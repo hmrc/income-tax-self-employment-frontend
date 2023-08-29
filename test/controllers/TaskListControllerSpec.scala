@@ -19,22 +19,20 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UnauthorisedView
+import views.html.TaskListView
 
-class UnauthorisedControllerSpec extends SpecBase {
+class TaskListControllerSpec extends SpecBase {
 
-  "Unauthorised Controller" - {
+  "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
-
+        val request = FakeRequest(GET, routes.TaskListController.show.url)
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[UnauthorisedView]
+        val view = application.injector.instanceOf[TaskListView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
