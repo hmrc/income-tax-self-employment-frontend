@@ -32,7 +32,7 @@ lazy val root = (project in file("."))
       "controllers.routes._",
       "viewmodels.govuk.all._"
     ),
-    PlayKeys.playDefaultPort := 9000,
+    PlayKeys.playDefaultPort := 10901,
     scalacOptions ++= Seq(
       "-feature",
       "-rootdir",
