@@ -10,6 +10,9 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
+site.view = View
+
+status.checkOurRecords = CHECK OUR RECORDS
 
 date.day = Day
 date.month = Month
@@ -38,6 +41,9 @@ error.summary.title = There is a problem
 index.title = income-tax-self-employment-frontend
 index.heading = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+
+taskList.title = Self-employment
+taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
