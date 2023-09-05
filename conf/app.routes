@@ -21,3 +21,8 @@ GET         /account/sign-out                            controllers.auth.AuthCo
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /selfEmploymentAbroad                        controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = NormalMode)
+POST       /selfEmploymentAbroad                        controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = NormalMode)
+GET        /changeSelfEmploymentAbroad                  controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeSelfEmploymentAbroad                  controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = CheckMode)
