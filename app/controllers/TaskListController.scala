@@ -29,7 +29,7 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
                                    val controllerComponents: MessagesControllerComponents,
                                    view: TaskListView) extends FrontendBaseController with I18nSupport {
 
-  def show(): Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData) { implicit request =>
       Ok(view())
   }
 }

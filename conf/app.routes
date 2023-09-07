@@ -12,7 +12,7 @@ GET         /refresh-session                             controllers.KeepAliveCo
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /task-list                                   controllers.TaskListController.show
+GET         /task-list                                   controllers.TaskListController.onPageLoad
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
@@ -22,7 +22,7 @@ GET         /account/signed-out                          controllers.auth.Signed
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /selfEmploymentAbroad                        controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = NormalMode)
-POST       /selfEmploymentAbroad                        controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = NormalMode)
-GET        /changeSelfEmploymentAbroad                  controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeSelfEmploymentAbroad                  controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = CheckMode)
+GET        /about-trade/abroad                           controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = NormalMode)
+POST       /about-trade/abroad                           controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = NormalMode)
+GET        /about-trade/abroad/change                    controllers.SelfEmploymentAbroadController.onPageLoad(mode: Mode = CheckMode)
+POST       /about-trade/abroad/change                    controllers.SelfEmploymentAbroadController.onSubmit(mode: Mode = CheckMode)
