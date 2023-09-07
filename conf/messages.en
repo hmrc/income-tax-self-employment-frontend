@@ -61,3 +61,11 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+detailsCompletedSection.title = Have you completed this section?
+detailsCompletedSection.heading = Have you completed this section?
+detailsCompletedSection.yes = Yes, I’ve completed this section
+detailsCompletedSection.no = No, I’ll come back to it later
+detailsCompletedSection.checkYourAnswersLabel = Have you completed this section?
+detailsCompletedSection.error.required = Select if you’ve completed this section
+detailsCompletedSection.change.hidden = DetailsCompletedSection

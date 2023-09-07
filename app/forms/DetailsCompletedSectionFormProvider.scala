@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.DetailsCompletedSection
 
-  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
-    Arbitrary {
-      Gen.oneOf(DetailsCompletedSection.values.toSeq)
-    }
+class DetailsCompletedSectionFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[DetailsCompletedSection] =
+    Form(
+      "value" -> enumerable[DetailsCompletedSection]("detailsCompletedSection.error.required")
+    )
 }

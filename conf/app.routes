@@ -1,23 +1,28 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+->         /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET        /                                            controllers.IndexController.onPageLoad
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET        /refresh-session                             controllers.KeepAliveController.keepAlive
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET        /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /task-list                                   controllers.TaskListController.show
+GET        /task-list                                   controllers.TaskListController.show
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET        /account/sign-out-survey                     controllers.auth.AuthController.signOut
+GET        /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
+GET        /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /details/completed-section                    controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = NormalMode)
+POST       /details/completed-section                    controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = NormalMode)
+GET        /details/change-completed-section             controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = CheckMode)
+POST       /details/change-completed-section             controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = CheckMode)
