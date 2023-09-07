@@ -50,7 +50,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "cy" -> Lang("cy")
   )
 
-  lazy val selfEmploymentBEBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxSelfEmploymentUrl) + "/income-tax-self-employment"
+
+  val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
 
 
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")

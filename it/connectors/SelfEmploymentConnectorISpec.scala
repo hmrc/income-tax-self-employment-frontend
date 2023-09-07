@@ -33,33 +33,32 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   lazy val connector: SelfEmploymentConnector = app.injector.instanceOf[SelfEmploymentConnector]
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
 
-  def appConfig(businessApiHost: String): FrontendAppConfig = new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
+  def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig = new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
     override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
   }
 
   val (nino, mtdId) = ("123456789", "1234567890123456")
 
-  val url = s"income-tax-self-employment/business/$nino"
+  val getBusinesses = s"/income-tax-self-employment/business/$nino"
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
-    new HttpHeader(HeaderNames.authorisation, "Bearer secret"),
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue"),
     new HttpHeader("mtditid", mtdId)
   )
 
-
   ".getBusinesses" should {
 
-    "return 200" when {
+    "return 200" in {
       val internalHost = "localhost"
 
       val expectedResponseBody = aGetBusinessDataRequestStr
 
       val expectedResult = Json.parse(expectedResponseBody).as[GetBusiness]
-      stubGetWithResponseBody(url, OK, expectedResponseBody, headersSentToBE)
+      stubGetWithResponseBody(getBusinesses, OK, expectedResponseBody, headersSentToBE)
 
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-      val result = await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino)(hc, ec))
+
+      val result = await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtdId)(hc, ec))
       result mustBe Right(expectedResult)
     }
 
@@ -72,11 +71,11 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       val errorResponseBody = Json.obj("code" -> invalidIdType, "reason" -> invalidReason, "errorType" -> "DOWNSTREAM_ERROR_CODE")
 
       s"return a $errorStatus" in {
-        stubGetWithResponseBody(url, errorStatus, errorResponseBody.toString(), headersSentToBE)
+        stubGetWithResponseBody(getBusinesses, errorStatus, errorResponseBody.toString(), headersSentToBE)
         auditStubs()
 
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-        val result = await(connector.getBusinesses(nino)(hc, ec))
+        val result = await(new SelfEmploymentConnector(httpClient, appConfig()).getBusinesses(nino, mtdId)(hc, ec))
         result mustBe Left(APIStatusError(errorStatus, APIError(invalidIdType, invalidReason)))
       }
     }
@@ -86,28 +85,31 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       val errorResponseBody = Json.obj("code" -> invalidIdType, "reason" -> invalidReason, "errorType" -> "DOWNSTREAM_ERROR_CODE")
       val errorStatus = 404
 
-      stubGetWithResponseBody(url, errorStatus, errorResponseBody.toString(), headersSentToBE)
+      stubGetWithResponseBody(getBusinesses, errorStatus, errorResponseBody.toString(), headersSentToBE)
       auditStubs()
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
-      val result = await(connector.getBusinesses(nino)(hc, ec))
+      val result = await(new SelfEmploymentConnector(httpClient, appConfig()).getBusinesses(nino, mtdId)(hc, ec))
       result mustBe Left(APIStatusError(errorStatus, APIError(invalidIdType, invalidReason)))
     }
   }
+
   ".getBusiness" should {
 
     val businessId = "ABC123"
+    val getBusiness = s"/income-tax-self-employment/business/$nino/$businessId"
 
-    "return 200" when {
+
+    "return 200" in {
       val internalHost = "localhost"
 
       val expectedResponseBody = aGetBusinessDataRequestStr
 
       val expectedResult = Json.parse(expectedResponseBody).as[GetBusiness]
-      stubGetWithResponseBody(url, OK, expectedResponseBody, headersSentToBE)
+      stubGetWithResponseBody(getBusiness, OK, expectedResponseBody, headersSentToBE)
 
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-      val result = await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId)(hc, ec))
+      val result = await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec))
       result mustBe Right(expectedResult)
     }
 
@@ -120,11 +122,11 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       val errorResponseBody = Json.obj("code" -> invalidIdType, "reason" -> invalidReason, "errorType" -> "DOWNSTREAM_ERROR_CODE")
 
       s"return a $errorStatus" in {
-        stubGetWithResponseBody(url, errorStatus, errorResponseBody.toString(), headersSentToBE)
+        stubGetWithResponseBody(getBusiness, errorStatus, errorResponseBody.toString(), headersSentToBE)
         auditStubs()
 
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-        val result = await(connector.getBusiness(nino, businessId)(hc, ec))
+        val result = await(new SelfEmploymentConnector(httpClient, appConfig()).getBusiness(nino, mtdId, businessId)(hc, ec))
         result mustBe Left(APIStatusError(errorStatus, APIError(invalidIdType, invalidReason)))
       }
     }
@@ -134,11 +136,11 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       val errorResponseBody = Json.obj("code" -> invalidIdType, "reason" -> invalidReason, "errorType" -> "DOWNSTREAM_ERROR_CODE")
       val errorStatus = 404
 
-      stubGetWithResponseBody(url, errorStatus, errorResponseBody.toString(), headersSentToBE)
+      stubGetWithResponseBody(getBusiness, errorStatus, errorResponseBody.toString(), headersSentToBE)
       auditStubs()
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
-      val result = await(connector.getBusiness(nino, businessId)(hc, ec))
+      val result = await(new SelfEmploymentConnector(httpClient, appConfig()).getBusiness(nino, mtdId, businessId)(hc, ec))
       result mustBe Left(APIStatusError(errorStatus, APIError(invalidIdType, invalidReason)))
     }
   }
