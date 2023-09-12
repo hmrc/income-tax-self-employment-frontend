@@ -61,3 +61,6 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+selfEmploymentSummary.title = Self-employment
+selfEmploymentSummary.heading = Self-employment
