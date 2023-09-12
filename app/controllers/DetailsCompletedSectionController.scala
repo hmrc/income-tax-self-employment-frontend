@@ -31,17 +31,15 @@ import views.html.DetailsCompletedSectionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DetailsCompletedSectionController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   selfEmploymentService: SelfEmploymentService,
-                                                   navigator: Navigator,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: DetailsCompletedSectionFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: DetailsCompletedSectionView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DetailsCompletedSectionController @Inject()(override val messagesApi: MessagesApi,
+                                                  selfEmploymentService: SelfEmploymentService,
+                                                  navigator: Navigator,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  formProvider: DetailsCompletedSectionFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: DetailsCompletedSectionView
+                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
@@ -56,7 +54,7 @@ class DetailsCompletedSectionController @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -64,12 +62,12 @@ class DetailsCompletedSectionController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DetailsCompletedSectionPage, value))
-            //TODO: call selfEmploymentService.saveJourneyState with nino, journeyId and isComplete (state)
-//            _              <- selfEmploymentService.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, updatedAnswers))
+          Future.successful(Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId))))
+        //          for {
+        //            updatedAnswers <- Future.fromTry(request.userAnswers.set(DetailsCompletedSectionPage, value))
+        //            //TODO: call selfEmploymentService.saveJourneyState with nino, journeyId and isComplete (state)
+        ////            _              <- selfEmploymentService.set(updatedAnswers)
+        //          } yield Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, updatedAnswers))
       )
-      Future.successful(Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId))))
   }
 }

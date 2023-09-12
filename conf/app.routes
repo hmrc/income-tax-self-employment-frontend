@@ -22,7 +22,7 @@ GET        /account/signed-out                          controllers.auth.SignedO
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /details/completed-section                    controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = NormalMode)
-POST       /details/completed-section                    controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = NormalMode)
-GET        /details/change-completed-section             controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = CheckMode)
-POST       /details/change-completed-section             controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = CheckMode)
+GET        /details/completed-section                   controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = NormalMode)
+POST       /details/completed-section                   controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = NormalMode)
+GET        /details/change-completed-section            controllers.DetailsCompletedSectionController.onPageLoad(mode: Mode = CheckMode)
+POST       /details/change-completed-section            controllers.DetailsCompletedSectionController.onSubmit(mode: Mode = CheckMode)

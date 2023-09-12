@@ -29,13 +29,13 @@
     @formHelper(action = routes.DetailsCompletedSectionController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("detailsCompletedSection.heading")).asPageHeading(),
+                legend = LegendViewModel(messages("detailsCompletedSection.title")).asPageHeading(),
                 items  = DetailsCompletedSection.options
             )
         )
