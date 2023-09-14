@@ -23,6 +23,6 @@ GET        /account/signed-out                          controllers.auth.SignedO
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
-PUT        /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
+POST       /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
 GET        /details/change-completed-section/:taxYear/:nino/:journey            controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode = CheckMode)
-PUT        /details/change-completed-section/:taxYear/:nino/:journey            controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = CheckMode)
+POST       /details/change-completed-section/:taxYear/:nino/:journey            controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = CheckMode)
