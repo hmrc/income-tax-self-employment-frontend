@@ -17,18 +17,17 @@
 package service
 
 import connectors.SelfEmploymentConnector
+import connectors.httpParsers.SelfEmploymentResponse.SelfEmploymentResponse
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)
-                                     (implicit ec: ExecutionContext
-                                      ) extends Logging {
+                                     (implicit ec: ExecutionContext) extends Logging {
 
-   //TODO: we can decide if state is Boolean or String
-    def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean): Unit = {
-      connector.saveJourneyState(nino, journeyId, isComplete)(new HeaderCarrier(), ec)
-    }
+  def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean): Future[SelfEmploymentResponse] = {
+    connector.saveJourneyState(nino, journeyId, isComplete)(new HeaderCarrier(), ec)
+  }
 }

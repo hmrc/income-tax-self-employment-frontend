@@ -54,6 +54,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  //TODO: Change this to the correct URL if different
-  lazy val selfEmploymentBaseUrl: String = configuration.get[String](ConfigKeys.selfEmploymentBackEndUrl) + "/self-employment"
+  lazy val selfEmploymentBaseUrl: String = configuration.get[String](ConfigKeys.selfEmploymentBackEndUrl) + "/income-tax-self-employment"
 }

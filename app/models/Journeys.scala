@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object ConfigKeys {
-  val selfEmploymentBackEndUrl = "microservice.services.income-tax-self-employment.url"
+object Journeys {
+
+  val SelfEmploymentAbroad: String = "self-employment-abroad"
+  val Income: String = "income"
+  val ExpensesCategories: String = "expenses-categories"
+  val NationalInsurance: String = "national-insurance"
+
 }

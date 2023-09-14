@@ -18,17 +18,18 @@ package controllers
 
 import controllers.actions._
 import forms.DetailsCompletedSectionFormProvider
-
-import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.DetailsCompletedSection.Yes
+import models.{DetailsCompletedSection, Mode, UserAnswers}
 import navigation.Navigator
 import pages.DetailsCompletedSectionPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import service.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DetailsCompletedSectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DetailsCompletedSectionController @Inject()(override val messagesApi: MessagesApi,
@@ -39,11 +40,12 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
                                                   formProvider: DetailsCompletedSectionFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: DetailsCompletedSectionView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit val ec: ExecutionContext
+                                                 ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[DetailsCompletedSection] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DetailsCompletedSectionPage) match {
@@ -51,23 +53,24 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, taxYear, nino, journey, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, nino, journey, mode))),
 
-        value =>
-          Future.successful(Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId))))
-        //          for {
-        //            updatedAnswers <- Future.fromTry(request.userAnswers.set(DetailsCompletedSectionPage, value))
-        //            //TODO: call selfEmploymentService.saveJourneyState with nino, journeyId and isComplete (state)
-        ////            _              <- selfEmploymentService.set(updatedAnswers)
-        //          } yield Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, updatedAnswers))
+        value => {
+          selfEmploymentService.saveJourneyState(
+            nino = nino, journeyId = journey, isComplete = value.equals(Yes)
+          ) map {
+            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId)))
+            case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
+          }
+        }
       )
   }
 }

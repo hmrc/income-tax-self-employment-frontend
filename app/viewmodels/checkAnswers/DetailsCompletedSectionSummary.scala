@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object DetailsCompletedSectionSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, nino: String, journey: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DetailsCompletedSectionPage).map {
       answer =>
 
@@ -42,7 +42,8 @@ object DetailsCompletedSectionSummary  {
           key     = "detailsCompletedSection.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DetailsCompletedSectionController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change",
+              routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, journey, CheckMode).url)
               .withVisuallyHiddenText(messages("detailsCompletedSection.change.hidden"))
           )
         )

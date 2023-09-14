@@ -18,144 +18,152 @@ package controllers
 
 import base.SpecBase
 import forms.DetailsCompletedSectionFormProvider
-import models.{DetailsCompletedSection, NormalMode, UserAnswers}
+import models.{APIErrorBodyModel, APIErrorModel, DetailsCompletedSection, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.Ignore
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DetailsCompletedSectionPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import service.SelfEmploymentService
 import views.html.DetailsCompletedSectionView
 
-import scala.concurrent.Future
+import java.time.LocalDate
+import scala.concurrent.{ExecutionContext, Future}
 
 class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  val taxYear = LocalDate.now().getYear
+  val nino = "AA112233A"
+  val journey = "journeyId"
 
-  lazy val detailsCompletedSectionRoute = routes.DetailsCompletedSectionController.onPageLoad(NormalMode).url
-
+  val mockService = mock[SelfEmploymentService]
+  implicit val ec: ExecutionContext = ExecutionContext.global
   val formProvider = new DetailsCompletedSectionFormProvider()
-  val form = formProvider()
+  val form: Form[DetailsCompletedSection] = formProvider()
+
+  lazy val detailsCompletedSectionRoute: String = routes.DetailsCompletedSectionController.onPageLoad(
+    taxYear, nino, journey, NormalMode).url
+  lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val taskListRoute: String = routes.TaskListController.show.url
+  lazy val taskListCall: Call = Call("GET", taskListRoute)
 
   "DetailsCompletedSection Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, detailsCompletedSectionRoute)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request = FakeRequest(GET, detailsCompletedSectionRoute)
 
-        val view = application.injector.instanceOf[DetailsCompletedSectionView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+        }
       }
+
+      "must populate the view correctly on a GET when the question has previously been answered" in {
+
+        val userAnswers = UserAnswers(userAnswersId).set(DetailsCompletedSectionPage, DetailsCompletedSection.values.head).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, detailsCompletedSectionRoute)
+
+          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(
+            form.fill(DetailsCompletedSection.values.head), taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+        }
+      }
+
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DetailsCompletedSectionPage, DetailsCompletedSection.values.head).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        when(mockService.saveJourneyState(nino = nino, journeyId = journey, isComplete = true)
+        ) thenReturn Future(Right(()))
 
-      running(application) {
-        val request = FakeRequest(GET, detailsCompletedSectionRoute)
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(taskListCall)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
 
-        val view = application.injector.instanceOf[DetailsCompletedSectionView]
+        running(application) {
+          val request =
+            FakeRequest(PUT, detailsCompletedSectionRoute)
+              .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(DetailsCompletedSection.values.head), NormalMode)(request, messages(application)).toString
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual taskListRoute
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        running(application) {
+          val request =
+            FakeRequest(PUT, detailsCompletedSectionRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+          val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, detailsCompletedSectionRoute)
+          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+        }
+      }
+
+      "must redirect to Journey Recovery when an error response is returned from the service" in {
+
+        when(mockService.saveJourneyState(nino = "invalidNino", journeyId = "invalidJourneyId", isComplete = true)
+        ) thenReturn Future(Left(APIErrorModel(500, APIErrorBodyModel.parsingError)))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(journeyRecoveryCall)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+
+        running(application) {
+          val request = FakeRequest(PUT, detailsCompletedSectionRoute)
             .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual journeyRecoveryRoute
+        }
       }
-    }
 
-    //TODO: remove ignore when selfEmploymentService is implemented and controller updated
-    "must return a Bad Request and errors when invalid data is submitted" ignore {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, detailsCompletedSectionRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DetailsCompletedSectionView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    //TODO: remove ignore when selfEmploymentService is implemented and controller updated
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, detailsCompletedSectionRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, detailsCompletedSectionRoute)
-            .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
     }
   }
 }

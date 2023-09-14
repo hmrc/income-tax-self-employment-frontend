@@ -27,7 +27,7 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case DetailsCompletedSectionPage => _ => routes.DetailsCompletedSectionController.onPageLoad(NormalMode)
+    case DetailsCompletedSectionPage => _ => routes.TaskListController.show
     case _ => _ => routes.IndexController.onPageLoad
   }
 

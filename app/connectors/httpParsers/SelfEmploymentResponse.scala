@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package connectors.httpParsers
 
-object ConfigKeys {
-  val selfEmploymentBackEndUrl = "microservice.services.income-tax-self-employment.url"
+import models.APIErrorModel
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+
+object SelfEmploymentResponse extends APIParser {
+  type SelfEmploymentResponse = Either[APIErrorModel, Unit]
+
+  override val parserName: String = "SelfEmploymentResponse"
+  override val service: String = "income-tax-self-employment"
+
+  implicit object SelfEmploymentHttpReads extends HttpReads[SelfEmploymentResponse] {
+    override def read(method: String, url: String, response: HttpResponse): SelfEmploymentResponse =
+      SessionHttpReads.read(method, url, response)
+  }
 }
