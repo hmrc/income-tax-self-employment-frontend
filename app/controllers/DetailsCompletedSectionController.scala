@@ -72,5 +72,5 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           }
         }
       )
-  }
+  } // TODO EOL GetBusiness
 }

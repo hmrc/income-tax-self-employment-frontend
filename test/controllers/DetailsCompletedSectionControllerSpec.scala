@@ -110,7 +110,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(PUT, detailsCompletedSectionRoute)
+            FakeRequest(POST, detailsCompletedSectionRoute)
               .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
 
           val result = route(application, request).value
@@ -126,7 +126,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(PUT, detailsCompletedSectionRoute)
+            FakeRequest(POST, detailsCompletedSectionRoute)
               .withFormUrlEncodedBody(("value", "invalid value"))
 
           val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -154,7 +154,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          val request = FakeRequest(PUT, detailsCompletedSectionRoute)
+          val request = FakeRequest(POST, detailsCompletedSectionRoute)
             .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
 
           val result = route(application, request).value
