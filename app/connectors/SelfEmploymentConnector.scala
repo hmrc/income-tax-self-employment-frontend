@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParsers.SelfEmploymentResponse.{SelfEmploymentHttpReads, SelfEmploymentResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -24,10 +25,25 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject()(val http: HttpClient,
-                                        val appConfig: FrontendAppConfig) {
+                                        val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SelfEmploymentResponse] = {
-    val url = appConfig.selfEmploymentBaseUrl + s"/completed-section/$nino/$journeyId/${isComplete.toString}"
+  def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean)
+                      (implicit hc: HeaderCarrier): Future[SelfEmploymentResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$journeyId/${isComplete.toString}"
     http.PUT[String, SelfEmploymentResponse](url, "")
   }
+
+  def getBusinesses(nino: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+  }
+
+  def getBusiness(nino: String, businessId: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+  }
+
 }

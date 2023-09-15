@@ -39,8 +39,8 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
                                                   getData: DataRetrievalAction,
                                                   formProvider: DetailsCompletedSectionFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: DetailsCompletedSectionView
-                                                 )(implicit val ec: ExecutionContext
+                                                  view: DetailsCompletedSectionView)
+                                                 (implicit val ec: ExecutionContext
                                                  ) extends FrontendBaseController with I18nSupport {
 
   val form: Form[DetailsCompletedSection] = formProvider()
@@ -64,13 +64,11 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           Future.successful(BadRequest(view(formWithErrors, taxYear, nino, journey, mode))),
 
         value => {
-          selfEmploymentService.saveJourneyState(
-            nino = nino, journeyId = journey, isComplete = value.equals(Yes)
-          ) map {
+          selfEmploymentService.saveJourneyState(nino, journey, isComplete = value.equals(Yes)) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId)))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
           }
         }
       )
-  } // TODO EOL GetBusiness
+  }
 }

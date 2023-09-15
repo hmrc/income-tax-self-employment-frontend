@@ -22,12 +22,11 @@ import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)
-                                     (implicit ec: ExecutionContext) extends Logging {
+class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector) extends Logging {
 
   def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean): Future[SelfEmploymentResponse] = {
-    connector.saveJourneyState(nino, journeyId, isComplete)(new HeaderCarrier(), ec)
+    connector.saveJourneyState(nino, journeyId, isComplete)(new HeaderCarrier())
   }
 }
