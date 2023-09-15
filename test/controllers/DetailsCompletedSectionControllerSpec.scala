@@ -18,7 +18,9 @@ package controllers
 
 import base.SpecBase
 import forms.DetailsCompletedSectionFormProvider
-import models.{APIErrorBodyModel, APIErrorModel, DetailsCompletedSection, NormalMode, UserAnswers}
+import models.errors.APIErrorBody
+import models.errors.APIErrorBody.APIStatusError
+import models.{DetailsCompletedSection, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,11 +38,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
-  val taxYear = LocalDate.now().getYear
+  val taxYear: Int = LocalDate.now().getYear
   val nino = "AA112233A"
   val journey = "journeyId"
 
-  val mockService = mock[SelfEmploymentService]
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
   implicit val ec: ExecutionContext = ExecutionContext.global
   val formProvider = new DetailsCompletedSectionFormProvider()
   val form: Form[DetailsCompletedSection] = formProvider()
@@ -49,7 +51,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
     taxYear, nino, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val taskListRoute: String = routes.TaskListController.show.url
+  lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
 
   "DetailsCompletedSection Controller" - {
@@ -97,7 +99,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        when(mockService.saveJourneyState(nino = nino, journeyId = journey, isComplete = true)
+        when(mockService.saveJourneyState(nino, journey, taxYear, isComplete = true)
         ) thenReturn Future(Right(()))
 
         val application =
@@ -142,8 +144,8 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
-        when(mockService.saveJourneyState(nino = "invalidNino", journeyId = "invalidJourneyId", isComplete = true)
-        ) thenReturn Future(Left(APIErrorModel(500, APIErrorBodyModel.parsingError)))
+        when(mockService.saveJourneyState("invalidNino", "invalidJourneyId", taxYear, isComplete = true)
+        ) thenReturn Future(Left(APIStatusError(BAD_REQUEST, APIErrorBody.APIError("400", "Error"))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))

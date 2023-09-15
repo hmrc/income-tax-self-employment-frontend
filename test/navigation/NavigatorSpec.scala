@@ -34,6 +34,11 @@ class NavigatorSpec extends SpecBase {
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad
       }
+
+      "must go from a Details Completed page to the Task List page" in {
+
+        navigator.nextPage(DetailsCompletedSectionPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad
+      }
     }
 
     "in Check mode" - {

@@ -16,17 +16,21 @@
 
 package connectors.httpParsers
 
-import models.APIErrorModel
+import models.errors.APIErrorBody.APIStatusError
+import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SelfEmploymentResponse extends APIParser {
-  type SelfEmploymentResponse = Either[APIErrorModel, Unit]
+  type SelfEmploymentResponse = Either[APIStatusError, Unit]
 
-  override val parserName: String = "SelfEmploymentResponse"
-  override val service: String = "income-tax-self-employment"
+  val parserName: String = "SelfEmploymentResponse"
+  val service: String = "income-tax-self-employment"
 
   implicit object SelfEmploymentHttpReads extends HttpReads[SelfEmploymentResponse] {
     override def read(method: String, url: String, response: HttpResponse): SelfEmploymentResponse =
-      SessionHttpReads.read(method, url, response)
+      response.status match {
+        case NO_CONTENT => Right(())
+        case _ => pagerDutyError(response)
+      }
   }
 }

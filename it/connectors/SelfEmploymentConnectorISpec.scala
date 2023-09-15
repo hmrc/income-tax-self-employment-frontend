@@ -19,7 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
-import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import connectors.httpParsers.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParsers.SelfEmploymentResponse.SelfEmploymentResponse
 import helpers.WiremockSpec
 import models.DetailsCompletedSection.Yes
@@ -32,6 +32,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, SessionId}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class SelfEmploymentConnectorISpec extends WiremockSpec {
@@ -47,6 +48,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
   val nino = "123456789"
+  val taxYear = LocalDate.now().getYear
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue")
@@ -60,7 +62,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
     behave like journeyStateRequestReturnsNoContent(
       () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(nino, journeyId, isComplete.equals(Yes))(hc)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(nino, journeyId, taxYear, isComplete.equals(Yes))(hc)))
 
 
     behave like journeyStateRequestReturnsError(
@@ -68,7 +70,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
         BAD_REQUEST,
         Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter").toString(),
         headersSentToBE))(
-      () => underTest.saveJourneyState(nino, journeyId, isComplete.equals(Yes)))
+      () => underTest.saveJourneyState(nino, journeyId, taxYear, isComplete.equals(Yes)))
   }
 
   ".getBusiness" should {

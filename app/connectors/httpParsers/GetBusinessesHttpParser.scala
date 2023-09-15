@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.httpParser
+package connectors.httpParsers
 
 import models.errors.APIErrorBody.APIStatusError
 import models.requests.GetBusinesses

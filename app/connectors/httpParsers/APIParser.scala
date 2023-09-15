@@ -16,67 +16,62 @@
 
 package connectors.httpParsers
 
-import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel}
+import models.errors.APIErrorBody.{APIError, APIErrors, APIStatusError}
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import utils.PagerDutyHelper.PagerDutyKeys._
-import utils.PagerDutyHelper.pagerDutyLog
+import utils.PagerDutyHelper.{getCorrelationId, pagerDutyLog}
 
 trait APIParser {
+  def parserName: String
+  def apiType: String = ""
 
-  val parserName: String
-  val service: String
+  def logMessage(response: HttpResponse): String =
+    s"[$parserName][read] Received ${response.status} from $apiType API. Body:${response.body} ${getCorrelationId(response)}"
 
-  def logMessage(response: HttpResponse): String = {
-    s"[$parserName][read] Received ${response.status} from $service API. Body:${response.body}"
+  def nonModelValidatingJsonFromAPI[Response]: Either[APIStatusError, Response] = {
+    pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, s"[$parserName][read] Invalid Json from $apiType API.")
+    Left(APIStatusError(INTERNAL_SERVER_ERROR, APIError.parsingError))
   }
 
-  def badSuccessJsonFromAPI[Response]: Either[APIErrorModel, Response] = {
-    pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, s"[$parserName][read] Invalid Json from $service API.")
-    Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel.parsingError))
-  }
-
-  def handleAPIError[Response](response: HttpResponse, statusOverride: Option[Int] = None): Either[APIErrorModel, Response] = {
+  def handleAPIError[Response](response: HttpResponse, statusOverride: Option[Int] = None): Either[APIStatusError, Response] = {
 
     val status = statusOverride.getOrElse(response.status)
 
     try {
       val json = response.json
 
-      lazy val apiError = json.asOpt[APIErrorBodyModel]
-      lazy val apiErrors = json.asOpt[APIErrorsBodyModel]
+      lazy val apiError = json.asOpt[APIError]
+      lazy val apiErrors = json.asOpt[APIErrors]
 
       (apiError, apiErrors) match {
-        case (Some(apiError), _) => Left(APIErrorModel(status, apiError))
-        case (_, Some(apiErrors)) => Left(APIErrorModel(status, apiErrors))
+        case (Some(apiErr), _) => Left(APIStatusError(status, apiErr))
+        case (_, Some(apiErrs)) => Left(APIStatusError(status, apiErrs))
         case _ =>
-          pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, s"[$parserName][read] Unexpected Json from $service API.")
-          Left(APIErrorModel(status, APIErrorBodyModel.parsingError))
+          pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, s"[$parserName][read] Unexpected Json from $apiType API.")
+          Left(APIStatusError(status, APIError.parsingError))
       }
     } catch {
-      case _: Exception => Left(APIErrorModel(status, APIErrorBodyModel.parsingError))
+      case _: Exception => Left(APIStatusError(status, APIError.parsingError))
     }
   }
 
-  type SessionResponse = Either[APIErrorModel, Unit]
-
-  implicit object SessionHttpReads extends HttpReads[SessionResponse] {
-    override def read(method: String, url: String, response: HttpResponse): SessionResponse = {
-      response.status match {
-        case NO_CONTENT => Right(())
-        case BAD_REQUEST =>
-          pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
-          handleAPIError(response)
-        case INTERNAL_SERVER_ERROR =>
-          pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
-          handleAPIError(response)
-        case SERVICE_UNAVAILABLE =>
-          pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
-          handleAPIError(response)
-        case _ =>
-          pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
-          handleAPIError(response, Some(INTERNAL_SERVER_ERROR))
-      }
+  def pagerDutyError[A](response: HttpResponse): Either[APIStatusError, A] =
+    response.status match {
+      case BAD_REQUEST =>
+        pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
+        handleAPIError(response)
+      case NOT_FOUND =>
+        pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
+        handleAPIError(response)
+      case INTERNAL_SERVER_ERROR =>
+        pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
+        handleAPIError(response)
+      case SERVICE_UNAVAILABLE =>
+        pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
+        handleAPIError(response)
+      case _ =>
+        pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
+        handleAPIError(response, Some(INTERNAL_SERVER_ERROR))
     }
-  }
 }

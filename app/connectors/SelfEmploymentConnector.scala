@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
+import connectors.httpParsers.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParsers.SelfEmploymentResponse.{SelfEmploymentHttpReads, SelfEmploymentResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -27,10 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class SelfEmploymentConnector @Inject()(val http: HttpClient,
                                         val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean)
+  def saveJourneyState(nino: String, journeyId: String, taxYear: Int, isComplete: Boolean)
                       (implicit hc: HeaderCarrier): Future[SelfEmploymentResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$journeyId/${isComplete.toString}"
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$taxYear/$journeyId/${isComplete.toString}"
     http.PUT[String, SelfEmploymentResponse](url, "")
   }
 

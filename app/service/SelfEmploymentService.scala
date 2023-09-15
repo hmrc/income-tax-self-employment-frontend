@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector) extends Logging {
 
-  def saveJourneyState(nino: String, journeyId: String, isComplete: Boolean): Future[SelfEmploymentResponse] = {
-    connector.saveJourneyState(nino, journeyId, isComplete)(new HeaderCarrier())
+  def saveJourneyState(nino: String, journeyId: String, taxYear: Int, isComplete: Boolean): Future[SelfEmploymentResponse] = {
+    connector.saveJourneyState(nino, journeyId, taxYear, isComplete)(new HeaderCarrier())
   }
 }

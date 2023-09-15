@@ -28,7 +28,7 @@ class APIParserSpec extends SpecBase {
 
   object FakeParser extends APIParser {
     override val parserName: String = "TestParser"
-    override val service: String = "service"
+    val service: String = "service"
   }
 
   def httpResponse(json: JsValue =
@@ -56,7 +56,7 @@ class APIParserSpec extends SpecBase {
           |}""".stripMargin
     }
     "return the the correct error" in {
-      val result = FakeParser.badSuccessJsonFromAPI
+      val result = FakeParser.nonModelValidatingJsonFromAPI
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API")))
     }
     "handle multiple errors" in {
