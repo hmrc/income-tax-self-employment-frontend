@@ -26,7 +26,7 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: Int, nino: String, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SelfEmploymentAbroadPage).map {
       answer =>
 
@@ -36,7 +36,7 @@ object SelfEmploymentAbroadSummary  {
           key     = "selfEmploymentAbroad.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SelfEmploymentAbroadController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.SelfEmploymentAbroadController.onPageLoad(taxYear, nino, CheckMode).url)
               .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
           )
         )

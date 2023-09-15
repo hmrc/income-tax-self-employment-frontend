@@ -21,7 +21,6 @@ import forms.SelfEmploymentAbroadFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.SelfEmploymentAbroadPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -42,31 +41,34 @@ class SelfEmploymentAbroadController @Inject()(
                                                 view: SelfEmploymentAbroadView
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def form(): Form[Boolean] = formProvider()
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
-        case None => form()
-        case Some(value) => form().fill(value)
+        case None => formProvider() //ToDo give 'isAgent' argument to formProvider when 'user.isAgent' is created + edit in view
+        case Some(value) => formProvider().fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, taxYear, nino, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      form().bindFromRequest().fold(
+      formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, nino, mode))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers))
+            isSuccessful <- sessionRepository.set(updatedAnswers)
+          } yield {
+            val redirectLocation =
+              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers)
+              else routes.JourneyRecoveryController.onPageLoad()
+            Redirect(redirectLocation)
+          }
       )
   }
 }
