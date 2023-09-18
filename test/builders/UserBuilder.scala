@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package generators
+package builders
 
-trait ModelGenerators {
+import controllers.actions.AuthenticatedIdentifierAction.User
+
+object UserBuilder {
+  val aNoddyUser = User("mtdItId", arn = None, "nino", "affinityGroup")
 }

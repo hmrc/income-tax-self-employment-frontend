@@ -53,4 +53,15 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  
+  
+  def incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
+    configuration.get[String]("microservice.services.income-tax-submission-frontend.context")
+
+  def incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
+    configuration.get[String]("microservice.services.income-tax-submission-frontend.iv-redirect")
+
+  def viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.view-and-change.url") +
+    "/report-quarterly/income-and-expenses/view/agents/client-utr"
 }
+
