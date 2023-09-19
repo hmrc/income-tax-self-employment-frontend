@@ -15,25 +15,39 @@
  */
 
 package controllers
-
+import connectors.SelfEmploymentConnector
 import controllers.actions._
+import handlers.ErrorHandler
+import models.requests.OptionalDataRequest
+
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfEmploymentSummaryView
+
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SelfEmploymentSummaryController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       errorHandler: ErrorHandler,
+                                       selfEmploymentConnector: SelfEmploymentConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: SelfEmploymentSummaryView
+                                       view: SelfEmploymentSummaryView,
+                                       ec: ExecutionContext
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
-      Ok(view())
+  def onPageLoad: Action[AnyContent] = (identify andThen getData) async {
+    implicit request: OptionalDataRequest[AnyContent] =>
+      selfEmploymentConnector.getBusinesses(request.nino).map {
+        case Left(_) =>  errorHandler.internalServerError()
+        case Right(value) =>
+          val business = value.tradingName.getOrElse("")
+          Ok(view(business))
+      }
   }
 }

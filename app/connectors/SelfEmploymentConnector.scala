@@ -26,22 +26,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class SelfEmploymentConnector @Inject()(val http: HttpClient,
                                   val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  def getBusinesses(nino: String, mtditid: String)
+  def getBusinesses(nino: String)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
+//    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hcWithExtras, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
   }
 
-  def getBusiness(nino: String,mtditid: String, businessId: String)
+  def getBusiness(nino: String, businessId: String)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
+//    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hcWithExtras, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
   }
 
 }
