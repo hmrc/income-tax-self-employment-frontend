@@ -17,7 +17,7 @@
 package connectors.httpParser
 
 import models.errors.APIErrorBody.APIStatusError
-import models.requests.{BusinessData, GetBusinesses}
+import models.requests.GetBusinesses
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
