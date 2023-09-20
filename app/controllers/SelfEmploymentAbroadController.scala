@@ -30,22 +30,21 @@ import views.html.SelfEmploymentAbroadView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentAbroadController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                formProvider: SelfEmploymentAbroadFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SelfEmploymentAbroadView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SelfEmploymentAbroadController @Inject()(override val messagesApi: MessagesApi,
+                                               sessionRepository: SessionRepository,
+                                               navigator: Navigator,
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               formProvider: SelfEmploymentAbroadFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: SelfEmploymentAbroadView)
+                                              (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
-        case None => formProvider() //ToDo give 'isAgent' argument to formProvider when 'user.isAgent' is created + edit in view
+        case None => formProvider() //ToDo give 'isAgent' argument to formProvider when 'user.isAgent' is created. Remove hardcoding of 'selfEmploymentAbroad.title.INDIVIDUAL' message in view
         case Some(value) => formProvider().fill(value)
       }
 
