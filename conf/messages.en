@@ -62,6 +62,13 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
+selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
+selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad
+selfEmploymentAbroad.error.required.individual = Select yes if you carried out all of your self-employment abroad
+selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
+selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
+
 detailsCompletedSection.title = Have you completed this section?
 detailsCompletedSection.yes = Yes, I’ve completed this section
 detailsCompletedSection.no = No, I’ll come back to it later

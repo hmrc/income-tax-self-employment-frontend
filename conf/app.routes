@@ -12,7 +12,7 @@ GET        /refresh-session                             controllers.KeepAliveCon
 
 GET        /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET        /task-list                                   controllers.TaskListController.onPageLoad
+GET         /task-list                                   controllers.TaskListController.onPageLoad
 
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
@@ -21,6 +21,11 @@ GET        /account/sign-out                            controllers.auth.AuthCon
 GET        /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /details/self-employment-abroad/:taxYear/:nino                           controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = NormalMode)
+POST       /details/self-employment-abroad/:taxYear/:nino                           controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = NormalMode)
+GET        /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = CheckMode)
+POST       /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = CheckMode)
 
 GET        /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
 POST       /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
