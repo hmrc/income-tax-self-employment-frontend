@@ -44,7 +44,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
-        case None => formProvider() //ToDo give 'isAgent' argument to formProvider when 'user.isAgent' is created. Remove hardcoding of 'selfEmploymentAbroad.title.INDIVIDUAL' message in view
+        case None => formProvider() //TODO give 'isAgent' argument to formProvider when 'user.isAgent' is created. Remove hardcoding of 'selfEmploymentAbroad.title.INDIVIDUAL' message in view
         case Some(value) => formProvider().fill(value)
       }
 

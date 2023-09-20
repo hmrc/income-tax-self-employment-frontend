@@ -38,7 +38,7 @@ class NavigatorSpec extends SpecBase {
 
       "must go from the last page in a journey to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad //ToDo check redirect to DetailsCompleted page when implemented
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad //TODO check redirect to DetailsCompleted page when implemented
       }
     }
 

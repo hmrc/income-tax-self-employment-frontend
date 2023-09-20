@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
 
-  def apply(isAgent: Boolean = false): Form[Boolean] = //ToDo remove default '= false' when isAgent is implemented as User parameter
+  def apply(isAgent: Boolean = false): Form[Boolean] = //TODO remove default '= false' when isAgent is implemented as User parameter
     Form(
       "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
     )

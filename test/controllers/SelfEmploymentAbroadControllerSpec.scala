@@ -99,7 +99,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(taskListCall)), //ToDo replace with DetailsCompletedSection when created
+              bind[Navigator].toInstance(new FakeNavigator(taskListCall)), //TODO replace with DetailsCompletedSection when created
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -112,7 +112,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual taskListCall.url //ToDo replace with DetailsCompletedSection when created
+          redirectLocation(result).value mustEqual taskListCall.url //TODO replace with DetailsCompletedSection when created
         }
       }
 

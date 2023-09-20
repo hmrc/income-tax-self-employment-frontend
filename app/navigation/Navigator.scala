@@ -27,7 +27,7 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-//    case SelfEmploymentAbroadPage => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, Abroad, mode) //ToDo uncomment when DetailsCompleted PR merged
+//    case SelfEmploymentAbroadPage => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, Abroad, mode) //TODO uncomment when DetailsCompleted PR merged
     case _ => _ => routes.TaskListController.onPageLoad
   }
 
