@@ -20,6 +20,11 @@ GET         /account/sign-out-survey                     controllers.auth.AuthCo
 GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
+GET         /error/you-need-client-authorisation         controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
+GET         /error/you-need-to-sign-up                   controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
+GET         /error/you-need-agent-services-account       controllers.authorisationErrors.YouNeedAgentServicesController.onPageLoad
+
+
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /:taxYear/self-employment/details/self-employment-abroad                           controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
