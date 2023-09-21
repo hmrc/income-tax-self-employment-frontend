@@ -27,11 +27,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class SelfEmploymentConnector @Inject()(val http: HttpClient,
                                         val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  def saveJourneyState(nino: String, journeyId: String, taxYear: Int, isComplete: Boolean)
+  def saveJourneyState(nino: String, journey: String, taxYear: Int, isComplete: Boolean)
                       (implicit hc: HeaderCarrier): Future[SelfEmploymentResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$taxYear/$journeyId/${isComplete.toString}"
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$taxYear/$journey/${isComplete.toString}"
     http.PUT[String, SelfEmploymentResponse](url, "")
+  }
+
+  def getJourneyState(nino: String, journey: String, taxYear: Int)
+                     (implicit hc: HeaderCarrier): Future[SelfEmploymentResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$nino/$taxYear/$journey"
+    http.GET[SelfEmploymentResponse](url)(SelfEmploymentHttpReads, hc, ec)
   }
 
   def getBusinesses(nino: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
