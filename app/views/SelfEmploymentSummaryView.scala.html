@@ -20,10 +20,24 @@
 )
 
 @(tradingName: Seq[String])(implicit request: Request[_], messages: Messages)
+
 @layout(pageTitle = titleNoForm(messages("selfEmploymentSummary.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("selfEmploymentSummary.heading")</h1>
-<p>@tradingName</p>
+
+<dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+    <div class="hmrc-add-to-a-list__contents">
+ <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light govuk-!-width-one-half">
+            <span class="govuk-body">
+                    @tradingName
+            </span>
+  <dd class="hmrc-add-to-a-list__change">
+   <a href="#" class="govuk-link">@messages("site.view")</a>
+  </dd>
+ </dt>
+    </div>
+</dl>
+
 <p class="govuk-body">
  @govukButton(
  ButtonViewModel(messages("site.continue"))
