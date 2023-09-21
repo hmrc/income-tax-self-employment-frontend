@@ -12,6 +12,10 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.view = View
 
+status.completed = COMPLETED
+status.notStarted = NOT STARTED
+status.cannotStartYet = CANNOT START YET
+status.inProgress = IN PROGRESS
 status.checkOurRecords = CHECK OUR RECORDS
 
 date.day = Day
@@ -37,6 +41,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+error.noTradingName = Trading name not found
 
 index.title = income-tax-self-employment-frontend
 index.heading = income-tax-self-employment-frontend
@@ -62,6 +67,7 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+selfEmploymentAbroad = Self-employment abroad
 selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
 selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
 selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad

@@ -18,21 +18,28 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.requests.OptionalDataRequest
+import models.requests.{BusinessData, OptionalDataRequest}
+import models.viewModels.TaggedSelfEmploymentsViewModel
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaskListView
 
 class TaskListController @Inject()(override val messagesApi: MessagesApi,
+                                   sessionRepository: SessionRepository,
                                    identify: IdentifierAction,
                                    getData: DataRetrievalAction,
                                    val controllerComponents: MessagesControllerComponents,
                                    view: TaskListView) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
+  def onPageLoad(taxYear: Int, nino: String): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
 
     identify
-      Ok(view())
+    val selfEmploymentList: Seq[BusinessData] =
+//      selfEmploymentService.getCompletedSelfEmployments(nino)
+      Seq.empty
+    val completedSelfEmploymentsList: Seq[TaggedSelfEmploymentsViewModel] = selfEmploymentList.flatMap(se => TaggedSelfEmploymentsViewModel(se, ""))
+    Ok(view(taxYear, nino, completedSelfEmploymentsList))
   }
 }

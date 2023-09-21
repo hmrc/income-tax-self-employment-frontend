@@ -15,10 +15,12 @@
  *@
 
 @import templates.Layout
+@import models.requests.BusinessData
 
-@this(layout: Layout)
+@this(layout: Layout,
+      selfEmployments: SelfEmployments)
 
-@()(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, nino: String, selfEmploymentList: Seq[TaggedSelfEmploymentsViewModel])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("taskList.title"))) {
 
@@ -36,5 +38,27 @@
             </a>
         </li>
     </ul>
+
+
+    @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
+        <h2 class="app-task-list__section">
+            @{s"${selfEmployment.getOrElse(messages("error.noTradingName")).businessData.tradingName} - $messages("taskList.title")"}
+        </h2>
+
+        <ul class="app-task-list__items govuk-!-padding-left-0">
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="@SelfEmploymentAbroadController.onPageLoad(taxYear, if (status.equals("notStarted")) NormalMode else CheckMode)" style="govuk-link">
+                        @messages("selfEmploymentAbroad")
+                    </a>
+                </span>
+                <a href="#">
+                    <strong class=s"govuk-tag app-task-list__tag @{s"govuk-tag--${selfEmployment.status}"}>
+                        @messages(s"status.${selfEmployment.status}")
+                    </strong>
+                </a>
+            </li>
+        </ul>
+    }
 
 }
