@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(tradingName: String)(implicit request: Request[_], messages: Messages)
+@(tradingName: Seq[String])(implicit request: Request[_], messages: Messages)
 @layout(pageTitle = titleNoForm(messages("selfEmploymentSummary.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("selfEmploymentSummary.heading")</h1>

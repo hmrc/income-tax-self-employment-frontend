@@ -22,7 +22,7 @@ import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetBusinessesHttpParser extends APIParser {
-  type GetBusinessesResponse = Either[APIStatusError, GetBusiness]
+  type GetBusinessesResponse = Either[APIStatusError, Seq[GetBusiness]]
 
   override val parserName: String = "GetBusinessHttpParser"
   override val apiType: String = "income-tax-self-employment-frontend"
@@ -31,7 +31,7 @@ object GetBusinessesHttpParser extends APIParser {
 
     override def read(method: String, url: String, response: HttpResponse): GetBusinessesResponse =
       response.status match {
-        case OK => response.json.validate[GetBusiness].fold[GetBusinessesResponse](
+        case OK => response.json.validate[Seq[GetBusiness]].fold[GetBusinessesResponse](
           _ => nonModelValidatingJsonFromAPI, parsedModel => Right(parsedModel)
         )
         case _ => pagerDutyError(response)

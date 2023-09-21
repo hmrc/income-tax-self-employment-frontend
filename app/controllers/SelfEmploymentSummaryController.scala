@@ -42,11 +42,11 @@ class SelfEmploymentSummaryController @Inject()(
                                      ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) async {
-    implicit request: OptionalDataRequest[AnyContent] =>
-      selfEmploymentConnector.getBusinesses(request.nino).map {
+    implicit request =>
+      selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
         case Left(_) =>  errorHandler.internalServerError()
         case Right(value) =>
-          val business = value.tradingName.getOrElse("")
+          val business = value.map(_.tradingName.getOrElse(""))
           Ok(view(business))
       }
   }
