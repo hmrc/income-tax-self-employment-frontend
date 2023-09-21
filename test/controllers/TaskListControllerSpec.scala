@@ -30,7 +30,7 @@ class TaskListControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.TaskListController.show.url)
+        val request = FakeRequest(GET, routes.TaskListController.onPageLoad.url)
         val result = route(application, request).value
         val view = application.injector.instanceOf[TaskListView]
 

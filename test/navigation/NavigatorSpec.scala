@@ -25,14 +25,20 @@ class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
 
+  case object UnknownPage extends Page
+
   "Navigator" - {
 
     "in Normal mode" - {
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad
+      }
+
+      "must go from the last page in a journey to the 'Have you completed this section?' page" in {
+
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad //TODO check redirect to DetailsCompleted page when implemented
       }
     }
 
@@ -40,7 +46,6 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
-        case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
       }
     }
