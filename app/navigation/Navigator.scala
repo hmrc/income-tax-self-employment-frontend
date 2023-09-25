@@ -28,7 +28,7 @@ class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
 //    case SelfEmploymentAbroadPage => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, Abroad, mode) //TODO uncomment when DetailsCompleted PR merged
-    case _ => _ => routes.TaskListController.onPageLoad
+    case _ => _ => routes.TaskListController.onPageLoad(3) //TODO replace taxYear
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {

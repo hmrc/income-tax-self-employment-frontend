@@ -12,7 +12,7 @@ GET         /refresh-session                             controllers.KeepAliveCo
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /task-list                                   controllers.TaskListController.onPageLoad
+GET         /:taxYear/task-list                           controllers.TaskListController.onPageLoad(taxYear: Int)
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
@@ -31,3 +31,5 @@ GET        /details/self-employment-abroad/:taxYear/:nino                       
 POST       /details/self-employment-abroad/:taxYear/:nino                           controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = NormalMode)
 GET        /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = CheckMode)
 POST       /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = CheckMode)
+
+GET        /:taxYear/self-employment/details/check                       controllers.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int)
