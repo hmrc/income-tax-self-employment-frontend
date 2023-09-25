@@ -13,10 +13,15 @@ site.govuk = GOV.UK
 site.view = View
 
 status.completed = COMPLETED
+status.inProgress = IN PROGRESS
 status.notStarted = NOT STARTED
 status.cannotStartYet = CANNOT START YET
-status.inProgress = IN PROGRESS
 status.checkOurRecords = CHECK OUR RECORDS
+
+common.selfEmploymentAbroad = Self-employment abroad
+common.income = Income
+common.expensesCategories = Expenses categories
+common.nationalInsurance = National Insurance
 
 date.day = Day
 date.month = Month
@@ -67,7 +72,6 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-selfEmploymentAbroad = Self-employment abroad
 selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
 selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
 selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad

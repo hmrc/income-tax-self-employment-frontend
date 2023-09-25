@@ -19,27 +19,36 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.requests.{BusinessData, OptionalDataRequest}
-import models.viewModels.TaggedSelfEmploymentsViewModel
+import models.viewModels.TaggedTradeDetailsViewModel
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import service.SelfEmploymentService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaskListView
 
+import scala.concurrent.ExecutionContext
+
 class TaskListController @Inject()(override val messagesApi: MessagesApi,
-                                   sessionRepository: SessionRepository,
+                                   selfEmploymentService: SelfEmploymentService,
                                    identify: IdentifierAction,
                                    getData: DataRetrievalAction,
                                    val controllerComponents: MessagesControllerComponents,
-                                   view: TaskListView) extends FrontendBaseController with I18nSupport {
+                                   view: TaskListView)
+                                  (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, nino: String): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
+  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request: OptionalDataRequest[AnyContent] =>
 
-    identify
-    val selfEmploymentList: Seq[BusinessData] =
-//      selfEmploymentService.getCompletedSelfEmployments(nino)
-      Seq.empty
-    val completedSelfEmploymentsList: Seq[TaggedSelfEmploymentsViewModel] = selfEmploymentList.flatMap(se => TaggedSelfEmploymentsViewModel(se, ""))
-    Ok(view(taxYear, nino, completedSelfEmploymentsList))
+//    val taggedTradeDetailsList: Seq[TaggedTradeDetailsViewModel] = {
+      // 1. Service to Connector to backend that returns a sequence of objects for each Business
+      // 2. These objects will also contain: (businessId: String, tradingName: Option[String], completed: Boolean)
+      // 3. Filter out the non-completed trades and create a
+      //      val completedTradeDetailsList: Seq[BusinessData] = selfEmploymentService.getCompletedTradeDetails(request.user.nino, taxYear)
+      //      selfEmploymentList.flatMap(se => TaggedTradeDetailsViewModel(se, ""))
+      selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear) map {
+        case Right(list: Seq[TaggedTradeDetailsViewModel]) => Ok(view(taxYear, request.user, list))
+        case Left(_) => Ok(view(taxYear, request.user, Seq.empty))
+
+      }
   }
 }

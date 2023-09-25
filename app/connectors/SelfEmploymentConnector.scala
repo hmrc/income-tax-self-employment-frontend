@@ -18,27 +18,80 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
+import models.errors.APIErrorBody.APIStatusError
+import models.requests.{BusinessData, BusinessDataWithStatus}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentConnector @Inject()(val http: HttpClient,
-                                  val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
+class SelfEmploymentConnector @Inject()(val http: HttpClient, val appConfig: FrontendAppConfig)
+                                       (implicit ec: ExecutionContext) {
 
-  def getBusinesses(nino: String, mtditid: String)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+//  def getBusinesses(nino: String): Future[GetBusinessesResponse] = {
+//
+//
+//    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
+//    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+//  }
+//
+//  def getBusiness(nino: String, businessId: String): Future[GetBusinessesResponse] = {
+//
+//    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
+//    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+//  }
 
-
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+  def getTradesWithStatus(nino: String, taxYear: Int): Future[Either[APIStatusError, Seq[BusinessDataWithStatus]]] = {
+    val bdws1 = BusinessDataWithStatus(BusinessData(
+      businessId = "id1",
+      typeOfBusiness = "Name 1",
+      tradingName = None,
+      yearOfMigration = None,
+      accountingPeriods = Seq.empty,
+      firstAccountingPeriodStartDate = None,
+      firstAccountingPeriodEndDate = None,
+      latencyDetails = None,
+      accountingType = None,
+      commencementDate = None,
+      cessationDate = None,
+      businessAddressLineOne = "example",
+      businessAddressLineTwo = None,
+      businessAddressLineThree = None,
+      businessAddressLineFour = None,
+      businessAddressPostcode = None,
+      businessAddressCountryCode = "example"
+    ), true)
+    val bdws2 = BusinessDataWithStatus(BusinessData(
+      businessId = "id2",
+      typeOfBusiness = "Name 2",
+      tradingName = None,
+      yearOfMigration = None,
+      accountingPeriods = Seq.empty,
+      firstAccountingPeriodStartDate = None,
+      firstAccountingPeriodEndDate = None,
+      latencyDetails = None,
+      accountingType = None,
+      commencementDate = None,
+      cessationDate = None,
+      businessAddressLineOne = "example",
+      businessAddressLineTwo = None,
+      businessAddressLineThree = None,
+      businessAddressLineFour = None,
+      businessAddressPostcode = None,
+      businessAddressCountryCode = "example"
+    ), false)
+    Future(Right(Seq(bdws1, bdws2)))
   }
 
-  def getBusiness(nino: String, mtditid: String, businessId: String)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+//  def getJourneyState(nino: String, taxYear: Int, businessId: String, journey: String): Future[Either[APIStatusError, String]] = {
+//
+//    val url = appConfig.selfEmploymentBEBaseUrl + s"/completed-section/$businessId/$journey/$taxYear"
+//    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+//  }
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+  def getJourneyStateMock(taxYear: Int, businessId: String, journey: String): Future[Either[APIStatusError, String]] = {
+    Future(Right(if (businessId.equals("id1")) "completed" else "notStarted"))
+    //can return a NoContent if 'notStarted', Ok(Boolean) for 'completed' or 'inProgress'
   }
 
 }

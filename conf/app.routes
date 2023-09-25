@@ -12,7 +12,7 @@ GET         /refresh-session                             controllers.KeepAliveCo
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /task-list                                   controllers.TaskListController.onPageLoad
+GET         /:taxYear/task-list                          controllers.TaskListController.onPageLoad(taxYear: Int)
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 

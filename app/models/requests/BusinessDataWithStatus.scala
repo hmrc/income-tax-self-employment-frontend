@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package models.requests
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
-
-  def apply(isAgent: Boolean): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
-    )
-}
+case class BusinessDataWithStatus(businessData: BusinessData,
+                                  isCompleted: Boolean)

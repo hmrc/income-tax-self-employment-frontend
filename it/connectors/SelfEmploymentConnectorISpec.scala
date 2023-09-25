@@ -16,13 +16,13 @@
 
 package connectors
 
-import builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
+import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import helpers.WiremockSpec
 import models.errors.APIErrorBody.{APIError, APIStatusError}
-import models.requests.{BusinessData, GetBusinesses}
+import models.requests.GetBusinesses
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -61,7 +61,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
     behave like businessRequestReturnsOk(
       () => stubGetWithResponseBody(getBusiness, OK, aGetBusinessDataRequestStr, headersSentToBE))(
-       () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec)))
 
 
     behave like businessRequestReturnsError(
