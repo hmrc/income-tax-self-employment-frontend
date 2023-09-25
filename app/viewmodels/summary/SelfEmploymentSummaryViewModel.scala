@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package viewmodels.summary
 
 import models.UserAnswers
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
-import scala.concurrent.{ExecutionContext, Future}
+object SelfEmploymentSummaryViewModel {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.userId, request.user, dataToReturn))
+  def row(answers:UserAnswers, rowKey: String)(implicit messages: Messages): SummaryListRow = {
 
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+    SummaryListRowViewModel(
+      key = rowKey,
+      value = ValueViewModel(""),
+      actions = Seq(ActionItemViewModel(messages("site.view"), "#"))
+    )
+  }
+
 }

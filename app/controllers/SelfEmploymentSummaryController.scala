@@ -18,13 +18,17 @@ package controllers
 import connectors.SelfEmploymentConnector
 import controllers.actions._
 import handlers.ErrorHandler
+import models.UserAnswers
 import models.requests.OptionalDataRequest
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfEmploymentSummaryView
+import viewmodels.govuk.summarylist._
+import viewmodels.summary.SelfEmploymentSummaryViewModel.row
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,11 +47,18 @@ class SelfEmploymentSummaryController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
+
+      val userAnswers = UserAnswers(request.userId)
+
       selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
         case Left(_) =>  errorHandler.internalServerError()
         case Right(value) =>
-          val business = value.map(_.tradingName.getOrElse(""))
-          Ok(view(business))
-      }
+          val tradeNameList: Seq[Option[String]] = value.map(name => name.tradingName)
+          val mockTradeName = Seq(Some("trade 1"), Some("trade 2"), Some("trade 3"), None)
+          val viewModel = SummaryList(rows =
+            mockTradeName.map(name=>
+            row(userAnswers, s"${name.getOrElse("")}")), classes = "goovuk-!-margin-bottom-7")
+
+          Ok(view(viewModel))
+      }}
   }
-}

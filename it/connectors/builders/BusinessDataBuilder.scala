@@ -16,7 +16,25 @@
 
 package connectors.builders
 
+import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import models.requests.GetBusiness
+
 object BusinessDataBuilder {
+
+  val aGetBusiness: Seq[GetBusiness] = Seq(
+    GetBusiness(businessId = "", typeOfBusiness = "", tradingName = Some("Trade one"), yearOfMigration = ???,
+      accountingPeriods = ???, firstAccountingPeriodStartDate = ???, firstAccountingPeriodEndDate = ???,
+      latencyDetails = ???, accountingType = ???, commencementDate = ???, cessationDate = ???,
+      businessAddressLineOne = ???, businessAddressLineTwo = ???, businessAddressLineThree = ???,
+      businessAddressLineFour = ???, businessAddressPostcode = ???, businessAddressCountryCode = ???),
+    GetBusiness(businessId = "", typeOfBusiness = "", tradingName = Some("Trade two"), yearOfMigration = ???,
+      accountingPeriods = ???, firstAccountingPeriodStartDate = ???, firstAccountingPeriodEndDate = ???,
+      latencyDetails = ???, accountingType = ???, commencementDate = ???, cessationDate = ???,
+      businessAddressLineOne = ???, businessAddressLineTwo = ???, businessAddressLineThree = ???,
+      businessAddressLineFour = ???, businessAddressPostcode = ???, businessAddressCountryCode = ???)
+  )
+
+  val aGetBusinessResponse: GetBusinessesResponse = Right(aGetBusiness)
 
   lazy val aGetBusinessDataRequestStr: String =
   """
