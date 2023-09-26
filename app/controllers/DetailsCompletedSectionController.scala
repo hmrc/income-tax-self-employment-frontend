@@ -69,6 +69,7 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
 
         value => {
+//          val businessId = journey.toString + "-" + request.nino
           selfEmploymentService.saveJourneyState(journey+request.userId, journey, taxYear, complete = value.equals(Yes)) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId)))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())

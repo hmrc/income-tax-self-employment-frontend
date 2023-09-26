@@ -18,7 +18,7 @@ package connectors.httpParsers
 
 import models.errors.APIErrorBody.APIStatusError
 import play.api.http.Status.NO_CONTENT
-import play.api.libs.json.{JsObject, JsPath, Json, OWrites, Writes}
+import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SelfEmploymentResponse extends APIParser {
