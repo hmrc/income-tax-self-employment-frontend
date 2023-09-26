@@ -47,7 +47,6 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val retrievals = Retrievals.internalId and Retrievals.affinityGroup
-
     authorised().retrieve(retrievals) {
       case Some(internalId) ~ Some(AffinityGroup.Agent) =>
         agentAuthentication(block, internalId)(request, hc)
@@ -135,6 +134,7 @@ class AuthenticatedIdentifierAction @Inject()(
                                                    checkedIdentifier: String,
                                                    enrolments: Enrolments): Option[String] = enrolments.enrolments.collectFirst {
     case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) => enrolmentIdentifiers.collectFirst {
+          
       case EnrolmentIdentifier(`checkedIdentifier`, identifierValue) => identifierValue
     }
   }.flatten
@@ -165,7 +165,6 @@ object AuthenticatedIdentifierAction {
 
     val TAX_YEAR = "TAX_YEAR"
     val VALID_TAX_YEARS = "validTaxYears"
-    val TEMP_NEW_EMPLOYMENT_ID = "TEMP_NEW_EMPLOYMENT_ID"
   }
 }
 
