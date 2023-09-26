@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models.errors
 
-import models.UserAnswers
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
+import play.api.libs.json.{JsValue, Json}
 
-import scala.concurrent.{ExecutionContext, Future}
+case class HttpError(status: Int, body: HttpErrorBody) {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
-
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.userId, request.user, dataToReturn))
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  def toJson: JsValue = body match {
+    case error: SingleErrorBody => Json.toJson(error)
+    case errors: MultiErrorsBody => Json.toJson(errors)
+  }
 }
