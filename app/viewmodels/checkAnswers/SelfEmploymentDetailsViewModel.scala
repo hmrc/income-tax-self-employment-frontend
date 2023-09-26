@@ -16,15 +16,31 @@
 
 package viewmodels.checkAnswers
 
-import models.UserAnswers
+import models.requests.BusinessData
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SelfEmploymentDetailsViewModel {
 
-  def row(answers: UserAnswers, rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)(implicit messages: Messages): SummaryListRow = {
+  def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList = {
+    SummaryList(
+      rows = Seq(
+        row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
+        row("typeOfBusiness", business.typeOfBusiness, Some(isAgent)),
+        row("accountingType", business.accountingType.getOrElse("")),
+        row("startDate", business.commencementDate.getOrElse(""), Some(isAgent)),
+        row("linkedToConstructionIndustryScheme", "No"),
+        row("fosterCare", "No", Some(isAgent)),
+        row("farmerOrMarketGardener", "No", Some(isAgent)),
+        row("profitFromLiteraryOrCreativeWorks", "No", Some(isAgent))
+      ),
+      classes = "govuk-!-margin-bottom-7")
+  }
+
+  private def row(rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)
+                 (implicit messages: Messages): SummaryListRow = {
     val agentIndividual = userIsAgent match {
       case None => ""
       case Some(isAgent) => if (isAgent) ".agent" else ".individual"

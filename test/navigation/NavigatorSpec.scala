@@ -18,8 +18,8 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import pages._
 import models._
+import pages._
 
 class NavigatorSpec extends SpecBase {
 
@@ -33,12 +33,15 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(3)
+        //TODO get real taxYear
       }
 
       "must go from the last page in a journey to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad //TODO check redirect to DetailsCompleted page when implemented
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(3)
+        //TODO check redirect to DetailsCompleted page when implemented
+        //TODO get real taxYear
       }
     }
 

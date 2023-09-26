@@ -19,21 +19,24 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(list: SummaryList, agentOrIndividual: String)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, taxYear: Int, agentOrIndividual: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"))) {
 
+    <p class="govuk-caption-l hmrc-caption-xl">
+        @messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)
+    </p>
     <h1 class="govuk-heading-l">@messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual")</h1>
 
     @govukSummaryList(list)
 
-    <div class = "">
+    <div class = "govuk-button-group govuk-!-margin-top-9">
         @govukButton(Button(
             attributes = Map("id" -> "continue"),
             preventDoubleClick = Some(true),
             content = Text(messages("site.saveAndContinue")),
             classes = "govuk-button"
-        ))
+        ).asLink("#"))
 
         <a href="#" class ="govuk-link">
             @messages("checkYourSelfEmploymentDetails.removeSelfEmployment")

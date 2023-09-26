@@ -12,6 +12,7 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.view = View
 site.saveAndContinue = Save and continue
+site.taxYearCaption = 6 April {0} to 5 April {1}
 
 status.checkOurRecords = CHECK OUR RECORDS
 
@@ -66,10 +67,10 @@ selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
 
 checkYourSelfEmploymentDetails.title.individual = Check your self-employment details
 checkYourSelfEmploymentDetails.title.agent = Check your client`s self-employment details
-checkYourSelfEmploymentDetails.name.individual = What name did you use for your self-employment?
-checkYourSelfEmploymentDetails.name.agent = What name did your client use for their self-employment?
-checkYourSelfEmploymentDetails.whatDidYouDo.individual = What did you do for your self-employment?
-checkYourSelfEmploymentDetails.whatDidYouDo.agent = What did your client do for their self-employment?
+checkYourSelfEmploymentDetails.tradingName.individual = What name did you use for your self-employment?
+checkYourSelfEmploymentDetails.tradingName.agent = What name did your client use for their self-employment?
+checkYourSelfEmploymentDetails.typeOfBusiness.individual = What did you do for your self-employment?
+checkYourSelfEmploymentDetails.typeOfBusiness.agent = What did your client do for their self-employment?
 checkYourSelfEmploymentDetails.accountingType = What type of accounting do you use?
 checkYourSelfEmploymentDetails.startDate.individual = When did your self-employment start?
 checkYourSelfEmploymentDetails.startDate.agent = When did your client`s self-employment start?
@@ -78,4 +79,6 @@ checkYourSelfEmploymentDetails.fosterCare.individual = Were you a foster carer o
 checkYourSelfEmploymentDetails.fosterCare.agent = Was your client a foster carer or shared lives carer?
 checkYourSelfEmploymentDetails.farmerOrMarketGardener.individual = Were you a farmer or market gardener?
 checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a farmer or market gardener?
+checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
+checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment

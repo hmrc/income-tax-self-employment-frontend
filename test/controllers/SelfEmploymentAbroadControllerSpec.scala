@@ -43,7 +43,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val nino = "AA112233A"
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, nino, NormalMode).url
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
+  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(3).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)

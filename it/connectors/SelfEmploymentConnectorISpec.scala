@@ -16,13 +16,13 @@
 
 package connectors
 
-import builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
+import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import helpers.WiremockSpec
 import models.errors.APIErrorBody.{APIError, APIStatusError}
-import models.requests.{BusinessData, GetBusinesses}
+import models.requests.GetBusinesses
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -43,7 +43,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-  val (nino, mtdId) = ("123456789", "1234567890123456")
+  val nino = "123456789"
 
   val getBusinesses = s"/income-tax-self-employment/business/$nino"
 
@@ -61,7 +61,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
     behave like businessRequestReturnsOk(
       () => stubGetWithResponseBody(getBusiness, OK, aGetBusinessDataRequestStr, headersSentToBE))(
-       () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId)(hc, ec)))
 
 
     behave like businessRequestReturnsError(
@@ -69,7 +69,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
         BAD_REQUEST,
         Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter", "errorType" -> "DOWNSTREAM_ERROR_CODE").toString(),
         headersSentToBE))(
-      () => underTest.getBusiness(nino, mtdId, businessId))
+      () => underTest.getBusiness(nino, businessId))
   }
 
   ".getBusinesses" should {
@@ -81,14 +81,14 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
     behave like businessRequestReturnsOk(
       () => stubGetWithResponseBody(getBusinesses, OK, aGetBusinessDataRequestStr, headersSentToBE))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtdId)(hc, ec)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino)(hc, ec)))
 
     behave like businessRequestReturnsError(
       () => stubGetWithResponseBody(getBusinesses,
         BAD_REQUEST,
         Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter", "errorType" -> "DOWNSTREAM_ERROR_CODE").toString(),
         headersSentToBE))(
-      () => underTest.getBusinesses(nino, mtdId))
+      () => underTest.getBusinesses(nino))
   }
 
   def businessRequestReturnsOk(stubs: () => Unit)(block: () => GetBusinessesResponse): Unit =
@@ -96,7 +96,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       val expectedResponseBody = aGetBusinessDataRequestStr
       val expectedResult = Json.parse(expectedResponseBody).as[GetBusinesses]
       stubs()
-      val result = (block())
+      val result = block()
       result mustBe Right(expectedResult)
     }
 

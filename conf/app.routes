@@ -32,4 +32,4 @@ POST       /details/self-employment-abroad/:taxYear/:nino                       
 GET        /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = CheckMode)
 POST       /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/self-employment/details/check                       controllers.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int)
+GET        /:taxYear/self-employment/details/check/:businessId                       controllers.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
