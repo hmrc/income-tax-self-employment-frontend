@@ -19,7 +19,6 @@ import connectors.SelfEmploymentConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import models.UserAnswers
-import models.requests.OptionalDataRequest
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfEmploymentSummaryView
-import viewmodels.govuk.summarylist._
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,10 +52,10 @@ class SelfEmploymentSummaryController @Inject()(
         case Left(_) =>  errorHandler.internalServerError()
         case Right(value) =>
           val tradeNameList: Seq[Option[String]] = value.map(name => name.tradingName)
-          val mockTradeName = Seq(Some("trade 1"), Some("trade 2"), Some("trade 3"), None)
+          val mockTradeName = Seq(Some("Fruit Company"), Some(" A-Z Cars"), Some("Plumbing Inc"), Some("Alex Smith"))
           val viewModel = SummaryList(rows =
             mockTradeName.map(name=>
-            row(userAnswers, s"${name.getOrElse("")}")), classes = "goovuk-!-margin-bottom-7")
+            row(userAnswers, s"${name.getOrElse("")}")), classes = "govuk-summary-list govuk-summary-list__two-cells")
 
           Ok(view(viewModel))
       }}

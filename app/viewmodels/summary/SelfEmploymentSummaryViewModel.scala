@@ -18,7 +18,7 @@ package viewmodels.summary
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -28,10 +28,12 @@ object SelfEmploymentSummaryViewModel {
   def row(answers:UserAnswers, rowKey: String)(implicit messages: Messages): SummaryListRow = {
 
     SummaryListRowViewModel(
-      key = rowKey,
+      key = Key(
+        content = rowKey,
+        classes = "govuk-!-font-weight-regular"
+      ),
       value = ValueViewModel(""),
       actions = Seq(ActionItemViewModel(messages("site.view"), "#"))
     )
   }
-
 }
