@@ -27,7 +27,7 @@ POST       /details/self-employment-abroad/:taxYear/:nino                       
 GET        /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = CheckMode)
 POST       /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = CheckMode)
 
-GET        /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
-POST       /details/completed-section/:taxYear/:nino/:journey                   controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = NormalMode)
-GET        /details/change-completed-section/:taxYear/:nino/:journey            controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode = CheckMode)
-POST       /details/change-completed-section/:taxYear/:nino/:journey            controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode = CheckMode)
+GET        /:taxYear/details/completed-section/:journey                             controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, journey: String, mode: Mode = NormalMode)
+POST       /:taxYear/details/completed-section/:journey                             controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, journey: String, mode: Mode = NormalMode)
+GET        /:taxYear/details/change-completed-section/:journey                      controllers.DetailsCompletedSectionController.onPageLoad(taxYear: Int, journey: String, mode: Mode = CheckMode)
+POST       /:taxYear/details/change-completed-section/:journey                      controllers.DetailsCompletedSectionController.onSubmit(taxYear: Int, journey: String, mode: Mode = CheckMode)

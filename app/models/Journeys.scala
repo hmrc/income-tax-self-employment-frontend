@@ -16,6 +16,7 @@
 
 package models
 
+@deprecated("Use the new Journey model")
 object Journeys {
 
   val SelfEmploymentAbroad: String = "self-employment-abroad"

@@ -43,7 +43,7 @@ object DetailsCompletedSectionSummary  {
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change",
-              routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, journey, CheckMode).url)
+              routes.DetailsCompletedSectionController.onPageLoad(taxYear, journey, CheckMode).url)
               .withVisuallyHiddenText(messages("detailsCompletedSection.change.hidden"))
           )
         )

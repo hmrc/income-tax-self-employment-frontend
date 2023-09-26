@@ -18,6 +18,7 @@ package connectors.httpParsers
 
 import models.errors.APIErrorBody.APIStatusError
 import play.api.http.Status.NO_CONTENT
+import play.api.libs.json.{JsObject, JsPath, Json, OWrites, Writes}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SelfEmploymentResponse extends APIParser {
@@ -32,5 +33,8 @@ object SelfEmploymentResponse extends APIParser {
         case NO_CONTENT => Right(())
         case _ => pagerDutyError(response)
       }
+  }
+  implicit object SelfEmploymentHttpWrites extends OWrites[String] {
+    override def writes(o: String): JsObject = Json.obj()
   }
 }

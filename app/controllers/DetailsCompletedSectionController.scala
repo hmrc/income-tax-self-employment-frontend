@@ -45,26 +45,31 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
 
   val form: Form[DetailsCompletedSection] = formProvider()
 
-  def onPageLoad(taxYear: Int, nino: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
+//      val journeyState = selfEmploymentService.getJourneyState(journey+request.userId, journey, taxYear) match {
+//        case Right(model) => model.completed
+//        case _ => false
+//      }
+//      TODO update using backend service instead of userAnswers
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DetailsCompletedSectionPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, nino, journey, mode))
+      Ok(view(preparedForm, taxYear, journey, mode))
   }
 
-  def onSubmit(taxYear: Int, nino: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, nino, journey, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
 
         value => {
-          selfEmploymentService.saveJourneyState(nino, journey, taxYear, isComplete = value.equals(Yes)) map {
+          selfEmploymentService.saveJourneyState(journey+request.userId, journey, taxYear, complete = value.equals(Yes)) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId)))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
           }
