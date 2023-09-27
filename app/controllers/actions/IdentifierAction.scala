@@ -51,10 +51,10 @@ class AuthenticatedIdentifierAction @Inject()(
     authorised().retrieve(retrievals) {
       case Some(internalId) ~ Some(AffinityGroup.Agent) =>
         agentAuthentication(block, internalId)(request, hc)
-        
+
       case Some(internalId) ~ Some(affinityGroup) =>
         individualAuthentication(block, internalId, affinityGroup)(request, hc)
-        
+
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
     } recover {
@@ -108,7 +108,7 @@ class AuthenticatedIdentifierAction @Inject()(
     val optionalMtdItId = request.session.get(SessionValues.CLIENT_MTDITID)
 
     (optionalMtdItId, optionalNino) match {
-      
+
       case (Some(mtdItId), Some(nino)) =>
         authorised(agentAuthPredicate(mtdItId))
           .retrieve(allEnrolments) { enrolments =>
@@ -165,7 +165,6 @@ object AuthenticatedIdentifierAction {
 
     val TAX_YEAR = "TAX_YEAR"
     val VALID_TAX_YEARS = "validTaxYears"
-    val TEMP_NEW_EMPLOYMENT_ID = "TEMP_NEW_EMPLOYMENT_ID"
   }
 }
 

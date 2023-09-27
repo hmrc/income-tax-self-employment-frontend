@@ -27,9 +27,9 @@ GET         /error/you-need-agent-services-account       controllers.authorisati
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /details/self-employment-abroad/:taxYear/:nino                           controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = NormalMode)
-POST       /details/self-employment-abroad/:taxYear/:nino                           controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = NormalMode)
-GET        /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, nino: String, mode: Mode = CheckMode)
-POST       /details/self-employment-abroad/change/:taxYear/:nino                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, nino: String, mode: Mode = CheckMode)
+GET         /:taxYear/details/self-employment-abroad                                controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST        /:taxYear/details/self-employment-abroad                                controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET         /:taxYear/details/self-employment-abroad/change                         controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST        /:taxYear/details/self-employment-abroad/change                         controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET        /:taxYear/self-employment/details/check/:businessId                       controllers.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/self-employment/details/check/:businessId                     controllers.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)

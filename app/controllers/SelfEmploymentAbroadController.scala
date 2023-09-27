@@ -40,7 +40,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
                                                view: SelfEmploymentAbroadView)
                                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
@@ -48,15 +48,15 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
         case Some(value) => formProvider().fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, nino, mode))
+      Ok(view(preparedForm, taxYear, request.user.nino, mode))
   }
 
-  def onSubmit(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, nino, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.nino, mode))),
 
         value =>
           for {

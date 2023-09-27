@@ -61,6 +61,9 @@ object SelfEmploymentDetailsViewModel {
     )
   }
 
-  private def handleDateString(date: Option[String]): String =
-    if (date.isEmpty) "" else LocalDate.parse(date.get).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
+  private def handleDateString(date: Option[String]): String = try {
+      LocalDate.parse(date.getOrElse("")).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
+    } catch {
+      case _: Throwable => ""
+    }
 }

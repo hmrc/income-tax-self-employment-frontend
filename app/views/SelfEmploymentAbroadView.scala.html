@@ -26,7 +26,7 @@
 
 @layout(pageTitle = title(form, messages("selfEmploymentAbroad.title.individual"))) {
 
-    @formHelper(action = routes.SelfEmploymentAbroadController.onSubmit(taxYear, nino, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SelfEmploymentAbroadController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

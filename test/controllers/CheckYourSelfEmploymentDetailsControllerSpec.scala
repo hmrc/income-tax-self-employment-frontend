@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
-import models.errors.APIErrorBody.{APIError, APIStatusError}
+import models.errors.{HttpError, HttpErrorBody}
 import models.requests.BusinessData
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
@@ -33,7 +33,6 @@ import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
 import views.html.CheckYourSelfEmploymentDetailsView
 
 import java.time.LocalDate
-import java.time.format.{DateTimeFormatter, FormatStyle}
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
@@ -90,7 +89,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val errorBusinessId: String = "Bad BusinessID"
-          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)) thenReturn Future(Left(APIStatusError(BAD_REQUEST, APIError.nino400)))
+          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError)))
 
           val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 
