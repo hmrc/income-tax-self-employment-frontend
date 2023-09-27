@@ -25,19 +25,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject()(val http: HttpClient, val appConfig: FrontendAppConfig) {
 
-  def getBusinesses(nino: String)
+  def getBusinesses(nino: String, mtditid: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getBusiness(nino: String, businessId: String)
+  def getBusiness(nino: String, businessId: String, mtditid: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
+  def getStubbedBusiness(nino: String, businessId: String, mtditid: String) //TODO remove when no longer needed
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/FI290077A/SJPR05893938418"
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
 }

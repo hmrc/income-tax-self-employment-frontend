@@ -14,19 +14,22 @@
  * limitations under the License.
  *@
 
+@import templates.helpers.Heading
+
 @this(  layout: templates.Layout,
         govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        heading: Heading
 )
 
 @(list: SummaryList, taxYear: Int, agentOrIndividual: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"))) {
 
-    <p class="govuk-caption-l hmrc-caption-xl">
-        @messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)
-    </p>
-    <h1 class="govuk-heading-l">@messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual")</h1>
+    @heading(
+        messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"),
+        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString))
+    )
 
     @govukSummaryList(list)
 

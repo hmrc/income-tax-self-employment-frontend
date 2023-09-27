@@ -22,6 +22,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList,
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, FormatStyle}
+
 object SelfEmploymentDetailsViewModel {
 
   def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList = {
@@ -30,7 +33,7 @@ object SelfEmploymentDetailsViewModel {
         row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
         row("typeOfBusiness", business.typeOfBusiness, Some(isAgent)),
         row("accountingType", business.accountingType.getOrElse("")),
-        row("startDate", business.commencementDate.getOrElse(""), Some(isAgent)),
+        row("startDate", handleDateString(business.commencementDate), Some(isAgent)),
         row("linkedToConstructionIndustryScheme", "No"),
         row("fosterCare", "No", Some(isAgent)),
         row("farmerOrMarketGardener", "No", Some(isAgent)),
@@ -58,4 +61,6 @@ object SelfEmploymentDetailsViewModel {
     )
   }
 
+  private def handleDateString(date: Option[String]): String =
+    if (date.isEmpty) "" else LocalDate.parse(date.get).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
 }

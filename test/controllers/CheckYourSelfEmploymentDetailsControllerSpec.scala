@@ -17,20 +17,32 @@
 package controllers
 
 import base.SpecBase
+import connectors.SelfEmploymentConnector
+import controllers.actions.AuthenticatedIdentifierAction.User
+import models.errors.APIErrorBody.{APIError, APIStatusError}
 import models.requests.BusinessData
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
 import views.html.CheckYourSelfEmploymentDetailsView
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, FormatStyle}
+import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase {
+class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val taxYear: Int = LocalDate.now().getYear
-  val businessId: String = "SJPR05893938418"
+  val taxYear = LocalDate.now().getYear
+  val nino = "FI290077A"
+  val mtditid = "mtditid"
+  val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
+
   val aBusinessData: BusinessData = BusinessData(
     businessId = "businessId", typeOfBusiness = "Carpenter", tradingName = Some("Alex Smith"), yearOfMigration = None,
     accountingPeriods = Seq.empty, firstAccountingPeriodStartDate = None, firstAccountingPeriodEndDate = None,
@@ -41,16 +53,25 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase {
     businessAddressLineOne = "TheAddress", businessAddressLineTwo = None, businessAddressLineThree = None,
     businessAddressLineFour = None, businessAddressPostcode = None, businessAddressCountryCode = "GB")
 
-  val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-  val selfEmploymentDetails: SummaryList = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, isAgent = false)(messages(application))
+  implicit val ec: ExecutionContext = ExecutionContext.global
+
+  val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 
   "CheckYourSelfEmploymentDetails Controller" - {
 
     "onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
+      "must return OK with the correct view content" in {
+
+        val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+
+        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, isAgent = false)(messages(application))
 
         running(application) {
+          val businessId: String = "SJPR05893938418"
+          when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
+
           val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
@@ -59,6 +80,24 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase {
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual")(request, messages(application)).toString
+        }
+      }
+
+      "must redirect to the journey recovery page when an invalid business ID returns an error from the backend" in {
+
+        val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+
+        running(application) {
+          val errorBusinessId: String = "Bad BusinessID"
+          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)) thenReturn Future(Left(APIStatusError(BAD_REQUEST, APIError.nino400)))
+
+          val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
