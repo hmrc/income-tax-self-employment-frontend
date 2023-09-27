@@ -18,8 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DetailsCompletedSectionFormProvider
-import models.errors.APIErrorBody
-import models.errors.APIErrorBody.APIStatusError
+import models.errors.{HttpError, HttpErrorBody}
 import models.{DetailsCompletedSection, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito.when
@@ -48,7 +47,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
   val form: Form[DetailsCompletedSection] = formProvider()
 
   lazy val detailsCompletedSectionRoute: String = routes.DetailsCompletedSectionController.onPageLoad(
-    taxYear, nino, journey, NormalMode).url
+    taxYear, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
   lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
@@ -70,7 +69,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[DetailsCompletedSectionView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, journey, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -89,7 +88,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
-            form.fill(DetailsCompletedSection.values.head), taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+            form.fill(DetailsCompletedSection.values.head), taxYear, journey, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -99,7 +98,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        when(mockService.saveJourneyState(nino, journey, taxYear, isComplete = true)
+        when(mockService.saveJourneyState(nino, journey, taxYear, complete = true)
         ) thenReturn Future(Right(()))
 
         val application =
@@ -138,14 +137,14 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, nino, journey, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, journey, NormalMode)(request, messages(application)).toString
         }
       }
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
-        when(mockService.saveJourneyState("invalidNino", "invalidJourneyId", taxYear, isComplete = true)
-        ) thenReturn Future(Left(APIStatusError(BAD_REQUEST, APIErrorBody.APIError("400", "Error"))))
+        when(mockService.saveJourneyState("invalidNino", "invalidJourneyId", taxYear, complete = true)
+        ) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))

@@ -19,8 +19,8 @@ package connectors
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
-import connectors.httpParsers.GetBusinessesHttpParser.GetBusinessesResponse
-import connectors.httpParsers.SelfEmploymentResponse.SelfEmploymentResponse
+import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import connectors.httpParser.SelfEmploymentResponse.SelfEmploymentResponse
 import helpers.WiremockSpec
 import models.DetailsCompletedSection.Yes
 import models.errors.APIErrorBody.{APIError, APIStatusError}

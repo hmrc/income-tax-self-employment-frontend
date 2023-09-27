@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.httpParser
 
 import base.SpecBase
-import connectors.httpParsers.APIParser
 import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 
-class APIParserSpec extends SpecBase {
+class HttpParserSpec extends SpecBase {
 
-  object FakeParser extends APIParser {
+  object FakeParser extends HttpParser {
     override val parserName: String = "TestParser"
     val service: String = "service"
   }
@@ -60,25 +59,25 @@ class APIParserSpec extends SpecBase {
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API")))
     }
     "handle multiple errors" in {
-      val result = FakeParser.handleAPIError(httpResponse())
+      val result = FakeParser.handleHttpError(httpResponse())
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorsBodyModel(Seq(
         APIErrorBodyModel("SERVICE_UNAVAILABLE", "The service is currently unavailable"),
         APIErrorBodyModel("INTERNAL_SERVER_ERROR", "The service is currently facing issues.")
       ))))
     }
     "handle single errors" in {
-      val result = FakeParser.handleAPIError(httpResponse(Json.parse(
+      val result = FakeParser.handleHttpError(httpResponse(Json.parse(
         """{"code":"INTERNAL_SERVER_ERROR","reason":"The service is currently facing issues."}""".stripMargin)))
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "The service is currently facing issues.")))
     }
 
     "handle response that is neither a single error or multiple errors" in {
-      val result = FakeParser.handleAPIError(httpResponse(Json.obj()))
+      val result = FakeParser.handleHttpError(httpResponse(Json.obj()))
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API")))
     }
 
     "handle response when the response body is not json" in {
-      val result = FakeParser.handleAPIError(HttpResponse(INTERNAL_SERVER_ERROR, "", Map("CorrelationId" -> Seq("1234645654645"))))
+      val result = FakeParser.handleHttpError(HttpResponse(INTERNAL_SERVER_ERROR, "", Map("CorrelationId" -> Seq("1234645654645"))))
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API")))
     }
   }

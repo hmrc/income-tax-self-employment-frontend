@@ -1,4 +1,4 @@
-package connectors.httpParsers
+package connectors.httpParser
 
 class HttpParserSpec extends HttpParserBehaviours {
   

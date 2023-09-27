@@ -17,7 +17,7 @@
 package service
 
 import connectors.SelfEmploymentConnector
-import connectors.httpParsers.SelfEmploymentResponse.SelfEmploymentResponse
+import connectors.httpParser.SelfEmploymentResponse.SelfEmploymentResponse
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 

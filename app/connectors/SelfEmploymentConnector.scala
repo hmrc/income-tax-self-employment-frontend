@@ -17,9 +17,8 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.httpParsers.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
-import connectors.httpParsers.SelfEmploymentResponse
-import connectors.httpParsers.SelfEmploymentResponse.{SelfEmploymentHttpReads, SelfEmploymentHttpWrites, SelfEmploymentResponse}
+import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
+import connectors.httpParser.SelfEmploymentResponse.{SelfEmploymentHttpReads, SelfEmploymentHttpWrites, SelfEmploymentResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject

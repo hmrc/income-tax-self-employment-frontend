@@ -19,9 +19,7 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.SelfEmploymentConnector
-import connectors.httpParsers.SelfEmploymentResponse.SelfEmploymentResponse
-import models.errors.APIErrorBody
-import models.errors.APIErrorBody.APIStatusError
+import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
@@ -54,16 +52,16 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       when(mockConnector.saveJourneyState(nino, journey, taxYear, complete = true)
       ) thenReturn Future(Right(()))
 
-      val result = await(selfEmploymentService.saveJourneyState(nino, journey, taxYear, isComplete = true))
+      val result = await(selfEmploymentService.saveJourneyState(nino, journey, taxYear, complete = true))
       result mustBe Right(())
     }
 
     "must return a Left(APIErrorModel) when the connector returns an error SelfEmploymentResponse" in {
-      val invalidNinoResponse = APIStatusError(BAD_REQUEST, APIErrorBody.APIError("400", "Error"))
+      val invalidNinoResponse = HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))
       when(mockConnector.saveJourneyState("fakeNino", journey, taxYear, complete = true)
       ) thenReturn Future(Left(invalidNinoResponse))
 
-      val result = await(selfEmploymentService.saveJourneyState("fakeNino", journey, taxYear, isComplete = true))
+      val result = await(selfEmploymentService.saveJourneyState("fakeNino", journey, taxYear, complete = true))
       result mustBe Left(invalidNinoResponse)
     }
 

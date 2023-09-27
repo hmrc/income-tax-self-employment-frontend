@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package connectors.httpParsers
+package connectors.httpParser
 
 import models.errors.HttpError
-import models.requests.GetBusinesses
-import play.api.http.Status._
+import play.api.http.Status.NO_CONTENT
+import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object GetBusinessesHttpParser extends HttpParser {
-  type GetBusinessesResponse = Either[HttpError, GetBusinesses]
+object SelfEmploymentResponse extends HttpParser {
+  type SelfEmploymentResponse = Either[HttpError, Unit]
 
-  override val parserName: String = "GetBusinessHttpParser"
+  val parserName: String = "SelfEmploymentResponse"
+  val service: String = "income-tax-self-employment"
 
-  implicit object GetBusinessesHttpReads extends HttpReads[GetBusinessesResponse] {
-
-    override def read(method: String, url: String, response: HttpResponse): GetBusinessesResponse =
+  implicit object SelfEmploymentHttpReads extends HttpReads[SelfEmploymentResponse] {
+    override def read(method: String, url: String, response: HttpResponse): SelfEmploymentResponse =
       response.status match {
-        case OK => response.json.validate[GetBusinesses].fold[GetBusinessesResponse](
-          _ => nonModelValidatingJsonFromAPI, parsedModel => Right(parsedModel)
-        )
+        case NO_CONTENT => Right(())
         case _ => pagerDutyError(response)
       }
+  }
+  implicit object SelfEmploymentHttpWrites extends OWrites[String] {
+    override def writes(o: String): JsObject = Json.obj()
   }
 }
