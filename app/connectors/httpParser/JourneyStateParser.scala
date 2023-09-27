@@ -17,23 +17,25 @@
 package connectors.httpParser
 
 import models.errors.HttpError
-import play.api.http.Status.NO_CONTENT
+import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object SelfEmploymentResponse extends HttpParser {
-  type SelfEmploymentResponse = Either[HttpError, Unit]
+object JourneyStateParser extends HttpParser {
+  type JourneyStateResponse = Either[HttpError, Option[Boolean]]
 
-  val parserName: String = "SelfEmploymentResponse"
+  val parserName: String = "JourneyStateParser"
   val service: String = "income-tax-self-employment"
 
-  implicit object SelfEmploymentHttpReads extends HttpReads[SelfEmploymentResponse] {
-    override def read(method: String, url: String, response: HttpResponse): SelfEmploymentResponse =
+  implicit object SelfEmploymentHttpReads extends HttpReads[JourneyStateResponse] {
+    override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse =
       response.status match {
-        case NO_CONTENT => Right(())
+        case OK => Right(Some(response.body.toBoolean))
+        case NO_CONTENT => Right(None)
         case _ => pagerDutyError(response)
       }
   }
+
   implicit object SelfEmploymentHttpWrites extends OWrites[String] {
     override def writes(o: String): JsObject = Json.obj()
   }

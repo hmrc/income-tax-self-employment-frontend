@@ -17,20 +17,22 @@
 package service
 
 import connectors.SelfEmploymentConnector
-import connectors.httpParser.SelfEmploymentResponse.SelfEmploymentResponse
+import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector) extends Logging {
+class JourneyStateService @Inject()(connector: SelfEmploymentConnector) extends Logging {
 
-  def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean): Future[SelfEmploymentResponse] = {
-    connector.saveJourneyState(businessId, journey, taxYear, complete)(new HeaderCarrier())
+  def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean, mtditid: String)
+                      (implicit hc: HeaderCarrier): Future[JourneyStateResponse] = {
+    connector.saveJourneyState(businessId, journey, taxYear, complete, mtditid)
   }
 
-  def getJourneyState(businessId: String, journey: String, taxYear: Int): Future[SelfEmploymentResponse] = {
-    connector.getJourneyState(businessId, journey, taxYear)(new HeaderCarrier())
+  def getJourneyState(businessId: String, journey: String, taxYear: Int, mtditid: String)
+                     (implicit hc: HeaderCarrier): Future[JourneyStateResponse] = {
+    connector.getJourneyState(businessId, journey, taxYear, mtditid)
   }
 }

@@ -18,14 +18,14 @@ package controllers
 
 import controllers.actions._
 import forms.DetailsCompletedSectionFormProvider
-import models.DetailsCompletedSection.Yes
+import models.DetailsCompletedSection.{No, Yes}
 import models.{DetailsCompletedSection, Mode, UserAnswers}
 import navigation.Navigator
 import pages.DetailsCompletedSectionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import service.SelfEmploymentService
+import service.JourneyStateService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DetailsCompletedSectionView
 
@@ -33,7 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DetailsCompletedSectionController @Inject()(override val messagesApi: MessagesApi,
-                                                  selfEmploymentService: SelfEmploymentService,
+                                                  selfEmploymentService: JourneyStateService,
                                                   navigator: Navigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
@@ -45,20 +45,20 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
 
   val form: Form[DetailsCompletedSection] = formProvider()
 
-  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
-//      val journeyState = selfEmploymentService.getJourneyState(journey+request.userId, journey, taxYear) match {
-//        case Right(model) => model.completed
-//        case _ => false
-//      }
-//      TODO update using backend service instead of userAnswers
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DetailsCompletedSectionPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      val businessId = journey + "-" + request.user.nino
+      val preparedForm = selfEmploymentService.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
+        case Right(Some(true)) => form.fill(Yes)
+        case Right(Some(false)) => form.fill(No)
+        case Right(None) => form
+        case Left(_) => form
       }
 
-      Ok(view(preparedForm, taxYear, journey, mode))
+      preparedForm map {
+        form => Ok(view(form, taxYear, journey, mode))
+      }
   }
 
   def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
@@ -69,8 +69,9 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
 
         value => {
-//          val businessId = journey.toString + "-" + request.nino
-          selfEmploymentService.saveJourneyState(journey+request.userId, journey, taxYear, complete = value.equals(Yes)) map {
+          val businessId = journey + "-" + request.user.nino
+          selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
+            request.user.mtditid) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId)))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
           }

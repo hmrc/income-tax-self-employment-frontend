@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import service.SelfEmploymentService
+import service.JourneyStateService
 import views.html.DetailsCompletedSectionView
 
 import java.time.LocalDate
@@ -40,8 +40,10 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
   val taxYear: Int = LocalDate.now().getYear
   val nino = "AA112233A"
   val journey = "journeyId"
+  val businessId = journey + "-" + nino
+  val mtditid = "mtditid"
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockService: JourneyStateService = mock[JourneyStateService]
   implicit val ec: ExecutionContext = ExecutionContext.global
   val formProvider = new DetailsCompletedSectionFormProvider()
   val form: Form[DetailsCompletedSection] = formProvider()
@@ -98,14 +100,14 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        when(mockService.saveJourneyState(nino, journey, taxYear, complete = true)
+        when(mockService.saveJourneyState(businessId, journey, taxYear, complete = true, mtditid)
         ) thenReturn Future(Right(()))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(taskListCall)),
-              bind[SelfEmploymentService].toInstance(mockService)
+              bind[JourneyStateService].toInstance(mockService)
             )
             .build()
 
@@ -143,14 +145,14 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
-        when(mockService.saveJourneyState("invalidNino", "invalidJourneyId", taxYear, complete = true)
+        when(mockService.saveJourneyState("invalidBusinessId", "invalidJourneyId", taxYear, complete = true, mtditid)
         ) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(journeyRecoveryCall)),
-              bind[SelfEmploymentService].toInstance(mockService)
+              bind[JourneyStateService].toInstance(mockService)
             )
             .build()
 

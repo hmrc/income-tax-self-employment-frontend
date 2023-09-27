@@ -17,8 +17,8 @@
 package config
 
 import connectors.SelfEmploymentConnector
-import connectors.httpParser.SelfEmploymentResponse.SelfEmploymentResponse
-import org.scalamock.handlers.CallHandler5
+import connectors.httpParser.JourneyStateParser.JourneyStateResponse
+import org.scalamock.handlers.CallHandler6
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,10 +26,10 @@ import scala.concurrent.Future
 trait MockSelfEmploymentConnector extends MockFactory {
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 
-  def mockSaveJourneyState(nino: String, journeyId: String, taxYear: Int, isComplete: Boolean, response: SelfEmploymentResponse):
-    CallHandler5[String, String, Int, Boolean, HeaderCarrier, Future[SelfEmploymentResponse]] = {
-      (mockConnector.saveJourneyState(_: String, _: String, _: Int, _: Boolean)(_: HeaderCarrier))
-        .expects(nino, journeyId, taxYear, isComplete, *)
+  def mockSaveJourneyState(nino: String, journeyId: String, taxYear: Int, complete: Boolean, mtditid: String, response: JourneyStateResponse):
+    CallHandler6[String, String, Int, Boolean, String, HeaderCarrier, Future[JourneyStateResponse]] = {
+      (mockConnector.saveJourneyState(_: String, _: String, _: Int, _: Boolean, _: String)(_: HeaderCarrier))
+        .expects(nino, journeyId, taxYear, complete, mtditid, *)
         .returns(Future.successful(response))
         .anyNumberOfTimes()
     }

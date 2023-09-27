@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
-import connectors.httpParser.SelfEmploymentResponse.SelfEmploymentResponse
+import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.DetailsCompletedSection.Yes
 import models.errors.APIErrorBody.{APIError, APIStatusError}
@@ -102,14 +102,14 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
     behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
   }
 
-  def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => SelfEmploymentResponse): Unit =
+  def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => JourneyStateResponse): Unit =
     "return a 204 response and a SelfEmploymentResponse model" in {
       stubs()
       val result = block()
       result mustBe Right(())
     }
 
-  def journeyStateRequestReturnsError(stubs: () => Unit)(block: () => Future[SelfEmploymentResponse]): Unit =
+  def journeyStateRequestReturnsError(stubs: () => Unit)(block: () => Future[JourneyStateResponse]): Unit =
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())

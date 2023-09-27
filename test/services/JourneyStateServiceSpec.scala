@@ -23,13 +23,13 @@ import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
-import service.SelfEmploymentService
+import service.JourneyStateService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
+class JourneyStateServiceSpec extends SpecBase with MockitoSugar {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -38,30 +38,32 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
   val mockAppConfig = mock[FrontendAppConfig]
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 //  val connector = new SelfEmploymentConnector(mockHttp, mockAppConfig)
-  val selfEmploymentService = new SelfEmploymentService(mockConnector)
+  val selfEmploymentService = new JourneyStateService(mockConnector)
 
   val nino = "AA112233A"
   val journey = "journeyId"
   val taxYear = LocalDate.now().getYear
+  val businessId = journey + "-" + nino
+  val mtditid = "mtditid"
 
   "saveJourneyState" - {
 
     "must return a Right(()) when the connector returns a successful SelfEmploymentResponse" in {
 
 //      when(mockHttp.PUT[String, SelfEmploymentResponse]("", "")
-      when(mockConnector.saveJourneyState(nino, journey, taxYear, complete = true)
-      ) thenReturn Future(Right(()))
+      when(mockConnector.saveJourneyState(businessId, journey, taxYear, complete = true, mtditid)
+      ) thenReturn Future(Right(Some(true)))
 
-      val result = await(selfEmploymentService.saveJourneyState(nino, journey, taxYear, complete = true))
-      result mustBe Right(())
+      val result = await(selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = true, mtditid))
+      result mustBe Right(Some(true))
     }
 
     "must return a Left(APIErrorModel) when the connector returns an error SelfEmploymentResponse" in {
       val invalidNinoResponse = HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))
-      when(mockConnector.saveJourneyState("fakeNino", journey, taxYear, complete = true)
+      when(mockConnector.saveJourneyState("fakeBusinessId", journey, taxYear, complete = true, mtditid)
       ) thenReturn Future(Left(invalidNinoResponse))
 
-      val result = await(selfEmploymentService.saveJourneyState("fakeNino", journey, taxYear, complete = true))
+      val result = await(selfEmploymentService.saveJourneyState("fakeBusinessId", journey, taxYear, complete = true, mtditid))
       result mustBe Left(invalidNinoResponse)
     }
 
