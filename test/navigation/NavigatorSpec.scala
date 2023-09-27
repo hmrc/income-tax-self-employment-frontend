@@ -33,13 +33,13 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(3)
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(2023)
         //TODO get real taxYear
       }
 
       "must go from the last page in a journey to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(3)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(2023)
         //TODO check redirect to DetailsCompleted page when implemented
         //TODO get real taxYear
       }

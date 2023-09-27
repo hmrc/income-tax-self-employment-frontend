@@ -19,7 +19,8 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.HttpError
+import models.errors.HttpErrorBody.SingleErrorBody
 import models.requests.BusinessData
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
@@ -69,6 +70,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val businessId: String = "SJPR05893938418"
+
           when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
           val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
@@ -89,7 +91,9 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val errorBusinessId: String = "Bad BusinessID"
-          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError)))
+
+          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)
+          ) thenReturn Future(Left(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found"))))
 
           val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 
