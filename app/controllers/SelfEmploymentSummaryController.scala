@@ -15,10 +15,10 @@
  */
 
 package controllers
+
 import connectors.SelfEmploymentConnector
 import controllers.actions._
 import handlers.ErrorHandler
-import models.UserAnswers
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,35 +28,33 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfEmploymentSummaryView
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SelfEmploymentSummaryController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       errorHandler: ErrorHandler,
-                                       selfEmploymentConnector: SelfEmploymentConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: SelfEmploymentSummaryView,
-                                       ec: ExecutionContext
-                                     ) extends FrontendBaseController with I18nSupport {
+                                                 override val messagesApi: MessagesApi,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 errorHandler: ErrorHandler,
+                                                 selfEmploymentConnector: SelfEmploymentConnector,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: SelfEmploymentSummaryView,
+                                                 ec: ExecutionContext
+                                               ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
-      val userAnswers = UserAnswers(request.userId)
-
       selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
-        case Left(_) =>  errorHandler.internalServerError()
+        case Left(_) => errorHandler.internalServerError()
         case Right(value) =>
           val tradeNameList: Seq[Option[String]] = value.map(name => name.tradingName)
-          val mockTradeName = Seq(Some("Fruit Company"), Some(" A-Z Cars"), Some("Plumbing Inc"), Some("Alex Smith"))
           val viewModel = SummaryList(rows =
-            mockTradeName.map(name=>
-            row(userAnswers, s"${name.getOrElse("")}")), classes = "govuk-summary-list govuk-summary-list__two-cells")
+            tradeNameList.map(name =>
+              row(s"${name.getOrElse("")}")))
 
           Ok(view(viewModel))
-      }}
+      }
   }
+}

@@ -16,25 +16,41 @@
 
 package connectors.builders
 
-import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import models.errors.APIErrorBody.APIStatusError
 import models.requests.GetBusiness
+import models.requests.GetBusiness.{AccountingPeriod, LatencyDetails}
+
 
 object BusinessDataBuilder {
 
   val aGetBusiness: Seq[GetBusiness] = Seq(
-    GetBusiness(businessId = "", typeOfBusiness = "", tradingName = Some("Trade one"), yearOfMigration = ???,
-      accountingPeriods = ???, firstAccountingPeriodStartDate = ???, firstAccountingPeriodEndDate = ???,
-      latencyDetails = ???, accountingType = ???, commencementDate = ???, cessationDate = ???,
-      businessAddressLineOne = ???, businessAddressLineTwo = ???, businessAddressLineThree = ???,
-      businessAddressLineFour = ???, businessAddressPostcode = ???, businessAddressCountryCode = ???),
-    GetBusiness(businessId = "", typeOfBusiness = "", tradingName = Some("Trade two"), yearOfMigration = ???,
-      accountingPeriods = ???, firstAccountingPeriodStartDate = ???, firstAccountingPeriodEndDate = ???,
-      latencyDetails = ???, accountingType = ???, commencementDate = ???, cessationDate = ???,
-      businessAddressLineOne = ???, businessAddressLineTwo = ???, businessAddressLineThree = ???,
-      businessAddressLineFour = ???, businessAddressPostcode = ???, businessAddressCountryCode = ???)
+    GetBusiness(businessId = "SJPR05893938418", typeOfBusiness = "self-employment", tradingName = Some("Trade one"), yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")), firstAccountingPeriodStartDate = Some("2019-09-30"), firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")), accountingType = Some("ACCRUAL"), commencementDate = Some("2023-04-06"), cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address", businessAddressLineTwo = Some("Business Address 2"), businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"), businessAddressPostcode = Some("Business Address 5"), businessAddressCountryCode = "GB"),
+    GetBusiness(businessId = "SJPR05893938418", typeOfBusiness = "self-employment", tradingName = Some("Trade two"), yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")), firstAccountingPeriodStartDate = Some("2019-09-30"), firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")), accountingType = Some("ACCRUAL"), commencementDate = Some("2023-04-06"), cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address", businessAddressLineTwo = Some("Business Address 2"), businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"), businessAddressPostcode = Some("Business Address 5"), businessAddressCountryCode = "GB")
   )
 
-  val aGetBusinessResponse: GetBusinessesResponse = Right(aGetBusiness)
+  val aGetBusinessNoneTradeNames: Seq[GetBusiness] = Seq(
+    GetBusiness(businessId = "SJPR05893938418", typeOfBusiness = "self-employment", tradingName = None, yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")), firstAccountingPeriodStartDate = Some("2019-09-30"), firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")), accountingType = Some("ACCRUAL"), commencementDate = Some("2023-04-06"), cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address", businessAddressLineTwo = Some("Business Address 2"), businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"), businessAddressPostcode = Some("Business Address 5"), businessAddressCountryCode = "GB"),
+    GetBusiness(businessId = "SJPR05893938418", typeOfBusiness = "self-employment", tradingName = None, yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")), firstAccountingPeriodStartDate = Some("2019-09-30"), firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")), accountingType = Some("ACCRUAL"), commencementDate = Some("2023-04-06"), cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address", businessAddressLineTwo = Some("Business Address 2"), businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"), businessAddressPostcode = Some("Business Address 5"), businessAddressCountryCode = "GB")
+  )
+
+  val aGetBusinessResponse: Either[APIStatusError, Seq[GetBusiness]] = Right(aGetBusiness)
+  val aGetBusinessNoneResponse: Either[APIStatusError, Seq[GetBusiness]] = Right(aGetBusinessNoneTradeNames)
 
   lazy val aGetBusinessDataRequestStr: String =
   """
