@@ -26,6 +26,9 @@ import models.DetailsCompletedSection.Yes
 import models.errors.APIErrorBody.{APIError, APIStatusError}
 import models.requests.GetBusinesses
 import models.{APIErrorBodyModel, APIErrorModel, Journeys}
+import models.errors.HttpErrorBody.SingleErrorBody
+import models.errors.{HttpError, HttpErrorBody}
+import models.requests.GetBusinesses
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -40,9 +43,10 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   lazy val connector: SelfEmploymentConnector = app.injector.instanceOf[SelfEmploymentConnector]
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
 
-  def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig = new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
-    override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
-  }
+  def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
+    new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
+      override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
+    }
 
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
@@ -74,24 +78,15 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   }
 
   ".getBusiness" should {
-
     val businessId = "ABC123"
     val getBusiness = s"/income-tax-self-employment/business/$nino/$businessId"
 
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
-
-    behave like businessRequestReturnsOk(
-      () => stubGetWithResponseBody(getBusiness, OK, aGetBusinessDataRequestStr, headersSentToBE))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId)(hc)))
-
-
-    behave like businessRequestReturnsError(
-      () => stubGetWithResponseBody(getBusiness,
-        BAD_REQUEST,
-        Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter", "errorType" -> "DOWNSTREAM_ERROR_CODE").toString(),
-        headersSentToBE))(
-      () => underTest.getBusiness(nino, businessId))
+    behave like businessRequestReturnsOk(getBusiness,
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec))
+    )
+    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, mtdId, businessId))
   }
 
   ".getBusinesses" should {
@@ -101,16 +96,10 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
     val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-    behave like businessRequestReturnsOk(
-      () => stubGetWithResponseBody(getBusinesses, OK, aGetBusinessDataRequestStr, headersSentToBE))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino)(hc)))
-
-    behave like businessRequestReturnsError(
-      () => stubGetWithResponseBody(getBusinesses,
-        BAD_REQUEST,
-        Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter", "errorType" -> "DOWNSTREAM_ERROR_CODE").toString(),
-        headersSentToBE))(
-      () => underTest.getBusinesses(nino))
+    behave like businessRequestReturnsOk(getBusinesses,
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtdId)(hc, ec))
+    )
+    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
   }
 
   def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => SelfEmploymentResponse): Unit =
@@ -127,19 +116,34 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       result mustBe Left(APIErrorModel(BAD_REQUEST, APIErrorBodyModel("INVALID_NINO", "Submission has not passed validation. Invalid parameter")))
     }
 
-  def businessRequestReturnsOk(stubs: () => Unit)(block: () => GetBusinessesResponse): Unit =
+  def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
     "return a 200 response and a GetBusinessRequest model" in {
       val expectedResponseBody = aGetBusinessDataRequestStr
       val expectedResult = Json.parse(expectedResponseBody).as[GetBusinesses]
-      stubs()
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
       result mustBe Right(expectedResult)
     }
+    "return a 200 response but produce a json non-validation error" in {
+      val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
+      val result = block()
+      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+    }
+  }
 
-  def businessRequestReturnsError(stubs: () => Unit)(block: () => Future[GetBusinessesResponse]): Unit =
-    "return an error when the connector returns an error" in {
-      stubs()
-      val result = await(block())
-      result mustBe Left(APIStatusError(BAD_REQUEST, APIError("INVALID_NINO", "Submission has not passed validation. Invalid parameter")))
+  def businessRequestReturnsError(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit =
+    for ((errorStatus, code, reason) <- Seq(
+      (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
+      (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),
+      (INTERNAL_SERVER_ERROR, "SERVER_ERROR", "IF is currently experiencing problems that require live service intervention."),
+      (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", "Dependent systems are currently not responding."))) {
+
+      s"return a $errorStatus error when the connector returns an error" in {
+        stubGetWithResponseBody(getUrl, errorStatus,
+          Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
+        val result = await(block())
+        result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
+      }
     }
 }

@@ -43,16 +43,17 @@ class SelfEmploymentConnector @Inject()(val http: HttpClient,
     http.GET[SelfEmploymentResponse](url)(SelfEmploymentHttpReads, hc, ec)
   }
 
-  def getBusinesses(nino: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
+  def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getBusiness(nino: String, businessId: String)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] = {
+  def getBusiness(nino: String, mtditid: String, businessId: String)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/business/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
 }

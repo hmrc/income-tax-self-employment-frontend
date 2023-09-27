@@ -22,11 +22,11 @@ import uk.gov.hmrc.http.HttpResponse
 object PagerDutyHelper extends Logging {
 
   object PagerDutyKeys extends Enumeration {
-    val BAD_SUCCESS_JSON_FROM_API: PagerDutyKeys.Value = Value
-    val SERVICE_UNAVAILABLE_FROM_API: PagerDutyKeys.Value = Value
-    val INTERNAL_SERVER_ERROR_FROM_API: PagerDutyKeys.Value = Value
-    val UNEXPECTED_RESPONSE_FROM_API: PagerDutyKeys.Value = Value
-    val FOURXX_RESPONSE_FROM_API: PagerDutyKeys.Value = Value
+    val BAD_SUCCESS_JSON_FROM_CONNECTOR: PagerDutyKeys.Value = Value
+    val SERVICE_UNAVAILABLE_FROM_CONNECTOR: PagerDutyKeys.Value = Value
+    val INTERNAL_SERVER_ERROR_FROM_CONNECTOR: PagerDutyKeys.Value = Value
+    val UNEXPECTED_RESPONSE_FROM_CONNECTOR: PagerDutyKeys.Value = Value
+    val FOURXX_RESPONSE_FROM_CONNECTOR: PagerDutyKeys.Value = Value
     val FAILED_TO_CREATE_UPDATE_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
     val FAILED_TO_FIND_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
     val FAILED_TO_ClEAR_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
@@ -37,11 +37,10 @@ object PagerDutyHelper extends Logging {
     logger.error(s"$pagerDutyKey $otherDetail")
   }
 
-  def getCorrelationId(response: HttpResponse): String = {
+  def getCorrelationId(response:HttpResponse): String ={
     response.header("CorrelationId") match {
       case Some(id) => s" CorrelationId: $id"
       case _ => ""
     }
   }
-
 }
