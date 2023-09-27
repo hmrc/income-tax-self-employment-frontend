@@ -48,7 +48,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
     accountingPeriods = Seq.empty, firstAccountingPeriodStartDate = None, firstAccountingPeriodEndDate = None,
     latencyDetails = None,
     accountingType = Some("Traditional accounting (Accrual basis)"),
-    commencementDate = Some(LocalDate.of(2022, 11, 14).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))),
+    commencementDate = Some("2022-11-14"),
     cessationDate = None,
     businessAddressLineOne = "TheAddress", businessAddressLineTwo = None, businessAddressLineThree = None,
     businessAddressLineFour = None, businessAddressPostcode = None, businessAddressCountryCode = "GB")
