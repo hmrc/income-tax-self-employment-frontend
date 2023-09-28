@@ -27,7 +27,7 @@ object JourneyStateParser extends HttpParser {
   val parserName: String = "JourneyStateParser"
   val service: String = "income-tax-self-employment"
 
-  implicit object SelfEmploymentHttpReads extends HttpReads[JourneyStateResponse] {
+  implicit object JourneyStateHttpReads extends HttpReads[JourneyStateResponse] {
     override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse =
       response.status match {
         case OK => Right(Some(response.body.toBoolean))
@@ -37,7 +37,7 @@ object JourneyStateParser extends HttpParser {
       }
   }
 
-  implicit object SelfEmploymentHttpWrites extends OWrites[String] {
+  implicit object JourneyStateHttpWrites extends OWrites[String] {
     override def writes(o: String): JsObject = Json.obj()
   }
 }
