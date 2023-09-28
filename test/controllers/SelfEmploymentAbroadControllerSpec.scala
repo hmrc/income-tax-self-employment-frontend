@@ -37,13 +37,13 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
+  val isAgent = false
   val formProvider = new SelfEmploymentAbroadFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val form: Form[Boolean] = formProvider(isAgent)
   val taxYear: Int = LocalDate.now().getYear
-  val nino = "AA112233A"
 
-  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, nino, NormalMode).url
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
+  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
+  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
@@ -64,7 +64,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[SelfEmploymentAbroadView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -82,7 +82,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(true), taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -132,7 +132,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 

@@ -16,14 +16,14 @@
 
 package connectors
 
-import builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
+import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import helpers.WiremockSpec
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
-import models.requests.GetBusinesses
+import models.requests.BusinessData
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -45,43 +45,40 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-  val (nino, mtdId) = ("123456789", "1234567890123456")
+  val nino = "AA370343B"
+  val mtditid: String = "mtditid"
 
-  val getBusinesses = s"/income-tax-self-employment/business/$nino"
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue")
   )
 
   ".getBusiness" should {
-    val businessId = "ABC123"
-    val getBusiness = s"/income-tax-self-employment/business/$nino/$businessId"
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-    
+    val businessId = "SJPR05893938418"
+    val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+
     behave like businessRequestReturnsOk(getBusiness,
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId, mtditid)(hc, ec))
     )
-    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, mtdId, businessId))
+    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
   }
 
   ".getBusinesses" should {
 
-    val getBusinesses = s"/income-tax-self-employment/business/$nino"
-
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-    val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
+    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino"
 
     behave like businessRequestReturnsOk(getBusinesses,
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtdId)(hc, ec))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtditid)(hc, ec))
     )
-    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
+    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
     "return a 200 response and a GetBusinessRequest model" in {
       val expectedResponseBody = aGetBusinessDataRequestStr
-      val expectedResult = Json.parse(expectedResponseBody).as[GetBusinesses]
+      val expectedResult = Json.parse(expectedResponseBody).as[Seq[BusinessData]]
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
       result mustBe Right(expectedResult)
