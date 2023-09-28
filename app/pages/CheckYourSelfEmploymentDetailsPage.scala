@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-@deprecated("Use the new Journey model", since = "0.1")
-object Journeys {
+import play.api.libs.json.JsPath
 
-  val SelfEmploymentAbroad: String = "self-employment-abroad"
-  val Income: String = "income"
-  val ExpensesCategories: String = "expenses-categories"
-  val NationalInsurance: String = "national-insurance"
+case object CheckYourSelfEmploymentDetailsPage extends Page {
 
+  override def toString: String = "selfEmploymentAbroad"
 }

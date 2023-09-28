@@ -40,23 +40,23 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
                                                view: SelfEmploymentAbroadView)
                                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
-        case None => formProvider() //TODO give 'isAgent' argument to formProvider when 'user.isAgent' is created. Remove hardcoding of 'selfEmploymentAbroad.title.INDIVIDUAL' message in view
-        case Some(value) => formProvider().fill(value)
+        case None => formProvider(request.user.isAgent)
+        case Some(value) => formProvider(request.user.isAgent).fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, nino, mode))
+      Ok(view(preparedForm, taxYear, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: Int, nino: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      formProvider().bindFromRequest().fold(
+      formProvider(request.user.isAgent).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, nino, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.isAgent, mode))),
 
         value =>
           for {
@@ -64,7 +64,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
-              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers)
+              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, taxYear, updatedAnswers)
               else routes.JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }

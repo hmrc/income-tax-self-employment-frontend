@@ -26,6 +26,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject()(http: HttpClient, appConfig: FrontendAppConfig) {
 
+  def getBusinesses(nino: String, mtditid: String)
+                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino"
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
+  def getBusiness(nino: String, businessId: String, mtditid: String)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
   def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean, mtditid: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
 
@@ -46,17 +60,4 @@ class SelfEmploymentConnector @Inject()(http: HttpClient, appConfig: FrontendApp
     http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hcWithMtditid, ec)
   }
 
-  def getBusinesses(nino: String, mtditid: String)
-                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
-  }
-
-  def getBusiness(nino: String, businessId: String, mtditid: String)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
-  }
 }

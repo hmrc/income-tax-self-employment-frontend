@@ -37,12 +37,6 @@ case class BusinessData(businessId: String,
                         businessAddressPostcode: Option[String],
                         businessAddressCountryCode: String)
 
-case class GetBusinesses(businessData: Seq[BusinessData])
-
-object GetBusinesses {
-  implicit val businessesFormat: OFormat[GetBusinesses] = Json.format[GetBusinesses]
-}
-
 object BusinessData {
   implicit val businessFormat: OFormat[BusinessData] = Json.format[BusinessData]
 

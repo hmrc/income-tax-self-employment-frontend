@@ -17,15 +17,13 @@
 package controllers
 
 import base.SpecBase
-import connectors.SelfEmploymentConnector
 import forms.DetailsCompletedSectionFormProvider
 import models.errors.{HttpError, HttpErrorBody}
-import models.{DetailsCompletedSection, NormalMode, UserAnswers}
+import models.{DetailsCompletedSection, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DetailsCompletedSectionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
@@ -55,7 +53,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
     taxYear, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
+  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
 
   "DetailsCompletedSection Controller" - {

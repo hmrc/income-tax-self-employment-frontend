@@ -11,6 +11,8 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.view = View
+site.saveAndContinue = Save and continue
+site.taxYearCaption = 6 April {0} to 5 April {1}
 
 status.checkOurRecords = CHECK OUR RECORDS
 
@@ -39,28 +41,22 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 
 index.title = income-tax-self-employment-frontend
-index.heading = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.title = Self-employment
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 signedOut.title = For your security, we signed you out
-signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
 
 selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
 selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
@@ -68,6 +64,24 @@ selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad
 selfEmploymentAbroad.error.required.individual = Select yes if you carried out all of your self-employment abroad
 selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
 selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
+
+checkYourSelfEmploymentDetails.title.individual = Check your self-employment details
+checkYourSelfEmploymentDetails.title.agent = Check your client`s self-employment details
+checkYourSelfEmploymentDetails.tradingName.individual = What name did you use for your self-employment?
+checkYourSelfEmploymentDetails.tradingName.agent = What name did your client use for their self-employment?
+checkYourSelfEmploymentDetails.typeOfBusiness.individual = What did you do for your self-employment?
+checkYourSelfEmploymentDetails.typeOfBusiness.agent = What did your client do for their self-employment?
+checkYourSelfEmploymentDetails.accountingType = What type of accounting do you use?
+checkYourSelfEmploymentDetails.startDate.individual = When did your self-employment start?
+checkYourSelfEmploymentDetails.startDate.agent = When did your client`s self-employment start?
+checkYourSelfEmploymentDetails.linkedToConstructionIndustryScheme = Was this self-employment linked to the Construction Industry Scheme?
+checkYourSelfEmploymentDetails.fosterCare.individual = Were you a foster carer or shared lives carer?
+checkYourSelfEmploymentDetails.fosterCare.agent = Was your client a foster carer or shared lives carer?
+checkYourSelfEmploymentDetails.farmerOrMarketGardener.individual = Were you a farmer or market gardener?
+checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a farmer or market gardener?
+checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
+checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
+checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
 detailsCompletedSection.title = Have you completed this section?
 detailsCompletedSection.yes = Yes, I’ve completed this section

@@ -17,8 +17,13 @@
 package models
 
 sealed trait Journey
+
 case object TradeDetails extends Journey {
   override def toString: String = "trade-details"
+}
+
+case object Abroad extends Journey {
+  override def toString: String = "self-employment-abroad"
 }
 
 case object Income extends Journey {
