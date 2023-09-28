@@ -20,7 +20,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(tradingNames: SummaryList)(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, tradingNames: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("selfEmploymentSummary.title"))) {
 
@@ -30,8 +30,8 @@
 
 <p class="govuk-body">
  @govukButton(
- ButtonViewModel(messages("site.continue"))
- .asLink(routes.TaskListController.show.url)
- )
+    ButtonViewModel(messages("site.continue"))
+    .asLink(routes.TaskListController.onPageLoad.url)
+  )
 </p>
 }

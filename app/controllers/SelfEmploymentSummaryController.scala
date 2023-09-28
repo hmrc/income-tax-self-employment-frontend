@@ -43,18 +43,15 @@ class SelfEmploymentSummaryController @Inject()(
                                                  ec: ExecutionContext
                                                ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) async {
+  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
       selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(value) =>
           val tradeNameList: Seq[Option[String]] = value.map(name => name.tradingName)
-          val viewModel = SummaryList(rows =
-            tradeNameList.map(name =>
-              row(s"${name.getOrElse("")}")))
-
-          Ok(view(viewModel))
+          val viewModel = SummaryList(rows = tradeNameList.map(name =>  row(s"${name.getOrElse("")}")))
+          Ok(view(taxYear, viewModel))
       }
   }
 }

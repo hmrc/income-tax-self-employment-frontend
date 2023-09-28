@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.mdtp
 
-import models.requests.BusinessData.{AccountingPeriod, LatencyDetails}
+import models.mdtp.BusinessData.{AccountingPeriod, LatencyDetails}
 import play.api.libs.json.{Json, OFormat}
 
 case class BusinessData(
@@ -38,12 +38,6 @@ case class BusinessData(
   businessAddressPostcode: Option[String],
   businessAddressCountryCode: String
 )
-
-case class GetBusinesses(businessData: Seq[BusinessData])
-object GetBusinesses {
-  implicit val businessesFormat: OFormat[GetBusinesses] = Json.format[GetBusinesses]
-
-  }
 
 object BusinessData {
   implicit val businessFormat: OFormat[BusinessData] = Json.format[BusinessData]
