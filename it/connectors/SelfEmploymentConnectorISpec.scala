@@ -22,11 +22,10 @@ import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
-import models.DetailsCompletedSection.Yes
+import models.TradeDetails
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
-import models.requests.GetBusinesses
-import models.{APIErrorBodyModel, APIErrorModel, TradeDetails}
+import models.requests.BusinessData
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -49,9 +48,13 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-  val nino = "123456789"
+  val nino = "FI290077A"
+  val mtditid: String = "mtditid"
+  val tradeDetailsJourney = TradeDetails.toString
   val taxYear = LocalDate.now().getYear
-  val mtdId = "mtdId"
+  val businessId = tradeDetailsJourney + "-" + nino
+
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue")
@@ -59,66 +62,82 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
   ".saveJourneyState" should {
 
-    val (journeyId, complete) = (TradeDetails.toString, Yes)
-    val saveJourneyState = s"details/completed-section/$journeyId/${complete.equals(Yes).toString}"
+    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
     behave like journeyStateRequestReturnsNoContent(
       () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(nino, journeyId, taxYear, complete.equals(Yes), "")(hc)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(
+        businessId, tradeDetailsJourney, taxYear, true, mtditid)(hc, ec)))
+  }
+
+  ".saveJourneyState" should {
+
+    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
 
     behave like journeyStateRequestReturnsError(
       () => stubPutWithResponseBody(saveJourneyState,
         BAD_REQUEST,
-        Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter").toString(),
+        Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
         headersSentToBE))(
-      () => underTest.saveJourneyState(nino, journeyId, taxYear, complete.equals(Yes), ""))
+      () => new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(
+        businessId, tradeDetailsJourney, taxYear, true, mtditid)(hc, ec))
   }
 
-  ".getBusiness" should {
-    val businessId = "ABC123"
-    val getBusiness = s"/income-tax-self-employment/business/$nino/$businessId"
-
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
-    behave like businessRequestReturnsOk(getBusiness,
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, mtdId, businessId)(hc, ec))
-    )
-    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, mtdId, businessId))
-  }
-
-  ".getBusinesses" should {
-
-    val getBusinesses = s"/income-tax-self-employment/business/$nino"
-
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-    val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
-
-    behave like businessRequestReturnsOk(getBusinesses,
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtdId)(hc, ec))
-    )
-    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
-  }
+  def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
+    "return a 204 response and a JourneyStateResponse model" in {
+      stubPutWithoutResponseBody(getUrl, NO_CONTENT)
+      val result = block()
+      result mustBe Right(None)
+    }
 
   def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => JourneyStateResponse): Unit =
     "return a 204 response and a SelfEmploymentResponse model" in {
       stubs()
       val result = block()
-      result mustBe Right(())
+      result mustBe Right(None)
     }
 
   def journeyStateRequestReturnsError(stubs: () => Unit)(block: () => Future[JourneyStateResponse]): Unit =
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())
-      result mustBe Left(APIErrorModel(BAD_REQUEST, APIErrorBodyModel("INVALID_NINO", "Submission has not passed validation. Invalid parameter")))
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")))
     }
+
+// TODO SASS-5249 has working tests for getBusiness
+//  ".getBusiness" should {
+//
+//    val businessId = "SJPR05893938418"
+//    val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+//
+//    behave like businessRequestReturnsOk(getBusiness,
+//      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId, mtditid)(hc, ec))
+//    )
+//    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
+//  }
+//
+//
+//  ".getBusinesses" should {
+//
+//    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino"
+//
+//    behave like businessRequestReturnsOk(getBusinesses,
+//      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtditid)(hc, ec))
+//    )
+//    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+//  }
+
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
     "return a 200 response and a GetBusinessRequest model" in {
       val expectedResponseBody = aGetBusinessDataRequestStr
-      val expectedResult = Json.parse(expectedResponseBody).as[GetBusinesses]
+      val expectedResult = Json.parse(expectedResponseBody).as[Seq[BusinessData]]
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
       result mustBe Right(expectedResult)

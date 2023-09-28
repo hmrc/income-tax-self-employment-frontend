@@ -25,10 +25,10 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject()(val http: HttpClient,
-                                        val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
+                                        val appConfig: FrontendAppConfig) {
 
   def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean, mtditid: String)
-                      (implicit hc: HeaderCarrier): Future[JourneyStateResponse] = {
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
 
     val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
 
@@ -39,7 +39,7 @@ class SelfEmploymentConnector @Inject()(val http: HttpClient,
   }
 
   def getJourneyState(businessId: String, journey: String, taxYear: Int, mtditid: String)
-                     (implicit hc: HeaderCarrier): Future[JourneyStateResponse] = {
+                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
 
     val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
 
