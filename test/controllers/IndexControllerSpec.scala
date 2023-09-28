@@ -17,9 +17,10 @@
 package controllers
 
 import base.SpecBase
+import controllers.standard.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
+import views.html.standard.IndexView
 
 class IndexControllerSpec extends SpecBase {
 

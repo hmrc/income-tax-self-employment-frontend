@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys
 
 import controllers.actions._
 import forms.DetailsCompletedSectionFormProvider
@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import service.JourneyStateService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DetailsCompletedSectionView
+import views.html.journeys.DetailsCompletedSectionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -73,7 +73,7 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, taxYear, UserAnswers(request.userId)))
-            case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
+            case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
           }
         }
       )

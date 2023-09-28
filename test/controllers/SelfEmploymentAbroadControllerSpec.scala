@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import controllers.journeys.abroad.routes
 import forms.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -30,7 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SelfEmploymentAbroadView
+import views.html.journeys.abroad.SelfEmploymentAbroadView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -43,11 +44,11 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val taxYear: Int = LocalDate.now().getYear
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListRoute: String = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val detailsCompletedRoute: String = routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val detailsCompletedRoute: String = controllers.journeys.routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
   lazy val detailsCompletedCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {

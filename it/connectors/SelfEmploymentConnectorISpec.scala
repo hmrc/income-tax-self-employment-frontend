@@ -112,8 +112,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
     val businessId = "ABC123"
     val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
     
-    behave like businessRequestReturnsOk(getBusiness, () => underTest.getBusiness(nino, businessId, mtdId))
-    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtdId))
+    behave like businessRequestReturnsOk(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
+    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
   }
 
   ".getBusinesses" should {
@@ -122,8 +122,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
     val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-    behave like businessRequestReturnsOk(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
-    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtdId))
+    behave like businessRequestReturnsOk(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit = {

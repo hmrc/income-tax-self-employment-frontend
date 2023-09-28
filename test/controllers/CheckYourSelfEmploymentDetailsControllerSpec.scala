@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
+import controllers.journeys.tradeDetails.routes
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.mdtp.BusinessData
@@ -31,7 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
-import views.html.CheckYourSelfEmploymentDetailsView
+import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -100,7 +101,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import controllers.routes
+import controllers.journeys.routes
 import models.{CheckMode, UserAnswers}
 import pages.DetailsCompletedSectionPage
 import play.api.i18n.Messages

@@ -18,9 +18,10 @@ package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
+import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
 import models.mdtp.BusinessData
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,17 +48,19 @@ class SelfEmploymentSummaryController @Inject()(
       selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(model) =>
-          val viewModel = generateRowList(taxYear, model)
+          val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), bd.businessId)))
           Ok(view(taxYear, viewModel))
       }
   }
   
-  private def generateRowList(taxYear: Int, model: Seq[BusinessData])(implicit request: Request[AnyContent]) = {
-    SummaryList(rows = model.map(bd =>
-      row(
-        bd.tradingName.getOrElse(""),
-        routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, bd.businessId).url
-      )
-    ))
+  
+}
+
+object SelfEmploymentSummaryController {
+  def generateRowList(taxYear: Int, model: Seq[(String, String)])(implicit messages: Messages) = {
+    SummaryList(rows = model.map {
+      case (tradingName, businessId) =>
+        row(tradingName, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
+    })
   }
 }

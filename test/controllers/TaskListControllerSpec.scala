@@ -17,9 +17,10 @@
 package controllers
 
 import base.SpecBase
+import controllers.journeys.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TaskListView
+import views.html.journeys.TaskListView
 
 import java.time.LocalDate
 
@@ -38,7 +39,7 @@ class TaskListControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[TaskListView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view(taxYear)(request, messages(application)).toString
       }
     }
   }

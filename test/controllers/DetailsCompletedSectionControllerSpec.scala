@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import controllers.journeys.routes
 import forms.DetailsCompletedSectionFormProvider
 import models.errors.{HttpError, HttpErrorBody}
 import models.{DetailsCompletedSection, NormalMode}
@@ -31,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.JourneyStateService
-import views.html.DetailsCompletedSectionView
+import views.html.journeys.DetailsCompletedSectionView
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +52,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val detailsCompletedSectionRoute: String = routes.DetailsCompletedSectionController.onPageLoad(
     taxYear, journey, NormalMode).url
-  lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
   lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
