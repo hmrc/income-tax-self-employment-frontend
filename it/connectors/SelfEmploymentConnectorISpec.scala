@@ -45,7 +45,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-  val nino = "FI290077A"
+  val nino = "AA370343B"
   val mtditid: String = "mtditid"
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))

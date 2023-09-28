@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val taxYear = LocalDate.now().getYear
-  val nino = "FI290077A"
+  val nino = "AA370343B"
   val mtditid = "mtditid"
   val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
 

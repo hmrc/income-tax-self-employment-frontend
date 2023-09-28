@@ -21,9 +21,12 @@ import controllers.routes
 import models._
 import pages._
 
+import java.time.LocalDate
+
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
+  val taxYear = LocalDate.now().getYear
 
   case object UnknownPage extends Page
 
@@ -33,15 +36,13 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(2023)
-        //TODO get real taxYear
+        navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
       }
 
       "must go from the last page in a journey to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(2023)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
         //TODO check redirect to DetailsCompleted page when implemented
-        //TODO get real taxYear
       }
     }
 
@@ -49,7 +50,7 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
+        navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
       }
     }
   }

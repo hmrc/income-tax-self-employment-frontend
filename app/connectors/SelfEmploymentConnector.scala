@@ -39,11 +39,4 @@ class SelfEmploymentConnector @Inject()(http: HttpClient, appConfig: FrontendApp
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getStubbedBusiness(nino: String, businessId: String, mtditid: String) //TODO remove when no longer needed
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/FI290077A/SJPR05893938418"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
-  }
-
 }

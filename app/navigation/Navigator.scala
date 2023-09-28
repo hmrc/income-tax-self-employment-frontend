@@ -26,19 +26,19 @@ import models._
 @Singleton
 class Navigator @Inject()() {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
+  private val normalRoutes: Page => Int => UserAnswers => Call = {
 //    case SelfEmploymentAbroadPage => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, nino, Abroad, mode) //TODO uncomment when DetailsCompleted PR merged
-    case _ => _ => routes.TaskListController.onPageLoad(2023) //TODO replace taxYear
+    case _ => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad
+  private val checkRouteMap: Page => Int => UserAnswers => Call = {
+    case _ => taxYear => _ => routes.CheckYourAnswersController.onPageLoad
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(userAnswers)
+      normalRoutes(page)(taxYear)(userAnswers)
     case CheckMode =>
-      checkRouteMap(page)(userAnswers)
+      checkRouteMap(page)(taxYear)(userAnswers)
   }
 }

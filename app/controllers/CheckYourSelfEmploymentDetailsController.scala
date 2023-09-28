@@ -41,7 +41,6 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
 
       val isAgent = request.user.isAgent
       selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
-        //        selfEmploymentConnector.getStubbedBusiness(request.user.nino, businessId, request.user.mtditid) map { //TODO remove when no longer needed
         case Right(business: Seq[BusinessData]) =>
           val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
           Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual"))
