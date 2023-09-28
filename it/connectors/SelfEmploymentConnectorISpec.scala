@@ -23,12 +23,10 @@ import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.DetailsCompletedSection.Yes
-import models.errors.APIErrorBody.{APIError, APIStatusError}
-import models.requests.GetBusinesses
-import models.{APIErrorBodyModel, APIErrorModel, Journeys}
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
 import models.requests.GetBusinesses
+import models.{APIErrorBodyModel, APIErrorModel, TradeDetails}
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -53,6 +51,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
   val nino = "123456789"
   val taxYear = LocalDate.now().getYear
+  val mtdId = "mtdId"
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue")
@@ -60,13 +59,13 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
   ".saveJourneyState" should {
 
-    val (journeyId, isComplete) = (Journeys.Income, Yes)
-    val saveJourneyState = s"/completed-section/$nino/$journeyId/${isComplete.equals(Yes).toString}"
+    val (journeyId, complete) = (TradeDetails.toString, Yes)
+    val saveJourneyState = s"details/completed-section/$journeyId/${complete.equals(Yes).toString}"
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
     behave like journeyStateRequestReturnsNoContent(
       () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
-      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(nino, journeyId, taxYear, isComplete.equals(Yes))(hc)))
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(nino, journeyId, taxYear, complete.equals(Yes), "")(hc)))
 
 
     behave like journeyStateRequestReturnsError(
@@ -74,7 +73,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
         BAD_REQUEST,
         Json.obj("code" -> "INVALID_NINO", "reason" -> "Submission has not passed validation. Invalid parameter").toString(),
         headersSentToBE))(
-      () => underTest.saveJourneyState(nino, journeyId, taxYear, isComplete.equals(Yes)))
+      () => underTest.saveJourneyState(nino, journeyId, taxYear, complete.equals(Yes), ""))
   }
 
   ".getBusiness" should {

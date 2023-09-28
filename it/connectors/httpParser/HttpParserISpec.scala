@@ -1,6 +1,6 @@
 package connectors.httpParser
 
-class HttpParserSpec extends HttpParserBehaviours {
+class HttpParserISpec extends HttpParserBehaviours {
   
   "FakeParser"  - {
       behave like logHttpResponse()
