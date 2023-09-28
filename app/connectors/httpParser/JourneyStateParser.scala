@@ -17,7 +17,7 @@
 package connectors.httpParser
 
 import models.errors.HttpError
-import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.http.Status.{CREATED, NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -31,6 +31,7 @@ object JourneyStateParser extends HttpParser {
     override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse =
       response.status match {
         case OK => Right(Some(response.body.toBoolean))
+        case CREATED => Right(None)
         case NO_CONTENT => Right(None)
         case _ => pagerDutyError(response)
       }
