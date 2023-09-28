@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import models.DetailsCompletedSection
+import play.api.libs.json.JsPath
 
-trait ModelGenerators {
+case object DetailsCompletedSectionPage extends QuestionPage[DetailsCompletedSection] {
 
-  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
-    Arbitrary {
-      Gen.oneOf(DetailsCompletedSection.values.toSeq)
-    }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "detailsCompletedSection"
 }

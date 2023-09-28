@@ -20,7 +20,9 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
+import models.TradeDetails
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
 import models.requests.BusinessData
@@ -30,6 +32,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, SessionId}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class SelfEmploymentConnectorISpec extends WiremockSpec {
@@ -47,12 +50,44 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
   val nino = "AA370343B"
   val mtditid: String = "mtditid"
+  val tradeDetailsJourney = TradeDetails.toString
+  val taxYear = LocalDate.now().getYear
+  val businessId = tradeDetailsJourney + "-" + nino
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
   val headersSentToBE: Seq[HttpHeader] = Seq(
     new HttpHeader(HeaderNames.xSessionId, "sessionIdValue")
   )
+
+  ".saveJourneyState" should {
+
+    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
+
+    behave like journeyStateRequestReturnsNoContent(
+      () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(
+        businessId, tradeDetailsJourney, taxYear, true, mtditid)(hc, ec)))
+  }
+
+  ".saveJourneyState" should {
+
+    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
+
+
+    behave like journeyStateRequestReturnsError(
+      () => stubPutWithResponseBody(saveJourneyState,
+        BAD_REQUEST,
+        Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
+        headersSentToBE))(
+      () => new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(
+        businessId, tradeDetailsJourney, taxYear, true, mtditid)(hc, ec))
+  }
+
 
   ".getBusiness" should {
 
@@ -74,6 +109,28 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
     )
     behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
   }
+
+  def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
+    "return a 204 response and a JourneyStateResponse model" in {
+      stubPutWithoutResponseBody(getUrl, NO_CONTENT)
+      val result = block()
+      result mustBe Right(None)
+    }
+
+  def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => JourneyStateResponse): Unit =
+    "return a 204 response and a SelfEmploymentResponse model" in {
+      stubs()
+      val result = block()
+      result mustBe Right(None)
+    }
+
+  def journeyStateRequestReturnsError(stubs: () => Unit)(block: () => Future[JourneyStateResponse]): Unit =
+    "return an error when the connector returns an error" in {
+      stubs()
+      val result = await(block())
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")))
+    }
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
     "return a 200 response and a GetBusinessRequest model" in {

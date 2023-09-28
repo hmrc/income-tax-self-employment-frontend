@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.httpParsers
+package connectors.httpParser
 
 import connectors.httpParser.HttpParser
 import models.errors.HttpError

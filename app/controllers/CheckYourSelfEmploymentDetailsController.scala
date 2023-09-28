@@ -44,7 +44,6 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
         case Right(business: Seq[BusinessData]) =>
           val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
           Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual"))
-        //TODO in View replace SaveAndContinue button's href to CompletedDetailsController when created
         //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
         case _ =>
           Redirect(routes.JourneyRecoveryController.onPageLoad().url)

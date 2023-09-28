@@ -82,3 +82,9 @@ checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a 
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
+
+detailsCompletedSection.title = Have you completed this section?
+detailsCompletedSection.yes = Yes, I’ve completed this section
+detailsCompletedSection.no = No, I’ll come back to it later
+detailsCompletedSection.error.required = Select yes if you’ve completed this section
+detailsCompletedSection.change.hidden = DetailsCompletedSection

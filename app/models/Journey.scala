@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+sealed trait Journey
 
-trait ModelGenerators {
+case object TradeDetails extends Journey {
+  override def toString: String = "trade-details"
+}
 
-  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
-    Arbitrary {
-      Gen.oneOf(DetailsCompletedSection.values.toSeq)
-    }
+case object Abroad extends Journey {
+  override def toString: String = "self-employment-abroad"
+}
+
+case object Income extends Journey {
+  override def toString: String = "income"
 }

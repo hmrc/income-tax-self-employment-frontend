@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import play.api.libs.json.JsPath
 
-trait ModelGenerators {
+case object CheckYourSelfEmploymentDetailsPage extends Page {
 
-  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
-    Arbitrary {
-      Gen.oneOf(DetailsCompletedSection.values.toSeq)
-    }
+  override def toString: String = "selfEmploymentAbroad"
 }

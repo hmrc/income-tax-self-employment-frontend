@@ -50,7 +50,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "cy" -> Lang("cy")
   )
 
-
   val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
 
 
@@ -58,8 +57,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
-  
-  
+
+
   def incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
     configuration.get[String]("microservice.services.income-tax-submission-frontend.context")
 
