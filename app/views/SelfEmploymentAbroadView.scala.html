@@ -22,11 +22,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], taxYear: Int, nino: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: Int, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selfEmploymentAbroad.title.individual"))) {
+@layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}"))) {
 
-    @formHelper(action = routes.SelfEmploymentAbroadController.onSubmit(taxYear, nino, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SelfEmploymentAbroadController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -35,7 +35,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("selfEmploymentAbroad.title.individual")).asPageHeading()
+                legend = LegendViewModel(messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}")).asPageHeading()
             )
         )
 
