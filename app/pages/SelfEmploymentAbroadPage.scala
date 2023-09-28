@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import play.api.libs.json.JsPath
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case object SelfEmploymentAbroadPage extends QuestionPage[Boolean] {
 
-case class DataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "selfEmploymentAbroad"
+}

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+import javax.inject.Inject
 
-case class DataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
+
+  def apply(isAgent: Boolean = false): Form[Boolean] = //TODO remove default '= false' when isAgent is implemented as User parameter
+    Form(
+      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
+    )
+}

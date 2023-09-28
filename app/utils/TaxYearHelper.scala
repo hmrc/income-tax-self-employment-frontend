@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package utils
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import java.time.LocalDate
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
-
-case class DataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+object TaxYearHelper {
+  private val dateNow: LocalDate = LocalDate.now()
+  private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
+  
+  val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
+  val taxYearEOY: Int = taxYear - 1
+  val taxYearEndOfYearMinusOne: Int = taxYearEOY - 1
+  val validTaxYearList: Seq[Int] = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
+}

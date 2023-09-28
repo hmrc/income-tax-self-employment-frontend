@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.errors
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
+import play.api.libs.json.{JsValue, Json}
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case class HttpError(status: Int, body: HttpErrorBody) {
 
-case class DataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+  def toJson: JsValue = body match {
+    case error: SingleErrorBody => Json.toJson(error)
+    case errors: MultiErrorsBody => Json.toJson(errors)
+  }
+}

@@ -23,25 +23,21 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentConnector @Inject()(val http: HttpClient,
-                                  val appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
+class SelfEmploymentConnector @Inject()(http: HttpClient,
+                                        appConfig: FrontendAppConfig) {
 
   def getBusinesses(nino: String, mtditid: String)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
-
+    
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/list"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hcWithExtras, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
   def getBusiness(nino: String, businessId: String, mtditid: String)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val hcWithExtras = hc.withExtraHeaders("mtditid" -> mtditid)
-
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hcWithExtras, ec)
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
 }

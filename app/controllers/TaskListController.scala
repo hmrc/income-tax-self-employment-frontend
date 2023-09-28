@@ -18,6 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -29,7 +30,7 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
                                    val controllerComponents: MessagesControllerComponents,
                                    view: TaskListView) extends FrontendBaseController with I18nSupport {
 
-  def show(): Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
       Ok(view())
   }
 }
