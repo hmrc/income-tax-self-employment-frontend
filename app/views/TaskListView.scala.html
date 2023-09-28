@@ -44,7 +44,7 @@
 
     @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
         <h2 class="app-task-list__section">
-            @messages("taskList.title")
+            @messages(s"$selfEmployment.tradingName")
         </h2>
 
         <ul class="app-task-list__items govuk-!-padding-left-0">

@@ -18,12 +18,12 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.requests.{BusinessData, OptionalDataRequest}
+import models.requests.{OptionalDataRequest, TaggedTradeDetails}
 import models.viewModels.TaggedTradeDetailsViewModel
+import models.viewModels.TaggedTradeDetailsViewModel.buildSummaryList
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import service.SelfEmploymentService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaskListView
 
@@ -35,18 +35,27 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
                                    getData: DataRetrievalAction,
                                    val controllerComponents: MessagesControllerComponents,
                                    view: TaskListView)
-                                  (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                  (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request: OptionalDataRequest[AnyContent] =>
 
-      // 1. Service to Connector to backend that returns a sequence of objects for each completed Business
-      // 2. Backend needs to get all businesses, filter so only returning 'isCompleted = true' businessDatas
-      // 3. Then return a sequence of these in on object that contains:
-      //           (businessId: String, tradingName: Option[String], abroadStatus, incomeStatus, expensesStatus, nationalInsuranceStatus)
+    // 1. Service to Connector to backend that returns a sequence of objects for each completed Business
+    // 2. Backend needs to get all businesses, filter so only returning 'isCompleted = true' businessDatas
+    // 3. Then return a sequence of these in on object that contains:
+    //           (businessId: String, tradingName: Option[String], abroadStatus, incomeStatus, expensesStatus, nationalInsuranceStatus)
 
-      selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear, request.user.mtditid) map {
-        case Right(list: Seq[TaggedTradeDetailsViewModel]) => Ok(view(taxYear, request.user, list))
-        case Left(_) => Ok(view(taxYear, request.user, Seq.empty))
-      }
+    selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear, request.user.mtditid) map {
+
+      case Right(list: Seq[TaggedTradeDetails]) =>
+        val vmList = list.map(ttd => TaggedTradeDetailsViewModel(
+          ttd.tradingName.getOrElse(""),
+          ttd.businessId,
+          buildSummaryList(ttd)))
+
+        Ok(view(taxYear, request.user, vmList))
+
+      case Left(_) =>
+        Ok(view(taxYear, request.user, Seq.empty))
+    }
   }
 }

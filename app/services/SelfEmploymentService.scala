@@ -18,7 +18,7 @@ package service
 
 import connectors.SelfEmploymentConnector
 import models.errors.{HttpError, ServiceError}
-import models.requests.BusinessDataWithStatus
+import models.requests.{BusinessDataWithStatus, TaggedTradeDetails}
 import models.viewModels.TaggedTradeDetailsViewModel
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,9 +27,9 @@ import utils.FutureEitherOps
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
+class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector) extends Logging {
 
-  def getCompletedTradeDetailsMock(nino: String, taxYear: Int, mtditid: String): Future[Either[HttpError, Seq[TaggedTradeDetailsViewModel]]] = {
+  def getCompletedTradeDetailsMock(nino: String, taxYear: Int, mtditid: String): Future[Either[HttpError, Seq[TaggedTradeDetails]]] = {
     connector.getTradesWithStatusMock(nino, taxYear, mtditid)
   }
 
