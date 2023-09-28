@@ -19,42 +19,38 @@ package connectors.builders
 object BusinessDataBuilder {
 
   lazy val aGetBusinessDataRequestStr: String =
-  """
-      |
-      |{
-      |   "businessData":[
-      |      {
-      |         "businessId":"SJPR05893938418",
-      |         "typeOfBusiness":"self-employment",
-      |         "tradingName":"string",
-      |         "yearOfMigration":"2022",
-      |         "accountingPeriods":[
-      |            {
-      |               "start":"2023-02-29",
-      |               "end":"2024-02-29"
-      |            }
-      |         ],
-      |         "firstAccountingPeriodStartDate":"2019-09-30",
-      |         "firstAccountingPeriodEndDate":"2020-02-29",
-      |         "latencyDetails":{
-      |            "latencyEndDate":"2020-02-27",
-      |            "taxYear1":"2019",
-      |            "latencyIndicator1":"A",
-      |            "taxYear2":"2020",
-      |            "latencyIndicator2":"A"
-      |         },
-      |         "accountingType":"ACCRUAL",
-      |         "commencementDate":"2023-04-06",
-      |         "cessationDate":"2024-04-05",
-      |         "businessAddressLineOne":"string",
-      |         "businessAddressLineTwo  ":"string",
-      |         "businessAddressLineThree":"string",
-      |         "businessAddressLineFour ":"string",
-      |         "businessAddressPostcode ":"string",
-      |         "businessAddressCountryCode":"GB"
-      |      }
-      |   ]
-      |}
+  """ |[
+      |   {
+      |      "businessId":"SJPR05893938418",
+      |      "typeOfBusiness":"self-employment",
+      |      "tradingName":"string",
+      |      "yearOfMigration":"2022",
+      |      "accountingPeriods":[
+      |         {
+      |            "start":"2023-02-29",
+      |            "end":"2024-02-29"
+      |         }
+      |      ],
+      |      "firstAccountingPeriodStartDate":"2019-09-30",
+      |      "firstAccountingPeriodEndDate":"2020-02-29",
+      |      "latencyDetails":{
+      |         "latencyEndDate":"2020-02-27",
+      |         "taxYear1":"2019",
+      |         "latencyIndicator1":"A",
+      |         "taxYear2":"2020",
+      |         "latencyIndicator2":"A"
+      |      },
+      |      "accountingType":"ACCRUAL",
+      |      "commencementDate":"2023-04-06",
+      |      "cessationDate":"2024-04-05",
+      |      "businessAddressLineOne":"string",
+      |      "businessAddressLineTwo  ":"string",
+      |      "businessAddressLineThree":"string",
+      |      "businessAddressLineFour ":"string",
+      |      "businessAddressPostcode ":"string",
+      |      "businessAddressCountryCode":"GB"
+      |   }
+      |]
       |""".stripMargin
 
 

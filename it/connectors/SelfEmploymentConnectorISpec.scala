@@ -48,7 +48,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
-  val nino = "FI290077A"
+  val nino = "AA370343B"
   val mtditid: String = "mtditid"
   val tradeDetailsJourney = TradeDetails.toString
   val taxYear = LocalDate.now().getYear
@@ -88,6 +88,28 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
         businessId, tradeDetailsJourney, taxYear, true, mtditid)(hc, ec))
   }
 
+
+  ".getBusiness" should {
+
+    val businessId = "SJPR05893938418"
+    val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+
+    behave like businessRequestReturnsOk(getBusiness,
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId, mtditid)(hc, ec))
+    )
+    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
+  }
+
+  ".getBusinesses" should {
+
+    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino"
+
+    behave like businessRequestReturnsOk(getBusinesses,
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtditid)(hc, ec))
+    )
+    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+  }
+
   def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
     "return a 204 response and a JourneyStateResponse model" in {
       stubPutWithoutResponseBody(getUrl, NO_CONTENT)
@@ -109,30 +131,6 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
       result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")))
     }
-
-// TODO SASS-5249 has working tests for getBusiness
-//  ".getBusiness" should {
-//
-//    val businessId = "SJPR05893938418"
-//    val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
-//
-//    behave like businessRequestReturnsOk(getBusiness,
-//      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusiness(nino, businessId, mtditid)(hc, ec))
-//    )
-//    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
-//  }
-//
-//
-//  ".getBusinesses" should {
-//
-//    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino"
-//
-//    behave like businessRequestReturnsOk(getBusinesses,
-//      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtditid)(hc, ec))
-//    )
-//    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
-//  }
-
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
     "return a 200 response and a GetBusinessRequest model" in {
