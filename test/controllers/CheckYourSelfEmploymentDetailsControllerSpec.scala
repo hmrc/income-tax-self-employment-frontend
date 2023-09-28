@@ -21,7 +21,7 @@ import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.requests.BusinessData
+import models.mdtp.BusinessData
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

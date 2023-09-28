@@ -26,12 +26,11 @@
 
     <h1 class="govuk-heading-xl">@messages("selfEmploymentSummary.heading")</h1>
 
-@govukSummaryList(tradingNames)
+     @govukSummaryList(tradingNames)
 
-<p class="govuk-body">
- @govukButton(
-    ButtonViewModel(messages("site.continue"))
-    .asLink(routes.TaskListController.onPageLoad.url)
-  )
-</p>
+     <p class="govuk-body">
+         @govukButton(ButtonViewModel(messages("site.continue"))
+           .asLink(controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url)
+         )
+     </p>
 }

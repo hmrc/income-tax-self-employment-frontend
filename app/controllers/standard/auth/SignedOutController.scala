@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.standard.auth
 
-import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.requests.OptionalDataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import javax.inject.Inject
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TaskListView
+import views.html.standard.auth.SignedOutView
 
-class TaskListController @Inject()(override val messagesApi: MessagesApi,
-                                   identify: IdentifierAction,
-                                   getData: DataRetrievalAction,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: TaskListView) extends FrontendBaseController with I18nSupport {
+class SignedOutController @Inject()(
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: SignedOutView
+                                   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
 }

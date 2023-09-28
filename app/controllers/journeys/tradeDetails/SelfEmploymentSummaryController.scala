@@ -14,44 +14,50 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
 import handlers.ErrorHandler
-
-import javax.inject.Inject
+import models.mdtp.BusinessData
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SelfEmploymentSummaryView
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
+import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class SelfEmploymentSummaryController @Inject()(
                                                  override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
                                                  errorHandler: ErrorHandler,
                                                  selfEmploymentConnector: SelfEmploymentConnector,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: SelfEmploymentSummaryView,
-                                                 ec: ExecutionContext
-                                               ) extends FrontendBaseController with I18nSupport {
+                                                 view: SelfEmploymentSummaryView
+                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
       selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(value) =>
-          val tradeNameList: Seq[Option[String]] = value.map(name => name.tradingName)
-          val viewModel = SummaryList(rows = tradeNameList.map(name =>  row(s"${name.getOrElse("")}")))
+        case Right(model) =>
+          val viewModel = generateRowList(taxYear, model)
           Ok(view(taxYear, viewModel))
       }
+  }
+  
+  private def generateRowList(taxYear: Int, model: Seq[BusinessData])(implicit request: Request[AnyContent]) = {
+    SummaryList(rows = model.map(bd =>
+      row(
+        bd.tradingName.getOrElse(""),
+        routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, bd.businessId).url
+      )
+    ))
   }
 }

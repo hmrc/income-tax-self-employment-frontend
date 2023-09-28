@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
-import models.requests.BusinessData
+import models.mdtp.BusinessData
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
-import views.html.CheckYourSelfEmploymentDetailsView
+import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,7 +47,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
         //TODO in View replace SaveAndContinue button's href to CompletedDetailsController when created
         //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
         case _ =>
-          Redirect(routes.JourneyRecoveryController.onPageLoad().url)
+          Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
       }
   }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.standard
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

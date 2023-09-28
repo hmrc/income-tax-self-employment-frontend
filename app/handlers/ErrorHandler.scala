@@ -22,7 +22,7 @@ import play.api.mvc.{Request, Result}
 import play.api.mvc.Results.InternalServerError
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.ErrorTemplate
+import views.html.standard.ErrorTemplate
 
 @Singleton
 class ErrorHandler @Inject()(

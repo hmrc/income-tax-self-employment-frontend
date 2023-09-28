@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.abroad
 
 import controllers.actions._
 import forms.SelfEmploymentAbroadFormProvider
@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SelfEmploymentAbroadView
+import views.html.journeys.abroad.SelfEmploymentAbroadView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,7 +65,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
           } yield {
             val redirectLocation =
               if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, taxYear, updatedAnswers)
-              else routes.JourneyRecoveryController.onPageLoad()
+              else controllers.standard.routes.JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }
       )

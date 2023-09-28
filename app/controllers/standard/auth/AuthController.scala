@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.auth
+package controllers.standard.auth
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction

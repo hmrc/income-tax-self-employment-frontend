@@ -18,7 +18,9 @@
 
 @this(layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages)
+@(taxYear: Int)(implicit request: Request[_], messages: Messages)
+
+@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
 @layout(pageTitle = titleNoForm(messages("taskList.title"))) {
 
@@ -27,7 +29,7 @@
     <ul class="app-task-list__items govuk-!-padding-left-0">
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-                <a href="#" style="govuk-link">
+                <a class ="govuk-link" href=@selfEmploymentSummaryLink>
                     @messages("taskList.reviewLink")
                 </a>
             </span>

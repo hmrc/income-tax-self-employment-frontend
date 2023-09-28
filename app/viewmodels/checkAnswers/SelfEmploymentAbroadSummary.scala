@@ -36,7 +36,7 @@ object SelfEmploymentAbroadSummary  {
           key     = "selfEmploymentAbroad.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SelfEmploymentAbroadController.onPageLoad(taxYear, CheckMode).url)
+            ActionItemViewModel("site.change", controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, CheckMode).url)
               .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
           )
         )
