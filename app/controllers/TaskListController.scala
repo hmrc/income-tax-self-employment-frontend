@@ -39,16 +39,14 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request: OptionalDataRequest[AnyContent] =>
 
-//    val taggedTradeDetailsList: Seq[TaggedTradeDetailsViewModel] = {
-      // 1. Service to Connector to backend that returns a sequence of objects for each Business
-      // 2. These objects will also contain: (businessId: String, tradingName: Option[String], completed: Boolean)
-      // 3. Filter out the non-completed trades and create a
-      //      val completedTradeDetailsList: Seq[BusinessData] = selfEmploymentService.getCompletedTradeDetails(request.user.nino, taxYear)
-      //      selfEmploymentList.flatMap(se => TaggedTradeDetailsViewModel(se, ""))
-      selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear) map {
+      // 1. Service to Connector to backend that returns a sequence of objects for each completed Business
+      // 2. Backend needs to get all businesses, filter so only returning 'isCompleted = true' businessDatas
+      // 3. Then return a sequence of these in on object that contains:
+      //           (businessId: String, tradingName: Option[String], abroadStatus, incomeStatus, expensesStatus, nationalInsuranceStatus)
+
+      selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear, request.user.mtditid) map {
         case Right(list: Seq[TaggedTradeDetailsViewModel]) => Ok(view(taxYear, request.user, list))
         case Left(_) => Ok(view(taxYear, request.user, Seq.empty))
-
       }
   }
 }

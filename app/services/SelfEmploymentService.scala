@@ -17,8 +17,7 @@
 package service
 
 import connectors.SelfEmploymentConnector
-import models.errors.APIErrorBody.APIStatusError
-import models.errors.ServiceError
+import models.errors.{HttpError, ServiceError}
 import models.requests.BusinessDataWithStatus
 import models.viewModels.TaggedTradeDetailsViewModel
 import play.api.Logging
@@ -30,43 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
 
-//  def getCompletedTradeDetails(nino: String, taxYear: Int): Future[Either[APIStatusError, Seq[TaggedTradeDetailsViewModel]]] = {
-//    val result = connector.getTradesWithStatus(nino, taxYear) map {
+  def getCompletedTradeDetailsMock(nino: String, taxYear: Int, mtditid: String): Future[Either[HttpError, Seq[TaggedTradeDetailsViewModel]]] = {
+    connector.getTradesWithStatusMock(nino, taxYear, mtditid)
+  }
+
+//  private def checkSelfEmploymentAbroadStatus(taxYear: Int, businessId: String): Future[Either[HttpError, String]] = {
+//    //    connector.getJourneyState(taxYear, businessId, "self-employment-abroad") map {
+//    connector.getJourneyStateMock(taxYear, businessId, "self-employment-abroad") map {
 //      case Left(error) => Left(error)
-//      case Right(businessesData: Seq[BusinessDataWithStatus]) =>
-//        val completedBusinessesList: Seq[BusinessDataWithStatus] = businessesData.filter(_.isCompleted)
-//        Right(completedBusinessesList.map(bdws =>
-//          (for {
-//            abroadStatus <- FutureEitherOps[APIStatusError, String](checkSelfEmploymentAbroadStatus(taxYear, bdws.businessData.businessId).map(_ => "completed"))
-//            incomeStatus <- FutureEitherOps[APIStatusError, String](checkSelfEmploymentAbroadStatus(taxYear, bdws.businessData.businessId).map(_ => "notStarted"))
-//            expensesStatus <- FutureEitherOps[APIStatusError, String](checkSelfEmploymentAbroadStatus(taxYear, bdws.businessData.businessId).map(_ => "notStarted"))
-//            nationalInsuranceStatus <- FutureEitherOps[APIStatusError, String](checkSelfEmploymentAbroadStatus(taxYear, bdws.businessData.businessId).map(_ => "notStarted"))
-//            result = TaggedTradeDetailsViewModel(
-//                bdws.businessData.tradingName,
-//                abroadStatus,
-//                incomeStatus,
-//                expensesStatus,
-//                nationalInsuranceStatus)
-//          } yield {
-//            result
-//          }).value
-//        ))
+//      case Right(status) => Right(status)
 //    }
-//    result
 //  }
-
-  def getCompletedTradeDetailsMock(nino: String, taxYear: Int): Future[Either[APIStatusError, Seq[TaggedTradeDetailsViewModel]]] = {
-    Future(Right(Seq(
-      TaggedTradeDetailsViewModel(Some("TradingName1"), "completed", "inProgress", "notStarted", "notStarted"),
-      TaggedTradeDetailsViewModel(None, "notStarted", "notStarted", "notStarted", "notStarted")
-    )))
-  }
-
-  private def checkSelfEmploymentAbroadStatus(taxYear: Int, businessId: String): Future[Either[APIStatusError, String]] = {
-    //    connector.getJourneyState(taxYear, businessId, "self-employment-abroad") map {
-    connector.getJourneyStateMock(taxYear, businessId, "self-employment-abroad") map {
-      case Left(error) => Left(error)
-      case Right(status) => Right(status)
-    }
-  }
 }

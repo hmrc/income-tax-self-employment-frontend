@@ -27,7 +27,7 @@ GET         /error/you-need-agent-services-account       controllers.authorisati
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /:taxYear/self-employment/details/self-employment-abroad                           controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST       /:taxYear/self-employment/details/self-employment-abroad                           controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET        /:taxYear/self-employment/details/self-employment-abroad/change                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST       /:taxYear/self-employment/details/self-employment-abroad/change                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET         /:taxYear/self-employment/details/self-employment-abroad                           controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST        /:taxYear/self-employment/details/self-employment-abroad                           controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET         /:taxYear/self-employment/details/self-employment-abroad/change                    controllers.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST        /:taxYear/self-employment/details/self-employment-abroad/change                    controllers.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = CheckMode)

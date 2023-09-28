@@ -19,7 +19,8 @@ package models.viewModels
 import models.requests.BusinessData
 import play.api.libs.json.{Json, OFormat}
 
-case class TaggedTradeDetailsViewModel(tradingName: Option[String],
+case class TaggedTradeDetailsViewModel(businessId: String,
+                                       tradingName: Option[String],
                                        abroadStatus: String,
                                        incomeStatus: String,
                                        expensesStatus: String,

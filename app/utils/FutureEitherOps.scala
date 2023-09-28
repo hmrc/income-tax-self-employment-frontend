@@ -16,13 +16,12 @@
 
 package utils
 
-import models.errors.APIErrorBody.APIStatusError
-import models.errors.ServiceError
+import models.errors.HttpError
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class FutureEitherOps[E <: APIStatusError, R](value: Future[Either[E, R]])(implicit ec: ExecutionContext, hc: HeaderCarrier) {
+case class FutureEitherOps[E <: HttpError, R](value: Future[Either[E, R]])(implicit ec: ExecutionContext, hc: HeaderCarrier) {
 
   def map[B](mappingFunction: R => B): FutureEitherOps[E, B] = {
     FutureEitherOps(value.map {
