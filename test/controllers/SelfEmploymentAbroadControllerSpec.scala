@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.SelfEmploymentAbroadFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,6 +47,8 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val detailsCompletedRoute: String = routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val detailsCompletedCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
 
@@ -99,7 +101,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(taskListCall)), //TODO replace with DetailsCompletedSection when created
+              bind[Navigator].toInstance(new FakeNavigator(detailsCompletedCall)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -112,7 +114,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual taskListCall.url //TODO replace with DetailsCompletedSection when created
+          redirectLocation(result).value mustEqual detailsCompletedCall.url
         }
       }
 

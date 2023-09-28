@@ -27,6 +27,10 @@ object PagerDutyHelper extends Logging {
     val INTERNAL_SERVER_ERROR_FROM_CONNECTOR: PagerDutyKeys.Value = Value
     val UNEXPECTED_RESPONSE_FROM_CONNECTOR: PagerDutyKeys.Value = Value
     val FOURXX_RESPONSE_FROM_CONNECTOR: PagerDutyKeys.Value = Value
+    val FAILED_TO_CREATE_UPDATE_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
+    val FAILED_TO_FIND_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
+    val FAILED_TO_ClEAR_SELF_EMPLOYMENT_DATA: PagerDutyKeys.Value = Value
+    val ENCRYPTION_DECRYPTION_ERROR: PagerDutyKeys.Value = Value
   }
 
   def pagerDutyLog(pagerDutyKey: PagerDutyKeys.Value, otherDetail: String = ""): Unit = {

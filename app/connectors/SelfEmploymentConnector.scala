@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
+import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -38,6 +39,26 @@ class SelfEmploymentConnector @Inject()(http: HttpClient,
 
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
+  def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean, mtditid: String)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
+
+    val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/$complete"
+
+    http.PUT[String, JourneyStateResponse](url, "")(
+      JourneyStateHttpWrites, JourneyStateHttpReads, hcWithMtditid, ec)
+  }
+
+  def getJourneyState(businessId: String, journey: String, taxYear: Int, mtditid: String)
+                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
+
+    val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/"
+    http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hcWithMtditid, ec)
   }
 
 }

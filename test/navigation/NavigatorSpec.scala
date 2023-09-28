@@ -34,15 +34,24 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" - {
 
+      "must go from the Check Your Self Employment Details page to the 'Have you completed this section?' page" in {
+
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+      }
+
+      "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
+
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+      }
+
+      "must go from a Details Completed page to the Task List page" in {
+
+        navigator.nextPage(DetailsCompletedSectionPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
+      }
+
       "must go from a page that doesn't exist in the route map to Index" in {
 
         navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
-      }
-
-      "must go from the last page in a journey to the 'Have you completed this section?' page" in {
-
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
-        //TODO check redirect to DetailsCompleted page when implemented
       }
     }
 
