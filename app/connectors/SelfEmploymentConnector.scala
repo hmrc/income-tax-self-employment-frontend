@@ -18,8 +18,9 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
-import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
+import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
+import models.requests.TaggedTradeDetails
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -54,10 +55,16 @@ class SelfEmploymentConnector @Inject()(val http: HttpClient, val appConfig: Fro
       JourneyStateHttpWrites, JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
+  def getTradesWithStatus(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
+
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/trades-with-statuses/$nino/$taxYear/"
+    http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
   def getTradesWithStatusMock(nino: String, taxYear: Int, mtditid: String): Future[GetTradesStatusResponse] = {
     Future(Right(Seq(
-      TaggedTradeDetails("BusinessId1", Some("TradingName1"), "completed", "inProgress", "notStarted", "notStarted"),
-      TaggedTradeDetails("BusinessId2", None, "notStarted", "notStarted", "notStarted", "notStarted")
+      TaggedTradeDetails("BusinessId1", Some("TradingName1"), Some(true), Some(false), None, None),
+      TaggedTradeDetails("BusinessId2", None, None, None, None, None)
     )))
   }
 

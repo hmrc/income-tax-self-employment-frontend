@@ -20,24 +20,13 @@ import play.api.libs.json.{Json, OFormat}
 
 case class TaggedTradeDetails(businessId: String,
                               tradingName: Option[String],
-                              abroadStatus: String,
-                              incomeStatus: String,
-                              expensesStatus: String,
-                              nationalInsuranceStatus: String)
+                              abroadStatus: Option[Boolean],
+                              incomeStatus: Option[Boolean],
+                              expensesStatus: Option[Boolean],
+                              nationalInsuranceStatus: Option[Boolean])
 
 object TaggedTradeDetails {
 
   implicit val format: OFormat[TaggedTradeDetails] = Json.format[TaggedTradeDetails]
 
-  private val completedStatus = "completed"
-  private val inProgressStatus = "inProgress"
-  private val notStartedStatus = "notStarted"
-  private val cannotStartYetStatus = "cannotStartYet"
-
-  def addCannotStartStatus(data: TaggedTradeDetails): TaggedTradeDetails = {
-    val income = if (data.abroadStatus.equals(notStartedStatus)) cannotStartYetStatus else data.incomeStatus
-    val expenses = if (data.incomeStatus.equals(notStartedStatus)) cannotStartYetStatus else data.expensesStatus
-    val nationalInsurance = if (data.expensesStatus.equals(notStartedStatus)) cannotStartYetStatus else data.nationalInsuranceStatus
-    data.copy(incomeStatus = income, expensesStatus = expenses, nationalInsuranceStatus = nationalInsurance)
-  }
 }

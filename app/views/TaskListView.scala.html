@@ -20,10 +20,12 @@
 @import models.viewModels.TaggedTradeDetailsViewModel
 @import models.Mode
 
-@this(layout: Layout)
+@this(layout: Layout,
+        govukSummaryList: GovukSummaryList
+)
 
 @(taxYear: Int, user: User, selfEmploymentList: Seq[TaggedTradeDetailsViewModel])(implicit request: Request[_], messages: Messages)
-
+@{val example = "example"}
 @layout(pageTitle = titleNoForm(messages("taskList.title"))) {
 
     <h2 class="app-task-list__section">@messages("taskList.title")</h2>
@@ -44,68 +46,10 @@
 
     @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
         <h2 class="app-task-list__section">
-            @messages(s"$selfEmployment.tradingName")
+            @{s"${selfEmployment.tradingName} - ${messages("taskList.title")}"}
         </h2>
 
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a href="@SelfEmploymentAbroadController.onPageLoad(taxYear, if (selfEmployment.abroadStatus.equals("notStarted")) NormalMode else CheckMode)" style="govuk-link">
-                        @messages("common.selfEmploymentAbroad")
-                    </a>
-                </span>
-                <a href="#">
-                    <strong class="govuk-tag app-task-list__tag govuk-tag--@{s"${selfEmployment.abroadStatus}"}">
-                        @messages(s"status.${selfEmployment.abroadStatus}")
-                    </strong>
-                </a>
-            </li>
-        </ul>
-
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a href="#" style="govuk-link">
-                        @messages("common.income")
-                    </a>
-                </span>
-                <a href="#">
-                    <strong class="govuk-tag app-task-list__tag govuk-tag--@{s"${selfEmployment.incomeStatus}"}">
-                        @messages(s"status.${selfEmployment.incomeStatus}")
-                    </strong>
-                </a>
-            </li>
-        </ul>
-
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a href="#" style="govuk-link">
-                        @messages("common.expensesCategories")
-                    </a>
-                </span>
-                <a href="#">
-                    <strong class="govuk-tag app-task-list__tag govuk-tag--@{s"${selfEmployment.expensesStatus}"}">
-                        @messages(s"status.${selfEmployment.expensesStatus}")
-                    </strong>
-                </a>
-            </li>
-        </ul>
-
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a href="#" style="govuk-link">
-                        @messages("common.nationalInsurance")
-                    </a>
-                </span>
-                <a href="#">
-                    <strong class="govuk-tag app-task-list__tag govuk-tag--@{s"${selfEmployment.nationalInsuranceStatus}"}">
-                        @messages(s"status.${selfEmployment.nationalInsuranceStatus}")
-                    </strong>
-                </a>
-            </li>
-        </ul>
+        @govukSummaryList(selfEmployment.statusList)
     }
 
 }

@@ -43,14 +43,15 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
     // 2. Backend needs to get all businesses, filter so only returning 'isCompleted = true' businessDatas
     // 3. Then return a sequence of these in on object that contains:
     //           (businessId: String, tradingName: Option[String], abroadStatus, incomeStatus, expensesStatus, nationalInsuranceStatus)
+    //TODO remove ^these^ comments when backend endpoint setup
 
     selfEmploymentService.getCompletedTradeDetailsMock(request.user.nino, taxYear, request.user.mtditid) map {
 
       case Right(list: Seq[TaggedTradeDetails]) =>
-        val vmList = list.map(ttd => TaggedTradeDetailsViewModel(
-          ttd.tradingName.getOrElse(""),
-          ttd.businessId,
-          buildSummaryList(ttd)))
+        val vmList = list.map(tradeDetails => TaggedTradeDetailsViewModel(
+          tradeDetails.tradingName.getOrElse(""),
+          tradeDetails.businessId,
+          buildSummaryList(tradeDetails, taxYear)))
 
         Ok(view(taxYear, request.user, vmList))
 

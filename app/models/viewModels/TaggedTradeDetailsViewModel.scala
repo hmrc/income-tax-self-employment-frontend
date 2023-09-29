@@ -17,10 +17,11 @@
 package models.viewModels
 
 import models.requests.TaggedTradeDetails
+import models.{CheckMode, NormalMode}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 case class TaggedTradeDetailsViewModel(tradingName: String,
                                        businessId: String,
@@ -33,30 +34,48 @@ object TaggedTradeDetailsViewModel {
   private val notStartedStatus = "notStarted"
   private val cannotStartYetStatus = "cannotStartYet"
 
-  def buildSummaryList(business: TaggedTradeDetails)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(business: TaggedTradeDetails, taxYear: Int)(implicit messages: Messages): SummaryList = {
+    val (abroadUrlString, incomeUrlString, expensesUrlString, nationalInsuranceUrlString) =
+      (controllers.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, if (business.abroadStatus.isEmpty) NormalMode else CheckMode).url,
+        "#",
+        "#",
+        "#")
 
     SummaryList(
       rows = Seq(
-        row("selfEmploymentAbroad", business.abroadStatus),
-        row("income", sortStatuses(business.incomeStatus, business.abroadStatus)),
-        row("expensesCategories", sortStatuses(business.expensesStatus, business.incomeStatus)),
-        row("nationalInsurance", sortStatuses(business.nationalInsuranceStatus, business.expensesStatus))
+        buildRow("selfEmploymentAbroad", abroadUrlString, statusToString(business.abroadStatus)),
+        buildRow("income", incomeUrlString, statusToString(business.incomeStatus, business.abroadStatus)),
+        buildRow("expensesCategories", expensesUrlString, statusToString(business.expensesStatus, business.incomeStatus)),
+        buildRow("nationalInsurance", nationalInsuranceUrlString, statusToString(business.nationalInsuranceStatus, business.expensesStatus))
       ),
       classes = "govuk-!-margin-bottom-7")
   }
 
-  private def row(rowKey: String, status: String)
-                 (implicit messages: Messages): SummaryListRow = {
+  private def buildRow(rowKey: String, href: String, status: String)(implicit messages: Messages): SummaryListRow = {
+
+    val keyString = messages(s"common.$rowKey")
+    val statusString = messages(s"status.$status")
+
     SummaryListRowViewModel(
-      key = Key(
-        content = s"common.$rowKey",
-        classes = "govuk-!-font-weight-regular"
+      key = KeyViewModel(HtmlContent(
+        s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href style='govuk-link'> $keyString </a> </span>")
       ),
       value = Value(),
-      actions = Seq(ActionItemViewModel((s"status.$status"), "#"))
-    )
+      actions = Seq(ActionItem(
+        href = href,
+        content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>"),
+      )
+      )).withCssClass("app-task-list__item")
   }
 
-  private def sortStatuses(status: String, priorStatus: String): String =
-    if (priorStatus.equals(notStartedStatus)) cannotStartYetStatus else status
+
+  private def statusToString(status: Option[Boolean], prevStatus: Option[Boolean] = None): String = {
+    status match {
+      case Some(true) => completedStatus
+      case Some(false) => inProgressStatus
+      case _ =>
+        if (prevStatus.exists(!_.equals(true))) cannotStartYetStatus else notStartedStatus
+    }
+  }
+
 }

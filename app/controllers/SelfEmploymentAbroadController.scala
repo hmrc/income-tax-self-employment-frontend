@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.SelfEmploymentAbroadFormProvider
-import models.{Mode, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,7 +40,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
                                                view: SelfEmploymentAbroadView)
                                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode = NormalMode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
