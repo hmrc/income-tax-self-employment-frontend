@@ -23,7 +23,7 @@
         heading: Heading
 )
 
-@(list: SummaryList, taxYear: Int, agentOrIndividual: String)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, taxYear: Int, agentOrIndividual: String, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"))) {
 
@@ -40,7 +40,7 @@
             preventDoubleClick = Some(true),
             content = Text(messages("site.saveAndContinue")),
             classes = "govuk-button"
-        ).asLink(controllers.journeys.routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode).url))
+        ).asLink(nextRoute))
 
         <a href="#" class ="govuk-link">
             @messages("checkYourSelfEmploymentDetails.removeSelfEmployment")

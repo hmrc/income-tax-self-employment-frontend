@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import connectors.SelfEmploymentConnector
 import controllers.journeys.routes
 import forms.DetailsCompletedSectionFormProvider
 import models.errors.{HttpError, HttpErrorBody}
@@ -31,7 +32,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import service.JourneyStateService
 import views.html.journeys.DetailsCompletedSectionView
 
 import java.time.LocalDate
@@ -45,7 +45,7 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
   val businessId = journey + "-" + nino
   val mtditid = "mtditid"
 
-  val mockService: JourneyStateService = mock[JourneyStateService]
+  val mockConnector = mock[SelfEmploymentConnector]
   implicit val ec: ExecutionContext = ExecutionContext.global
   val formProvider = new DetailsCompletedSectionFormProvider()
   val form: Form[DetailsCompletedSection] = formProvider()
@@ -64,11 +64,11 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
       "must return OK and the correct view for a GET" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[JourneyStateService].toInstance(mockService)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
 
-          when(mockService.getJourneyState(any, meq(journey), meq(taxYear), any)(any)) thenReturn Future(Right(None))
+          when(mockConnector.getJourneyState(any, meq(journey), meq(taxYear), any)(any, any)) thenReturn Future(Right(None))
 
           val request = FakeRequest(GET, detailsCompletedSectionRoute)
 
@@ -84,10 +84,10 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[JourneyStateService].toInstance(mockService)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
-          when(mockService.getJourneyState(any, meq(journey), meq(taxYear), any)(any)) thenReturn Future(Right(Some(true)))
+          when(mockConnector.getJourneyState(any, meq(journey), meq(taxYear), any)(any, any)) thenReturn Future(Right(Some(true)))
 
           val request = FakeRequest(GET, detailsCompletedSectionRoute)
 
@@ -106,11 +106,11 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        when(mockService.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any)
+        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)
         ) thenReturn Future(Right(None))
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[JourneyStateService].toInstance(mockService)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
           val request =
@@ -126,11 +126,11 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must return a Bad Request and errors when invalid data is submitted" in {
 
-        when(mockService.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any)
+        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)
         ) thenReturn Future(Right(None))
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[JourneyStateService].toInstance(mockService)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
           val request =
@@ -150,15 +150,15 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
-        when(mockService.saveJourneyState(any, meq("invalidJourneyId"), meq(taxYear),
-          complete = meq(true), any)(any)
+        when(mockConnector.saveJourneyState(any, meq("invalidJourneyId"), meq(taxYear),
+          complete = meq(true), any)(any, any)
         ) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(journeyRecoveryCall)),
-              bind[JourneyStateService].toInstance(mockService)
+              bind[SelfEmploymentConnector].toInstance(mockConnector)
             )
             .build()
 

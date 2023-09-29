@@ -44,21 +44,17 @@ class SelfEmploymentConnector @Inject()(http: HttpClient,
   def saveJourneyState(businessId: String, journey: String, taxYear: Int, complete: Boolean, mtditid: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
-
     val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/$complete"
 
     http.PUT[String, JourneyStateResponse](url, "")(
-      JourneyStateHttpWrites, JourneyStateHttpReads, hcWithMtditid, ec)
+      JourneyStateHttpWrites, JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
   def getJourneyState(businessId: String, journey: String, taxYear: Int, mtditid: String)
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val hcWithMtditid = hc.withExtraHeaders(headers = "mtditid" -> mtditid)
-
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/"
-    http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hcWithMtditid, ec)
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
+    http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
 }

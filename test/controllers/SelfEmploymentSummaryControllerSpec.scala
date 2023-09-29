@@ -21,7 +21,7 @@ import controllers.journeys.tradeDetails.routes
 import connectors.SelfEmploymentConnector
 import builders.BusinessDataBuilder.{aBusinessDataNoneResponse, aBusinessDataResponse}
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
-import models.UserAnswers
+import models.{NormalMode, TradeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -50,14 +50,19 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
     "onPageLoad" - {
 
+      val nextRoute = "/update-and-submit-income-tax-return/self-employment" +
+        controllers.journeys.routes.DetailsCompletedSectionController.onPageLoad(taxYear, "trade-details", NormalMode).url
+      
       "must return OK and the correct view when there are no self-employments" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(Right(Seq()))
 
+         
           val request = FakeRequest(GET, routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value
@@ -70,13 +75,14 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           )
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, emptySummaryList)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(taxYear, emptySummaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
       "must return OK and the correct view when there are None trading names" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
 
@@ -92,14 +98,15 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val noneSummaryList = generateRowList(taxYear, noneTradingNames)(messages(application))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, noneSummaryList)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(taxYear, noneSummaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
 
       "must return OK and the correct view for a GET when self-employment data exist" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
 
         running(application) {
 
@@ -115,7 +122,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val summaryList = generateRowList(taxYear, tradingNames)(messages(application))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear,summaryList)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(taxYear,summaryList, nextRoute)(request, messages(application)).toString
         }
       }
 

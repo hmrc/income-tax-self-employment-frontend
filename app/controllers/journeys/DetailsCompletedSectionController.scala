@@ -16,6 +16,7 @@
 
 package controllers.journeys
 
+import connectors.SelfEmploymentConnector
 import controllers.actions._
 import forms.DetailsCompletedSectionFormProvider
 import models.DetailsCompletedSection.{No, Yes}
@@ -25,7 +26,6 @@ import pages.DetailsCompletedSectionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import service.JourneyStateService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.DetailsCompletedSectionView
 
@@ -33,7 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DetailsCompletedSectionController @Inject()(override val messagesApi: MessagesApi,
-                                                  selfEmploymentService: JourneyStateService,
+                                                  selfEmploymentConnector: SelfEmploymentConnector,
                                                   navigator: Navigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
@@ -48,8 +48,8 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
   def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
-      val businessId = journey + "-" + request.user.nino
-      val preparedForm = selfEmploymentService.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
+      val businessId = journey + "-" + request.user.nino  //TODO use the actual businessId as it is unique to the business
+      val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
         case Right(Some(true)) => form.fill(Yes)
         case Right(Some(false)) => form.fill(No)
         case Right(None) => form
@@ -70,7 +70,7 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
 
         value => {
           val businessId = journey + "-" + request.user.nino
-          selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
+          selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
             case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, taxYear, UserAnswers(request.userId)))
             case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())

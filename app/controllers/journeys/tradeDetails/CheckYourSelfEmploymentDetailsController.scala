@@ -18,7 +18,11 @@ package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
+import models.{NormalMode, UserAnswers}
 import models.mdtp.BusinessData
+import models.requests.OptionalDataRequest
+import navigation.Navigator
+import pages.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,6 +36,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
                                                          identify: IdentifierAction,
                                                          getData: DataRetrievalAction,
                                                          selfEmploymentConnector: SelfEmploymentConnector,
+                                                         navigator: Navigator,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          view: CheckYourSelfEmploymentDetailsView)
                                                         (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -43,11 +48,16 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
       selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
         case Right(business: Seq[BusinessData]) =>
           val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
-          Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual"))
+          val nextRoute = navigate(taxYear, navigator)
+          Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
         //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
         case _ =>
           Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
       }
+  }
+  
+  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
+    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, request.userAnswers.getOrElse(UserAnswers(request.userId))).url
   }
 
 }

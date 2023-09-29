@@ -71,6 +71,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val businessId: String = "SJPR05893938418"
+          val nextRoute = routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
           when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
@@ -81,7 +82,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val view = application.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual", nextRoute)(request, messages(application)).toString
         }
       }
 

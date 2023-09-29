@@ -20,9 +20,12 @@ import connectors.SelfEmploymentConnector
 import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
-import models.mdtp.BusinessData
+import models.{NormalMode, UserAnswers}
+import models.requests.OptionalDataRequest
+import navigation.Navigator
+import pages.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
@@ -38,6 +41,7 @@ class SelfEmploymentSummaryController @Inject()(
                                                  getData: DataRetrievalAction,
                                                  errorHandler: ErrorHandler,
                                                  selfEmploymentConnector: SelfEmploymentConnector,
+                                                 navigator: Navigator,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SelfEmploymentSummaryView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -49,10 +53,14 @@ class SelfEmploymentSummaryController @Inject()(
         case Left(_) => errorHandler.internalServerError()
         case Right(model) =>
           val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), bd.businessId)))
-          Ok(view(taxYear, viewModel))
+          val nextRoute = navigate(taxYear, navigator)
+          Ok(view(taxYear, viewModel, nextRoute))
       }
   }
-  
+
+  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
+    navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, taxYear, request.userAnswers.getOrElse(UserAnswers(request.userId))).url
+  }
   
 }
 

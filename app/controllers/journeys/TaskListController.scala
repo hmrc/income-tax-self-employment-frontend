@@ -17,20 +17,41 @@
 package controllers.journeys
 
 import com.google.inject.Inject
+import connectors.SelfEmploymentConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import models.TradeDetails
+import models.errors.HttpError
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class TaskListController @Inject()(override val messagesApi: MessagesApi,
                                    identify: IdentifierAction,
                                    getData: DataRetrievalAction,
+                                   selfEmploymentConnector: SelfEmploymentConnector,
                                    val controllerComponents: MessagesControllerComponents,
-                                   view: TaskListView) extends FrontendBaseController with I18nSupport {
+                                   view: TaskListView)
+                                  (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) { implicit request: OptionalDataRequest[AnyContent] =>
-    Ok(view(taxYear))
+  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    getStatusMsg(taxYear, selfEmploymentConnector) map {
+      case Right(Some(true)) =>  Ok(view(taxYear, "status.complete"))
+      case Right(Some(false)) => Ok(view(taxYear, "status.processing"))
+      case Right(None) =>  Ok(view(taxYear, "status.checkOurRecords"))
+      case Left(_) => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+    }
+  }
+  
+  private def getStatusMsg(taxYear: Int, selfEmploymentConnector: SelfEmploymentConnector)
+                          (implicit request: OptionalDataRequest[AnyContent], ec: ExecutionContext) = {
+    
+    val journey = TradeDetails.toString
+    val tradeId = journey + "-" + request.user.nino
+    
+    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear, request.user.mtditid)
   }
 }

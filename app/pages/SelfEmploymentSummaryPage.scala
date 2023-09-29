@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
-)
+package pages
 
-@(taxYear: Int, tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm(messages("selfEmploymentSummary.title"))) {
-
-    <h1 class="govuk-heading-xl">@messages("selfEmploymentSummary.heading")</h1>
-
-     @govukSummaryList(tradingNames)
-
-     <p class="govuk-body">
-         @govukButton(ButtonViewModel(messages("site.continue"))
-           .asLink(nextRoute)
-         )
-     </p>
+case object SelfEmploymentSummaryPage extends Page {
+  override def toString: String = "selfEmploymentSummary"
 }

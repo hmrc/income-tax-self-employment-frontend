@@ -18,7 +18,7 @@
 
 @this(layout: Layout)
 
-@(taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, statusMsg: String)(implicit request: Request[_], messages: Messages)
 
 @selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
@@ -34,7 +34,7 @@
                 </a>
             </span>
             <a href="#">
-                <strong class="govuk-tag app-task-list__tag govuk-tag--grey">@messages("status.checkOurRecords")</strong>
+                <strong class="govuk-tag app-task-list__tag govuk-tag--grey">@messages(statusMsg)</strong>
             </a>
         </li>
     </ul>

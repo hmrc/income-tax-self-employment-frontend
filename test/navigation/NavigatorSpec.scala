@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.journeys.{routes => jRoutes}
 import controllers.standard.{routes => stRoutes}
+import controllers.journeys.tradeDetails.{routes => tdRoutes}
 import models._
 import pages._
 
@@ -37,7 +38,8 @@ class NavigatorSpec extends SpecBase {
 
       "must go from the Check Your Self Employment Details page to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          tdRoutes.SelfEmploymentSummaryController.onPageLoad(taxYear)
       }
 
       "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
