@@ -17,9 +17,16 @@
 package controllers
 
 import base.SpecBase
+import builders.UserBuilder.aNoddyUser
+import controllers.actions.AuthenticatedIdentifierAction.User
+import models.requests.TaggedTradeDetails
+import models.viewModels.TaggedTradeDetailsViewModel
+import models.viewModels.TaggedTradeDetailsViewModel.buildSummaryList
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.TaskListView
+
+import java.time.LocalDate
 
 class TaskListControllerSpec extends SpecBase {
 
@@ -30,12 +37,17 @@ class TaskListControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.TaskListController.onPageLoad.url)
+        val taxYear = LocalDate.now().getYear
+        val selfEmploymentList = Seq(
+          TaggedTradeDetails("BusinessId1", Some("TradingName1"), Some(true), Some(false), None, None),
+          TaggedTradeDetails("BusinessId2", None, None, None, None, None)
+        ).map(x => TaggedTradeDetailsViewModel(x.tradingName.getOrElse(""), x.businessId, buildSummaryList(x, taxYear)(messages(application))))
+        val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
         val result = route(application, request).value
         val view = application.injector.instanceOf[TaskListView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view(taxYear, aNoddyUser, selfEmploymentList)(request, messages(application)).toString
       }
     }
   }

@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.SelfEmploymentAbroadFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,16 +37,18 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
+  val isAgent = false
   val formProvider = new SelfEmploymentAbroadFormProvider()
-  val form: Form[Boolean] = formProvider(false)
+  val form: Form[Boolean] = formProvider(isAgent)
   val taxYear: Int = LocalDate.now().getYear
-  val nino = "AA112233A"
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad.url
+  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val detailsCompletedRoute: String = routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val detailsCompletedCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
 
@@ -64,7 +66,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[SelfEmploymentAbroadView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -82,7 +84,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(true), taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -99,7 +101,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(taskListCall)), //TODO replace with DetailsCompletedSection when created
+              bind[Navigator].toInstance(new FakeNavigator(detailsCompletedCall)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -112,7 +114,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual taskListCall.url //TODO replace with DetailsCompletedSection when created
+          redirectLocation(result).value mustEqual detailsCompletedCall.url
         }
       }
 
@@ -132,7 +134,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, nino, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 

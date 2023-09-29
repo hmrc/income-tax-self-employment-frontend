@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout
-)
+package models
 
-@()(implicit request: Request[_], messages: Messages)
+sealed trait Journey
 
-@layout(
-    pageTitle = titleNoForm(messages("unauthorised.title")),
-    timeout   = false
-) {
+case object TradeDetails extends Journey {
+  override def toString: String = "trade-details"
+}
 
-    <h1 class="govuk-heading-xl">@messages("unauthorised.title")</h1>
+case object Abroad extends Journey {
+  override def toString: String = "self-employment-abroad"
+}
 
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+case object Income extends Journey {
+  override def toString: String = "income"
 }

@@ -74,7 +74,7 @@ object TaggedTradeDetailsViewModel {
       case Some(true) => completedStatus
       case Some(false) => inProgressStatus
       case _ =>
-        if (prevStatus.exists(!_.equals(true))) cannotStartYetStatus else notStartedStatus
+        if (prevStatus.exists(!_)) cannotStartYetStatus else notStartedStatus
     }
   }
 

@@ -19,41 +19,35 @@ package models.requests
 import models.requests.BusinessData.{AccountingPeriod, LatencyDetails}
 import play.api.libs.json.{Json, OFormat}
 
-case class BusinessData(
-  businessId: String,
-  typeOfBusiness: String,
-  tradingName: Option[String],
-  yearOfMigration: Option[String],
-  accountingPeriods: Seq[AccountingPeriod],
-  firstAccountingPeriodStartDate: Option[String],
-  firstAccountingPeriodEndDate: Option[String],
-  latencyDetails: Option[LatencyDetails],
-  accountingType: Option[String],
-  commencementDate: Option[String],
-  cessationDate: Option[String],
-  businessAddressLineOne: String,
-  businessAddressLineTwo: Option[String],
-  businessAddressLineThree: Option[String],
-  businessAddressLineFour: Option[String],
-  businessAddressPostcode: Option[String],
-  businessAddressCountryCode: String
-)
-
-case class GetBusinesses(businessData: Seq[BusinessData])
-object GetBusinesses {
-  implicit val businessesFormat: OFormat[GetBusinesses] = Json.format[GetBusinesses]
-
-  }
+case class BusinessData(businessId: String,
+                        typeOfBusiness: String,
+                        tradingName: Option[String],
+                        yearOfMigration: Option[String],
+                        accountingPeriods: Seq[AccountingPeriod],
+                        firstAccountingPeriodStartDate: Option[String],
+                        firstAccountingPeriodEndDate: Option[String],
+                        latencyDetails: Option[LatencyDetails],
+                        accountingType: Option[String],
+                        commencementDate: Option[String],
+                        cessationDate: Option[String],
+                        businessAddressLineOne: String,
+                        businessAddressLineTwo: Option[String],
+                        businessAddressLineThree: Option[String],
+                        businessAddressLineFour: Option[String],
+                        businessAddressPostcode: Option[String],
+                        businessAddressCountryCode: String)
 
 object BusinessData {
   implicit val businessFormat: OFormat[BusinessData] = Json.format[BusinessData]
 
   case class AccountingPeriod(start: String, end: String)
+
   object AccountingPeriod {
     implicit val accountingPeriodFormat: OFormat[AccountingPeriod] = Json.format[AccountingPeriod]
   }
 
   case class LatencyDetails(latencyEndDate: String, taxYear1: String, latencyIndicator1: String, taxYear2: String, latencyIndicator2: String)
+
   object LatencyDetails {
     implicit val latencyDetailsFormat: OFormat[LatencyDetails] = Json.format[LatencyDetails]
   }

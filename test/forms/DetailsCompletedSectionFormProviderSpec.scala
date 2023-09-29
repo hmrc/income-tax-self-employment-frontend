@@ -16,32 +16,30 @@
 
 package forms
 
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.OptionFieldBehaviours
+import models.DetailsCompletedSection
 import play.api.data.FormError
 
-class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
+class DetailsCompletedSectionFormProviderSpec extends OptionFieldBehaviours {
 
-  def requiredKey(isAgent: Boolean) = s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}"
-
-  val invalidKey = "error.boolean"
-  val isAgent = false
-
-  def form(isAgent: Boolean) = new SelfEmploymentAbroadFormProvider()(isAgent)
+  val form = new DetailsCompletedSectionFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
+    val requiredKey = "detailsCompletedSection.error.required"
 
-    behave like booleanField(
-      form(isAgent),
+    behave like optionsField[DetailsCompletedSection](
+      form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      validValues  = DetailsCompletedSection.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(
-      form(isAgent),
+      form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey(false))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

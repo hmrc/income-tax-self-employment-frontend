@@ -16,5 +16,13 @@
 
 package generators
 
+import models._
+import org.scalacheck.{Arbitrary, Gen}
+
 trait ModelGenerators {
+
+  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
+    Arbitrary {
+      Gen.oneOf(DetailsCompletedSection.values.toSeq)
+    }
 }

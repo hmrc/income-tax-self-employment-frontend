@@ -28,7 +28,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, BodyParsers, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
-  
+
   import AuthenticatedIdentifierActionSpec._
 
   val app = applicationBuilder().build()
@@ -80,7 +80,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
         }
       }
     }
-    
+
     "return a redirect" - {
 
       "the nino enrolment is missing" - {
@@ -114,7 +114,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
       "the confidence level is below minimum" - {
         val block: IdentifierRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
         val mtditid = "1234567890"
-        
+
         val enrolFn = (optNino: Option[String]) => Enrolments(Set(individualIdEnrolment(mtditid), ninoEnrolment(optNino.get)))
         lazy val result: Future[Result] = futureResult(enrolFn(Some("AA123456A")), block, ConfidenceLevel.L50)
         "has a status of 303" in {
@@ -146,9 +146,9 @@ object IndividualAuthenticatedSpec {
     Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
     Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, "1234567890")), "Activated"))
   )
-  
+
   val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("MTDITID" -> "1234567890")
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
-  
+
 
 }
