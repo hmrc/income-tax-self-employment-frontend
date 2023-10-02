@@ -21,8 +21,8 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryDetailsCompletedSection: Arbitrary[DetailsCompletedSection] =
+  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
     Arbitrary {
-      Gen.oneOf(DetailsCompletedSection.values.toSeq)
+      Gen.oneOf(CompletedSectionState.values.toSeq)
     }
 }

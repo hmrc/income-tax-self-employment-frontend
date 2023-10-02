@@ -20,14 +20,13 @@ import com.google.inject.Inject
 import connectors.SelfEmploymentConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.TradeDetails
-import models.errors.HttpError
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject()(override val messagesApi: MessagesApi,
                                    identify: IdentifierAction,

@@ -24,40 +24,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DetailsCompletedSectionSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "DetailsCompletedSection" - {
+  "SectionCompletedState" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(DetailsCompletedSection.values.toSeq)
+      val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
       forAll(gen) {
-        detailsCompletedSection =>
+        sectionCompletedState =>
 
-          JsString(detailsCompletedSection.toString).validate[DetailsCompletedSection].asOpt.value mustEqual detailsCompletedSection
+          JsString(sectionCompletedState.toString).validate[CompletedSectionState].asOpt.value mustEqual sectionCompletedState
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!DetailsCompletedSection.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!CompletedSectionState.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[DetailsCompletedSection] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[CompletedSectionState] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(DetailsCompletedSection.values.toSeq)
+      val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
       forAll(gen) {
-        detailsCompletedSection =>
+        sectionCompletedState =>
 
-          Json.toJson(detailsCompletedSection) mustEqual JsString(detailsCompletedSection.toString)
+          Json.toJson(sectionCompletedState) mustEqual JsString(sectionCompletedState.toString)
       }
     }
   }

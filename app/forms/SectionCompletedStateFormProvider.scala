@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.DetailsCompletedSection
+import models.CompletedSectionState
 
-class DetailsCompletedSectionFormProvider @Inject() extends Mappings {
+class SectionCompletedStateFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DetailsCompletedSection] =
+  def apply(): Form[CompletedSectionState] =
     Form(
-      "value" -> enumerable[DetailsCompletedSection]("detailsCompletedSection.error.required")
+      "value" -> enumerable[CompletedSectionState]("sectionCompletedState.error.required")
     )
 }

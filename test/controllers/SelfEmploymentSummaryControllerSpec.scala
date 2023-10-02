@@ -17,22 +17,22 @@
 package controllers
 
 import base.SpecBase
-import controllers.journeys.tradeDetails.routes
-import connectors.SelfEmploymentConnector
 import builders.BusinessDataBuilder.{aBusinessDataNoneResponse, aBusinessDataResponse}
+import connectors.SelfEmploymentConnector
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
-import models.{NormalMode, TradeDetails, UserAnswers}
+import controllers.journeys.tradeDetails.routes
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.when
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
-import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
-import play.api.inject.bind
+import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,8 +50,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
     "onPageLoad" - {
 
-      val nextRoute = "/update-and-submit-income-tax-return/self-employment" +
-        controllers.journeys.routes.DetailsCompletedSectionController.onPageLoad(taxYear, "trade-details", NormalMode).url
+      val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, "trade-details", NormalMode).url
       
       "must return OK and the correct view when there are no self-employments" in {
 

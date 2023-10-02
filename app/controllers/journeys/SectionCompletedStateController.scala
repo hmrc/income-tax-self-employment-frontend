@@ -18,37 +18,37 @@ package controllers.journeys
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
-import forms.DetailsCompletedSectionFormProvider
-import models.DetailsCompletedSection.{No, Yes}
-import models.{DetailsCompletedSection, Mode, UserAnswers}
+import forms.SectionCompletedStateFormProvider
+import models.CompletedSectionState.{No, Yes}
+import models.{CompletedSectionState, Mode, UserAnswers}
 import navigation.Navigator
-import pages.DetailsCompletedSectionPage
+import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.DetailsCompletedSectionView
+import views.html.journeys.SectionCompletedStateView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DetailsCompletedSectionController @Inject()(override val messagesApi: MessagesApi,
-                                                  selfEmploymentConnector: SelfEmploymentConnector,
-                                                  navigator: Navigator,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  formProvider: DetailsCompletedSectionFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: DetailsCompletedSectionView)
-                                                 (implicit val ec: ExecutionContext
+class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
+                                                selfEmploymentConnector: SelfEmploymentConnector,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                formProvider: SectionCompletedStateFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: SectionCompletedStateView)
+                                               (implicit val ec: ExecutionContext
                                                  ) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[DetailsCompletedSection] = formProvider()
+  val form: Form[CompletedSectionState] = formProvider()
 
   def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
 
-      val businessId = journey + "-" + request.user.nino  //TODO use the actual businessId as it is unique to the business
+      val businessId = journey + "-" + request.user.nino  //TODO use the actual businessId as it is unique to the business, this can be a value reteived into the userAnswers
       val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
         case Right(Some(true)) => form.fill(Yes)
         case Right(Some(false)) => form.fill(No)
@@ -72,7 +72,7 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           val businessId = journey + "-" + request.user.nino
           selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, taxYear, UserAnswers(request.userId)))
+            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, taxYear, UserAnswers(request.userId)))
             case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
           }
         }

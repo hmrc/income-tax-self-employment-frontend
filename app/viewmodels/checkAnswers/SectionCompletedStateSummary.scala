@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.journeys.routes
 import models.{CheckMode, UserAnswers}
-import pages.DetailsCompletedSectionPage
+import pages.SectionCompletedStatePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,25 +26,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DetailsCompletedSectionSummary  {
+object SectionCompletedStateSummary  {
 
   def row(answers: UserAnswers, taxYear: Int, nino: String, journey: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DetailsCompletedSectionPage).map {
+    answers.get(SectionCompletedStatePage).map {
       answer =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"detailsCompletedSection.$answer"))
+            HtmlFormat.escape(messages(s"sectionCompletedState.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = "detailsCompletedSection.checkYourAnswersLabel",
+          key     = "sectionCompletedState.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change",
-              routes.DetailsCompletedSectionController.onPageLoad(taxYear, journey, CheckMode).url)
-              .withVisuallyHiddenText(messages("detailsCompletedSection.change.hidden"))
+              routes.SectionCompletedStateController.onPageLoad(taxYear, journey, CheckMode).url)
+              .withVisuallyHiddenText(messages("sectionCompletedState.change.hidden"))
           )
         )
     }

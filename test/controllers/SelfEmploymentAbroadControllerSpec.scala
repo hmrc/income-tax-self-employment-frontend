@@ -48,8 +48,8 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val detailsCompletedRoute: String = controllers.journeys.routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
-  lazy val detailsCompletedCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val sectionCompletedStateRoute: String = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
 
@@ -102,7 +102,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(detailsCompletedCall)),
+              bind[Navigator].toInstance(new FakeNavigator(sectionCompletedStateCall)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -115,7 +115,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual detailsCompletedCall.url
+          redirectLocation(result).value mustEqual sectionCompletedStateCall.url
         }
       }
 

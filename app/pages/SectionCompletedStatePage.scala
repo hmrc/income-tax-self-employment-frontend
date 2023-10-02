@@ -16,12 +16,12 @@
 
 package pages
 
-import models.DetailsCompletedSection
+import models.CompletedSectionState
 import play.api.libs.json.JsPath
 
-case object DetailsCompletedSectionPage extends QuestionPage[DetailsCompletedSection] {
+case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "detailsCompletedSection"
+  override def toString: String = "sectionCompletedState"
 }

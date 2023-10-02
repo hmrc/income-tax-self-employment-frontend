@@ -19,9 +19,9 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.journeys.routes
-import forms.DetailsCompletedSectionFormProvider
+import forms.SectionCompletedStateFormProvider
 import models.errors.{HttpError, HttpErrorBody}
-import models.{DetailsCompletedSection, NormalMode}
+import models.{CompletedSectionState, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
@@ -32,12 +32,12 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.journeys.DetailsCompletedSectionView
+import views.html.journeys.SectionCompletedStateView
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
+class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
   val taxYear: Int = LocalDate.now().getYear
   val nino = "AA112233A"
@@ -47,17 +47,17 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
   val mockConnector = mock[SelfEmploymentConnector]
   implicit val ec: ExecutionContext = ExecutionContext.global
-  val formProvider = new DetailsCompletedSectionFormProvider()
-  val form: Form[DetailsCompletedSection] = formProvider()
+  val formProvider = new SectionCompletedStateFormProvider()
+  val form: Form[CompletedSectionState] = formProvider()
 
-  lazy val detailsCompletedSectionRoute: String = routes.DetailsCompletedSectionController.onPageLoad(
+  lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(
     taxYear, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
   lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
 
-  "DetailsCompletedSection Controller" - {
+  "SectionCompletedStateController" - {
 
     "onPageLoad" - {
 
@@ -70,9 +70,9 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
           when(mockConnector.getJourneyState(any, meq(journey), meq(taxYear), any)(any, any)) thenReturn Future(Right(None))
 
-          val request = FakeRequest(GET, detailsCompletedSectionRoute)
+          val request = FakeRequest(GET, sectionCompletedStateRoute)
 
-          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+          val view = application.injector.instanceOf[SectionCompletedStateView]
 
           val result = route(application, request).value
 
@@ -89,15 +89,15 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           when(mockConnector.getJourneyState(any, meq(journey), meq(taxYear), any)(any, any)) thenReturn Future(Right(Some(true)))
 
-          val request = FakeRequest(GET, detailsCompletedSectionRoute)
+          val request = FakeRequest(GET, sectionCompletedStateRoute)
 
-          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+          val view = application.injector.instanceOf[SectionCompletedStateView]
 
           val result = route(application, request).value
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
-            form.fill(DetailsCompletedSection.values.head), taxYear, journey, NormalMode)(request, messages(application)).toString
+            form.fill(CompletedSectionState.values.head), taxYear, journey, NormalMode)(request, messages(application)).toString
         }
       }
     }
@@ -114,8 +114,8 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, detailsCompletedSectionRoute)
-              .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
+            FakeRequest(POST, sectionCompletedStateRoute)
+              .withFormUrlEncodedBody(("value", CompletedSectionState.values.head.toString))
 
           val result = route(application, request).value
 
@@ -134,12 +134,12 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, detailsCompletedSectionRoute)
+            FakeRequest(POST, sectionCompletedStateRoute)
               .withFormUrlEncodedBody(("value", "invalid value"))
 
           val boundForm = form.bind(Map("value" -> "invalid value"))
 
-          val view = application.injector.instanceOf[DetailsCompletedSectionView]
+          val view = application.injector.instanceOf[SectionCompletedStateView]
 
           val result = route(application, request).value
 
@@ -163,8 +163,8 @@ class DetailsCompletedSectionControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          val request = FakeRequest(POST, detailsCompletedSectionRoute)
-            .withFormUrlEncodedBody(("value", DetailsCompletedSection.values.head.toString))
+          val request = FakeRequest(POST, sectionCompletedStateRoute)
+            .withFormUrlEncodedBody(("value", CompletedSectionState.values.head.toString))
 
           val result = route(application, request).value
 

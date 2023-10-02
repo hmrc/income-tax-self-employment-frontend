@@ -44,12 +44,13 @@ class NavigatorSpec extends SpecBase {
 
       "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
       }
 
       "must go from a Details Completed page to the Task List page" in {
 
-        navigator.nextPage(DetailsCompletedSectionPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
+        navigator.nextPage(SectionCompletedStatePage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
       }
 
       "must go from a page that doesn't exist in the route map to Index" in {

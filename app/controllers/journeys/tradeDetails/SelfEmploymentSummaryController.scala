@@ -20,10 +20,10 @@ import connectors.SelfEmploymentConnector
 import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
-import models.{NormalMode, UserAnswers}
 import models.requests.OptionalDataRequest
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
+import pages.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
