@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package service
+package services
 
 import connectors.SelfEmploymentConnector
-import models.errors.HttpError
-import models.requests.TaggedTradeDetails
+import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import play.api.Logging
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
 class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector) extends Logging {
 
-  def getCompletedTradeDetailsMock(nino: String, taxYear: Int, mtditid: String): Future[Either[HttpError, Seq[TaggedTradeDetails]]] = {
-    connector.getTradesWithStatusMock(nino, taxYear, mtditid)
+  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)
+                              (implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
+//        connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
+    connector.getCompletedTradesWithStatusMock(nino, taxYear, mtditid)
   }
 
 }

@@ -46,7 +46,7 @@
 
     @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
         <h2 class="app-task-list__section">
-            @{s"${selfEmployment.tradingName} - ${messages("taskList.title")}"}
+            @{s"${selfEmployment.tradingName}${messages("taskList.title")}"}
         </h2>
 
         @govukSummaryList(selfEmployment.statusList)

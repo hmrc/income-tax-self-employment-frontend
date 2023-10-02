@@ -17,12 +17,12 @@
 package connectors.httpParser
 
 import models.errors.HttpError
-import models.requests.TaggedTradeDetails
+import models.requests.TradesJourneyStatuses
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetTradesStatusHttpParser extends HttpParser {
-  type GetTradesStatusResponse = Either[HttpError, Seq[TaggedTradeDetails]]
+  type GetTradesStatusResponse = Either[HttpError, Seq[TradesJourneyStatuses]]
 
   override val parserName: String = "GetTradesStatusHttpParser"
 
@@ -30,7 +30,7 @@ object GetTradesStatusHttpParser extends HttpParser {
 
     override def read(method: String, url: String, response: HttpResponse): GetTradesStatusResponse =
       response.status match {
-        case OK => response.json.validate[Seq[TaggedTradeDetails]].fold[GetTradesStatusResponse](
+        case OK => response.json.validate[Seq[TradesJourneyStatuses]].fold[GetTradesStatusResponse](
           _ => nonModelValidatingJsonFromAPI, parsedModel => Right(parsedModel)
         )
         case _ => pagerDutyError(response)

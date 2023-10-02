@@ -40,27 +40,27 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
                                                view: SelfEmploymentAbroadView)
                                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode = NormalMode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
+      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
         case None => formProvider(request.user.isAgent)
         case Some(value) => formProvider(request.user.isAgent).fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, request.user.isAgent, mode))
+      Ok(view(preparedForm, taxYear, businessId, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       formProvider(request.user.isAgent).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.isAgent, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.user.isAgent, mode))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId)))
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =

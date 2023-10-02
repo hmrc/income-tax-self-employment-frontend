@@ -16,7 +16,27 @@
 
 package models
 
+import play.api.libs.json._
+
 sealed trait Journey
+
+object Journey {
+
+  val journeyReads: Reads[Journey] = Reads[Journey] {
+    case JsString("trade-details") => JsSuccess(TradeDetails)
+    case JsString("self-employment-abroad") => JsSuccess(Abroad)
+    case JsString("income") => JsSuccess(Income)
+    case JsString("expenses") => JsSuccess(Expenses)
+    case JsString("national-insurance") => JsSuccess(NationalInsurance)
+    case _ => JsError("Parsing error")
+  }
+
+  val journeyWrites: Writes[Journey] = Writes[Journey] {
+    case journey @ _ => JsString(journey.toString)
+  }
+
+  implicit val journeyFormat: Format[Journey] = Format(journeyReads, journeyWrites)
+}
 
 case object TradeDetails extends Journey {
   override def toString: String = "trade-details"
@@ -28,4 +48,12 @@ case object Abroad extends Journey {
 
 case object Income extends Journey {
   override def toString: String = "income"
+}
+
+case object Expenses extends Journey {
+  override def toString: String = "expenses"
+}
+
+case object NationalInsurance extends Journey {
+  override def toString: String = "national-insurance"
 }

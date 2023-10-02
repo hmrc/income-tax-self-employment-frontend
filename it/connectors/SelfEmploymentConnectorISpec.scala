@@ -19,13 +19,15 @@ package connectors
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
+import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTaggedTradeDetailsRequestString
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.TradeDetails
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
-import models.requests.BusinessData
+import models.requests.{BusinessData, TradesJourneyStatuses}
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -63,20 +65,10 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
 
     val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
     behave like journeyStateRequestReturnsNoContent(
       () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
       () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).saveJourneyState(
         businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc)))
-  }
-
-  ".saveJourneyState" should {
-
-    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
-
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
 
     behave like journeyStateRequestReturnsError(
       () => stubPutWithResponseBody(saveJourneyState,
@@ -107,6 +99,17 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
       () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getBusinesses(nino, mtditid)(hc))
     )
     behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+  }
+
+
+  ".getCompletedTradesWithStatuses" should {
+
+    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/trade-statuses/$nino/$taxYear"
+
+    behave like tradesWithStatusesRequestReturnsOk(getCompletedTradesWithStatuses,
+      () => await(new SelfEmploymentConnector(httpClient, appConfig(internalHost)).getCompletedTradesWithStatuses(nino, taxYear, mtditid)(hc))
+    )
+    behave like tradesWithStatusesRequestReturnsError(getCompletedTradesWithStatuses, () => underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid))
   }
 
   def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
@@ -148,6 +151,37 @@ class SelfEmploymentConnectorISpec extends WiremockSpec {
   }
 
   def businessRequestReturnsError(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit =
+    for ((errorStatus, code, reason) <- Seq(
+      (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
+      (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),
+      (INTERNAL_SERVER_ERROR, "SERVER_ERROR", "IF is currently experiencing problems that require live service intervention."),
+      (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", "Dependent systems are currently not responding."))) {
+
+      s"return a $errorStatus error when the connector returns an error" in {
+        stubGetWithResponseBody(getUrl, errorStatus,
+          Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
+        val result = await(block())
+        result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
+      }
+    }
+
+  def tradesWithStatusesRequestReturnsOk(getUrl: String, block: () => GetTradesStatusResponse): Unit = {
+    "return a 200 response and a sequence of TaggedTradeDetails models" in {
+      val expectedResponseBody = aSequenceTaggedTradeDetailsRequestString
+      val expectedResult = Json.parse(expectedResponseBody).as[Seq[TradesJourneyStatuses]]
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
+      val result = block()
+      result mustBe Right(expectedResult)
+    }
+    "return a 200 response but produce a json non-validation error" in {
+      val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
+      val result = block()
+      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+    }
+  }
+
+  def tradesWithStatusesRequestReturnsError(getUrl: String, block: () => Future[GetTradesStatusResponse]): Unit =
     for ((errorStatus, code, reason) <- Seq(
       (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
       (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),

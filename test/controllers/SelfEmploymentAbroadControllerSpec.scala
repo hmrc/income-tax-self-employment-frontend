@@ -41,8 +41,9 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new SelfEmploymentAbroadFormProvider()
   val form: Form[Boolean] = formProvider(isAgent)
   val taxYear: Int = LocalDate.now().getYear
+  val businessId = "businessId"
 
-  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
+  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
   lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
@@ -66,13 +67,13 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[SelfEmploymentAbroadView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly for a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true, Some(businessId)).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +85,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), taxYear, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(true), taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -134,7 +135,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
         }
       }
 

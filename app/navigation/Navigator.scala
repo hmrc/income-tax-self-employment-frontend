@@ -16,7 +16,7 @@
 
 package navigation
 
-import controllers.routes
+import controllers.routes._
 import models._
 import pages._
 import play.api.mvc.Call
@@ -27,14 +27,14 @@ import javax.inject.{Inject, Singleton}
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    case SelfEmploymentAbroadPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
-    case DetailsCompletedSectionPage => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
-    case _ => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
+    case CheckYourSelfEmploymentDetailsPage => taxYear => _ => DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode) //TODO direct to CYA page when created
+    case SelfEmploymentAbroadPage => taxYear => _ => DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to CYA page when created
+    case DetailsCompletedSectionPage => taxYear => _ => TaskListController.onPageLoad(taxYear)
+    case _ => taxYear => _ => TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case _ => taxYear => _ => routes.CheckYourAnswersController.onPageLoad
+    case _ => taxYear => _ => CheckYourAnswersController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {

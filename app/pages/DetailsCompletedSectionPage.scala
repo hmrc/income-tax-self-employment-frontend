@@ -21,7 +21,8 @@ import play.api.libs.json.JsPath
 
 case object DetailsCompletedSectionPage extends QuestionPage[DetailsCompletedSection] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path(businessId: Option[String] = None): JsPath =
+    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
   override def toString: String = "detailsCompletedSection"
 }

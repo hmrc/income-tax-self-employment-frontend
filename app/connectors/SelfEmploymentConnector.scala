@@ -20,7 +20,9 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import models.requests.TaggedTradeDetails
+import models._
+import models.requests.TradesJourneyStatuses
+import models.requests.TradesJourneyStatuses.JourneyStatus
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -58,17 +60,22 @@ class SelfEmploymentConnector @Inject()(http: HttpClient, appConfig: FrontendApp
       JourneyStateHttpWrites, JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getTradesWithStatus(nino: String, taxYear: Int, mtditid: String)
-                         (implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
+  def getCompletedTradesWithStatuses(nino: String, taxYear: Int, mtditid: String)
+                                    (implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/trades-with-statuses/$nino/$taxYear/"
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/trade-statuses/$nino/$taxYear"
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getTradesWithStatusMock(nino: String, taxYear: Int, mtditid: String): Future[GetTradesStatusResponse] = {
+  def getCompletedTradesWithStatusMock(nino: String, taxYear: Int, mtditid: String): Future[GetTradesStatusResponse] = {
     Future(Right(Seq(
-      TaggedTradeDetails("BusinessId1", Some("TradingName1"), Some(true), Some(false), None, None),
-      TaggedTradeDetails("BusinessId2", None, None, None, None, None)
+      TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
+        JourneyStatus(Abroad, Some(true)),
+        JourneyStatus(Income, Some(false)),
+        JourneyStatus(Expenses, None),
+        JourneyStatus(NationalInsurance, None)
+      )),
+      TradesJourneyStatuses("BusinessId2", None, Seq.empty)
     )))
   }
 
