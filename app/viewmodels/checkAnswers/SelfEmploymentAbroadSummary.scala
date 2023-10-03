@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import controllers.routes
+import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.{CheckMode, UserAnswers}
 import pages.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SelfEmploymentAbroadSummary  {
+object SelfEmploymentAbroadSummary {
 
   def row(taxYear: Int, nino: String, businessId: String, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SelfEmploymentAbroadPage).map {
@@ -33,10 +33,10 @@ object SelfEmploymentAbroadSummary  {
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "selfEmploymentAbroad.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "selfEmploymentAbroad.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
+            ActionItemViewModel("site.change", SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
           )
         )

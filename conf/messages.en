@@ -93,8 +93,10 @@ checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Di
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
-detailsCompletedSection.title = Have you completed this section?
-detailsCompletedSection.yes = Yes, I’ve completed this section
-detailsCompletedSection.no = No, I’ll come back to it later
-detailsCompletedSection.error.required = Select yes if you’ve completed this section
-detailsCompletedSection.change.hidden = DetailsCompletedSection
+selfEmploymentSummary.title = Self-employment
+
+sectionCompletedState.title = Have you completed this section?
+sectionCompletedState.yes = Yes, I’ve completed this section
+sectionCompletedState.no = No, I’ll come back to it later
+sectionCompletedState.error.required = Select yes if you’ve completed this section
+sectionCompletedState.change.hidden = SectionCompletedState

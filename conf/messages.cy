@@ -62,8 +62,8 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-detailsCompletedSection.title = Have you completed this section?
-detailsCompletedSection.yes = Yes, I’ve completed this section
-detailsCompletedSection.no = No, I’ll come back to it later
-detailsCompletedSection.error.required = Select yes if you’ve completed this section
-detailsCompletedSection.change.hidden = DetailsCompletedSection
+sectionCompletedState.title = Have you completed this section?
+sectionCompletedState.yes = Yes, I’ve completed this section
+sectionCompletedState.no = No, I’ll come back to it later
+sectionCompletedState.error.required = Select yes if you’ve completed this section
+sectionCompletedState.change.hidden = SectionCompletedState

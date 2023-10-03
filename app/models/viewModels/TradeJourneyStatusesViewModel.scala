@@ -16,7 +16,7 @@
 
 package models.viewModels
 
-import controllers.routes._
+import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages

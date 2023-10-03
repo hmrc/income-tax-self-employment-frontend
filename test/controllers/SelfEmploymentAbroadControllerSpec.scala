@@ -30,7 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SelfEmploymentAbroadView
+import views.html.journeys.abroad.SelfEmploymentAbroadView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -43,13 +43,17 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val taxYear: Int = LocalDate.now().getYear
   val businessId = "businessId"
 
-  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
+  lazy val selfEmploymentAbroadRoute: String =
+    controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val taskListRoute: String =
+    controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String = routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryRoute: String =
+    controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val detailsCompletedRoute: String = routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
-  lazy val detailsCompletedCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val sectionCompletedStateRoute: String =
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
 
@@ -102,7 +106,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(detailsCompletedCall)),
+              bind[Navigator].toInstance(new FakeNavigator(sectionCompletedStateCall)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -115,7 +119,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual detailsCompletedCall.url
+          redirectLocation(result).value mustEqual sectionCompletedStateCall.url
         }
       }
 

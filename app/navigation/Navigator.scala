@@ -16,7 +16,9 @@
 
 package navigation
 
-import controllers.routes._
+import controllers.journeys.routes._
+import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
+import controllers.standard.routes._
 import models._
 import pages._
 import play.api.mvc.Call
@@ -27,13 +29,19 @@ import javax.inject.{Inject, Singleton}
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => (Int, Option[String]) => Call = {
-    case CheckYourSelfEmploymentDetailsPage => _ => (taxYear, businessId) =>
-    DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode) //TODO direct to reviewSummary page when created
+    case CheckYourSelfEmploymentDetailsPage => _ =>
+      (taxYear, businessId) =>
+        SelfEmploymentSummaryController.onPageLoad(taxYear)
 
-    case SelfEmploymentAbroadPage => _ => (taxYear, businessId) =>
-      DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to SelfEmploymentAbroad CYA page when created
+    case SelfEmploymentSummaryPage => _ =>
+      (taxYear, businessId) =>
+        SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
 
-    case DetailsCompletedSectionPage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
+    case SelfEmploymentAbroadPage => _ =>
+      (taxYear, businessId) =>
+        SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to SelfEmploymentAbroad CYA page when created
+
+    case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
     case _ => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
   }
 

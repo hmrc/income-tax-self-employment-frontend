@@ -42,9 +42,9 @@
             hmrcTimeoutDialog(TimeoutDialog(
                 timeout             = Some(appConfig.timeout),
                 countdown           = Some(appConfig.countdown),
-                keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
+                keepAliveUrl        = Some(controllers.standard.routes.KeepAliveController.keepAlive.url),
                 keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
+                signOutUrl          = Some(controllers.standard.auth.routes.AuthController.signOut.url),
                 signOutButtonText   = Some(messages("timeout.signOut")),
                 title               = Some(messages("timeout.title")),
                 message             = Some(messages("timeout.message"))
@@ -64,8 +64,8 @@
     @if(appConfig.languageTranslationEnabled) {
         @hmrcLanguageSelect(LanguageSelect(
             if (messages.lang.code == "cy") Cy else En,
-            (En, routes.LanguageSwitchController.switchToLanguage("en").url),
-            (Cy, routes.LanguageSwitchController.switchToLanguage("cy").url)
+            (En, controllers.standard.routes.LanguageSwitchController.switchToLanguage("en").url),
+            (Cy, controllers.standard.routes.LanguageSwitchController.switchToLanguage("cy").url)
         ))
     }
 
@@ -86,8 +86,8 @@
     pageTitle   = Some(pageTitle),
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(routes.IndexController.onPageLoad.url),
-        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+        serviceUrl  = Some(controllers.standard.routes.IndexController.onPageLoad.url),
+        signOutUrl  = if(showSignOut) Some(controllers.standard.auth.routes.AuthController.signOut.url) else None,
         phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
     )),
     beforeContentBlock = Some(beforeContent),

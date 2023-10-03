@@ -16,5 +16,7 @@
 
 package models.requests
 
+import models.mdtp.BusinessData
+
 case class BusinessDataWithStatus(businessData: BusinessData,
                                   isCompleted: Boolean)
