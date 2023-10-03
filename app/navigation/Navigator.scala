@@ -19,7 +19,6 @@ package navigation
 import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
-import controllers.routes
 import pages._
 import models._
 
@@ -27,14 +26,22 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    case SelfEmploymentAbroadPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
-    case DetailsCompletedSectionPage => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
-    case _ => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
+    case CheckYourSelfEmploymentDetailsPage => taxYear => _ =>
+      controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear)
+
+    case SelfEmploymentSummaryPage => taxYear => _ =>
+      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+    
+    case SelfEmploymentAbroadPage => taxYear => _ =>
+      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+    
+    case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+    
+    case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case _ => taxYear => _ => routes.CheckYourAnswersController.onPageLoad
+    case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {

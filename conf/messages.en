@@ -15,6 +15,8 @@ site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
 
 status.checkOurRecords = CHECK OUR RECORDS
+status.processing = IN PROGRESS
+status.complete = COMPLETED
 
 date.day = Day
 date.month = Month
@@ -41,22 +43,28 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 
 index.title = income-tax-self-employment-frontend
+index.heading = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.title = Self-employment
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
+checkYourAnswers.heading = Check Your Answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
+journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
+journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 signedOut.title = For your security, we signed you out
+signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
+unauthorised.heading = You can’t access this service with this account
 
 selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
 selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
@@ -83,8 +91,11 @@ checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Di
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
-detailsCompletedSection.title = Have you completed this section?
-detailsCompletedSection.yes = Yes, I’ve completed this section
-detailsCompletedSection.no = No, I’ll come back to it later
-detailsCompletedSection.error.required = Select yes if you’ve completed this section
-detailsCompletedSection.change.hidden = DetailsCompletedSection
+selfEmploymentSummary.title = Self-employment
+selfEmploymentSummary.heading = Self-employment
+
+sectionCompletedState.title = Have you completed this section?
+sectionCompletedState.yes = Yes, I’ve completed this section
+sectionCompletedState.no = No, I’ll come back to it later
+sectionCompletedState.error.required = Select yes if you’ve completed this section
+sectionCompletedState.change.hidden = SectionCompletedState

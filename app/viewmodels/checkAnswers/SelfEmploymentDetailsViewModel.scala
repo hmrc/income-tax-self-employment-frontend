@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import models.requests.BusinessData
+import models.mdtp.BusinessData
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._

@@ -19,9 +19,10 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
+import controllers.journeys.tradeDetails.routes
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.requests.BusinessData
+import models.mdtp.BusinessData
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -31,7 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
-import views.html.CheckYourSelfEmploymentDetailsView
+import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,6 +71,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val businessId: String = "SJPR05893938418"
+          val nextRoute = routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
           when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
@@ -80,7 +82,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val view = application.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual", nextRoute)(request, messages(application)).toString
         }
       }
 
@@ -100,7 +102,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
