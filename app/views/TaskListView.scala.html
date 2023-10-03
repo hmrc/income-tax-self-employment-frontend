@@ -17,14 +17,14 @@
 @import templates.Layout
 @import models.requests.BusinessData
 @import controllers.actions.AuthenticatedIdentifierAction.User
-@import models.viewModels.TaggedTradeDetailsViewModel
+@import models.viewModels.TradeJourneyStatusesViewModel
 @import models.Mode
 
 @this(layout: Layout,
         govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: Int, user: User, selfEmploymentList: Seq[TaggedTradeDetailsViewModel])(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, user: User, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 @{val example = "example"}
 @layout(pageTitle = titleNoForm(messages("taskList.title"))) {
 
