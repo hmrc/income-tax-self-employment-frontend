@@ -38,3 +38,5 @@ GET        /:taxYear/details/completed-section/:journey          controllers.jou
 POST       /:taxYear/details/completed-section/:journey          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, journey: String, mode: Mode = NormalMode)
 GET        /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, journey: String, mode: Mode = CheckMode)
 POST       /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, journey: String, mode: Mode = CheckMode)
+
+GET        /selfEmploymentAbroadCYA                       controllers.SelfEmploymentAbroadCYAController.onPageLoad()

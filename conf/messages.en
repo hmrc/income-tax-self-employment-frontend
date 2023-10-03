@@ -99,3 +99,6 @@ sectionCompletedState.yes = Yes, I’ve completed this section
 sectionCompletedState.no = No, I’ll come back to it later
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 sectionCompletedState.change.hidden = SectionCompletedState
+
+selfEmploymentAbroadCYA.title = selfEmploymentAbroadCYA
+selfEmploymentAbroadCYA.heading = selfEmploymentAbroadCYA
