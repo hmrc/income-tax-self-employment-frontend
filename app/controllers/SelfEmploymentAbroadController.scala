@@ -64,7 +64,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
-              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, taxYear, updatedAnswers)
+              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear)
               else routes.JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }

@@ -26,20 +26,24 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Navigator @Inject()() {
 
-  private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ => DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode) //TODO direct to CYA page when created
-    case SelfEmploymentAbroadPage => taxYear => _ => DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to CYA page when created
-    case DetailsCompletedSectionPage => taxYear => _ => TaskListController.onPageLoad(taxYear)
-    case _ => taxYear => _ => TaskListController.onPageLoad(taxYear)
+  private val normalRoutes: Page => UserAnswers => (Int, Option[String]) => Call = {
+    case CheckYourSelfEmploymentDetailsPage => _ => (taxYear, businessId) =>
+    DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode) //TODO direct to reviewSummary page when created
+
+    case SelfEmploymentAbroadPage => _ => (taxYear, businessId) =>
+      DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to SelfEmploymentAbroad CYA page when created
+
+    case DetailsCompletedSectionPage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
+    case _ => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
     case _ => taxYear => _ => CheckYourAnswersController.onPageLoad
   }
 
-  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: Option[String] = None): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(taxYear)(userAnswers)
+      normalRoutes(page)(userAnswers)(taxYear, businessId)
     case CheckMode =>
       checkRouteMap(page)(taxYear)(userAnswers)
   }

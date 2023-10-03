@@ -72,7 +72,7 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
           val businessId = journey + "-" + request.user.nino
           selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, taxYear, UserAnswers(request.userId)))
+            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId), taxYear))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
           }
         }
