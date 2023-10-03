@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.abroad
 
 import base.SpecBase
 import play.api.test.FakeRequest
@@ -30,7 +30,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.SelfEmploymentAbroadCYAController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad().url)
 
         val result = route(application, request).value
 
