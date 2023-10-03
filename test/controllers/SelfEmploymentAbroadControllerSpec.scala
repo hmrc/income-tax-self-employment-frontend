@@ -17,143 +17,153 @@
 package controllers
 
 import base.SpecBase
+import controllers.journeys.abroad.routes
 import forms.SelfEmploymentAbroadFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SelfEmploymentAbroadPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SelfEmploymentAbroadView
+import views.html.journeys.abroad.SelfEmploymentAbroadView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
+  val isAgent = false
   val formProvider = new SelfEmploymentAbroadFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider(isAgent)
+  val taxYear: Int = LocalDate.now().getYear
 
-  lazy val selfEmploymentAbroadRoute = routes.SelfEmploymentAbroadController.onPageLoad(NormalMode).url
+  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
+  lazy val taskListRoute: String = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListCall: Call = Call("GET", taskListRoute)
+  lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val sectionCompletedStateRoute: String = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, selfEmploymentAbroadRoute)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request = FakeRequest(GET, selfEmploymentAbroadRoute)
 
-        val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, taxYear, isAgent, NormalMode)(request, messages(application)).toString
+        }
       }
+
+      "must populate the view correctly for a GET when the question has previously been answered" in {
+
+        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, selfEmploymentAbroadRoute)
+
+          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(true), taxYear, isAgent, NormalMode)(request, messages(application)).toString
+        }
+      }
+
     }
 
-    "must return OK and the correct view for a GET if no existing data is found" in {
+    "onSubmit" - {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      "must redirect to the next page when valid data is submitted" in {
 
-      running(application) {
-        val request = FakeRequest(GET, selfEmploymentAbroadRoute)
+        val mockSessionRepository = mock[SessionRepository]
 
-        val result = route(application, request).value
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(sectionCompletedStateCall)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        running(application) {
+          val request =
+            FakeRequest(POST, selfEmploymentAbroadRoute)
+              .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual sectionCompletedStateCall.url
+        }
       }
-    }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        running(application) {
+          val request =
+            FakeRequest(POST, selfEmploymentAbroadRoute)
+              .withFormUrlEncodedBody(("value", "OhDear"))
 
-      running(application) {
-        val request = FakeRequest(GET, selfEmploymentAbroadRoute)
+          val boundForm = form.bind(Map("value" -> "OhDear"))
 
-        val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(request, messages(application)).toString
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, taxYear, isAgent, NormalMode)(request, messages(application)).toString
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the Journey Recovery page when session repository fails to set new data" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+        val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(false)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, selfEmploymentAbroadRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        running(application) {
+          val request =
+            FakeRequest(POST, selfEmploymentAbroadRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual journeyRecoveryCall.url
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, selfEmploymentAbroadRoute)
-            .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[SelfEmploymentAbroadView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to the next page for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, selfEmploymentAbroadRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.IndexController.onPageLoad.url
-      }
     }
   }
 }

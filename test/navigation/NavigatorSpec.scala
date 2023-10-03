@@ -17,22 +17,45 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
-import pages._
+import controllers.journeys.{routes => jRoutes}
+import controllers.standard.{routes => stRoutes}
+import controllers.journeys.tradeDetails.{routes => tdRoutes}
 import models._
+import pages._
+
+import java.time.LocalDate
 
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
+  val taxYear = LocalDate.now().getYear
+
+  case object UnknownPage extends Page
 
   "Navigator" - {
 
     "in Normal mode" - {
 
+      "must go from the Check Your Self Employment Details page to the 'Have you completed this section?' page" in {
+
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          tdRoutes.SelfEmploymentSummaryController.onPageLoad(taxYear)
+      }
+
+      "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
+
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+      }
+
+      "must go from a Details Completed page to the Task List page" in {
+
+        navigator.nextPage(SectionCompletedStatePage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
+      }
+
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad
+        navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
       }
     }
 
@@ -40,8 +63,7 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
+        navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe stRoutes.CheckYourAnswersController.onPageLoad
       }
     }
   }

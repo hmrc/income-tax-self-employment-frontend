@@ -21,25 +21,27 @@ import play.api.data.FormError
 
 class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "selfEmploymentAbroad.error.required"
-  val invalidKey = "error.boolean"
+  def requiredKey(isAgent: Boolean) = s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}"
 
-  val form = new SelfEmploymentAbroadFormProvider()()
+  val invalidKey = "error.boolean"
+  val isAgent = false
+
+  def form(isAgent: Boolean) = new SelfEmploymentAbroadFormProvider()(isAgent)
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like booleanField(
-      form,
+      form(isAgent),
       fieldName,
       invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
-      form,
+      form(isAgent),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey(false))
     )
   }
 }

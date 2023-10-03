@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(isAgent: Boolean): Form[Boolean] =
     Form(
-      "value" -> boolean("selfEmploymentAbroad.error.required")
+      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
     )
 }

@@ -21,9 +21,10 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
@@ -49,8 +50,22 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     "cy" -> Lang("cy")
   )
 
+  val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
+
+
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+
+
+  def incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
+    configuration.get[String]("microservice.services.income-tax-submission-frontend.context")
+
+  def incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
+    configuration.get[String]("microservice.services.income-tax-submission-frontend.iv-redirect")
+
+  def viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.view-and-change.url") +
+    "/report-quarterly/income-and-expenses/view/agents/client-utr"
 }
+
