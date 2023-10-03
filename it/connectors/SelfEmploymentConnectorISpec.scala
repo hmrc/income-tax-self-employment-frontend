@@ -18,7 +18,6 @@ package connectors
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
-import connectors.builders.BusinessDataBuilder.aGetBusinessDataRequestStr
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
