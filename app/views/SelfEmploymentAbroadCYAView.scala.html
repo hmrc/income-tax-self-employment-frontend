@@ -16,12 +16,21 @@
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, summaryList: SummaryList, nextRoute: String, isAgent: Boolean)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("selfEmploymentAbroadCYA.title"))) {
+@layout(pageTitle = titleNoForm(messages(s"common.checkYourDetails.title.${if (isAgent) "agent" else "individual"}"))) {
 
-    <h1 class="govuk-heading-xl">@messages("selfEmploymentAbroadCYA.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages(s"common.checkYourDetails.heading.${if (isAgent) "agent" else "individual"}")</h1>
+
+    @govukSummaryList(summaryList)
+
+    <p class="govuk-body">
+        @govukButton(ButtonViewModel(messages("site.saveAndContinue"))
+            .asLink(nextRoute)
+        )
+    </p>
 }

@@ -17,27 +17,54 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
+import models.{Abroad, NormalMode, UserAnswers}
+import org.scalatestplus.mockito.MockitoSugar
+import pages.SelfEmploymentAbroadPage
+import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.http.HeaderCarrier
+import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
+import viewmodels.govuk.SummaryListFluency
 import views.html.SelfEmploymentAbroadCYAView
 
-class SelfEmploymentAbroadCYAControllerSpec extends SpecBase {
+import java.time.LocalDate
+import scala.concurrent.ExecutionContext
+
+class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
+
+  val agent = false
+  val taxYear: Int = LocalDate.now().getYear
+
+
+  implicit val ec: ExecutionContext = ExecutionContext.global
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentAbroadCYA Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(
+        taxYear, Abroad.toString, NormalMode).url
 
-      running(application) {
-        val request = FakeRequest(GET, controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad().url)
+      "must return OK and the correct view for a GET" in {
 
-        val result = route(application, request).value
+        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-        val view = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
+        running(application) {
+          val request = FakeRequest(GET, controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url)
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
+
+          val abroadSummary = SummaryList(Seq(SelfEmploymentAbroadSummary.row(taxYear, agent, userAnswers)(messages(application)).get))
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(taxYear, abroadSummary, nextRoute, agent)(request, messages(application)).toString
+        }
       }
     }
   }

@@ -17,9 +17,15 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
+import models.NormalMode
+import models.requests.DataRequest
+import navigation.Navigator
+import pages.SelfEmploymentAbroadCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
 import views.html.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
@@ -29,12 +35,20 @@ class SelfEmploymentAbroadCYAController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       navigator: Navigator,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: SelfEmploymentAbroadCYAView
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: Int/*, businessId: String*/): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      val agent = request.user.isAgent
+      val summaryList = SummaryList(Seq(SelfEmploymentAbroadSummary.row(taxYear, agent, request.userAnswers).get))
+      val nextRoute = navigate(taxYear, navigator)
+      Ok(view(taxYear, summaryList, nextRoute, agent))
+  }
+
+  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]) = {
+    navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, request.userAnswers).url
   }
 }

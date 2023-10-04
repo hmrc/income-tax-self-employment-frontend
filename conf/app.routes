@@ -31,7 +31,7 @@ POST        /:taxYear/details/self-employment-abroad             controllers.jou
 GET         /:taxYear/details/self-employment-abroad/change      controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
 POST        /:taxYear/details/self-employment-abroad/change      controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET        /selfEmploymentAbroadCYA                              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad()
+GET         /:taxYear/self-employment/details/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: Int)
 
 GET         /:taxYear/details/check/:businessId                  controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
 GET         /:taxYear/self-employment-summary                    controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
@@ -40,5 +40,4 @@ GET        /:taxYear/details/completed-section/:journey          controllers.jou
 POST       /:taxYear/details/completed-section/:journey          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, journey: String, mode: Mode = NormalMode)
 GET        /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, journey: String, mode: Mode = CheckMode)
 POST       /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, journey: String, mode: Mode = CheckMode)
-
 

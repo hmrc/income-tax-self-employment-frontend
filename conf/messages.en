@@ -42,6 +42,11 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
+common.checkYourDetails.title.agent = Check your client’s details
+common.checkYourDetails.title.individual = Check your details
+common.checkYourDetails.heading.agent = Check your client’s details
+common.checkYourDetails.heading.individual = Check your details
+
 index.title = income-tax-self-employment-frontend
 index.heading = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -68,7 +73,8 @@ unauthorised.heading = You can’t access this service with this account
 
 selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
 selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
-selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad
+selfEmploymentAbroad.checkYourAnswersLabel.individual = Did you carry out all of your self-employment abroad?
+selfEmploymentAbroad.checkYourAnswersLabel.agent = Did your client carry out all of their self-employment abroad?
 selfEmploymentAbroad.error.required.individual = Select yes if you carried out all of your self-employment abroad
 selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
 selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
@@ -99,6 +105,3 @@ sectionCompletedState.yes = Yes, I’ve completed this section
 sectionCompletedState.no = No, I’ll come back to it later
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 sectionCompletedState.change.hidden = SectionCompletedState
-
-selfEmploymentAbroadCYA.title = selfEmploymentAbroadCYA
-selfEmploymentAbroadCYA.heading = selfEmploymentAbroadCYA
