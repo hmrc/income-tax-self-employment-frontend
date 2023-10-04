@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import builders.UserBuilder.aNoddyUser
 import connectors.SelfEmploymentConnector
-import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
+import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.errors.{HttpError, HttpErrorBody}

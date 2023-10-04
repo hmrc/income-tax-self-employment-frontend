@@ -18,7 +18,6 @@ package connectors
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
-import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesRequestString
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
@@ -28,6 +27,7 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
 import models.mdtp.BusinessData
 import models.requests.TradesJourneyStatuses
+import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -183,6 +183,17 @@ class BusinessDataConnectorISpec extends WiremockSpec {
         result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
       }
     }
+
+  lazy val aSequenceTadesJourneyStatusesRequestString =
+    Json.toJson(Seq(
+      TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
+        JourneyStatus(Abroad, Some(true)),
+        JourneyStatus(Income, Some(false)),
+        JourneyStatus(Expenses, None),
+        JourneyStatus(NationalInsurance, None)
+      )),
+      TradesJourneyStatuses("BusinessId2", None, Seq.empty)
+    )).toString()
 
   lazy val aBusinessDataRequestStr: String =
     """
