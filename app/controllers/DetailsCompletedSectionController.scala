@@ -57,22 +57,22 @@ class DetailsCompletedSectionController @Inject()(override val messagesApi: Mess
       }
 
       preparedForm map {
-        form => Ok(view(form, taxYear, journey, mode))
+        form => Ok(view(form, taxYear, Some(businessId), journey, mode))
       }
   }
 
-  def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, businessId: Option[String], journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
 
         value => {
-          val businessId = journey + "-" + request.user.nino
-          selfEmploymentService.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
+//          val businessId = journey + "-" + request.user.nino
+          selfEmploymentService.saveJourneyState(businessId.get, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, taxYear, UserAnswers(request.userId)))
+            case Right(_) => Redirect(navigator.nextPage(DetailsCompletedSectionPage, mode, UserAnswers(request.userId), taxYear, businessId))
             case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
           }
         }

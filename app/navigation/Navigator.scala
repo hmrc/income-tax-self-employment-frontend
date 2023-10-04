@@ -26,20 +26,21 @@ import models._
 @Singleton
 class Navigator @Inject()() {
 
-  private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    case SelfEmploymentAbroadPage => taxYear => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
-    case DetailsCompletedSectionPage => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
-    case _ => taxYear => _ => routes.TaskListController.onPageLoad(taxYear)
+  private val normalRoutes: Page => (Int, Option[String]) => UserAnswers => Call = {
+    case CheckYourSelfEmploymentDetailsPage => (taxYear, businessId) => _ =>
+      routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+    case SelfEmploymentAbroadPage => (taxYear, businessId) => _ => routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+    case DetailsCompletedSectionPage => (taxYear, _) => _ => routes.TaskListController.onPageLoad(taxYear)
+    case _ => (taxYear, _) => _ => routes.TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
     case _ => taxYear => _ => routes.CheckYourAnswersController.onPageLoad
   }
 
-  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: Option[String] = None): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(taxYear)(userAnswers)
+      normalRoutes(page)(taxYear, businessId)(userAnswers)
     case CheckMode =>
       checkRouteMap(page)(taxYear)(userAnswers)
   }

@@ -48,15 +48,15 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
         case Some(value) => formProvider(request.user.isAgent).fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, request.user.isAgent, mode))
+      Ok(view(preparedForm, taxYear, None, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, businessId: Option[String], mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       formProvider(request.user.isAgent).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.isAgent, mode))),
+          Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.user.isAgent, mode))),
 
         value =>
           for {
@@ -64,8 +64,8 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
-              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, taxYear, updatedAnswers)
-              else routes.JourneyRecoveryController.onPageLoad()
+              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear, businessId)
+                else routes.JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }
       )
