@@ -7,18 +7,18 @@ import play.api.libs.json.Json
 
 object TradesJourneyStatusesBuilder {
 
-  val aTaggedTradeDetailsModel = TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
+  val aTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
     JourneyStatus(Abroad, Some(true)),
     JourneyStatus(Income, Some(false)),
     JourneyStatus(Expenses, None),
     JourneyStatus(NationalInsurance, None)
   ))
-  val aTaggedTradeDetailsRequestJson = Json.toJson(aTaggedTradeDetailsModel)
+  val aTadesJourneyStatusesRequestJson = Json.toJson(aTadesJourneyStatusesModel)
 
-  val anEmptyTaggedTradeDetailsModel = TradesJourneyStatuses("BusinessId2", None, Seq.empty)
-  val anEmptyTaggedTradeDetailsRequestJson = Json.toJson(anEmptyTaggedTradeDetailsModel)
+  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId2", None, Seq.empty)
+  val anEmptyTadesJourneyStatusesRequestJson = Json.toJson(anEmptyTadesJourneyStatusesModel)
 
-  val aSequenceTaggedTradeDetailsModel = Seq(aTaggedTradeDetailsModel, anEmptyTaggedTradeDetailsModel)
-  val aSequenceTaggedTradeDetailsRequestString = Json.toJson(aSequenceTaggedTradeDetailsModel).toString()
+  val aSequenceTadesJourneyStatusesModel = Seq(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
+  val aSequenceTadesJourneyStatusesRequestString = Json.toJson(aSequenceTadesJourneyStatusesModel).toString()
 
 }

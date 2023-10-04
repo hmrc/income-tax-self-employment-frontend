@@ -18,11 +18,11 @@ package controllers.journeys
 
 import com.google.inject.Inject
 import connectors.SelfEmploymentConnector
-import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.standard.routes.JourneyRecoveryController
 import models.TradeDetails
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
+import models.viewModels.TradeJourneyStatusesViewModel
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -42,31 +42,41 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request =>
 
-    val msgStatus = getStatusMsg(taxYear, selfEmploymentConnector) map {
-      case Left(_) => "error" //TODO change this from error
-      case Right(status) => if (status.isEmpty) "checkOurRecords" else if (status.get) "completed" else "inProgress"
-    }
-    val viewModelList = selfEmploymentService.getCompletedTradeDetails(request.user.nino, taxYear, request.user.mtditid) map {
-      case Left(_) => Seq.empty //TODO change this to error
-      case Right(list: Seq[TradesJourneyStatuses]) =>
-        if (list.isEmpty) Seq.empty else list.map(TradesJourneyStatuses.toViewModel(_, taxYear))
-    }
     for {
-      statusMsg <- msgStatus
-      viewModelList <- viewModelList
+      statusMsg <- getStatusMsg(taxYear, selfEmploymentConnector)
+      viewModelList <-
+        if (statusMsg.exists(_.equals("completed"))) getViewModelList(taxYear)
+        else Future(Some(Seq.empty))
     } yield {
-      if (statusMsg.equals("error")) Redirect(JourneyRecoveryController.onPageLoad())
-      else Ok(view(taxYear, request.user, statusMsg, viewModelList))
+      if (statusMsg.isEmpty || viewModelList.isEmpty) Redirect(JourneyRecoveryController.onPageLoad())
+      else Ok(view(taxYear, request.user, statusMsg.get, viewModelList.get))
     }
   }
 
-
   private def getStatusMsg(taxYear: Int, selfEmploymentConnector: SelfEmploymentConnector)
-                          (implicit request: OptionalDataRequest[AnyContent], ec: ExecutionContext): Future[JourneyStateResponse] = {
+                          (implicit request: OptionalDataRequest[AnyContent], ec: ExecutionContext): Future[Option[String]] = {
 
     val journey = TradeDetails.toString
     val tradeId = journey + "-" + request.user.nino
 
-    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear, request.user.mtditid)
+    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear, request.user.mtditid) map {
+      case Left(_) => None
+      case Right(status) => Some(
+        if (status.isEmpty) "checkOurRecords"
+        else if (status.get) "completed"
+        else "inProgress"
+      )
+    }
+  }
+
+  private def getViewModelList(taxYear: Int)
+                              (implicit request: OptionalDataRequest[AnyContent]): Future[Option[Seq[TradeJourneyStatusesViewModel]]] = {
+
+    selfEmploymentService.getCompletedTradeDetails(request.user.nino, taxYear, request.user.mtditid) map {
+      case Left(_) => None
+      case Right(list) => Some(
+        if (list.isEmpty) Seq.empty else list.map(TradesJourneyStatuses.toViewModel(_, taxYear))
+      )
+    }
   }
 }

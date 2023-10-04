@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import builders.UserBuilder.aNoddyUser
 import connectors.SelfEmploymentConnector
-import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTaggedTradeDetailsModel
+import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.errors.{HttpError, HttpErrorBody}
@@ -52,18 +52,38 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
   "TaskListController .onPageLoad" - {
 
-    "must return OK and the correct view" - {
+    "must return OK and display Self-employments when review of trade details has been completed" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[SelfEmploymentService].toInstance(mockService))
+        .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+        .build()
 
-      "with Self-employments when a sequence of completed trade details are returned from the backend" in {
+      val selfEmploymentList = aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear)(messages(application)))
+
+      running(application) {
+        when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
+        when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
+
+        val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[TaskListView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(taxYear, aNoddyUser, "completed", selfEmploymentList)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and display no Self-employments" - {
+      "when an empty sequence of employments is returned from the backend" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
           .build()
 
-        val selfEmploymentList = aSequenceTaggedTradeDetailsModel.map(TradesJourneyStatuses.toViewModel(_, taxYear)(messages(application)))
+        val selfEmploymentList = Seq.empty
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTaggedTradeDetailsModel))
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(selfEmploymentList))
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
@@ -74,71 +94,84 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           contentAsString(result) mustEqual view(taxYear, aNoddyUser, "completed", selfEmploymentList)(request, messages(application)).toString
         }
       }
+      "when the review of trade details has not been completed" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
-      "with no Self-employments" - {
-        "when an empty sequence is returned from the backend" in {
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind[SelfEmploymentService].toInstance(mockService))
-            .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
-            .build()
+        val selfEmploymentList = Seq.empty
 
-          val selfEmploymentList = Seq.empty
+        running(application) {
+          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(false)))
 
-          running(application) {
-            when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(selfEmploymentList))
-            when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(false)))
+          val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
+          val result = route(application, request).value
+          val view = application.injector.instanceOf[TaskListView]
 
-            val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-            val result = route(application, request).value
-            val view = application.injector.instanceOf[TaskListView]
-
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, aNoddyUser, "inProgress", selfEmploymentList)(request, messages(application)).toString
-          }
-        }
-
-        "when a Left(error) is returned from downstream" in {
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind[SelfEmploymentService].toInstance(mockService))
-            .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
-            .build()
-
-          val selfEmploymentList = Seq.empty
-          val hTTPError = HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)
-
-          running(application) {
-            when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Left(hTTPError))
-            when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
-
-            val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-            val result = route(application, request).value
-            val view = application.injector.instanceOf[TaskListView]
-
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, aNoddyUser, "completed", selfEmploymentList)(request, messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(taxYear, aNoddyUser, "inProgress", selfEmploymentList)(request, messages(application)).toString
         }
       }
+      "when the review of trade details has not been started" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
+        val selfEmploymentList = Seq.empty
+
+        running(application) {
+          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(None))
+
+          val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
+          val result = route(application, request).value
+          val view = application.injector.instanceOf[TaskListView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(taxYear, aNoddyUser, "checkOurRecords", selfEmploymentList)(request, messages(application)).toString
+        }
+      }
     }
 
-    "must redirect to Journey Recovery when an error response is returned from the service" in {
+    "must redirect to Journey Recovery when an error response is returned" - {
+      "from the service" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[SelfEmploymentService].toInstance(mockService))
-        .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
-        .build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
-      running(application) {
-        when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTaggedTradeDetailsModel))
-        when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn
-          Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
+        running(application) {
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn
+            Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
+          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
-        val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-        val result = route(application, request).value
+          val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
+      }
+      "from the connector" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
+
+        running(application) {
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
+          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn
+            Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
+
+          val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

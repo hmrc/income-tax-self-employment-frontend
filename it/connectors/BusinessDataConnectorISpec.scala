@@ -18,7 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
-import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTaggedTradeDetailsRequestString
+import connectors.builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesRequestString
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
@@ -155,7 +155,7 @@ class BusinessDataConnectorISpec extends WiremockSpec {
 
   def tradesWithStatusesRequestReturnsOk(getUrl: String, block: () => GetTradesStatusResponse): Unit = {
     "return a 200 response and a sequence of TaggedTradeDetails models" in {
-      val expectedResponseBody = aSequenceTaggedTradeDetailsRequestString
+      val expectedResponseBody = aSequenceTadesJourneyStatusesRequestString
       val expectedResult = Json.parse(expectedResponseBody).as[Seq[TradesJourneyStatuses]]
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
