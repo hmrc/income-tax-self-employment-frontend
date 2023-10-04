@@ -17,7 +17,9 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
+import controllers.journeys.{routes => jRoutes}
+import controllers.standard.{routes => stRoutes}
+import controllers.journeys.tradeDetails.{routes => tdRoutes}
 import models._
 import pages._
 
@@ -36,22 +38,24 @@ class NavigatorSpec extends SpecBase {
 
       "must go from the Check Your Self Employment Details page to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.DetailsCompletedSectionController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          tdRoutes.SelfEmploymentSummaryController.onPageLoad(taxYear)
       }
 
       "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.DetailsCompletedSectionController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
       }
 
       "must go from a Details Completed page to the Task List page" in {
 
-        navigator.nextPage(DetailsCompletedSectionPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
+        navigator.nextPage(SectionCompletedStatePage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
       }
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe routes.TaskListController.onPageLoad(taxYear)
+        navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
       }
     }
 
@@ -59,7 +63,7 @@ class NavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
-        navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
+        navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe stRoutes.CheckYourAnswersController.onPageLoad
       }
     }
   }

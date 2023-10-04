@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.AuthenticatedIdentifierAction.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues, User}
-import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results._
@@ -61,7 +60,7 @@ class AuthenticatedIdentifierAction @Inject()(
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
+        Redirect(controllers.standard.routes.UnauthorisedController.onPageLoad)
     }
   }
 
