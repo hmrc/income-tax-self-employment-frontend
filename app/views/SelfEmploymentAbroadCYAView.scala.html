@@ -14,9 +14,12 @@
  * limitations under the License.
  *@
 
+@import templates.helpers.Heading
+
 @this(
         layout: templates.Layout,
         govukButton: GovukButton,
+        heading: Heading,
         govukSummaryList: GovukSummaryList
 )
 
@@ -24,7 +27,10 @@
 
 @layout(pageTitle = titleNoForm(messages(s"common.checkYourDetails.title.${if (isAgent) "agent" else "individual"}"))) {
 
-    <h1 class="govuk-heading-xl">@messages(s"common.checkYourDetails.heading.${if (isAgent) "agent" else "individual"}")</h1>
+    @heading(
+        messages(s"common.checkYourDetails.heading.${if (isAgent) "agent" else "individual"}"),
+        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString))
+    )
 
     @govukSummaryList(summaryList)
 
