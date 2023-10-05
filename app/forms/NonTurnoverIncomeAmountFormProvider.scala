@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-trait ModelGenerators {
+class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> bigDecimal(
+        "nonTurnoverIncomeAmount.error.required",
+        "nonTurnoverIncomeAmount.error.nonNumeric")
+          .verifying(inBigDecimalRange(0, 100000000000.00, "nonTurnoverIncomeAmount.error.outOfRange")) //TODO amount verification inline with ticket 5553
+    )
 }
