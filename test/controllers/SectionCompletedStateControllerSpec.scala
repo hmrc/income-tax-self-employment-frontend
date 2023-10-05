@@ -42,7 +42,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
   val taxYear: Int = LocalDate.now().getYear
   val nino = "AA112233A"
   val journey = "journeyId"
-  val businessId = journey + "-" + nino
+  val businessId = "businessId-1"
   val mtditid = "mtditid"
 
   val mockConnector = mock[SelfEmploymentConnector]

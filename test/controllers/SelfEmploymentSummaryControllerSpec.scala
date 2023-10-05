@@ -45,8 +45,6 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
   val taxYear = LocalDate.now().getYear
   val businessId = "trade-details-nino"
 
-  val baseUrl = "/update-and-submit-income-tax-return/self-employment"
-
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -54,7 +52,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
     "onPageLoad" - {
 
-      val nextRoute = baseUrl + SectionCompletedStateController.onPageLoad(taxYear, businessId, "trade-details", NormalMode).url
+      def nextRoute = SectionCompletedStateController.onPageLoad(taxYear, businessId, "trade-details", NormalMode).url
       
       "must return OK and the correct view when there are no self-employments" in {
 
