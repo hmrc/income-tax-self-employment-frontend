@@ -18,9 +18,10 @@ package controllers.journeys.abroad
 
 import base.SpecBase
 import models.{Abroad, NormalMode, UserAnswers}
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SelfEmploymentAbroadPage
-import play.api.libs.json.JsObject
+import play.api.libs.json.Json
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -30,42 +31,53 @@ import viewmodels.govuk.SummaryListFluency
 import views.html.SelfEmploymentAbroadCYAView
 
 import java.time.LocalDate
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
-  val agent = false
-  val taxYear: Int = LocalDate.now().getYear
+  private val isAgent = false
+  private val taxYear = LocalDate.now().getYear
 
+  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url
+  private lazy val nextRoute  = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
 
   implicit val ec: ExecutionContext = ExecutionContext.global
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier    = HeaderCarrier()
 
-  "SelfEmploymentAbroadCYA Controller" - {
-
-    "onPageLoad" - {
-
-      val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(
-        taxYear, Abroad.toString, NormalMode).url
-
+  "SelfEmploymentAbroadCYAController" - {
+    "when user answers are present" - {
       "must return OK and the correct view for a GET" in {
-
-        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val userAnswers                 = UserAnswers("someId", Json.obj("selfEmploymentAbroad" -> true))
+        val application                 = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 
         running(application) {
-          val request = FakeRequest(GET, controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url)
+          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, userAnswers)(messages(application))
+          val expectedSummaryList         = SummaryList(Seq(expectedMaybeSummaryListRow))
 
-          val result = route(application, request).value
+          val request                = FakeRequest(GET, requestUrl)
+          val result: Future[Result] = route(application, request).value
 
-          val view = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
+          status(result) shouldBe OK
 
-          val abroadSummary = SummaryList(Seq(SelfEmploymentAbroadSummary.row(taxYear, agent, userAnswers)(messages(application)).get))
+          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, isAgent)(
+            request,
+            messages(application)).toString
+        }
+      }
+    }
+    "when user answers are not provided" - {
+      "must redirect to the JourneyRecoveryController for a GET" in {
+        val application = applicationBuilder(userAnswers = None).build()
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, abroadSummary, nextRoute, agent)(request, messages(application)).toString
+        running(application) {
+          val request                = FakeRequest(GET, requestUrl)
+          val result: Future[Result] = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
         }
       }
     }
   }
+
 }

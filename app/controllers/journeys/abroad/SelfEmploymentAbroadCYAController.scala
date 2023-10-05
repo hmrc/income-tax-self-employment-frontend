@@ -30,25 +30,29 @@ import views.html.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
 
-class SelfEmploymentAbroadCYAController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       navigator: Navigator,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: SelfEmploymentAbroadCYAView
-                                     ) extends FrontendBaseController with I18nSupport {
+class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   navigator: Navigator,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: SelfEmploymentAbroadCYAView)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(taxYear: Int/*, businessId: String*/): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val agent = request.user.isAgent
-      val summaryList = SummaryList(Seq(SelfEmploymentAbroadSummary.row(taxYear, agent, request.userAnswers).get))
-      val nextRoute = navigate(taxYear, navigator)
-      Ok(view(taxYear, summaryList, nextRoute, agent))
+  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val isAgent         = request.user.isAgent
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, request.userAnswers)
+    val summaryList     = SummaryList(Seq(summaryListRows))
+
+    val nextRoute = nextPageUrl(taxYear, navigator)
+
+    Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]) = {
-    navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, request.userAnswers).url
-  }
+  private def nextPageUrl(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
+    navigator
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, request.userAnswers)
+      .url
+
 }
