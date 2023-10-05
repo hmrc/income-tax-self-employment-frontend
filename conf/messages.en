@@ -66,13 +66,6 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
-selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
-selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad
-selfEmploymentAbroad.error.required.individual = Select yes if you carried out all of your self-employment abroad
-selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
-selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
-
 checkYourSelfEmploymentDetails.title.individual = Check your self-employment details
 checkYourSelfEmploymentDetails.title.agent = Check your client`s self-employment details
 checkYourSelfEmploymentDetails.tradingName.individual = What name did you use for your self-employment?
@@ -100,22 +93,25 @@ sectionCompletedState.no = No, I’ll come back to it later
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 sectionCompletedState.change.hidden = SectionCompletedState
 
-anyOtherIncome.title = anyOtherIncome
-anyOtherIncome.heading = anyOtherIncome
-anyOtherIncome.checkYourAnswersLabel = anyOtherIncome
-anyOtherIncome.error.required = Select yes if anyOtherIncome
-anyOtherIncome.change.hidden = AnyOtherIncome
+###### Abroad Journey ######
 
-checkYourIncome.title = checkYourIncome
-checkYourIncome.heading = checkYourIncome
+selfEmploymentAbroad.title.individual = Did you carry out all of your self-employment abroad?
+selfEmploymentAbroad.title.agent = Did your client carry out all of their self-employment abroad?
+selfEmploymentAbroad.checkYourAnswersLabel = selfEmploymentAbroad
+selfEmploymentAbroad.error.required.individual = Select yes if you carried out all of your self-employment abroad
+selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
+selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
 
-howMuchTradingAllowance.title = HowMuchTradingAllowance
-howMuchTradingAllowance.heading = HowMuchTradingAllowance
-howMuchTradingAllowance.checkYourAnswersLabel = HowMuchTradingAllowance
-howMuchTradingAllowance.error.nonNumeric = Enter your howMuchTradingAllowance using numbers
-howMuchTradingAllowance.error.required = Select howMuchTradingAllowance
-howMuchTradingAllowance.change.hidden = HowMuchTradingAllowance
+###### Income Journey ######
 
+## Income not counted as turnover
+incomeNotCountedAsTurnover.title = incomeNotCountedAsTurnover
+incomeNotCountedAsTurnover.heading = incomeNotCountedAsTurnover
+incomeNotCountedAsTurnover.checkYourAnswersLabel = incomeNotCountedAsTurnover
+incomeNotCountedAsTurnover.error.required = Select yes if incomeNotCountedAsTurnover
+incomeNotCountedAsTurnover.change.hidden = incomeNotCountedAsTurnover
+
+## Non-turnover income amount
 nonTurnoverIncomeAmount.title = NonTurnoverIncomeAmount
 nonTurnoverIncomeAmount.heading = NonTurnoverIncomeAmount
 nonTurnoverIncomeAmount.checkYourAnswersLabel = NonTurnoverIncomeAmount
@@ -124,14 +120,23 @@ nonTurnoverIncomeAmount.error.required = Enter your nonTurnoverIncomeAmount
 nonTurnoverIncomeAmount.error.outOfRange = NonTurnoverIncomeAmount must be between {0} and {1}
 nonTurnoverIncomeAmount.change.hidden = NonTurnoverIncomeAmount
 
-notTaxableAmount.title = NotTaxableAmount
-notTaxableAmount.heading = NotTaxableAmount
-notTaxableAmount.checkYourAnswersLabel = NotTaxableAmount
-notTaxableAmount.error.nonNumeric = Enter your notTaxableAmount using numbers
-notTaxableAmount.error.required = Enter your notTaxableAmount
-notTaxableAmount.error.outOfRange = NotTaxableAmount must be between {0} and {1}
-notTaxableAmount.change.hidden = NotTaxableAmount
+## Turnover income amount
+turnoverIncomeAmount.title = TurnoverIncomeAmount
+turnoverIncomeAmount.heading = TurnoverIncomeAmount
+turnoverIncomeAmount.checkYourAnswersLabel = TurnoverIncomeAmount
+turnoverIncomeAmount.error.nonNumeric = Enter your turnoverIncomeAmount using numbers
+turnoverIncomeAmount.error.required = Enter your turnoverIncomeAmount
+turnoverIncomeAmount.error.outOfRange = Turnover income amount must be between {0} and {1}
+turnoverIncomeAmount.change.hidden = TurnoverIncomeAmount
 
+## Any other income
+anyOtherIncome.title = anyOtherIncome
+anyOtherIncome.heading = anyOtherIncome
+anyOtherIncome.checkYourAnswersLabel = anyOtherIncome
+anyOtherIncome.error.required = Select yes if anyOtherIncome
+anyOtherIncome.change.hidden = AnyOtherIncome
+
+## Other income amount
 otherIncomeAmount.title = OtherIncomeAmount
 otherIncomeAmount.heading = OtherIncomeAmount
 otherIncomeAmount.checkYourAnswersLabel = OtherIncomeAmount
@@ -140,6 +145,23 @@ otherIncomeAmount.error.required = Enter your otherIncomeAmount
 otherIncomeAmount.error.outOfRange = OtherIncomeAmount must be between {0} and {1}
 otherIncomeAmount.change.hidden = OtherIncomeAmount
 
+## Turnover not taxable
+turnoverNotTaxable.title = turnoverNotTaxable
+turnoverNotTaxable.heading = turnoverNotTaxable
+turnoverNotTaxable.checkYourAnswersLabel = turnoverNotTaxable
+turnoverNotTaxable.error.required = Select yes if turnoverNotTaxable
+turnoverNotTaxable.change.hidden = TurnoverNotTaxable
+
+## Not taxable amount
+notTaxableAmount.title = NotTaxableAmount
+notTaxableAmount.heading = NotTaxableAmount
+notTaxableAmount.checkYourAnswersLabel = NotTaxableAmount
+notTaxableAmount.error.nonNumeric = Enter your notTaxableAmount using numbers
+notTaxableAmount.error.required = Enter your notTaxableAmount
+notTaxableAmount.error.outOfRange = NotTaxableAmount must be between {0} and {1}
+notTaxableAmount.change.hidden = NotTaxableAmount
+
+## Trading allowance
 tradingAllowance.title = Trading allowance
 tradingAllowance.heading = Trading allowance
 tradingAllowance.useTradingAllowance = Use the trading allowance
@@ -148,6 +170,15 @@ tradingAllowance.checkYourAnswersLabel = Trading allowance
 tradingAllowance.error.required = Select tradingAllowance
 tradingAllowance.change.hidden = TradingAllowance
 
+## How much trading allowance
+howMuchTradingAllowance.title = HowMuchTradingAllowance
+howMuchTradingAllowance.heading = HowMuchTradingAllowance
+howMuchTradingAllowance.checkYourAnswersLabel = HowMuchTradingAllowance
+howMuchTradingAllowance.error.nonNumeric = Enter your howMuchTradingAllowance using numbers
+howMuchTradingAllowance.error.required = Select howMuchTradingAllowance
+howMuchTradingAllowance.change.hidden = HowMuchTradingAllowance
+
+## Trading allowance amount
 tradingAllowanceAmount.title = How much trading allowance do you want to use?
 tradingAllowanceAmount.heading = How much trading allowance do you want to use?
 tradingAllowanceAmount.maximum = The maximum £
@@ -157,22 +188,6 @@ tradingAllowanceAmount.error.required = Enter your trading allowance amount
 tradingAllowanceAmount.error.outOfRange = Trading allowance amount must be between {0} and {1}
 tradingAllowanceAmount.change.hidden = Trading allowance amount
 
-turnoverIncomeAmount.title = TurnoverIncomeAmount
-turnoverIncomeAmount.heading = TurnoverIncomeAmount
-turnoverIncomeAmount.checkYourAnswersLabel = TurnoverIncomeAmount
-turnoverIncomeAmount.error.nonNumeric = Enter your turnoverIncomeAmount using numbers
-turnoverIncomeAmount.error.required = Enter your turnoverIncomeAmount
-turnoverIncomeAmount.error.outOfRange = Turnover income amount must be between {0} and {1}
-turnoverIncomeAmount.change.hidden = TurnoverIncomeAmount
-
-turnoverNotTaxable.title = turnoverNotTaxable
-turnoverNotTaxable.heading = turnoverNotTaxable
-turnoverNotTaxable.checkYourAnswersLabel = turnoverNotTaxable
-turnoverNotTaxable.error.required = Select yes if turnoverNotTaxable
-turnoverNotTaxable.change.hidden = TurnoverNotTaxable
-
-incomeNotCountedAsTurnover.title = incomeNotCountedAsTurnover
-incomeNotCountedAsTurnover.heading = incomeNotCountedAsTurnover
-incomeNotCountedAsTurnover.checkYourAnswersLabel = incomeNotCountedAsTurnover
-incomeNotCountedAsTurnover.error.required = Select yes if incomeNotCountedAsTurnover
-incomeNotCountedAsTurnover.change.hidden = incomeNotCountedAsTurnover
+## Check your income
+checkYourIncome.title = checkYourIncome
+checkYourIncome.heading = checkYourIncome
