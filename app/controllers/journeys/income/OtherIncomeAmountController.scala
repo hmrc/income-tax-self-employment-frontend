@@ -44,7 +44,7 @@ class OtherIncomeAmountController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherIncomeAmountPage) match {
@@ -55,7 +55,7 @@ class OtherIncomeAmountController @Inject()(
       Ok(view(preparedForm, mode, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
     implicit request =>
 
       form.bindFromRequest().fold(
