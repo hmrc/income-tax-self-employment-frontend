@@ -15,29 +15,33 @@
  *@
 
 @import controllers.journeys.income.routes.AnyOtherIncomeController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("anyOtherIncome.title"))) {
+@layout(pageTitle = title(form, messages(s"anyOtherIncome.title.$isAgentString"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"anyOtherIncome.title.$isAgentString"), None, extraClasses = "govuk-!-margin-bottom-4")
 
     @formHelper(action = AnyOtherIncomeController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("anyOtherIncome.heading")).asPageHeading()
+                legend = LegendViewModel("")
             )
         )
 

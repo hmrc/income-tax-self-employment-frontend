@@ -160,7 +160,7 @@ turnoverIncomeAmount.checkYourAnswersLabel = TurnoverIncomeAmount
 turnoverIncomeAmount.error.required = Enter the amount of turnover
 turnoverIncomeAmount.error.nonNumeric = The amount of turnover must be a number
 turnoverIncomeAmount.error.lessThanZero = The amount of turnover must be more than £0
-turnoverIncomeAmount.error.overNonTurnoverAmount = The amount of tax paid must be less than £{0} //TODO
+turnoverIncomeAmount.error.overMax = The amount of tax paid must be less than £100,000,000,000
 turnoverIncomeAmount.change.hidden = Change your turnover income amount
 
 ## Any other income
@@ -178,7 +178,7 @@ otherIncomeAmount.checkYourAnswersLabel = OtherIncomeAmount
 otherIncomeAmount.error.required = Enter the amount of other income
 otherIncomeAmount.error.nonNumeric = The amount of other income must be a number
 otherIncomeAmount.error.lessThanZero = The amount of other income must be more than £0
-otherIncomeAmount.error.overNonTurnoverAmount = The other income must be less than £{0} //TODO
+otherIncomeAmount.error.overMax = The other income must be less than £100,000,000,000
 otherIncomeAmount.change.hidden = Change other income amount
 
 ## Turnover not taxable

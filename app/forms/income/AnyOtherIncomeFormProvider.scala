@@ -23,8 +23,9 @@ import javax.inject.Inject
 
 class AnyOtherIncomeFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[Boolean] =
+  def apply(isAgentString: String, taxYear: Int): Form[Boolean] =
     Form(
-      "value" -> boolean("anyOtherIncome.error.required")
+      "value" -> boolean(s"anyOtherIncome.error.required.$isAgentString",
+        args = Seq((taxYear-1).toString, taxYear.toString)) //TODO is this correct or should it be (taxYear, taxYear+1)
     )
 }

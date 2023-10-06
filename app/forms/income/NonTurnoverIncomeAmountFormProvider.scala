@@ -29,7 +29,7 @@ class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
         s"nonTurnoverIncomeAmount.error.required.$isAgentString",
         s"nonTurnoverIncomeAmount.error.nonNumeric.$isAgentString",
         Seq(tradeName))
-        .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString")) //TODO amount verification inline with ticket 5553
+        .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString"))
         .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$isAgentString")) //TODO amount verification inline with ticket 5553
     )
 }

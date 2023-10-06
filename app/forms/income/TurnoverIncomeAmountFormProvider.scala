@@ -20,14 +20,16 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
+import scala.collection.immutable.Seq
 
 class TurnoverIncomeAmountFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[BigDecimal] =
+  def apply(): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
         "turnoverIncomeAmount.error.required",
         "turnoverIncomeAmount.error.nonNumeric")
-          .verifying(inBigDecimalRange(0, 100000000000.00, "turnoverIncomeAmount.error.outOfRange"))
+        .verifying(isBigDecimalGreaterThanZero("turnoverIncomeAmount.error.lessThanZero"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, "turnoverIncomeAmount.error.overMax")) //TODO amount verification inline with ticket 5553
     )
 }
