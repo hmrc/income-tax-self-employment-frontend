@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
-import models.HowMuchTradingAllowance
-
-import javax.inject.Inject
 import play.api.data.Form
 
-class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[HowMuchTradingAllowance] =
+class OtherIncomeAmountFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[BigDecimal] =
     Form(
-      "value" -> enumerable[HowMuchTradingAllowance]("howMuchTradingAllowance.error.required")
+      "value" -> bigDecimal(
+        "otherIncomeAmount.error.required",
+        "otherIncomeAmount.error.nonNumeric")
+        .verifying(inBigDecimalRange(0, 100000000000.00, "otherIncomeAmount.error.outOfRange"))
     )
 }

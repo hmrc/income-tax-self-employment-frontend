@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.income.TurnoverNotTaxableFormProvider
 import play.api.data.FormError
 
 class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {

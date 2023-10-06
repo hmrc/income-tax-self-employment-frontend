@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import forms.income.NonTurnoverIncomeAmountFormProvider
 import play.api.data.FormError
 
 class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {

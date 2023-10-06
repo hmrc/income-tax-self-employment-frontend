@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
+class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
 
-  def apply(isAgent: Boolean): Form[Boolean] =
+  def apply(isAgentString: String, tradeName: String): Form[BigDecimal] =
     Form(
-      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
+      "value" -> bigDecimal(
+        s"nonTurnoverIncomeAmount.error.required.$isAgentString",
+        s"nonTurnoverIncomeAmount.error.nonNumeric.$isAgentString",
+        Seq(tradeName))
+        .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString")) //TODO amount verification inline with ticket 5553
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$isAgentString")) //TODO amount verification inline with ticket 5553
     )
 }

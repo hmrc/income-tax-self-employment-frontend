@@ -17,7 +17,7 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
-import forms.SelfEmploymentAbroadFormProvider
+import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any

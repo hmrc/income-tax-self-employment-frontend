@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.abroad.SelfEmploymentAbroadFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

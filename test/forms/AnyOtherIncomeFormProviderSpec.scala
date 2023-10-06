@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.income.AnyOtherIncomeFormProvider
 import play.api.data.FormError
 
 class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {

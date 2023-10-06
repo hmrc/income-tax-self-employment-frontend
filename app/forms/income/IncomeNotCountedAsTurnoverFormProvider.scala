@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[BigDecimal] =
+class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[Boolean] =
     Form(
-      "value" -> bigDecimal(
-        "nonTurnoverIncomeAmount.error.required",
-        "nonTurnoverIncomeAmount.error.nonNumeric")
-          .verifying(inBigDecimalRange(0, 100000000000.00, "nonTurnoverIncomeAmount.error.outOfRange")) //TODO amount verification inline with ticket 5553
+      "value" -> boolean(s"incomeNotCountedAsTurnover.error.required.$isAgentString")
     )
 }

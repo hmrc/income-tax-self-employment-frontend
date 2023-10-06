@@ -4,6 +4,10 @@
 .js-enabled .js-visible {
   display: inline-block !important;
 }
+.govuk-hint {
+    margin-bottom: 15px;
+    color: #505a5f;
+}
 .govuk-tag--grey {
   float: right;
 }

@@ -19,7 +19,7 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income.routes.TradingAllowanceController
 import controllers.standard.routes.JourneyRecoveryController
-import forms.TradingAllowanceFormProvider
+import forms.income.TradingAllowanceFormProvider
 import models.{NormalMode, TradingAllowance, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.joda.time.LocalDate

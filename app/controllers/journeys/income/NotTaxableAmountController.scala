@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.NotTaxableAmountFormProvider
+import forms.income.NotTaxableAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.NotTaxableAmountPage
@@ -42,25 +42,26 @@ class NotTaxableAmountController @Inject()(
                                             view: NotTaxableAmountView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
+      val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None => formProvider(isAgent)
+        case Some(value) => formProvider(isAgent).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear))
+      Ok(view(preparedForm, mode, isAgent, taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
+      formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
+          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
 
         value =>
           for {

@@ -16,18 +16,20 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.NonTurnoverIncomeAmountController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("nonTurnoverIncomeAmount.title"))) {
+@layout(pageTitle = title(form, messages(s"nonTurnoverIncomeAmount.title.$isAgentString"))) {
 
     @formHelper(action = NonTurnoverIncomeAmountController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
@@ -35,17 +37,20 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @heading(messages(s"nonTurnoverIncomeAmount.title.$isAgentString"), None, extraClasses = "govuk-!-margin-bottom-3")
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("nonTurnoverIncomeAmount.heading")).asPageHeading()
+                label = LabelViewModel(messages("site.hint.amount")).withCssClass("govuk-hint")
             )
             .asNumeric()
-            .withWidth(Fixed10)
+            .withWidth(Fixed5)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(messages("site.continue")).withCssClass("govuk-!-margin-top-2")
         )
     }
 }

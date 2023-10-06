@@ -15,29 +15,50 @@
  *@
 
 @import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("incomeNotCountedAsTurnover.title"))) {
 
-    @formHelper(action = IncomeNotCountedAsTurnoverController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+    @heading(messages("incomeNotCountedAsTurnover.title"), None)
+
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+        <p>
+            @messages(s"incomeNotCountedAsTurnover.p1.$isAgentString")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages(s"incomeNotCountedAsTurnover.l1.$isAgentString")</li>
+            <li>@messages(s"incomeNotCountedAsTurnover.l2.$isAgentString")</li>
+            <li>@messages("incomeNotCountedAsTurnover.l3")</li>
+            <li>@messages("incomeNotCountedAsTurnover.l4")</li>
+        </ul>
+        <p>
+            @messages("incomeNotCountedAsTurnover.p2")
+        </p>
+    </div>
+
+    @formHelper(action = IncomeNotCountedAsTurnoverController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("incomeNotCountedAsTurnover.heading")).asPageHeading()
+                legend = LegendViewModel(messages(s"incomeNotCountedAsTurnover.subHeading.$isAgentString"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

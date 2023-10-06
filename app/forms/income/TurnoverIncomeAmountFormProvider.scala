@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class AnyOtherIncomeFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[Boolean] =
+class TurnoverIncomeAmountFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[BigDecimal] =
     Form(
-      "value" -> boolean("anyOtherIncome.error.required")
+      "value" -> bigDecimal(
+        "turnoverIncomeAmount.error.required",
+        "turnoverIncomeAmount.error.nonNumeric")
+          .verifying(inBigDecimalRange(0, 100000000000.00, "turnoverIncomeAmount.error.outOfRange"))
     )
 }

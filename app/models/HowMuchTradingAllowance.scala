@@ -24,8 +24,8 @@ sealed trait HowMuchTradingAllowance
 
 object HowMuchTradingAllowance extends Enumerable.Implicits {
 
-  case object Maximum extends WithName("The maximum £") with HowMuchTradingAllowance
-  case object LessThan extends WithName("Less than") with HowMuchTradingAllowance
+  case object Maximum extends WithName("maximum") with HowMuchTradingAllowance
+  case object LessThan extends WithName("lessThan") with HowMuchTradingAllowance
 
   val values: Seq[HowMuchTradingAllowance] = Seq(
     Maximum, LessThan

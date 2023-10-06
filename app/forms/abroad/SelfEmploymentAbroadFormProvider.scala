@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.abroad
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[Boolean] =
+class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
+
+  def apply(isAgent: Boolean): Form[Boolean] =
     Form(
-      "value" -> boolean("incomeNotCountedAsTurnover.error.required")
+      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
     )
 }

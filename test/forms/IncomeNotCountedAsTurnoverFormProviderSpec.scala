@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import play.api.data.FormError
 
 class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours {

@@ -17,7 +17,7 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
-import forms.SelfEmploymentAbroadFormProvider
+import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.SelfEmploymentAbroadPage

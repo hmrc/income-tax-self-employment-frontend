@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[Boolean] =
+class AnyOtherIncomeFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[Boolean] =
     Form(
-      "value" -> boolean("turnoverNotTaxable.error.required")
+      "value" -> boolean("anyOtherIncome.error.required")
     )
 }

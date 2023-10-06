@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import forms.income.NotTaxableAmountFormProvider
 import play.api.data.FormError
 
 class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {

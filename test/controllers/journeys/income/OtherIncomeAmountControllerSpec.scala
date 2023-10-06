@@ -19,7 +19,7 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income.routes.OtherIncomeAmountController
 import controllers.standard.routes.JourneyRecoveryController
-import forms.OtherIncomeAmountFormProvider
+import forms.income.OtherIncomeAmountFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.joda.time.LocalDate
