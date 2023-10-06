@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.{routes => jRoutes}
 import controllers.standard.{routes => stRoutes}
 import controllers.journeys.tradeDetails.{routes => tdRoutes}
+import controllers.journeys.abroad.{routes => aRoutes}
 import models._
 import pages._
 
@@ -42,9 +43,15 @@ class NavigatorSpec extends SpecBase {
           tdRoutes.SelfEmploymentSummaryController.onPageLoad(taxYear)
       }
 
-      "must go from the Self-employment Abroad page to the 'Have you completed this section?' page" in {
+      "must go from the Self-employment Abroad page to the 'Check your details' page" in {
 
         navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+      }
+
+      "must go from the Check your details page to the 'Have you completed section' page" in {
+
+        navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, UserAnswers("id")) mustBe
           jRoutes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
       }
 
@@ -64,6 +71,12 @@ class NavigatorSpec extends SpecBase {
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
         navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe stRoutes.CheckYourAnswersController.onPageLoad
+      }
+
+      "must go from Self-employment Abroad page to the 'Check your details' page" in {
+
+        navigator.nextPage(SelfEmploymentAbroadPage, CheckMode, taxYear, UserAnswers("id")) mustBe
+          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
       }
     }
   }

@@ -32,50 +32,47 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
-                                                selfEmploymentConnector: SelfEmploymentConnector,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                formProvider: SectionCompletedStateFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SectionCompletedStateView)
-                                               (implicit val ec: ExecutionContext
-                                                 ) extends FrontendBaseController with I18nSupport {
+class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
+                                                 selfEmploymentConnector: SelfEmploymentConnector,
+                                                 navigator: Navigator,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 formProvider: SectionCompletedStateFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[CompletedSectionState] = formProvider()
 
-  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
-    implicit request =>
+  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    val businessId =
+      journey + "-" + request.user.nino // TODO use the actual businessId as it is unique to the business, this can be a value reteived into the userAnswers
+    val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
+      case Right(Some(true))  => form.fill(Yes)
+      case Right(Some(false)) => form.fill(No)
+      case Right(None)        => form
+      case Left(_)            => form
+    }
 
-      val businessId = journey + "-" + request.user.nino  //TODO use the actual businessId as it is unique to the business, this can be a value reteived into the userAnswers
-      val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
-        case Right(Some(true)) => form.fill(Yes)
-        case Right(Some(false)) => form.fill(No)
-        case Right(None) => form
-        case Left(_) => form
-      }
-
-      preparedForm map {
-        form => Ok(view(form, taxYear, journey, mode))
-      }
+    preparedForm map { form =>
+      Ok(view(form, taxYear, journey, mode))
+    }
   }
 
-  def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
-
+  def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
         value => {
           val businessId = journey + "-" + request.user.nino
-          selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
-            request.user.mtditid) map {
+          selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes), request.user.mtditid) map {
             case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, taxYear, UserAnswers(request.userId)))
-            case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+            case _        => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
           }
         }
       )
   }
+
 }
