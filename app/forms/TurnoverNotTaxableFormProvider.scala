@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
+class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("turnoverNotTaxable.error.required")
+    )
 }

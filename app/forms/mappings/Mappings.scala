@@ -16,11 +16,12 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import models.Enumerable
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.Enumerable
+import play.api.data.validation.{Constraint, Invalid, Valid}
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
@@ -32,6 +33,11 @@ trait Mappings extends Formatters with Constraints {
                     nonNumericKey: String = "error.nonNumeric",
                     args: Seq[String] = Seq.empty): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
+
+  protected def bigDecimal(requiredKey: String = "error.required",
+                           nonNumericKey: String = "error.nonNumeric",
+                           args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
+    of(bigDecimalFormatter(requiredKey, nonNumericKey, args))
 
   protected def boolean(requiredKey: String = "error.required",
                         invalidKey: String = "error.boolean",
@@ -51,4 +57,16 @@ trait Mappings extends Formatters with Constraints {
                            requiredKey: String,
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+
+
+  def inBigDecimalRange(minimum: BigDecimal, maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
+    Constraint {
+      input: BigDecimal =>
+
+        if (input >= minimum && input <= maximum) {
+          Valid
+        } else {
+          Invalid(errorKey, minimum, maximum)
+        }
+    }
 }

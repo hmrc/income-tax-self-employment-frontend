@@ -16,11 +16,12 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
-
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
+
+import java.time.{Instant, LocalDate, ZoneOffset}
+import scala.collection.immutable.TreeMap
 
 trait Generators extends ModelGenerators {
 
@@ -46,19 +47,69 @@ trait Generators extends ModelGenerators {
     }
   }
 
+  def genBDIntersperseString(gen: Gen[String],
+                             value: String,
+                             frequencyV: BigDecimal = 1,
+                             frequencyN: BigDecimal = 10): Gen[String] = {
+
+    val genValue: Gen[Option[String]] = frequencyBD(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
+
+    for {
+      seq1 <- gen
+      seq2 <- Gen.listOfN(seq1.length, genValue)
+    } yield {
+      seq1.toSeq.zip(seq2).foldLeft("") {
+        case (acc, (n, Some(v))) =>
+          acc + n + v
+        case (acc, (n, _)) =>
+          acc + n
+      }
+    }
+  }
+
+  def frequencyBD[T](gs: (BigDecimal, Gen[T])*): Gen[T] = {
+    val filtered = gs.iterator.filter(_._1 > 0).toVector
+    if (filtered.isEmpty) {
+      throw new IllegalArgumentException("no items with positive weights")
+    } else {
+      var total: BigDecimal = 0
+      val builder = TreeMap.newBuilder[BigDecimal, Gen[T]]
+      filtered.foreach { case (weight, value) =>
+        total += weight
+        builder += ((total, value))
+      }
+      val tree = builder.result
+      choose(BigDecimal(1.00), total).flatMap(r => tree.rangeFrom(r).head._2)
+    }
+  }
+
+  def bigDecimalsInRangeWithCommas(min: BigDecimal, max: BigDecimal): Gen[String] = {
+    val numberGen = choose[BigDecimal](min, max).map(_.toString)
+    genBDIntersperseString(numberGen, ",")
+  }
+
+  def bigDecimalsBelowValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] suchThat (_ < value)
+
+  def bigDecimalsAboveValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] suchThat (_ > value)
+
+  def bigDecimalsOutsideRange(min: BigDecimal, max: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] suchThat (x => x < min || x > max)
+
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max).map(_.toString)
     genIntersperseString(numberGen, ",")
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat (_.nonEmpty)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -67,19 +118,19 @@ trait Generators extends ModelGenerators {
       .map("%f".format(_))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
@@ -92,8 +143,8 @@ trait Generators extends ModelGenerators {
 
   def stringsLongerThan(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, arbitrary[Char])
+    length <- Gen.chooseNum(minLength + 1, maxLength)
+    chars <- listOfN(length, arbitrary[Char])
   } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
