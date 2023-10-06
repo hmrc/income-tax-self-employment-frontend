@@ -33,14 +33,20 @@ class Navigator @Inject()() {
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
     
     case SelfEmploymentAbroadPage => taxYear => _ =>
+      controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+
+    case SelfEmploymentAbroadCYAPage => taxYear => _ =>
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
-    
+
     case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
     
     case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
+    case SelfEmploymentAbroadPage => taxYear => _ =>
+        controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+
     case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
   }
 
