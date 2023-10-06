@@ -22,11 +22,13 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class NotTaxableAmountFormProvider @Inject() extends Mappings {
-  def apply(isAgentString: String): Form[BigDecimal] =
+  def apply(isAgentString: String, tradeName: String): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        "notTaxableAmount.error.required",
-        "notTaxableAmount.error.nonNumeric")
-        .verifying(inBigDecimalRange(0, 100000000000.00, "notTaxableAmount.error.outOfRange"))
+        s"notTaxableAmount.error.required.$isAgentString",
+        s"notTaxableAmount.error.nonNumeric.$isAgentString",
+        Seq(tradeName))
+        .verifying(isBigDecimalGreaterThanZero(s"notTaxableAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"notTaxableAmount.error.overMax.$isAgentString")) //TODO amount verification inline with ticket 5553
     )
 }

@@ -15,29 +15,51 @@
  *@
 
 @import controllers.journeys.income.routes.TurnoverNotTaxableController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverNotTaxable.title"))) {
 
-    @formHelper(action = TurnoverNotTaxableController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+    @heading(messages("turnoverNotTaxable.title"), None)
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+        <p>
+            @messages("turnoverNotTaxable.p1")
+        </p>
+        <p>
+            @messages("turnoverNotTaxable.p2")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("turnoverNotTaxable.l1")</li>
+            <li>@messages("turnoverNotTaxable.l2")</li>
+            <li>@messages("turnoverNotTaxable.l3")</li>
+        </ul>
+        <p>
+            @messages("turnoverNotTaxable.p3")
+        </p>
+    </div>
+
+    @formHelper(action = TurnoverNotTaxableController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("turnoverNotTaxable.heading")).asPageHeading()
+                legend = LegendViewModel(messages(s"turnoverNotTaxable.subHeading.$isAgentString"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

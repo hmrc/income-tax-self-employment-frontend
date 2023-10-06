@@ -49,8 +49,8 @@ class TurnoverNotTaxableController @Inject()(
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverNotTaxablePage) match {
-        case None => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None => formProvider(isAgent, taxYear)
+        case Some(value) => formProvider(isAgent, taxYear).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
@@ -59,7 +59,7 @@ class TurnoverNotTaxableController @Inject()(
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
+      formProvider(isAgentString(request.user.isAgent), taxYear).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
 

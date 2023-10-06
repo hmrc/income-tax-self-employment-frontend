@@ -31,13 +31,13 @@
 
 @layout(pageTitle = title(form, messages(s"nonTurnoverIncomeAmount.title.$isAgentString"))) {
 
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"nonTurnoverIncomeAmount.title.$isAgentString"), None, extraClasses = "govuk-!-margin-bottom-3")
+
     @formHelper(action = NonTurnoverIncomeAmountController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
-
-        @heading(messages(s"nonTurnoverIncomeAmount.title.$isAgentString"), None, extraClasses = "govuk-!-margin-bottom-3")
 
         @govukInput(
             InputViewModel(

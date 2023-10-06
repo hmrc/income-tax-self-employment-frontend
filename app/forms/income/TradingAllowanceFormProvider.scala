@@ -26,6 +26,6 @@ class TradingAllowanceFormProvider @Inject() extends Mappings {
 
   def apply(isAgentString: String): Form[TradingAllowance] =
     Form(
-      "value" -> enumerable[TradingAllowance]("tradingAllowance.error.required")
+      "value" -> enumerable[TradingAllowance](s"tradingAllowance.error.required.$isAgentString")
     )
 }

@@ -30,27 +30,28 @@ import views.html.journeys.income.NotTaxableAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotTaxableAmountController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
-                                            navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: NotTaxableAmountFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: NotTaxableAmountView
+class NotTaxableAmountController @Inject()(override val messagesApi: MessagesApi,
+                                           sessionRepository: SessionRepository,
+                                           navigator: Navigator,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: NotTaxableAmountFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: NotTaxableAmountView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
+
+  val tradeName = "PlaceHolderTradeName" //TODO get trade name from url businessId or userAnswers.get
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
-        case None => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None => formProvider(isAgent, tradeName)
+        case Some(value) => formProvider(isAgent, tradeName).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
@@ -59,7 +60,7 @@ class NotTaxableAmountController @Inject()(
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
+      formProvider(isAgentString(request.user.isAgent), tradeName).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
 
