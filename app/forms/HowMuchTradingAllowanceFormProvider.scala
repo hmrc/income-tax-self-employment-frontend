@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import forms.mappings.Mappings
+import models.HowMuchTradingAllowance
 
-trait ModelGenerators {
+import javax.inject.Inject
+import play.api.data.Form
 
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
+class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+  def apply(): Form[HowMuchTradingAllowance] =
+    Form(
+      "value" -> enumerable[HowMuchTradingAllowance]("howMuchTradingAllowance.error.required")
+    )
 }

@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-trait ModelGenerators {
+import javax.inject.Inject
 
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
+class OtherIncomeAmountFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> bigDecimal(
+        "otherIncomeAmount.error.required",
+        "otherIncomeAmount.error.nonNumeric")
+        .verifying(inBigDecimalRange(0, 100000000000.00, "otherIncomeAmount.error.outOfRange"))
+    )
 }

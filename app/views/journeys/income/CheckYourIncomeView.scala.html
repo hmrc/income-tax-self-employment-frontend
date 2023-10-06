@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package generators
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+@()(implicit request: Request[_], messages: Messages)
 
-trait ModelGenerators {
+@layout(pageTitle = titleNoForm(messages("checkYourIncome.title"))) {
 
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+    <h1 class="govuk-heading-xl">@messages("checkYourIncome.heading")</h1>
 }

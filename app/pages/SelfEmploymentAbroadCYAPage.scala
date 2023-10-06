@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
-
-trait ModelGenerators {
-
-  implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(HowMuchTradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
-    Arbitrary {
-      Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
-    }
+object SelfEmploymentAbroadCYAPage extends Page {
+  override def toString: String = "selfEmploymentAbroadCYA"
 }
