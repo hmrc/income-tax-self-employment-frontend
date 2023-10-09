@@ -28,7 +28,6 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 object SelfEmploymentDetailsViewModel {
 
   def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList = {
-    println(row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)))
     SummaryList(
       rows = Seq(
         row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
