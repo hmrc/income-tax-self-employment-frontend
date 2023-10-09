@@ -18,10 +18,10 @@ package models.requests
 
 import models.Journey
 import models.requests.TradesJourneyStatuses.JourneyStatus
-import models.viewModels.TradeJourneyStatusesViewModel
-import models.viewModels.TradeJourneyStatusesViewModel.buildSummaryList
+import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
+import viewmodels.TradeJourneyStatusesViewModel
 
 case class TradesJourneyStatuses(businessId: String,
                                  tradingName: Option[String],

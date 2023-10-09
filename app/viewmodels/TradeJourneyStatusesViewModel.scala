@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.viewModels
+package viewmodels
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models._

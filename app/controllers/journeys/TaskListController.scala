@@ -22,11 +22,11 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.standard.routes.JourneyRecoveryController
 import models.TradeDetails
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
-import models.viewModels.TradeJourneyStatusesViewModel
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.TradeJourneyStatusesViewModel
 import views.html.journeys.TaskListView
 
 import scala.concurrent.{ExecutionContext, Future}
