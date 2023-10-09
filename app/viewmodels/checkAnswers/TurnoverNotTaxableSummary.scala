@@ -27,18 +27,17 @@ import viewmodels.implicits._
 object TurnoverNotTaxableSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TurnoverNotTaxablePage).map {
-      answer =>
+    answers.get(TurnoverNotTaxablePage).map { answer =>
+      val value = if (answer) "site.yes" else "site.no"
 
-        val value = if (answer) "site.yes" else "site.no"
-
-        SummaryListRowViewModel(
-          key = "turnoverNotTaxable.checkYourAnswersLabel",
-          value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "turnoverNotTaxable.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
         )
+      )
     }
+
 }

@@ -39,7 +39,7 @@ trait HttpParser {
   def handleHttpError[Response](response: HttpResponse, statusOverride: Option[Int] = None): Either[HttpError, Response] = {
     val status = statusOverride.getOrElse(response.status)
     Try {
-      val json = response.json
+      val json          = response.json
       lazy val apiError = json.asOpt[SingleErrorBody]
       if (apiError.nonEmpty) Left(HttpError(status, apiError.get)) else Left(HttpError(status, json.asOpt[MultiErrorsBody].get))
     } match {
@@ -68,4 +68,5 @@ trait HttpParser {
         pagerDutyLog(UNEXPECTED_RESPONSE_FROM_CONNECTOR, logMessage(response))
         handleHttpError(response, Some(INTERNAL_SERVER_ERROR))
     }
+
 }

@@ -17,7 +17,5 @@
 package config
 
 object ConfigKeys {
-
   val incomeTaxSelfEmploymentUrl = "microservice.services.income-tax-self-employment.url"
-
 }

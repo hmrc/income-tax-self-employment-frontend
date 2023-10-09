@@ -58,4 +58,5 @@ class TurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       requiredError = FormError(fieldName, "turnoverIncomeAmount.error.required")
     )
   }
+
 }

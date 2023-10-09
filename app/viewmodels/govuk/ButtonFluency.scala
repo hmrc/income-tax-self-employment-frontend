@@ -30,19 +30,20 @@ trait ButtonFluency {
         element = Some("button"),
         content = content
       )
+
   }
 
   implicit class FluentButton(button: Button) {
 
     def asLink(href: String): Button =
-      button.copy (
+      button.copy(
         element = Some("a"),
-        href    = Some(href)
+        href = Some(href)
       )
 
     def asInput(inputType: String): Button =
-      button.copy (
-        element   = Some("input"),
+      button.copy(
+        element = Some("input"),
         inputType = Some(inputType)
       )
 
@@ -69,5 +70,7 @@ trait ButtonFluency {
 
     def asWarningButton(): Button =
       withCssClass("govuk-button--warning")
+
   }
+
 }

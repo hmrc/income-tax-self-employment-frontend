@@ -30,38 +30,35 @@ import views.html.journeys.abroad.SelfEmploymentAbroadView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentAbroadController @Inject()(override val messagesApi: MessagesApi,
-                                               sessionRepository: SessionRepository,
-                                               navigator: Navigator,
-                                               identify: IdentifierAction,
-                                               getData: DataRetrievalAction,
-                                               formProvider: SelfEmploymentAbroadFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               view: SelfEmploymentAbroadView)
-                                              (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                formProvider: SelfEmploymentAbroadFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: SelfEmploymentAbroadView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
+      case None        => formProvider(request.user.isAgent)
+      case Some(value) => formProvider(request.user.isAgent).fill(value)
+    }
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
-        case None => formProvider(request.user.isAgent)
-        case Some(value) => formProvider(request.user.isAgent).fill(value)
-      }
-
-      Ok(view(preparedForm, taxYear, request.user.isAgent, mode))
+    Ok(view(preparedForm, taxYear, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-    implicit request =>
-
-      formProvider(request.user.isAgent).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.isAgent, mode))),
-
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    formProvider(request.user.isAgent)
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, request.user.isAgent, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value))
-            isSuccessful <- sessionRepository.set(updatedAnswers)
+            isSuccessful   <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
               if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, taxYear, updatedAnswers)
@@ -70,4 +67,5 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
           }
       )
   }
+
 }

@@ -27,16 +27,15 @@ import viewmodels.implicits._
 object NonTurnoverIncomeAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NonTurnoverIncomeAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key = "nonTurnoverIncomeAmount.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))
-          )
+    answers.get(NonTurnoverIncomeAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "nonTurnoverIncomeAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))
         )
+      )
     }
+
 }

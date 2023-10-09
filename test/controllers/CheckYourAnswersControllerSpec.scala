@@ -58,4 +58,5 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       }
     }
   }
+
 }

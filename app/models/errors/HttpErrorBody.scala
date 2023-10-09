@@ -21,9 +21,9 @@ import play.api.libs.json.{Json, OFormat}
 sealed trait HttpErrorBody
 
 object HttpErrorBody {
-  
+
   val parsingError: HttpErrorBody = SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")
-  
+
   /** Single Error * */
   case class SingleErrorBody(code: String, reason: String) extends HttpErrorBody
 
@@ -37,4 +37,5 @@ object HttpErrorBody {
   object MultiErrorsBody {
     implicit val formats: OFormat[MultiErrorsBody] = Json.format[MultiErrorsBody]
   }
+
 }

@@ -18,9 +18,9 @@ package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
-import models.{NormalMode, UserAnswers}
 import models.mdtp.BusinessData
 import models.requests.OptionalDataRequest
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,30 +32,31 @@ import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesApi: MessagesApi,
-                                                         identify: IdentifierAction,
-                                                         getData: DataRetrievalAction,
-                                                         selfEmploymentConnector: SelfEmploymentConnector,
-                                                         navigator: Navigator,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         view: CheckYourSelfEmploymentDetailsView)
-                                                        (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesApi: MessagesApi,
+                                                          identify: IdentifierAction,
+                                                          getData: DataRetrievalAction,
+                                                          selfEmploymentConnector: SelfEmploymentConnector,
+                                                          navigator: Navigator,
+                                                          val controllerComponents: MessagesControllerComponents,
+                                                          view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData) async { //TODO (Edem) does this need 'andThen requireData' ?
-    implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] =
+    (identify andThen getData) async { // TODO (Edem) does this need 'andThen requireData' ?
+      implicit request =>
+        val isAgent = request.user.isAgent
+        selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
+          case Right(business: Seq[BusinessData]) =>
+            val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
+            val nextRoute             = navigate(taxYear, navigator)
+            Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
+          // TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
+          case _ =>
+            Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+        }
+    }
 
-      val isAgent = request.user.isAgent
-      selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
-        case Right(business: Seq[BusinessData]) =>
-          val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
-          val nextRoute = navigate(taxYear, navigator)
-          Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
-        //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
-        case _ =>
-          Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
-      }
-  }
-  
   private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
     navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, request.userAnswers.getOrElse(UserAnswers(request.userId))).url
   }

@@ -42,4 +42,5 @@ class UnauthorisedControllerSpec extends SpecBase {
       }
     }
   }
+
 }

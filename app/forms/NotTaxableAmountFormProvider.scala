@@ -22,11 +22,11 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class NotTaxableAmountFormProvider @Inject() extends Mappings {
+
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "notTaxableAmount.error.required",
-        "notTaxableAmount.error.nonNumeric")
+      "value" -> bigDecimal("notTaxableAmount.error.required", "notTaxableAmount.error.nonNumeric")
         .verifying(inBigDecimalRange(0, 100000000000.00, "notTaxableAmount.error.outOfRange"))
     )
+
 }

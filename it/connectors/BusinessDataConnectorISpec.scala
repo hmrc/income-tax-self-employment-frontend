@@ -33,28 +33,28 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class BusinessDataConnectorISpec extends WiremockSpec {
-  
+
   def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
     new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
       override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
     }
-  
-  val headersSentToBE: Seq[HttpHeader] = Seq( new HttpHeader(HeaderNames.xSessionId, "sessionIdValue") )
-  
+
+  val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader(HeaderNames.xSessionId, "sessionIdValue"))
+
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-  
+  implicit val hc: HeaderCarrier  = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
+
   val underTest = new SelfEmploymentConnector(httpClient, appConfig())
 
-  val nino = "AA370343B"
+  val nino            = "AA370343B"
   val mtditid: String = "mtditid"
-  
+
   val taxYear = LocalDate.now().getYear
-  
+
   ".getBusiness" should {
-    val businessId = "ABC123"
+    val businessId  = "ABC123"
     val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
-    
+
     behave like businessRequestReturnsOk(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
     behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
   }
@@ -67,10 +67,10 @@ class BusinessDataConnectorISpec extends WiremockSpec {
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit = {
-    
+
     "return a 200 response and a BusinessData model" in {
       val expectedResponseBody = aBusinessDataRequestStr
-      val expectedResult = Json.parse(expectedResponseBody).as[Seq[BusinessData]]
+      val expectedResult       = Json.parse(expectedResponseBody).as[Seq[BusinessData]]
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = await(block())
       result mustBe Right(expectedResult)
@@ -85,21 +85,21 @@ class BusinessDataConnectorISpec extends WiremockSpec {
 
   def businessRequestReturnsError(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit =
     for ((errorStatus, code, reason) <- Seq(
-      (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
-      (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),
-      (INTERNAL_SERVER_ERROR, "SERVER_ERROR", "IF is currently experiencing problems that require live service intervention."),
-      (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", "Dependent systems are currently not responding."))) {
+        (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
+        (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", "IF is currently experiencing problems that require live service intervention."),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", "Dependent systems are currently not responding.")
+      )) {
 
       s"return a $errorStatus error when the connector returns an error" in {
-        stubGetWithResponseBody(getUrl, errorStatus,
-          Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
+        stubGetWithResponseBody(getUrl, errorStatus, Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
         val result = await(block())
         result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
       }
     }
-    
+
   lazy val aBusinessDataRequestStr: String =
-  """
+    """
       |[
       |{
       |   "businessId":"SJPR05893938418",

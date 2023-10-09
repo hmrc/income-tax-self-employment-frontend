@@ -30,16 +30,17 @@ trait InputFluency {
   object InputViewModel extends ErrorMessageAwareness {
 
     def apply(
-               field: Field,
-               label: Label
-             )(implicit messages: Messages): Input =
+        field: Field,
+        label: Label
+    )(implicit messages: Messages): Input =
       Input(
-        id           = field.id,
-        name         = field.name,
-        value        = field.value,
-        label        = label,
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        label = label,
         errorMessage = errorMessage(field)
       )
+
   }
 
   implicit class FluentInput(input: Input) {
@@ -96,5 +97,7 @@ trait InputFluency {
 
     def withWidth(inputWidth: InputWidth): Input =
       input.withCssClass(inputWidth.toString)
+
   }
+
 }

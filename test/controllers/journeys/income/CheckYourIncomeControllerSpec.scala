@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 class CheckYourIncomeControllerSpec extends SpecBase {
 
-  val taxYear = LocalDate.now().getYear
+  val taxYear: Int = LocalDate.now().getYear
 
   "CheckYourIncome Controller" - {
 
@@ -46,4 +46,5 @@ class CheckYourIncomeControllerSpec extends SpecBase {
       }
     }
   }
+
 }

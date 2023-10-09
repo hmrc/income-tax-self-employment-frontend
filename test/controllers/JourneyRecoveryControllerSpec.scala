@@ -17,9 +17,9 @@
 package controllers
 
 import base.SpecBase
+import controllers.standard.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import controllers.standard.routes
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.standard.{JourneyRecoveryContinueView, JourneyRecoveryStartAgainView}
 
@@ -86,4 +86,5 @@ class JourneyRecoveryControllerSpec extends SpecBase {
       }
     }
   }
+
 }

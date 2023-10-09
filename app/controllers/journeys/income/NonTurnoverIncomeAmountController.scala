@@ -30,8 +30,7 @@ import views.html.journeys.income.NonTurnoverIncomeAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonTurnoverIncomeAmountController @Inject()(
-                                                   override val messagesApi: MessagesApi,
+class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                                    sessionRepository: SessionRepository,
                                                    navigator: Navigator,
                                                    identify: IdentifierAction,
@@ -39,34 +38,34 @@ class NonTurnoverIncomeAmountController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    formProvider: NonTurnoverIncomeAmountFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: NonTurnoverIncomeAmountView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   view: NonTurnoverIncomeAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, taxYear, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, taxYear, updatedAnswers))
+        )
   }
+
 }

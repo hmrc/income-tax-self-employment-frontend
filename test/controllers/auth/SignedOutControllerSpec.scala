@@ -42,4 +42,5 @@ class SignedOutControllerSpec extends SpecBase {
       }
     }
   }
+
 }

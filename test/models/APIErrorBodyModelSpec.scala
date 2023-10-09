@@ -22,19 +22,17 @@ import play.api.http.Status.SERVICE_UNAVAILABLE
 import play.api.libs.json.{JsObject, Json}
 
 class APIErrorBodyModelSpec extends SpecBase {
-  val model: APIErrorBodyModel = new APIErrorBodyModel(
-    "SERVICE_UNAVAILABLE", "The service is currently unavailable")
+  val model: APIErrorBodyModel = new APIErrorBodyModel("SERVICE_UNAVAILABLE", "The service is currently unavailable")
+
   val jsModel: JsObject = Json.obj(
-    "code" -> "SERVICE_UNAVAILABLE",
+    "code"   -> "SERVICE_UNAVAILABLE",
     "reason" -> "The service is currently unavailable"
   )
 
   val errorsJsModel: JsObject = Json.obj(
     "failures" -> Json.arr(
-      Json.obj("code" -> "SERVICE_UNAVAILABLE",
-        "reason" -> "The service is currently unavailable"),
-      Json.obj("code" -> "INTERNAL_SERVER_ERROR",
-        "reason" -> "The service is currently facing issues.")
+      Json.obj("code" -> "SERVICE_UNAVAILABLE", "reason"   -> "The service is currently unavailable"),
+      Json.obj("code" -> "INTERNAL_SERVER_ERROR", "reason" -> "The service is currently facing issues.")
     )
   )
 
@@ -51,10 +49,14 @@ class APIErrorBodyModelSpec extends SpecBase {
   "The APIErrorModel" - {
 
     val model = APIErrorModel(SERVICE_UNAVAILABLE, APIErrorBodyModel("SERVICE_UNAVAILABLE", "The service is currently unavailable"))
-    val errorsModel = APIErrorModel(SERVICE_UNAVAILABLE, APIErrorsBodyModel(Seq(
-      APIErrorBodyModel("SERVICE_UNAVAILABLE", "The service is currently unavailable"),
-      APIErrorBodyModel("INTERNAL_SERVER_ERROR", "The service is currently facing issues.")
-    )))
+    val errorsModel = APIErrorModel(
+      SERVICE_UNAVAILABLE,
+      APIErrorsBodyModel(
+        Seq(
+          APIErrorBodyModel("SERVICE_UNAVAILABLE", "The service is currently unavailable"),
+          APIErrorBodyModel("INTERNAL_SERVER_ERROR", "The service is currently facing issues.")
+        ))
+    )
 
     "parse to Json" in {
       model.toJson shouldBe jsModel

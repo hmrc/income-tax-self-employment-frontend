@@ -49,8 +49,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
         val taxYear = LocalDate.now().getYear
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-        val result = route(application, request).value
-        val view = application.injector.instanceOf[TaskListView]
+        val result  = route(application, request).value
+        val view    = application.injector.instanceOf[TaskListView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(taxYear, "status.checkOurRecords")(request, messages(application)).toString
@@ -70,11 +70,12 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
         val taxYear = LocalDate.now().getYear
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
+
 }

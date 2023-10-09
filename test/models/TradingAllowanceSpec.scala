@@ -18,10 +18,10 @@ package models
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -32,10 +32,8 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = Gen.oneOf(TradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        tradingAllowance =>
-
-          JsString(tradingAllowance.toString).validate[TradingAllowance].asOpt.value mustEqual tradingAllowance
+      forAll(gen) { tradingAllowance =>
+        JsString(tradingAllowance.toString).validate[TradingAllowance].asOpt.value mustEqual tradingAllowance
       }
     }
 
@@ -43,10 +41,8 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = arbitrary[String] suchThat (!TradingAllowance.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[TradingAllowance] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[TradingAllowance] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,11 +50,10 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = Gen.oneOf(TradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        tradingAllowance =>
-
-          Json.toJson(tradingAllowance) mustEqual JsString(tradingAllowance.toString)
+      forAll(gen) { tradingAllowance =>
+        Json.toJson(tradingAllowance) mustEqual JsString(tradingAllowance.toString)
       }
     }
   }
+
 }

@@ -38,30 +38,30 @@ import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
- 
+
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
-  val userAnswers = UserAnswers("1345566")
-  val taxYear = LocalDate.now().getYear
+  val userAnswers: UserAnswers               = UserAnswers("1345566")
+  val taxYear: Int                           = LocalDate.now().getYear
 
   implicit val ec: ExecutionContext = ExecutionContext.global
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier    = HeaderCarrier()
 
   "SelfEmploymentSummary Controller" - {
 
     "onPageLoad" - {
 
       val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, "trade-details", NormalMode).url
-      
+
       "must return OK and the correct view when there are no self-employments" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(Right(Seq()))
 
-         
           val request = FakeRequest(GET, routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value
@@ -69,9 +69,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val view = application.injector.instanceOf[SelfEmploymentSummaryView]
 
           val emptyTradingNames: Seq[Option[String]] = Seq()
-          val emptySummaryList = SummaryList(rows =
-            emptyTradingNames.map(name => row(s"${name.getOrElse("")}")(messages(application)))
-          )
+          val emptySummaryList = SummaryList(rows = emptyTradingNames.map(name => row(s"${name.getOrElse("")}")(messages(application))))
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(taxYear, emptySummaryList, nextRoute)(request, messages(application)).toString
@@ -81,7 +79,8 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
       "must return OK and the correct view when there are None trading names" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
 
@@ -94,18 +93,18 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val view = application.injector.instanceOf[SelfEmploymentSummaryView]
 
           val noneTradingNames = Seq(("", "businessId-0-1"), ("", "businessId-0-2"))
-          val noneSummaryList = generateRowList(taxYear, noneTradingNames)(messages(application))
+          val noneSummaryList  = generateRowList(taxYear, noneTradingNames)(messages(application))
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(taxYear, noneSummaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
-
       "must return OK and the correct view for a GET when self-employment data exist" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
 
@@ -116,15 +115,16 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val result = route(application, request).value
 
           val view = application.injector.instanceOf[SelfEmploymentSummaryView]
-          
-          val tradingNames = Seq( ("Trade one", "businessId-1"), ("Trade two", "businessId-2"))
-          val summaryList = generateRowList(taxYear, tradingNames)(messages(application))
+
+          val tradingNames = Seq(("Trade one", "businessId-1"), ("Trade two", "businessId-2"))
+          val summaryList  = generateRowList(taxYear, tradingNames)(messages(application))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear,summaryList, nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(taxYear, summaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
     }
   }
+
 }

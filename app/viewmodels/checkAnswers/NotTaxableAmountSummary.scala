@@ -27,16 +27,15 @@ import viewmodels.implicits._
 object NotTaxableAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotTaxableAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key = "notTaxableAmount.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
-          )
+    answers.get(NotTaxableAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "notTaxableAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
         )
+      )
     }
+
 }

@@ -29,7 +29,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
 
-  private val contactHost = configuration.get[String]("contact-frontend.host")
+  private val contactHost                  = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "income-tax-self-employment-frontend"
 
   def feedbackUrl(implicit request: RequestHeader): String =
@@ -52,12 +52,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
 
-
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
-
 
   def incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
     configuration.get[String]("microservice.services.income-tax-submission-frontend.context")
@@ -67,5 +65,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.view-and-change.url") +
     "/report-quarterly/income-and-expenses/view/agents/client-utr"
-}
 
+}

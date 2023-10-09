@@ -25,19 +25,22 @@ object JourneyStateParser extends HttpParser {
   type JourneyStateResponse = Either[HttpError, Option[Boolean]]
 
   val parserName: String = "JourneyStateParser"
-  val service: String = "income-tax-self-employment"
+  val service: String    = "income-tax-self-employment"
 
   implicit object JourneyStateHttpReads extends HttpReads[JourneyStateResponse] {
+
     override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse =
       response.status match {
-        case OK => Right(Some(response.body.toBoolean))
-        case CREATED => Right(None)
+        case OK         => Right(Some(response.body.toBoolean))
+        case CREATED    => Right(None)
         case NO_CONTENT => Right(None)
-        case _ => pagerDutyError(response)
+        case _          => pagerDutyError(response)
       }
+
   }
 
   implicit object JourneyStateHttpWrites extends OWrites[String] {
     override def writes(o: String): JsObject = Json.obj()
   }
+
 }

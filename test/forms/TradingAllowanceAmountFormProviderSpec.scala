@@ -58,4 +58,5 @@ class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       requiredError = FormError(fieldName, "tradingAllowanceAmount.error.required")
     )
   }
+
 }

@@ -23,7 +23,6 @@ import viewmodels.implicits._
 
 object SelfEmploymentSummaryViewModel {
 
-
   def row(rowKey: String, actionLink: String = "#")(implicit messages: Messages): SummaryListRow = {
 
     SummaryListRowViewModel(
@@ -32,7 +31,8 @@ object SelfEmploymentSummaryViewModel {
         classes = "govuk-!-font-weight-regular"
       ),
       value = ValueViewModel(""),
-      actions = Seq(ActionItemViewModel(messages("site.view"),  actionLink))
+      actions = Seq(ActionItemViewModel(messages("site.view"), actionLink))
     )
   }
+
 }

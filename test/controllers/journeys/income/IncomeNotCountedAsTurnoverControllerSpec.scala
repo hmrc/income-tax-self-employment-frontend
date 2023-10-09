@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.IncomeNotCountedAsTurnoverPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,13 +39,13 @@ import scala.concurrent.Future
 
 class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new IncomeNotCountedAsTurnoverFormProvider()
-  val form = formProvider()
-  val taxYear = LocalDate.now().getYear
+  val formProvider        = new IncomeNotCountedAsTurnoverFormProvider()
+  val form: Form[Boolean] = formProvider()
+  val taxYear: Int        = LocalDate.now().getYear
 
-  lazy val incomeNotCountedAsTurnoverRoute = IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, NormalMode).url
+  lazy val incomeNotCountedAsTurnoverRoute: String = IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, NormalMode).url
 
   "ncomeNotCountedAsTurnover Controller" - {
 
@@ -128,7 +129,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -142,7 +143,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -158,4 +159,5 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       }
     }
   }
+
 }

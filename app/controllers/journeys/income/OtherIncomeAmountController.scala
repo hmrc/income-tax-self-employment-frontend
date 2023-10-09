@@ -30,8 +30,7 @@ import views.html.journeys.income.OtherIncomeAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherIncomeAmountController @Inject()(
-                                             override val messagesApi: MessagesApi,
+class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
@@ -39,34 +38,34 @@ class OtherIncomeAmountController @Inject()(
                                              requireData: DataRequiredAction,
                                              formProvider: OtherIncomeAmountFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: OtherIncomeAmountView
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             view: OtherIncomeAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherIncomeAmountPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers))
+        )
   }
+
 }

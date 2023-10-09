@@ -58,4 +58,5 @@ class OtherIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       requiredError = FormError(fieldName, "otherIncomeAmount.error.required")
     )
   }
+
 }

@@ -18,9 +18,9 @@ package forms
 
 import forms.mappings.Mappings
 import models.HowMuchTradingAllowance
+import play.api.data.Form
 
 import javax.inject.Inject
-import play.api.data.Form
 
 class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
 
@@ -28,4 +28,5 @@ class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[HowMuchTradingAllowance]("howMuchTradingAllowance.error.required")
     )
+
 }

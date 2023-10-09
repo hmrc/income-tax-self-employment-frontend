@@ -31,7 +31,7 @@ class Navigator @Inject()() {
 
     case SelfEmploymentSummaryPage => taxYear => _ =>
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    
+
     case SelfEmploymentAbroadPage => taxYear => _ =>
       controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
 
@@ -39,7 +39,7 @@ class Navigator @Inject()() {
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
 
     case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
-    
+
     case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 

@@ -22,7 +22,7 @@ import play.api.data.FormError
 class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "anyOtherIncome.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new AnyOtherIncomeFormProvider()()
 
@@ -42,4 +42,5 @@ class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

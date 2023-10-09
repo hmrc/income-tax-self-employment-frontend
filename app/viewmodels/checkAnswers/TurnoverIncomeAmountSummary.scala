@@ -24,19 +24,18 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TurnoverIncomeAmountSummary  {
+object TurnoverIncomeAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TurnoverIncomeAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "turnoverIncomeAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("turnoverIncomeAmount.change.hidden"))
-          )
+    answers.get(TurnoverIncomeAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "turnoverIncomeAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("turnoverIncomeAmount.change.hidden"))
         )
+      )
     }
+
 }

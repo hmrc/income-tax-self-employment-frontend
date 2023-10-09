@@ -24,7 +24,7 @@ class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
   def requiredKey(isAgent: Boolean) = s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}"
 
   val invalidKey = "error.boolean"
-  val isAgent = false
+  val isAgent    = false
 
   def form(isAgent: Boolean) = new SelfEmploymentAbroadFormProvider()(isAgent)
 
@@ -44,4 +44,5 @@ class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey(false))
     )
   }
+
 }

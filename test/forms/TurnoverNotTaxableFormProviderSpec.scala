@@ -22,7 +22,7 @@ import play.api.data.FormError
 class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "turnoverNotTaxable.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new TurnoverNotTaxableFormProvider()()
 
@@ -42,4 +42,5 @@ class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

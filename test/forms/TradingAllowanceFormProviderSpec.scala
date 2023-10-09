@@ -26,7 +26,7 @@ class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "tradingAllowance.error.required"
 
     behave like optionsField[TradingAllowance](
@@ -42,4 +42,5 @@ class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

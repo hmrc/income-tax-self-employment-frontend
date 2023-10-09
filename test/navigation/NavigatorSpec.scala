@@ -17,10 +17,10 @@
 package navigation
 
 import base.SpecBase
+import controllers.journeys.abroad.{routes => aRoutes}
+import controllers.journeys.tradeDetails.{routes => tdRoutes}
 import controllers.journeys.{routes => jRoutes}
 import controllers.standard.{routes => stRoutes}
-import controllers.journeys.tradeDetails.{routes => tdRoutes}
-import controllers.journeys.abroad.{routes => aRoutes}
 import models._
 import pages._
 
@@ -28,8 +28,8 @@ import java.time.LocalDate
 
 class NavigatorSpec extends SpecBase {
 
-  val navigator = new Navigator
-  val taxYear = LocalDate.now().getYear
+  val navigator    = new Navigator
+  val taxYear: Int = LocalDate.now().getYear
 
   case object UnknownPage extends Page
 
@@ -80,4 +80,5 @@ class NavigatorSpec extends SpecBase {
       }
     }
   }
+
 }

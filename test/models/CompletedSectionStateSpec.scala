@@ -18,10 +18,10 @@ package models
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -32,10 +32,8 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
-      forAll(gen) {
-        sectionCompletedState =>
-
-          JsString(sectionCompletedState.toString).validate[CompletedSectionState].asOpt.value mustEqual sectionCompletedState
+      forAll(gen) { sectionCompletedState =>
+        JsString(sectionCompletedState.toString).validate[CompletedSectionState].asOpt.value mustEqual sectionCompletedState
       }
     }
 
@@ -43,10 +41,8 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = arbitrary[String] suchThat (!CompletedSectionState.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[CompletedSectionState] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[CompletedSectionState] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,11 +50,10 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
-      forAll(gen) {
-        sectionCompletedState =>
-
-          Json.toJson(sectionCompletedState) mustEqual JsString(sectionCompletedState.toString)
+      forAll(gen) { sectionCompletedState =>
+        Json.toJson(sectionCompletedState) mustEqual JsString(sectionCompletedState.toString)
       }
     }
   }
+
 }

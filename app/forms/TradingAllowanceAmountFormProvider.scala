@@ -16,18 +16,17 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class TradingAllowanceAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "tradingAllowanceAmount.error.required",
-        "tradingAllowanceAmount.error.nonNumeric")
+      "value" -> bigDecimal("tradingAllowanceAmount.error.required", "tradingAllowanceAmount.error.nonNumeric")
         .verifying(inBigDecimalRange(0, 100000000000.00, "tradingAllowanceAmount.error.outOfRange"))
     )
+
 }

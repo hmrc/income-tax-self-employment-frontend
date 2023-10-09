@@ -27,16 +27,15 @@ import viewmodels.implicits._
 object HowMuchTradingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowMuchTradingAllowancePage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key = "howMuchTradingAllowance.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
-          )
+    answers.get(HowMuchTradingAllowancePage).map { answer =>
+      SummaryListRowViewModel(
+        key = "howMuchTradingAllowance.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
         )
+      )
     }
+
 }

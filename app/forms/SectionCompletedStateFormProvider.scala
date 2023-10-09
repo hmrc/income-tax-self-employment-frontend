@@ -16,11 +16,11 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.CompletedSectionState
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class SectionCompletedStateFormProvider @Inject() extends Mappings {
 
@@ -28,4 +28,5 @@ class SectionCompletedStateFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[CompletedSectionState]("sectionCompletedState.error.required")
     )
+
 }

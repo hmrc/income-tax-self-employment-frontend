@@ -58,4 +58,5 @@ class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       requiredError = FormError(fieldName, "notTaxableAmount.error.required")
     )
   }
+
 }

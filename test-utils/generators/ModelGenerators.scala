@@ -35,4 +35,5 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(CompletedSectionState.values)
     }
+
 }

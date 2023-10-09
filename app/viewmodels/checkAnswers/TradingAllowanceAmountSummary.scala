@@ -29,22 +29,21 @@ import viewmodels.implicits._
 object TradingAllowanceAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowanceAmountPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"TradingAllowanceAmount.$answer"))
-          )
+    answers.get(TradingAllowanceAmountPage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"TradingAllowanceAmount.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key = "TradingAllowanceAmount.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("TradingAllowanceAmount.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "TradingAllowanceAmount.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("TradingAllowanceAmount.change.hidden"))
         )
+      )
     }
+
 }

@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.HowMuchTradingAllowancePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,13 +39,13 @@ import scala.concurrent.Future
 
 class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new HowMuchTradingAllowanceFormProvider()
-  val form = formProvider()
-  val taxYear = LocalDate.now().getYear
+  val formProvider                        = new HowMuchTradingAllowanceFormProvider()
+  val form: Form[HowMuchTradingAllowance] = formProvider()
+  val taxYear: Int                        = LocalDate.now().getYear
 
-  lazy val howMuchTradingAllowanceRoute = HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode).url
+  lazy val howMuchTradingAllowanceRoute: String = HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode).url
 
   "HowMuchTradingAllowance Controller" - {
 
@@ -78,7 +79,9 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowMuchTradingAllowance.values.head), NormalMode, taxYear)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(HowMuchTradingAllowance.values.head), NormalMode, taxYear)(
+          request,
+          messages(application)).toString
       }
     }
 
@@ -128,7 +131,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -142,7 +145,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -159,4 +162,5 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

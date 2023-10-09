@@ -25,9 +25,8 @@ class OtherIncomeAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "otherIncomeAmount.error.required",
-        "otherIncomeAmount.error.nonNumeric")
+      "value" -> bigDecimal("otherIncomeAmount.error.required", "otherIncomeAmount.error.nonNumeric")
         .verifying(inBigDecimalRange(0, 100000000000.00, "otherIncomeAmount.error.outOfRange"))
     )
+
 }

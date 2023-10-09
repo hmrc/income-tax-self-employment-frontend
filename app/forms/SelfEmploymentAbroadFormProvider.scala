@@ -27,4 +27,5 @@ class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
     )
+
 }

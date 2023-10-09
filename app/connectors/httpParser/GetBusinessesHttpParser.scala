@@ -25,7 +25,7 @@ object GetBusinessesHttpParser extends HttpParser {
   type GetBusinessesResponse = Either[HttpError, Seq[BusinessData]]
 
   override val parserName: String = "GetBusinessHttpParser"
-  
+
   implicit object GetBusinessesHttpReads extends HttpReads[GetBusinessesResponse] {
 
     override def read(method: String, url: String, response: HttpResponse): GetBusinessesResponse =

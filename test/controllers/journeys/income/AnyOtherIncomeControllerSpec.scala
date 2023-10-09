@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AnyOtherIncomePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,13 +39,13 @@ import scala.concurrent.Future
 
 class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new AnyOtherIncomeFormProvider()
-  val form = formProvider()
-  val taxYear = LocalDate.now().getYear
+  val formProvider        = new AnyOtherIncomeFormProvider()
+  val form: Form[Boolean] = formProvider()
+  val taxYear: Int        = LocalDate.now().getYear
 
-  lazy val anyOtherIncomeRoute = AnyOtherIncomeController.onPageLoad(taxYear, NormalMode).url
+  lazy val anyOtherIncomeRoute: String = AnyOtherIncomeController.onPageLoad(taxYear, NormalMode).url
 
   "AnyOtherIncome Controller" - {
 
@@ -128,7 +129,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -142,7 +143,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -158,4 +159,5 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

@@ -22,7 +22,7 @@ import play.api.data.FormError
 class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "incomeNotCountedAsTurnover.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new IncomeNotCountedAsTurnoverFormProvider()()
 
@@ -42,4 +42,5 @@ class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours 
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

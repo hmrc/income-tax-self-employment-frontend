@@ -17,16 +17,18 @@
 package forms
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "nonTurnoverIncomeAmount.error.required",
-        "nonTurnoverIncomeAmount.error.nonNumeric")
-          .verifying(inBigDecimalRange(0, 100000000000.00, "nonTurnoverIncomeAmount.error.outOfRange")) //TODO amount verification inline with ticket 5553
+      "value" -> bigDecimal("nonTurnoverIncomeAmount.error.required", "nonTurnoverIncomeAmount.error.nonNumeric")
+        .verifying(
+          inBigDecimalRange(0, 100000000000.00, "nonTurnoverIncomeAmount.error.outOfRange")
+        ) // TODO amount verification inline with ticket 5553
     )
+
 }

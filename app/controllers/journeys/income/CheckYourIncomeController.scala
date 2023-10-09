@@ -24,17 +24,17 @@ import views.html.journeys.income.CheckYourIncomeView
 
 import javax.inject.Inject
 
-class CheckYourIncomeController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: CheckYourIncomeView
-                                     ) extends FrontendBaseController with I18nSupport {
+class CheckYourIncomeController @Inject() (override val messagesApi: MessagesApi,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: CheckYourIncomeView)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
-      Ok(view())
+  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    Ok(view())
   }
+
 }
