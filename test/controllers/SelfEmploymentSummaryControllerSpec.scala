@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessDataNoneResponse, aBusinessDataResponse}
+import builders.UserBuilder
 import connectors.SelfEmploymentConnector
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
@@ -43,7 +44,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers = UserAnswers("1345566")
   val taxYear = LocalDate.now().getYear
-  val businessId = "trade-details-nino"
+  val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -63,7 +64,6 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(Right(Seq()))
 
-         
           val request = FakeRequest(GET, SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value

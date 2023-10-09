@@ -26,15 +26,15 @@ GET         /unauthorised                                controllers.standard.Un
 
 GET         /:taxYear/task-list                          controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
 
-GET         /:taxYear/details/self-employment-abroad             controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/details/self-employment-abroad             controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/details/self-employment-abroad/change      controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/details/self-employment-abroad/change      controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/details/self-employment-abroad/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/details/self-employment-abroad/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/details/self-employment-abroad/change/:businessId      controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/details/self-employment-abroad/change/:businessId      controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
 GET         /:taxYear/details/check/:businessId                  controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
 GET         /:taxYear/self-employment-summary                    controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
 
-GET        /:taxYear/details/completed-section/:journey          controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-POST       /:taxYear/details/completed-section/:journey          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-GET        /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
-POST       /:taxYear/details/change-completed-section/:journey   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+GET        /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+POST       /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+GET        /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+POST       /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
