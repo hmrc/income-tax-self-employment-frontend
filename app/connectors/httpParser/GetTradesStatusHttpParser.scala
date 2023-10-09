@@ -31,7 +31,8 @@ object GetTradesStatusHttpParser extends HttpParser {
     override def read(method: String, url: String, response: HttpResponse): GetTradesStatusResponse =
       response.status match {
         case OK => response.json.validate[Seq[TradesJourneyStatuses]].fold[GetTradesStatusResponse](
-          _ => nonModelValidatingJsonFromAPI, parsedModel => Right(parsedModel)
+          _ => nonModelValidatingJsonFromAPI,
+          parsedModel => Right(parsedModel)
         )
         case _ => pagerDutyError(response)
       }

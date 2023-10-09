@@ -20,9 +20,6 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import models._
-import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyStatus
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -64,21 +61,8 @@ class SelfEmploymentConnector @Inject()(http: HttpClient,
   def getCompletedTradesWithStatuses(nino: String, taxYear: Int, mtditid: String)
                                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetTradesStatusResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/trade-statuses/$nino/$taxYear"
+    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear"
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
-  }
-
-  def getCompletedTradesWithStatusMock(nino: String, taxYear: Int, mtditid: String)
-                                      (implicit ec: ExecutionContext): Future[GetTradesStatusResponse] = {
-    Future(Right(Seq(
-      TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
-        JourneyStatus(Abroad, Some(true)),
-        JourneyStatus(Income, Some(false)),
-        JourneyStatus(Expenses, None),
-        JourneyStatus(NationalInsurance, None)
-      )),
-      TradesJourneyStatuses("BusinessId2", None, Seq.empty)
-    )))
   }
 
 }

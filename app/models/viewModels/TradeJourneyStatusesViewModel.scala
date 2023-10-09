@@ -42,36 +42,30 @@ object TradeJourneyStatusesViewModel {
       if (optJourney.isEmpty) None else optJourney.head.completedState
     }
 
-    val (abroadCompletionStatus, incomeCompletionStatus, expensesCompletionStatus, nationalInsuranceCompletionStatus) =
-      (getStatus(Abroad), getStatus(Income), getStatus(Expenses), getStatus(NationalInsurance))
+    val (abroadCompletionStatus, incomeCompletionStatus) =
+      (getStatus(Abroad), getStatus(Income))
 
-    val (abroadUrlString, incomeUrlString, expensesUrlString, nationalInsuranceUrlString) =
+    val (abroadUrlString, incomeUrlString) =
       (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode).url,
-        if (abroadCompletionStatus.getOrElse(false)) "#" else "#", //TODO replace first # with income journey url when created
-        "#",
-        "#")
+        if (abroadCompletionStatus.getOrElse(false)) "#" else "#" //TODO replace first # with income journey url when created
+        )
 
-    val (abroadStatusString, incomeStatusString, expensesStatusString, nationalInsuranceStatusString) =
+    val (abroadStatusString, incomeStatusString) =
       (
         if (abroadCompletionStatus.isEmpty) notStartedStatus
         else if (abroadCompletionStatus.get) completedStatus
         else inProgressStatus,
 
-        if (abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
+        if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
         else if (incomeCompletionStatus.isEmpty) notStartedStatus
         else if (incomeCompletionStatus.get) completedStatus
         else inProgressStatus,
-
-        "#",
-
-        "#")
+)
 
     SummaryList(
       rows = Seq(
         buildRow("selfEmploymentAbroad", abroadUrlString, abroadStatusString),
-        buildRow("income", incomeUrlString, incomeStatusString),
-        buildRow("expensesCategories", expensesUrlString, expensesStatusString),
-        buildRow("nationalInsurance", nationalInsuranceUrlString, nationalInsuranceStatusString)
+        buildRow("income", incomeUrlString, incomeStatusString)
       ),
       classes = "govuk-!-margin-bottom-7")
   }

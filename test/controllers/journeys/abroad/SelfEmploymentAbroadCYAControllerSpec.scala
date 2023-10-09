@@ -37,7 +37,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
 
   private val isAgent = false
   private val taxYear = LocalDate.now().getYear
-  private val businessId = "businessId"
+  private val businessId = "SJPR05893938418"
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url
   private lazy val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
@@ -48,7 +48,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
   "SelfEmploymentAbroadCYAController" - {
     "when user answers are present" - {
       "must return OK and the correct view for a GET" in {
-        val userAnswers = UserAnswers("someId", Json.obj("selfEmploymentAbroad" -> true))
+        val userAnswers = UserAnswers("someId", Json.obj("SJPR05893938418" -> Json.obj("selfEmploymentAbroad" -> true)))
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
         val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 

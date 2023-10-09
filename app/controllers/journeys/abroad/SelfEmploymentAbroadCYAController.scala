@@ -42,7 +42,7 @@ class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: Mess
 
   def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val isAgent = request.user.isAgent
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, "businessId", request.userAnswers) //TODO Connie pass in BusinessID
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, "SJPR05893938418", request.userAnswers) //TODO Connie pass in BusinessID
     val summaryList = SummaryList(Seq(summaryListRows))
 
     val nextRoute = nextPageUrl(taxYear, navigator)

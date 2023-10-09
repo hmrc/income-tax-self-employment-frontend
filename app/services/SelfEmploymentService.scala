@@ -19,16 +19,16 @@ package services
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import play.api.Logging
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
+class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext, hc: HeaderCarrier) extends Logging {
 
   def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String): Future[GetTradesStatusResponse] = {
 
-//        connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
-    connector.getCompletedTradesWithStatusMock(nino, taxYear, mtditid)
+        connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
   }
 
 }

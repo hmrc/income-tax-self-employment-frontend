@@ -29,7 +29,7 @@ object SelfEmploymentAbroadSummary {
 
 
   def row(taxYear: Int, isAgent: Boolean, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
-    userAnswers.get(SelfEmploymentAbroadPage) match {
+    userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
 
       case Some(answer) =>
 
