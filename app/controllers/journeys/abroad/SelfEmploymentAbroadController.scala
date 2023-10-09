@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.SelfEmploymentAbroadFormProvider
 import models.{Mode, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -19,7 +19,6 @@ package builders
 import models._
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
-import play.api.libs.json.Json
 
 object TradesJourneyStatusesBuilder {
 

@@ -17,9 +17,9 @@
 package controllers
 
 import base.SpecBase
+import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import builders.UserBuilder.aNoddyUser
 import connectors.SelfEmploymentConnector
-import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.errors.{HttpError, HttpErrorBody}
@@ -27,7 +27,6 @@ import models.requests.TradesJourneyStatuses
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

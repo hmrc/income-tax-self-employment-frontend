@@ -18,27 +18,36 @@ package viewmodels.checkAnswers
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.{CheckMode, UserAnswers}
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: Int, nino: String, businessId: String, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SelfEmploymentAbroadPage).map {
-      answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+  def row(taxYear: Int, isAgent: Boolean, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+    userAnswers.get(SelfEmploymentAbroadPage) match {
+
+      case Some(answer) =>
 
         SummaryListRowViewModel(
-          key = "selfEmploymentAbroad.checkYourAnswersLabel",
-          value = ValueViewModel(value),
+          key = Key(
+            content = s"selfEmploymentAbroad.checkYourAnswersLabel.${if (isAgent) "agent" else "individual"}",
+            classes = "govuk-!-width-two-thirds"),
+          value = Value(
+            content = if (answer) "site.yes" else "site.no",
+            classes = "govuk-!-width-one-third"),
           actions = Seq(
             ActionItemViewModel("site.change", SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
           )
         )
+
+      case None => throw new RuntimeException("No UserAnswers retrieved for SelfEmploymentAbroadPage")
     }
+  }
+
 }

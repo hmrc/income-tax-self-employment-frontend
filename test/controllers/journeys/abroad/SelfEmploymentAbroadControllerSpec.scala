@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.abroad
 
 import base.SpecBase
 import forms.SelfEmploymentAbroadFormProvider
@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call

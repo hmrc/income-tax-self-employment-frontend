@@ -16,11 +16,13 @@
 
 package navigation
 
+import controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController
 import controllers.journeys.routes._
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import controllers.standard.routes._
 import models._
 import pages._
+import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -39,20 +41,28 @@ class Navigator @Inject()() {
 
     case SelfEmploymentAbroadPage => _ =>
       (taxYear, businessId) =>
-        SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode) //TODO direct to SelfEmploymentAbroad CYA page when created
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+
+    case SelfEmploymentAbroadCYAPage => _ =>
+      (taxYear, businessId) =>
+        SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
 
     case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
-    case _ => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
+
+    case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case _ => taxYear => _ => CheckYourAnswersController.onPageLoad
+  private val checkRouteMap: Page => UserAnswers => (Int, Option[String]) => Call = {
+    case SelfEmploymentAbroadPage => _ =>
+      (taxYear, businessId) =>
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+    case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: Option[String] = None): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)(taxYear, businessId)
     case CheckMode =>
-      checkRouteMap(page)(taxYear)(userAnswers)
+      checkRouteMap(page)(userAnswers)(taxYear, businessId)
   }
 }
