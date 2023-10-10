@@ -32,16 +32,16 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
-                                                selfEmploymentConnector: SelfEmploymentConnector,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                formProvider: SectionCompletedStateFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SectionCompletedStateView)
-                                               (implicit val ec: ExecutionContext
-                                                 ) extends FrontendBaseController with I18nSupport {
+class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
+                                                 selfEmploymentConnector: SelfEmploymentConnector,
+                                                 navigator: Navigator,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 formProvider: SectionCompletedStateFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[CompletedSectionState] = formProvider()
 
@@ -61,8 +61,9 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
 
   def onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
-
-      form.bindFromRequest().fold(
+      form
+        .bindFromRequest()
+        .fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
 
@@ -75,4 +76,5 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
         }
       )
   }
+
 }

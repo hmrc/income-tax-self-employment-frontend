@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.abroad
 
 import base.SpecBase
-import controllers.journeys.abroad.routes
 import forms.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}

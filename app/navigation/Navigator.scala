@@ -33,6 +33,9 @@ class Navigator @Inject()() {
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), TradeDetails.toString, NormalMode)
 
     case SelfEmploymentAbroadPage => (taxYear, optBusinessId) => _ =>
+      controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
+
+    case SelfEmploymentAbroadCYAPage => (taxYear, optBusinessId)  => _ =>
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), Abroad.toString, NormalMode)
 
     case SectionCompletedStatePage => (taxYear, _) => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
@@ -40,14 +43,17 @@ class Navigator @Inject()() {
     case _ => (taxYear, _) => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 
-  private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
+  private val checkRouteMap: Page => (Int, Option[String]) => UserAnswers => Call = {
+    case SelfEmploymentAbroadPage => (taxYear, optBusinessId) => _ =>
+        controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
+
+    case _ => (taxYear, _) => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, optBusinessId: Option[String] = None): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(taxYear, optBusinessId)(userAnswers)
     case CheckMode =>
-      checkRouteMap(page)(taxYear)(userAnswers)
+      checkRouteMap(page)(taxYear, optBusinessId)(userAnswers)
   }
 }
