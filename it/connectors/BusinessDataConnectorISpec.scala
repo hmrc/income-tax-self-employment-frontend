@@ -91,7 +91,7 @@ class BusinessDataConnectorISpec extends WiremockSpec {
 
   ".getCompletedTradesWithStatuses" should {
 
-    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/trade-statuses/$nino/$taxYear"
+    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear"
 
     behave like tradesWithStatusesRequestReturnsOk(getCompletedTradesWithStatuses,
       () => await(underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid)(hc, ec))

@@ -24,9 +24,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext, hc: HeaderCarrier) extends Logging {
+class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String): Future[GetTradesStatusResponse] = {
+  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
 
         connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
   }

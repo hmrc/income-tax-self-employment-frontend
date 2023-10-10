@@ -48,7 +48,7 @@ object TradeJourneyStatusesViewModel {
     val (abroadUrlString, incomeUrlString) =
       (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode).url,
         if (abroadCompletionStatus.getOrElse(false)) "#" else "#" //TODO replace first # with income journey url when created
-        )
+      )
 
     val (abroadStatusString, incomeStatusString) =
       (
@@ -60,7 +60,7 @@ object TradeJourneyStatusesViewModel {
         else if (incomeCompletionStatus.isEmpty) notStartedStatus
         else if (incomeCompletionStatus.get) completedStatus
         else inProgressStatus,
-)
+      )
 
     SummaryList(
       rows = Seq(
@@ -74,10 +74,11 @@ object TradeJourneyStatusesViewModel {
 
     val keyString = messages(s"common.$rowKey")
     val statusString = messages(s"status.$status")
+    val optDeadlinkStyle = if (status.equals(cannotStartYetStatus)) s" class='govuk-deadlink'" else ""
 
     SummaryListRowViewModel(
       key = KeyViewModel(HtmlContent(
-        s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href style='govuk-link'> $keyString </a> </span>")),
+        s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
       value = Value(),
       actions = Seq(ActionItem(
         href = href,

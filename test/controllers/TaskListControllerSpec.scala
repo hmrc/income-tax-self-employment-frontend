@@ -60,7 +60,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
       val selfEmploymentList = aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear)(messages(application)))
 
       running(application) {
-        when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
+        when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
         when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
@@ -82,7 +82,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
         val selfEmploymentList = Seq.empty
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(selfEmploymentList))
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(selfEmploymentList))
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
@@ -142,7 +142,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn
             Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
@@ -161,7 +161,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
+          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn
             Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
 
