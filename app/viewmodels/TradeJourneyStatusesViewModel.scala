@@ -42,11 +42,12 @@ object TradeJourneyStatusesViewModel {
       if (optJourney.isEmpty) None else optJourney.head.completedState
     }
 
-    val (abroadCompletionStatus, incomeCompletionStatus) =
-      (getStatus(Abroad), getStatus(Income))
+    val (abroadCompletionStatus, incomeCompletionStatus) = (getStatus(Abroad), getStatus(Income))
+
+    val abroadMode = if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode
 
     val (abroadUrlString, incomeUrlString) =
-      (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode).url,
+      (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, abroadMode).url,
         if (abroadCompletionStatus.getOrElse(false)) "#" else "#" //TODO replace first # with income journey url when created
       )
 
@@ -59,7 +60,7 @@ object TradeJourneyStatusesViewModel {
         if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
         else if (incomeCompletionStatus.isEmpty) notStartedStatus
         else if (incomeCompletionStatus.get) completedStatus
-        else inProgressStatus,
+        else inProgressStatus
       )
 
     SummaryList(
