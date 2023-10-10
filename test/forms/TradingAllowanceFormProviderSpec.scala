@@ -23,7 +23,9 @@ import play.api.data.FormError
 
 class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TradingAllowanceFormProvider()()
+  val isAgentString = "isAgentString"
+
+  val form = new TradingAllowanceFormProvider()(isAgentString)
 
   ".value" - {
 

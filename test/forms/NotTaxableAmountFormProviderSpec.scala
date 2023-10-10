@@ -22,7 +22,10 @@ import play.api.data.FormError
 
 class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new NotTaxableAmountFormProvider()()
+  val isAgentString = "isAgentString"
+  val tradingName = "tradingName"
+
+  val form = new NotTaxableAmountFormProvider()(isAgentString, tradingName)
 
   ".value" - {
 

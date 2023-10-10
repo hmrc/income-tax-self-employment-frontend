@@ -18,14 +18,17 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import forms.income.TurnoverNotTaxableFormProvider
+import org.joda.time.LocalDate
 import play.api.data.FormError
 
 class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "turnoverNotTaxable.error.required"
   val invalidKey = "error.boolean"
+  val isAgentString = "isAgentString"
+  val taxYear = LocalDate.now().getYear
 
-  val form = new TurnoverNotTaxableFormProvider()()
+  val form = new TurnoverNotTaxableFormProvider()(isAgentString, taxYear)
 
   ".value" - {
 

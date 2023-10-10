@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package forms.income
+package pages
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class TurnoverIncomeAmountFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal(
-        "turnoverIncomeAmount.error.required",
-        "turnoverIncomeAmount.error.nonNumeric")
-        .verifying(isBigDecimalGreaterThanZero("turnoverIncomeAmount.error.lessThanZero"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, "turnoverIncomeAmount.error.overMax")) //TODO amount verification inline with ticket 5553
-    )
+object SelfEmploymentAbroadCYAPage extends Page {
+  override def toString: String = "selfEmploymentAbroadCYA"
 }

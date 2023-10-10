@@ -16,32 +16,47 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.mvc.Call
-import pages._
+import controllers.journeys.abroad.routes._
+import controllers.journeys.routes._
+import controllers.journeys.tradeDetails.routes._
+import controllers.standard.routes._
 import models._
+import pages._
+import play.api.mvc.Call
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ =>
-      controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear)
+    case CheckYourSelfEmploymentDetailsPage => taxYear =>
+      _ =>
+        SelfEmploymentSummaryController.onPageLoad(taxYear)
 
-    case SelfEmploymentSummaryPage => taxYear => _ =>
-      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    
-    case SelfEmploymentAbroadPage => taxYear => _ =>
-      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
-    
-    case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
-    
-    case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+    case SelfEmploymentSummaryPage => taxYear =>
+      _ =>
+        SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+
+    case SelfEmploymentAbroadPage => taxYear =>
+      _ =>
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+
+    case SelfEmploymentAbroadCYAPage => taxYear =>
+      _ =>
+        SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+
+    case SectionCompletedStatePage => taxYear => _ => TaskListController.onPageLoad(taxYear)
+
+    case _ => taxYear => _ => TaskListController.onPageLoad(taxYear)
   }
 
   private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
+    case SelfEmploymentAbroadPage => taxYear =>
+      _ =>
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+
+    case _ => taxYear => _ => CheckYourAnswersController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {

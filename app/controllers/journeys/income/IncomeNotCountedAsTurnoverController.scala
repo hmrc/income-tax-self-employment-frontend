@@ -30,16 +30,15 @@ import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncomeNotCountedAsTurnoverController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      sessionRepository: SessionRepository,
-                                                      navigator: Navigator,
-                                                      identify: IdentifierAction,
-                                                      getData: DataRetrievalAction,
-                                                      formProvider: IncomeNotCountedAsTurnoverFormProvider,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: IncomeNotCountedAsTurnoverView
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IncomeNotCountedAsTurnoverController @Inject()(override val messagesApi: MessagesApi,
+                                                     sessionRepository: SessionRepository,
+                                                     navigator: Navigator,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     formProvider: IncomeNotCountedAsTurnoverFormProvider,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     view: IncomeNotCountedAsTurnoverView)
+                                                    (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 

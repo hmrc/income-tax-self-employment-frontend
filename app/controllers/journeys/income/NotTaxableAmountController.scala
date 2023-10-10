@@ -38,14 +38,14 @@ class NotTaxableAmountController @Inject()(override val messagesApi: MessagesApi
                                            requireData: DataRequiredAction,
                                            formProvider: NotTaxableAmountFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: NotTaxableAmountView
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           view: NotTaxableAmountView)
+                                          (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
   val tradeName = "PlaceHolderTradeName" //TODO get trade name from url businessId or userAnswers.get
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
@@ -57,7 +57,7 @@ class NotTaxableAmountController @Inject()(override val messagesApi: MessagesApi
       Ok(view(preparedForm, mode, isAgent, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
       formProvider(isAgentString(request.user.isAgent), tradeName).bindFromRequest().fold(

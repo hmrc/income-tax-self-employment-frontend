@@ -18,14 +18,17 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import forms.income.AnyOtherIncomeFormProvider
+import org.joda.time.LocalDate
 import play.api.data.FormError
 
 class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "anyOtherIncome.error.required"
   val invalidKey = "error.boolean"
+  val isAgentString = "isAgentString"
+  val taxYear = LocalDate.now().getYear
 
-  val form = new AnyOtherIncomeFormProvider()()
+  val form = new AnyOtherIncomeFormProvider()(isAgentString, taxYear)
 
   ".value" - {
 

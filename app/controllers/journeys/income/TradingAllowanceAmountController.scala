@@ -38,12 +38,12 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
                                                  requireData: DataRequiredAction,
                                                  formProvider: TradingAllowanceAmountFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: TradingAllowanceAmountView
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 view: TradingAllowanceAmountView)
+                                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
@@ -55,7 +55,7 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
       Ok(view(preparedForm, mode, isAgent, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
       formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(

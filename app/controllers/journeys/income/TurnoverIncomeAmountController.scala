@@ -30,21 +30,20 @@ import views.html.journeys.income.TurnoverIncomeAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TurnoverIncomeAmountController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: TurnoverIncomeAmountFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: TurnoverIncomeAmountView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TurnoverIncomeAmountController @Inject()(override val messagesApi: MessagesApi,
+                                               sessionRepository: SessionRepository,
+                                               navigator: Navigator,
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: TurnoverIncomeAmountFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: TurnoverIncomeAmountView)
+                                              (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
@@ -56,7 +55,7 @@ class TurnoverIncomeAmountController @Inject()(
       Ok(view(preparedForm, mode, isAgent, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
       formProvider().bindFromRequest().fold(

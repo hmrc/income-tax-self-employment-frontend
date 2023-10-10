@@ -22,7 +22,9 @@ import play.api.data.FormError
 
 class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new TradingAllowanceAmountFormProvider()()
+  val isAgentString = "isAgentString"
+
+  val form = new TradingAllowanceAmountFormProvider()(isAgentString)
 
   ".value" - {
 

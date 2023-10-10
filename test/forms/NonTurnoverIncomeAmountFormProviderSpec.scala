@@ -20,9 +20,14 @@ import forms.behaviours.BigDecimalFieldBehaviours
 import forms.income.NonTurnoverIncomeAmountFormProvider
 import play.api.data.FormError
 
+import java.time.LocalDate
+
 class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new NonTurnoverIncomeAmountFormProvider()()
+  val isAgentString = "isAgentString"
+  val tradingName = "tradingName"
+
+  val form = new NonTurnoverIncomeAmountFormProvider()(isAgentString, tradingName)
 
   ".value" - {
 

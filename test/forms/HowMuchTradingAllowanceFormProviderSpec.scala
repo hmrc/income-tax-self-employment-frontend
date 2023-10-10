@@ -21,9 +21,13 @@ import forms.income.HowMuchTradingAllowanceFormProvider
 import models.HowMuchTradingAllowance
 import play.api.data.FormError
 
+import java.time.LocalDate
+
 class HowMuchTradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new HowMuchTradingAllowanceFormProvider()()
+  val isAgentString = "isAgentString"
+
+  val form = new HowMuchTradingAllowanceFormProvider()(isAgentString)
 
   ".value" - {
 
