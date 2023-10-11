@@ -55,6 +55,11 @@ common.checkYourDetails.title.individual = Check your details
 common.checkYourDetails.heading.agent = Check your client’s details
 common.checkYourDetails.heading.individual = Check your details
 
+common.checkYourDetails.title.agent = Check your client’s details
+common.checkYourDetails.title.individual = Check your details
+common.checkYourDetails.heading.agent = Check your client’s details
+common.checkYourDetails.heading.individual = Check your details
+
 index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
