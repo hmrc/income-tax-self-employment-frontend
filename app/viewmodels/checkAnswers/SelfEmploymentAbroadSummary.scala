@@ -26,10 +26,11 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: Int, isAgent: Boolean, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(taxYear: Int, isAgent: Boolean, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
     userAnswers.get(SelfEmploymentAbroadPage) match {
       case Some(answer) =>
-      val value = if (answer) "site.yes" else "site.no"
+
+        val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
         key = Key(
@@ -37,7 +38,7 @@ object SelfEmploymentAbroadSummary {
           classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
         )
       )

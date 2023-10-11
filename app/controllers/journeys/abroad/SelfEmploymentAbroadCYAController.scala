@@ -40,19 +40,19 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val isAgent         = request.user.isAgent
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, request.userAnswers)
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, request.userAnswers)
     val summaryList     = SummaryList(Seq(summaryListRows))
 
-    val nextRoute = nextPageUrl(taxYear, navigator)
+    val nextRoute = nextPageUrl(taxYear, businessId, navigator)
 
     Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def nextPageUrl(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, request.userAnswers)
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, Some(optBusinessId))
       .url
 
 }

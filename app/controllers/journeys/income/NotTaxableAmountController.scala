@@ -66,7 +66,7 @@ class NotTaxableAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

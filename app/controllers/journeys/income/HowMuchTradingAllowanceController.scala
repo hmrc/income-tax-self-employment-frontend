@@ -66,7 +66,7 @@ class HowMuchTradingAllowanceController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
       )
   }
 }

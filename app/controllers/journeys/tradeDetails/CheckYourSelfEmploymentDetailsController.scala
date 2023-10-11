@@ -48,7 +48,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
       selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
         case Right(business: Seq[BusinessData]) =>
           val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
-          val nextRoute = navigate(taxYear, navigator)
+          val nextRoute = navigate(taxYear, businessId, navigator)
           Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
         //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
         case _ =>
@@ -56,8 +56,8 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
       }
   }
   
-  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
-    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, request.userAnswers.getOrElse(UserAnswers(request.userId))).url
+  private def navigate(taxYear: Int, businessId: String, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
+    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, Some(businessId)).url
   }
 
 }

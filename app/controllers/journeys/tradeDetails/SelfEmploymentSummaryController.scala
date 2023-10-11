@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, TradeDetails, UserAnswers}
 import navigation.Navigator
 import pages.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -59,7 +59,8 @@ class SelfEmploymentSummaryController @Inject()(
   }
 
   private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
-    navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, taxYear, request.userAnswers.getOrElse(UserAnswers(request.userId))).url
+    val businessId = TradeDetails.toString + "-" + request.user.nino
+    navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, Some(businessId)).url
   }
   
 }

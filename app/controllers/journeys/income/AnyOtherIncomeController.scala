@@ -64,7 +64,7 @@ class AnyOtherIncomeController @Inject()(override val messagesApi: MessagesApi,
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(AnyOtherIncomePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AnyOtherIncomePage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear))
       )
   }
 }

@@ -25,35 +25,35 @@ import models._
 @Singleton
 class Navigator @Inject()() {
 
-  private val normalRoutes: Page => Int => UserAnswers => Call = {
-    case CheckYourSelfEmploymentDetailsPage => taxYear => _ =>
+  private val normalRoutes: Page => (Int, Option[String]) => UserAnswers => Call = {
+    case CheckYourSelfEmploymentDetailsPage => (taxYear, _) => _ =>
       controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear)
 
-    case SelfEmploymentSummaryPage => taxYear => _ =>
-      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
-    
-    case SelfEmploymentAbroadPage => taxYear => _ =>
-      controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+    case SelfEmploymentSummaryPage => (taxYear, optBusinessId) => _ =>
+      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), TradeDetails.toString, NormalMode)
 
-    case SelfEmploymentAbroadCYAPage => taxYear => _ =>
-      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+    case SelfEmploymentAbroadPage => (taxYear, optBusinessId) => _ =>
+      controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
 
-    case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
-    
-    case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+    case SelfEmploymentAbroadCYAPage => (taxYear, optBusinessId)  => _ =>
+      controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), Abroad.toString, NormalMode)
+
+    case SectionCompletedStatePage => (taxYear, _) => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+
+    case _ => (taxYear, _) => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 
-  private val checkRouteMap: Page => Int => UserAnswers => Call = {
-    case SelfEmploymentAbroadPage => taxYear => _ =>
-        controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+  private val checkRouteMap: Page => (Int, Option[String]) => UserAnswers => Call = {
+    case SelfEmploymentAbroadPage => (taxYear, optBusinessId) => _ =>
+        controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
 
-    case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
+    case _ => (taxYear, _) => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
   }
 
-  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, optBusinessId: Option[String] = None): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(taxYear)(userAnswers)
+      normalRoutes(page)(taxYear, optBusinessId)(userAnswers)
     case CheckMode =>
-      checkRouteMap(page)(taxYear)(userAnswers)
+      checkRouteMap(page)(taxYear, optBusinessId)(userAnswers)
   }
 }

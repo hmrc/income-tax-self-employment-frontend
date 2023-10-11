@@ -66,7 +66,7 @@ class TurnoverNotTaxableController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverNotTaxablePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear))
       )
   }
 }

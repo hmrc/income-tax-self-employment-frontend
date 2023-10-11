@@ -65,7 +65,7 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowanceAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

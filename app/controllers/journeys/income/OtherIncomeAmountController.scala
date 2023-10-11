@@ -66,7 +66,7 @@ class OtherIncomeAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

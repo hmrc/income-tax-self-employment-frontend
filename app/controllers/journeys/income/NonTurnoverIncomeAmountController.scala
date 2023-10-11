@@ -66,7 +66,7 @@ class NonTurnoverIncomeAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }
