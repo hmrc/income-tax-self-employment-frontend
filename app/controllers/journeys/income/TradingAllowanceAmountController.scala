@@ -43,7 +43,7 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val turnoverAmount = 1000.00 //TODO get turnover amount for user answers
+  val turnoverAmount = 1000.00 //TODO get turnover amount for user answers, ticket 5841
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>

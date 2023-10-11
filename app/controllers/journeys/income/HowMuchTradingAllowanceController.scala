@@ -43,7 +43,7 @@ class HowMuchTradingAllowanceController @Inject()(override val messagesApi: Mess
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val tradingAllowance = (900.00).toString //TODO this is turnover if less than 1000, otherwise is 1000
+  val tradingAllowance = (900.00).toString //TODO this is turnover if less than 1000, otherwise is 1000. GET in ticket 5841
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>

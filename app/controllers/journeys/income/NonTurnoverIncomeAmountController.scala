@@ -44,7 +44,7 @@ class NonTurnoverIncomeAmountController @Inject()(
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val tradeName = "PlaceHolderTradeName" //TODO get trade name from url businessId or userAnswers.get
+  val tradeName = "PlaceHolderTradeName" //TODO get trade name from url businessId or userAnswers.get, ticket 5841
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>

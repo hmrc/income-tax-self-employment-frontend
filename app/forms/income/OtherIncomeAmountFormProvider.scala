@@ -29,6 +29,6 @@ class OtherIncomeAmountFormProvider @Inject() extends Mappings {
         s"otherIncomeAmount.error.required.$isAgentString",
         s"otherIncomeAmount.error.nonNumeric.$isAgentString")
         .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$isAgentString"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$isAgentString")) //TODO amount verification inline with ticket 5553
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$isAgentString"))
     )
 }
