@@ -47,6 +47,10 @@ class TurnoverIncomeAmountController @Inject()(
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
+      val isAccrual: Boolean = true
+      //TODO SASS-5841 get business data with businessId to get accounting type (accrual or cash) then pass isAccrual Boolean through urls (used in pages 3 5 8)
+      //for now hardcode isAccrual as true and pass through urls in order to finish navigation
+
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage) match {
         case None => form
         case Some(value) => form.fill(value)

@@ -38,8 +38,47 @@ class Navigator @Inject()() {
     case SelfEmploymentAbroadCYAPage => taxYear => _ =>
       controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
 
+    case IncomeNotCountedAsTurnoverPage => taxYear => userAnswers =>
+        if (userAnswers.get(IncomeNotCountedAsTurnoverPage).getOrElse(false)) {
+          controllers.journeys.income.routes.NonTurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode)
+        } else {
+          controllers.journeys.income.routes.TurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode)
+        }
+
+    case NonTurnoverIncomeAmountPage => taxYear => _ => controllers.journeys.income.routes.TurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode)
+
+    case TurnoverIncomeAmountPage => taxYear => _ => controllers.journeys.income.routes.AnyOtherIncomeController.onPageLoad(taxYear, NormalMode)
+
+    case AnyOtherIncomePage => taxYear => userAnswers =>
+        if (userAnswers.get(AnyOtherIncomePage).getOrElse(false)) {
+          controllers.journeys.income.routes.OtherIncomeAmountController.onPageLoad(taxYear, NormalMode)
+        } else {
+          controllers.journeys.income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)
+        }
+
+//    case OtherIncomeAmountPage => taxYear => userAnswers =>
+//      if (userAnswers.get(OtherIncomeAmountPage).contains("")) {
+//      controllers.journeys.income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)} //TODO Accrual or Cash basis
+
+    case TurnoverNotTaxablePage => taxYear => userAnswers =>
+        if (userAnswers.get(TurnoverNotTaxablePage).getOrElse(false)) {
+          controllers.journeys.income.routes.NotTaxableAmountController.onPageLoad(taxYear, NormalMode)
+        } else {
+          controllers.journeys.income.routes.TradingAllowanceController.onPageLoad(taxYear, NormalMode)
+        }
+
+    case NotTaxableAmountPage => taxYear => _ => controllers.journeys.income.routes.TradingAllowanceController.onPageLoad(taxYear, NormalMode)
+
+    case TradingAllowancePage => taxYear => _ => controllers.journeys.income.routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode)
+
+    case HowMuchTradingAllowancePage => taxYear => _ => controllers.journeys.income.routes.TradingAllowanceAmountController.onPageLoad(taxYear, NormalMode)
+
+    case TradingAllowanceAmountPage => taxYear => _ => controllers.journeys.income.routes.CheckYourIncomeController.onPageLoad(taxYear)
+
+    //TODO check your income page
+
     case SectionCompletedStatePage => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
-    
+
     case _ => taxYear => _ => controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
   }
 
