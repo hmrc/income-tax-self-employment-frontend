@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int, isAccrual: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverIncomeAmount.title"))) {
 
@@ -46,7 +46,7 @@
             <li>@messages("turnoverIncomeAmount.l1")</li>
             <li>@messages("turnoverIncomeAmount.l2")</li>
             <li>@messages("turnoverIncomeAmount.l3")</li>
-            <li>@messages(s"turnoverIncomeAmount.l4.$isAgentString")</li>
+            @if(isAccrual) {<li>@messages(s"turnoverIncomeAmount.l4.$isAgentString")</li>}
         </ul>
     </div>
 

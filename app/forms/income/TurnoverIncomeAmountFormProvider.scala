@@ -23,12 +23,12 @@ import javax.inject.Inject
 
 class TurnoverIncomeAmountFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BigDecimal] =
+  def apply(isAgentString: String): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        "turnoverIncomeAmount.error.required",
-        "turnoverIncomeAmount.error.nonNumeric")
-        .verifying(isBigDecimalGreaterThanZero("turnoverIncomeAmount.error.lessThanZero"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, "turnoverIncomeAmount.error.overMax")) //TODO amount verification inline with ticket 5553
+        s"turnoverIncomeAmount.error.required.$isAgentString",
+        s"turnoverIncomeAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"turnoverIncomeAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"turnoverIncomeAmount.error.overMax.$isAgentString"))
     )
 }

@@ -38,7 +38,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages("turnoverNotTaxable.p1")
+            @messages(s"turnoverNotTaxable.p1.$isAgentString")
         </p>
         <p>
             @messages("turnoverNotTaxable.p2")
@@ -49,7 +49,7 @@
             <li>@messages("turnoverNotTaxable.l3")</li>
         </ul>
         <p>
-            @messages("turnoverNotTaxable.p3")
+            @messages(s"turnoverNotTaxable.p3.$isAgentString")
         </p>
     </div>
 

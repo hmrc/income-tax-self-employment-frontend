@@ -25,7 +25,6 @@ class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
 
   def apply(isAgentString: String, taxYear: Int): Form[Boolean] =
     Form(
-      "value" -> boolean(s"turnoverNotTaxable.error.required.$isAgentString",
-        args = Seq((taxYear - 1).toString, taxYear.toString)) //TODO is this correct or should it be (taxYear, taxYear+1)
+      "value" -> boolean(s"turnoverNotTaxable.error.required.$isAgentString")
     )
 }

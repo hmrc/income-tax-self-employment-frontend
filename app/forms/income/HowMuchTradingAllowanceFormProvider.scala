@@ -24,8 +24,12 @@ import javax.inject.Inject
 
 class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[HowMuchTradingAllowance] =
+  def apply(isAgentString: String, turnoverAmount: String): Form[HowMuchTradingAllowance] =
     Form(
-      "value" -> enumerable[HowMuchTradingAllowance]("howMuchTradingAllowance.error.required")
+      "value" -> enumerable[HowMuchTradingAllowance](
+        s"howMuchTradingAllowance.error.required.$isAgentString",
+        args = Seq(turnoverAmount)
+      )
     )
+
 }

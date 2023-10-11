@@ -43,13 +43,15 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
+  val turnoverAmount = 1000.00 //TODO get turnover amount for user answers
+
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowanceAmountPage) match {
-        case None => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None => formProvider(isAgent, turnoverAmount)
+        case Some(value) => formProvider(isAgent, turnoverAmount).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
@@ -58,7 +60,7 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
-      formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
+      formProvider(isAgentString(request.user.isAgent), turnoverAmount).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
 

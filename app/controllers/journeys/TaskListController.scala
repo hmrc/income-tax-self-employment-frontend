@@ -40,7 +40,7 @@ class TaskListController @Inject()(override val messagesApi: MessagesApi,
     getStatusMsg(taxYear, selfEmploymentConnector) map {
       case Right(Some(true)) =>  Ok(view(taxYear, "status.complete"))
       case Right(Some(false)) => Ok(view(taxYear, "status.processing"))
-      case Right(None) =>  Ok(view(taxYear, "status.checkOurRecords"))
+      case Right(None) => Ok(view(taxYear, "status.checkOurRecords"))
       case Left(_) => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
   }

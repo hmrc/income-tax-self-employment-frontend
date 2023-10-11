@@ -31,10 +31,10 @@ object HowMuchTradingAllowance extends Enumerable.Implicits {
     Maximum, LessThan
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(tradingAllowance: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"HowMuchTradingAllowance.${value.toString}")),
+        content = Text(messages(s"howMuchTradingAllowance.${value.toString}", tradingAllowance)),
         value   = Some(value.toString),
         id      = Some(s"value_$index")
       )

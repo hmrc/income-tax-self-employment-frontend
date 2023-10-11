@@ -38,29 +38,31 @@ class HowMuchTradingAllowanceController @Inject()(override val messagesApi: Mess
                                                   requireData: DataRequiredAction,
                                                   formProvider: HowMuchTradingAllowanceFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: HowMuchTradingAllowanceView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  view: HowMuchTradingAllowanceView)
+                                                 (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
+
+  val tradingAllowance = (900.00).toString //TODO this is turnover if less than 1000, otherwise is 1000
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(HowMuchTradingAllowancePage) match {
-        case None => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None => formProvider(isAgent, tradingAllowance)
+        case Some(value) => formProvider(isAgent, tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, isAgent, taxYear, tradingAllowance))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
-      formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
+      formProvider(isAgentString(request.user.isAgent), tradingAllowance).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, tradingAllowance))),
 
         value =>
           for {

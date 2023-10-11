@@ -23,11 +23,12 @@ import javax.inject.Inject
 
 class TradingAllowanceAmountFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[BigDecimal] =
+  def apply(isAgentString: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        "tradingAllowanceAmount.error.required",
-        "tradingAllowanceAmount.error.nonNumeric")
-        .verifying(inBigDecimalRange(0, 100000000000.00, "tradingAllowanceAmount.error.outOfRange"))
+        s"tradingAllowanceAmount.error.required.$isAgentString",
+        s"tradingAllowanceAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"tradingAllowanceAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(turnoverAmount, s"tradingAllowanceAmount.error.overTurnover.$isAgentString"))
     )
 }

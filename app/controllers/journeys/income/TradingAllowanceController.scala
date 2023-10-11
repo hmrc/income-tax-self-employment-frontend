@@ -43,6 +43,8 @@ class TradingAllowanceController @Inject()(override val messagesApi: MessagesApi
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
+  val isAccrual = true //TODO pass accrual through URL
+
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
@@ -52,7 +54,7 @@ class TradingAllowanceController @Inject()(override val messagesApi: MessagesApi
         case Some(value) => formProvider(isAgent).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
@@ -60,7 +62,7 @@ class TradingAllowanceController @Inject()(override val messagesApi: MessagesApi
 
       formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, isAccrual))),
 
         value =>
           for {
