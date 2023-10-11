@@ -37,22 +37,21 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
-  val isAgent = false
-  val formProvider = new SelfEmploymentAbroadFormProvider()
+  val isAgent             = false
+  val formProvider        = new SelfEmploymentAbroadFormProvider()
   val form: Form[Boolean] = formProvider(isAgent)
-  val taxYear: Int = LocalDate.now().getYear
-  val businessId = "businessId"
+  val taxYear: Int        = LocalDate.now().getYear
+  val businessId          = "businessId-1"
 
-  lazy val selfEmploymentAbroadRoute: String =
-    controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val taskListRoute: String =
-    controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
-  lazy val taskListCall: Call = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String =
-    controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-  lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
+  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListCall: Call                = Call("GET", taskListRoute)
+  lazy val journeyRecoveryRoute: String      = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryCall: Call         = Call("GET", journeyRecoveryRoute)
+
   lazy val sectionCompletedStateRoute: String =
-    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
+
   lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
@@ -170,4 +169,5 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
     }
   }
+
 }

@@ -19,7 +19,7 @@ package controllers.journeys.abroad
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.SelfEmploymentAbroadFormProvider
-import models.{Mode, NormalMode, UserAnswers}
+import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,7 +41,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
                                                view: SelfEmploymentAbroadView)
                                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
@@ -65,11 +65,8 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
-              if (isSuccessful) {
-                navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear)
-              } else {
-                JourneyRecoveryController.onPageLoad()
-              }
+              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear, Some(businessId))
+                else JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }
       )

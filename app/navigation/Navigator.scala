@@ -32,20 +32,20 @@ class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => (Int, Option[String]) => Call = {
     case CheckYourSelfEmploymentDetailsPage => _ =>
-      (taxYear, businessId) =>
+      (taxYear, _) =>
         SelfEmploymentSummaryController.onPageLoad(taxYear)
 
     case SelfEmploymentSummaryPage => _ =>
-      (taxYear, businessId) =>
-        SectionCompletedStateController.onPageLoad(taxYear, TradeDetails.toString, NormalMode)
+      (taxYear, optBusinessId) =>
+        SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), TradeDetails.toString, NormalMode)
 
     case SelfEmploymentAbroadPage => _ =>
-      (taxYear, businessId) =>
-        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+      (taxYear, optBusinessId) =>
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
 
     case SelfEmploymentAbroadCYAPage => _ =>
-      (taxYear, businessId) =>
-        SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+      (taxYear, optBusinessId) =>
+        SectionCompletedStateController.onPageLoad(taxYear, optBusinessId.getOrElse(""), Abroad.toString, NormalMode)
 
     case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
 
@@ -54,8 +54,9 @@ class Navigator @Inject()() {
 
   private val checkRouteMap: Page => UserAnswers => (Int, Option[String]) => Call = {
     case SelfEmploymentAbroadPage => _ =>
-      (taxYear, businessId) =>
-        SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+      (taxYear, optBusinessId) =>
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear, optBusinessId.getOrElse(""))
+
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 

@@ -46,31 +46,33 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
 
   val form: Form[CompletedSectionState] = formProvider()
 
-  def onPageLoad(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val businessId =
-      journey + "-" + request.user.nino // TODO use the actual businessId as it is unique to the business, this can be a value reteived into the userAnswers
-    val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
-      case Right(Some(true)) => form.fill(Yes)
-      case Right(Some(false)) => form.fill(No)
-      case Right(None) => form
-      case Left(_) => form
-    }
 
-    preparedForm map { form =>
-      Ok(view(form, taxYear, journey, mode))
-    }
+  def onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+    implicit request =>
+      val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
+        case Right(Some(true)) => form.fill(Yes)
+        case Right(Some(false)) => form.fill(No)
+        case Right(None) => form
+        case Left(_) => form
+      }
+
+      preparedForm map {
+        form => Ok(view(form, taxYear, businessId, journey, mode))
+      }
   }
 
-  def onSubmit(taxYear: Int, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, journey, mode))),
+  def onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
+
         value => {
-          val businessId = journey + "-" + request.user.nino
           selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear))
+            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear, Some(businessId)))
             case _ => Redirect(JourneyRecoveryController.onPageLoad())
           }
         }

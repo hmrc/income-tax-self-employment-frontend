@@ -40,19 +40,19 @@ class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: Mess
   extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val isAgent = request.user.isAgent
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, "SJPR05893938418", request.userAnswers) //TODO Connie pass in BusinessID
-    val summaryList = SummaryList(Seq(summaryListRows))
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val isAgent         = request.user.isAgent
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, request.userAnswers)
+    val summaryList     = SummaryList(Seq(summaryListRows))
 
-    val nextRoute = nextPageUrl(taxYear, navigator)
+    val nextRoute = nextPageUrl(taxYear, businessId, navigator)
 
     Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def nextPageUrl(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear)
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, Some(optBusinessId))
       .url
 
 }
