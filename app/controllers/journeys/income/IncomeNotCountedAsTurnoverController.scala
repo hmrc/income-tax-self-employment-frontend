@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.IncomeNotCountedAsTurnoverFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.IncomeNotCountedAsTurnoverPage
+import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

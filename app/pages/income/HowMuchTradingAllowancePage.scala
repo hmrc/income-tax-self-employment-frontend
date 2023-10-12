@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.income
 
 import models.HowMuchTradingAllowance
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object HowMuchTradingAllowancePage extends QuestionPage[HowMuchTradingAllowance] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path(businessId: Option[String] = None): JsPath =
+    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
   override def toString: String = "howMuchTradingAllowance"
 }

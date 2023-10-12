@@ -20,7 +20,7 @@ import controllers.actions._
 import models.NormalMode
 import models.requests.DataRequest
 import navigation.Navigator
-import pages.SelfEmploymentAbroadCYAPage
+import pages.abroad.SelfEmploymentAbroadCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -30,14 +30,14 @@ import views.html.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
 
-class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   navigator: Navigator,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: SelfEmploymentAbroadCYAView)
-    extends FrontendBaseController
+class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  navigator: Navigator,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: SelfEmploymentAbroadCYAView)
+  extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>

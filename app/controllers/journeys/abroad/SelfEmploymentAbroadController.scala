@@ -17,10 +17,11 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.SelfEmploymentAbroadFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,7 +44,7 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage) match {
+      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
         case None => formProvider(request.user.isAgent)
         case Some(value) => formProvider(request.user.isAgent).fill(value)
       }
@@ -60,12 +61,12 @@ class SelfEmploymentAbroadController @Inject()(override val messagesApi: Message
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId)))
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =
               if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear, Some(businessId))
-                else controllers.standard.routes.JourneyRecoveryController.onPageLoad()
+                else JourneyRecoveryController.onPageLoad()
             Redirect(redirectLocation)
           }
       )

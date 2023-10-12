@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.TurnoverNotTaxableFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TurnoverNotTaxablePage
+import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

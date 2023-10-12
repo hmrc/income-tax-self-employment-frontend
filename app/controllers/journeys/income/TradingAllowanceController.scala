@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.TradingAllowanceFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TradingAllowancePage
+import pages.income.TradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -18,9 +18,9 @@ package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
-import models.{NormalMode, UserAnswers}
 import models.mdtp.BusinessData
 import models.requests.OptionalDataRequest
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -56,7 +56,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
       }
   }
   
-  private def navigate(taxYear: Int, businessId: String, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]) = {
+  private def navigate(taxYear: Int, businessId: String, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
     navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, Some(businessId)).url
   }
 

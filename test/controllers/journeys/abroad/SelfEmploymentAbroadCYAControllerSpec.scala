@@ -36,12 +36,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
-  private val isAgent = false
-  private val taxYear = LocalDate.now().getYear
+  private val isAgent    = false
+  private val taxYear    = LocalDate.now().getYear
   private val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
-  private lazy val nextRoute  = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId ,Abroad.toString, NormalMode).url
+
+  private lazy val nextRoute =
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier    = HeaderCarrier()
@@ -49,7 +51,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
   "SelfEmploymentAbroadCYAController" - {
     "when user answers are present" - {
       "must return OK and the correct view for a GET" in {
-        val userAnswers                 = UserAnswers("someId", Json.obj("selfEmploymentAbroad" -> true))
+        val userAnswers                 = UserAnswers("someId", Json.obj("trade-details-nino" -> Json.obj("selfEmploymentAbroad" -> true)))
         val application                 = applicationBuilder(userAnswers = Some(userAnswers)).build()
         val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 

@@ -16,8 +16,9 @@
 
 package viewmodels.checkAnswers
 
+import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.{CheckMode, UserAnswers}
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,22 +27,25 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
+
   def row(taxYear: Int, isAgent: Boolean, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
-    userAnswers.get(SelfEmploymentAbroadPage) match {
+    userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
+
       case Some(answer) =>
 
-        val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"selfEmploymentAbroad.checkYourAnswersLabel.${if (isAgent) "agent" else "individual"}",
-          classes = "govuk-!-width-two-thirds"),
-        value = Value(content = value, classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
+        SummaryListRowViewModel(
+          key = Key(
+            content = s"selfEmploymentAbroad.checkYourAnswersLabel.${if (isAgent) "agent" else "individual"}",
+            classes = "govuk-!-width-two-thirds"),
+          value = Value(
+            content = if (answer) "site.yes" else "site.no",
+            classes = "govuk-!-width-one-third"),
+          actions = Seq(
+            ActionItemViewModel("site.change", SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
+              .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
+          )
         )
-      )
+
       case None => throw new RuntimeException("No UserAnswers retrieved for SelfEmploymentAbroadPage")
     }
   }

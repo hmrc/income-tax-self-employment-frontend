@@ -18,6 +18,7 @@ package controllers.journeys
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
 import models.CompletedSectionState.{No, Yes}
 import models.{CompletedSectionState, Mode, UserAnswers}
@@ -32,18 +33,19 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
-                                                 selfEmploymentConnector: SelfEmploymentConnector,
-                                                 navigator: Navigator,
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalAction,
-                                                 formProvider: SectionCompletedStateFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
-    extends FrontendBaseController
+class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
+                                                selfEmploymentConnector: SelfEmploymentConnector,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                formProvider: SectionCompletedStateFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
 
   val form: Form[CompletedSectionState] = formProvider()
+
 
   def onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
@@ -59,7 +61,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
       }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       form
         .bindFromRequest()
@@ -71,7 +73,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
           selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
             case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear, Some(businessId)))
-            case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+            case _ => Redirect(JourneyRecoveryController.onPageLoad())
           }
         }
       )

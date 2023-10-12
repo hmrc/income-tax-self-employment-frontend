@@ -19,10 +19,15 @@ package connectors
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
+import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
+import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
+import models._
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
 import models.mdtp.BusinessData
+import models.requests.TradesJourneyStatuses
+import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -33,52 +38,80 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class BusinessDataConnectorISpec extends WiremockSpec {
-  
+
   def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
     new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
       override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
     }
-  
-  val headersSentToBE: Seq[HttpHeader] = Seq( new HttpHeader(HeaderNames.xSessionId, "sessionIdValue") )
-  
+
+  val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader(HeaderNames.xSessionId, "sessionIdValue"))
+
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-  
+
   val underTest = new SelfEmploymentConnector(httpClient, appConfig())
 
   val nino = "AA370343B"
-  val mtditid: String = "mtditid"
-  
+  val mtditid = "mtditid"
+  val businessId = "ABC123"
+
   val taxYear = LocalDate.now().getYear
-  
+
   ".getBusiness" should {
-    val businessId = "ABC123"
     val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
-    
-    behave like businessRequestReturnsOk(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
+
+    behave like businessRequestReturnsOk(getBusiness, () => await(underTest.getBusiness(nino, businessId, mtditid)))
     behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
   }
 
   ".getBusinesses" should {
     val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino/list"
 
-    behave like businessRequestReturnsOk(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+    behave like businessRequestReturnsOk(getBusinesses, () => await(underTest.getBusinesses(nino, mtditid)))
     behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
   }
 
-  def businessRequestReturnsOk(getUrl: String, block: () => Future[GetBusinessesResponse]): Unit = {
-    
-    "return a 200 response and a BusinessData model" in {
+
+  ".saveJourneyState" should {
+
+    val tradeDetailsJourney = TradeDetails.toString
+    val saveJourneyState = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+
+    behave like journeyStateRequestReturnsNoContent(
+      () => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(
+      () => await(underTest.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec)))
+
+    behave like journeyStateRequestReturnsError(
+      () => stubPutWithResponseBody(saveJourneyState,
+        BAD_REQUEST,
+        Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
+        headersSentToBE))(
+      () => underTest.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec))
+  }
+
+  ".getCompletedTradesWithStatuses" should {
+
+    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear"
+
+    behave like tradesWithStatusesRequestReturnsOk(getCompletedTradesWithStatuses,
+      () => await(underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid)(hc, ec))
+    )
+    behave like tradesWithStatusesRequestReturnsError(getCompletedTradesWithStatuses,
+      () => underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid))
+  }
+
+  def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {
+    "return a 200 response and a GetBusinessRequest model" in {
       val expectedResponseBody = aBusinessDataRequestStr
       val expectedResult = Json.parse(expectedResponseBody).as[Seq[BusinessData]]
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
-      val result = await(block())
+      val result = block()
       result mustBe Right(expectedResult)
     }
     "return a 200 response but produce a json non-validation error" in {
       val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
-      val result = await(block())
+      val result = block()
       result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
     }
   }
@@ -97,9 +130,73 @@ class BusinessDataConnectorISpec extends WiremockSpec {
         result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
       }
     }
-    
+
+  def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
+    "return a 204 response and a JourneyStateResponse model" in {
+      stubPutWithoutResponseBody(getUrl, NO_CONTENT)
+      val result = block()
+      result mustBe Right(None)
+    }
+
+  def journeyStateRequestReturnsNoContent(stubs: () => Unit)(block: () => JourneyStateResponse): Unit =
+    "return a 204 response and a SelfEmploymentResponse model" in {
+      stubs()
+      val result = block()
+      result mustBe Right(None)
+    }
+
+  def journeyStateRequestReturnsError(stubs: () => Unit)(block: () => Future[JourneyStateResponse]): Unit =
+    "return an error when the connector returns an error" in {
+      stubs()
+      val result = await(block())
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")))
+    }
+
+  def tradesWithStatusesRequestReturnsOk(getUrl: String, block: () => GetTradesStatusResponse): Unit = {
+    "return a 200 response and a sequence of TaggedTradeDetails models" in {
+      val expectedResponseBody = aSequenceTadesJourneyStatusesRequestString
+      val expectedResult = Json.parse(expectedResponseBody).as[Seq[TradesJourneyStatuses]]
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
+      val result = block()
+      result mustBe Right(expectedResult)
+    }
+    "return a 200 response but produce a json non-validation error" in {
+      val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
+      stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
+      val result = block()
+      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+    }
+  }
+
+  def tradesWithStatusesRequestReturnsError(getUrl: String, block: () => Future[GetTradesStatusResponse]): Unit =
+    for ((errorStatus, code, reason) <- Seq(
+      (NOT_FOUND, "NOT_FOUND", "The remote endpoint has indicated that no data can be found."),
+      (BAD_REQUEST, "INVALID_NINO", "Submission has not passed validation. Invalid parameter NINO."),
+      (INTERNAL_SERVER_ERROR, "SERVER_ERROR", "IF is currently experiencing problems that require live service intervention."),
+      (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", "Dependent systems are currently not responding."))) {
+
+      s"return a $errorStatus error when the connector returns an error" in {
+        stubGetWithResponseBody(getUrl, errorStatus,
+          Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
+        val result = await(block())
+        result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
+      }
+    }
+
+  lazy val aSequenceTadesJourneyStatusesRequestString =
+    Json.toJson(Seq(
+      TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
+        JourneyStatus(Abroad, Some(true)),
+        JourneyStatus(Income, Some(false)),
+        JourneyStatus(Expenses, None),
+        JourneyStatus(NationalInsurance, None)
+      )),
+      TradesJourneyStatuses("BusinessId2", None, Seq.empty)
+    )).toString()
+
   lazy val aBusinessDataRequestStr: String =
-  """
+    """
       |[
       |{
       |   "businessId":"SJPR05893938418",

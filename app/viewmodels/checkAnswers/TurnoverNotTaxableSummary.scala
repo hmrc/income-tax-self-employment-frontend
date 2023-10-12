@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.journeys.income.routes.TurnoverNotTaxableController
 import models.{CheckMode, UserAnswers}
-import pages.TurnoverNotTaxablePage
+import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

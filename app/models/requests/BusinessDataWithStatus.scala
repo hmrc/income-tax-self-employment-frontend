@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package models.requests
 
-import play.api.libs.json.JsPath
+import models.mdtp.BusinessData
 
-case object NonTurnoverIncomeAmountPage extends QuestionPage[BigDecimal] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "nonTurnoverIncomeAmount"
-}
+case class BusinessDataWithStatus(businessData: BusinessData,
+                                  isCompleted: Boolean)

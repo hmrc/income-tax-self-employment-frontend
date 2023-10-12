@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SelfEmploymentAbroadPage
+import pages.abroad.SelfEmploymentAbroadPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -37,18 +37,21 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
-  val isAgent = false
-  val formProvider = new SelfEmploymentAbroadFormProvider()
+  val isAgent             = false
+  val formProvider        = new SelfEmploymentAbroadFormProvider()
   val form: Form[Boolean] = formProvider(isAgent)
-  val taxYear: Int = LocalDate.now().getYear
-  val businessId = "businessId-1"
+  val taxYear: Int        = LocalDate.now().getYear
+  val businessId          = "businessId-1"
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val taskListRoute: String = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
-  lazy val taskListCall: Call = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-  lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val sectionCompletedStateRoute: String = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
+  lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListCall: Call                = Call("GET", taskListRoute)
+  lazy val journeyRecoveryRoute: String      = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryCall: Call         = Call("GET", journeyRecoveryRoute)
+
+  lazy val sectionCompletedStateRoute: String =
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
+
   lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 
   "SelfEmploymentAbroad Controller" - {
@@ -73,7 +76,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
       "must populate the view correctly for a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true, Some(businessId)).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -166,4 +169,5 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
     }
   }
+
 }

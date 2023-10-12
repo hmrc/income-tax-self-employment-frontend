@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.OtherIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.OtherIncomeAmountPage
+import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

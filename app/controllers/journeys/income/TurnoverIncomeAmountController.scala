@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.TurnoverIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TurnoverIncomeAmountPage
+import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
