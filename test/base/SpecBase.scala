@@ -49,4 +49,8 @@ trait SpecBase
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
+
+  protected def welshTest(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
+
+  protected def agentTest(isAgent: Boolean): String = if (isAgent) "Agent" else "Individual"
 }

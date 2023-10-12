@@ -20,21 +20,17 @@ import forms.behaviours.BigDecimalFieldBehaviours
 import forms.income.NonTurnoverIncomeAmountFormProvider
 import play.api.data.FormError
 
-import java.time.LocalDate
-
 class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
-
-  val isAgentString = "isAgentString"
-  val tradingName = "tradingName"
-
-  val form = new NonTurnoverIncomeAmountFormProvider()(isAgentString, tradingName)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName     = "value"
+    val isAgentString = "agent"
+    val tradingName   = "tradingName"
+    val minimum       = 0
+    val maximum       = 100000000000.00
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    val form = new NonTurnoverIncomeAmountFormProvider()(isAgentString, tradingName)
 
     val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
@@ -47,21 +43,28 @@ class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours 
     behave like bigDecimalField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "nonTurnoverIncomeAmount.error.nonNumeric")
+      nonNumericError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.nonNumeric.$isAgentString", Seq(tradingName))
     )
 
-    behave like bigDecimalFieldWithRange(
+    behave like bigDecimalFieldWithMinimum(
       form,
       fieldName,
       minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "nonTurnoverIncomeAmount.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString", Seq(minimum))
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      maximum,
+      expectedError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.overMax.$isAgentString", Seq(maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "nonTurnoverIncomeAmount.error.required")
+      requiredError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.required.$isAgentString", Seq(tradingName))
     )
   }
+
 }

@@ -22,19 +22,16 @@ import play.api.data.FormError
 
 class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val isAgentString = "isAgentString"
-  val tradingName = "tradingName"
-
-  val form = new NotTaxableAmountFormProvider()(isAgentString, tradingName)
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName      = "value"
+    val isAgentString  = "individual"
+    val minimum        = 0
+    val turnoverAmount = 1000.00
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    val form = new NotTaxableAmountFormProvider()(isAgentString, turnoverAmount)
 
-    val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+    val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, turnoverAmount)
 
     behave like fieldThatBindsValidData(
       form,
@@ -45,21 +42,28 @@ class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     behave like bigDecimalField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "notTaxableAmount.error.nonNumeric")
+      nonNumericError = FormError(fieldName, s"notTaxableAmount.error.nonNumeric.$isAgentString")
     )
 
-    behave like bigDecimalFieldWithRange(
+    behave like bigDecimalFieldWithMinimum(
       form,
       fieldName,
-      minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "notTaxableAmount.error.outOfRange", Seq(minimum, maximum))
+      minimum,
+      expectedError = FormError(fieldName, s"notTaxableAmount.error.lessThanZero.$isAgentString", Seq(minimum))
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      turnoverAmount,
+      expectedError = FormError(fieldName, s"notTaxableAmount.error.overTurnover.$isAgentString", Seq(turnoverAmount))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "notTaxableAmount.error.required")
+      requiredError = FormError(fieldName, s"notTaxableAmount.error.required.$isAgentString")
     )
   }
+
 }

@@ -20,19 +20,16 @@ import forms.behaviours.BooleanFieldBehaviours
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import play.api.data.FormError
 
-import java.time.LocalDate
-
 class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours {
-
-  val requiredKey = "incomeNotCountedAsTurnover.error.required"
-  val invalidKey = "error.boolean"
-  val isAgentString = "isAgentString"
-
-  val form = new IncomeNotCountedAsTurnoverFormProvider()(isAgentString)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName     = "value"
+    val invalidKey    = "error.boolean"
+    val isAgentString = "individual"
+    val requiredKey   = s"incomeNotCountedAsTurnover.error.required.$isAgentString"
+
+    val form = new IncomeNotCountedAsTurnoverFormProvider()(isAgentString)
 
     behave like booleanField(
       form,
@@ -46,4 +43,5 @@ class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours 
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

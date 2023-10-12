@@ -22,17 +22,17 @@ import play.api.data.FormError
 
 class SectionCompletedStateFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new SectionCompletedStateFormProvider()()
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "sectionCompletedState.error.required"
+
+    val form = new SectionCompletedStateFormProvider()()
 
     behave like optionsField[CompletedSectionState](
       form,
       fieldName,
-      validValues  = CompletedSectionState.values,
+      validValues = CompletedSectionState.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
@@ -42,4 +42,5 @@ class SectionCompletedStateFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

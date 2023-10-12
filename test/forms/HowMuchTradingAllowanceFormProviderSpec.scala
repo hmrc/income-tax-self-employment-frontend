@@ -21,31 +21,30 @@ import forms.income.HowMuchTradingAllowanceFormProvider
 import models.HowMuchTradingAllowance
 import play.api.data.FormError
 
-import java.time.LocalDate
-
 class HowMuchTradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
-
-  val isAgentString = "isAgentString"
-
-  val form = new HowMuchTradingAllowanceFormProvider()(isAgentString)
 
   ".value" - {
 
-    val fieldName = "value"
-    val requiredKey = "howMuchTradingAllowance.error.required"
+    val fieldName      = "value"
+    val isAgentString  = "individual"
+    val turnoverAmount = "1000.00"
+    val requiredKey    = s"howMuchTradingAllowance.error.required.$isAgentString"
+
+    val form = new HowMuchTradingAllowanceFormProvider()(isAgentString, turnoverAmount)
 
     behave like optionsField[HowMuchTradingAllowance](
       form,
       fieldName,
       validValues = HowMuchTradingAllowance.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, "error.invalid", Seq(turnoverAmount))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(turnoverAmount))
     )
 
   }
+
 }

@@ -22,14 +22,14 @@ import play.api.data.FormError
 
 class OtherIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new OtherIncomeAmountFormProvider()()
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName     = "value"
+    val isAgentString = "individual"
+    val minimum       = 0
+    val maximum       = 100000000000.00
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    val form = new OtherIncomeAmountFormProvider()(isAgentString)
 
     val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
@@ -39,24 +39,25 @@ class OtherIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       validDataGenerator
     )
 
-    behave like bigDecimalField(
+    behave like bigDecimalFieldWithMinimum(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "otherIncomeAmount.error.nonNumeric")
+      minimum,
+      expectedError = FormError(fieldName, s"otherIncomeAmount.error.lessThanZero.$isAgentString", Seq(minimum))
     )
 
-    behave like bigDecimalFieldWithRange(
+    behave like bigDecimalFieldWithMaximum(
       form,
       fieldName,
-      minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "otherIncomeAmount.error.outOfRange", Seq(minimum, maximum))
+      maximum,
+      expectedError = FormError(fieldName, s"otherIncomeAmount.error.overMax.$isAgentString", Seq(maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "otherIncomeAmount.error.required")
+      requiredError = FormError(fieldName, s"otherIncomeAmount.error.required.$isAgentString")
     )
   }
+
 }

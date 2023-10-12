@@ -18,7 +18,6 @@ package controllers.journeys.income
 
 import base.SpecBase
 import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
-import controllers.standard.routes.JourneyRecoveryController
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -40,93 +39,100 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IncomeNotCountedAsTurnoverFormProvider()
-  val form = formProvider(isAgentString)
+  val formProvider  = new IncomeNotCountedAsTurnoverFormProvider()
+  val form          = formProvider(isAgentString)
   val isAgentString = "individual"
-  val taxYear = LocalDate.now().getYear
+  val taxYear       = LocalDate.now().getYear
 
   lazy val incomeNotCountedAsTurnoverRoute = IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, NormalMode).url
 
-  "ncomeNotCountedAsTurnover Controller" - {
+  "IncomeNotCountedAsTurnover Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
 
-        val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+        }
+      }
+
+      "must populate the view correctly on a GET when the question has previously been answered" in {
+
+        val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
+
+          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(true), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockSessionRepository = mock[SessionRepository]
 
-      running(application) {
-        val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        running(application) {
+          val request =
+            FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
+              .withFormUrlEncodedBody(("value", ""))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+          val boundForm = form.bind(Map("value" -> ""))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
-
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
-            .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+        }
       }
     }
   }
+
 }

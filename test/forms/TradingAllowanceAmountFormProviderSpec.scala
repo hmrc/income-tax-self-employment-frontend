@@ -22,18 +22,16 @@ import play.api.data.FormError
 
 class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val isAgentString = "isAgentString"
-
-  val form = new TradingAllowanceAmountFormProvider()(isAgentString)
-
   ".value" - {
 
-    val fieldName = "value"
+    val isAgentString  = "individual"
+    val fieldName      = "value"
+    val turnoverAmount = 1000.00
+    val minimum        = 0
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    val form = new TradingAllowanceAmountFormProvider()(isAgentString, turnoverAmount)
 
-    val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+    val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, turnoverAmount)
 
     behave like fieldThatBindsValidData(
       form,
@@ -44,21 +42,28 @@ class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     behave like bigDecimalField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "tradingAllowanceAmount.error.nonNumeric")
+      nonNumericError = FormError(fieldName, s"tradingAllowanceAmount.error.nonNumeric.$isAgentString")
     )
 
-    behave like bigDecimalFieldWithRange(
+    behave like bigDecimalFieldWithMinimum(
       form,
       fieldName,
-      minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "tradingAllowanceAmount.error.outOfRange", Seq(minimum, maximum))
+      minimum,
+      expectedError = FormError(fieldName, s"tradingAllowanceAmount.error.lessThanZero.$isAgentString", Seq(minimum))
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      turnoverAmount,
+      expectedError = FormError(fieldName, s"tradingAllowanceAmount.error.overTurnover.$isAgentString", Seq(turnoverAmount))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "tradingAllowanceAmount.error.required")
+      requiredError = FormError(fieldName, s"tradingAllowanceAmount.error.required.$isAgentString")
     )
   }
+
 }

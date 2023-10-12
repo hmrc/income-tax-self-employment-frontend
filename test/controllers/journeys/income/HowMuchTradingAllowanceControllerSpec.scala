@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.HowMuchTradingAllowancePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,124 +41,149 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new HowMuchTradingAllowanceFormProvider()
-  val form = formProvider(isAgentString)
-  val isAgentString = "individual"
-  val taxYear = LocalDate.now().getYear
+  val formProvider                = new HowMuchTradingAllowanceFormProvider()
+  val maxTradingAllowanceString   = (1000.00).toString
+  val smallTradingAllowanceString = (260.50).toString
+  val formWithMaxTA               = formProvider(isAgentString, maxTradingAllowanceString)
+  val formWithSmallTA             = formProvider(isAgentString, smallTradingAllowanceString)
+  val isAgentString               = "individual"
+  val taxYear                     = LocalDate.now().getYear
 
   lazy val howMuchTradingAllowanceRoute = HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode).url
 
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[HowMuchTradingAllowance])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = true, form = formWithMaxTA),
+    UserScenario(isWelsh = true, isAgent = false, form = formWithSmallTA)
+  )
+
+  def formTest(form: Form[HowMuchTradingAllowance]): String = if (form.equals(formWithMaxTA)) "max allowance" else "non-max allowance"
+
   "HowMuchTradingAllowance Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      //      userScenarios.foreach { userScenario =>
+      //        s"when ${welshTest(userScenario.isWelsh)}, ${agentTest(userScenario.isAgent)} and using the ${formTest(userScenario.form)}" - {
+      "must return OK with the correct view" in {
 
-      running(application) {
-        val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
 
-        val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+          val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual
+            view(formWithMaxTA, NormalMode, isAgentString, taxYear, maxTradingAllowanceString)(request, messages(application)).toString
+        }
+      }
+
+      "must populate the view correctly on a GET when the question has previously been answered" in {
+
+        val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, HowMuchTradingAllowance.values.head).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
+
+          val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual
+            view(formWithSmallTA.fill(HowMuchTradingAllowance.values.head), NormalMode, isAgentString, taxYear, smallTradingAllowanceString)(
+              request,
+              messages(application)).toString
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, HowMuchTradingAllowance.values.head).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockSessionRepository = mock[SessionRepository]
 
-      running(application) {
-        val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, howMuchTradingAllowanceRoute)
+              .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowMuchTradingAllowance.values.head), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        running(application) {
+          val request =
+            FakeRequest(POST, howMuchTradingAllowanceRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+          val boundForm = formWithSmallTA.bind(Map("value" -> "invalid value"))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, howMuchTradingAllowanceRoute)
-            .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
+          val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear, smallTradingAllowanceString)(request, messages(application)).toString
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, howMuchTradingAllowanceRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        running(application) {
+          val request =
+            FakeRequest(POST, howMuchTradingAllowanceRoute)
+              .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+          val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
+          status(result) mustEqual SEE_OTHER
 
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, howMuchTradingAllowanceRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, howMuchTradingAllowanceRoute)
-            .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }
+
 }

@@ -17,6 +17,9 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
+import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
+import controllers.journeys.routes.{SectionCompletedStateController, TaskListController}
+import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -34,11 +37,6 @@ import views.html.journeys.abroad.SelfEmploymentAbroadView
 
 import java.time.LocalDate
 import scala.concurrent.Future
-import controllers.journeys.routes.SectionCompletedStateController
-import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
-import controllers.standard.routes.JourneyRecoveryController
-import controllers.journeys.routes.TaskListController
-import controllers.standard.routes.JourneyRecoveryController
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 

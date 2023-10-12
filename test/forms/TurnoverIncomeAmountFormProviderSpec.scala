@@ -22,14 +22,14 @@ import play.api.data.FormError
 
 class TurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new TurnoverIncomeAmountFormProvider()()
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName     = "value"
+    val isAgentString = "agent"
+    val minimum       = 0
+    val maximum       = 100000000000.00
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    val form = new TurnoverIncomeAmountFormProvider()(isAgentString)
 
     val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
@@ -42,21 +42,28 @@ class TurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     behave like bigDecimalField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "turnoverIncomeAmount.error.nonNumeric")
+      nonNumericError = FormError(fieldName, s"turnoverIncomeAmount.error.nonNumeric.$isAgentString")
     )
 
-    behave like bigDecimalFieldWithRange(
+    behave like bigDecimalFieldWithMinimum(
       form,
       fieldName,
       minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "turnoverIncomeAmount.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, s"turnoverIncomeAmount.error.lessThanZero.$isAgentString", Seq(minimum))
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      maximum,
+      expectedError = FormError(fieldName, s"turnoverIncomeAmount.error.overMax.$isAgentString", Seq(maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "turnoverIncomeAmount.error.required")
+      requiredError = FormError(fieldName, s"turnoverIncomeAmount.error.required.$isAgentString")
     )
   }
+
 }

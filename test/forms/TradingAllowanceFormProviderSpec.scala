@@ -23,14 +23,13 @@ import play.api.data.FormError
 
 class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
-  val isAgentString = "isAgentString"
-
-  val form = new TradingAllowanceFormProvider()(isAgentString)
-
   ".value" - {
 
-    val fieldName = "value"
-    val requiredKey = "tradingAllowance.error.required"
+    val fieldName     = "value"
+    val isAgentString = "individual"
+    val requiredKey   = s"tradingAllowance.error.required.$isAgentString"
+
+    val form = new TradingAllowanceFormProvider()(isAgentString)
 
     behave like optionsField[TradingAllowance](
       form,
@@ -45,4 +44,5 @@ class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

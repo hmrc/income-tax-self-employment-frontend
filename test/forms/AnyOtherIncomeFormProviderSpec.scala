@@ -18,21 +18,18 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import forms.income.AnyOtherIncomeFormProvider
-import org.joda.time.LocalDate
 import play.api.data.FormError
 
 class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "anyOtherIncome.error.required"
-  val invalidKey = "error.boolean"
-  val isAgentString = "isAgentString"
-  val taxYear = LocalDate.now().getYear
-
-  val form = new AnyOtherIncomeFormProvider()(isAgentString, taxYear)
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName     = "value"
+    val invalidKey    = "error.boolean"
+    val isAgentString = "individual"
+    val requiredKey   = s"anyOtherIncome.error.required.$isAgentString" // TODO 5839 test individual and agent
+
+    val form = new AnyOtherIncomeFormProvider()(isAgentString)
 
     behave like booleanField(
       form,
@@ -46,4 +43,5 @@ class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }
