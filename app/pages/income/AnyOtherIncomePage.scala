@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.income
 
-object SelfEmploymentAbroadCYAPage extends Page {
-  override def toString: String = "selfEmploymentAbroadCYA"
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+case object AnyOtherIncomePage extends QuestionPage[Boolean] {
+
+  override def path(businessId: Option[String] = None): JsPath =
+    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
+
+  override def toString: String = "anyOtherIncome"
 }

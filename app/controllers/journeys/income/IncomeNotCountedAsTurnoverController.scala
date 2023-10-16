@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.IncomeNotCountedAsTurnoverPage
+import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -65,7 +65,7 @@ class IncomeNotCountedAsTurnoverController @Inject()(override val messagesApi: M
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear))
       )
   }
 }

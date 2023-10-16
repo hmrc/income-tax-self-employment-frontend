@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TurnoverNotTaxablePage
+import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -66,7 +66,7 @@ class TurnoverNotTaxableController @Inject()(override val messagesApi: MessagesA
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverNotTaxablePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear))
       )
   }
 }

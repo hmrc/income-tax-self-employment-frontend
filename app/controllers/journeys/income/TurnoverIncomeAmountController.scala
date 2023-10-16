@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.TurnoverIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TurnoverIncomeAmountPage
+import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -68,7 +68,7 @@ class TurnoverIncomeAmountController @Inject()(override val messagesApi: Message
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

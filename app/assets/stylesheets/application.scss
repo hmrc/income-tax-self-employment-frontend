@@ -1,3 +1,6 @@
+strong {
+  float: right;
+}
 .js-visible {
   display: none !important;
 }
@@ -8,6 +11,31 @@
     margin-bottom: 15px;
     color: #505a5f;
 }
-.govuk-tag--grey {
+.govuk-tag--notStarted, .govuk-tag--cannotStartYet, .govuk-tag--checkOurRecords {
+  color: #383f43;
+  background: #eeefef;
+}
+.govuk-tag--inProgress {
+  color: #144e81;
+  background: #d2e2f1;
+}
+.govuk-tag--completed {
+  color: #ffffff;
+  background-color: #1d70b8;
+}
+.govuk-summary-list__row {
+  list-style: none;
+}
+.govuk-summary-list__key {
+  width: 66.6%;
+}
+.govuk-summary-list__actions {
+  white-space: nowrap;
   float: right;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.govuk-deadlink {
+  color: #0b0c0c!important;
+  text-decoration: none!important;
 }

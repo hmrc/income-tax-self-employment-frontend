@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object SectionCompletedStateSummary  {
 
-  def row(answers: UserAnswers, taxYear: Int, nino: String, journey: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, journey: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SectionCompletedStatePage).map {
       answer =>
 
@@ -43,7 +43,7 @@ object SectionCompletedStateSummary  {
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change",
-              routes.SectionCompletedStateController.onPageLoad(taxYear, journey, CheckMode).url)
+              routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, CheckMode).url)
               .withVisuallyHiddenText(messages("sectionCompletedState.change.hidden"))
           )
         )

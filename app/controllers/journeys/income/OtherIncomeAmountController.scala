@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.OtherIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.OtherIncomeAmountPage
+import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -66,7 +66,7 @@ class OtherIncomeAmountController @Inject()(override val messagesApi: MessagesAp
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.NonTurnoverIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.NonTurnoverIncomeAmountPage
+import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,10 +51,7 @@ class NonTurnoverIncomeAmountController @Inject()(
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None =>
-
-          println("--------in NONE")
-          formProvider(isAgent, tradeName)
+        case None => formProvider(isAgent, tradeName)
         case Some(value) => formProvider(isAgent, tradeName).fill(value)
       }
 
@@ -72,7 +69,7 @@ class NonTurnoverIncomeAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

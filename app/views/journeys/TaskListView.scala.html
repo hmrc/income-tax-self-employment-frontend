@@ -15,10 +15,17 @@
  *@
 
 @import templates.Layout
+@import models.mdtp.BusinessData
+@import controllers.actions.AuthenticatedIdentifierAction.User
+@import viewmodels.TradeJourneyStatusesViewModel
+@import models.Mode
 
-@this(layout: Layout)
+@this(
+    layout: Layout,
+    govukSummaryList: GovukSummaryList
+)
 
-@(taxYear: Int, statusMsg: String)(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, user: User, statusMsg: String, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 
 @selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
@@ -33,10 +40,19 @@
                     @messages("taskList.reviewLink")
                 </a>
             </span>
-            <a href="#">
-                <strong class="govuk-tag app-task-list__tag govuk-tag--grey">@messages(statusMsg)</strong>
+            <a href=@selfEmploymentSummaryLink>
+                <strong class="govuk-tag app-task-list__tag govuk-tag--@statusMsg">@messages(s"status.$statusMsg")</strong>
             </a>
         </li>
     </ul>
+
+
+    @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
+        <h2 class="app-task-list__section">
+            @{s"${selfEmployment.tradingName}${messages("taskList.title")}"}
+        </h2>
+
+        @govukSummaryList(selfEmployment.statusList)
+    }
 
 }

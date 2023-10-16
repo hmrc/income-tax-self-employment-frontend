@@ -38,7 +38,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.TaxYearHelper._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {
   import AuthenticatedIdentifierActionSpec._

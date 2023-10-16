@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.abroad
 
-import play.api.libs.json.JsPath
+import pages.Page
 
-case object OtherIncomeAmountPage extends QuestionPage[BigDecimal] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "otherIncomeAmount"
+object SelfEmploymentAbroadCYAPage extends Page {
+  override def toString: String = "selfEmploymentAbroadCYA"
 }

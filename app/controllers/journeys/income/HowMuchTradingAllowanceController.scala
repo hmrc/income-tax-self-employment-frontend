@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
+import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -74,7 +74,7 @@ class HowMuchTradingAllowanceController @Inject()(override val messagesApi: Mess
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
       )
   }
 }

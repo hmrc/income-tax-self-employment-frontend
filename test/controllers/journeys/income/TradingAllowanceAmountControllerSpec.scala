@@ -25,7 +25,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TradingAllowanceAmountPage
+import pages.income.TradingAllowanceAmountPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -35,8 +35,7 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.income.TradingAllowanceAmountView
 
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
 
@@ -77,11 +76,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               val request = buildRequest(GET, tradingAllowanceAmountRoute(false, NormalMode), userScenario.isAgent)
 
-              val result = {
-                println("---------2 " + request)
-                println("---------3 " + Await.result(route(application, request).value, 20.seconds))
-                route(application, request).value
-              }
+              val result = route(application, request).value
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 

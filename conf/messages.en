@@ -15,9 +15,16 @@ site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
 site.hint.amount = For example, £193.54
 
+status.completed = COMPLETED
+status.inProgress = IN PROGRESS
+status.notStarted = NOT STARTED
+status.cannotStartYet = CANNOT START YET
 status.checkOurRecords = CHECK OUR RECORDS
-status.processing = IN PROGRESS
-status.complete = COMPLETED
+
+common.selfEmploymentAbroad = Self-employment abroad
+common.income = Income
+common.expensesCategories = Expenses categories
+common.nationalInsurance = National Insurance
 
 date.day = Day
 date.month = Month
@@ -42,6 +49,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+error.noTradingName = Trading name not found
 
 capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
 capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
@@ -61,38 +69,32 @@ common.checkYourDetails.heading.individual = Check your details
 
 
 index.title = income-tax-self-employment-frontend
-index.heading = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.title = Self-employment
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 signedOut.title = For your security, we signed you out
-signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
 
 checkYourSelfEmploymentDetails.title.individual = Check your self-employment details
-checkYourSelfEmploymentDetails.title.agent = Check your client`s self-employment details
+checkYourSelfEmploymentDetails.title.agent = Check your client’s self-employment details
 checkYourSelfEmploymentDetails.tradingName.individual = What name did you use for your self-employment?
 checkYourSelfEmploymentDetails.tradingName.agent = What name did your client use for their self-employment?
 checkYourSelfEmploymentDetails.typeOfBusiness.individual = What did you do for your self-employment?
 checkYourSelfEmploymentDetails.typeOfBusiness.agent = What did your client do for their self-employment?
 checkYourSelfEmploymentDetails.accountingType = What type of accounting do you use?
 checkYourSelfEmploymentDetails.startDate.individual = When did your self-employment start?
-checkYourSelfEmploymentDetails.startDate.agent = When did your client`s self-employment start?
+checkYourSelfEmploymentDetails.startDate.agent = When did your client’s self-employment start?
 checkYourSelfEmploymentDetails.linkedToConstructionIndustryScheme = Was this self-employment linked to the Construction Industry Scheme?
 checkYourSelfEmploymentDetails.fosterCare.individual = Were you a foster carer or shared lives carer?
 checkYourSelfEmploymentDetails.fosterCare.agent = Was your client a foster carer or shared lives carer?
@@ -103,7 +105,6 @@ checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did you
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
 selfEmploymentSummary.title = Self-employment
-selfEmploymentSummary.heading = Self-employment
 
 sectionCompletedState.title = Have you completed this section?
 sectionCompletedState.yes = Yes, I’ve completed this section

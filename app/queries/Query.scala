@@ -23,7 +23,7 @@ import scala.util.{Success, Try}
 
 sealed trait Query {
 
-  def path: JsPath
+  def path(businessId: Option[String]): JsPath
 }
 
 trait Gettable[A] extends Query
