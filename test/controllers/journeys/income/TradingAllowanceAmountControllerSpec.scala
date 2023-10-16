@@ -20,79 +20,116 @@ import base.SpecBase
 import controllers.journeys.income.routes.TradingAllowanceAmountController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceAmountFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.TradingAllowanceAmountPage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.income.TradingAllowanceAmountView
 
-import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future}
 
 class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new TradingAllowanceAmountFormProvider()
-  val form = formProvider(isAgentString, turnoverAmount)
-  val isAgentString = "individual"
-  val taxYear = LocalDate.now().getYear
-  val turnoverAmount = 1000.00
-  val validAnswer: BigDecimal = 0
-
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val tradingAllowanceAmountRoute = TradingAllowanceAmountController.onPageLoad(taxYear, NormalMode).url
+  val formProvider            = new TradingAllowanceAmountFormProvider()
+  val maxTradingAllowance     = 1000.00
+  val smallTradingAllowance   = 400.00
+  val validAnswer: BigDecimal = 100
+  val formIndividualWithMaxTA = formProvider("individual", maxTradingAllowance)
+  val formAgentWithSmallTA    = formProvider("agent", maxTradingAllowance)
+
+  def tradingAllowanceAmountRoute(isPost: Boolean, mode: Mode): String =
+    if (isPost) TradingAllowanceAmountController.onSubmit(taxYear, mode).url
+    else TradingAllowanceAmountController.onPageLoad(taxYear, mode).url
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formIndividualWithMaxTA),
+    UserScenario(isWelsh = false, isAgent = true, formAgentWithSmallTA)
+  )
+
+  def formTypeToString(form: Form[BigDecimal]): String =
+    if (form.equals(formIndividualWithMaxTA)) "max allowance" else "non-max allowance"
 
   "Trading allowance amount Controller" - {
 
     "onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
+      userScenarios.foreach { userScenario =>
+        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+          "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request = FakeRequest(GET, tradingAllowanceAmountRoute)
+            running(application) {
+              val request = buildRequest(GET, tradingAllowanceAmountRoute(false, NormalMode), userScenario.isAgent)
 
-          val result = route(application, request).value
+              val result = {
+                println("---------2 " + request)
+                println("---------3 " + Await.result(route(application, request).value, 20.seconds))
+                route(application, request).value
+              }
 
-          val view = application.injector.instanceOf[TradingAllowanceAmountView]
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, validAnswer).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request = buildRequest(GET, tradingAllowanceAmountRoute(false, CheckMode), userScenario.isAgent)
+
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, validAnswer).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, tradingAllowanceAmountRoute)
-
-          val view = application.injector.instanceOf[TradingAllowanceAmountView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, tradingAllowanceAmountRoute)
+          val request = buildRequest(GET, tradingAllowanceAmountRoute(false, NormalMode), false)
 
           val result = route(application, request).value
 
@@ -120,7 +157,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, tradingAllowanceAmountRoute)
+            buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -130,33 +167,125 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request =
-            FakeRequest(POST, tradingAllowanceAmountRoute)
-              .withFormUrlEncodedBody(("value", "invalid value"))
+            running(application) {
+              val request =
+                buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", ""))
 
-          val boundForm = form.bind(Map("value" -> "invalid value"))
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-          val view = application.injector.instanceOf[TradingAllowanceAmountView]
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
 
-          val result = route(application, request).value
+              val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", "non-BigDecimal"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "non-BigDecimal"))
+
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "a negative number is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", "-23"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "-23"))
+
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "turnover income amount exceeds £100,000,000,000.00" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", "100000000000.01"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "100000000000.01"))
+
+              val view = application.injector.instanceOf[TradingAllowanceAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
-      "redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+      "redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
           val request =
-            FakeRequest(POST, tradingAllowanceAmountRoute)
+            buildRequest(POST, tradingAllowanceAmountRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -168,4 +297,5 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

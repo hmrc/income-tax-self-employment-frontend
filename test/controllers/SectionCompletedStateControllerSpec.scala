@@ -33,20 +33,18 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.SectionCompletedStateView
+import scala.concurrent.ExecutionContext.Implicits.global
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
-  val taxYear: Int = LocalDate.now().getYear
   val nino = "AA112233A"
   val journey = "journeyId"
   val businessId = journey + "-" + nino
   val mtditid = "mtditid"
 
   val mockConnector = mock[SelfEmploymentConnector]
-  implicit val ec: ExecutionContext = ExecutionContext.global
   val formProvider = new SectionCompletedStateFormProvider()
   val form: Form[CompletedSectionState] = formProvider()
 

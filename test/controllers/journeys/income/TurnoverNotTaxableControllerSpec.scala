@@ -20,16 +20,17 @@ import base.SpecBase
 import controllers.journeys.income.routes.TurnoverNotTaxableController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverNotTaxableFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.TurnoverNotTaxablePage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.income.TurnoverNotTaxableView
@@ -41,47 +42,72 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new TurnoverNotTaxableFormProvider()
-  val form = formProvider(isAgentString, taxYear)
-  val isAgentString = "individual"
-  val taxYear = LocalDate.now().getYear
+  val formWithIndividual = formProvider("individual")
+  val formWithAgent = formProvider("agent")
 
-  lazy val turnoverNotTaxableRoute = TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode).url
+  def turnoverNotTaxableRoute(isPost: Boolean, mode: Mode): String =
+    if (isPost) TurnoverNotTaxableController.onSubmit(taxYear, mode).url
+    else TurnoverNotTaxableController.onPageLoad(taxYear, mode).url
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
+    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+  )
 
   "TurnoverNotTaxable Controller" - {
 
     "onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
+          "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request = FakeRequest(GET, turnoverNotTaxableRoute)
+            running(application) {
+              val request = buildRequest(GET, turnoverNotTaxableRoute(false, NormalMode), userScenario.isAgent)
 
-          val result = route(application, request).value
+              val result = route(application, request).value
 
-          val view = application.injector.instanceOf[TurnoverNotTaxableView]
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
-        }
-      }
+              val view = application.injector.instanceOf[TurnoverNotTaxableView]
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
+              val expectedResult =
+                view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                  request, messages(application, userScenario.isWelsh)).toString
 
-        val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true).success.value
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        running(application) {
-          val request = FakeRequest(GET, turnoverNotTaxableRoute)
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true).success.value
 
-          val view = application.injector.instanceOf[TurnoverNotTaxableView]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-          val result = route(application, request).value
+            running(application) {
+              val request = buildRequest(GET, turnoverNotTaxableRoute(false, CheckMode), userScenario.isAgent)
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val view = application.injector.instanceOf[TurnoverNotTaxableView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
@@ -90,7 +116,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, turnoverNotTaxableRoute)
+          val request = buildRequest(GET, turnoverNotTaxableRoute(false, NormalMode), false)
 
           val result = route(application, request).value
 
@@ -118,7 +144,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, turnoverNotTaxableRoute)
+            buildRequest(POST, turnoverNotTaxableRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
@@ -128,23 +154,61 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request =
-            FakeRequest(POST, turnoverNotTaxableRoute)
-              .withFormUrlEncodedBody(("value", ""))
 
-          val boundForm = form.bind(Map("value" -> ""))
+            running(application) {
+              val request =
+                buildRequest(POST, turnoverNotTaxableRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", ""))
 
-          val view = application.injector.instanceOf[TurnoverNotTaxableView]
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-          val result = route(application, request).value
+              val view = application.injector.instanceOf[TurnoverNotTaxableView]
 
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+
+            running(application) {
+              val request =
+                buildRequest(POST, turnoverNotTaxableRoute(true, NormalMode), userScenario.isAgent)
+                  .withFormUrlEncodedBody(("value", "non-Boolean"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
+
+              val view = application.injector.instanceOf[TurnoverNotTaxableView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
@@ -154,7 +218,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, turnoverNotTaxableRoute)
+            buildRequest(POST, turnoverNotTaxableRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value

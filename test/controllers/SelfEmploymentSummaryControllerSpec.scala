@@ -35,15 +35,14 @@ import viewmodels.summary.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
 import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
  
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers = UserAnswers("1345566")
-  val taxYear = LocalDate.now().getYear
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentSummary Controller" - {

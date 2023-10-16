@@ -16,41 +16,69 @@
 
 package base
 
+import builders.UserBuilder.aNoddyUser
+import controllers.actions.AuthenticatedIdentifierAction.SessionValues
 import controllers.actions._
 import models.UserAnswers
+import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
-trait SpecBase
-  extends AnyFreeSpec
-    with Matchers
-    with TryValues
-    with OptionValues
-    with ScalaFutures
-    with IntegrationPatience {
+import scala.concurrent.ExecutionContext
 
-  val userAnswersId: String = "id"
+trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+  val userAnswersId: String         = "id"
+  val taxYear: Int                  = LocalDate.now().getYear
+  val enLang                        = Lang("en-EN")
+  val cyLang                        = Lang("cy-CY")
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  implicit val ec = ExecutionContext.global
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  def messages(app: Application, isWelsh: Boolean = false): Messages =
+    if (isWelsh) {
+      app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
+    } else {
+      app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
+    }
+
+  protected def isWelshToString(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
+
+  protected def isAgentToString(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
+    val fakeIdentifierAction = {
+      if (isAgent) {
+        bind[IdentifierAction].to[FakeAgentIdentifierAction]
+      } else {
+        bind[IdentifierAction].to[FakeIndividualIdentifierAction]
+      }
+    }
+
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
+        fakeIdentifierAction,
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
+  }
 
-  protected def welshTest(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
+  protected def buildRequest(httpType: String, requestRoute: String, isAgent: Boolean): FakeRequest[AnyContentAsEmpty.type] = {
+    if (isAgent) {
+      FakeRequest(httpType, requestRoute)
+        .withSession(SessionValues.CLIENT_MTDITID -> aNoddyUser.mtditid, SessionValues.CLIENT_NINO -> aNoddyUser.nino)
+    } else {
+      FakeRequest(httpType, requestRoute)
+    }
+  }
 
-  protected def agentTest(isAgent: Boolean): String = if (isAgent) "Agent" else "Individual"
 }

@@ -35,7 +35,6 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.abroad.SelfEmploymentAbroadView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
@@ -43,7 +42,6 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val isAgent = false
   val formProvider = new SelfEmploymentAbroadFormProvider()
   val form: Form[Boolean] = formProvider(isAgent)
-  val taxYear: Int = LocalDate.now().getYear
 
   lazy val selfEmploymentAbroadRoute: String = SelfEmploymentAbroadController.onPageLoad(taxYear, NormalMode).url
   lazy val taskListRoute: String = TaskListController.onPageLoad(taxYear).url

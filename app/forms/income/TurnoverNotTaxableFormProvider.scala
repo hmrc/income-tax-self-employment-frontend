@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String, taxYear: Int): Form[Boolean] =
+  def apply(isAgentString: String): Form[Boolean] =
     Form(
       "value" -> boolean(s"turnoverNotTaxable.error.required.$isAgentString")
     )

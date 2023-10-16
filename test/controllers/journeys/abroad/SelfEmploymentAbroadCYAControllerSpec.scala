@@ -30,18 +30,15 @@ import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
 import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
   private val isAgent = false
-  private val taxYear = LocalDate.now().getYear
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url
   private lazy val nextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentAbroadCYAController" - {

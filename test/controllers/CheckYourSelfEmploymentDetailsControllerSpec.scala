@@ -34,12 +34,11 @@ import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val taxYear = LocalDate.now().getYear
   val nino = "AA370343B"
   val mtditid = "mtditid"
   val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
@@ -53,8 +52,6 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
     cessationDate = None,
     businessAddressLineOne = "TheAddress", businessAddressLineTwo = None, businessAddressLineThree = None,
     businessAddressLineFour = None, businessAddressPostcode = None, businessAddressCountryCode = "GB")
-
-  implicit val ec: ExecutionContext = ExecutionContext.global
 
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 

@@ -16,21 +16,35 @@
 
 package controllers.actions
 
-import builders.UserBuilder.aNoddyUser
+import builders.UserBuilder.{aNoddyAgentUser, aNoddyUser}
 import models.requests.IdentifierRequest
 import play.api.mvc._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class FakeAgentIdentifierAction @Inject() (bodyParsers: PlayBodyParsers) extends IdentifierAction {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id", aNoddyUser))
+    block(IdentifierRequest(request, "id", user = aNoddyAgentUser))
 
   override def parser: BodyParser[AnyContent] =
     bodyParsers.default
 
   override protected def executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
+
+}
+
+class FakeIndividualIdentifierAction @Inject() (bodyParsers: PlayBodyParsers) extends IdentifierAction {
+
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
+    block(IdentifierRequest(request, "id", user = aNoddyUser))
+
+  override def parser: BodyParser[AnyContent] =
+    bodyParsers.default
+
+  override protected def executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
+
 }

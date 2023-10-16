@@ -20,16 +20,17 @@ import base.SpecBase
 import controllers.journeys.income.routes.AnyOtherIncomeController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.AnyOtherIncomeFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AnyOtherIncomePage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.income.AnyOtherIncomeView
@@ -40,57 +41,82 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AnyOtherIncomeFormProvider()
-  val form = formProvider(isAgentString)
-  val isAgentString = "individual"
-  val taxYear = LocalDate.now().getYear
+  val formProvider  = new AnyOtherIncomeFormProvider()
+  val formWithIndividual          = formProvider("individual")
+  val formWithAgent          = formProvider("agent")
 
-  lazy val anyOtherIncomeRoute = AnyOtherIncomeController.onPageLoad(taxYear, NormalMode).url
+  def anyOtherIncomeRoute(isPost: Boolean, mode: Mode): String =
+    if (isPost) AnyOtherIncomeController.onSubmit(taxYear, mode).url
+    else AnyOtherIncomeController.onPageLoad(taxYear, mode).url
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
+    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+  )
 
   "AnyOtherIncome Controller" - {
 
     "onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
+          "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request = FakeRequest(GET, anyOtherIncomeRoute)
+            running(application) {
+              val request = buildRequest(GET, anyOtherIncomeRoute(false, NormalMode), userScenario.isAgent)
 
-          val result = route(application, request).value
+              val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AnyOtherIncomeView]
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val view = application.injector.instanceOf[AnyOtherIncomeView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                  request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request = buildRequest(GET, anyOtherIncomeRoute(false, CheckMode), userScenario.isAgent)
+
+              val view = application.injector.instanceOf[AnyOtherIncomeView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, anyOtherIncomeRoute)
-
-          val view = application.injector.instanceOf[AnyOtherIncomeView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, anyOtherIncomeRoute)
+          val request = buildRequest(GET, anyOtherIncomeRoute(false, NormalMode), false)
 
           val result = route(application, request).value
 
@@ -117,9 +143,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          val request =
-            FakeRequest(POST, anyOtherIncomeRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+          val request = buildRequest(POST, anyOtherIncomeRoute(true, NormalMode), false)
+            .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 
@@ -128,35 +153,66 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request =
-            FakeRequest(POST, anyOtherIncomeRoute)
-              .withFormUrlEncodedBody(("value", ""))
+            running(application) {
+              val request = buildRequest(POST, anyOtherIncomeRoute(true, NormalMode), userScenario.isAgent)
+                .withFormUrlEncodedBody(("value", ""))
 
-          val boundForm = form.bind(Map("value" -> ""))
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-          val view = application.injector.instanceOf[AnyOtherIncomeView]
+              val view = application.injector.instanceOf[AnyOtherIncomeView]
 
-          val result = route(application, request).value
+              val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request = buildRequest(POST, anyOtherIncomeRoute(true, NormalMode), userScenario.isAgent)
+                .withFormUrlEncodedBody(("value", "non-Boolean"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
+
+              val view = application.injector.instanceOf[AnyOtherIncomeView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
-
+      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request =
-            FakeRequest(POST, anyOtherIncomeRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+          val request = buildRequest(POST, anyOtherIncomeRoute(true, NormalMode), false)
+            .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 

@@ -51,7 +51,10 @@ class NonTurnoverIncomeAmountController @Inject()(
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None => formProvider(isAgent, tradeName)
+        case None =>
+
+          println("--------in NONE")
+          formProvider(isAgent, tradeName)
         case Some(value) => formProvider(isAgent, tradeName).fill(value)
       }
 

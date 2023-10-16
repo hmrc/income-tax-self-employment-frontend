@@ -19,13 +19,15 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.IncomeNotCountedAsTurnoverPage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,47 +42,72 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider  = new IncomeNotCountedAsTurnoverFormProvider()
-  val form          = formProvider(isAgentString)
-  val isAgentString = "individual"
-  val taxYear       = LocalDate.now().getYear
+  val formWithIndividual = formProvider("individual")
+  val formWithAgent = formProvider("agent")
 
-  lazy val incomeNotCountedAsTurnoverRoute = IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, NormalMode).url
+  def incomeNotCountedAsTurnoverRoute(isPost: Boolean, mode: Mode): String =
+    if (isPost) IncomeNotCountedAsTurnoverController.onSubmit(taxYear, mode).url
+    else IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, mode).url
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
+    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+  )
 
   "IncomeNotCountedAsTurnover Controller" - {
 
     "onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          "must return OK and the correct view for a GET" in {
 
-        running(application) {
-          val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-          val result = route(application, request).value
+            running(application) {
+              val request = buildRequest(GET, incomeNotCountedAsTurnoverRoute(false, NormalMode), userScenario.isAgent)
 
-          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+              val result = route(application, request).value
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
-        }
-      }
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
+              val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
-        val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true).success.value
+              val expectedResult =
+                view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(request, messages(application, userScenario.isWelsh)).toString
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
 
-        running(application) {
-          val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute)
+          "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+            val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true).success.value
 
-          val result = route(application, request).value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+            running(application) {
+              val request = FakeRequest(GET, incomeNotCountedAsTurnoverRoute(false, CheckMode))
+
+              val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
     }
@@ -103,8 +130,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
         running(application) {
           val request =
-            FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+            FakeRequest(POST, incomeNotCountedAsTurnoverRoute(true, NormalMode)).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 
@@ -113,23 +139,59 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        running(application) {
-          val request =
-            FakeRequest(POST, incomeNotCountedAsTurnoverRoute)
-              .withFormUrlEncodedBody(("value", ""))
+            running(application) {
+              val request =
+                FakeRequest(POST, incomeNotCountedAsTurnoverRoute(true, NormalMode)).withFormUrlEncodedBody(("value", ""))
+                  .withFormUrlEncodedBody(("value", ""))
 
-          val boundForm = form.bind(Map("value" -> ""))
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-          val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+              val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
-          val result = route(application, request).value
+              val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode, isAgentString, taxYear)(request, messages(application)).toString
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                FakeRequest(POST, incomeNotCountedAsTurnoverRoute(true, NormalMode)).withFormUrlEncodedBody(("value", ""))
+                  .withFormUrlEncodedBody(("value", "non-Boolean"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
+
+              val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
+                request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
         }
       }
     }

@@ -77,7 +77,7 @@
         </details>
     }
 
-    @formHelper(action = TradingAllowanceController.onSubmit(taxYear, mode), 'autoComplete -> "off") {
+    @formHelper(action = TradingAllowanceController.onSubmit(taxYear, isAccrual, mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
