@@ -44,7 +44,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val tradeName = "PlaceHolderTradeName" // TODO get trade name from url businessId or userAnswers.get, ticket 5841
+  val tradeName = "PlaceHolderTradeName" // TODO 5911 get from trade details backend
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>

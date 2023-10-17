@@ -42,5 +42,4 @@ class SectionCompletedStateFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }
