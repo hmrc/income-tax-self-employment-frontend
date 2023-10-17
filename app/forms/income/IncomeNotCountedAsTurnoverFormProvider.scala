@@ -27,4 +27,5 @@ class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean(s"incomeNotCountedAsTurnover.error.required.$isAgentString")
     )
+
 }

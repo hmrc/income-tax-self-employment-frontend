@@ -30,8 +30,7 @@ import views.html.journeys.income.NonTurnoverIncomeAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonTurnoverIncomeAmountController @Inject()(
-                                                   override val messagesApi: MessagesApi,
+class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                                    sessionRepository: SessionRepository,
                                                    navigator: Navigator,
                                                    identify: IdentifierAction,
@@ -39,37 +38,37 @@ class NonTurnoverIncomeAmountController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    formProvider: NonTurnoverIncomeAmountFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: NonTurnoverIncomeAmountView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   view: NonTurnoverIncomeAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val tradeName = "PlaceHolderTradeName" //TODO get trade name from url businessId or userAnswers.get, ticket 5841
+  val tradeName = "PlaceHolderTradeName" // TODO get trade name from url businessId or userAnswers.get, ticket 5841
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None => formProvider(isAgent, tradeName)
+        case None        => formProvider(isAgent, tradeName)
         case Some(value) => formProvider(isAgent, tradeName).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-
-      formProvider(isAgentString(request.user.isAgent), tradeName).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
-      )
+      formProvider(isAgentString(request.user.isAgent), tradeName)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
+        )
   }
+
 }

@@ -36,12 +36,12 @@ import scala.concurrent.ExecutionContext
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val userAnswersId: String         = "id"
-  val taxYear: Int                  = LocalDate.now().getYear
-  val enLang                        = Lang("en-EN")
-  val cyLang                        = Lang("cy-CY")
+  val userAnswersId: String = "id"
+  val taxYear: Int          = LocalDate.now().getYear
+  val enLang                = Lang("en-EN")
+  val cyLang                = Lang("cy-CY")
 
-  implicit val ec = ExecutionContext.global
+  implicit val ec                   = ExecutionContext.global
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application, isWelsh: Boolean = false): Messages =

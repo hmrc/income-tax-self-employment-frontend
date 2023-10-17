@@ -14,34 +14,39 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import play.api.data.FormError
 
 class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours {
 
   ".value" - {
 
-    val fieldName     = "value"
-    val invalidKey    = "error.boolean"
-    val isAgentString = "individual"
-    val requiredKey   = s"incomeNotCountedAsTurnover.error.required.$isAgentString"
+    val fieldName  = "value"
+    val invalidKey = "error.boolean"
+    case class UserScenario(user: String)
 
-    val form = new IncomeNotCountedAsTurnoverFormProvider()(isAgentString)
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new IncomeNotCountedAsTurnoverFormProvider()(userScenario.user)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like booleanField(
+          form,
+          fieldName,
+          invalidError = FormError(fieldName, invalidKey)
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"incomeNotCountedAsTurnover.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

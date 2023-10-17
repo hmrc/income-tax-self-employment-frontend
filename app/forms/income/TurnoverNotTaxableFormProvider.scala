@@ -27,4 +27,5 @@ class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean(s"turnoverNotTaxable.error.required.$isAgentString")
     )
+
 }

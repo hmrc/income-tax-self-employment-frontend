@@ -32,4 +32,5 @@ class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
         .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString"))
         .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$isAgentString"))
     )
+
 }

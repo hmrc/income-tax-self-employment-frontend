@@ -46,6 +46,7 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
 
   val form: Form[CompletedSectionState] = formProvider()
 
+
   def onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {

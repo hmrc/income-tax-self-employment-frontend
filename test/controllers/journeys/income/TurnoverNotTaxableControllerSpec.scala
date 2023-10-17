@@ -41,9 +41,9 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new TurnoverNotTaxableFormProvider()
+  val formProvider       = new TurnoverNotTaxableFormProvider()
   val formWithIndividual = formProvider("individual")
-  val formWithAgent = formProvider("agent")
+  val formWithAgent      = formProvider("agent")
 
   def turnoverNotTaxableRoute(isPost: Boolean, mode: Mode): String =
     if (isPost) TurnoverNotTaxableController.onSubmit(taxYear, mode).url
@@ -64,7 +64,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -78,7 +78,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
               val expectedResult =
                 view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                  request, messages(application, userScenario.isWelsh)).toString
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -89,7 +90,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -102,7 +103,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(userScenario.form.fill(true), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -111,7 +113,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -158,9 +160,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         s"when language is ${isWelshToString(userScenario.isWelsh)} and user is an ${isAgentToString(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
-
 
             running(application) {
               val request =
@@ -176,7 +177,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -185,9 +187,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
-
 
             running(application) {
               val request =
@@ -203,7 +204,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -212,7 +214,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -229,4 +231,5 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

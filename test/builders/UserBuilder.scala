@@ -20,6 +20,6 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 object UserBuilder {
-  val aNoddyUser = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
+  val aNoddyUser      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
   val aNoddyAgentUser = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
 }

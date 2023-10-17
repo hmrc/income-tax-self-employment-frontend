@@ -28,4 +28,5 @@ class TradingAllowanceFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[TradingAllowance](s"tradingAllowance.error.required.$isAgentString")
     )
+
 }

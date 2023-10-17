@@ -41,9 +41,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider  = new AnyOtherIncomeFormProvider()
-  val formWithIndividual          = formProvider("individual")
-  val formWithAgent          = formProvider("agent")
+  val formProvider       = new AnyOtherIncomeFormProvider()
+  val formWithIndividual = formProvider("individual")
+  val formWithAgent      = formProvider("agent")
 
   def anyOtherIncomeRoute(isPost: Boolean, mode: Mode): String =
     if (isPost) AnyOtherIncomeController.onSubmit(taxYear, mode).url
@@ -78,7 +78,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val expectedResult =
                 view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                  request, messages(application, userScenario.isWelsh)).toString
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -102,7 +103,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(userScenario.form.fill(true), CheckMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -173,7 +175,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -197,7 +200,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -222,4 +226,5 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

@@ -27,4 +27,5 @@ class AnyOtherIncomeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean(s"anyOtherIncome.error.required.$isAgentString")
     )
+
 }

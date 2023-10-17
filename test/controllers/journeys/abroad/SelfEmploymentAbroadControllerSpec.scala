@@ -17,9 +17,6 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
-import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
-import controllers.journeys.routes.{SectionCompletedStateController, TaskListController}
-import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -44,14 +41,14 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val form: Form[Boolean] = formProvider(isAgent)
   val businessId          = "businessId-1"
 
-  lazy val selfEmploymentAbroadRoute: String = SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val taskListRoute: String             = TaskListController.onPageLoad(taxYear).url
+  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
   lazy val taskListCall: Call                = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String      = JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryRoute: String      = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call         = Call("GET", journeyRecoveryRoute)
 
   lazy val sectionCompletedStateRoute: String =
-    SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
 
   lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
 

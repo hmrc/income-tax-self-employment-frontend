@@ -42,4 +42,5 @@ class CheckYourIncomeControllerSpec extends SpecBase {
       }
     }
   }
+
 }

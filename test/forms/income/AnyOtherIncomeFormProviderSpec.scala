@@ -14,34 +14,39 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.income.AnyOtherIncomeFormProvider
 import play.api.data.FormError
 
 class AnyOtherIncomeFormProviderSpec extends BooleanFieldBehaviours {
 
   ".value" - {
 
-    val fieldName     = "value"
-    val invalidKey    = "error.boolean"
-    val isAgentString = "individual"
-    val requiredKey   = s"anyOtherIncome.error.required.$isAgentString" // TODO 5839 test individual and agent
+    val fieldName  = "value"
+    val invalidKey = "error.boolean"
+    case class UserScenario(user: String)
 
-    val form = new AnyOtherIncomeFormProvider()(isAgentString)
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new AnyOtherIncomeFormProvider()(userScenario.user)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like booleanField(
+          form,
+          fieldName,
+          invalidError = FormError(fieldName, invalidKey)
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"anyOtherIncome.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

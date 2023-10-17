@@ -25,10 +25,9 @@ class OtherIncomeAmountFormProvider @Inject() extends Mappings {
 
   def apply(isAgentString: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        s"otherIncomeAmount.error.required.$isAgentString",
-        s"otherIncomeAmount.error.nonNumeric.$isAgentString")
+      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$isAgentString", s"otherIncomeAmount.error.nonNumeric.$isAgentString")
         .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$isAgentString"))
         .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$isAgentString"))
     )
+
 }

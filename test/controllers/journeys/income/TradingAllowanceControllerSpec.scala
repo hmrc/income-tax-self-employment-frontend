@@ -53,7 +53,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val userScenarios = Seq(
     UserScenario(isWelsh = false, isAgent = false, formIndividual, isAccrual = true),
-    UserScenario(isWelsh = false, isAgent = true, formAgent, isAccrual = true) //TODO 5841 change accrual to false in one userScenario
+    UserScenario(isWelsh = false, isAgent = true, formAgent, isAccrual = true) // TODO 5911 change accrual to false in one userScenario
   )
 
   def formTypeToString(isAccrual: Boolean): String = if (isAccrual) "accrual type accounting" else "cash type accounting"
@@ -180,7 +180,8 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, userScenario.isAccrual)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -206,7 +207,8 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, userScenario.isAccrual)(
-                request, messages(application, userScenario.isWelsh)).toString
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

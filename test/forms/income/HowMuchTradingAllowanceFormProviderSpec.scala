@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.behaviours.OptionFieldBehaviours
-import forms.income.HowMuchTradingAllowanceFormProvider
 import models.HowMuchTradingAllowance
 import play.api.data.FormError
 
@@ -26,25 +25,31 @@ class HowMuchTradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName      = "value"
-    val isAgentString  = "individual"
     val turnoverAmount = "1000.00"
-    val requiredKey    = s"howMuchTradingAllowance.error.required.$isAgentString"
+    case class UserScenario(user: String)
 
-    val form = new HowMuchTradingAllowanceFormProvider()(isAgentString, turnoverAmount)
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like optionsField[HowMuchTradingAllowance](
-      form,
-      fieldName,
-      validValues = HowMuchTradingAllowance.values,
-      invalidError = FormError(fieldName, "error.invalid", Seq(turnoverAmount))
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new HowMuchTradingAllowanceFormProvider()(userScenario.user, turnoverAmount)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(turnoverAmount))
-    )
+      s"when user is an ${userScenario.user}, form should " - {
 
+        behave like optionsField[HowMuchTradingAllowance](
+          form,
+          fieldName,
+          validValues = HowMuchTradingAllowance.values,
+          invalidError = FormError(fieldName, "error.invalid", Seq(turnoverAmount))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"howMuchTradingAllowance.error.required.${userScenario.user}", Seq(turnoverAmount))
+        )
+
+      }
+    }
   }
 
 }
