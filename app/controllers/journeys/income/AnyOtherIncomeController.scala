@@ -21,6 +21,7 @@ import forms.AnyOtherIncomeFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.AnyOtherIncomePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -40,7 +41,7 @@ class AnyOtherIncomeController @Inject()(override val messagesApi: MessagesApi,
                                          view: AnyOtherIncomeView)
                                         (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
