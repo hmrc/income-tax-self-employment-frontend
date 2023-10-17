@@ -42,7 +42,7 @@ object TradingAllowanceSummary {
           key = "tradingAllowance.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", TradingAllowanceController.onPageLoad(taxYear, isAccrual, CheckMode).url)
+            ActionItemViewModel("site.change", TradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
               .withVisuallyHiddenText(messages("tradingAllowance.change.hidden"))
           )
         )

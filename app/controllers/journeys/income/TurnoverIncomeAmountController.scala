@@ -43,7 +43,7 @@ class TurnoverIncomeAmountController @Inject()(override val messagesApi: Message
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
-  val isAccrual = true //TODO pass accrual through URL
+  val isAccrual = true //TODO SASS-5841 delete default, use get
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>

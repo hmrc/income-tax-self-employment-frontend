@@ -178,7 +178,9 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -205,7 +207,9 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {

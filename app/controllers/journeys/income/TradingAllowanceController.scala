@@ -42,9 +42,10 @@ class TradingAllowanceController @Inject()(override val messagesApi: MessagesApi
                                           (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
+  val isAccrual = true //TODO SASS-5841 delete default, use get (can't be passed through URL or will ruin next two pages' URLs)
 
-  def onPageLoad(taxYear: Int, isAccrual: Boolean = true, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
-    implicit request =>//TODO SASS-5840 remove default accrual, use string instead of Boolean?
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+    implicit request =>
 
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowancePage) match {
@@ -55,7 +56,7 @@ class TradingAllowanceController @Inject()(override val messagesApi: MessagesApi
       Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual))
   }
 
-  def onSubmit(taxYear: Int, isAccrual: Boolean, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
     implicit request =>
 
       formProvider(isAgentString(request.user.isAgent)).bindFromRequest().fold(

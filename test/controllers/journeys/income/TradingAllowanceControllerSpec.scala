@@ -45,15 +45,15 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formIndividual = formProvider("individual")
   val formAgent      = formProvider("agent")
 
-  def tradingAllowanceRoute(isPost: Boolean, isAccrual: Boolean, mode: Mode): String =
-    if (isPost) TradingAllowanceController.onSubmit(taxYear, isAccrual, mode).url
-    else TradingAllowanceController.onPageLoad(taxYear, isAccrual, mode).url
+  def tradingAllowanceRoute(isPost: Boolean, mode: Mode): String =
+    if (isPost) TradingAllowanceController.onSubmit(taxYear, mode).url
+    else TradingAllowanceController.onPageLoad(taxYear, mode).url
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TradingAllowance], isAccrual: Boolean)
 
   val userScenarios = Seq(
     UserScenario(isWelsh = false, isAgent = false, formIndividual, isAccrual = true),
-    UserScenario(isWelsh = false, isAgent = true, formAgent, isAccrual = false)
+    UserScenario(isWelsh = false, isAgent = true, formAgent, isAccrual = true) //TODO 5841 change accrual to false in one userScenario
   )
 
   def formTypeToString(isAccrual: Boolean): String = if (isAccrual) "accrual type accounting" else "cash type accounting"
@@ -69,7 +69,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = buildRequest(GET, tradingAllowanceRoute(false, userScenario.isAccrual, NormalMode), userScenario.isAgent)
+              val request = buildRequest(GET, tradingAllowanceRoute(false, NormalMode), userScenario.isAgent)
 
               val result = route(application, request).value
 
@@ -94,7 +94,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = buildRequest(GET, tradingAllowanceRoute(false, userScenario.isAccrual, CheckMode), userScenario.isAgent)
+              val request = buildRequest(GET, tradingAllowanceRoute(false, CheckMode), userScenario.isAgent)
 
               val view = application.injector.instanceOf[TradingAllowanceView]
 
@@ -121,7 +121,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = buildRequest(GET, tradingAllowanceRoute(false, true, NormalMode), true)
+          val request = buildRequest(GET, tradingAllowanceRoute(false, NormalMode), true)
 
           val result = route(application, request).value
 
@@ -149,7 +149,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            buildRequest(POST, tradingAllowanceRoute(true, true, NormalMode), false)
+            buildRequest(POST, tradingAllowanceRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
 
           val result = route(application, request).value
@@ -168,7 +168,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                buildRequest(POST, tradingAllowanceRoute(true, userScenario.isAccrual, NormalMode), userScenario.isAgent)
+                buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -194,7 +194,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                buildRequest(POST, tradingAllowanceRoute(true, userScenario.isAccrual, NormalMode), userScenario.isAgent)
+                buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -220,7 +220,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = buildRequest(POST, tradingAllowanceRoute(true, true, NormalMode), false)
+          val request = buildRequest(POST, tradingAllowanceRoute(true, NormalMode), false)
             .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
 
           val result = route(application, request).value

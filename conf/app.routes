@@ -83,10 +83,10 @@ POST       /:taxYear/income/turnover-exempt/amount                              
 GET        /:taxYear/income/change-turnover-exempt/amount                          controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
 POST       /:taxYear/income/change-turnover-exempt/amount                          controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET        /:taxYear/income/trading-allowance/:isAccrual                           controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, isAccrual: Boolean, mode: Mode = NormalMode)
-POST       /:taxYear/income/trading-allowance/:isAccrual                           controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, isAccrual: Boolean, mode: Mode = NormalMode)
-GET        /:taxYear/income/change-trading-allowance/:isAccrual                    controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, isAccrual: Boolean, mode: Mode = CheckMode)
-POST       /:taxYear/income/change-trading-allowance/:isAccrual                    controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, isAccrual: Boolean, mode: Mode = CheckMode)
+GET        /:taxYear/income/trading-allowance                                      controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/trading-allowance                                      controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-trading-allowance                               controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-trading-allowance                               controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
 GET        /:taxYear/income/trading-allowance/under-1000                           controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
 POST       /:taxYear/income/trading-allowance/under-1000                           controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
