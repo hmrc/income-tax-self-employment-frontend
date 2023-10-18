@@ -17,12 +17,13 @@
 package navigation
 
 import base.SpecBase
+import controllers.journeys.abroad.{routes => aRoutes}
+import controllers.journeys.tradeDetails.{routes => tdRoutes}
 import controllers.journeys.{routes => jRoutes}
 import controllers.standard.{routes => stRoutes}
-import controllers.journeys.tradeDetails.{routes => tdRoutes}
-import controllers.journeys.abroad.{routes => aRoutes}
 import models._
 import pages._
+import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 
 import java.time.LocalDate
 
@@ -30,6 +31,7 @@ class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
   val taxYear = LocalDate.now().getYear
+  val businessId = "businessId-1"
 
   case object UnknownPage extends Page
 
@@ -37,46 +39,52 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" - {
 
-      "must go from the Check Your Self Employment Details page to the 'Have you completed this section?' page" in {
+      "must go from the Check Your Self Employment Details page to the Self Employment Summary page" in {
 
-        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, taxYear, UserAnswers("id")) mustBe
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe
           tdRoutes.SelfEmploymentSummaryController.onPageLoad(taxYear)
       }
 
-      "must go from the Self-employment Abroad page to the 'Check your details' page" in {
+      "must go from the Self Employment Summary page to the Section Completed page with TradeDetails journey" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, taxYear, UserAnswers("id")) mustBe
-          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+        navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe
+          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails.toString, NormalMode)
       }
 
-      "must go from the Check your details page to the 'Have you completed section' page" in {
+      "must go from the Self-employment Abroad page to the Self Employment Abroad CYA page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, UserAnswers("id")) mustBe
-          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe
+          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+      }
+
+      "must go from the Abroad CYA page to the Section Completed page with Abroad journey" in {
+
+        navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe
+          jRoutes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode)
       }
 
       "must go from a Details Completed page to the Task List page" in {
 
-        navigator.nextPage(SectionCompletedStatePage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
+        navigator.nextPage(SectionCompletedStatePage, NormalMode, UserAnswers("id"), taxYear, Some(businessId))mustBe jRoutes.TaskListController.onPageLoad(taxYear)
       }
 
-      "must go from a page that doesn't exist in the route map to Index" in {
+      "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, taxYear, UserAnswers("id")) mustBe jRoutes.TaskListController.onPageLoad(taxYear)
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe stRoutes.JourneyRecoveryController.onPageLoad()
       }
     }
 
     "in Check mode" - {
 
-      "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
+      "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, CheckMode, taxYear, UserAnswers("id")) mustBe stRoutes.CheckYourAnswersController.onPageLoad
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe stRoutes.JourneyRecoveryController.onPageLoad()
       }
 
       "must go from Self-employment Abroad page to the 'Check your details' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, CheckMode, taxYear, UserAnswers("id")) mustBe
-          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear)
+        navigator.nextPage(SelfEmploymentAbroadPage, CheckMode, UserAnswers("id"), taxYear, Some(businessId)) mustBe
+          aRoutes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
       }
     }
   }

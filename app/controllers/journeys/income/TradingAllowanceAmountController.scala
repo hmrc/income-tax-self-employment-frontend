@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.TradingAllowanceAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.TradingAllowanceAmountPage
+import pages.income.TradingAllowanceAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -65,7 +65,7 @@ class TradingAllowanceAmountController @Inject()(override val messagesApi: Messa
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowanceAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import models.NormalMode
 import models.requests.DataRequest
 import navigation.Navigator
-import pages.SelfEmploymentAbroadCYAPage
+import pages.abroad.SelfEmploymentAbroadCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -30,29 +30,29 @@ import views.html.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
 
-class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   navigator: Navigator,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: SelfEmploymentAbroadCYAView)
-    extends FrontendBaseController
+class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  navigator: Navigator,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: SelfEmploymentAbroadCYAView)
+  extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val isAgent         = request.user.isAgent
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, request.userAnswers)
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, request.userAnswers)
     val summaryList     = SummaryList(Seq(summaryListRows))
 
-    val nextRoute = nextPageUrl(taxYear, navigator)
+    val nextRoute = nextPageUrl(taxYear, businessId, navigator)
 
     Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def nextPageUrl(taxYear: Int, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, taxYear, request.userAnswers)
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, Some(optBusinessId))
       .url
 
 }

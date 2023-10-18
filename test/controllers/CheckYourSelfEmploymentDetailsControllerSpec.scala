@@ -19,7 +19,8 @@ package controllers
 import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
-import controllers.journeys.tradeDetails.routes
+import controllers.journeys.tradeDetails.routes._
+import controllers.standard.routes._
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.mdtp.BusinessData
@@ -71,11 +72,11 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
 
         running(application) {
           val businessId: String = "SJPR05893938418"
-          val nextRoute = routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
+          val nextRoute = SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
           when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
-          val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
+          val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
 
@@ -97,12 +98,12 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)
           ) thenReturn Future(Left(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found"))))
 
-          val request = FakeRequest(GET, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
+          val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
         }
       }
     }

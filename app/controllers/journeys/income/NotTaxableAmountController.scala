@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.NotTaxableAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.NotTaxableAmountPage
+import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -66,7 +66,7 @@ class NotTaxableAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
       )
   }
 }

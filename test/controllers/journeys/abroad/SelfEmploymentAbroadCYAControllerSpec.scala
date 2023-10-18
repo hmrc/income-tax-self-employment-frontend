@@ -17,6 +17,7 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
+import builders.UserBuilder
 import models.{Abroad, NormalMode, UserAnswers}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,11 +36,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
-  private val isAgent = false
-  private val taxYear = LocalDate.now().getYear
+  private val isAgent    = false
+  private val taxYear    = LocalDate.now().getYear
+  private val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
-  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear).url
-  private lazy val nextRoute  = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, Abroad.toString, NormalMode).url
+  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+
+  private lazy val nextRoute =
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier    = HeaderCarrier()
@@ -47,12 +51,12 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
   "SelfEmploymentAbroadCYAController" - {
     "when user answers are present" - {
       "must return OK and the correct view for a GET" in {
-        val userAnswers                 = UserAnswers("someId", Json.obj("selfEmploymentAbroad" -> true))
+        val userAnswers                 = UserAnswers("someId", Json.obj("trade-details-nino" -> Json.obj("selfEmploymentAbroad" -> true)))
         val application                 = applicationBuilder(userAnswers = Some(userAnswers)).build()
         val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 
         running(application) {
-          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, userAnswers)(messages(application))
+          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, userAnswers)(messages(application))
           val expectedSummaryList         = SummaryList(Seq(expectedMaybeSummaryListRow))
 
           val request                = FakeRequest(GET, requestUrl)

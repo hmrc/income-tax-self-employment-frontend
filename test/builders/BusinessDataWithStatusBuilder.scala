@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package builders
 
-import models.CompletedSectionState
-import play.api.libs.json.JsPath
+import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataNoneTradeNames}
+import models.requests.BusinessDataWithStatus
 
-case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {
+object BusinessDataWithStatusBuilder {
 
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
+  val aCompletedBusinessDataWithStatus = BusinessDataWithStatus(aBusinessData.head, true)
 
-  override def toString: String = "sectionCompletedState"
+  val aNonCompletedBusinessDataWithStatus2 = BusinessDataWithStatus(aBusinessDataNoneTradeNames.head, false)
+
 }

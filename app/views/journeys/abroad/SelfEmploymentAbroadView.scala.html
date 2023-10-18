@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import controllers.actions.AuthenticatedIdentifierAction.User
+@import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
@@ -22,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], taxYear: Int, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: Int, businessId: String, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}"))) {
 
-    @formHelper(action = controllers.journeys.abroad.routes.SelfEmploymentAbroadController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = SelfEmploymentAbroadController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

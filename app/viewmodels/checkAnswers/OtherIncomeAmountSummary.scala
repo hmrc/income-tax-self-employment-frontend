@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.journeys.income.routes.OtherIncomeAmountController
 import models.{CheckMode, UserAnswers}
-import pages.OtherIncomeAmountPage
+import pages.income.OtherIncomeAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

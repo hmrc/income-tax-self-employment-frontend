@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.{CheckMode, UserAnswers}
-import pages.HowMuchTradingAllowancePage
+import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

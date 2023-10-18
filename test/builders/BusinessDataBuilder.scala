@@ -16,7 +16,6 @@
 
 package builders
 
-
 import models.errors.HttpError
 import models.mdtp.BusinessData
 import BusinessData.{AccountingPeriod, LatencyDetails}
@@ -96,6 +95,5 @@ object BusinessDataBuilder {
       |   "businessAddressCountryCode":"GB"
       |}
       |""".stripMargin
-
 
 }

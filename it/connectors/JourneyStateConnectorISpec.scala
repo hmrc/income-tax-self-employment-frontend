@@ -32,7 +32,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class JourneyStateConnectorISpec extends WiremockSpec {
-  
+
   def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
     new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
       override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
@@ -40,7 +40,7 @@ class JourneyStateConnectorISpec extends WiremockSpec {
 
   val internalHost = "localhost"
   val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
-  
+
   val mtditid: String = "mtditid"
   val journey = TradeDetails.toString
   val taxYear = LocalDate.now().getYear
@@ -49,22 +49,22 @@ class JourneyStateConnectorISpec extends WiremockSpec {
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
-  val headersSentToBE: Seq[HttpHeader] = Seq( new HttpHeader("mtditid", mtditid) )
+  val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid))
 
   ".getJourneyState" should {
     val getJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
     val completeState = false
-    
+
     behave like journeyStateRequestIsSuccessful(NO_CONTENT,
       Right(None),
       () => stubGetWithoutResponseBody(getJourneyStateUrl, NO_CONTENT),
-      () => underTest.getJourneyState( businessId, journey, taxYear, mtditid)
+      () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
-    
+
     behave like journeyStateRequestIsSuccessful(OK,
       Right(Some(completeState)),
       () => stubGetWithResponseBody(getJourneyStateUrl, OK, completeState.toString, headersSentToBE),
-      () => underTest.getJourneyState( businessId, journey, taxYear, mtditid)
+      () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -74,18 +74,18 @@ class JourneyStateConnectorISpec extends WiremockSpec {
       () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
   }
-  
+
   ".saveJourneyState" should {
 
     val completeState = true
     val saveJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/${completeState.toString}"
-    
+
     behave like journeyStateRequestIsSuccessful(NO_CONTENT,
       Right(None),
       () => stubPutWithoutResponseBody(saveJourneyStateUrl, NO_CONTENT),
-      () => underTest.saveJourneyState( businessId, journey, taxYear, completeState, mtditid)
+      () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
-  
+
     behave like journeyStateRequestReturnsError(
       () => stubPutWithResponseBody(saveJourneyStateUrl, BAD_REQUEST,
         Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
@@ -94,7 +94,7 @@ class JourneyStateConnectorISpec extends WiremockSpec {
       () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
   }
-  
+
 
   def journeyStateRequestIsSuccessful(expStatus: Int, expectedResult: JourneyStateResponse, stubs: () => Unit,
                                       block: () => Future[JourneyStateResponse]): Unit =
@@ -110,5 +110,5 @@ class JourneyStateConnectorISpec extends WiremockSpec {
       val result = await(block())
       result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
     }
-  
+
 }

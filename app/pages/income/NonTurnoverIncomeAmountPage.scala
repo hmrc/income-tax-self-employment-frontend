@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.income
 
-import models.CompletedSectionState
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {
+case object NonTurnoverIncomeAmountPage extends QuestionPage[BigDecimal] {
 
   override def path(businessId: Option[String] = None): JsPath =
     if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
-  override def toString: String = "sectionCompletedState"
+  override def toString: String = "nonTurnoverIncomeAmount"
 }

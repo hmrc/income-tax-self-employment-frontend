@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.income
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AnyOtherIncomePage extends QuestionPage[Boolean] {
+case object TurnoverNotTaxablePage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path(businessId: Option[String] = None): JsPath =
+    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
-  override def toString: String = "anyOtherIncome"
+  override def toString: String = "turnoverNotTaxable"
 }
