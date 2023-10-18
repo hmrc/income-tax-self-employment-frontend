@@ -41,7 +41,7 @@ class AnyOtherIncomeController @Inject()(override val messagesApi: MessagesApi,
                                         (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
-val hi = "hi"
+val hi = "new"
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
     implicit request =>
 
