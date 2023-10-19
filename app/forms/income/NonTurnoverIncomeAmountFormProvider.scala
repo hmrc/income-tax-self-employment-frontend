@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class NotTaxableAmountFormProvider @Inject() extends Mappings {
-  def apply(): Form[BigDecimal] =
+class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "notTaxableAmount.error.required",
-        "notTaxableAmount.error.nonNumeric")
-        .verifying(inBigDecimalRange(0, 100000000000.00, "notTaxableAmount.error.outOfRange"))
+      "value" -> bigDecimal(s"nonTurnoverIncomeAmount.error.required.$isAgentString", s"nonTurnoverIncomeAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$isAgentString"))
     )
+
 }

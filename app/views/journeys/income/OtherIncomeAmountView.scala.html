@@ -16,32 +16,37 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.OtherIncomeAmountController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("otherIncomeAmount.title"))) {
+@layout(pageTitle = title(form, messages(s"otherIncomeAmount.title.$authUserType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"otherIncomeAmount.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-4")
 
     @formHelper(action = OtherIncomeAmountController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("otherIncomeAmount.heading")).asPageHeading()
+                label = LabelViewModel("")
             )
             .asNumeric()
             .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(

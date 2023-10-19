@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.TurnoverNotTaxableFormProvider
+import forms.income.TurnoverNotTaxableFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.TurnoverNotTaxablePage
@@ -30,8 +30,7 @@ import views.html.journeys.income.TurnoverNotTaxableView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TurnoverNotTaxableController @Inject()(
-                                              override val messagesApi: MessagesApi,
+class TurnoverNotTaxableController @Inject() (override val messagesApi: MessagesApi,
                                               sessionRepository: SessionRepository,
                                               navigator: Navigator,
                                               identify: IdentifierAction,
@@ -39,34 +38,34 @@ class TurnoverNotTaxableController @Inject()(
                                               requireData: DataRequiredAction,
                                               formProvider: TurnoverNotTaxableFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: TurnoverNotTaxableView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                              view: TurnoverNotTaxableView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
-
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverNotTaxablePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverNotTaxablePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear))
-      )
+      formProvider(authUserType(request.user.isAgent))
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverNotTaxablePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear))
+        )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
 }

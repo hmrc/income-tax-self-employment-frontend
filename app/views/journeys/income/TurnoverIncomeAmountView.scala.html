@@ -16,36 +16,57 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.TurnoverIncomeAmountController
+@import views.html.templates.helpers.Heading
+@import viewmodels.LabelSize
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, isAccrual: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverIncomeAmount.title"))) {
 
-    @formHelper(action = TurnoverIncomeAmountController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+    @heading(messages("turnoverIncomeAmount.title"), None)
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-5">
+        <p>
+            @messages(s"turnoverIncomeAmount.p1.$authUserType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("turnoverIncomeAmount.l1")</li>
+            <li>@messages("turnoverIncomeAmount.l2")</li>
+            <li>@messages("turnoverIncomeAmount.l3")</li>
+            @if(isAccrual) {<li>@messages(s"turnoverIncomeAmount.l4.$authUserType")</li>}
+        </ul>
+    </div>
+
+    @formHelper(action = TurnoverIncomeAmountController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("turnoverIncomeAmount.heading")).asPageHeading()
+                label = LabelViewModel(messages(s"turnoverIncomeAmount.subHeading.$authUserType"))
+                            .asPageHeading(LabelSize.Medium)
             )
             .asNumeric()
             .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        <div class="govuk-!-margin-top-7">
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        </div>
     }
 }

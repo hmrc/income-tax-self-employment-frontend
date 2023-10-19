@@ -14,41 +14,42 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
-import forms.abroad.SelfEmploymentAbroadFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.OptionFieldBehaviours
+import models.HowMuchTradingAllowance
 import play.api.data.FormError
 
-class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
+class HowMuchTradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName  = "value"
-    val invalidKey = "error.boolean"
+    val fieldName      = "value"
+    val turnoverAmount = "1000.00"
     case class UserScenario(user: String)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals("agent"))
+      val form = new HowMuchTradingAllowanceFormProvider()(userScenario.user, turnoverAmount)
 
       s"when user is an ${userScenario.user}, form should " - {
 
-        behave like booleanField(
+        behave like optionsField[HowMuchTradingAllowance](
           form,
           fieldName,
-          invalidError = FormError(fieldName, invalidKey)
+          validValues = HowMuchTradingAllowance.values,
+          invalidError = FormError(fieldName, "error.invalid", Seq(turnoverAmount))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"selfEmploymentAbroad.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"howMuchTradingAllowance.error.required.${userScenario.user}", Seq(turnoverAmount))
         )
+
       }
     }
-
   }
 
 }

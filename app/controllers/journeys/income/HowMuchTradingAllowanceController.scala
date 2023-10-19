@@ -17,10 +17,10 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.HowMuchTradingAllowanceFormProvider
+import forms.income.HowMuchTradingAllowanceFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.income.HowMuchTradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,8 +30,7 @@ import views.html.journeys.income.HowMuchTradingAllowanceView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class HowMuchTradingAllowanceController @Inject()(
-                                                   override val messagesApi: MessagesApi,
+class HowMuchTradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                                    sessionRepository: SessionRepository,
                                                    navigator: Navigator,
                                                    identify: IdentifierAction,
@@ -39,34 +38,43 @@ class HowMuchTradingAllowanceController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    formProvider: HowMuchTradingAllowanceFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: HowMuchTradingAllowanceView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   view: HowMuchTradingAllowanceView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
-
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
+      val tradingAllowanceString = {
+        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
+        if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
+      }
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(HowMuchTradingAllowancePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
+        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
-      )
+      val tradingAllowanceString = {
+        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
+        if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
+      }
+      formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
+        )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
 }

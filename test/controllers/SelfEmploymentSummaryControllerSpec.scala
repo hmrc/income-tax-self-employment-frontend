@@ -20,6 +20,7 @@ import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessDataNoneResponse, aBusinessDataResponse}
 import builders.UserBuilder
 import connectors.SelfEmploymentConnector
+import controllers.journeys.routes.SectionCompletedStateController
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import models.{NormalMode, UserAnswers}
@@ -34,19 +35,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.summary.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
-import controllers.journeys.routes.SectionCompletedStateController
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
  
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers = UserAnswers("1345566")
-  val taxYear = LocalDate.now().getYear
   val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentSummary Controller" - {

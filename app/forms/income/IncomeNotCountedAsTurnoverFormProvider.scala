@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
-import models.HowMuchTradingAllowance
-
-import javax.inject.Inject
 import play.api.data.Form
 
-class HowMuchTradingAllowanceFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[HowMuchTradingAllowance] =
+class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String): Form[Boolean] =
     Form(
-      "value" -> enumerable[HowMuchTradingAllowance]("howMuchTradingAllowance.error.required")
+      "value" -> boolean(s"incomeNotCountedAsTurnover.error.required.$isAgentString")
     )
+
 }

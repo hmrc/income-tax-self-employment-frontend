@@ -18,35 +18,55 @@ package base
 
 import controllers.actions._
 import models.UserAnswers
+import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 
-trait SpecBase
-  extends AnyFreeSpec
-    with Matchers
-    with TryValues
-    with OptionValues
-    with ScalaFutures
-    with IntegrationPatience {
+import scala.concurrent.ExecutionContext
+
+trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
   val userAnswersId: String = "id"
+  val taxYear: Int          = LocalDate.now().getYear
+  val enLang                = Lang("en-EN")
+  val cyLang                = Lang("cy-CY")
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+  implicit val ec                   = ExecutionContext.global
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  def messages(app: Application, isWelsh: Boolean = false): Messages =
+    if (isWelsh) {
+      app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
+    } else {
+      app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
+    }
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
+
+  protected def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
+    val fakeIdentifierAction = {
+      if (isAgent) {
+        bind[IdentifierAction].to[FakeAgentIdentifierAction]
+      } else {
+        bind[IdentifierAction].to[FakeIndividualIdentifierAction]
+      }
+    }
+
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
+        fakeIdentifierAction,
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
+  }
+
 }

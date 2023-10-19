@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.abroad
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.TradingAllowance
 
-class TradingAllowanceFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[TradingAllowance] =
+class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
+
+  def apply(isAgent: Boolean): Form[Boolean] =
     Form(
-      "value" -> enumerable[TradingAllowance]("tradingAllowance.error.required")
+      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
     )
 }

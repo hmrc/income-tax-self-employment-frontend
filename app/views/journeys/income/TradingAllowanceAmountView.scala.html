@@ -16,36 +16,41 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.TradingAllowanceAmountController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("tradingAllowanceAmount.title"))) {
+@layout(pageTitle = title(form, messages(s"tradingAllowanceAmount.title.$authUserType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"tradingAllowanceAmount.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-3")
 
     @formHelper(action = TradingAllowanceAmountController.onSubmit(taxYear, mode), 'autoComplete -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("tradingAllowanceAmount.title")).asPageHeading()
+                label = LabelViewModel(messages("site.hint.amount")).withCssClass("govuk-hint")
             )
             .asNumeric()
             .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(messages("site.continue")).withCssClass("govuk-!-margin-top-2")
         )
     }
 }

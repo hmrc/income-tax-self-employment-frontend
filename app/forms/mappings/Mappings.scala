@@ -44,29 +44,33 @@ trait Mappings extends Formatters with Constraints {
                         args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
-
-  protected def enumerable[A](requiredKey: String = "error.required",
-                              invalidKey: String = "error.invalid",
-                              args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): FieldMapping[A] =
+  protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[String] = Seq.empty)(implicit
+      ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  protected def localDate(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+  protected def localDate(invalidKey: String,
+                          allRequiredKey: String,
+                          twoRequiredKey: String,
+                          requiredKey: String,
+                          args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-
-  def inBigDecimalRange(minimum: BigDecimal, maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint {
-      input: BigDecimal =>
-
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
-        }
+  def isBigDecimalGreaterThanZero(errorKey: String): Constraint[BigDecimal] =
+    Constraint { input: BigDecimal =>
+      if (input > 0) {
+        Valid
+      } else {
+        Invalid(errorKey, 0)
+      }
     }
+
+  def isBigDecimalLessThanMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
+    Constraint { input: BigDecimal =>
+      if (maximum >= input) {
+        Valid
+      } else {
+        Invalid(errorKey, maximum)
+      }
+    }
+
 }

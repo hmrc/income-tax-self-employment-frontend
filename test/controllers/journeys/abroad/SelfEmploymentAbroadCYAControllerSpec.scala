@@ -29,15 +29,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
 import viewmodels.govuk.SummaryListFluency
-import views.html.SelfEmploymentAbroadCYAView
+import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
   private val isAgent    = false
-  private val taxYear    = LocalDate.now().getYear
   private val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
@@ -45,8 +43,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
   private lazy val nextRoute =
     controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
-  implicit val hc: HeaderCarrier    = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentAbroadCYAController" - {
     "when user answers are present" - {

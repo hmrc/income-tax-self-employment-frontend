@@ -14,41 +14,56 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
-import forms.abroad.SelfEmploymentAbroadFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.BigDecimalFieldBehaviours
 import play.api.data.FormError
 
-class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
+class OtherIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
   ".value" - {
 
-    val fieldName  = "value"
-    val invalidKey = "error.boolean"
+    val fieldName = "value"
+    val minimum   = 0
+    val maximum   = 100000000000.00
     case class UserScenario(user: String)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals("agent"))
+      val form = new OtherIncomeAmountFormProvider()(userScenario.user)
 
       s"when user is an ${userScenario.user}, form should " - {
 
-        behave like booleanField(
+        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+
+        behave like fieldThatBindsValidData(
           form,
           fieldName,
-          invalidError = FormError(fieldName, invalidKey)
+          validDataGenerator
+        )
+
+        behave like bigDecimalFieldWithMinimum(
+          form,
+          fieldName,
+          minimum,
+          expectedError = FormError(fieldName, s"otherIncomeAmount.error.lessThanZero.${userScenario.user}", Seq(minimum))
+        )
+
+        behave like bigDecimalFieldWithMaximum(
+          form,
+          fieldName,
+          maximum,
+          expectedError = FormError(fieldName, s"otherIncomeAmount.error.overMax.${userScenario.user}", Seq(maximum))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"selfEmploymentAbroad.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"otherIncomeAmount.error.required.${userScenario.user}")
         )
       }
     }
-
   }
 
 }

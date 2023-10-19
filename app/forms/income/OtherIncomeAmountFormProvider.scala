@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
@@ -23,11 +23,11 @@ import javax.inject.Inject
 
 class OtherIncomeAmountFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BigDecimal] =
+  def apply(isAgentString: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "otherIncomeAmount.error.required",
-        "otherIncomeAmount.error.nonNumeric")
-        .verifying(inBigDecimalRange(0, 100000000000.00, "otherIncomeAmount.error.outOfRange"))
+      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$isAgentString", s"otherIncomeAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$isAgentString"))
     )
+
 }

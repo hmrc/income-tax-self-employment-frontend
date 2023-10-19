@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.IncomeNotCountedAsTurnoverFormProvider
+import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.IncomeNotCountedAsTurnoverPage
@@ -30,42 +30,39 @@ import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncomeNotCountedAsTurnoverController @Inject()(
-                                                      override val messagesApi: MessagesApi,
+class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: MessagesApi,
                                                       sessionRepository: SessionRepository,
                                                       navigator: Navigator,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
                                                       formProvider: IncomeNotCountedAsTurnoverFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
-                                                      view: IncomeNotCountedAsTurnoverView
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                      view: IncomeNotCountedAsTurnoverView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage) match {
+      case None        => formProvider(authUserType(request.user.isAgent))
+      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
+    }
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
-    implicit request =>
-
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, taxYear))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { //TODO add requireData SASS-5841
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    formProvider(authUserType(request.user.isAgent))
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear))
       )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
 }

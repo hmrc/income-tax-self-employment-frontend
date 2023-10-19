@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.TurnoverIncomeAmountFormProvider
+import forms.income.TurnoverIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.TurnoverIncomeAmountPage
@@ -30,8 +30,7 @@ import views.html.journeys.income.TurnoverIncomeAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TurnoverIncomeAmountController @Inject()(
-                                                override val messagesApi: MessagesApi,
+class TurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
                                                 navigator: Navigator,
                                                 identify: IdentifierAction,
@@ -39,34 +38,36 @@ class TurnoverIncomeAmountController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 formProvider: TurnoverIncomeAmountFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: TurnoverIncomeAmountView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                view: TurnoverIncomeAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
+  val isAccrual = true // TODO SASS-5911 delete default, use get
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, isAccrual))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverIncomeAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
-      )
+      formProvider(authUserType(request.user.isAgent))
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, isAccrual))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverIncomeAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
+        )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.income
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[Boolean] =
+class NotTaxableAmountFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
-      "value" -> boolean("incomeNotCountedAsTurnover.error.required")
+      "value" -> bigDecimal(s"notTaxableAmount.error.required.$isAgentString", s"notTaxableAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"notTaxableAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(turnoverAmount, s"notTaxableAmount.error.overTurnover.$isAgentString"))
     )
+
 }

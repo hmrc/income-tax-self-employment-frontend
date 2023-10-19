@@ -22,11 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.income.CheckYourIncomeView
 
-import java.time.LocalDate
-
 class CheckYourIncomeControllerSpec extends SpecBase {
-
-  val taxYear = LocalDate.now().getYear
 
   "CheckYourIncome Controller" - {
 
@@ -46,4 +42,5 @@ class CheckYourIncomeControllerSpec extends SpecBase {
       }
     }
   }
+
 }

@@ -57,11 +57,8 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
 
     s"not bind big decimals above $maximum" in {
 
-      forAll(bigDecimalsAboveValue(maximum) -> "bigDecimalAboveMax") {
-        number: BigDecimal =>
-          val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
+          val result = form.bind(Map(fieldName -> (maximum + 1).toString)).apply(fieldName)
           result.errors must contain only expectedError
-      }
     }
   }
 

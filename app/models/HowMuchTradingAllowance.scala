@@ -24,22 +24,23 @@ sealed trait HowMuchTradingAllowance
 
 object HowMuchTradingAllowance extends Enumerable.Implicits {
 
-  case object Maximum extends WithName("The maximum £") with HowMuchTradingAllowance
-  case object LessThan extends WithName("Less than") with HowMuchTradingAllowance
+  case object Maximum  extends WithName("maximum") with HowMuchTradingAllowance
+  case object LessThan extends WithName("lessThan") with HowMuchTradingAllowance
 
   val values: Seq[HowMuchTradingAllowance] = Seq(
-    Maximum, LessThan
+    Maximum,
+    LessThan
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"HowMuchTradingAllowance.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(tradingAllowance: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"howMuchTradingAllowance.${value.toString}", tradingAllowance)),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[HowMuchTradingAllowance] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }
