@@ -42,27 +42,22 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
-  val tradeName = "PlaceHolderTradeName" // TODO 5911 get from trade details backend
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None        => formProvider(isAgent, tradeName)
-        case Some(value) => formProvider(isAgent, tradeName).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(isAgentString(request.user.isAgent), tradeName)
+      formProvider(authUserType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))
@@ -70,5 +65,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
             } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
         )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

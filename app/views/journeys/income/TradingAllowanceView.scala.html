@@ -26,7 +26,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int, isAccrual: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, isAccrual: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("tradingAllowance.title"))) {
 
@@ -38,14 +38,14 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"tradingAllowance.p1.$isAgentString")
+            @messages(s"tradingAllowance.p1.$authUserType")
         </p>
         <p>
-            @messages(s"tradingAllowance.p2.$isAgentString")
+            @messages(s"tradingAllowance.p2.$authUserType")
         </p>
         @if(isAccrual){
             <p>
-                @messages(s"tradingAllowance.p3.$isAgentString")
+                @messages(s"tradingAllowance.p3.$authUserType")
             </p>
         }
     </div>
@@ -60,10 +60,10 @@
             </summary>
             <div class="govuk-details__text">
                 <p>
-                    @messages(s"capitalAllowances.p1.$isAgentString")
+                    @messages(s"capitalAllowances.p1.$authUserType")
                 </p>
                 <p>
-                    @messages(s"capitalAllowances.p2.$isAgentString")
+                    @messages(s"capitalAllowances.p2.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("capitalAllowances.l1")</li>
@@ -82,7 +82,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"tradingAllowance.subHeading.$isAgentString"))
+                legend = LegendViewModel(messages(s"tradingAllowance.subHeading.$authUserType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items = TradingAllowance.options
             )

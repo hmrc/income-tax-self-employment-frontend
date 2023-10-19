@@ -42,26 +42,24 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-  val isAccrual                       = true // TODO SASS-5911 delete default, use get (can't be passed through URL or will ruin next two pages' URLs)
+  val isAccrual = true // TODO SASS-5911 delete default, use get (can't be passed through URL or will ruin next two pages' URLs)
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowancePage) match {
-        case None        => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, isAccrual))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(isAgentString(request.user.isAgent))
+      formProvider(authUserType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, isAccrual))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, isAccrual))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowancePage, value))
@@ -69,5 +67,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
             } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear))
         )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

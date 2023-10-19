@@ -42,21 +42,18 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
       val tradingAllowanceString = {
         val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
         if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
       }
-      val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(HowMuchTradingAllowancePage) match {
-        case None        => formProvider(isAgent, tradingAllowanceString)
-        case Some(value) => formProvider(isAgent, tradingAllowanceString).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
+        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear, tradingAllowanceString))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
@@ -65,11 +62,11 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
         val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
         if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
       }
-      formProvider(isAgentString(request.user.isAgent), tradingAllowanceString)
+      formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, tradingAllowanceString))),
+            Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
@@ -77,5 +74,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
             } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
         )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }
