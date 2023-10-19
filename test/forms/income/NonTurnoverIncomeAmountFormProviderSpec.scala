@@ -23,16 +23,15 @@ class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours 
 
   ".value" - {
 
-    val fieldName   = "value"
-    val tradingName = "tradingName"
-    val minimum     = 0
-    val maximum     = 100000000000.00
+    val fieldName = "value"
+    val minimum   = 0
+    val maximum   = 100000000000.00
     case class UserScenario(user: String)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new NonTurnoverIncomeAmountFormProvider()(userScenario.user, tradingName)
+      val form = new NonTurnoverIncomeAmountFormProvider()(userScenario.user)
 
       s"when user is an ${userScenario.user}, form should " - {
 
@@ -47,7 +46,7 @@ class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours 
         behave like bigDecimalField(
           form,
           fieldName,
-          nonNumericError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.nonNumeric.${userScenario.user}", Seq(tradingName))
+          nonNumericError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.nonNumeric.${userScenario.user}")
         )
 
         behave like bigDecimalFieldWithMinimum(
@@ -67,7 +66,7 @@ class NonTurnoverIncomeAmountFormProviderSpec extends BigDecimalFieldBehaviours 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.required.${userScenario.user}", Seq(tradingName))
+          requiredError = FormError(fieldName, s"nonTurnoverIncomeAmount.error.required.${userScenario.user}")
         )
       }
     }

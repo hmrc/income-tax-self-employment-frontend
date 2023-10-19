@@ -41,11 +41,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider       = new NonTurnoverIncomeAmountFormProvider()
-  val tradeName          = "tradeName"
-  val formWithIndividual = formProvider("individual", tradeName)
-  val formWithAgent      = formProvider("agent", tradeName)
-
+  val formProvider            = new NonTurnoverIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100
 
   def nonTurnoverIncomeAmountRoute(isPost: Boolean, mode: Mode): String =
@@ -55,8 +51,8 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
-    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
+    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
   )
 
   "NonTurnoverIncomeAmount Controller" - {

@@ -17,13 +17,16 @@
 package controllers.journeys.income
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
+import models.mdtp.CashOrAccrual.isAccrual
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.TradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TradingAllowanceView
 
@@ -31,6 +34,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
+                                            selfEmploymentService: SelfEmploymentService,
                                             sessionRepository: SessionRepository,
                                             navigator: Navigator,
                                             identify: IdentifierAction,
@@ -42,32 +46,43 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-  val isAccrual                       = true // TODO SASS-5911 delete default, use get (can't be passed through URL or will ruin next two pages' URLs)
+  def isAgentString(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
+  val businessId = "SJPR05893938418" // TODO merge 5840, delete default
+
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
       val isAgent = isAgentString(request.user.isAgent)
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowancePage) match {
-        case None        => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
-      }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual))
+      selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+        case Right(cashOrAccrual) =>
+          val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowancePage) match {
+            case None        => formProvider(isAgent)
+            case Some(value) => formProvider(isAgent).fill(value)
+          }
+
+          Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual(cashOrAccrual)))
+      }
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(isAgentString(request.user.isAgent))
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, isAccrual))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowancePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear))
-        )
+      selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Right(cashOrAccrual) =>
+          formProvider(isAgentString(request.user.isAgent))
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, isAccrual(cashOrAccrual)))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowancePage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear))
+            )
+      }
   }
 
 }

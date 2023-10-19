@@ -20,9 +20,10 @@ import base.SpecBase
 import controllers.journeys.income.routes.TradingAllowanceController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
+import models.mdtp.CashOrAccrual.isAccrual
 import models.{CheckMode, Mode, NormalMode, TradingAllowance, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TradingAllowancePage
@@ -33,42 +34,45 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.income.TradingAllowanceView
 
 import scala.concurrent.Future
 
 class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
+  val formProvider = new TradingAllowanceFormProvider()
+  val businessId   = "businessId"
+
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider   = new TradingAllowanceFormProvider()
-  val formIndividual = formProvider("individual")
-  val formAgent      = formProvider("agent")
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   def tradingAllowanceRoute(isPost: Boolean, mode: Mode): String =
     if (isPost) TradingAllowanceController.onSubmit(taxYear, mode).url
     else TradingAllowanceController.onPageLoad(taxYear, mode).url
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TradingAllowance], isAccrual: Boolean)
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TradingAllowance], accrualOrCash: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formIndividual, isAccrual = true),
-    UserScenario(isWelsh = false, isAgent = true, formAgent, isAccrual = true) // TODO 5911 change accrual to false in one userScenario
+    UserScenario(isWelsh = false, isAgent = false, formProvider("individual"), "ACCRUAL"),
+    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"), "CASH")
   )
-
-  def formTypeToString(isAccrual: Boolean): String = if (isAccrual) "accrual type accounting" else "cash type accounting"
 
   "TradingAllowance Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and has ${formTypeToString(userScenario.isAccrual)}" - {
+        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and has ${userScenario.accrualOrCash} type accounting" - {
           "must return OK and the correct view" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
+              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accrualOrCash))
               val request = buildRequest(GET, tradingAllowanceRoute(false, NormalMode), userScenario.isAgent)
 
               val result = route(application, request).value
@@ -77,9 +81,10 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val view = application.injector.instanceOf[TradingAllowanceView]
 
-              val expectedResult = view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear, userScenario.isAccrual)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(userScenario.form, NormalMode, isAgentToString(userScenario.isAgent), taxYear, isAccrual(userScenario.accrualOrCash))(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -90,10 +95,13 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, TradingAllowance.values.head).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
+              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accrualOrCash))
               val request = buildRequest(GET, tradingAllowanceRoute(false, CheckMode), userScenario.isAgent)
 
               val view = application.injector.instanceOf[TradingAllowanceView]
@@ -107,7 +115,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 CheckMode,
                 isAgentToString(userScenario.isAgent),
                 taxYear,
-                userScenario.isAccrual)(request, messages(application, userScenario.isWelsh)).toString
+                isAccrual(userScenario.accrualOrCash))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -143,11 +151,14 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
 
         running(application) {
+          when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+
           val request =
             buildRequest(POST, tradingAllowanceRoute(true, NormalMode), false)
               .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
@@ -160,58 +171,70 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and has ${formTypeToString(userScenario.isAccrual)}" - {
-          "must return a Bad Request and errors when an empty form is submitted" in {
+        s"when ${isWelshToString(userScenario.isWelsh)}, ${isAgentToString(userScenario.isAgent)} and has ${userScenario.accrualOrCash} type accounting" - {
+          "must return a Bad Request and errors when" - {
+            "an empty form is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+                .overrides(bind[SelfEmploymentService].toInstance(mockService))
+                .build()
+              implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-            running(application) {
-              val request =
-                buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
-                  .withFormUrlEncodedBody(("value", ""))
+              running(application) {
+                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accrualOrCash))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+                val request =
+                  buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
+                    .withFormUrlEncodedBody(("value", ""))
 
-              val view = application.injector.instanceOf[TradingAllowanceView]
+                val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val result = route(application, request).value
+                val view = application.injector.instanceOf[TradingAllowanceView]
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, userScenario.isAccrual)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+                val expectedResult =
+                  view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, isAccrual(userScenario.accrualOrCash))(
+                    request,
+                    messages(application, userScenario.isWelsh)).toString
+
+                status(result) mustEqual BAD_REQUEST
+                contentAsString(langResult) mustEqual expectedResult
+              }
             }
-          }
 
-          "must return a Bad Request and errors when invalid data is submitted" in {
+            "invalid data is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+                .overrides(bind[SelfEmploymentService].toInstance(mockService))
+                .build()
+              implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-            running(application) {
-              val request =
-                buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+              running(application) {
+                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accrualOrCash))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+                val request =
+                  buildRequest(POST, tradingAllowanceRoute(true, NormalMode), userScenario.isAgent)
+                    .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val view = application.injector.instanceOf[TradingAllowanceView]
+                val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val result = route(application, request).value
+                val view = application.injector.instanceOf[TradingAllowanceView]
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, userScenario.isAccrual)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+                val expectedResult =
+                  view(boundForm, NormalMode, isAgentToString(userScenario.isAgent), taxYear, isAccrual(userScenario.accrualOrCash))(
+                    request,
+                    messages(application, userScenario.isWelsh)).toString
+
+                status(result) mustEqual BAD_REQUEST
+                contentAsString(langResult) mustEqual expectedResult
+              }
             }
           }
         }

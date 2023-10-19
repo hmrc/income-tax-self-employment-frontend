@@ -24,6 +24,7 @@ import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NonTurnoverIncomeAmountView
 
@@ -31,6 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                   selfEmploymentService: SelfEmploymentService,
                                                    sessionRepository: SessionRepository,
                                                    navigator: Navigator,
                                                    identify: IdentifierAction,
@@ -42,16 +44,14 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
-  val tradeName = "PlaceHolderTradeName" // TODO 5911 get from trade details backend
+  private def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
       val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None        => formProvider(isAgent, tradeName)
-        case Some(value) => formProvider(isAgent, tradeName).fill(value)
+        case None        => formProvider(isAgent)
+        case Some(value) => formProvider(isAgent).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
@@ -59,7 +59,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(isAgentString(request.user.isAgent), tradeName)
+      formProvider(isAgentString(request.user.isAgent))
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
