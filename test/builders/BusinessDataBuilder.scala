@@ -104,6 +104,47 @@ object BusinessDataBuilder {
     )
   )
 
+  val aBusinessDataCashAccounting: Seq[BusinessData] = Seq(
+    BusinessData(
+      businessId = "businessId-1",
+      typeOfBusiness = "self-employment",
+      tradingName = Some("Trade one"),
+      yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")),
+      firstAccountingPeriodStartDate = Some("2019-09-30"),
+      firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")),
+      accountingType = Some("CASH"),
+      commencementDate = Some("2023-04-06"),
+      cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address",
+      businessAddressLineTwo = Some("Business Address 2"),
+      businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"),
+      businessAddressPostcode = Some("Business Address 5"),
+      businessAddressCountryCode = "GB"
+    ),
+    BusinessData(
+      businessId = "businessId-2",
+      typeOfBusiness = "self-employment",
+      tradingName = Some("Trade two"),
+      yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")),
+      firstAccountingPeriodStartDate = Some("2019-09-30"),
+      firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")),
+      accountingType = Some("CASH"),
+      commencementDate = Some("2023-04-06"),
+      cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address",
+      businessAddressLineTwo = Some("Business Address 2"),
+      businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"),
+      businessAddressPostcode = Some("Business Address 5"),
+      businessAddressCountryCode = "GB"
+    )
+  )
+
   val aBusinessDataResponse: Either[HttpError, Seq[BusinessData]]     = Right(aBusinessData)
   val aBusinessDataNoneResponse: Either[HttpError, Seq[BusinessData]] = Right(aBusinessDataNoneTradeNames)
 

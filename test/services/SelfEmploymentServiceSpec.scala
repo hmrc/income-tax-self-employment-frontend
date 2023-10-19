@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import builders.BusinessDataBuilder.aBusinessData
+import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import connectors.SelfEmploymentConnector
 import models.errors.{HttpError, HttpErrorBody}
@@ -38,10 +38,12 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val nino       = "nino"
-  val businessId = "businessId"
-  val mtditid    = "mtditid"
-  val accrual    = "ACCRUAL"
+  val nino              = "nino"
+  val businessIdAccrual = "businessIdAccrual"
+  val businessIdCash    = "businessIdCash"
+  val mtditid           = "mtditid"
+  val accrual           = "ACCRUAL"
+  val cash              = "CASH"
 
   "getCompletedTradeDetails" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
@@ -64,28 +66,31 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "getBusinessAccountingType" - {
     "should return a BusinessID's accounting type in a Right when this is returned from the backend" in {
-      when(mockConnector.getBusiness(meq(nino), meq(businessId), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
+      when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
+      when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessDataCashAccounting))
 
-      val result = await(service.getBusinessAccountingType(nino, businessId, mtditid))(10.seconds)
+      val resultAccrual = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
+      val resultCash    = await(service.getBusinessAccountingType(nino, businessIdCash, mtditid))(10.seconds)
 
-      result mustEqual Right(accrual)
+      resultAccrual mustEqual Right(accrual)
+      resultCash mustEqual Right(cash)
     }
 
     "should return a Left(HttpError) when" - {
 
       "an empty sequence is returned from the backend" in {
-        when(mockConnector.getBusiness(meq(nino), meq(businessId), meq(mtditid))(any, any)) thenReturn Future(Right(Seq.empty))
+        when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(Seq.empty))
 
-        val result = await(service.getBusinessAccountingType(nino, businessId, mtditid))(10.seconds)
+        val result = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
         result mustEqual Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
       }
 
       "a Left(HttpError) is returned from the backend" in {
-        when(mockConnector.getBusiness(meq(nino), meq(businessId), meq(mtditid))(any, any)) thenReturn Future(
+        when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(
           Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
 
-        val result = await(service.getBusinessAccountingType(nino, businessId, mtditid))(10.seconds)
+        val result = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
         result mustEqual Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
       }
