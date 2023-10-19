@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class NotTaxableAmountFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
+  def apply(authUserType: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(s"notTaxableAmount.error.required.$authUserType", s"notTaxableAmount.error.nonNumeric.$authUserType")
         .verifying(isBigDecimalGreaterThanZero(s"notTaxableAmount.error.lessThanZero.$authUserType"))

@@ -46,7 +46,9 @@
             <li>@messages("turnoverIncomeAmount.l1")</li>
             <li>@messages("turnoverIncomeAmount.l2")</li>
             <li>@messages("turnoverIncomeAmount.l3")</li>
-            @if(accountingType.equals("ACCRUAL")) {<li>@messages(s"turnoverIncomeAmount.l4.$authUserType")</li>}
+            @if(accountingType.equals("ACCRUAL")) {
+                <li>@messages(s"turnoverIncomeAmount.l4.$authUserType")</li>
+            }
         </ul>
     </div>
 
