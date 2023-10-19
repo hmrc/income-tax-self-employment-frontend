@@ -17,6 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
@@ -24,6 +25,7 @@ import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.OtherIncomeAmountView
 
@@ -31,6 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
+                                             selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
@@ -41,6 +44,8 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                                              view: OtherIncomeAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
+  val businessId = "SJPR05893938418" // TODO 5840 delete default and get from the URL
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
@@ -54,16 +59,22 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(authUserType(request.user.isAgent))
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear))
-        )
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Right(accountingType) =>
+          formProvider(authUserType(request.user.isAgent))
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear)
+                ) // TODO 5840 use 'accountingType.equals("ACCRUAL")' in this .nextPage method
+            )
+      }
   }
 
   private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"

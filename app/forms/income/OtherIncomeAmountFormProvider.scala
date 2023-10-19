@@ -23,11 +23,11 @@ import javax.inject.Inject
 
 class OtherIncomeAmountFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[BigDecimal] =
+  def apply(authUserType: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$isAgentString", s"otherIncomeAmount.error.nonNumeric.$isAgentString")
-        .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$isAgentString"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$isAgentString"))
+      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$authUserType", s"otherIncomeAmount.error.nonNumeric.$authUserType")
+        .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$authUserType"))
     )
 
 }

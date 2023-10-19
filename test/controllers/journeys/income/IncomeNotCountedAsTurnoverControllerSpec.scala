@@ -19,7 +19,7 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

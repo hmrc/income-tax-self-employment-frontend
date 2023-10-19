@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class IncomeNotCountedAsTurnoverFormProvider @Inject() extends Mappings {
 
-  def apply(isAgentString: String): Form[Boolean] =
+  def apply(authUserType: String): Form[Boolean] =
     Form(
-      "value" -> boolean(s"incomeNotCountedAsTurnover.error.required.$isAgentString")
+      "value" -> boolean(s"incomeNotCountedAsTurnover.error.required.$authUserType")
     )
 
 }

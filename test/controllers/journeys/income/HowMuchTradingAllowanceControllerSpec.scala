@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.{CheckMode, HowMuchTradingAllowance, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, HowMuchTradingAllowance, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
