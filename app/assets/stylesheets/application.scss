@@ -7,6 +7,10 @@ strong {
 .js-enabled .js-visible {
   display: inline-block !important;
 }
+.govuk-hint {
+    margin-bottom: 15px;
+    color: #505a5f;
+}
 .govuk-tag--notStarted, .govuk-tag--cannotStartYet, .govuk-tag--checkOurRecords {
   color: #383f43;
   background: #eeefef;
@@ -30,6 +34,9 @@ strong {
   float: right;
   margin-bottom: 0;
   padding-bottom: 0;
+}
+.govuk-list--bullet {
+  padding-left: 40px;
 }
 .govuk-deadlink {
   color: #0b0c0c!important;

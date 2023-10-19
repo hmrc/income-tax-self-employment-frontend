@@ -16,30 +16,45 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.HowMuchTradingAllowanceController
+@import views.html.templates.helpers.Heading
+@import models.HowMuchTradingAllowance
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("howMuchTradingAllowance.title"))) {
 
-    @formHelper(action = HowMuchTradingAllowanceController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+    @heading(messages("howMuchTradingAllowance.title"), None)
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+        <p>
+            @messages(s"howMuchTradingAllowance.p1.$authUserType")
+        </p>
+        <p>
+            @messages("howMuchTradingAllowance.p2")
+        </p>
+    </div>
+
+    @formHelper(action = HowMuchTradingAllowanceController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("howMuchTradingAllowance.title")).asPageHeading(),
-                items  = HowMuchTradingAllowance.options
+                legend = LegendViewModel(messages(s"howMuchTradingAllowance.subHeading.$authUserType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = HowMuchTradingAllowance.options(tradingAllowance)
             )
         )
 

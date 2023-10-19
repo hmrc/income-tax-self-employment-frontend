@@ -37,7 +37,6 @@ import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.TaxYearHelper._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {

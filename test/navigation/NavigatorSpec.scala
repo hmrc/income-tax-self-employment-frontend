@@ -25,12 +25,9 @@ import models._
 import pages._
 import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 
-import java.time.LocalDate
-
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
-  val taxYear = LocalDate.now().getYear
   val businessId = "businessId-1"
 
   case object UnknownPage extends Page

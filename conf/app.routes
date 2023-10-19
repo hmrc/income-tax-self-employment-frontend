@@ -26,76 +26,78 @@ GET         /unauthorised                                              controlle
 
 GET         /:taxYear/task-list                                        controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
 
-GET         /:taxYear/details/self-employment-abroad/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/details/self-employment-abroad/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/details/self-employment-abroad/change/:businessId      controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/details/self-employment-abroad/change/:businessId      controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-
-GET         /:taxYear/self-employment/details/check/:businessId              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: Int, businessId: String)
-
-GET         /:taxYear/details/check/:businessId                              controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
-GET         /:taxYear/self-employment-summary                                controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
-
 GET        /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
 POST       /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
 GET        /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
 POST       /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
 
+########## Trade-details Journey ##########
+
+GET         /:taxYear/details/check/:businessId                                    controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
+
+GET         /:taxYear/self-employment-summary                                      controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
+
+########## Abroad Journey ##########
+
+GET         /:taxYear/details/self-employment-abroad/:businessId                   controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/details/self-employment-abroad/:businessId                   controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/details/self-employment-abroad/change/:businessId            controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/details/self-employment-abroad/change/:businessId            controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+
+GET         /:taxYear/self-employment/details/check/:businessId                    controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: Int, businessId: String)
 
 ########## Income Journey ##########
 
-GET         /:taxYear/incomeNotCountedAsTurnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/incomeNotCountedAsTurnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeIncomeNotCountedAsTurnover                 controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeIncomeNotCountedAsTurnover                 controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/not-counted-turnover                                   controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/not-counted-turnover                                   controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-not-counted-turnover                            controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-not-counted-turnover                            controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/nonTurnoverIncomeAmount                          controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/nonTurnoverIncomeAmount                          controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeNonTurnoverIncomeAmount                    controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeNonTurnoverIncomeAmount                    controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/not-counted-turnover/amount                            controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/not-counted-turnover/amount                            controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-not-counted-turnover/amount                     controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-not-counted-turnover/amount                     controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/turnoverIncomeAmount                             controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/turnoverIncomeAmount                             controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeTurnoverIncomeAmount                       controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeTurnoverIncomeAmount                       controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/turnover-amount                                        controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/turnover-amount                                        controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-turnover-amount                                 controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-turnover-amount                                 controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/anyOtherIncome                                   controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/anyOtherIncome                                   controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeAnyOtherIncome                             controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeAnyOtherIncome                             controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/other-income                                           controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/other-income                                           controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-other-income                                    controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-other-income                                    controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/otherIncomeAmount                                controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/otherIncomeAmount                                controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeOtherIncomeAmount                          controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeOtherIncomeAmount                          controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/other-income/amount                                    controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/other-income/amount                                    controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-other-income/amount                             controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-other-income/amount                             controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/turnoverNotTaxable                               controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/turnoverNotTaxable                               controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeTurnoverNotTaxable                         controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeTurnoverNotTaxable                         controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/turnover-exempt                                        controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/turnover-exempt                                        controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-turnover-exempt                                 controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-turnover-exempt                                 controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/notTaxableAmount                                 controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/notTaxableAmount                                 controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeNotTaxableAmount                           controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeNotTaxableAmount                           controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/turnover-exempt/amount                                 controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/turnover-exempt/amount                                 controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-turnover-exempt/amount                          controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-turnover-exempt/amount                          controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/tradingAllowance                                 controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/tradingAllowance                                 controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeTradingAllowance                           controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeTradingAllowance                           controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/trading-allowance                                      controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/trading-allowance                                      controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-trading-allowance                               controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-trading-allowance                               controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/howMuchTradingAllowance                          controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/howMuchTradingAllowance                          controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeHowMuchTradingAllowance                    controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeHowMuchTradingAllowance                    controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/trading-allowance/under-1000                           controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/trading-allowance/under-1000                           controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-trading-allowance/under-1000                    controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-trading-allowance/under-1000                    controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/tradingAllowanceAmount                           controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
-POST        /:taxYear/tradingAllowanceAmount                           controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
-GET         /:taxYear/changeTradingAllowanceAmount                     controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
-POST        /:taxYear/changeTradingAllowanceAmount                     controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
+GET        /:taxYear/income/trading-allowance/amount                               controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, mode: Mode = NormalMode)
+POST       /:taxYear/income/trading-allowance/amount                               controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, mode: Mode = NormalMode)
+GET        /:taxYear/income/change-trading-allowance/amount                        controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
+POST       /:taxYear/income/change-trading-allowance/amount                        controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET         /:taxYear/checkYourIncome                                  controllers.journeys.income.CheckYourIncomeController.onPageLoad(taxYear: Int)
+GET        /:taxYear/income/check-your-income                                      controllers.journeys.income.CheckYourIncomeController.onPageLoad(taxYear: Int)
 
 ##########  ##########
-
-

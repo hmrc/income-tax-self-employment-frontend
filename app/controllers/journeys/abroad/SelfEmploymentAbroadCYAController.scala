@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
-import views.html.SelfEmploymentAbroadCYAView
+import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
 

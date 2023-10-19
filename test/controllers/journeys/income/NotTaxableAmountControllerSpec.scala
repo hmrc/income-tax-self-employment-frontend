@@ -19,14 +19,16 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income.routes.NotTaxableAmountController
 import controllers.standard.routes.JourneyRecoveryController
-import forms.NotTaxableAmountFormProvider
-import models.{NormalMode, UserAnswers}
+import forms.income.NotTaxableAmountFormProvider
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.NotTaxableAmountPage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,127 +40,249 @@ import scala.concurrent.Future
 
 class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new NotTaxableAmountFormProvider()
-  val form = formProvider()
-  val taxYear = LocalDate.now().getYear
-
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer: BigDecimal = 0
+  val formProvider            = new NotTaxableAmountFormProvider()
+  val turnoverAmount          = 1000.00
+  val validAnswer: BigDecimal = 100
+  val formWithIndividual      = formProvider("individual", turnoverAmount)
+  val formWithAgent           = formProvider("agent", turnoverAmount)
 
-  lazy val notTaxableAmountRoute = NotTaxableAmountController.onPageLoad(taxYear, NormalMode).url
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
+    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+  )
 
   "NotTaxableAmount Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+          "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, notTaxableAmountRoute)
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        val result = route(application, request).value
+            running(application) {
+              val request = FakeRequest(GET, NotTaxableAmountController.onPageLoad(taxYear, NormalMode).url)
 
-        val view = application.injector.instanceOf[NotTaxableAmountView]
+              val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, taxYear)(request, messages(application)).toString
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val view = application.injector.instanceOf[NotTaxableAmountView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, validAnswer).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request = FakeRequest(GET, NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
+
+              val view = application.injector.instanceOf[NotTaxableAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, authUserType(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, NotTaxableAmountController.onPageLoad(taxYear, NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, validAnswer).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockSessionRepository = mock[SessionRepository]
 
-      running(application) {
-        val request = FakeRequest(GET, notTaxableAmountRoute)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[NotTaxableAmountView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+              .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, taxYear)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            running(application) {
+              val request =
+                FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+                  .withFormUrlEncodedBody(("value", ""))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, notTaxableAmountRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
+              val view = application.injector.instanceOf[NotTaxableAmountView]
 
-        val result = route(application, request).value
+              val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+                  .withFormUrlEncodedBody(("value", "non-BigDecimal"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "non-BigDecimal"))
+
+              val view = application.injector.instanceOf[NotTaxableAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "a negative number is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+                  .withFormUrlEncodedBody(("value", "-23"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "-23"))
+
+              val view = application.injector.instanceOf[NotTaxableAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "turnover income amount exceeds £100,000,000,000.00" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+                  .withFormUrlEncodedBody(("value", "100000000000.01"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "100000000000.01"))
+
+              val view = application.injector.instanceOf[NotTaxableAmountView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, notTaxableAmountRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        running(application) {
+          val request =
+            FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, NormalMode).url)
+              .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+          val result = route(application, request).value
 
-        val view = application.injector.instanceOf[NotTaxableAmountView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore { //TODO unignore when RequireData is implemented
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, notTaxableAmountRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" ignore { //TODO unignore when RequireData is implemented
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, notTaxableAmountRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }
+
 }

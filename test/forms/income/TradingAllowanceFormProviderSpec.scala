@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.behaviours.OptionFieldBehaviours
 import models.TradingAllowance
@@ -22,24 +22,32 @@ import play.api.data.FormError
 
 class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TradingAllowanceFormProvider()()
-
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "tradingAllowance.error.required"
+    case class UserScenario(user: String)
 
-    behave like optionsField[TradingAllowance](
-      form,
-      fieldName,
-      validValues = TradingAllowance.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new TradingAllowanceFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[TradingAllowance](
+          form,
+          fieldName,
+          validValues = TradingAllowance.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"tradingAllowance.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
+
 }

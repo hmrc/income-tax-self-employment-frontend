@@ -34,20 +34,16 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.auth.core.AffinityGroup
 import views.html.journeys.TaskListView
 
-import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
-  val taxYear = LocalDate.now().getYear
   val nino = "AA370343B"
   val mtditid = "mtditid"
-  val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
-
-  implicit val ec: ExecutionContext = ExecutionContext.global
+  val user: User = User(mtditid, None, nino, AffinityGroup.Individual.toString)
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
-  val mockConnector = mock[SelfEmploymentConnector]
+  val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 
   "TaskListController .onPageLoad" - {
 

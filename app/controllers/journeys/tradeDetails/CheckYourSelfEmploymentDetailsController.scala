@@ -41,7 +41,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
                                                          view: CheckYourSelfEmploymentDetailsView)
                                                         (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData) async { //TODO (Edem) does this need 'andThen requireData' ?
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData) async { //TODO Business does this need 'andThen requireData' ?
     implicit request =>
 
       val isAgent = request.user.isAgent

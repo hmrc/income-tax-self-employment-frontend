@@ -14,41 +14,38 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
-import forms.abroad.SelfEmploymentAbroadFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
+class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
 
   ".value" - {
 
-    val fieldName  = "value"
-    val invalidKey = "error.boolean"
+    val fieldName = "value"
     case class UserScenario(user: String)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals("agent"))
+      val form = new TurnoverNotTaxableFormProvider()(userScenario.user)
 
       s"when user is an ${userScenario.user}, form should " - {
 
         behave like booleanField(
           form,
           fieldName,
-          invalidError = FormError(fieldName, invalidKey)
+          invalidError = FormError(fieldName, "error.boolean")
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"selfEmploymentAbroad.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"turnoverNotTaxable.error.required.${userScenario.user}")
         )
       }
     }
-
   }
 
 }

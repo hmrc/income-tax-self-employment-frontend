@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[BigDecimal] =
+class TradingAllowanceAmountFormProvider @Inject() extends Mappings {
+
+  def apply(isAgentString: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
-        "nonTurnoverIncomeAmount.error.required",
-        "nonTurnoverIncomeAmount.error.nonNumeric")
-          .verifying(inBigDecimalRange(0, 100000000000.00, "nonTurnoverIncomeAmount.error.outOfRange")) //TODO amount verification inline with ticket 5553
+      "value" -> bigDecimal(s"tradingAllowanceAmount.error.required.$isAgentString", s"tradingAllowanceAmount.error.nonNumeric.$isAgentString")
+        .verifying(isBigDecimalGreaterThanZero(s"tradingAllowanceAmount.error.lessThanZero.$isAgentString"))
+        .verifying(isBigDecimalLessThanMax(turnoverAmount, s"tradingAllowanceAmount.error.overTurnover.$isAgentString"))
     )
+
 }

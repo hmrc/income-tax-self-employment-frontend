@@ -17,10 +17,10 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.NotTaxableAmountFormProvider
+import forms.income.NotTaxableAmountFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.income.NotTaxableAmountPage
+import pages.income.{NotTaxableAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,8 +30,7 @@ import views.html.journeys.income.NotTaxableAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotTaxableAmountController @Inject()(
-                                            override val messagesApi: MessagesApi,
+class NotTaxableAmountController @Inject() (override val messagesApi: MessagesApi,
                                             sessionRepository: SessionRepository,
                                             navigator: Navigator,
                                             identify: IdentifierAction,
@@ -39,34 +38,42 @@ class NotTaxableAmountController @Inject()(
                                             requireData: DataRequiredAction,
                                             formProvider: NotTaxableAmountFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: NotTaxableAmountView
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            view: NotTaxableAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
-
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { //TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-
+      val tradingAllowance: BigDecimal = {
+        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
+        if (turnover > 1000.00) 1000.00 else turnover
+      }
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
+        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
-      )
+      val tradingAllowance: BigDecimal = {
+        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
+        if (turnover > 1000.00) 1000.00 else turnover
+      }
+      formProvider(authUserType(request.user.isAgent), tradingAllowance)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
+        )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+
 }

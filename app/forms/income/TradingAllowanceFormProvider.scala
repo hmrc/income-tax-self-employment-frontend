@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package forms.income
+
+import forms.mappings.Mappings
+import models.TradingAllowance
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class TradingAllowanceFormProvider @Inject() extends Mappings {
 
-class AnyOtherIncomeFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
+  def apply(isAgentString: String): Form[TradingAllowance] =
     Form(
-      "value" -> boolean("anyOtherIncome.error.required")
+      "value" -> enumerable[TradingAllowance](s"tradingAllowance.error.required.$isAgentString")
     )
+
 }
