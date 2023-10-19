@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.checkAnswers.SelfEmploymentAbroadSummary
+import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
 import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
