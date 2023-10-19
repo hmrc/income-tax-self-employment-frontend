@@ -49,7 +49,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage) match {
@@ -63,7 +63,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(authUserType(request.user.isAgent))

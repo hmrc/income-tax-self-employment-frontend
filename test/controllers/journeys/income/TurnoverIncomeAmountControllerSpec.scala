@@ -74,7 +74,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, TurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode).url)
 
@@ -104,7 +104,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, TurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
 
@@ -161,7 +161,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
 
           val request =
             FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
@@ -185,7 +185,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
@@ -217,7 +217,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
@@ -249,7 +249,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
@@ -281,7 +281,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)

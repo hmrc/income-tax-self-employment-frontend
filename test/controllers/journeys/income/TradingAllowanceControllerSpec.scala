@@ -68,7 +68,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
               val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, NormalMode).url)
 
               val result = route(application, request).value
@@ -96,7 +96,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
 
@@ -153,7 +153,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
 
           val request =
             FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
@@ -177,7 +177,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
@@ -208,7 +208,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
               running(application) {
-                when(mockService.getBusinessAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
                   FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)

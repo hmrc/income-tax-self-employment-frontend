@@ -33,7 +33,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(impli
     connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
   }
 
-  def getBusinessAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] = {
+  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] = {
 
     connector.getBusiness(nino, businessId, mtditid).map {
       case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)

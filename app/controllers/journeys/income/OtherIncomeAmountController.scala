@@ -59,7 +59,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(authUserType(request.user.isAgent))

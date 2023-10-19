@@ -69,8 +69,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
       when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessDataCashAccounting))
 
-      val resultAccrual = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
-      val resultCash    = await(service.getBusinessAccountingType(nino, businessIdCash, mtditid))(10.seconds)
+      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
+      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))(10.seconds)
 
       resultAccrual mustEqual Right(accrual)
       resultCash mustEqual Right(cash)
@@ -81,7 +81,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       "an empty sequence is returned from the backend" in {
         when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(Seq.empty))
 
-        val result = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
         result mustEqual Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
       }
@@ -90,7 +90,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
         when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(
           Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
 
-        val result = await(service.getBusinessAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
         result mustEqual Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
       }
