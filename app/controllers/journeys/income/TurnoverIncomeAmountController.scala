@@ -19,7 +19,6 @@ package controllers.journeys.income
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverIncomeAmountFormProvider
-import models.mdtp.CashOrAccrual.isAccrual
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.TurnoverIncomeAmountPage
@@ -56,13 +55,13 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
 
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
-        case Right(cashOrAccrual) =>
+        case Right(accountingType) =>
           val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage) match {
             case None        => formProvider(isAgent)
             case Some(value) => formProvider(isAgent).fill(value)
           }
 
-          Ok(view(preparedForm, mode, isAgent, taxYear, isAccrual(cashOrAccrual)))
+          Ok(view(preparedForm, mode, isAgent, taxYear, accountingType))
       }
   }
 
@@ -70,12 +69,12 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
     implicit request =>
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(cashOrAccrual) =>
+        case Right(accountingType) =>
           formProvider(isAgentString(request.user.isAgent))
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, isAccrual(cashOrAccrual)))),
+                Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverIncomeAmountPage, value))

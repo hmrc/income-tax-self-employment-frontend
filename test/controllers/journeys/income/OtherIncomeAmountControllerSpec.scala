@@ -43,7 +43,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new OtherIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100.00
   val turnoverAmount          = 1000.00
-  val businessId              = "businessId"
+  val businessId              = "SJPR05893938418"
   val turnoverNotTaxableCall  = TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)
   val tradingAllowanceCall    = TradingAllowanceController.onPageLoad(taxYear, NormalMode)
 

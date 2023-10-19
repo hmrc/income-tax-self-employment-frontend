@@ -19,7 +19,6 @@ package controllers.journeys.income
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
-import models.mdtp.CashOrAccrual.isAccrual
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.income.OtherIncomeAmountPage
@@ -65,7 +64,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     implicit request =>
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(cashOrAccrual) =>
+        case Right(accountingType) =>
           formProvider(isAgentString(request.user.isAgent))
             .bindFromRequest()
             .fold(
@@ -74,7 +73,9 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear)) // TODO 5840 use 'isAccrual(cashOrAccrual): Boolean' in this .nextPage method
+                } yield Redirect(
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear)
+                ) // TODO 5840 use 'accountingType.equals("ACCRUAL")' in this .nextPage method
             )
       }
   }
