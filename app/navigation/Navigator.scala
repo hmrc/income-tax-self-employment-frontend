@@ -56,9 +56,9 @@ class Navigator @Inject()() {
           controllers.journeys.income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)
         }
 
-//    case OtherIncomeAmountPage => taxYear => userAnswers =>
-//      if (userAnswers.get(OtherIncomeAmountPage).contains("")) {
-//      controllers.journeys.income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)} //TODO Accrual or Cash basis
+    case OtherIncomeAmountPage => taxYear => _ =>
+      if () {
+      controllers.journeys.income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)} //TODO Accrual or Cash basis
 
     case TurnoverNotTaxablePage => taxYear => userAnswers =>
         if (userAnswers.get(TurnoverNotTaxablePage).getOrElse(false)) {
@@ -89,9 +89,9 @@ class Navigator @Inject()() {
     case _ => taxYear => _ =>  controllers.standard.routes.CheckYourAnswersController.onPageLoad
   }
 
-  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers): Call = mode match {
+  def nextPage(page: Page, mode: Mode, taxYear: Int, userAnswers: UserAnswers, isAccrual: Boolean = false): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(taxYear)(userAnswers)
+      normalRoutes(page)(taxYear)(userAnswers)(isAccrual)
     case CheckMode =>
       checkRouteMap(page)(taxYear)(userAnswers)
   }

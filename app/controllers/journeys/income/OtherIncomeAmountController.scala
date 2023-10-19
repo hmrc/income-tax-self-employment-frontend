@@ -58,6 +58,10 @@ class OtherIncomeAmountController @Inject()(
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData).async { //TODO add requireData SASS-5841
     implicit request =>
 
+      val isAccrual: Boolean = true
+      //TODO SASS-5841 get business data with businessId to get accounting type (accrual or cash) then pass isAccrual Boolean through urls (used in pages 3 5 8)
+      //for now hardcode isAccrual as true and pass through urls in order to finish navigation
+
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, taxYear))),
@@ -66,7 +70,7 @@ class OtherIncomeAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, taxYear, updatedAnswers, isAccrual))
       )
   }
 }
