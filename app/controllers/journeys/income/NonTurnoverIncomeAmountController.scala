@@ -42,16 +42,14 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
-  val tradeName = "PlaceHolderTradeName" // TODO 5911 get from trade details backend
+  def authUserType(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = isAgentString(request.user.isAgent)
+      val isAgent = authUserType(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None        => formProvider(isAgent, tradeName)
-        case Some(value) => formProvider(isAgent, tradeName).fill(value)
+        case None        => formProvider(isAgent)
+        case Some(value) => formProvider(isAgent).fill(value)
       }
 
       Ok(view(preparedForm, mode, isAgent, taxYear))
@@ -59,10 +57,10 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      formProvider(isAgentString(request.user.isAgent), tradeName)
+      formProvider(authUserType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NonTurnoverIncomeAmountPage, value))

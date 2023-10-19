@@ -26,7 +26,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, isAgentString: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("incomeNotCountedAsTurnover.title"))) {
 
@@ -38,11 +38,11 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"incomeNotCountedAsTurnover.p1.$isAgentString")
+            @messages(s"incomeNotCountedAsTurnover.p1.$authUserType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-            <li>@messages(s"incomeNotCountedAsTurnover.l1.$isAgentString")</li>
-            <li>@messages(s"incomeNotCountedAsTurnover.l2.$isAgentString")</li>
+            <li>@messages(s"incomeNotCountedAsTurnover.l1.$authUserType")</li>
+            <li>@messages(s"incomeNotCountedAsTurnover.l2.$authUserType")</li>
         </ul>
         <p>
             @messages("incomeNotCountedAsTurnover.p2")
@@ -54,7 +54,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"incomeNotCountedAsTurnover.subHeading.$isAgentString"))
+                legend = LegendViewModel(messages(s"incomeNotCountedAsTurnover.subHeading.$authUserType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )

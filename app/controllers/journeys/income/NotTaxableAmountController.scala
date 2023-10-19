@@ -42,7 +42,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
+  def authUserType(isAgent: Boolean) = if (isAgent) "agent" else "individual"
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
@@ -50,7 +50,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
         val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
         if (turnover > 1000.00) 1000.00 else turnover
       }
-      val isAgent = isAgentString(request.user.isAgent)
+      val isAgent = authUserType(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
         case None        => formProvider(isAgent, tradingAllowance)
         case Some(value) => formProvider(isAgent, tradingAllowance).fill(value)
@@ -65,10 +65,10 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
         val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
         if (turnover > 1000.00) 1000.00 else turnover
       }
-      formProvider(isAgentString(request.user.isAgent), tradingAllowance)
+      formProvider(authUserType(request.user.isAgent), tradingAllowance)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
