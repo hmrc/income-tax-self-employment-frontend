@@ -16,8 +16,6 @@
 
 package base
 
-import builders.UserBuilder.aNoddyUser
-import controllers.actions.AuthenticatedIdentifierAction.SessionValues
 import controllers.actions._
 import models.UserAnswers
 import org.joda.time.LocalDate
@@ -29,7 +27,6 @@ import play.api.Application
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext
@@ -51,9 +48,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
     }
 
-  protected def isWelshToString(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
+  protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
 
-  protected def isAgentToString(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+  protected def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
     val fakeIdentifierAction = {
@@ -70,15 +67,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
         fakeIdentifierAction,
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
-  }
-
-  protected def buildRequest(httpType: String, requestRoute: String, isAgent: Boolean): FakeRequest[AnyContentAsEmpty.type] = {
-    if (isAgent) {
-      FakeRequest(httpType, requestRoute)
-        .withSession(SessionValues.CLIENT_MTDITID -> aNoddyUser.mtditid, SessionValues.CLIENT_NINO -> aNoddyUser.nino)
-    } else {
-      FakeRequest(httpType, requestRoute)
-    }
   }
 
 }

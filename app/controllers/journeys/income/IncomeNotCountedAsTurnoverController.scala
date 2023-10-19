@@ -41,23 +41,20 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val isAgent = isAgentString(request.user.isAgent)
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage) match {
-      case None        => formProvider(isAgent)
-      case Some(value) => formProvider(isAgent).fill(value)
+      case None        => formProvider(authUserType(request.user.isAgent))
+      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, isAgent, taxYear))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider(isAgentString(request.user.isAgent))
+    formProvider(authUserType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value))
@@ -65,5 +62,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear))
       )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

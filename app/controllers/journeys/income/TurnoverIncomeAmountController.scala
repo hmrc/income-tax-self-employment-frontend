@@ -45,23 +45,19 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
-
   val businessId = "SJPR05893938418" // TODO merge 5840, delete default
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = isAgentString(request.user.isAgent)
-
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage) match {
-            case None        => formProvider(isAgent)
-            case Some(value) => formProvider(isAgent).fill(value)
+            case None        => formProvider(authUserType(request.user.isAgent))
+            case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
           }
 
-          Ok(view(preparedForm, mode, isAgent, taxYear, accountingType))
+          Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, accountingType))
       }
   }
 
@@ -70,11 +66,11 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
-          formProvider(isAgentString(request.user.isAgent))
+          formProvider(authUserType(request.user.isAgent))
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear, accountingType))),
+                Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverIncomeAmountPage, value))
@@ -83,5 +79,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
             )
       }
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

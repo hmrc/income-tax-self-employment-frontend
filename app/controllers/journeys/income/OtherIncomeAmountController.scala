@@ -45,19 +45,16 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def isAgentString(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
-
   val businessId = "SJPR05893938418" // TODO 5840 delete default and get from the URL
 
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = isAgentString(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherIncomeAmountPage) match {
-        case None        => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
@@ -65,10 +62,10 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
       selfEmploymentService.getBusinessAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
-          formProvider(isAgentString(request.user.isAgent))
+          formProvider(authUserType(request.user.isAgent))
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAgentString(request.user.isAgent), taxYear))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
@@ -79,5 +76,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
             )
       }
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }
