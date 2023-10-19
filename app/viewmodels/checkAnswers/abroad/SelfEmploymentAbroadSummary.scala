@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.abroad
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.{CheckMode, UserAnswers}

@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.AnyOtherIncomeController
+import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.{CheckMode, UserAnswers}
-import pages.income.AnyOtherIncomePage
+import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AnyOtherIncomeSummary {
+object HowMuchTradingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AnyOtherIncomePage).map {
+    answers.get(HowMuchTradingAllowancePage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
-
         SummaryListRowViewModel(
-          key = "anyOtherIncome.checkYourAnswersLabel",
-          value = ValueViewModel(value),
+          key = "howMuchTradingAllowance.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", AnyOtherIncomeController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("anyOtherIncome.change.hidden"))
+            ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
+              .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
           )
         )
     }

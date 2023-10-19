@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.tradeDetails
 
 import models.mdtp.BusinessData
 import play.api.i18n.Messages

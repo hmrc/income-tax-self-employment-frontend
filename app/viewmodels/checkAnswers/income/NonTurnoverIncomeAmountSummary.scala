@@ -14,36 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TradingAllowanceAmountController
+import controllers.journeys.income.routes.NonTurnoverIncomeAmountController
 import models.{CheckMode, UserAnswers}
-import pages.income.TradingAllowanceAmountPage
+import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TradingAllowanceAmountSummary {
+object NonTurnoverIncomeAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowanceAmountPage).map {
+    answers.get(NonTurnoverIncomeAmountPage).map {
       answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"TradingAllowanceAmount.$answer"))
-          )
-        )
-
         SummaryListRowViewModel(
-          key = "TradingAllowanceAmount.checkYourAnswersLabel",
-          value = value,
+          key = "nonTurnoverIncomeAmount.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("TradingAllowanceAmount.change.hidden"))
+            ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
+              .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))
           )
         )
     }
