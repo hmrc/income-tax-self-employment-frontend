@@ -42,21 +42,18 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def authUserType(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
       val tradingAllowance: BigDecimal = {
         val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
         if (turnover > 1000.00) 1000.00 else turnover
       }
-      val isAgent = authUserType(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
-        case None        => formProvider(isAgent, tradingAllowance)
-        case Some(value) => formProvider(isAgent, tradingAllowance).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
+        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
@@ -76,5 +73,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
             } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
         )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

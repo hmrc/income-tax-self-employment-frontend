@@ -41,16 +41,13 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  def authUserType(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val isAgent = authUserType(request.user.isAgent)
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage) match {
-      case None        => formProvider(isAgent)
-      case Some(value) => formProvider(isAgent).fill(value)
+      case None        => formProvider(authUserType(request.user.isAgent))
+      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, isAgent, taxYear))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
@@ -65,5 +62,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear))
       )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

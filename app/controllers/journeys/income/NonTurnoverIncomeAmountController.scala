@@ -42,17 +42,14 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def authUserType(isAgent: Boolean) = if (isAgent) "agent" else "individual"
-
   def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
     implicit request =>
-      val isAgent = authUserType(request.user.isAgent)
       val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NonTurnoverIncomeAmountPage) match {
-        case None        => formProvider(isAgent)
-        case Some(value) => formProvider(isAgent).fill(value)
+        case None        => formProvider(authUserType(request.user.isAgent))
+        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, isAgent, taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
   }
 
   def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
@@ -68,5 +65,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
             } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear))
         )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }
