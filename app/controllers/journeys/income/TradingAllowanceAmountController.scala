@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.TradingAllowanceAmountFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.IncomeNavigator
 import pages.income.{TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TradingAllowanceAmountController @Inject() (override val messagesApi: MessagesApi,
                                                   sessionRepository: SessionRepository,
-                                                  navigator: Navigator,
+                                                  navigator: IncomeNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
@@ -56,7 +56,7 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TradingAllowanceAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, Some(businessId)))
+            } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

@@ -21,11 +21,8 @@ import controllers.journeys.income.routes.{OtherIncomeAmountController, TradingA
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.OtherIncomeAmountPage
@@ -47,7 +44,6 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new OtherIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100.00
   val turnoverAmount          = 1000.00
-  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
   val businessId = "SJPR05893938418"
   val turnoverNotTaxableCall  = TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
   val tradingAllowanceCall    = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -146,7 +142,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute(isAccrual = true))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(isAccrual = true))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -172,7 +168,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute(isAccrual = false))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(isAccrual = false))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )

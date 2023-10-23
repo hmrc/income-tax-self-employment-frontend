@@ -17,11 +17,11 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.TradingAllowanceController
+import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, TradingAllowanceController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.{CheckMode, NormalMode, TradingAllowance, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -42,11 +41,8 @@ import scala.concurrent.Future
 class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new TradingAllowanceFormProvider()
-
-  def onwardRoute = Call("GET", "/foo")
-
-  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
-  val businessId = "SJPR05893938418"
+  val businessId   = "SJPR05893938418"
+  val onwardRoute  = HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -79,9 +75,10 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val view = application.injector.instanceOf[TradingAllowanceView]
 
-              val expectedResult = view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -149,7 +146,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
               bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
@@ -194,9 +191,10 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                val expectedResult =
+                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                    request,
+                    messages(application, userScenario.isWelsh)).toString
 
                 status(result) mustEqual BAD_REQUEST
                 contentAsString(langResult) mustEqual expectedResult
@@ -225,9 +223,10 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                val expectedResult =
+                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                    request,
+                    messages(application, userScenario.isWelsh)).toString
 
                 status(result) mustEqual BAD_REQUEST
                 contentAsString(langResult) mustEqual expectedResult

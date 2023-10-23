@@ -24,6 +24,8 @@ import views.html.journeys.income.CheckYourIncomeView
 
 class CheckYourIncomeControllerSpec extends SpecBase {
 
+  val businessId = "SJPR05893938418"
+
   "CheckYourIncome Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -31,7 +33,7 @@ class CheckYourIncomeControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, CheckYourIncomeController.onPageLoad(taxYear).url)
+        val request = FakeRequest(GET, CheckYourIncomeController.onPageLoad(taxYear, businessId).url)
 
         val result = route(application, request).value
 

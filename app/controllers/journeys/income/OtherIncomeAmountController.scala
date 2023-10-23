@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
-                                             navigator: Navigator,
+                                             navigator: IncomeNavigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
@@ -71,8 +71,8 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, Some(businessId))
-                ) // TODO 5840 use 'accountingType.equals("ACCRUAL")' in this .nextPage method
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals("ACCRUAL")))
+                )
             )
       }
   }

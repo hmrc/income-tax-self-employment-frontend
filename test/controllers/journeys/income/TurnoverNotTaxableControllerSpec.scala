@@ -17,11 +17,11 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.TurnoverNotTaxableController
+import controllers.journeys.income.routes.{NotTaxableAmountController, TradingAllowanceController, TurnoverNotTaxableController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverNotTaxableFormProvider
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -40,19 +39,18 @@ import scala.concurrent.Future
 
 class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  val formProvider         = new TurnoverNotTaxableFormProvider()
+  val businessId           = "SJPR05893938418"
+  val notTaxableAmountCall = NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceCall = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
-  val formProvider       = new TurnoverNotTaxableFormProvider()
-  val formWithIndividual = formProvider("individual")
-  val formWithAgent      = formProvider("agent")
+  val onwardRoute = (userAnswer: Boolean) => if (userAnswer) notTaxableAmountCall else tradingAllowanceCall
 
-  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
-  val businessId = "SJPR05893938418"
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
-    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
+    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
   )
 
   "TurnoverNotTaxable Controller" - {
@@ -129,7 +127,9 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
     "onSubmit" - {
 
-      "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the Not Taxable Amount page when a user answer 'Yes' is submitted" in {
+
+        val userAnswer = true
 
         val mockSessionRepository = mock[SessionRepository]
 
@@ -138,7 +138,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -146,12 +146,40 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", "true"))
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual notTaxableAmountCall.url
+        }
+      }
+
+      "must redirect to the Trading Allowance page when a user answer 'No' is submitted" in {
+
+        val userAnswer = false
+
+        val mockSessionRepository = mock[SessionRepository]
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual tradingAllowanceCall.url
         }
       }
 

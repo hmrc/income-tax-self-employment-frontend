@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverIncomeAmountFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.IncomeNavigator
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                                 selfEmploymentService: SelfEmploymentService,
                                                 sessionRepository: SessionRepository,
-                                                navigator: Navigator,
+                                                navigator: IncomeNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -75,7 +75,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, Some(businessId)))
+                } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }

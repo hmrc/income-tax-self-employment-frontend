@@ -21,7 +21,7 @@ import controllers.actions._
 import models.mdtp.BusinessData
 import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
-import navigation.Navigator
+import navigation.TradeDetailsNavigator
 import pages.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
                                                          identify: IdentifierAction,
                                                          getData: DataRetrievalAction,
                                                          selfEmploymentConnector: SelfEmploymentConnector,
-                                                         navigator: Navigator,
+                                                         navigator: TradeDetailsNavigator,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          view: CheckYourSelfEmploymentDetailsView)
                                                         (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -56,8 +56,8 @@ class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesAp
       }
   }
   
-  private def navigate(taxYear: Int, businessId: String, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
-    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, Some(businessId)).url
+  private def navigate(taxYear: Int, businessId: String, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
+    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId).url
   }
 
 }

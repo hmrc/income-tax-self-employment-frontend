@@ -22,7 +22,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
 import models.CompletedSectionState.{No, Yes}
 import models.{CompletedSectionState, Mode, UserAnswers}
-import navigation.Navigator
+import navigation.IncomeNavigator
 import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
                                                 selfEmploymentConnector: SelfEmploymentConnector,
-                                                navigator: Navigator,
+                                                navigator: IncomeNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 formProvider: SectionCompletedStateFormProvider,
@@ -72,7 +72,7 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
         value => {
           selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
             request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear, Some(businessId)))
+            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear, businessId))
             case _ => Redirect(JourneyRecoveryController.onPageLoad())
           }
         }

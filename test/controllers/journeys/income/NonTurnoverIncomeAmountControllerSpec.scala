@@ -17,11 +17,11 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.NonTurnoverIncomeAmountController
+import controllers.journeys.income.routes.{NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.NonTurnoverIncomeAmountFormProvider
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -40,13 +39,10 @@ import scala.concurrent.Future
 
 class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider            = new NonTurnoverIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100
-
-  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
-  val businessId = "SJPR05893938418"
+  val businessId              = "SJPR05893938418"
+  val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
@@ -138,7 +134,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()

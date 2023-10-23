@@ -19,7 +19,7 @@ package controllers.journeys.abroad
 import controllers.actions._
 import models.NormalMode
 import models.requests.DataRequest
-import navigation.Navigator
+import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,14 +30,14 @@ import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
 import javax.inject.Inject
 
-class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: MessagesApi,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  navigator: Navigator,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: SelfEmploymentAbroadCYAView)
-  extends FrontendBaseController
+class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   navigator: AbroadNavigator,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: SelfEmploymentAbroadCYAView)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
@@ -50,9 +50,9 @@ class SelfEmploymentAbroadCYAController @Inject()(override val messagesApi: Mess
     Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: Navigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, Some(optBusinessId))
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, optBusinessId)
       .url
 
 }

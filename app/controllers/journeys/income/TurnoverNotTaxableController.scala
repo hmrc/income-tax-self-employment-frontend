@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.IncomeNavigator
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TurnoverNotTaxableController @Inject() (override val messagesApi: MessagesApi,
                                               sessionRepository: SessionRepository,
-                                              navigator: Navigator,
+                                              navigator: IncomeNavigator,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
@@ -62,7 +62,7 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, Some(businessId)))
+            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 
