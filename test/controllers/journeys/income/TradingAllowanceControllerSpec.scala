@@ -42,9 +42,11 @@ import scala.concurrent.Future
 class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new TradingAllowanceFormProvider()
-  val businessId   = "SJPR05893938418"
 
   def onwardRoute = Call("GET", "/foo")
+
+  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
+  val businessId = "SJPR05893938418"
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -69,7 +71,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
-              val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, NormalMode).url)
+              val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -77,7 +79,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val view = application.injector.instanceOf[TradingAllowanceView]
 
-              val expectedResult = view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.accountingType)(
+              val expectedResult = view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -98,7 +100,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-              val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
+              val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[TradingAllowanceView]
 
@@ -111,6 +113,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 CheckMode,
                 authUserType(userScenario.isAgent),
                 taxYear,
+                businessId,
                 userScenario.accountingType)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
@@ -125,7 +128,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, NormalMode).url)
+          val request = FakeRequest(GET, TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -156,7 +159,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
           when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
 
           val request =
-            FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+            FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
 
           val result = route(application, request).value
@@ -180,7 +183,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
-                  FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+                  FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
                     .withFormUrlEncodedBody(("value", ""))
 
                 val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -191,7 +194,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.accountingType)(
+                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -211,7 +214,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
                 val request =
-                  FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+                  FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
                     .withFormUrlEncodedBody(("value", "invalid value"))
 
                 val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -222,7 +225,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.accountingType)(
+                val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -239,7 +242,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+          val request = FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
             .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
 
           val result = route(application, request).value

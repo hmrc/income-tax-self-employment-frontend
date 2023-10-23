@@ -18,7 +18,7 @@ package controllers.journeys.income
 
 import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigation.Navigator
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,36 +42,36 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val tradingAllowanceString = {
-        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
+        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000)
         if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
       }
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(HowMuchTradingAllowancePage) match {
+      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowanceString = {
-        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000)
+        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000)
         if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
       }
       formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, tradingAllowanceString))),
+            Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(HowMuchTradingAllowancePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear))
+            } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, Some(businessId)))
         )
   }
 

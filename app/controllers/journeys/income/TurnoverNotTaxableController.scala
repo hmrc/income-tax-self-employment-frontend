@@ -18,7 +18,7 @@ package controllers.journeys.income
 
 import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigation.Navigator
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,27 +42,27 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverNotTaxablePage) match {
+      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent))
         case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(authUserType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TurnoverNotTaxablePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear))
+            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, Some(businessId)))
         )
   }
 

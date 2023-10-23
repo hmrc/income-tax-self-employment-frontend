@@ -51,6 +51,9 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formIndividualWithMaxTA           = formProvider("individual", maxTradingAllowanceString)
   val formAgentWithSmallTA              = formProvider("agent", smallTradingAllowanceString)
 
+  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
+  val businessId = "SJPR05893938418"
+
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
   val userScenarios = Seq(
@@ -74,7 +77,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode).url)
+              val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -82,7 +85,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
-              val expectedResult = view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.allowanceString)(
+              val expectedResult = view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -105,7 +108,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
+              val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
@@ -118,6 +121,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 CheckMode,
                 authUserType(userScenario.isAgent),
                 taxYear,
+                businessId,
                 userScenario.allowanceString)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
@@ -132,7 +136,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, NormalMode).url)
+          val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -161,7 +165,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+            FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
 
           val result = route(application, request).value
@@ -182,7 +186,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -193,7 +197,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.allowanceString)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -211,7 +215,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -222,7 +226,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, userScenario.allowanceString)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -238,7 +242,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, NormalMode).url)
+          val request = FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
             .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
 
           val result = route(application, request).value

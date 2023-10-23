@@ -45,6 +45,9 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new NonTurnoverIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100
 
+  //TODO: remove when businessId is all linked-up via Navigator SASS-5840
+  val businessId = "SJPR05893938418"
+
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
   val userScenarios = Seq(
@@ -64,7 +67,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode).url)
+              val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -73,7 +76,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[NonTurnoverIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -90,7 +93,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
+              val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[NonTurnoverIncomeAmountView]
 
@@ -98,7 +101,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -114,7 +117,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, NormalMode).url)
+          val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -142,7 +145,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+            FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -161,7 +164,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -172,7 +175,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -188,7 +191,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-BigDecimal"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-BigDecimal"))
@@ -199,7 +202,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -215,7 +218,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "-23"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "-23"))
@@ -226,7 +229,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -242,7 +245,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "100000000000.01"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "100000000000.01"))
@@ -253,7 +256,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -270,7 +273,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+            FakeRequest(POST, NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value

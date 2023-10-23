@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigation.Navigator
 import pages.income.TradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,21 +47,21 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
 
   val businessId = "SJPR05893938418" // TODO merge 5840, delete default
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData  andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TradingAllowancePage) match {
+          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId)) match {
             case None        => formProvider(authUserType(request.user.isAgent))
             case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
           }
 
-          Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, accountingType))
+          Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, accountingType))
       }
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -70,12 +70,12 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, accountingType))),
+                Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TradingAllowancePage, value))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TradingAllowancePage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear))
+                } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, Some(businessId)))
             )
       }
   }

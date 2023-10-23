@@ -41,25 +41,25 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage) match {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
       case None        => formProvider(authUserType(request.user.isAgent))
       case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     formProvider(authUserType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value, Some(businessId)))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear))
+          } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, Some(businessId)))
       )
   }
 
