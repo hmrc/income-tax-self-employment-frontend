@@ -31,7 +31,7 @@ object TradingAllowanceAmountSummary {
     answers.get(TradingAllowanceAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"tradingAllowanceAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = answer.toString, classes = "govuk-!-width-one-third"),
+        value = Value(content = s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, CheckMode).url)
             .withVisuallyHiddenText(messages("TradingAllowanceAmount.change.hidden"))

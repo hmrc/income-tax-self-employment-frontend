@@ -31,7 +31,7 @@ object NotTaxableAmountSummary {
     answers.get(NotTaxableAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"notTaxableAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = answer.toString, classes = "govuk-!-width-one-third"),
+        value = Value(content = s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
             .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))

@@ -31,7 +31,7 @@ object NonTurnoverIncomeAmountSummary {
     answers.get(NonTurnoverIncomeAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"nonTurnoverIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = answer.toString, classes = "govuk-!-width-one-third"),
+        value = Value(content =  s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
             .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))

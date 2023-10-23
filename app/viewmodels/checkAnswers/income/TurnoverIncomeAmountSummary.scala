@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TurnoverNotTaxableController
+import controllers.journeys.income.routes.TurnoverIncomeAmountController
 import models.{CheckMode, UserAnswers}
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.Messages
@@ -31,9 +31,9 @@ object TurnoverIncomeAmountSummary {
     answers.get(TurnoverIncomeAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"turnoverIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = answer.toString, classes = "govuk-!-width-one-third"),
+        value = Value(content = s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", TurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
             .withVisuallyHiddenText(messages("turnoverIncomeAmount.change.hidden"))
         )
       )

@@ -57,7 +57,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-            result.get.value.content shouldBe Text("The maximum £456.0")
+            result.get.value.content shouldBe Text("The maximum £456.00")
           }
         }
         "user answers don't exist for TurnoverIncomeAmountPage" should {

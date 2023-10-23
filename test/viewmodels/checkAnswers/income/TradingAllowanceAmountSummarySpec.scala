@@ -48,7 +48,7 @@ class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("tradingAllowanceAmount.checkYourAnswersLabel.individual")
-        result.get.value.content shouldBe Text("123.45")
+        result.get.value.content shouldBe Text("£123.45")
       }
     }
     "user answers do not exist for TradingAllowanceAmountPage" should {

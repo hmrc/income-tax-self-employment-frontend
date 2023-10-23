@@ -32,7 +32,7 @@ object HowMuchTradingAllowanceSummary {
       val value = answer match {
         case HowMuchTradingAllowance.Maximum =>
           val turnoverIncomeAmount = answers.get(TurnoverIncomeAmountPage) match {
-            case Some(amount) => amount
+            case Some(amount) => amount.setScale(2)
             case None         => throw new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage")
           }
           s"The maximum £$turnoverIncomeAmount"

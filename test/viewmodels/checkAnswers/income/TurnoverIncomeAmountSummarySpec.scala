@@ -48,7 +48,7 @@ class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("turnoverIncomeAmount.checkYourAnswersLabel.agent")
-        result.get.value.content shouldBe Text("123.45")
+        result.get.value.content shouldBe Text("£123.45")
       }
     }
   }

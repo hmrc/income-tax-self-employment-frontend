@@ -48,7 +48,7 @@ class OtherIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("otherIncomeAmount.checkYourAnswersLabel.individual")
-        result.get.value.content shouldBe Text("123.45")
+        result.get.value.content shouldBe Text("£123.45")
       }
     }
     "user answers do not exist for IncomeNotCountedAsTurnoverPage" should {
