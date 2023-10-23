@@ -98,6 +98,6 @@ POST       /:taxYear/income/trading-allowance/amount                            
 GET        /:taxYear/income/change-trading-allowance/amount                        controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, mode: Mode = CheckMode)
 POST       /:taxYear/income/change-trading-allowance/amount                        controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, mode: Mode = CheckMode)
 
-GET        /:taxYear/income/check-your-income                                      controllers.journeys.income.CheckYourIncomeController.onPageLoad(taxYear: Int)
+GET        /:taxYear/income/check-your-income                                      controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: Int)
 
 ##########  ##########

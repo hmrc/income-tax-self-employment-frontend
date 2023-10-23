@@ -20,23 +20,23 @@ import controllers.journeys.income.routes.NotTaxableAmountController
 import models.{CheckMode, UserAnswers}
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object NotTaxableAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotTaxableAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key = "notTaxableAmount.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
-              .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
-          )
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NotTaxableAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = Key(content = s"notTaxableAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        value = Value(content = answer.toString, classes = "govuk-!-width-one-third"),
+        actions = Seq(
+          ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
+            .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
         )
+      )
     }
+
 }
