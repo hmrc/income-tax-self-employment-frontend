@@ -81,10 +81,10 @@ object TradeJourneyStatusesViewModel {
       key = KeyViewModel(HtmlContent(
         s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
       value = Value(),
-      actions = Seq(ActionItem(
+      actions = Seq(ActionItemViewModel(
         href = href,
-        content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>")))
-    ).withCssClass("app-task-list__item")
+        content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>")).withCssClass("tag-float"))
+    ).withCssClass("app-task-list__item no-wrap no-after-content")
   }
 
 }
