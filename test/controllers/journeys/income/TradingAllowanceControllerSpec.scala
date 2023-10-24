@@ -17,9 +17,10 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, TradingAllowanceController}
+import controllers.journeys.income.routes.{CheckYourIncomeController, HowMuchTradingAllowanceController, TradingAllowanceController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
+import models.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import models.{CheckMode, NormalMode, TradingAllowance, UserAnswers}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -40,9 +41,12 @@ import scala.concurrent.Future
 
 class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new TradingAllowanceFormProvider()
-  val businessId   = "SJPR05893938418"
-  val onwardRoute  = HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val formProvider                = new TradingAllowanceFormProvider()
+  val businessId                  = "SJPR05893938418"
+  val howMuchTradingAllowanceCall = HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val incomeCyaCall               = CheckYourIncomeController.onPageLoad(taxYear, businessId)
+
+  val onwardRoute = (userAnswer: TradingAllowance) => if (userAnswer.equals(UseTradingAllowance)) howMuchTradingAllowanceCall else incomeCyaCall
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -137,7 +141,9 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onSubmit" - {
 
-      "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the How Much Trading Allowance page when 'UseTradingAllowance' answer is submitted" in {
+
+        val userAnswer = UseTradingAllowance
 
         val mockSessionRepository = mock[SessionRepository]
 
@@ -146,7 +152,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
@@ -157,12 +163,43 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val request =
             FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", TradingAllowance.values.head.toString))
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual howMuchTradingAllowanceCall.url
+        }
+      }
+
+      "must redirect to the Income CYA page when 'DeclareExpenses' answer is submitted" in {
+
+        val userAnswer = DeclareExpenses
+
+        val mockSessionRepository = mock[SessionRepository]
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+              bind[SelfEmploymentService].toInstance(mockService),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(application) {
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+
+          val request =
+            FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual incomeCyaCall.url
         }
       }
 

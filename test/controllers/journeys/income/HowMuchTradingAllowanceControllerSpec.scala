@@ -17,9 +17,10 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, TradingAllowanceAmountController}
+import controllers.journeys.income.routes.{CheckYourIncomeController, HowMuchTradingAllowanceController, TradingAllowanceAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
+import models.HowMuchTradingAllowance.{LessThan, Maximum}
 import models.{CheckMode, HowMuchTradingAllowance, NormalMode, UserAnswers}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
@@ -34,6 +35,7 @@ import play.api.libs.json.Format.GenericFormat
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
 import scala.concurrent.Future
@@ -48,7 +50,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formIndividualWithMaxTA           = formProvider("individual", maxTradingAllowanceString)
   val formAgentWithSmallTA              = formProvider("agent", smallTradingAllowanceString)
   val businessId                        = "SJPR05893938418"
-  val onwardRoute                       = TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceAmountCall        = TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val incomeCyaCall                     = CheckYourIncomeController.onPageLoad(taxYear, businessId)
+
+  val onwardRoute = (userAnswer: HowMuchTradingAllowance) => if (userAnswer.equals(LessThan)) tradingAllowanceAmountCall else incomeCyaCall
+
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
@@ -147,7 +154,9 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onSubmit" - {
 
-      "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the Trading Allowance Amount page when 'LessThan' answer is submitted" in {
+
+        val userAnswer = LessThan
 
         val mockSessionRepository = mock[SessionRepository]
 
@@ -156,7 +165,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -164,12 +173,41 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", HowMuchTradingAllowance.values.head.toString))
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual tradingAllowanceAmountCall.url
+        }
+      }
+
+      "must redirect to the Income CYA page when 'Maximum' answer is submitted" in {
+
+        val userAnswer = Maximum
+
+        val mockSessionRepository = mock[SessionRepository]
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(application) {
+
+          val request =
+            FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual incomeCyaCall.url
         }
       }
 

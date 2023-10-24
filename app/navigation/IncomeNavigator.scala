@@ -19,6 +19,8 @@ package navigation
 import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
+import models.HowMuchTradingAllowance.{LessThan, Maximum}
+import models.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import models._
 import pages._
 import pages.income._
@@ -34,7 +36,7 @@ class IncomeNavigator @Inject() () {
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(IncomeNotCountedAsTurnoverPage) match {
+          userAnswers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
             case Some(true)  => NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) => TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case _ =>
@@ -48,7 +50,7 @@ class IncomeNavigator @Inject() () {
     case AnyOtherIncomePage =>
       userAnswers =>
         (taxYear, businessId, optIsAccrual) =>
-          userAnswers.get(AnyOtherIncomePage) match {
+          userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
             case Some(true)                                   => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) if optIsAccrual.getOrElse(false) => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) if !optIsAccrual.getOrElse(true) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -67,7 +69,7 @@ class IncomeNavigator @Inject() () {
     case TurnoverNotTaxablePage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(TurnoverNotTaxablePage) match {
+          userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
             case Some(true)  => NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
             case _           => JourneyRecoveryController.onPageLoad()
@@ -75,9 +77,23 @@ class IncomeNavigator @Inject() () {
 
     case NotTaxableAmountPage => _ => (taxYear, businessId, _) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case TradingAllowancePage => _ => (taxYear, businessId, _) => HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+    case TradingAllowancePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(TradingAllowancePage, Some(businessId)) match {
+            case Some(UseTradingAllowance) => HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(DeclareExpenses)     => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            case _                         => JourneyRecoveryController.onPageLoad()
+          }
 
-    case HowMuchTradingAllowancePage => _ => (taxYear, businessId, _) => TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    case HowMuchTradingAllowancePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
+            case Some(LessThan) => TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(Maximum)  => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            case _              => JourneyRecoveryController.onPageLoad()
+          }
 
     case TradingAllowanceAmountPage =>
       userAnswers =>
