@@ -34,10 +34,11 @@ class IncomeNavigator @Inject() () {
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          if (userAnswers.get(IncomeNotCountedAsTurnoverPage).getOrElse(false)) {
-            NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-          } else {
-            TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+          userAnswers.get(IncomeNotCountedAsTurnoverPage) match {
+            case Some(true)  => NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) => TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case _ =>
+              JourneyRecoveryController.onPageLoad()
           }
 
     case NonTurnoverIncomeAmountPage => _ => (taxYear, businessId, _) => TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
@@ -46,29 +47,30 @@ class IncomeNavigator @Inject() () {
 
     case AnyOtherIncomePage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
-          if (userAnswers.get(AnyOtherIncomePage).getOrElse(false)) { // TODO should all the getOrElse default to ERROR?
-            OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-          } else {
-            TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode) // TODO what if cash/accrual
+        (taxYear, businessId, optIsAccrual) =>
+          userAnswers.get(AnyOtherIncomePage) match {
+            case Some(true)                                   => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if optIsAccrual.getOrElse(false) => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if !optIsAccrual.getOrElse(true) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _                                            => JourneyRecoveryController.onPageLoad()
           }
 
     case OtherIncomeAmountPage =>
       _ =>
-        (taxYear, businessId, isAccrual) =>
-          if (isAccrual.getOrElse(false)) {
-            TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-          } else {
-            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+        (taxYear, businessId, optIsAccrual) =>
+          optIsAccrual match {
+            case Some(true)  => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _           => JourneyRecoveryController.onPageLoad()
           }
 
     case TurnoverNotTaxablePage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          if (userAnswers.get(TurnoverNotTaxablePage).getOrElse(false)) {
-            NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-          } else {
-            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+          userAnswers.get(TurnoverNotTaxablePage) match {
+            case Some(true)  => NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _           => JourneyRecoveryController.onPageLoad()
           }
 
     case NotTaxableAmountPage => _ => (taxYear, businessId, _) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -80,11 +82,13 @@ class IncomeNavigator @Inject() () {
     case TradingAllowanceAmountPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          if (isComplete(userAnswers)) {
-            CheckYourIncomeController.onPageLoad(taxYear, businessId)
-          } else JourneyRecoveryController.onPageLoad()
+          if (isComplete(userAnswers)) CheckYourIncomeController.onPageLoad(taxYear, businessId)
+          else JourneyRecoveryController.onPageLoad()
+
     case IncomeCYAPage =>
-      _ => (taxYear, businessId, _) => SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
+      _ =>
+        (taxYear, businessId, _) =>
+          SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode) // TODO 5840 isComplete checks?
 
     case SectionCompletedStatePage => _ => (taxYear, _, _) => TaskListController.onPageLoad(taxYear)
 

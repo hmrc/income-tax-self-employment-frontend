@@ -17,6 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.income.AnyOtherIncomeFormProvider
 import models.Mode
 import navigation.IncomeNavigator
@@ -24,6 +25,7 @@ import pages.income.AnyOtherIncomePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.AnyOtherIncomeView
 
@@ -31,6 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
+                                          selfEmploymentService: SelfEmploymentService,
                                           sessionRepository: SessionRepository,
                                           navigator: IncomeNavigator,
                                           identify: IdentifierAction,
@@ -54,16 +57,22 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(authUserType(request.user.isAgent))
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyOtherIncomePage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear, businessId))
-        )
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Right(accountingType) =>
+          formProvider(authUserType(request.user.isAgent))
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyOtherIncomePage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(
+                  navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals("ACCRUAL")))
+                )
+            )
+      }
   }
 
   private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"

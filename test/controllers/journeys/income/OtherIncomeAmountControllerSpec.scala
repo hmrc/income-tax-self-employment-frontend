@@ -44,10 +44,9 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new OtherIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100.00
   val turnoverAmount          = 1000.00
-  val businessId = "SJPR05893938418"
+  val businessId              = "SJPR05893938418"
   val turnoverNotTaxableCall  = TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
   val tradingAllowanceCall    = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-
 
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
@@ -94,7 +93,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, validAnswer).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, validAnswer, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]

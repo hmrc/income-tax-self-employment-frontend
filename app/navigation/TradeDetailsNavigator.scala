@@ -35,9 +35,7 @@ class TradeDetailsNavigator @Inject() () {
     case CheckYourSelfEmploymentDetailsPage => _ => (taxYear, _) => SelfEmploymentSummaryController.onPageLoad(taxYear)
 
     case SelfEmploymentSummaryPage =>
-      _ =>
-        (taxYear, businessId) =>
-          SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails.toString, NormalMode)
+      _ => (taxYear, businessId) => SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails.toString, NormalMode)
 
     case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
 
@@ -45,9 +43,6 @@ class TradeDetailsNavigator @Inject() () {
   }
 
   private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = {
-
-    case SelfEmploymentAbroadPage =>
-      _ => (taxYear, businessId) => SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }

@@ -45,8 +45,6 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418" // TODO 5840 delete default and get from the URL
-
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId)) match {
