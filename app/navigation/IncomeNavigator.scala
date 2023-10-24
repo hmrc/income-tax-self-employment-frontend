@@ -96,15 +96,10 @@ class IncomeNavigator @Inject() () {
           }
 
     case TradingAllowanceAmountPage =>
-      userAnswers =>
-        (taxYear, businessId, _) =>
-          if (isComplete(userAnswers)) CheckYourIncomeController.onPageLoad(taxYear, businessId)
-          else JourneyRecoveryController.onPageLoad()
+      _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
 
     case IncomeCYAPage =>
-      _ =>
-        (taxYear, businessId, _) =>
-          SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode) // TODO 5840 isComplete checks?
+      _ => (taxYear, businessId, _) => SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
 
     case SectionCompletedStatePage => _ => (taxYear, _, _) => TaskListController.onPageLoad(taxYear)
 
@@ -113,14 +108,7 @@ class IncomeNavigator @Inject() () {
 
   private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
 
-    case _ =>
-      userAnswers =>
-        (taxYear, businessId, _) =>
-          if (isComplete(userAnswers))
-            CheckYourIncomeController.onPageLoad(taxYear, businessId)
-          else JourneyRecoveryController.onPageLoad()
-
-    case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
+    case _ => _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =
@@ -131,5 +119,4 @@ class IncomeNavigator @Inject() () {
         checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual)
     }
 
-  private def isComplete(userAnswers: UserAnswers): Boolean = true // TODO replace this with a check to ensure user answers are actually completed?
 }

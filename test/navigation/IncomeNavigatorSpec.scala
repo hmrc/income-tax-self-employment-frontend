@@ -198,15 +198,10 @@ class IncomeNavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
-      "must go from any Income journey page to the 'Check your details' page if journey data is complete" in {
+      "must go from any Income journey page to the 'Check your details' page" in {
 
         navigator.nextPage(TradingAllowancePage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe
           CheckYourIncomeController.onPageLoad(taxYear, businessId)
-      }
-
-      "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" ignore { // TODO unignore when isComplete implemented in Navigator
-
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
   }

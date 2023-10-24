@@ -20,18 +20,6 @@ import models.{Mode, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
-class FakeTradeDetailsNavigator(desiredRoute: Call) extends TradeDetailsNavigator { // TODO 5840 put in separate files?
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
-}
-
-class FakeAbroadNavigator(desiredRoute: Call) extends AbroadNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
-}
-
 class FakeIncomeNavigator(desiredRoute: Call) extends IncomeNavigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean]): Call =
