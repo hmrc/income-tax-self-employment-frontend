@@ -23,8 +23,9 @@
 @layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$authUserType"))) {
 
     @heading(
-        messages(s"checkYourIncome.title.$authUserType"),
-        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString))
+        heading = messages(s"checkYourIncome.title.$authUserType"),
+        subheading = Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+        extraClasses = "govuk-!-margin-bottom-3"
     )
 
     @govukSummaryList(summaryList)

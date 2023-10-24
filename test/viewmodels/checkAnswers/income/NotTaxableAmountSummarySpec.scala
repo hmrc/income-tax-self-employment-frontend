@@ -48,8 +48,6 @@ class NotTaxableAmountSummarySpec extends AnyWordSpec with Matchers {
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("notTaxableAmount.checkYourAnswersLabel.individual")
         result.get.value.content shouldBe Text("£123.45")
-
-        // Tests for actions?
       }
     }
     "user answers do not exist for NotTaxableAmountPage" should {
