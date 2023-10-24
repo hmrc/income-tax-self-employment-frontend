@@ -16,13 +16,15 @@
 
 @import controllers.actions.AuthenticatedIdentifierAction.User
 @import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
 @(form: Form[_], taxYear: Int, businessId: String, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -35,10 +37,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @heading(messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}"), None, extraClasses = "govuk-!-margin-bottom-3")
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}")).asPageHeading()
+                legend = LegendViewModel("")
             )
         )
 

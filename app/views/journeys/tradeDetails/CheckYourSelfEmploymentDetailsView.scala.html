@@ -29,7 +29,8 @@
 
     @heading(
         messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"),
-        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString))
+        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+        extraClasses = "govuk-!-margin-bottom-3"
     )
 
     @govukSummaryList(list)

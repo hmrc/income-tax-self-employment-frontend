@@ -31,8 +31,8 @@ object SelfEmploymentSummaryViewModel {
         content = rowKey,
         classes = "govuk-!-font-weight-regular"
       ),
-      value = ValueViewModel(""),
-      actions = Seq(ActionItemViewModel(messages("site.view"),  actionLink))
+      value = ValueViewModel("").withCssClass("govuk-summary-list__empty-value"),
+      actions = Seq(ActionItemViewModel(messages("site.view"), actionLink))
     )
   }
 }
