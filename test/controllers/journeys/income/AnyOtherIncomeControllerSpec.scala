@@ -54,9 +54,10 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
-  val answerIsTrueOnwardRoute = otherIncomeAmountCall
-
-  def answerIsFalseOnwardRoute(isAccrual: Boolean) = if (isAccrual) turnoverNotTaxableCall else tradingAllowanceCall
+  def redirectCallFromNoResponse(accountingType: String) = accountingType match {
+    case "ACCRUAL" => turnoverNotTaxableCall
+    case "CASH" => tradingAllowanceCall
+  }
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
 
@@ -147,7 +148,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(answerIsTrueOnwardRoute)),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -173,7 +174,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(answerIsTrueOnwardRoute)),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -203,7 +204,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(answerIsFalseOnwardRoute(accountingType.equals("ACCRUAL")))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -230,7 +231,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(answerIsFalseOnwardRoute(accountingType.equals("ACCRUAL")))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )

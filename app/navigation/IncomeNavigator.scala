@@ -51,10 +51,10 @@ class IncomeNavigator @Inject() () {
       userAnswers =>
         (taxYear, businessId, optIsAccrual) =>
           userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
-            case Some(true)                                   => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) if optIsAccrual.getOrElse(false) => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) if !optIsAccrual.getOrElse(true) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-            case _                                            => JourneyRecoveryController.onPageLoad()
+            case Some(true)                                  => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if optIsAccrual.contains(true)  => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if optIsAccrual.contains(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _                                           => JourneyRecoveryController.onPageLoad()
           }
 
     case OtherIncomeAmountPage =>
@@ -106,9 +106,8 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
-
-    case _ => _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = { case _ =>
+    _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =

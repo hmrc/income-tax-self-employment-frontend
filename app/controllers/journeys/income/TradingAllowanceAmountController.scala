@@ -44,6 +44,17 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
+      val preparedForm = request.userAnswers.get(TradingAllowanceAmountPage, Some(businessId)) match {
+        case None => formProvider(authUserType(request.user.isAgent), tradingAllowance)
+        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
+      }
+
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
+  }
+
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
@@ -57,17 +68,6 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
-  }
-
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
-      val preparedForm = request.userAnswers.get(TradingAllowanceAmountPage, Some(businessId)) match {
-        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
-        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
-      }
-
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
   private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"

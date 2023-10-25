@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
                                                 selfEmploymentConnector: SelfEmploymentConnector,
-                                                navigator: IncomeNavigator,
+                                                navigator: IncomeNavigator, // TODO create generic navigator for non-journey specific pages
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 formProvider: SectionCompletedStateFormProvider,
