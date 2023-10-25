@@ -31,28 +31,32 @@
 
 @layout(pageTitle = titleNoForm(messages("taskList.title"))) {
 
-    <h2 class="app-task-list__section">@messages("taskList.title")</h2>
+    <div class="task-list">
 
-    <ul class="app-task-list__items govuk-!-padding-left-0">
-        <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-                <a class ="govuk-link" href=@selfEmploymentSummaryLink>
-                    @messages("taskList.reviewLink")
+        <h2 class="app-task-list__section">@messages("taskList.title")</h2>
+
+        <ul class="app-task-list__items govuk-!-padding-left-0">
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a class ="govuk-link" href=@selfEmploymentSummaryLink>
+                        @messages("taskList.reviewLink")
+                    </a>
+                </span>
+                <a href=@selfEmploymentSummaryLink>
+                    <strong class="govuk-tag tag-float app-task-list__tag govuk-tag--@statusMsg">@messages(s"status.$statusMsg")</strong>
                 </a>
-            </span>
-            <a href=@selfEmploymentSummaryLink>
-                <strong class="govuk-tag app-task-list__tag govuk-tag--@statusMsg">@messages(s"status.$statusMsg")</strong>
-            </a>
-        </li>
-    </ul>
+            </li>
+        </ul>
 
 
-    @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
-        <h2 class="app-task-list__section">
-            @{s"${selfEmployment.tradingName}${messages("taskList.title")}"}
-        </h2>
+        @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
+            <h2 class="app-task-list__section">
+                @{s"${selfEmployment.tradingName}${messages("taskList.title")}"}
+            </h2>
 
-        @govukSummaryList(selfEmployment.statusList)
-    }
+            @govukSummaryList(selfEmployment.statusList)
+        }
+
+    </div>
 
 }

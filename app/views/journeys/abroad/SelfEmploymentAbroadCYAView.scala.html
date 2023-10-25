@@ -29,14 +29,15 @@
 
     @heading(
         messages(s"common.checkYourDetails.heading.${if (isAgent) "agent" else "individual"}"),
-        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString))
+        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+        extraClasses = "govuk-!-margin-bottom-3"
     )
 
     @govukSummaryList(summaryList)
 
-    <p class="govuk-body">
+    <div class="govuk-button-group govuk-!-margin-top-9">
         @govukButton(ButtonViewModel(messages("site.saveAndContinue"))
             .asLink(nextRoute)
         )
-    </p>
+    </div>
 }
