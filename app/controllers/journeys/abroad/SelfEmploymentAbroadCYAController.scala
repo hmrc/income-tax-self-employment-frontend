@@ -50,9 +50,9 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     Ok(view(taxYear, summaryList, nextRoute, isAgent))
   }
 
-  private def nextPageUrl(taxYear: Int, optBusinessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: Int, businessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, optBusinessId)
+      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
 }
