@@ -110,7 +110,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -241,7 +241,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
