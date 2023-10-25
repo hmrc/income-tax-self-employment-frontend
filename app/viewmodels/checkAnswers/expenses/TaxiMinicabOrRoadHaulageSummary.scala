@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses
 
-import controllers.routes
+import controllers.journeys.expenses.routes
 import models.{CheckMode, UserAnswers}
 import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.Messages
@@ -26,25 +26,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TaxiMinicabOrRoadHaulageSummary  {
+object TaxiMinicabOrRoadHaulageSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TaxiMinicabOrRoadHaulagePage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"taxiMinicabOrRoadHaulage.$answer"))
-          )
+    answers.get(TaxiMinicabOrRoadHaulagePage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"taxiMinicabOrRoadHaulage.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "taxiMinicabOrRoadHaulage.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.TaxiMinicabOrRoadHaulageController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("taxiMinicabOrRoadHaulage.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "taxiMinicabOrRoadHaulage.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.TaxiMinicabOrRoadHaulageController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("taxiMinicabOrRoadHaulage.change.hidden"))
         )
+      )
     }
+
 }

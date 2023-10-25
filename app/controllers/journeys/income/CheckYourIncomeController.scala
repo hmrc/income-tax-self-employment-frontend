@@ -33,7 +33,7 @@ class CheckYourIncomeController @Inject()(
                                        view: CheckYourIncomeView
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       Ok(view())
   }

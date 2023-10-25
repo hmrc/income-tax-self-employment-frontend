@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses
 
-import controllers.routes
+import controllers.journeys.expenses.routes
 import models.{CheckMode, UserAnswers}
 import pages.expenses.WorkFromBusinessPremisesPage
 import play.api.i18n.Messages
@@ -26,25 +26,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object WorkFromBusinessPremisesSummary  {
+object WorkFromBusinessPremisesSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WorkFromBusinessPremisesPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"workFromBusinessPremises.$answer"))
-          )
+    answers.get(WorkFromBusinessPremisesPage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"workFromBusinessPremises.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "workFromBusinessPremises.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.WorkFromBusinessPremisesController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("workFromBusinessPremises.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "workFromBusinessPremises.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.WorkFromBusinessPremisesController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("workFromBusinessPremises.change.hidden"))
         )
+      )
     }
+
 }

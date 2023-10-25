@@ -19,7 +19,7 @@ package controllers.journeys.expenses
 import controllers.actions._
 import forms.expenses.WorkFromBusinessPremisesFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.ExpensesNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WorkFromBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
                                                     sessionRepository: SessionRepository,
-                                                    navigator: Navigator,
+                                                    navigator: ExpensesNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

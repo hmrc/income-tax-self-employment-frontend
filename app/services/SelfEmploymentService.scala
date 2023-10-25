@@ -18,7 +18,9 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
+import models.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
+import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,6 +29,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
+
+  private val maxIncomeTradingAllowance: BigDecimal = 1000
 
   def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
 
@@ -40,6 +44,11 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(impli
       case Left(error)                                                       => Left(error)
       case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
     }
+  }
+
+  def getIncomeTradingAllowance(businessId: String, userAnswers: UserAnswers): BigDecimal = {
+    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
+    if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
   }
 
 }

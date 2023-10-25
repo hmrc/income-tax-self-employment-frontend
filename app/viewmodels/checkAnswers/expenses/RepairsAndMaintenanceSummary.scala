@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses
 
-import controllers.routes
+import controllers.journeys.expenses.routes
 import models.{CheckMode, UserAnswers}
 import pages.expenses.RepairsAndMaintenancePage
 import play.api.i18n.Messages
@@ -26,25 +26,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RepairsAndMaintenanceSummary  {
+object RepairsAndMaintenanceSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RepairsAndMaintenancePage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"repairsAndMaintenance.$answer"))
-          )
+    answers.get(RepairsAndMaintenancePage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"repairsAndMaintenance.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "repairsAndMaintenance.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.RepairsAndMaintenanceController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("repairsAndMaintenance.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "repairsAndMaintenance.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("repairsAndMaintenance.change.hidden"))
         )
+      )
     }
+
 }

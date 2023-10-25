@@ -17,10 +17,10 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
+import controllers.journeys.income.routes.{IncomeNotCountedAsTurnoverController, NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -29,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -39,17 +38,20 @@ import scala.concurrent.Future
 
 class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  val formProvider                = new IncomeNotCountedAsTurnoverFormProvider()
+  val businessId                  = "SJPR05893938418"
+  val nonTurnoverIncomeAmountCall = NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val turnoverIncomeAmountCall    = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  val formProvider       = new IncomeNotCountedAsTurnoverFormProvider()
-  val formWithIndividual = formProvider("individual")
-  val formWithAgent      = formProvider("agent")
+  val onwardRoute = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
+
+  val mockSessionRepository = mock[SessionRepository]
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
-    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
+    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
   )
 
   "IncomeNotCountedAsTurnover Controller" - {
@@ -65,7 +67,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, NormalMode).url)
+              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -74,7 +76,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -85,13 +87,13 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, CheckMode).url)
+              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
@@ -99,7 +101,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -113,28 +115,55 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
     "onSubmit" - {
 
-      "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the Non-Turnover Income Amount page when a user answer 'Yes' is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
+        val userAnswer = true
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
 
         running(application) {
           val request =
-            FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, NormalMode).url).withFormUrlEncodedBody(("value", "true"))
+            FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual nonTurnoverIncomeAmountCall.url
+        }
+      }
+
+      "must redirect to the Turnover Income Amount page when a user answer 'No' is submitted" in {
+
+        val userAnswer = false
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
+              .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
         }
       }
 
@@ -147,7 +176,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             running(application) {
               val request =
-                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -158,7 +187,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -174,7 +203,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             running(application) {
               val request =
-                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -185,7 +214,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

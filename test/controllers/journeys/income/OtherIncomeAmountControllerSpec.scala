@@ -21,11 +21,8 @@ import controllers.journeys.income.routes.{OtherIncomeAmountController, TradingA
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.OtherIncomeAmountPage
@@ -48,8 +45,8 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer: BigDecimal = 100.00
   val turnoverAmount          = 1000.00
   val businessId              = "SJPR05893938418"
-  val turnoverNotTaxableCall  = TurnoverNotTaxableController.onPageLoad(taxYear, NormalMode)
-  val tradingAllowanceCall    = TradingAllowanceController.onPageLoad(taxYear, NormalMode)
+  val turnoverNotTaxableCall  = TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceCall    = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
@@ -76,7 +73,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, NormalMode).url)
+              val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -85,7 +82,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[OtherIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -96,13 +93,13 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, validAnswer).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, validAnswer, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
+              val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[OtherIncomeAmountView]
 
@@ -110,7 +107,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -121,12 +118,12 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, NormalMode).url)
+          val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -144,7 +141,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute(isAccrual = true))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(isAccrual = true))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -155,7 +152,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
 
             val request =
-              FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+              FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", validAnswer.toString))
 
             val result = route(application, request).value
@@ -170,7 +167,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute(isAccrual = false))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(isAccrual = false))),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -181,7 +178,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("CASH"))
 
             val request =
-              FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+              FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", validAnswer.toString))
 
             val result = route(application, request).value
@@ -204,7 +201,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
               val request =
-                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -215,7 +212,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -234,7 +231,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
               val request =
-                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-BigDecimal"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-BigDecimal"))
@@ -245,7 +242,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -264,7 +261,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
               val request =
-                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "-23"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "-23"))
@@ -275,7 +272,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -294,7 +291,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
               val request =
-                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+                FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "100000000000.01"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "100000000000.01"))
@@ -305,7 +302,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear)(
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -316,13 +313,13 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore { // TODO unignore when RequireData is implemented
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
           val request =
-            FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, NormalMode).url)
+            FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value

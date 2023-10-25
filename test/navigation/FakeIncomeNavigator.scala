@@ -20,9 +20,8 @@ import models.{Mode, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+class FakeIncomeNavigator(desiredRoute: Call) extends IncomeNavigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, optBusinessId: Option[String]): Call =
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean]): Call =
     desiredRoute
-
 }

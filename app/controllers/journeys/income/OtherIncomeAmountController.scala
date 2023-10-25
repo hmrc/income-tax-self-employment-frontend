@@ -19,8 +19,8 @@ package controllers.journeys.income
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
-import models.{Mode, UserAnswers}
-import navigation.Navigator
+import models.Mode
+import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
-                                             navigator: Navigator,
+                                             navigator: IncomeNavigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
@@ -45,19 +45,17 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418" // TODO 5840 delete default and get from the URL
-
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherIncomeAmountPage) match {
+      val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent))
         case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -65,14 +63,14 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
           formProvider(authUserType(request.user.isAgent))
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherIncomeAmountPage, value))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear)
-                ) // TODO 5840 use 'accountingType.equals("ACCRUAL")' in this .nextPage method
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals("ACCRUAL")))
+                )
             )
       }
   }

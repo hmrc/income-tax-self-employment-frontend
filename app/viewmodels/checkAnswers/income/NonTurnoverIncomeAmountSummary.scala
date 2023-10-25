@@ -26,7 +26,7 @@ import viewmodels.implicits._
 
 object NonTurnoverIncomeAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage).map {
       answer =>
 
@@ -34,7 +34,7 @@ object NonTurnoverIncomeAmountSummary {
           key = "nonTurnoverIncomeAmount.checkYourAnswersLabel",
           value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, CheckMode).url)
+            ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))
           )
         )

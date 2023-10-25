@@ -15,6 +15,7 @@
  *@
 
 @import models.journeys.GoodsToSellOrUse
+@import controllers.journeys.expenses.routes.GoodsToSellOrUseController
 
 @this(
     layout: templates.Layout,
@@ -28,7 +29,7 @@
 
 @layout(pageTitle = title(form, messages("goodsToSellOrUse.title"))) {
 
-    @formHelper(action = journeys.expenses.routes.GoodsToSellOrUseController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = GoodsToSellOrUseController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

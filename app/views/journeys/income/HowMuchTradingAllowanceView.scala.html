@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("howMuchTradingAllowance.title"))) {
 
@@ -47,7 +47,7 @@
         </p>
     </div>
 
-    @formHelper(action = HowMuchTradingAllowanceController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(
