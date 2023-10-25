@@ -20,10 +20,12 @@ import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import connectors.SelfEmploymentConnector
+import models.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.test.Helpers.await
 import uk.gov.hmrc.http.HeaderCarrier
@@ -93,6 +95,30 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
         val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
         result mustEqual Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+      }
+    }
+  }
+
+  "getIncomeTradingAllowance" - {
+    "should return a BigDecimal trading allowance that is" - {
+      val maxIncomeTradingAllowance: BigDecimal = 1000
+      val smallTurnover: BigDecimal             = 450.00
+      val largeTurnover: BigDecimal             = 45000.00
+      val businessId                            = "businessId"
+
+      "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
+        val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
+
+        service.getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
+      }
+
+      "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
+        val userAnswersLargeTurnover =
+          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
+        val userAnswersEqualToMax = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(businessId)).success.value
+
+        service.getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
+        service.getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
       }
     }
   }

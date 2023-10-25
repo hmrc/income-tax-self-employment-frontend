@@ -27,7 +27,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"tradingAllowanceAmount.title.$authUserType"))) {
 
@@ -37,7 +37,7 @@
 
     @heading(messages(s"tradingAllowanceAmount.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-3")
 
-    @formHelper(action = TradingAllowanceAmountController.onSubmit(taxYear, mode), 'autoComplete -> "off") {
+    @formHelper(action = TradingAllowanceAmountController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukInput(
             InputViewModel(

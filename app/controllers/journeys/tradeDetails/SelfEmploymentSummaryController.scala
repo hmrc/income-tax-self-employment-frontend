@@ -22,7 +22,7 @@ import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generat
 import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
 import models.{NormalMode, TradeDetails, UserAnswers}
-import navigation.Navigator
+import navigation.TradeDetailsNavigator
 import pages.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
                                                  getData: DataRetrievalAction,
                                                  errorHandler: ErrorHandler,
                                                  selfEmploymentConnector: SelfEmploymentConnector,
-                                                 navigator: Navigator,
+                                                 navigator: TradeDetailsNavigator,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SelfEmploymentSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -55,10 +55,10 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     }
   }
 
-  private def navigate(taxYear: Int, navigator: Navigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
+  private def navigate(taxYear: Int, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
     val businessId = TradeDetails.toString + "-" + request.user.nino
     navigator
-      .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, Some(businessId))
+      .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
       .url
   }
 

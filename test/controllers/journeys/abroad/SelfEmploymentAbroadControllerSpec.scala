@@ -19,7 +19,7 @@ package controllers.journeys.abroad
 import base.SpecBase
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.{Abroad, NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeAbroadNavigator, AbroadNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -103,7 +103,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(sectionCompletedStateCall)),
+              bind[AbroadNavigator].toInstance(new FakeAbroadNavigator(sectionCompletedStateCall)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()

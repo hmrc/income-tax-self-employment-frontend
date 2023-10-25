@@ -26,7 +26,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("incomeNotCountedAsTurnover.title"))) {
 
@@ -49,7 +49,7 @@
         </p>
     </div>
 
-    @formHelper(action = IncomeNotCountedAsTurnoverController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
