@@ -57,9 +57,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(impli
     val numberFormat  = NumberFormat.getNumberInstance(Locale.US)
     val decimalFormat = new DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(Locale.US))
 
-    val formatter: BigDecimal => String = (x: BigDecimal) => if (x.isWhole) numberFormat.format(x) else decimalFormat.format(x)
-
-    formatter(amount)
+    if (amount.isWhole) numberFormat.format(amount) else decimalFormat.format(amount)
   }
 
 }

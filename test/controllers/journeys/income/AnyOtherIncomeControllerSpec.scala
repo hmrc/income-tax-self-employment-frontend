@@ -58,7 +58,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
     case "ACCRUAL" => turnoverNotTaxableCall
     case "CASH" => tradingAllowanceCall
   }
-
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
 
   val userScenarios = Seq(
