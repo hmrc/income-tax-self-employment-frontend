@@ -25,6 +25,8 @@ import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.text.{DecimalFormat, NumberFormat}
+import java.util.Locale
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,6 +51,15 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(impli
   def getIncomeTradingAllowance(businessId: String, userAnswers: UserAnswers): BigDecimal = {
     val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
     if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
+  }
+
+  def convertBigDecimalToMoneyString(amount: BigDecimal): String = {
+    val numberFormat  = NumberFormat.getNumberInstance(Locale.US)
+    val decimalFormat = new DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(Locale.US))
+
+    val formatter: BigDecimal => String = (x: BigDecimal) => if (x.isWhole) numberFormat.format(x) else decimalFormat.format(x)
+
+    formatter(amount)
   }
 
 }

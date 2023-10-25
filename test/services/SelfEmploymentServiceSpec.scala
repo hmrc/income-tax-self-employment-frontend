@@ -47,6 +47,11 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
   val accrual           = "ACCRUAL"
   val cash              = "CASH"
 
+  val maxIncomeTradingAllowance: BigDecimal = 1000
+  val smallTurnover: BigDecimal             = 450.00
+  val largeTurnover: BigDecimal             = 45000.00
+  val businessId                            = "businessId"
+
   "getCompletedTradeDetails" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
       when(mockConnector.getCompletedTradesWithStatuses(meq(nino), meq(taxYear), meq(mtditid))(any, any)) thenReturn Future(
@@ -101,11 +106,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "getIncomeTradingAllowance" - {
     "should return a BigDecimal trading allowance that is" - {
-      val maxIncomeTradingAllowance: BigDecimal = 1000
-      val smallTurnover: BigDecimal             = 450.00
-      val largeTurnover: BigDecimal             = 45000.00
-      val businessId                            = "businessId"
-
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
         val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
 
@@ -114,12 +114,22 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
         val userAnswersLargeTurnover =
+          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(businessId)).success.value
+        val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
-        val userAnswersEqualToMax = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(businessId)).success.value
 
         service.getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
         service.getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
       }
+    }
+  }
+
+  "convertBigDecimalToMoneyString" - {
+    "should format BigDecimals to String with commas every thousand, and to two decimal places unless a whole number" in {
+      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 1000.1, 1000.10, 1000.01)
+      val formattedStringSeq: Seq[String] = Seq("1,000,000,000", "1,000", "1,000.10", "1,000.10", "1,000.01")
+
+      bigDecimalSeq.map(service.convertBigDecimalToMoneyString(_)) mustEqual formattedStringSeq
     }
   }
 
