@@ -45,6 +45,8 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
   val onwardRoute = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
 
+  val mockSessionRepository = mock[SessionRepository]
+
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Boolean])
 
   val userScenarios = Seq(
@@ -117,8 +119,6 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
         val userAnswer = true
 
-        val mockSessionRepository = mock[SessionRepository]
-
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
@@ -144,8 +144,6 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       "must redirect to the Turnover Income Amount page when a user answer 'No' is submitted" in {
 
         val userAnswer = false
-
-        val mockSessionRepository = mock[SessionRepository]
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
