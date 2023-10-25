@@ -26,7 +26,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, isAccrual: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("tradingAllowance.title"))) {
 
@@ -43,7 +43,7 @@
         <p>
             @messages(s"tradingAllowance.p2.$authUserType")
         </p>
-        @if(isAccrual){
+        @if(accountingType.equals("ACCRUAL")){
             <p>
                 @messages(s"tradingAllowance.p3.$authUserType")
             </p>
@@ -51,7 +51,7 @@
     </div>
 
 
-    @if(isAccrual){
+    @if(accountingType.equals("ACCRUAL")){
         <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
             <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -65,7 +65,7 @@
                 <p>
                     @messages(s"capitalAllowances.p2.$authUserType")
                 </p>
-                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
                     <li>@messages("capitalAllowances.l1")</li>
                     <li>@messages("capitalAllowances.l2")</li>
                     <li>@messages("capitalAllowances.l3")</li>

@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.NotTaxableAmountController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.NotTaxableAmountFormProvider
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

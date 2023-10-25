@@ -1,12 +1,18 @@
 strong {
   float: right;
 }
+
 .js-visible {
   display: none !important;
 }
 .js-enabled .js-visible {
   display: inline-block !important;
 }
+
+.no-wrap {
+  white-space: nowrap;
+}
+
 .govuk-hint {
     margin-bottom: 15px;
     color: #505a5f;
@@ -23,22 +29,38 @@ strong {
   color: #ffffff;
   background-color: #1d70b8;
 }
-.govuk-summary-list__row {
-  list-style: none;
-}
 .govuk-summary-list__key {
   width: 66.6%;
 }
-.govuk-summary-list__actions {
-  white-space: nowrap;
-  float: right;
+.govuk-summary-list__empty-value {
   margin-bottom: 0;
-  padding-bottom: 0;
 }
-.govuk-list--bullet {
+.indent-40px {
   padding-left: 40px;
 }
 .govuk-deadlink {
   color: #0b0c0c!important;
   text-decoration: none!important;
+}
+
+@media only screen and (min-width: 40.0625em) {
+    .task-list {
+        min-width: 550px;
+    }
+    .no-after-content:after {
+      content: None;
+      display: block
+    }
+}
+
+@media only screen and (min-width: 28.125em) {
+    .tag-float {
+      float: right;
+    }
+}
+
+@media only screen and (max-width: 28.125em) {
+    .tag-float {
+      float: left;
+    }
 }

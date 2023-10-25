@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.NonTurnoverIncomeAmountController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.NonTurnoverIncomeAmountFormProvider
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -42,8 +42,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NonTurnoverIncomeAmountFormProvider()
-
+  val formProvider            = new NonTurnoverIncomeAmountFormProvider()
   val validAnswer: BigDecimal = 100
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])

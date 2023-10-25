@@ -18,17 +18,28 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
+import models.errors.{HttpError, HttpErrorBody}
 import play.api.Logging
+import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentService @Inject()(connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
+class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
 
-        connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
+    connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
+  }
+
+  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] = {
+
+    connector.getBusiness(nino, businessId, mtditid).map {
+      case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)
+      case Left(error)                                                       => Left(error)
+      case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
+    }
   }
 
 }
