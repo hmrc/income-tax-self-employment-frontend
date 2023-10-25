@@ -71,7 +71,7 @@ class IncomeNavigatorSpec extends SpecBase {
           AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
-      "AnyOtherIncomePage must go to the" - {
+      "Any Other Income Page must go to the" - {
         "Other Income Amount page when answer is 'Yes'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(businessId)).success.value
@@ -96,6 +96,24 @@ class IncomeNavigatorSpec extends SpecBase {
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
           navigator.nextPage(AnyOtherIncomePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "Other Income Amount Page must go to the" - {
+        "Turnover Not Taxable page when accounting type is 'ACCRUAL'" in {
+
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(true)) mustBe
+            TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+        }
+        "Trading Allowance page when accounting type is 'CASH'" in {
+
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(false)) mustBe
+            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+        }
+        "Journey Recovery page when there is no accounting type" in {
+
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
