@@ -23,6 +23,7 @@ import controllers.standard.routes._
 import models._
 import pages._
 import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
+import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}

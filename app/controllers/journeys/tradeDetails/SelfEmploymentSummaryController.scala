@@ -23,7 +23,7 @@ import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
 import models.{NormalMode, TradeDetails, UserAnswers}
 import navigation.Navigator
-import pages.SelfEmploymentSummaryPage
+import pages.tradeDetails.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList

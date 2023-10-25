@@ -100,4 +100,34 @@ POST       /:taxYear/income/change-trading-allowance/amount                     
 
 GET        /:taxYear/income/check-your-income                                      controllers.journeys.income.CheckYourIncomeController.onPageLoad(taxYear: Int)
 
-##########  ##########
+########## Expenses Journey ##########
+
+GET        /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)

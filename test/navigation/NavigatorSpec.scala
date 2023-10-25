@@ -24,6 +24,7 @@ import controllers.standard.{routes => stRoutes}
 import models._
 import pages._
 import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
+import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 
 class NavigatorSpec extends SpecBase {
 
