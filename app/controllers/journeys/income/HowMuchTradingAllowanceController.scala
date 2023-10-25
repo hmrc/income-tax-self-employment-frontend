@@ -20,10 +20,11 @@ import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import navigation.IncomeNavigator
-import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
+import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
@@ -31,6 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class HowMuchTradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
+                                                   selfEmploymentService: SelfEmploymentService,
                                                    sessionRepository: SessionRepository,
                                                    navigator: IncomeNavigator,
                                                    identify: IdentifierAction,
@@ -44,10 +46,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowanceString = {
-        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000)
-        if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
-      }
+      val tradingAllowanceString = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers).setScale(2).toString()
       val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
@@ -58,15 +57,13 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowanceString = {
-        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000)
-        if (turnover > 1000.00) "1000.00" else turnover.setScale(2).toString()
-      }
+      val tradingAllowanceString = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers).setScale(2).toString()
       formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
+            Future.successful(
+              BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId)))

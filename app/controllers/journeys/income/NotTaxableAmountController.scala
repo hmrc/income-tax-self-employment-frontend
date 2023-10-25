@@ -20,10 +20,11 @@ import controllers.actions._
 import forms.income.NotTaxableAmountFormProvider
 import models.Mode
 import navigation.IncomeNavigator
-import pages.income.{NotTaxableAmountPage, TurnoverIncomeAmountPage}
+import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NotTaxableAmountView
 
@@ -31,6 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotTaxableAmountController @Inject() (override val messagesApi: MessagesApi,
+                                            selfEmploymentService: SelfEmploymentService,
                                             sessionRepository: SessionRepository,
                                             navigator: IncomeNavigator,
                                             identify: IdentifierAction,
@@ -44,10 +46,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance: BigDecimal = {
-        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000.00)
-        if (turnover > 1000.00) 1000.00 else turnover
-      }
+      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
       val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
         case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
@@ -58,10 +57,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowance: BigDecimal = {
-        val turnover: BigDecimal = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(1000.00)
-        if (turnover > 1000.00) 1000.00 else turnover
-      }
+      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
       formProvider(authUserType(request.user.isAgent), tradingAllowance)
         .bindFromRequest()
         .fold(
