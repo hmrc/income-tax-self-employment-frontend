@@ -16,15 +16,14 @@
 
 @import models.journeys.WorkFromHome
 @import controllers.journeys.expenses.routes.WorkFromHomeController
-@import views.html.templates.helpers.Heading
+@import viewmodels.LegendSize.Large
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
@@ -35,14 +34,12 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages(s"workFromHome.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-2")
-
     @formHelper(action = WorkFromHomeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(""),
+                legend = LegendViewModel(messages(s"workFromHome.title.$authUserType")).asPageHeading(size = Large),
                 items  = WorkFromHome.options
             )
         )

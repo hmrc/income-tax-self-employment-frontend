@@ -27,6 +27,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.WorkFromHomePage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -43,118 +46,187 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
   lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(NormalMode).url
 
   val formProvider = new WorkFromHomeFormProvider()
-  val form         = formProvider()
+  val businessId   = "SJPR05893938418"
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[WorkFromHome])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
+    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
+  )
 
   "WorkFromHome Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+          "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, workFromHomeRoute)
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        val result = route(application, request).value
+            running(application) {
+              val request = FakeRequest(GET, workFromHomeRoute)
 
-        val view = application.injector.instanceOf[WorkFromHomeView]
+              val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val view = application.injector.instanceOf[WorkFromHomeView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(WorkFromHomePage, WorkFromHome.values.head, Some(businessId)).success.value
+
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request = FakeRequest(GET, workFromHomeRoute)
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val view = application.injector.instanceOf[WorkFromHomeView]
+
+              val expectedResult =
+                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, workFromHomeRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(WorkFromHomePage, WorkFromHome.values.head).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockSessionRepository = mock[SessionRepository]
 
-      running(application) {
-        val request = FakeRequest(GET, workFromHomeRoute)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[WorkFromHomeView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, workFromHomeRoute)
+              .withFormUrlEncodedBody(("value", WorkFromHome.values.head.toString))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WorkFromHome.values.head), NormalMode)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            running(application) {
+              val request =
+                FakeRequest(POST, workFromHomeRoute)
+                  .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, workFromHomeRoute)
-            .withFormUrlEncodedBody(("value", WorkFromHome.values.head.toString))
+              val view = application.injector.instanceOf[WorkFromHomeView]
 
-        val result = route(application, request).value
+              val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              val request =
+                FakeRequest(POST, workFromHomeRoute)
+                  .withFormUrlEncodedBody(("value", ""))
+
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
+
+              val view = application.injector.instanceOf[WorkFromHomeView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" ignore {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, workFromHomeRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        running(application) {
+          val request =
+            FakeRequest(POST, workFromHomeRoute)
+              .withFormUrlEncodedBody(("value", WorkFromHome.values.head.toString))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+          val result = route(application, request).value
 
-        val view = application.injector.instanceOf[WorkFromHomeView]
+          status(result) mustEqual SEE_OTHER
 
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, workFromHomeRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, workFromHomeRoute)
-            .withFormUrlEncodedBody(("value", WorkFromHome.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

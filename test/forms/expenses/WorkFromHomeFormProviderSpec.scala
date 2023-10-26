@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class WorkFromHomeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new WorkFromHomeFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "workFromHome.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[WorkFromHome](
-      form,
-      fieldName,
-      validValues = WorkFromHome.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new WorkFromHomeFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[WorkFromHome](
+          form,
+          fieldName,
+          validValues = WorkFromHome.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"workFromHome.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }
