@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package forms.expenses
 
-case object CheckYourSelfEmploymentDetailsPage extends Page {
+import forms.mappings.Mappings
+import models.journeys.WorkFromHome
+import play.api.data.Form
 
-  override def toString: String = "selfEmploymentAbroad"
+import javax.inject.Inject
+
+class WorkFromHomeFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[WorkFromHome] =
+    Form(
+      "value" -> enumerable[WorkFromHome]("workFromHome.error.required")
+    )
+
 }
