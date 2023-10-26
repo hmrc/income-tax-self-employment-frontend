@@ -16,29 +16,56 @@
 
 @import models.journeys.RepairsAndMaintenance
 @import controllers.journeys.expenses.routes.RepairsAndMaintenanceController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("repairsAndMaintenance.title"))) {
 
-    @formHelper(action = RepairsAndMaintenanceController.onSubmit(mode), 'autoComplete -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+    @heading(messages("repairsAndMaintenance.title"), None)
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+        <p>
+            @messages(s"site.canInclude.$authUserType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("repairsAndMaintenance.l1")</li>
+            @if(accountingType.equals("ACCRUAL")){
+                <li>@messages("repairsAndMaintenance.l2")</li>
+            }
+        </ul>
+        <p>
+            @messages(s"site.cannotInclude.$authUserType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("repairsAndMaintenance.l3")</li>
+            <li>@messages("repairsAndMaintenance.l4")</li>
+            @if(accountingType.equals("CASH")){
+                <li>@messages("repairsAndMaintenance.l2")</li>
+            }
+        </ul>
+    </div>
+
+    @formHelper(action = RepairsAndMaintenanceController.onSubmit(mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("repairsAndMaintenance.heading")).asPageHeading(),
+                legend = LegendViewModel(messages(s"repairsAndMaintenance.subHeading.$authUserType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items  = RepairsAndMaintenance.options
             )
         )
