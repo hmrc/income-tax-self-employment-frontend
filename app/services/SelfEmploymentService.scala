@@ -58,7 +58,7 @@ object SelfEmploymentService {
   }
 
   def convertBigDecimalToMoneyString(amount: BigDecimal): String = {
-    val numberFormat = NumberFormat.getNumberInstance(Locale.US)
+    val numberFormat  = NumberFormat.getNumberInstance(Locale.UK)
     val decimalFormat = new DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(Locale.US))
 
     if (amount.isWhole) numberFormat.format(amount) else decimalFormat.format(amount)
