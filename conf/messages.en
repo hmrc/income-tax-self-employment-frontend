@@ -302,6 +302,13 @@ checkYourIncome.r8.agent = How much trading allowance does your client want to u
 
 ###### Expenses Journey ######
 
+## Common
+expenses.yesAllowable.individual = Yes, all of my expenses are allowable
+expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
+expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
+expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.no = No
+
 ## Office supplies
 officeSupplies.title = Office supplies
 officeSupplies.heading = Office supplies
@@ -337,28 +344,21 @@ repairsAndMaintenance.l3 = repairs of non-work premises or equipment
 repairsAndMaintenance.l4 = costs of buying, improving or altering premises
 repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs and maintenance of property or equipment?
 repairsAndMaintenance.subHeading.agent = Did your client spend anything on repairs and maintenance of property or equipment?
-repairsAndMaintenance.yesAllowable.individual = Yes, all of my expenses are allowable
-repairsAndMaintenance.yesAllowable.agent = Yes, all of my client’s expenses are allowable
-repairsAndMaintenance.yesDisallowable.individual = Yes, some of my expenses are disallowable
-repairsAndMaintenance.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
-repairsAndMaintenance.no = No
 repairsAndMaintenance.checkYourAnswersLabel = Repairs and maintenance
 repairsAndMaintenance.error.required.individual = Select if all your repairs and maintenance expenses are allowable, some of them are disallowable or you do not have any repairs and maintenance expenses
 repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
 repairsAndMaintenance.change.hidden = RepairsAndMaintenance
 
 ## Work from home
-workFromHome.title = Did you work from home?
-workFromHome.yes = Yes
-workFromHome.no = No
+workFromHome.title.individual = Did you work from home?
+workFromHome.title.agent = Did your client work from home?
 workFromHome.checkYourAnswersLabel = Did you work from home?
-workFromHome.error.required = Select workFromHome
+workFromHome.error.required.individual = Select yes if you worked from home
+workFromHome.error.required.agent = Select yes if your client worked from home
 workFromHome.change.hidden = WorkFromHome
 
 ## Work from business premises
 workFromBusinessPremises.title = Did you work from your own business premises?
-workFromBusinessPremises.yesAllowable = Yes, all of my expenses are allowable
-workFromBusinessPremises.yesDisallowable = Yes, some of my expenses are disallowable
 workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own business premises?
 workFromBusinessPremises.error.required = Select workFromBusinessPremises
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises

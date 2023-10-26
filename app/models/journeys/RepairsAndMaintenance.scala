@@ -35,9 +35,10 @@ object RepairsAndMaintenance extends Enumerable.Implicits {
     No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+  def options(authUserType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    val optUserType = if (value.equals(No)) "" else s".$authUserType"
     RadioItem(
-      content = Text(messages(s"repairsAndMaintenance.${value.toString}")),
+      content = Text(messages(s"expenses.${value.toString}$optUserType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
