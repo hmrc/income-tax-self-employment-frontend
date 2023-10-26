@@ -45,8 +45,8 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formProvider                      = new HowMuchTradingAllowanceFormProvider()
   val maxTradingAllowance: BigDecimal   = 1000.00
   val smallTradingAllowance: BigDecimal = 260.50
-  val maxTradingAllowanceString         = maxTradingAllowance.setScale(2).toString()
-  val smallTradingAllowanceString       = smallTradingAllowance.setScale(2).toString()
+  val maxTradingAllowanceString         = "1,000"
+  val smallTradingAllowanceString       = "260.50"
   val formIndividualWithMaxTA           = formProvider("individual", maxTradingAllowanceString)
   val formAgentWithSmallTA              = formProvider("agent", smallTradingAllowanceString)
   val businessId                        = "SJPR05893938418"
