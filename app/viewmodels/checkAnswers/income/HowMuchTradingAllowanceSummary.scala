@@ -27,11 +27,11 @@ import viewmodels.implicits._
 
 object HowMuchTradingAllowanceSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowMuchTradingAllowancePage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val value = answer match {
         case HowMuchTradingAllowance.Maximum =>
-          val turnoverIncomeAmount = answers.get(TurnoverIncomeAmountPage) match {
+          val turnoverIncomeAmount = answers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
             case Some(amount) => amount.setScale(2)
             case None         => throw new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage")
           }
@@ -43,7 +43,7 @@ object HowMuchTradingAllowanceSummary {
         key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
         )
       )

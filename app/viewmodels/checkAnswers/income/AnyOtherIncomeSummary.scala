@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object AnyOtherIncomeSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AnyOtherIncomePage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AnyOtherIncomePage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
         key = Key(content = s"anyOtherIncome.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", AnyOtherIncomeController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("anyOtherIncome.change.hidden"))
         )
       )

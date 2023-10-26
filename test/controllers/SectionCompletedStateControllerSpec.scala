@@ -22,7 +22,7 @@ import controllers.journeys.routes
 import forms.SectionCompletedStateFormProvider
 import models.errors.{HttpError, HttpErrorBody}
 import models.{CompletedSectionState, NormalMode}
-import navigation.{FakeNavigator, Navigator}
+import navigation._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -154,7 +154,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(journeyRecoveryCall)),
+              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(journeyRecoveryCall)),
               bind[SelfEmploymentConnector].toInstance(mockConnector)
             )
             .build()

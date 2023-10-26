@@ -27,13 +27,13 @@ import viewmodels.implicits._
 
 object NotTaxableAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotTaxableAmountPage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"notTaxableAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
         )
       )

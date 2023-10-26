@@ -26,11 +26,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class NonTurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id        = "some_id"
-  private val taxYear   = 2024
-  private val authUser  = "individual"
-  private val data      = Json.obj("nonTurnoverIncomeAmount" -> 123.45)
-  private val otherData = Json.obj("otherPage" -> 123.45)
+  private val id         = "some_id"
+  private val businessId = "some_business_id"
+  private val taxYear    = 2024
+  private val authUser   = "individual"
+  private val data       = Json.obj(businessId -> Json.obj("nonTurnoverIncomeAmount" -> 123.45))
+  private val otherData  = Json.obj("otherPage" -> 123.45)
 
   private val userAnswers      = UserAnswers(id, data)
   private val otherUserAnswers = UserAnswers(id, otherData)
@@ -43,7 +44,7 @@ class NonTurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
   "NonTurnoverIncomeAmountSummary" when {
     "user answers for IncomeNotCountedAsTurnoverPage exist" should {
       "generate a summary list row" in {
-        val result = NonTurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser)
+        val result = NonTurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("nonTurnoverIncomeAmount.checkYourAnswersLabel.individual")
@@ -52,7 +53,7 @@ class NonTurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
     }
     "user answers do not exist for IncomeNotCountedAsTurnoverPage" should {
       "return None" in {
-        val result = NonTurnoverIncomeAmountSummary.row(otherUserAnswers, taxYear, authUser)
+        val result = NonTurnoverIncomeAmountSummary.row(otherUserAnswers, taxYear, authUser, businessId)
 
         result shouldBe None
       }

@@ -26,12 +26,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id       = "some_id"
-  private val taxYear  = 2024
-  private val authUser = "agent"
+  private val id         = "some_id"
+  private val businessId = "some_business_id"
+  private val taxYear    = 2024
+  private val authUser   = "agent"
 
-  private val data          = Json.obj("turnoverIncomeAmount" -> 123.45)
-  private val someOtherData = Json.obj("someOtherPage" -> 123.45)
+  private val data          = Json.obj(businessId -> Json.obj("turnoverIncomeAmount" -> 123.45))
+  private val someOtherData = Json.obj(businessId -> Json.obj("someOtherPage" -> 123.45))
 
   private val userAnswers          = UserAnswers(id, data)
   private val someOtherUserAnswers = UserAnswers(id, someOtherData)
@@ -44,7 +45,7 @@ class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
   "TurnoverIncomeAmountSummary" when {
     "user answers for TurnoverIncomeAmountPage exist" should {
       "generate a summary list row" in {
-        val result = TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser)
+        val result = TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("turnoverIncomeAmount.checkYourAnswersLabel.agent")
@@ -55,7 +56,7 @@ class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
   "user answers do not exist for TurnoverIncomeAmountPage" should {
     "return None" in {
-      val result = TurnoverIncomeAmountSummary.row(someOtherUserAnswers, taxYear, authUser)
+      val result = TurnoverIncomeAmountSummary.row(someOtherUserAnswers, taxYear, authUser, businessId)
 
       result shouldBe None
     }

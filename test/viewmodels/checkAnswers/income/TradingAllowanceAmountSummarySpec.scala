@@ -26,12 +26,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id       = "some_id"
-  private val taxYear  = 2024
-  private val authUser = "individual"
+  private val id         = "some_id"
+  private val businessId = "some_business_id"
+  private val taxYear    = 2024
+  private val authUser   = "individual"
 
-  private val data      = Json.obj("tradingAllowanceAmount" -> 123.45)
-  private val otherData = Json.obj("otherPage" -> 123.45)
+  private val data      = Json.obj(businessId -> Json.obj("tradingAllowanceAmount" -> 123.45))
+  private val otherData = Json.obj(businessId -> Json.obj("otherPage" -> 123.45))
 
   private val userAnswers      = UserAnswers(id, data)
   private val otherUserAnswers = UserAnswers(id, otherData)
@@ -44,7 +45,7 @@ class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
   "TradingAllowanceAmountSummary" when {
     "user answers for TradingAllowanceAmountPage exist" should {
       "generate a summary list row" in {
-        val result = TradingAllowanceAmountSummary.row(userAnswers, taxYear, authUser)
+        val result = TradingAllowanceAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("tradingAllowanceAmount.checkYourAnswersLabel.individual")
@@ -53,7 +54,7 @@ class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
     }
     "user answers do not exist for TradingAllowanceAmountPage" should {
       "return None" in {
-        val result = TradingAllowanceAmountSummary.row(otherUserAnswers, taxYear, authUser)
+        val result = TradingAllowanceAmountSummary.row(otherUserAnswers, taxYear, authUser, businessId)
 
         result shouldBe None
       }

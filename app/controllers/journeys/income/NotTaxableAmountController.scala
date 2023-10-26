@@ -18,12 +18,13 @@ package controllers.journeys.income
 
 import controllers.actions._
 import forms.income.NotTaxableAmountFormProvider
-import models.{Mode, UserAnswers}
-import navigation.Navigator
-import pages.income.{NotTaxableAmountPage, TurnoverIncomeAmountPage}
+import models.Mode
+import navigation.IncomeNavigator
+import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NotTaxableAmountView
 
@@ -31,8 +32,9 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotTaxableAmountController @Inject() (override val messagesApi: MessagesApi,
+                                            selfEmploymentService: SelfEmploymentService,
                                             sessionRepository: SessionRepository,
-                                            navigator: Navigator,
+                                            navigator: IncomeNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
@@ -42,35 +44,29 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) { // TODO add requireData SASS-5841
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance: BigDecimal = {
-        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
-        if (turnover > 1000.00) 1000.00 else turnover
-      }
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(NotTaxableAmountPage) match {
+      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
+      val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
         case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear))
+      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, mode: Mode): Action[AnyContent] = (identify andThen getData) async { // TODO add requireData SASS-5841
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowance: BigDecimal = {
-        val turnover: BigDecimal = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TurnoverIncomeAmountPage).getOrElse(1000.00)
-        if (turnover > 1000.00) 1000.00 else turnover
-      }
+      val tradingAllowance: BigDecimal = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers)
       formProvider(authUserType(request.user.isAgent), tradingAllowance)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(NotTaxableAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear))
+            } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

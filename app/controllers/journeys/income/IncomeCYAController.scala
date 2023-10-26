@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.requests.DataRequest
-import navigation.Navigator
+import navigation._
 import pages.income.IncomeCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,29 +34,29 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
-                                     navigator: Navigator,
+                                     navigator: IncomeNavigator,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: IncomeCYAView)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear)
+      .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
     val summaryList = SummaryList(
       rows = Seq(
-        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        TradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        HowMuchTradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        NotTaxableAmountSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        OtherIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, authUserType(request)),
-        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, authUserType(request))
+        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        HowMuchTradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        NotTaxableAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        OtherIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, authUserType(request), businessId)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )

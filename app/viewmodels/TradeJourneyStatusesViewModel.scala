@@ -17,6 +17,7 @@
 package viewmodels
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
+import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
 import models._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
@@ -45,10 +46,12 @@ object TradeJourneyStatusesViewModel {
     val (abroadCompletionStatus, incomeCompletionStatus) = (getStatus(Abroad), getStatus(Income))
 
     val abroadMode = if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode
+    val incomeMode = if (incomeCompletionStatus.isEmpty) NormalMode else CheckMode
 
     val (abroadUrlString, incomeUrlString) =
       (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, abroadMode).url,
-        if (abroadCompletionStatus.getOrElse(false)) "#" else "#" //TODO replace first # with income journey url when created
+        if (abroadCompletionStatus.getOrElse(false)) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId,incomeMode).url
+        else "#"
       )
 
     val (abroadStatusString, incomeStatusString) =

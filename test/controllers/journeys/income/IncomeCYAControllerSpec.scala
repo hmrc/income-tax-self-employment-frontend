@@ -18,7 +18,7 @@ package controllers.journeys.income
 
 import base.SpecBase
 import controllers.journeys.income.routes.IncomeCYAController
-import models.UserAnswers
+import models.{Income, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -33,6 +33,7 @@ import scala.concurrent.Future
 class IncomeCYAControllerSpec extends SpecBase {
 
   private val authUserType = "individual"
+  private val businessId = "some_business_id"
 
   private val userAnswerData = Json.parse(s"""
        |{
@@ -46,8 +47,6 @@ class IncomeCYAControllerSpec extends SpecBase {
 
   private val userAnswers = UserAnswers("some_id", userAnswerData.as[JsObject])
 
-  private lazy val nextRoute = controllers.standard.routes.JourneyRecoveryController.onPageLoad(None).url
-
   "IncomeCYAController" - {
     "when handling a request to load a page" - {
       "must return a 200 OK, passing in the view as the content" in {
@@ -56,14 +55,14 @@ class IncomeCYAControllerSpec extends SpecBase {
 
         running(application) {
           val view    = application.injector.instanceOf[IncomeCYAView]
-          val request = FakeRequest(GET, IncomeCYAController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, IncomeCYAController.onPageLoad(taxYear, businessId).url)
 
           val expectedSummaryListRows = Seq(
-            AnyOtherIncomeSummary.row(userAnswers, taxYear, authUserType),
-            IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, authUserType),
-            TradingAllowanceSummary.row(userAnswers, taxYear, authUserType),
-            TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUserType),
-            TurnoverNotTaxableSummary.row(userAnswers, taxYear, authUserType)
+            AnyOtherIncomeSummary.row(userAnswers, taxYear, authUserType, businessId),
+            IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, authUserType, businessId),
+            TradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId),
+            TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUserType, businessId),
+            TurnoverNotTaxableSummary.row(userAnswers, taxYear, authUserType, businessId)
           ).flatten
 
           val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
@@ -71,7 +70,10 @@ class IncomeCYAControllerSpec extends SpecBase {
           val result: Future[Result] = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, expectedSummaryLists, nextRoute, authUserType)(request, messages(application)).toString
+
+          val expectedNextRoute = controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode).url
+
+          contentAsString(result) mustEqual view(taxYear, expectedSummaryLists, expectedNextRoute, authUserType)(request, messages(application)).toString
         }
       }
     }

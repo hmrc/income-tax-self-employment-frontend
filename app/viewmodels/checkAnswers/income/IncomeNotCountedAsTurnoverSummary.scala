@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object IncomeNotCountedAsTurnoverSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IncomeNotCountedAsTurnoverPage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
         key = Key(content = s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
-          ActionItemViewModel("site.change", IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, CheckMode).url)
+          ActionItemViewModel("site.change", IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("incomeNotCountedAsTurnover.change.hidden"))
         )
       )

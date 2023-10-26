@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.tradeDetails
 
 import base.SpecBase
 import connectors.SelfEmploymentConnector

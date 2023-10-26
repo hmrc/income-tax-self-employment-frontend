@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package pages.income
+package navigation
 
-import pages.Page
+import models.{Mode, UserAnswers}
+import pages._
+import play.api.mvc.Call
 
-object IncomeCYAPage extends Page {
-  override def toString: String = "incomeCYA"
+class FakeAbroadNavigator(desiredRoute: Call) extends AbroadNavigator {
+
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
+    desiredRoute
 }

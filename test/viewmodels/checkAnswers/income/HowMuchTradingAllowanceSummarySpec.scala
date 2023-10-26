@@ -26,20 +26,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id       = "some_id"
-  private val taxYear  = 2024
-  private val authUser = "individual"
+  private val id         = "some_id"
+  private val businessId = "some_business_id"
+  private val taxYear    = 2024
+  private val authUser   = "individual"
 
   private val turnoverIncomeAmountPageData     = Json.obj("turnoverIncomeAmount" -> 456.00)
   private val maxTradingAllowancePageData      = Json.obj("howMuchTradingAllowance" -> "maximum")
   private val lessThanTradingAllowancePageData = Json.obj("howMuchTradingAllowance" -> "lessThan")
 
-  private val otherData = Json.obj("otherPage" -> 123.45)
+  private val otherData = Json.obj(businessId -> Json.obj("otherPage" -> 123.45))
 
-  private val completeUserAnswersWithMaxTradingAllowance     = UserAnswers(id, turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)
-  private val completeUserAnswersWithMinimumTradingAllowance = UserAnswers(id, turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)
+  private val completeUserAnswersWithMaxTradingAllowance =
+    UserAnswers(id, Json.obj(businessId -> (turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)))
 
-  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, maxTradingAllowancePageData)
+  private val completeUserAnswersWithMinimumTradingAllowance =
+    UserAnswers(id, Json.obj(businessId -> (turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)))
+
+  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, Json.obj(businessId -> maxTradingAllowancePageData))
 
   private val otherUserAnswers = UserAnswers(id, otherData)
 
@@ -53,7 +57,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
       "the maximum trading allowance is selected" when {
         "user answers exist for TurnoverIncomeAmountPage" should {
           "generate a summary list row where the monetary value is taken from the TurnoverIncomeAmountPage answer" in {
-            val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMaxTradingAllowance, taxYear, authUser)
+            val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMaxTradingAllowance, taxYear, authUser, businessId)
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
@@ -62,7 +66,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
         }
         "user answers don't exist for TurnoverIncomeAmountPage" should {
           "throw a run-time exception" in {
-            lazy val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser)
+            lazy val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser, businessId)
 
             val exception = intercept[RuntimeException](result)
 
@@ -72,7 +76,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
       }
       "less than the maximum trading allowance is selected" should {
         "generate a summary list row where the value is quoted as `A lower amount`" in {
-          val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMinimumTradingAllowance, taxYear, authUser)
+          val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMinimumTradingAllowance, taxYear, authUser, businessId)
 
           result.get shouldBe a[SummaryListRow]
           result.get.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
@@ -82,7 +86,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
     }
     "user answers do not exist for HowMuchTradingAllowancePage" should {
       "return None" in {
-        val result = HowMuchTradingAllowanceSummary.row(otherUserAnswers, taxYear, authUser)
+        val result = HowMuchTradingAllowanceSummary.row(otherUserAnswers, taxYear, authUser, businessId)
 
         result shouldBe None
       }
