@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.expenses
 
-import controllers.journeys.income.routes.TradingAllowanceAmountController
+import controllers.journeys.expenses.routes
 import models.{CheckMode, UserAnswers}
-import pages.income.TradingAllowanceAmountPage
+import pages.expenses.WorkFromHomePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,25 +26,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TradingAllowanceAmountSummary {
+object WorkFromHomeSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowanceAmountPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"TradingAllowanceAmount.$answer"))
-          )
+  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(WorkFromHomePage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"workFromHome.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key = "TradingAllowanceAmount.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("TradingAllowanceAmount.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "workFromHome.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.WorkFromHomeController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("workFromHome.change.hidden"))
         )
+      )
     }
+
 }

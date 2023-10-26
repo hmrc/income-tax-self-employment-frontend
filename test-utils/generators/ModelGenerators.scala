@@ -17,9 +17,40 @@
 package generators
 
 import models._
+import models.journeys._
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryWorkFromHome: Arbitrary[WorkFromHome] =
+    Arbitrary {
+      Gen.oneOf(WorkFromHome.values.toSeq)
+    }
+
+  implicit lazy val arbitraryWorkFromBusinessPremises: Arbitrary[WorkFromBusinessPremises] =
+    Arbitrary {
+      Gen.oneOf(WorkFromBusinessPremises.values.toSeq)
+    }
+
+  implicit lazy val arbitraryTaxiMinicabOrRoadHaulage: Arbitrary[TaxiMinicabOrRoadHaulage] =
+    Arbitrary {
+      Gen.oneOf(TaxiMinicabOrRoadHaulage.values.toSeq)
+    }
+
+  implicit lazy val arbitraryRepairsAndMaintenance: Arbitrary[RepairsAndMaintenance] =
+    Arbitrary {
+      Gen.oneOf(RepairsAndMaintenance.values.toSeq)
+    }
+
+  implicit lazy val arbitraryOfficeSupplies: Arbitrary[OfficeSupplies] =
+    Arbitrary {
+      Gen.oneOf(OfficeSupplies.values.toSeq)
+    }
+
+  implicit lazy val arbitraryGoodsToSellOrUse: Arbitrary[GoodsToSellOrUse] =
+    Arbitrary {
+      Gen.oneOf(GoodsToSellOrUse.values.toSeq)
+    }
 
   implicit lazy val arbitraryHowMuchTradingAllowance: Arbitrary[HowMuchTradingAllowance] =
     Arbitrary {
@@ -35,4 +66,5 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(CompletedSectionState.values)
     }
+
 }

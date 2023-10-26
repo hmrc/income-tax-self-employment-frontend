@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TurnoverNotTaxableController
+import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.{CheckMode, UserAnswers}
-import pages.income.TurnoverNotTaxablePage
+import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TurnoverNotTaxableSummary {
+object HowMuchTradingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TurnoverNotTaxablePage).map {
+    answers.get(HowMuchTradingAllowancePage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
-
         SummaryListRowViewModel(
-          key = "turnoverNotTaxable.checkYourAnswersLabel",
-          value = ValueViewModel(value),
+          key = "howMuchTradingAllowance.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
+            ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
+              .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
           )
         )
     }

@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package forms.expenses
 
-case object SelfEmploymentSummaryPage extends Page {
-  override def toString: String = "selfEmploymentSummary"
+import forms.mappings.Mappings
+import models.journeys.WorkFromBusinessPremises
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class WorkFromBusinessPremisesFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[WorkFromBusinessPremises] =
+    Form(
+      "value" -> enumerable[WorkFromBusinessPremises]("workFromBusinessPremises.error.required")
+    )
+
 }
