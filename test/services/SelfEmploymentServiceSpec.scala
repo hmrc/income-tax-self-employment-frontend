@@ -28,6 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.test.Helpers.await
+import services.SelfEmploymentService.{convertBigDecimalToMoneyString, getIncomeTradingAllowance}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -109,7 +110,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
         val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
 
-        service.getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
+        getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
       }
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
@@ -118,18 +119,18 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
         val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
 
-        service.getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
-        service.getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
       }
     }
   }
 
   "convertBigDecimalToMoneyString" - {
     "should format BigDecimals to String with commas every thousand, and to two decimal places unless a whole number" in {
-      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 1000.1, 10.10, 1000.01, 0.1)
+      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 10.1, 1000.10, 1000.01, 0.1)
       val formattedStringSeq: Seq[String] = Seq("1,000,000,000", "1,000", "10.10", "1,000.10", "1,000.01", "0.10")
 
-      bigDecimalSeq.map(service.convertBigDecimalToMoneyString(_)) mustEqual formattedStringSeq
+      bigDecimalSeq.map(convertBigDecimalToMoneyString(_)) mustEqual formattedStringSeq
     }
   }
 
