@@ -126,8 +126,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "convertBigDecimalToMoneyString" - {
     "should format BigDecimals to String with commas every thousand, and to two decimal places unless a whole number" in {
-      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 1000.1, 1000.10, 1000.01)
-      val formattedStringSeq: Seq[String] = Seq("1,000,000,000", "1,000", "1,000.10", "1,000.10", "1,000.01")
+      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 1000.1, 1000.10, 1000.01, 0.1)
+      val formattedStringSeq: Seq[String] = Seq("1,000,000,000", "1,000", "1,000.10", "1,000.10", "1,000.01", "0.10")
 
       bigDecimalSeq.map(service.convertBigDecimalToMoneyString(_)) mustEqual formattedStringSeq
     }
