@@ -36,8 +36,6 @@ class AbroadNavigator @Inject() () {
     case SelfEmploymentAbroadCYAPage =>
       _ => (taxYear, businessId) => SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode)
 
-    case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
-
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 

@@ -38,21 +38,20 @@ import scala.concurrent.Future
 
 class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
-  val nino = "AA112233A"
-  val journey = "journeyId"
+  val nino       = "AA112233A"
+  val journey    = "journeyId"
   val businessId = "businessId-1"
-  val mtditid = "mtditid"
+  val mtditid    = "mtditid"
 
-  val mockConnector = mock[SelfEmploymentConnector]
-  val formProvider = new SectionCompletedStateFormProvider()
+  val mockConnector                     = mock[SelfEmploymentConnector]
+  val formProvider                      = new SectionCompletedStateFormProvider()
   val form: Form[CompletedSectionState] = formProvider()
 
-  lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(
-    taxYear, businessId, journey, NormalMode).url
-  lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-  lazy val journeyRecoveryCall: Call = Call("GET", journeyRecoveryRoute)
-  lazy val taskListRoute: String = routes.TaskListController.onPageLoad(taxYear).url
-  lazy val taskListCall: Call = Call("GET", taskListRoute)
+  lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url
+  lazy val journeyRecoveryRoute: String       = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+  lazy val journeyRecoveryCall: Call          = Call("GET", journeyRecoveryRoute)
+  lazy val taskListRoute: String              = routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListCall: Call                 = Call("GET", taskListRoute)
 
   "SectionCompletedStateController" - {
 
@@ -61,7 +60,8 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
       "must return OK and the correct view for a GET" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
 
@@ -81,7 +81,8 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
           when(mockConnector.getJourneyState(any, meq(journey), meq(taxYear), any)(any, any)) thenReturn Future(Right(Some(true)))
@@ -93,8 +94,9 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(
-            form.fill(CompletedSectionState.values.head), taxYear, businessId, journey, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(CompletedSectionState.values.head), taxYear, businessId, journey, NormalMode)(
+            request,
+            messages(application)).toString
         }
       }
     }
@@ -103,11 +105,11 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)
-        ) thenReturn Future(Right(None))
+        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)) thenReturn Future(Right(None))
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
           val request =
@@ -123,11 +125,11 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
       "must return a Bad Request and errors when invalid data is submitted" in {
 
-        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)
-        ) thenReturn Future(Right(None))
+        when(mockConnector.saveJourneyState(any, meq(journey), meq(taxYear), complete = meq(true), any)(any, any)) thenReturn Future(Right(None))
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector)).build()
+          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .build()
 
         running(application) {
           val request =
@@ -147,14 +149,13 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
-        when(mockConnector.saveJourneyState(any, meq("invalidJourneyId"), meq(taxYear),
-          complete = meq(true), any)(any, any)
-        ) thenReturn Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
+        when(mockConnector.saveJourneyState(any, meq("invalidJourneyId"), meq(taxYear), complete = meq(true), any)(any, any)) thenReturn Future(
+          Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(journeyRecoveryCall)),
+              bind[GeneralNavigator].toInstance(new FakeGeneralNavigator(journeyRecoveryCall)),
               bind[SelfEmploymentConnector].toInstance(mockConnector)
             )
             .build()
@@ -171,4 +172,5 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

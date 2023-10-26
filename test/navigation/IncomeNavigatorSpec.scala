@@ -202,12 +202,6 @@ class IncomeNavigatorSpec extends SpecBase {
           SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
       }
 
-      "Section Completed page must go to the Task List page" in {
-
-        navigator.nextPage(SectionCompletedStatePage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe TaskListController.onPageLoad(
-          taxYear)
-      }
-
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()

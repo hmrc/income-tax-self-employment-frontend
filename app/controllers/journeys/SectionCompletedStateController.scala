@@ -21,8 +21,8 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
 import models.CompletedSectionState.{No, Yes}
-import models.{CompletedSectionState, Mode, UserAnswers}
-import navigation.IncomeNavigator
+import models.{CompletedSectionState, Mode}
+import navigation.GeneralNavigator
 import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,31 +33,30 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SectionCompletedStateController @Inject()(override val messagesApi: MessagesApi,
-                                                selfEmploymentConnector: SelfEmploymentConnector,
-                                                navigator: IncomeNavigator, // TODO create generic navigator for non-journey specific pages
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                formProvider: SectionCompletedStateFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
+class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
+                                                 selfEmploymentConnector: SelfEmploymentConnector,
+                                                 navigator: GeneralNavigator,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 formProvider: SectionCompletedStateFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   val form: Form[CompletedSectionState] = formProvider()
 
-
   def onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
-        case Right(Some(true)) => form.fill(Yes)
+        case Right(Some(true))  => form.fill(Yes)
         case Right(Some(false)) => form.fill(No)
-        case Right(None) => form
-        case Left(_) => form
+        case Right(None)        => form
+        case Left(_)            => form
       }
 
-      preparedForm map {
-        form => Ok(view(form, taxYear, businessId, journey, mode))
+      preparedForm map { form =>
+        Ok(view(form, taxYear, businessId, journey, mode))
       }
   }
 
@@ -66,17 +65,14 @@ class SectionCompletedStateController @Inject()(override val messagesApi: Messag
       form
         .bindFromRequest()
         .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
-
-        value => {
-          selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes),
-            request.user.mtditid) map {
-            case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, mode, UserAnswers(request.userId), taxYear, businessId))
-            case _ => Redirect(JourneyRecoveryController.onPageLoad())
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
+          value => {
+            selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes), request.user.mtditid) map {
+              case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, taxYear))
+              case _        => Redirect(JourneyRecoveryController.onPageLoad())
+            }
           }
-        }
-      )
+        )
   }
 
 }
