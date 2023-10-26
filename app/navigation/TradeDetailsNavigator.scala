@@ -36,8 +36,6 @@ class TradeDetailsNavigator @Inject() () {
     case SelfEmploymentSummaryPage =>
       _ => (taxYear, businessId) => SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails.toString, NormalMode)
 
-    case SectionCompletedStatePage => _ => (taxYear, _) => TaskListController.onPageLoad(taxYear)
-
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
