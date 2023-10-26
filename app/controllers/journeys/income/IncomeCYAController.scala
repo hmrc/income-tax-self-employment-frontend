@@ -47,16 +47,16 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
     val summaryList = SummaryList(
       rows = Seq(
-        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
         IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        TradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        HowMuchTradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
         NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        NotTaxableAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
         OtherIncomeAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, authUserType(request), businessId)
+        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        NotTaxableAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        HowMuchTradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )
