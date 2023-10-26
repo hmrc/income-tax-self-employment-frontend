@@ -43,7 +43,7 @@ class WorkFromHomeController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "businessId"
+  val businessId = "SJPR05893938418"
   val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>

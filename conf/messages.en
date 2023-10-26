@@ -358,7 +358,11 @@ workFromHome.error.required.agent = Select yes if your client worked from home
 workFromHome.change.hidden = WorkFromHome
 
 ## Work from business premises
-workFromBusinessPremises.title = Did you work from your own business premises?
+workFromBusinessPremises.title.individual = Did you work from your own business premises?
+workFromBusinessPremises.title.agent = Did your client work from their own business premises?
+workFromBusinessPremises.hint.individual = For example an office, shop or industrial unit that you own or rent. Select no if you worked from your home.
+workFromBusinessPremises.hint.agent = For example an office, shop or industrial unit that your client owns or rents. Select no if your client worked from their home.
 workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own business premises?
-workFromBusinessPremises.error.required = Select workFromBusinessPremises
+workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
+workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises

@@ -18,7 +18,7 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.WorkFromBusinessPremisesFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.WorkFromBusinessPremisesView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,28 +43,32 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear    = LocalDate.now.getYear
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(WorkFromBusinessPremisesPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(WorkFromBusinessPremisesPage, Some(businessId)) match {
+      case None        => formProvider(authUserType(request.user.isAgent))
+      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    form
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    formProvider(authUserType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WorkFromBusinessPremisesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(WorkFromBusinessPremisesPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, updatedAnswers))
       )
   }
+
+  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

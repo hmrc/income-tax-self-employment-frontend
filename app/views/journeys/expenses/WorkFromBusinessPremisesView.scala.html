@@ -16,30 +16,35 @@
 
 @import models.journeys.WorkFromBusinessPremises
 @import controllers.journeys.expenses.routes.WorkFromBusinessPremisesController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("workFromBusinessPremises.title"))) {
+@layout(pageTitle = title(form, messages(s"workFromBusinessPremises.title.$authUserType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
     @formHelper(action = WorkFromBusinessPremisesController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
-        }
+        @heading(messages(s"workFromBusinessPremises.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-1")
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("workFromBusinessPremises.heading")).asPageHeading(),
-                items  = WorkFromBusinessPremises.options
+                legend = LegendViewModel(messages(s"workFromBusinessPremises.hint.$authUserType"))
+                            .withCssClass("govuk-hint"),
+                items  = WorkFromBusinessPremises.options(authUserType)
             )
         )
 
@@ -48,3 +53,4 @@
         )
     }
 }
+

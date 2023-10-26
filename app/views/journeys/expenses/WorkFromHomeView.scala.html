@@ -35,7 +35,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages(s"workFromHome.title.$authUserType"), None)
+    @heading(messages(s"workFromHome.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-2")
 
     @formHelper(action = WorkFromHomeController.onSubmit(mode), 'autoComplete -> "off") {
 
