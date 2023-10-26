@@ -306,3 +306,59 @@ checkYourIncome.r7.individual = How much of your trading allowance do you want t
 checkYourIncome.r7.agent = How much of their trading allowance does your client want to use?
 checkYourIncome.r8.individual = How much trading allowance do you want to use?
 checkYourIncome.r8.agent = How much trading allowance does your client want to use?
+
+###### Expenses Journey ######
+
+## Office supplies
+officeSupplies.title = Office supplies
+officeSupplies.heading = Office supplies
+officeSupplies.esAllowable = Yes, all of my expenses are allowable
+officeSupplies.yesDisallowable = Yes, some of my expenses are disallowable
+officeSupplies.checkYourAnswersLabel = Office supplies
+officeSupplies.error.required = Select officeSupplies
+officeSupplies.change.hidden = OfficeSupplies
+
+## Taxi Minicab or Road Haulage
+taxiMinicabOrRoadHaulage.title = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.heading = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.yes = Yes
+taxiMinicabOrRoadHaulage.no = No
+taxiMinicabOrRoadHaulage.checkYourAnswersLabel = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.error.required = Select taxiMinicabOrRoadHaulage
+taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
+
+## Goods to sell or use
+goodsToSellOrUse.title = Goods to sell or use
+goodsToSellOrUse.heading = Goods to sell or use
+goodsToSellOrUse.yesAllowable = Yes, all of my expenses are allowable
+goodsToSellOrUse.yesDisallowable = Yes, some of my expenses are disallowable
+goodsToSellOrUse.checkYourAnswersLabel = Goods to sell or use
+goodsToSellOrUse.error.required = Select goodsToSellOrUse
+goodsToSellOrUse.change.hidden = GoodsToSellOrUse
+
+## Repairs and maintenance
+repairsAndMaintenance.title = Repairs and maintenance
+repairsAndMaintenance.heading = Repairs and maintenance
+repairsAndMaintenance.yesAllowable = Yes, all of my expenses are allowable
+repairsAndMaintenance.yesDisallowable = Yes, some of my expenses are disallowable
+repairsAndMaintenance.checkYourAnswersLabel = Repairs and maintenance
+repairsAndMaintenance.error.required = Select repairsAndMaintenance
+repairsAndMaintenance.change.hidden = RepairsAndMaintenance
+
+## Work from home
+workFromHome.title = Did you work from home?
+workFromHome.heading = Did you work from home?
+workFromHome.yes = Yes
+workFromHome.no = No
+workFromHome.checkYourAnswersLabel = Did you work from home?
+workFromHome.error.required = Select workFromHome
+workFromHome.change.hidden = WorkFromHome
+
+## Work from business premises
+workFromBusinessPremises.title = Did you work from your own business premises?
+workFromBusinessPremises.heading = Did you work from your own business premises?
+workFromBusinessPremises.yesAllowable = Yes, all of my expenses are allowable
+workFromBusinessPremises.yesDisallowable = Yes, some of my expenses are disallowable
+workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own business premises?
+workFromBusinessPremises.error.required = Select workFromBusinessPremises
+workFromBusinessPremises.change.hidden = WorkFromBusinessPremises

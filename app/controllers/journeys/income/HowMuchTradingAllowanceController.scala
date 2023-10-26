@@ -24,7 +24,7 @@ import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SelfEmploymentService
+import services.SelfEmploymentService.{convertBigDecimalToMoneyString, getIncomeTradingAllowance}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
@@ -32,7 +32,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class HowMuchTradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                                   selfEmploymentService: SelfEmploymentService,
                                                    sessionRepository: SessionRepository,
                                                    navigator: IncomeNavigator,
                                                    identify: IdentifierAction,
@@ -46,7 +45,8 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowanceString = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers).setScale(2).toString()
+      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
+      val tradingAllowanceString = convertBigDecimalToMoneyString(tradingAllowance)
       val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
         case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
@@ -57,7 +57,8 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowanceString = selfEmploymentService.getIncomeTradingAllowance(businessId, request.userAnswers).setScale(2).toString()
+      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
+      val tradingAllowanceString = convertBigDecimalToMoneyString(tradingAllowance)
       formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
         .bindFromRequest()
         .fold(

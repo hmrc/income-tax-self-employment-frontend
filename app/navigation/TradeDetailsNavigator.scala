@@ -16,13 +16,12 @@
 
 package navigation
 
-import controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController
 import controllers.journeys.routes._
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import controllers.standard.routes._
 import models._
 import pages._
-import pages.abroad.SelfEmploymentAbroadPage
+import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}

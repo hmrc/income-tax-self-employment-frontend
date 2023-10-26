@@ -22,6 +22,7 @@ import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
 import models._
 import pages._
+import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 
 class TradeDetailsNavigatorSpec extends SpecBase {
 

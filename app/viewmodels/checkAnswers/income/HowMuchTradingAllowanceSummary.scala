@@ -21,6 +21,7 @@ import models.{CheckMode, HowMuchTradingAllowance, UserAnswers}
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
+
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -48,5 +49,4 @@ object HowMuchTradingAllowanceSummary {
         )
       )
     }
-
 }
