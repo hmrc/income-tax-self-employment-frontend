@@ -339,7 +339,7 @@ goodsToSellOrUse.change.hidden = GoodsToSellOrUse
 ## Repairs and maintenance
 repairsAndMaintenance.title = Repairs and maintenance
 repairsAndMaintenance.l1 = repairs and maintenance of work premises and equipment
-repairsAndMaintenance.l2 = the cost of equipment and tools
+repairsAndMaintenance.l2 = cost of equipment and tools
 repairsAndMaintenance.l3 = repairs of non-work premises or equipment
 repairsAndMaintenance.l4 = costs of buying, improving or altering premises
 repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs and maintenance of property or equipment?
