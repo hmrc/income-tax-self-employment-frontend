@@ -18,6 +18,7 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.WorkFromBusinessPremisesFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
@@ -49,27 +50,27 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(WorkFromBusinessPremisesPage, Some(businessId)) match {
-      case None        => formProvider(authUserType(request.user.isAgent))
-      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
     val radioContentString = buildLegendHeadingWithHintString(
       WorkFromBusinessPremisesPage,
-      Some(authUserType(request.user.isAgent)),
+      Some(userType(request.user.isAgent)),
       headingExtraClasses = "govuk-!-margin-bottom-2")
 
-    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, radioContentString))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, radioContentString))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val radioContentString = buildLegendHeadingWithHintString(
       WorkFromBusinessPremisesPage,
-      Some(authUserType(request.user.isAgent)),
+      Some(userType(request.user.isAgent)),
       headingExtraClasses = "govuk-!-margin-bottom-2")
-    formProvider(authUserType(request.user.isAgent))
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, radioContentString))),
+          Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, radioContentString))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
@@ -78,7 +79,5 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
           } yield Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, updatedAnswers))
       )
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

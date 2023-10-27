@@ -19,6 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.NotTaxableAmountFormProvider
 import models.Mode
+import models.ModelUtils.userType
 import navigation.IncomeNavigator
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,20 +48,20 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
       val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
-        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowance)
-        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowance).fill(value)
+        case None        => formProvider(userType(request.user.isAgent), tradingAllowance)
+        case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      formProvider(authUserType(request.user.isAgent), tradingAllowance)
+      formProvider(userType(request.user.isAgent), tradingAllowance)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId)))
@@ -68,7 +69,5 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
             } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

@@ -17,7 +17,9 @@
 package base
 
 import controllers.actions._
+import models.AccountingType.{Accrual, Cash}
 import models.UserAnswers
+import models.UserType.{Agent, Individual}
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -35,10 +37,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val taxYear: Int      = LocalDate.now().getYear
   val userAnswersId     = "id"
-  val individual        = "individual"
-  val agent             = "agent"
-  val accrual           = "ACCRUAL"
-  val cash              = "CASH"
+  val individual        = Individual.toString
+  val agent             = Agent.toString
+  val accrual           = Accrual.toString
+  val cash              = Cash.toString
   val stubbedBusinessId = "SJPR05893938418"
   val enLang: Lang      = Lang("en-EN")
   val cyLang: Lang      = Lang("cy-CY")

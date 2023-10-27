@@ -18,6 +18,7 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.WorkFromHomeFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromHomePage
@@ -48,18 +49,18 @@ class WorkFromHomeController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(WorkFromHomePage, Some(businessId)) match {
-      case None        => formProvider(authUserType(request.user.isAgent))
-      case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider(authUserType(request.user.isAgent))
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
@@ -68,7 +69,5 @@ class WorkFromHomeController @Inject() (override val messagesApi: MessagesApi,
           } yield Redirect(navigator.nextPage(WorkFromHomePage, mode, updatedAnswers))
       )
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

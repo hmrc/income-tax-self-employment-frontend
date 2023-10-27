@@ -19,6 +19,7 @@ package controllers.journeys.expenses
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.RepairsAndMaintenanceFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.RepairsAndMaintenancePage
@@ -54,11 +55,11 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
         val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(RepairsAndMaintenancePage, Some(businessId)) match {
-          case None        => formProvider(authUserType(request.user.isAgent))
-          case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
+          case None        => formProvider(userType(request.user.isAgent))
+          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
 
-        Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, accountingType))
+        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
     }
   }
 
@@ -66,11 +67,11 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
-        formProvider(authUserType(request.user.isAgent))
+        formProvider(userType(request.user.isAgent))
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, accountingType))),
+              Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
@@ -80,7 +81,5 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
           )
     }
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

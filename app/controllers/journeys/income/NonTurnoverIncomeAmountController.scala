@@ -19,6 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.NonTurnoverIncomeAmountFormProvider
 import models.Mode
+import models.ModelUtils.userType
 import navigation.IncomeNavigator
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,19 +46,19 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(NonTurnoverIncomeAmountPage, Some(businessId)) match {
-        case None        => formProvider(authUserType(request.user.isAgent))
-        case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
+        case None        => formProvider(userType(request.user.isAgent))
+        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(authUserType(request.user.isAgent))
+      formProvider(userType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NonTurnoverIncomeAmountPage, value, Some(businessId)))
@@ -65,7 +66,5 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
             } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }
