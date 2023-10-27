@@ -17,6 +17,7 @@
 @import models.journeys.WorkFromBusinessPremises
 @import controllers.journeys.expenses.routes.WorkFromBusinessPremisesController
 @import views.html.templates.helpers.Heading
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 @this(
     layout: templates.Layout,
@@ -27,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, contentString: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"workFromBusinessPremises.title.$authUserType"))) {
 
@@ -37,14 +38,11 @@
 
     @formHelper(action = WorkFromBusinessPremisesController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @heading(messages(s"workFromBusinessPremises.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-1")
-
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"workFromBusinessPremises.hint.$authUserType"))
-                            .withCssClass("govuk-hint"),
-                items  = WorkFromBusinessPremises.options(authUserType)
+                items  = WorkFromBusinessPremises.options(authUserType),
+                legend = LegendViewModel(HtmlContent(contentString)).withCssClass("no-margin-bottom")
             )
         )
 

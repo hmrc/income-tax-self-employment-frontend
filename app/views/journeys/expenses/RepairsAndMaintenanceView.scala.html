@@ -35,9 +35,9 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("repairsAndMaintenance.title"), None)
+    @heading(messages("repairsAndMaintenance.title"), None, extraClasses = "no-padding-top")
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+    <div class="govuk-body govuk-!-margin-top-6">
         <p>
             @messages(s"site.canInclude.$authUserType")
         </p>

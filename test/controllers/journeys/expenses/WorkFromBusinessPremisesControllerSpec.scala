@@ -27,14 +27,14 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.WorkFromBusinessPremisesPage
-import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.WorkFromBusinessPremisesView
 
 import scala.concurrent.Future
@@ -48,11 +48,16 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
   val businessId   = "SJPR05893938418"
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[WorkFromBusinessPremises])
+  def isAgent(authUserType: String) = authUserType.equals("agent")
+
+  def buildLegendContent(authUserType: String)(implicit messages: Messages) =
+    buildLegendHeadingWithHintString(WorkFromBusinessPremisesPage, Some(authUserType), "govuk-!-margin-bottom-2")
+
+  case class UserScenario(isWelsh: Boolean, authUserType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
+    UserScenario(isWelsh = false, authUserType = "individual"),
+    UserScenario(isWelsh = false, authUserType = "agent")
   )
 
   "WorkFromBusinessPremises Controller" - {
@@ -60,12 +65,14 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userScenario.authUserType}" - {
 
           "must return OK and the correct view for a GET" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val form                 = formProvider(userScenario.authUserType)
+            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -77,7 +84,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                view(form, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -91,8 +98,10 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val userAnswers =
               UserAnswers(userAnswersId).set(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.head, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val form                 = formProvider(userScenario.authUserType)
+            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -104,12 +113,9 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(WorkFromBusinessPremises.values.head),
-                  NormalMode,
-                  authUserType(userScenario.isAgent),
-                  taxYear,
-                  businessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -162,18 +168,20 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userScenario.authUserType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val form                 = formProvider(userScenario.authUserType)
+            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request =
                 FakeRequest(POST, workFromBusinessPremisesRoute)
                   .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+              val boundForm = form.bind(Map("value" -> ""))
 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
@@ -182,7 +190,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -191,15 +199,17 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val form                 = formProvider(userScenario.authUserType)
+            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request =
                 FakeRequest(POST, workFromBusinessPremisesRoute)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+              val boundForm = form.bind(Map("value" -> "invalid value"))
 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
@@ -208,7 +218,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

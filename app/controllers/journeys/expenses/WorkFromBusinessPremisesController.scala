@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.WorkFromBusinessPremisesView
 
 import java.time.LocalDate
@@ -51,15 +52,24 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       case None        => formProvider(authUserType(request.user.isAgent))
       case Some(value) => formProvider(authUserType(request.user.isAgent)).fill(value)
     }
+    val radioContentString = buildLegendHeadingWithHintString(
+      WorkFromBusinessPremisesPage,
+      Some(authUserType(request.user.isAgent)),
+      headingExtraClasses = "govuk-!-margin-bottom-2")
 
-    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId))
+    Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, radioContentString))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    val radioContentString = buildLegendHeadingWithHintString(
+      WorkFromBusinessPremisesPage,
+      Some(authUserType(request.user.isAgent)),
+      headingExtraClasses = "govuk-!-margin-bottom-2")
     formProvider(authUserType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, radioContentString))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
