@@ -16,7 +16,6 @@
 
 @import models.journeys.WorkFromBusinessPremises
 @import controllers.journeys.expenses.routes.WorkFromBusinessPremisesController
-@import views.html.templates.helpers.Heading
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 @this(
@@ -24,8 +23,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, contentString: String)(implicit request: Request[_], messages: Messages)
@@ -51,4 +49,3 @@
         )
     }
 }
-
