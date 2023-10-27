@@ -79,7 +79,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val view = application.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual", nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, individual, nextRoute)(request, messages(application)).toString
         }
       }
 

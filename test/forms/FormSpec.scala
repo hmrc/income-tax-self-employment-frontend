@@ -16,15 +16,13 @@
 
 package forms
 
+import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{Assertion, OptionValues}
 import play.api.data.{Form, FormError}
 
-trait FormSpec extends AnyFreeSpec with Matchers with OptionValues {
-
-  val individual = "individual"
-  val agent      = "agent"
+trait FormSpec extends AnyFreeSpec with SpecBase with Matchers with OptionValues {
 
   lazy val emptyForm: Map[String, String] = Map[String, String]()
 

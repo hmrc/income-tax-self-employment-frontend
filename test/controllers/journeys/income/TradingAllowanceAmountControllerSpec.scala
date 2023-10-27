@@ -43,8 +43,8 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
   val maxTradingAllowance     = 1000.00
   val smallTradingAllowance   = 400.00
   val validAnswer: BigDecimal = 100
-  val formIndividualWithMaxTA = formProvider("individual", maxTradingAllowance)
-  val formAgentWithSmallTA    = formProvider("agent", maxTradingAllowance)
+  val formIndividualWithMaxTA = formProvider(individual, maxTradingAllowance)
+  val formAgentWithSmallTA    = formProvider(agent, maxTradingAllowance)
   val businessId              = "SJPR05893938418"
   val onwardRoute             = CheckYourIncomeController.onPageLoad(taxYear, businessId)
 

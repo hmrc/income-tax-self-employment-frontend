@@ -31,7 +31,7 @@ class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals("agent"))
+      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals(agent))
 
       s"when user is an ${userScenario.user}, form should " - {
 

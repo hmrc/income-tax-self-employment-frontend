@@ -47,8 +47,8 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
   )
 
   "NonTurnoverIncomeAmount Controller" - {

@@ -57,8 +57,8 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
   )
 
   "OtherIncomeAmount Controller" - {
@@ -149,7 +149,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+            when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
             val request =
               FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -175,7 +175,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("CASH"))
+            when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(cash))
 
             val request =
               FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -199,7 +199,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
               val request =
                 FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
@@ -229,7 +229,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
               val request =
                 FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-BigDecimal"))
@@ -259,7 +259,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
               val request =
                 FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "-23"))
@@ -289,7 +289,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
               val request =
                 FakeRequest(POST, OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "100000000000.01"))

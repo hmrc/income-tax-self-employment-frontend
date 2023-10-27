@@ -42,8 +42,8 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new NotTaxableAmountFormProvider()
   val turnoverAmount          = 1000.00
   val validAnswer: BigDecimal = 100
-  val formWithIndividual      = formProvider("individual", turnoverAmount)
-  val formWithAgent           = formProvider("agent", turnoverAmount)
+  val formWithIndividual      = formProvider(individual, turnoverAmount)
+  val formWithAgent           = formProvider(agent, turnoverAmount)
   val businessId              = "SJPR05893938418"
   val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
 

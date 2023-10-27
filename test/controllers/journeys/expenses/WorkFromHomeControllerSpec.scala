@@ -46,13 +46,12 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
   lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(NormalMode).url
 
   val formProvider = new WorkFromHomeFormProvider()
-  val businessId   = "SJPR05893938418"
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[WorkFromHome])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual")),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"))
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
   )
 
   "WorkFromHome Controller" - {
@@ -76,7 +75,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -87,7 +86,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(WorkFromHomePage, WorkFromHome.values.head, Some(businessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(WorkFromHomePage, WorkFromHome.values.head, Some(stubbedBusinessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -102,7 +101,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -177,7 +176,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -203,7 +202,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

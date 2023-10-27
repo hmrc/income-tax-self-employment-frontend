@@ -54,8 +54,8 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual"), "ACCRUAL"),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"), "CASH")
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)
   )
 
   "TurnoverIncomeAmount Controller" - {
@@ -160,7 +160,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
