@@ -28,27 +28,36 @@ import viewmodels.implicits._
 
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
-      val value = answer match {
-        case HowMuchTradingAllowance.Maximum =>
-          val turnoverIncomeAmount = answers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
-            case Some(amount) if amount < 1000  => formatMoney(amount)
-            case Some(amount) if amount >= 1000 => formatMoney(1000)
-            case None                           => throw new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage")
-          }
-          s"The maximum £$turnoverIncomeAmount"
+  def row(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
+      messages: Messages): Option[Either[Exception, SummaryListRow]] = {
 
-        case HowMuchTradingAllowance.LessThan => messages("howMuchTradingAllowance.lowerAmount")
+    userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
+      val rowValueOrError = answer match {
+        case HowMuchTradingAllowance.Maximum =>
+          calculateMaxTradingAllowance(userAnswers, businessId)
+            .map(amount => s"The maximum £$amount")
+
+        case HowMuchTradingAllowance.LessThan =>
+          Right(messages("howMuchTradingAllowance.lowerAmount"))
       }
-      SummaryListRowViewModel(
+
+      for {
+        rowValue <- rowValueOrError
+      } yield SummaryListRowViewModel(
         key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = value, classes = "govuk-!-width-one-third"),
+        value = Value(content = rowValue, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
-        )
+            .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden")))
       )
+    }
+  }
+
+  private def calculateMaxTradingAllowance(userAnswers: UserAnswers, businessId: String): Either[Exception, String] =
+    userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
+      case Some(amount) if amount < 1000  => Right(formatMoney(amount))
+      case Some(amount) if amount >= 1000 => Right(formatMoney(1000))
+      case None                           => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))
     }
 
 }

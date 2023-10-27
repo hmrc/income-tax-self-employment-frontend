@@ -16,13 +16,13 @@
 
 package viewmodels.checkAnswers.income
 
+import cats.data.EitherT
 import models.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
@@ -56,31 +56,34 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
     "user answers for HowMuchTradingAllowancePage exist" when {
       "the maximum trading allowance is selected" when {
         "user answers exist for TurnoverIncomeAmountPage" should {
-          "generate a summary list row where the monetary value is taken from the TurnoverIncomeAmountPage answer" in {
-            val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMaxTradingAllowance, taxYear, authUser, businessId)
+          "generate a summary list row (bundled in a Right) where the monetary value is taken from the TurnoverIncomeAmountPage answer" in {
+            val resultT = EitherT(HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMaxTradingAllowance, taxYear, authUser, businessId))
 
-            result.get shouldBe a[SummaryListRow]
-            result.get.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-            result.get.value.content shouldBe Text("The maximum £456.00")
+            resultT.map { row =>
+              row.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
+              row.value.content shouldBe Text("The maximum £456.00")
+            }
+
           }
         }
         "user answers don't exist for TurnoverIncomeAmountPage" should {
-          "throw a run-time exception" in {
-            lazy val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser, businessId)
+          "return a run-time exception bundled in a Left" in {
+            val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser, businessId)
 
-            val exception = intercept[RuntimeException](result)
-
-            exception.getMessage shouldBe "Unable to retrieve user answers for TurnoverIncomeAmountPage"
+            result should matchPattern {
+              case Some(Left(_: RuntimeException)) =>
+            }
           }
         }
       }
       "less than the maximum trading allowance is selected" should {
         "generate a summary list row where the value is quoted as `A lower amount`" in {
-          val result = HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMinimumTradingAllowance, taxYear, authUser, businessId)
+          val resultT = EitherT(HowMuchTradingAllowanceSummary.row(completeUserAnswersWithMinimumTradingAllowance, taxYear, authUser, businessId))
 
-          result.get shouldBe a[SummaryListRow]
-          result.get.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-          result.get.value.content shouldBe Text("howMuchTradingAllowance.lowerAmount")
+          resultT.map { row =>
+            row.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
+            row.value.content shouldBe Text("howMuchTradingAllowance.lowerAmount")
+          }
         }
       }
     }

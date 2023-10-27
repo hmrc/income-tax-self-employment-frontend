@@ -17,13 +17,14 @@
 package controllers.journeys.income
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.NormalMode
 import models.requests.DataRequest
+import models.{NormalMode, UserAnswers}
 import navigation._
 import pages.income.IncomeCYAPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.income._
 import views.html.journeys.income.IncomeCYAView
@@ -55,7 +56,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
         TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
         NotTaxableAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
         TradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
-        HowMuchTradingAllowanceSummary.row(request.userAnswers, taxYear, authUserType(request), businessId),
+        howMuchTradingAllowanceSummaryRow(request.userAnswers, taxYear, authUserType(request), businessId),
         TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, authUserType(request), businessId)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
@@ -66,5 +67,14 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
   private def authUserType(request: DataRequest[AnyContent]): String =
     if (request.user.isAgent) "agent" else "individual"
+
+  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
+      messages: Messages): Option[SummaryListRow] = {
+
+    HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId).map {
+      case Right(value)    => value
+      case Left(exception) => throw exception
+    }
+  }
 
 }
