@@ -28,7 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.test.Helpers.await
-import services.SelfEmploymentService.{convertBigDecimalToMoneyString, getIncomeTradingAllowance}
+import services.SelfEmploymentService.getIncomeTradingAllowance
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -122,15 +122,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
         getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
         getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
       }
-    }
-  }
-
-  "convertBigDecimalToMoneyString" - {
-    "should format BigDecimals to String with commas every thousand, and to two decimal places unless a whole number" in {
-      val bigDecimalSeq: Seq[BigDecimal]  = Seq(1000000000, 1000.00, 10.1, 1000.10, 1000.01, 0.1)
-      val formattedStringSeq: Seq[String] = Seq("1,000,000,000", "1,000", "10.10", "1,000.10", "1,000.01", "0.10")
-
-      bigDecimalSeq.map(convertBigDecimalToMoneyString(_)) mustEqual formattedStringSeq
     }
   }
 

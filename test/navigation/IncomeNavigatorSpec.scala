@@ -159,7 +159,7 @@ class IncomeNavigatorSpec extends SpecBase {
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(businessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -181,7 +181,7 @@ class IncomeNavigatorSpec extends SpecBase {
           val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(businessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -193,7 +193,7 @@ class IncomeNavigatorSpec extends SpecBase {
       "Trading Allowance Amount Page must go to the Income CYA page" in {
 
         navigator.nextPage(TradingAllowanceAmountPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
-          CheckYourIncomeController.onPageLoad(taxYear, businessId)
+          IncomeCYAController.onPageLoad(taxYear, businessId)
       }
 
       "Income CYA page must go to the Section Completed page with Income journey" in {
@@ -213,7 +213,7 @@ class IncomeNavigatorSpec extends SpecBase {
       "must go from any Income journey page to the 'Check your details' page" in {
 
         navigator.nextPage(TradingAllowancePage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe
-          CheckYourIncomeController.onPageLoad(taxYear, businessId)
+          IncomeCYAController.onPageLoad(taxYear, businessId)
       }
     }
   }
