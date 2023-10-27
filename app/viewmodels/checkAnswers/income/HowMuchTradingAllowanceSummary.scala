@@ -21,20 +21,21 @@ import models.{CheckMode, HowMuchTradingAllowance, UserAnswers}
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
-
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HowMuchTradingAllowanceSummary {
+object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val value = answer match {
         case HowMuchTradingAllowance.Maximum =>
           val turnoverIncomeAmount = answers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
-            case Some(amount) => amount.setScale(2)
-            case None         => throw new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage")
+            case Some(amount) if amount < 1000  => formatMoney(amount)
+            case Some(amount) if amount >= 1000 => formatMoney(1000)
+            case None                           => throw new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage")
           }
           s"The maximum £$turnoverIncomeAmount"
 
@@ -49,4 +50,5 @@ object HowMuchTradingAllowanceSummary {
         )
       )
     }
+
 }

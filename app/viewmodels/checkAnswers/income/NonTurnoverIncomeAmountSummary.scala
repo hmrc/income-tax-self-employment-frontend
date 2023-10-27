@@ -22,16 +22,17 @@ import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object NonTurnoverIncomeAmountSummary {
+object NonTurnoverIncomeAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"nonTurnoverIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content =  s"£${answer.setScale(2)}", classes = "govuk-!-width-one-third"),
+        value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))
