@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class RepairsAndMaintenanceFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new RepairsAndMaintenanceFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "repairsAndMaintenance.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[RepairsAndMaintenance](
-      form,
-      fieldName,
-      validValues = RepairsAndMaintenance.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new RepairsAndMaintenanceFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[RepairsAndMaintenance](
+          form,
+          fieldName,
+          validValues = RepairsAndMaintenance.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"repairsAndMaintenance.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

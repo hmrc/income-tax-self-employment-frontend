@@ -14,6 +14,10 @@ site.view = View
 site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
 site.hint.amount = For example, £193.54
+site.canInclude.individual = You can include:
+site.canInclude.agent = Your client can include:
+site.cannotInclude.individual = You cannot include:
+site.cannotInclude.agent = Your client cannot include:
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -298,6 +302,13 @@ checkYourIncome.r8.agent = How much trading allowance does your client want to u
 
 ###### Expenses Journey ######
 
+## Common
+expenses.yesAllowable.individual = Yes, all of my expenses are allowable
+expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
+expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
+expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.no = No
+
 ## Office supplies
 officeSupplies.title = Office supplies
 officeSupplies.heading = Office supplies
@@ -327,27 +338,31 @@ goodsToSellOrUse.change.hidden = GoodsToSellOrUse
 
 ## Repairs and maintenance
 repairsAndMaintenance.title = Repairs and maintenance
-repairsAndMaintenance.heading = Repairs and maintenance
-repairsAndMaintenance.yesAllowable = Yes, all of my expenses are allowable
-repairsAndMaintenance.yesDisallowable = Yes, some of my expenses are disallowable
+repairsAndMaintenance.l1 = repairs and maintenance of work premises and equipment
+repairsAndMaintenance.l2 = the cost of equipment and tools
+repairsAndMaintenance.l3 = repairs of non-work premises or equipment
+repairsAndMaintenance.l4 = costs of buying, improving or altering premises
+repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs and maintenance of property or equipment?
+repairsAndMaintenance.subHeading.agent = Did your client spend anything on repairs and maintenance of property or equipment?
 repairsAndMaintenance.checkYourAnswersLabel = Repairs and maintenance
-repairsAndMaintenance.error.required = Select repairsAndMaintenance
+repairsAndMaintenance.error.required.individual = Select if all your repairs and maintenance expenses are allowable, some of them are disallowable or you do not have any repairs and maintenance expenses
+repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
 repairsAndMaintenance.change.hidden = RepairsAndMaintenance
 
 ## Work from home
-workFromHome.title = Did you work from home?
-workFromHome.heading = Did you work from home?
-workFromHome.yes = Yes
-workFromHome.no = No
+workFromHome.title.individual = Did you work from home?
+workFromHome.title.agent = Did your client work from home?
 workFromHome.checkYourAnswersLabel = Did you work from home?
-workFromHome.error.required = Select workFromHome
+workFromHome.error.required.individual = Select yes if you worked from home
+workFromHome.error.required.agent = Select yes if your client worked from home
 workFromHome.change.hidden = WorkFromHome
 
 ## Work from business premises
-workFromBusinessPremises.title = Did you work from your own business premises?
-workFromBusinessPremises.heading = Did you work from your own business premises?
-workFromBusinessPremises.yesAllowable = Yes, all of my expenses are allowable
-workFromBusinessPremises.yesDisallowable = Yes, some of my expenses are disallowable
+workFromBusinessPremises.title.individual = Did you work from your own business premises?
+workFromBusinessPremises.title.agent = Did your client work from their own business premises?
+workFromBusinessPremises.hint.individual = For example an office, shop or industrial unit that you own or rent. Select no if you worked from your home.
+workFromBusinessPremises.hint.agent = For example an office, shop or industrial unit that your client owns or rents. Select no if your client worked from their home.
 workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own business premises?
-workFromBusinessPremises.error.required = Select workFromBusinessPremises
+workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
+workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises

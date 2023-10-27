@@ -13,6 +13,14 @@ strong {
   white-space: nowrap;
 }
 
+.no-padding-top {
+  padding-top: 0;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0;
+}
+
 .govuk-hint {
     margin-bottom: 15px;
     color: #505a5f;
