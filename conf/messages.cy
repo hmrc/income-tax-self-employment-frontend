@@ -312,19 +312,28 @@ expenses.no = No
 ## Office supplies
 officeSupplies.title = Office supplies
 officeSupplies.heading = Office supplies
-officeSupplies.esAllowable = Yes, all of my expenses are allowable
-officeSupplies.yesDisallowable = Yes, some of my expenses are disallowable
+officeSupplies.l1 = phones, including mobiles
+officeSupplies.l2 = internet, email and fax running costs
+officeSupplies.l3 = postage, stationery and printing
+officeSupplies.l4 = small office equipment
+officeSupplies.l5 = computer software costs
+officeSupplies.l6 = equipment and computer hardware
+officeSupplies.l7 = any amounts that cover personal use
+officeSupplies.l8 = new phones or computer hardware
+officeSupplies.subHeading.individual = Did you buy any office supplies?
+officeSupplies.subHeading.agent = Did your client buy any office supplies?
 officeSupplies.checkYourAnswersLabel = Office supplies
-officeSupplies.error.required = Select officeSupplies
+officeSupplies.error.required.individual = Select if all your office supplies expenses are allowable, some of them are disallowable or you do not have any office supplies expenses
+officeSupplies.error.required.agent = Select if all your client’s office supplies expenses are allowable, some of them are disallowable or they do not have any office supplies expenses
 officeSupplies.change.hidden = OfficeSupplies
 
 ## Taxi Minicab or Road Haulage
 taxiMinicabOrRoadHaulage.title = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.heading = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.yes = Yes
-taxiMinicabOrRoadHaulage.no = No
+taxiMinicabOrRoadHaulage.heading.individual = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.heading.agent = Was your client a taxi, minicab or road haulage industry driver?
 taxiMinicabOrRoadHaulage.checkYourAnswersLabel = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.error.required = Select taxiMinicabOrRoadHaulage
+taxiMinicabOrRoadHaulage.error.required.individual = Select yes if you were a taxi, minicab or road haulage industry driver
+taxiMinicabOrRoadHaulage.error.required.agent = Select yes if your client was a taxi, minicab or road haulage industry driver
 taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
 
 ## Goods to sell or use

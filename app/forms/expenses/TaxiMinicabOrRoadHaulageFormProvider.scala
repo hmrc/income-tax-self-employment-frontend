@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class TaxiMinicabOrRoadHaulageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[TaxiMinicabOrRoadHaulage] =
+  def apply(userType: String): Form[TaxiMinicabOrRoadHaulage] =
     Form(
-      "value" -> enumerable[TaxiMinicabOrRoadHaulage]("taxiMinicabOrRoadHaulage.error.required")
+      "value" -> enumerable[TaxiMinicabOrRoadHaulage](s"taxiMinicabOrRoadHaulage.error.required.$userType")
     )
 
 }

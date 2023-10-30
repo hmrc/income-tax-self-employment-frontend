@@ -22,25 +22,30 @@ import play.api.data.FormError
 
 class OfficeSuppliesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new OfficeSuppliesFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "officeSupplies.error.required"
+    val fieldName = "value"
+    case class UserScenario(user: String)
 
-    behave like optionsField[OfficeSupplies](
-      form,
-      fieldName,
-      validValues = OfficeSupplies.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new OfficeSuppliesFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+        behave like optionsField[OfficeSupplies](
+          form,
+          fieldName,
+          validValues = OfficeSupplies.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"officeSupplies.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
-
 }

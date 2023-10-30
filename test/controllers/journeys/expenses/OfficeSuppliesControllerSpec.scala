@@ -23,140 +23,250 @@ import forms.expenses.OfficeSuppliesFormProvider
 import models.journeys.OfficeSupplies
 import models.{NormalMode, UserAnswers}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.OfficeSuppliesPage
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.OfficeSuppliesView
 
 import scala.concurrent.Future
 
 class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
+  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(NormalMode).url
+  val formProvider = new OfficeSuppliesFormProvider()
+  val businessId   = "SJPR05893938418"
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)
+  )
+
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(NormalMode).url
-
-  val formProvider = new OfficeSuppliesFormProvider()
-  val form         = formProvider()
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[OfficeSupplies], accountingType: String)
 
   "OfficeSupplies Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${authUserType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+          "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-      running(application) {
-        val request = FakeRequest(GET, officeSuppliesRoute)
+            running(application) {
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-        val result = route(application, request).value
+              val request = FakeRequest(GET, officeSuppliesRoute)
 
-        val view = application.injector.instanceOf[OfficeSuppliesView]
+              val view = application.injector.instanceOf[OfficeSuppliesView]
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers =
+              UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head, Some(businessId)).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
+              val request = FakeRequest(GET, officeSuppliesRoute)
+
+              val view = application.injector.instanceOf[OfficeSuppliesView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(
+                  userScenario.form.fill(OfficeSupplies.values.head),
+                  NormalMode,
+                  authUserType(userScenario.isAgent),
+                  taxYear,
+                  businessId,
+                  userScenario.accountingType
+                )(request, messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, officeSuppliesRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
+      "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head).success.value
+        val mockSessionRepository = mock[SessionRepository]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      running(application) {
-        val request = FakeRequest(GET, officeSuppliesRoute)
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val view = application.injector.instanceOf[OfficeSuppliesView]
+        running(application) {
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
-        val result = route(application, request).value
+          val request =
+            FakeRequest(POST, officeSuppliesRoute)
+              .withFormUrlEncodedBody(("value", OfficeSupplies.values.head.toString))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(OfficeSupplies.values.head), NormalMode)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${authUserType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+          "must return a Bad Request and errors when empty form is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            running(application) {
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+              val request =
+                FakeRequest(POST, officeSuppliesRoute)
+                  .withFormUrlEncodedBody(("value", ""))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, officeSuppliesRoute)
-            .withFormUrlEncodedBody(("value", OfficeSupplies.values.head.toString))
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-        val result = route(application, request).value
+              val view = application.injector.instanceOf[OfficeSuppliesView]
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
+              val result = route(application, request).value
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-      running(application) {
-        val request =
-          FakeRequest(POST, officeSuppliesRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+          "must return a Bad Request and errors when invalid data is submitted" in {
 
-        val view = application.injector.instanceOf[OfficeSuppliesView]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        val result = route(application, request).value
+            running(application) {
+              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
+              val request =
+                FakeRequest(POST, officeSuppliesRoute)
+                  .withFormUrlEncodedBody(("value", "invalid"))
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid"))
 
-      val application = applicationBuilder(userAnswers = None).build()
+              val view = application.injector.instanceOf[OfficeSuppliesView]
 
-      running(application) {
-        val request = FakeRequest(GET, officeSuppliesRoute)
+              val result = route(application, request).value
 
-        val result = route(application, request).value
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
+              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
 
-      val application = applicationBuilder(userAnswers = None).build()
+          "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      running(application) {
-        val request =
-          FakeRequest(POST, officeSuppliesRoute)
-            .withFormUrlEncodedBody(("value", OfficeSupplies.values.head.toString))
+            val application = applicationBuilder(userAnswers = None).build()
 
-        val result = route(application, request).value
+            running(application) {
+              val request = FakeRequest(GET, officeSuppliesRoute)
 
-        status(result) mustEqual SEE_OTHER
+              val result = route(application, request).value
 
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+            }
+          }
+
+          "redirect to Journey Recovery for a POST if no existing data is found" in {
+
+            val application = applicationBuilder(userAnswers = None).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, officeSuppliesRoute)
+                  .withFormUrlEncodedBody(("value", OfficeSupplies.values.head.toString))
+
+              val result = route(application, request).value
+
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+            }
+          }
+        }
       }
     }
   }
-
 }
