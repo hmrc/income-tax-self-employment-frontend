@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
-import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
+import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 import scala.concurrent.Future

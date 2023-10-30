@@ -20,25 +20,25 @@ import controllers.journeys.income.routes.TurnoverNotTaxableController
 import models.{CheckMode, UserAnswers}
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object TurnoverNotTaxableSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TurnoverNotTaxablePage).map {
-      answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
+      val value = if (answer) "site.yes" else "site.no"
 
-        val value = if (answer) "site.yes" else "site.no"
-
-        SummaryListRowViewModel(
-          key = "turnoverNotTaxable.checkYourAnswersLabel",
-          value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = Key(content = s"turnoverNotTaxable.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        value = Value(content = value, classes = "govuk-!-width-one-third"),
+        actions = Seq(
+          ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
         )
+      )
     }
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.summary
+package viewmodels.checkAnswers.tradeDetails
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}

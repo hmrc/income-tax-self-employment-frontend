@@ -20,23 +20,24 @@ import controllers.journeys.income.routes.OtherIncomeAmountController
 import models.{CheckMode, UserAnswers}
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OtherIncomeAmountSummary {
+object OtherIncomeAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OtherIncomeAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key = "otherIncomeAmount.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("otherIncomeAmount.change.hidden"))
-          )
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(OtherIncomeAmountPage, Some(businessId)).map { answer =>
+      SummaryListRowViewModel(
+        key = Key(content = s"otherIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
+        actions = Seq(
+          ActionItemViewModel("site.change", OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("otherIncomeAmount.change.hidden"))
         )
+      )
     }
+
 }

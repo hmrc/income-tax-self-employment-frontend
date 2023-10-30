@@ -28,7 +28,7 @@ import pages.income._
 
 class IncomeNavigatorSpec extends SpecBase {
 
-  val navigator  = new IncomeNavigator
+  val navigator = new IncomeNavigator
 
   case object UnknownPage extends Page
 
@@ -158,7 +158,7 @@ class IncomeNavigatorSpec extends SpecBase {
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            CheckYourIncomeController.onPageLoad(taxYear, stubbedBusinessId)
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -180,7 +180,7 @@ class IncomeNavigatorSpec extends SpecBase {
           val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            CheckYourIncomeController.onPageLoad(taxYear, stubbedBusinessId)
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -192,7 +192,7 @@ class IncomeNavigatorSpec extends SpecBase {
       "Trading Allowance Amount Page must go to the Income CYA page" in {
 
         navigator.nextPage(TradingAllowanceAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          CheckYourIncomeController.onPageLoad(taxYear, stubbedBusinessId)
+          IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
       }
 
       "Income CYA page must go to the Section Completed page with Income journey" in {
@@ -212,7 +212,7 @@ class IncomeNavigatorSpec extends SpecBase {
       "must go from any Income journey page to the 'Check your details' page" in {
 
         navigator.nextPage(TradingAllowancePage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          CheckYourIncomeController.onPageLoad(taxYear, stubbedBusinessId)
+          IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
       }
     }
   }
