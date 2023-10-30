@@ -16,15 +16,14 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.OtherIncomeAmountController
-@import views.html.templates.helpers.Heading
+@import viewmodels.LabelSize.Large
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton,
-    heading: Heading
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
@@ -35,14 +34,14 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"otherIncomeAmount.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-4")
-
     @formHelper(action = OtherIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel("")
+                label = LabelViewModel(messages(s"otherIncomeAmount.title.$authUserType"))
+                        .asPageHeading(size = Large)
+                        .withCssClass("govuk-!-margin-bottom-6")
             )
             .asNumeric()
             .withWidth(Fixed10)
