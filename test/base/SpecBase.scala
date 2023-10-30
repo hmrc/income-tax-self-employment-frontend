@@ -17,7 +17,9 @@
 package base
 
 import controllers.actions._
+import models.AccountingType.{Accrual, Cash}
 import models.UserAnswers
+import models.UserType.{Agent, Individual}
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,17 +31,22 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val userAnswersId: String = "id"
-  val taxYear: Int          = LocalDate.now().getYear
-  val enLang                = Lang("en-EN")
-  val cyLang                = Lang("cy-CY")
+  val taxYear: Int      = LocalDate.now().getYear
+  val userAnswersId     = "id"
+  val individual        = Individual.toString
+  val agent             = Agent.toString
+  val accrual           = Accrual.toString
+  val cash              = Cash.toString
+  val stubbedBusinessId = "SJPR05893938418"
+  val enLang: Lang      = Lang("en-EN")
+  val cyLang: Lang      = Lang("cy-CY")
 
-  implicit val ec                   = ExecutionContext.global
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+  def emptyUserAnswers: UserAnswers         = UserAnswers(userAnswersId)
 
   def messages(app: Application, isWelsh: Boolean = false): Messages =
     if (isWelsh) {
@@ -50,7 +57,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
 
-  protected def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
+  protected def authUserType(isAgent: Boolean): String = if (isAgent) agent else individual
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
     val fakeIdentifierAction = {

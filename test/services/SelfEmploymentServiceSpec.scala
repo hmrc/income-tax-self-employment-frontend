@@ -45,8 +45,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
   val businessIdAccrual = "businessIdAccrual"
   val businessIdCash    = "businessIdCash"
   val mtditid           = "mtditid"
-  val accrual           = "ACCRUAL"
-  val cash              = "CASH"
 
   val maxIncomeTradingAllowance: BigDecimal = 1000
   val smallTurnover: BigDecimal             = 450.00

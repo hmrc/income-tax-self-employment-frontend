@@ -25,7 +25,7 @@ object ContentStringViewModel {
                                        optAuthUserType: Option[String] = None,
                                        headingExtraClasses: String = "",
                                        hintExtraClasses: String = "")(implicit messages: Messages): String = {
-    val optAuthUserString = if (optAuthUserType.isEmpty) "" else s".${optAuthUserType.get}"
+    val optAuthUserString = optAuthUserType.map(userType => s".${userType}").getOrElse("")
     val heading           = messages(s"${page.toString}.title$optAuthUserString")
     val hint              = messages(s"${page.toString}.hint$optAuthUserString")
 
