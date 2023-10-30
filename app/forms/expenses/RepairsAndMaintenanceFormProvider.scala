@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class RepairsAndMaintenanceFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[RepairsAndMaintenance] =
+  def apply(authUserType: String): Form[RepairsAndMaintenance] =
     Form(
-      "value" -> enumerable[RepairsAndMaintenance]("repairsAndMaintenance.error.required")
+      "value" -> enumerable[RepairsAndMaintenance](s"repairsAndMaintenance.error.required.$authUserType")
     )
 
 }

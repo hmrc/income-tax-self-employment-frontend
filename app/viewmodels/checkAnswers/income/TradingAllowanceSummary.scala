@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -28,23 +29,18 @@ import viewmodels.implicits._
 
 object TradingAllowanceSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowancePage).map {
-      answer =>
+  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(TradingAllowancePage, Some(businessId)).map { answer =>
+      val value = Value(content = HtmlContent(HtmlFormat.escape(messages(s"tradingAllowance.$answer"))), classes = "govuk-!-width-one-third")
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"tradingAllowance.$answer"))
-          )
+      SummaryListRowViewModel(
+        key = Key(content = s"tradingAllowance.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("tradingAllowance.change.hidden"))
         )
-
-        SummaryListRowViewModel(
-          key = "tradingAllowance.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("tradingAllowance.change.hidden"))
-          )
-        )
+      )
     }
+
 }

@@ -82,7 +82,7 @@ class IncomeNavigator @Inject() () {
         (taxYear, businessId, _) =>
           userAnswers.get(TradingAllowancePage, Some(businessId)) match {
             case Some(UseTradingAllowance) => HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(DeclareExpenses)     => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            case Some(DeclareExpenses)     => IncomeCYAController.onPageLoad(taxYear, businessId)
             case _                         => JourneyRecoveryController.onPageLoad()
           }
 
@@ -91,23 +91,21 @@ class IncomeNavigator @Inject() () {
         (taxYear, businessId, _) =>
           userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
             case Some(LessThan) => TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(Maximum)  => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+            case Some(Maximum)  => IncomeCYAController.onPageLoad(taxYear, businessId)
             case _              => JourneyRecoveryController.onPageLoad()
           }
 
     case TradingAllowanceAmountPage =>
-      _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+      _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
 
     case IncomeCYAPage =>
       _ => (taxYear, businessId, _) => SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
-
-    case SectionCompletedStatePage => _ => (taxYear, _, _) => TaskListController.onPageLoad(taxYear)
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = { case _ =>
-    _ => (taxYear, businessId, _) => CheckYourIncomeController.onPageLoad(taxYear, businessId)
+    _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =

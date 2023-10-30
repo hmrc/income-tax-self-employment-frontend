@@ -17,26 +17,47 @@
 package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
-import models.{CheckMode, UserAnswers}
-import pages.income.HowMuchTradingAllowancePage
+import models.{CheckMode, HowMuchTradingAllowance, UserAnswers}
+import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HowMuchTradingAllowanceSummary {
+object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowMuchTradingAllowancePage).map {
-      answer =>
+  def row(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
+      messages: Messages): Option[Either[Exception, SummaryListRow]] = {
 
-        SummaryListRowViewModel(
-          key = "howMuchTradingAllowance.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden"))
-          )
-        )
+    userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
+      val rowValueOrError = answer match {
+        case HowMuchTradingAllowance.Maximum =>
+          calculateMaxTradingAllowance(userAnswers, businessId)
+            .map(amount => s"The maximum £$amount")
+
+        case HowMuchTradingAllowance.LessThan =>
+          Right(messages("howMuchTradingAllowance.lowerAmount"))
+      }
+
+      for {
+        rowValue <- rowValueOrError
+      } yield SummaryListRowViewModel(
+        key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        value = Value(content = rowValue, classes = "govuk-!-width-one-third"),
+        actions = Seq(
+          ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden")))
+      )
     }
+  }
+
+  private def calculateMaxTradingAllowance(userAnswers: UserAnswers, businessId: String): Either[Exception, String] =
+    userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
+      case Some(amount) if amount < 1000  => Right(formatMoney(amount))
+      case Some(amount) if amount >= 1000 => Right(formatMoney(1000))
+      case None                           => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))
+    }
+
 }

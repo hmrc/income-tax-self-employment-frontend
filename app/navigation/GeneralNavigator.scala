@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton
-)
+package navigation
 
-@()(implicit request: Request[_], messages: Messages)
+import controllers.journeys.routes._
+import controllers.standard.routes._
+import pages._
+import play.api.mvc.Call
 
-@layout(pageTitle = titleNoForm(messages("checkYourIncome.title"))) {
+import javax.inject.{Inject, Singleton}
 
-    <h1 class="govuk-heading-xl">@messages("checkYourIncome.heading")</h1>
+@Singleton
+class GeneralNavigator @Inject() () {
+
+  private val normalRoutes: Page => Int => Call = {
+
+    case SectionCompletedStatePage => taxYear => TaskListController.onPageLoad(taxYear)
+
+    case _ => _ => JourneyRecoveryController.onPageLoad()
+  }
+
+  def nextPage(page: Page, taxYear: Int): Call = normalRoutes(page)(taxYear)
+
 }

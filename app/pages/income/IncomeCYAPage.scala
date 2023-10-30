@@ -19,5 +19,5 @@ package pages.income
 import pages.Page
 
 object IncomeCYAPage extends Page {
-  override def toString: String = "incomeCYAPage"
+  override def toString: String = "incomeCYA"
 }

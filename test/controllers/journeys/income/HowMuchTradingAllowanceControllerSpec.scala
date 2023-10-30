@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{CheckYourIncomeController, HowMuchTradingAllowanceController, TradingAllowanceAmountController}
+import controllers.journeys.income.routes.{IncomeCYAController, HowMuchTradingAllowanceController, TradingAllowanceAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.HowMuchTradingAllowance.{LessThan, Maximum}
@@ -51,7 +51,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formAgentWithSmallTA              = formProvider("agent", smallTradingAllowanceString)
   val businessId                        = "SJPR05893938418"
   val tradingAllowanceAmountCall        = TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
-  val incomeCyaCall                     = CheckYourIncomeController.onPageLoad(taxYear, businessId)
+  val incomeCyaCall                     = IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val onwardRoute = (userAnswer: HowMuchTradingAllowance) => if (userAnswer.equals(LessThan)) tradingAllowanceAmountCall else incomeCyaCall
 
