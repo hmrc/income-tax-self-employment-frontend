@@ -377,3 +377,11 @@ workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own busi
 workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
+
+travelForWork.title = Travel and accommodation for work
+travelForWork.heading = Travel and accommodation for work
+travelForWork.yes.allowable = Yes, all of my expenses are allowable
+travelForWork.yes.disallowable = Yes, some of my expenses are disallowable
+travelForWork.checkYourAnswersLabel = Travel and accommodation for work
+travelForWork.error.required = Select travelForWork
+travelForWork.change.hidden = TravelForWork

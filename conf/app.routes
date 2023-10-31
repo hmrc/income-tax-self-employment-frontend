@@ -131,3 +131,8 @@ GET        /expenses/work-from-business-premises                                
 POST       /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
 POST       /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = CheckMode)
