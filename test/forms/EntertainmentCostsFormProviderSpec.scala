@@ -17,23 +17,23 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import forms.expenses.TravelForWorkFormProvider
-import models.TravelForWork
+import forms.expenses.EntertainmentCostsFormProvider
+import models.EntertainmentCosts
 import play.api.data.FormError
 
-class TravelForWorkFormProviderSpec extends OptionFieldBehaviours {
+class EntertainmentCostsFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TravelForWorkFormProvider()()
+  val form = new EntertainmentCostsFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "travelForWork.error.required"
+    val requiredKey = "entertainmentCosts.error.required"
 
-    behave like optionsField[TravelForWork](
+    behave like optionsField[EntertainmentCosts](
       form,
       fieldName,
-      validValues  = TravelForWork.values,
+      validValues  = EntertainmentCosts.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

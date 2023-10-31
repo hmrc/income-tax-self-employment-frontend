@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.expenses
 
 import forms.mappings.Mappings
+import models.journeys.TravelForWork
 import play.api.data.Form
-import models.TravelForWork
+
+import javax.inject.Inject
 
 class TravelForWorkFormProvider @Inject() extends Mappings {
 
