@@ -46,7 +46,6 @@ import scala.concurrent.Future
 class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider           = new AnyOtherIncomeFormProvider()
-  val businessId             = "SJPR05893938418"
   val otherIncomeAmountCall  = OtherIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
   val turnoverNotTaxableCall = TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
   val tradingAllowanceCall   = TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -197,7 +196,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
       "when a user answer 'No' is submitted, must clear OtherIncomeAmount data and redirect to" - {
         val userAnswer  = false
-        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
 
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
@@ -223,7 +222,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverNotTaxableCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
           }
         }
         "the Trading Allowance page when journey is CASH accounting type" in {
@@ -250,7 +249,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual tradingAllowanceCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
           }
         }
       }
