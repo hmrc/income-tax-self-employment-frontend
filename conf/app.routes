@@ -131,3 +131,18 @@ GET        /expenses/work-from-business-premises                                
 POST       /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
 POST       /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = CheckMode)
