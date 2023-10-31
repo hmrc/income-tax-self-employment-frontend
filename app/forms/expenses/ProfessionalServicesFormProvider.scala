@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package pages.expenses
+package forms.expenses
 
-import models.journeys.TravelForWork
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import models.journeys.ProfessionalServices
+import play.api.data.Form
+import play.api.data.Forms.set
 
-case object TravelForWorkPage extends QuestionPage[TravelForWork] {
+import javax.inject.Inject
 
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
+class ProfessionalServicesFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "travelForWork"
+  def apply(): Form[Set[ProfessionalServices]] =
+    Form(
+      "value" -> set(enumerable[ProfessionalServices]("professionalServices.error.required")).verifying(nonEmptySet("professionalServices.error.required"))
+    )
 }

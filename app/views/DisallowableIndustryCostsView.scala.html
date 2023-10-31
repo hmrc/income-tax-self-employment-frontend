@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.journeys.TravelForWork
+@import models.journeys.DisallowableIndustryCosts
 
 @this(
     layout: templates.Layout,
@@ -26,9 +26,9 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("travelForWork.title"))) {
+@layout(pageTitle = title(form, messages("disallowableIndustryCosts.title"))) {
 
-    @formHelper(action = controllers.journeys.expenses.routes.TravelForWorkController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.journeys.expenses.routes.DisallowableIndustryCostsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -37,8 +37,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("travelForWork.heading")).asPageHeading(),
-                items  = TravelForWork.options
+                legend = LegendViewModel(messages("disallowableIndustryCosts.heading")).asPageHeading(),
+                items  = DisallowableIndustryCosts.options
             )
         )
 

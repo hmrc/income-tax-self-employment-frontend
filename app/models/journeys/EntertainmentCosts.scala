@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 
-package models
+package models.journeys
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait TravelForWork
+sealed trait EntertainmentCosts
 
-object TravelForWork extends Enumerable.Implicits {
+object EntertainmentCosts extends Enumerable.Implicits {
 
-  case object Yesallowable extends WithName("yes.allowable") with TravelForWork
-  case object Yesdisallowable extends WithName("yes.disallowable") with TravelForWork
+  case object Yes extends WithName("yes") with EntertainmentCosts
+  case object No  extends WithName("no") with EntertainmentCosts
 
-  val values: Seq[TravelForWork] = Seq(
-    Yesallowable, Yesdisallowable
+  val values: Seq[EntertainmentCosts] = Seq(
+    Yes,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"travelForWork.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"entertainmentCosts.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
-  implicit val enumerable: Enumerable[TravelForWork] =
+  implicit val enumerable: Enumerable[EntertainmentCosts] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }
+

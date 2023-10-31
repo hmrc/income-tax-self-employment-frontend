@@ -16,31 +16,31 @@
 
 package forms
 
-import forms.behaviours.OptionFieldBehaviours
-import forms.expenses.TravelForWorkFormProvider
-import models.TravelForWork
+import forms.behaviours.CheckboxFieldBehaviours
+import forms.expenses.ProfessionalServicesFormProvider
+import models.professionalServices
 import play.api.data.FormError
 
-class TravelForWorkFormProviderSpec extends OptionFieldBehaviours {
+class professionalServicesFormProviderSpec extends CheckboxFieldBehaviours {
 
-  val form = new TravelForWorkFormProvider()()
+  val form = new ProfessionalServicesFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "travelForWork.error.required"
+    val requiredKey = "professionalServices.error.required"
 
-    behave like optionsField[TravelForWork](
+    behave like checkboxField[professionalServices](
       form,
       fieldName,
-      validValues  = TravelForWork.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      validValues  = professionalServices.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
-    behave like mandatoryField(
+    behave like mandatoryCheckboxField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredKey
     )
   }
 }

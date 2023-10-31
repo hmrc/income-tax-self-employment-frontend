@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.expenses
+package pages
 
-import models.journeys.TravelForWork
-import pages.QuestionPage
+import models.journeys.DisallowableIndustryCosts
 import play.api.libs.json.JsPath
 
-case object TravelForWorkPage extends QuestionPage[TravelForWork] {
+case object disallowableIndustryCostsPage extends QuestionPage[DisallowableIndustryCosts] {
 
   override def path(businessId: Option[String] = None): JsPath =
     if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
-  override def toString: String = "travelForWork"
+  override def toString: String = "disallowableIndustryCosts"
 }

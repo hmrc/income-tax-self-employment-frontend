@@ -22,6 +22,36 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitrarydisallowableFees: Arbitrary[DisallowableFees] =
+    Arbitrary {
+      Gen.oneOf(disallowableFees.values.toSeq)
+    }
+
+  implicit lazy val arbitrarydisallowableIndustryCosts: Arbitrary[DisallowableIndustryCosts] =
+    Arbitrary {
+      Gen.oneOf(disallowableIndustryCosts.values.toSeq)
+    }
+
+  implicit lazy val arbitrarystaffCosts: Arbitrary[StaffCosts] =
+    Arbitrary {
+      Gen.oneOf(staffCosts.values.toSeq)
+    }
+
+  implicit lazy val arbitraryprofessionalServices: Arbitrary[ProfessionalServices] =
+    Arbitrary {
+      Gen.oneOf(professionalServices.values)
+    }
+
+  implicit lazy val arbitraryEntertainmentCosts: Arbitrary[EntertainmentCosts] =
+    Arbitrary {
+      Gen.oneOf(EntertainmentCosts.values.toSeq)
+    }
+
+  implicit lazy val arbitraryAdvertisingOrMarketing: Arbitrary[AdvertisingOrMarketing] =
+    Arbitrary {
+      Gen.oneOf(AdvertisingOrMarketing.values.toSeq)
+    }
+
   implicit lazy val arbitraryTravelForWork: Arbitrary[TravelForWork] =
     Arbitrary {
       Gen.oneOf(TravelForWork.values.toSeq)

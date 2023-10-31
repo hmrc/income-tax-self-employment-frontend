@@ -380,8 +380,56 @@ workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 
 travelForWork.title = Travel and accommodation for work
 travelForWork.heading = Travel and accommodation for work
-travelForWork.yes.allowable = Yes, all of my expenses are allowable
-travelForWork.yes.disallowable = Yes, some of my expenses are disallowable
+travelForWork.yesAllowable = Yes, all of my expenses are allowable
+travelForWork.yesDisallowable = Yes, some of my expenses are disallowable
 travelForWork.checkYourAnswersLabel = Travel and accommodation for work
 travelForWork.error.required = Select travelForWork
 travelForWork.change.hidden = TravelForWork
+
+advertisingOrMarketing.title = Advertising or marketing
+advertisingOrMarketing.heading = Advertising or marketing
+advertisingOrMarketing.yesAllowable = Yes, all of my expenses are allowable
+advertisingOrMarketing.yesDisallowable = Yes, some of my expenses are disallowable
+advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
+advertisingOrMarketing.error.required = Select advertisingOrMarketing
+advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+
+entertainmentCosts.title = Entertainment costs
+entertainmentCosts.heading = Entertainment costs
+entertainmentCosts.yes = Yes
+entertainmentCosts.no = No
+entertainmentCosts.checkYourAnswersLabel = Entertainment costs
+entertainmentCosts.error.required = Select entertainmentCosts
+entertainmentCosts.change.hidden = EntertainmentCosts
+
+professionalServices.title = Staff, construction industry and professional services expenses
+professionalServices.heading = Staff, construction industry and professional services expenses
+professionalServices.staff = Staff
+professionalServices.constructionSubcontractors = Construction industry subcontractors
+professionalServices.checkYourAnswersLabel = Staff, construction industry and professional services expenses
+professionalServices.error.required = Select professionalServices
+professionalServices.change.hidden = professionalServices
+
+staffCosts.title = Disallowable staff costs
+staffCosts.heading = Disallowable staff costs
+staffCosts.yes = Yes
+staffCosts.no = No
+staffCosts.checkYourAnswersLabel = Disallowable staff costs
+staffCosts.error.required = Select staffCosts
+staffCosts.change.hidden = staffCosts
+
+disallowableIndustryCosts.title = Disallowable construction industry subcontractors costs
+disallowableIndustryCosts.heading = Disallowable construction industry subcontractors costs
+disallowableIndustryCosts.yes = Yes
+disallowableIndustryCosts.no = No
+disallowableIndustryCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
+disallowableIndustryCosts.error.required = Select disallowableIndustryCosts
+disallowableIndustryCosts.change.hidden = disallowableIndustryCosts
+
+disallowableFees.title = Disallowable professional fees
+disallowableFees.heading = Disallowable professional fees
+disallowableFees.yes = YYes
+disallowableFees.no = NMNo
+disallowableFees.checkYourAnswersLabel = Disallowable professional fees
+disallowableFees.error.required = Select disallowableFees
+disallowableFees.change.hidden = disallowableFees

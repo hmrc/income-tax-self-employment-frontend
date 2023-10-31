@@ -17,64 +17,65 @@
 package controllers
 
 import base.SpecBase
-import forms.expenses.TravelForWorkFormProvider
-import models.{NormalMode, TravelForWork, UserAnswers}
+import forms.expenses.ProfessionalServicesFormProvider
+import models.{NormalMode, professionalServices, UserAnswers}
 import navigation.{FakeExpensesNavigator, ExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.TravelForWorkPage
+import pages.professionalServicesPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.TravelForWorkView
+import views.html.professionalServicesView
 
 import scala.concurrent.Future
 
-class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
+class professionalServicesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val travelForWorkRoute = controllers.journeys.expenses.routes.TravelForWorkController.onPageLoad(NormalMode).url
+  lazy val professionalServicesRoute = routes.professionalServicesController.onPageLoad(NormalMode).url
 
-  val formProvider = new TravelForWorkFormProvider()
+  val formProvider = new ProfessionalServicesFormProvider()
   val form = formProvider()
 
-  "TravelForWork Controller" - {
+  "professionalServices Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
+        val request = FakeRequest(GET, professionalServicesRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TravelForWorkView]
+        val view = application.injector.instanceOf[professionalServicesView]
 
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(professionalServicesPage, professionalServices.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
+        val request = FakeRequest(GET, professionalServicesRoute)
 
-        val view = application.injector.instanceOf[TravelForWorkView]
+        val view = application.injector.instanceOf[professionalServicesView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TravelForWork.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(professionalServices.values.toSet), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -94,8 +95,8 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, travelForWorkRoute)
-            .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
+          FakeRequest(POST, professionalServicesRoute)
+            .withFormUrlEncodedBody(("value[0]", professionalServices.values.head.toString))
 
         val result = route(application, request).value
 
@@ -110,12 +111,12 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, travelForWorkRoute)
+          FakeRequest(POST, professionalServicesRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[TravelForWorkView]
+        val view = application.injector.instanceOf[professionalServicesView]
 
         val result = route(application, request).value
 
@@ -129,7 +130,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
+        val request = FakeRequest(GET, professionalServicesRoute)
 
         val result = route(application, request).value
 
@@ -138,19 +139,18 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, travelForWorkRoute)
-            .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
+          FakeRequest(POST, professionalServicesRoute)
+            .withFormUrlEncodedBody(("value[0]", professionalServices.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
