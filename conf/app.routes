@@ -1,35 +1,35 @@
 # microservice specific routes
 
-->          /hmrc-frontend                                             hmrcfrontend.Routes
+->          /hmrc-frontend                                                        hmrcfrontend.Routes
 
-GET         /                                                          controllers.standard.IndexController.onPageLoad
+GET         /                                                                     controllers.standard.IndexController.onPageLoad
 
-GET         /assets/*file                                              controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                                         controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                                            controllers.standard.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                                       controllers.standard.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                                           controllers.standard.KeepAliveController.keepAlive
+GET         /refresh-session                                                      controllers.standard.KeepAliveController.keepAlive
 
-GET         /there-is-a-problem                                        controllers.standard.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                                                   controllers.standard.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                                        controllers.standard.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers                                                   controllers.standard.CheckYourAnswersController.onPageLoad
 
-GET         /account/sign-out-survey                                   controllers.standard.auth.AuthController.signOut
-GET         /account/sign-out                                          controllers.standard.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                                        controllers.standard.auth.SignedOutController.onPageLoad
+GET         /account/sign-out-survey                                              controllers.standard.auth.AuthController.signOut
+GET         /account/sign-out                                                     controllers.standard.auth.AuthController.signOutNoSurvey
+GET         /account/signed-out                                                   controllers.standard.auth.SignedOutController.onPageLoad
 
-GET         /error/you-need-client-authorisation                       controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
-GET         /error/you-need-to-sign-up                                 controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
-GET         /error/you-need-agent-services-account                     controllers.authorisationErrors.YouNeedAgentServicesController.onPageLoad
+GET         /error/you-need-client-authorisation                                  controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
+GET         /error/you-need-to-sign-up                                            controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
+GET         /error/you-need-agent-services-account                                controllers.authorisationErrors.YouNeedAgentServicesController.onPageLoad
 
-GET         /unauthorised                                              controllers.standard.UnauthorisedController.onPageLoad
+GET         /unauthorised                                                         controllers.standard.UnauthorisedController.onPageLoad
 
-GET         /:taxYear/task-list                                        controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
+GET         /:taxYear/task-list                                                   controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
 
-GET        /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-POST       /:taxYear/details/completed-section/:journey/:businessId          controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-GET        /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
-POST       /:taxYear/details/change-completed-section/:journey/:businessId   controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+GET        /:taxYear/details/completed-section/:journey/:businessId               controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+POST       /:taxYear/details/completed-section/:journey/:businessId               controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+GET        /:taxYear/details/change-completed-section/:journey/:businessId        controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+POST       /:taxYear/details/change-completed-section/:journey/:businessId        controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
 
 ########## Trade-details Journey ##########
 
@@ -98,7 +98,7 @@ POST       /:taxYear/:businessId/income/trading-allowance/amount                
 GET        /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 POST       /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.CheckYourIncomeController.onPageLoad(taxYear: Int, businessId: String)
+GET        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: Int, businessId: String)
 
 ########## Expenses Journey ##########
 

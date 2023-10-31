@@ -14,6 +14,10 @@ site.view = View
 site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
 site.hint.amount = For example, £193.54
+site.canInclude.individual = You can include:
+site.canInclude.agent = Your client can include:
+site.cannotInclude.individual = You cannot include:
+site.cannotInclude.agent = Your client cannot include:
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -135,7 +139,8 @@ incomeNotCountedAsTurnover.l2.individual = payments for the right to cross your 
 incomeNotCountedAsTurnover.l2.agent = payments for the right to cross their land
 incomeNotCountedAsTurnover.subHeading.individual = Did you get any income you’re not counting as turnover?
 incomeNotCountedAsTurnover.subHeading.agent = Did your client get any income they’re not counting as turnover?
-incomeNotCountedAsTurnover.checkYourAnswersLabel = IncomeNotCountedAsTurnover
+incomeNotCountedAsTurnover.checkYourAnswersLabel.individual = Did you have any income you’re not counting as turnover?
+incomeNotCountedAsTurnover.checkYourAnswersLabel.agent = Did your client have any income they’re not counting as turnover?
 incomeNotCountedAsTurnover.error.required.individual = Select yes if you had any income you’re not treating as turnover
 incomeNotCountedAsTurnover.error.required.agent = Select yes if your client had any income they’re not treating as turnover
 incomeNotCountedAsTurnover.change.hidden = Change income not counted as turnover
@@ -143,7 +148,8 @@ incomeNotCountedAsTurnover.change.hidden = Change income not counted as turnover
 ## Non-turnover income amount
 nonTurnoverIncomeAmount.title.individual = How much non-turnover income did you get?
 nonTurnoverIncomeAmount.title.agent = How much non-turnover income did your client get?
-nonTurnoverIncomeAmount.checkYourAnswersLabel = NonTurnoverIncomeAmount
+nonTurnoverIncomeAmount.checkYourAnswersLabel.individual = How much non-turnover income did you get?
+nonTurnoverIncomeAmount.checkYourAnswersLabel.agent = How much non-turnover income did your client get?
 nonTurnoverIncomeAmount.error.required.individual = Enter the amount of non-turnover income you got
 nonTurnoverIncomeAmount.error.required.agent = Enter the amount of non-turnover income your client got
 nonTurnoverIncomeAmount.error.nonNumeric.individual = The amount of non-turnover income you got must be a number
@@ -165,7 +171,8 @@ turnoverIncomeAmount.l4.individual = money owed to you for work already done
 turnoverIncomeAmount.l4.agent = money owed to your client for work already done
 turnoverIncomeAmount.subHeading.individual = What was your turnover?
 turnoverIncomeAmount.subHeading.agent = What was your client’s turnover?
-turnoverIncomeAmount.checkYourAnswersLabel = TurnoverIncomeAmount
+turnoverIncomeAmount.checkYourAnswersLabel.agent = What was your client's turnover?
+turnoverIncomeAmount.checkYourAnswersLabel.individual = What was your turnover?
 turnoverIncomeAmount.error.required.individual = Enter your turnover
 turnoverIncomeAmount.error.required.agent = Enter your client’s turnover
 turnoverIncomeAmount.error.nonNumeric.individual = Your turnover must be a number
@@ -179,7 +186,8 @@ turnoverIncomeAmount.change.hidden = Change your turnover income amount
 ## Any other income
 anyOtherIncome.title.individual = Is there any other self-employment income you need to tell us about?
 anyOtherIncome.title.agent = Is there any other self-employment income your client needs to tell us about?
-anyOtherIncome.checkYourAnswersLabel = AnyOtherIncome
+anyOtherIncome.checkYourAnswersLabel.individual = Is there any other self-employment income you need to tell us about?
+anyOtherIncome.checkYourAnswersLabel.agent = Is there any other self-employment income your client needs to tell us about?
 anyOtherIncome.error.required.individual = Select yes if there’s any other self-employment income you need to tell us about
 anyOtherIncome.error.required.agent = Select yes if there’s any other self-employment income your client needs to tell us about
 anyOtherIncome.change.hidden = Change any other income
@@ -187,7 +195,8 @@ anyOtherIncome.change.hidden = Change any other income
 ## Other income amount
 otherIncomeAmount.title.individual = How much other self-employment income did you get?
 otherIncomeAmount.title.agent = How much other self-employment income did your client get?
-otherIncomeAmount.checkYourAnswersLabel = OtherIncomeAmount
+otherIncomeAmount.checkYourAnswersLabel.individual = How much other self-employment income did you get?
+otherIncomeAmount.checkYourAnswersLabel.agent = How much other self-employment income did your client get?
 otherIncomeAmount.error.required.individual = Enter the amount of other self-employment income you got
 otherIncomeAmount.error.required.agent = Enter the amount of other self-employment income your client got
 otherIncomeAmount.error.nonNumeric.individual = The amount of other self-employment income you got must be a number
@@ -210,7 +219,8 @@ turnoverNotTaxable.l2 = compensation payments
 turnoverNotTaxable.l3 = payments for work done on a consultancy basis
 turnoverNotTaxable.subHeading.individual = Is any of your turnover exempt from being taxed as profit?
 turnoverNotTaxable.subHeading.agent = Is any of your client’s turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel = TurnoverNotTaxable
+turnoverNotTaxable.checkYourAnswersLabel.individual = Is any of your turnover exempt from being taxed as profit?
+turnoverNotTaxable.checkYourAnswersLabel.agent = Is any of your client's turnover exempt from being taxed as profit?
 turnoverNotTaxable.error.required.individual = Select yes if any of your turnover is exempt from being taxed as profit
 turnoverNotTaxable.error.required.agent = Select yes if any of your client’s turnover is exempt from being taxed as profit
 turnoverNotTaxable.change.hidden = Change turnover exempt from tax
@@ -218,7 +228,8 @@ turnoverNotTaxable.change.hidden = Change turnover exempt from tax
 ## Not taxable amount
 notTaxableAmount.title.individual = How much of your turnover is exempt from being taxed as profit?
 notTaxableAmount.title.agent = How much of your client’s turnover is exempt from being taxed as profit?
-notTaxableAmount.checkYourAnswersLabel = NotTaxableAmount
+notTaxableAmount.checkYourAnswersLabel.individual = How much of your turnover is exempt from being taxed as profit?
+notTaxableAmount.checkYourAnswersLabel.agent = How much of your client's turnover is exempt from being taxed as profit?
 notTaxableAmount.error.required.individual = Enter the amount of your turnover exempt from being taxed as profit
 notTaxableAmount.error.required.agent = Enter the amount of your client's turnover exempt from being taxed as profit
 notTaxableAmount.error.nonNumeric.individual = The amount of your turnover exempt from being taxed as profit must be a number
@@ -243,7 +254,8 @@ tradingAllowance.subHeading.individual = What do you want to do?
 tradingAllowance.subHeading.agent = What does your client want to do?
 tradingAllowance.useTradingAllowance = Use the trading allowance
 tradingAllowance.declareExpenses = Declare expenses
-tradingAllowance.checkYourAnswersLabel = Trading allowance
+tradingAllowance.checkYourAnswersLabel.individual = Do you want to use the trading allowance or declare expenses?
+tradingAllowance.checkYourAnswersLabel.agent = Does your client want to use the trading allowance or declare expenses?
 tradingAllowance.error.required.individual = Select yes if you want to use the trading allowance or declare expenses
 tradingAllowance.error.required.agent = Select yes if your client wants to use the trading allowance or declare expenses
 tradingAllowance.change.hidden = Change trading allowance
@@ -257,15 +269,18 @@ howMuchTradingAllowance.subHeading.individual = How much of your trading allowan
 howMuchTradingAllowance.subHeading.agent = How much of your client’s trading allowance do you want to use?
 howMuchTradingAllowance.maximum = The maximum £{0}
 howMuchTradingAllowance.lessThan = Less than £{0}
+howMuchTradingAllowance.lowerAmount = A lower amount
 howMuchTradingAllowance.error.required.individual = Select if you want to use the full trading allowance of £{0} or less than £{0}
 howMuchTradingAllowance.error.required.agent = Select if your client wants to use the full trading allowance of £{0} or less than £{0}
-howMuchTradingAllowance.checkYourAnswersLabel = HowMuchTradingAllowance
+howMuchTradingAllowance.checkYourAnswersLabel.individual = How much of your trading allowance do you want to use?
+howMuchTradingAllowance.checkYourAnswersLabel.agent = How much of their trading allowance does your client want to use?
 howMuchTradingAllowance.change.hidden = Change how much trading allowance you want to use
 
 ## Trading allowance amount
 tradingAllowanceAmount.title.individual = How much trading allowance do you want to use?
 tradingAllowanceAmount.title.agent = How much trading allowance does your client want to use?
-tradingAllowanceAmount.checkYourAnswersLabel = TradingAllowanceAmount
+tradingAllowanceAmount.checkYourAnswersLabel.individual = How much trading allowance do you want to use?
+tradingAllowanceAmount.checkYourAnswersLabel.agent = How much trading allowance does your client want to use?
 tradingAllowanceAmount.error.required.individual = Enter the amount of trading allowance you want to use
 tradingAllowanceAmount.error.required.agent = Enter the amount of trading allowance your client wants to use
 tradingAllowanceAmount.error.nonNumeric.individual = The amount of trading allowance you want to use must be a number
@@ -276,7 +291,7 @@ tradingAllowanceAmount.error.overTurnover.individual = The amount of trading all
 tradingAllowanceAmount.error.overTurnover.agent = The amount of trading allowance your client wants to use must be less than  £{0}
 tradingAllowanceAmount.change.hidden = Change trading allowance amount
 
-## Check your income
+## Check your income (Income CYA)
 checkYourIncome.title.individual = Check your income
 checkYourIncome.title.agent = Check your client’s income
 checkYourIncome.r1.individual = Did you have any income you’re not counting as turnover?
@@ -297,6 +312,13 @@ checkYourIncome.r8.individual = How much trading allowance do you want to use?
 checkYourIncome.r8.agent = How much trading allowance does your client want to use?
 
 ###### Expenses Journey ######
+
+## Common
+expenses.yesAllowable.individual = Yes, all of my expenses are allowable
+expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
+expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
+expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.no = No
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -327,27 +349,31 @@ goodsToSellOrUse.change.hidden = GoodsToSellOrUse
 
 ## Repairs and maintenance
 repairsAndMaintenance.title = Repairs and maintenance
-repairsAndMaintenance.heading = Repairs and maintenance
-repairsAndMaintenance.yesAllowable = Yes, all of my expenses are allowable
-repairsAndMaintenance.yesDisallowable = Yes, some of my expenses are disallowable
+repairsAndMaintenance.l1 = repairs and maintenance of work premises and equipment
+repairsAndMaintenance.l2 = cost of equipment and tools
+repairsAndMaintenance.l3 = repairs of non-work premises or equipment
+repairsAndMaintenance.l4 = costs of buying, improving or altering premises
+repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs and maintenance of property or equipment?
+repairsAndMaintenance.subHeading.agent = Did your client spend anything on repairs and maintenance of property or equipment?
 repairsAndMaintenance.checkYourAnswersLabel = Repairs and maintenance
-repairsAndMaintenance.error.required = Select repairsAndMaintenance
+repairsAndMaintenance.error.required.individual = Select if all your repairs and maintenance expenses are allowable, some of them are disallowable or you do not have any repairs and maintenance expenses
+repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
 repairsAndMaintenance.change.hidden = RepairsAndMaintenance
 
 ## Work from home
-workFromHome.title = Did you work from home?
-workFromHome.heading = Did you work from home?
-workFromHome.yes = Yes
-workFromHome.no = No
+workFromHome.title.individual = Did you work from home?
+workFromHome.title.agent = Did your client work from home?
 workFromHome.checkYourAnswersLabel = Did you work from home?
-workFromHome.error.required = Select workFromHome
+workFromHome.error.required.individual = Select yes if you worked from home
+workFromHome.error.required.agent = Select yes if your client worked from home
 workFromHome.change.hidden = WorkFromHome
 
 ## Work from business premises
-workFromBusinessPremises.title = Did you work from your own business premises?
-workFromBusinessPremises.heading = Did you work from your own business premises?
-workFromBusinessPremises.yesAllowable = Yes, all of my expenses are allowable
-workFromBusinessPremises.yesDisallowable = Yes, some of my expenses are disallowable
+workFromBusinessPremises.title.individual = Did you work from your own business premises?
+workFromBusinessPremises.title.agent = Did your client work from their own business premises?
+workFromBusinessPremises.hint.individual = For example an office, shop or industrial unit that you own or rent. Select no if you worked from your home.
+workFromBusinessPremises.hint.agent = For example an office, shop or industrial unit that your client owns or rents. Select no if your client worked from their home.
 workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own business premises?
-workFromBusinessPremises.error.required = Select workFromBusinessPremises
+workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
+workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises

@@ -19,13 +19,15 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
+import models.ModelUtils.userType
 import navigation.IncomeNavigator
 import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SelfEmploymentService.{convertBigDecimalToMoneyString, getIncomeTradingAllowance}
+import services.SelfEmploymentService.getIncomeTradingAllowance
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
 import javax.inject.Inject
@@ -41,30 +43,31 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: HowMuchTradingAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with MoneyUtils {
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val tradingAllowanceString = convertBigDecimalToMoneyString(tradingAllowance)
+      val tradingAllowance = getIncomeTradingAllowance(businessId, request.userAnswers)
+      val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
       val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
-        case None        => formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
-        case Some(value) => formProvider(authUserType(request.user.isAgent), tradingAllowanceString).fill(value)
+        case None        => formProvider(userType(request.user.isAgent), tradingAllowanceString)
+        case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
 
-      Ok(view(preparedForm, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val tradingAllowanceString = convertBigDecimalToMoneyString(tradingAllowance)
-      formProvider(authUserType(request.user.isAgent), tradingAllowanceString)
+      val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
+      formProvider(userType(request.user.isAgent), tradingAllowanceString)
         .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful(
-              BadRequest(view(formWithErrors, mode, authUserType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
+              BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId)))
@@ -72,7 +75,5 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
             } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
         )
   }
-
-  private def authUserType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 
 }

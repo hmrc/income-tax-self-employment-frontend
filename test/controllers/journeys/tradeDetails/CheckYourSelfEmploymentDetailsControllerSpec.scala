@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
-import viewmodels.checkAnswers.SelfEmploymentDetailsViewModel
+import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 import scala.concurrent.Future
@@ -79,7 +79,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val view = application.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, "individual", nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, individual, nextRoute)(request, messages(application)).toString
         }
       }
 

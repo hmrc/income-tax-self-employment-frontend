@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.summary.SelfEmploymentSummaryViewModel.row
+import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
 import javax.inject.Inject

@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{CheckYourIncomeController, HowMuchTradingAllowanceController, TradingAllowanceController}
+import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
@@ -44,7 +44,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val formProvider                = new TradingAllowanceFormProvider()
   val businessId                  = "SJPR05893938418"
   val howMuchTradingAllowanceCall = HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-  val incomeCyaCall               = CheckYourIncomeController.onPageLoad(taxYear, businessId)
+  val incomeCyaCall               = IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val onwardRoute = (userAnswer: TradingAllowance) => if (userAnswer.equals(UseTradingAllowance)) howMuchTradingAllowanceCall else incomeCyaCall
 
@@ -53,8 +53,8 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TradingAllowance], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider("individual"), "ACCRUAL"),
-    UserScenario(isWelsh = false, isAgent = true, formProvider("agent"), "CASH")
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)
   )
 
   "TradingAllowance Controller" - {
@@ -159,7 +159,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -190,7 +190,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right("ACCRUAL"))
+          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)

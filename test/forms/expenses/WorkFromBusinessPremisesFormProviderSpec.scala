@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class WorkFromBusinessPremisesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new WorkFromBusinessPremisesFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "workFromBusinessPremises.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[WorkFromBusinessPremises](
-      form,
-      fieldName,
-      validValues = WorkFromBusinessPremises.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new WorkFromBusinessPremisesFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[WorkFromBusinessPremises](
+          form,
+          fieldName,
+          validValues = WorkFromBusinessPremises.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"workFromBusinessPremises.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }
