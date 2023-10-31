@@ -62,7 +62,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${authUserType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
@@ -82,7 +82,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -116,7 +116,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   userScenario.form.fill(OfficeSupplies.values.head),
                   NormalMode,
-                  authUserType(userScenario.isAgent),
+                  userType(userScenario.isAgent),
                   taxYear,
                   businessId,
                   userScenario.accountingType
@@ -175,7 +175,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${authUserType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
@@ -198,7 +198,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                 request,
                 messages(application)).toString
 
@@ -229,7 +229,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                 request,
                 messages(application)).toString
 

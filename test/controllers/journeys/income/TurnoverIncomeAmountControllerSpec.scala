@@ -63,7 +63,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent)
@@ -83,7 +83,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[TurnoverIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -115,7 +115,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult = view(
                 userScenario.form.fill(validAnswer),
                 CheckMode,
-                authUserType(userScenario.isAgent),
+                userType(userScenario.isAgent),
                 taxYear,
                 businessId,
                 userScenario.accountingType)(request, messages(application, userScenario.isWelsh)).toString
@@ -174,7 +174,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
           "must return a Bad Request and errors when" - {
             "an empty form is submitted" in {
 
@@ -199,7 +199,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
@@ -231,7 +231,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
@@ -263,7 +263,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
@@ -295,7 +295,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 

@@ -59,7 +59,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
 
           "must return OK and the correct view for a GET" in {
 
@@ -76,7 +76,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -101,7 +101,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -168,7 +168,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -187,7 +187,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -214,7 +214,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

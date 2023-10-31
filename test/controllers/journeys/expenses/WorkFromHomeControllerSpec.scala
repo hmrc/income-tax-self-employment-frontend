@@ -59,7 +59,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -75,7 +75,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -101,7 +101,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -156,7 +156,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${authUserType(userScenario.isAgent)}" - {
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -176,7 +176,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -202,7 +202,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
