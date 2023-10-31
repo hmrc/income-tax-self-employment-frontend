@@ -17,7 +17,7 @@
 package viewmodels
 
 import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, SelfEmploymentAbroadController}
-import controllers.journeys.income.routes.{CheckYourIncomeController, IncomeNotCountedAsTurnoverController}
+import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import models._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
@@ -51,7 +51,7 @@ object TradeJourneyStatusesViewModel {
 
       val incomeUrl =
         if (incomeCompletionStatus.isEmpty) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url
-        else CheckYourIncomeController.onPageLoad(taxYear, business.businessId).url
+        else IncomeCYAController.onPageLoad(taxYear, business.businessId).url
 
       (
         abroadUrl,
