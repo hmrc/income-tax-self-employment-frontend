@@ -16,8 +16,8 @@
 
 package viewmodels
 
-import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
-import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
+import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, SelfEmploymentAbroadController}
+import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import models._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
@@ -25,15 +25,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 
-case class TradeJourneyStatusesViewModel(tradingName: String,
-                                         businessId: String,
-                                         statusList: SummaryList)
+case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String, statusList: SummaryList)
 
 object TradeJourneyStatusesViewModel {
 
-  private val completedStatus = "completed"
-  private val inProgressStatus = "inProgress"
-  private val notStartedStatus = "notStarted"
+  private val completedStatus      = "completed"
+  private val inProgressStatus     = "inProgress"
+  private val notStartedStatus     = "notStarted"
   private val cannotStartYetStatus = "cannotStartYet"
 
   def buildSummaryList(business: TradesJourneyStatuses, taxYear: Int)(implicit messages: Messages): SummaryList = {
@@ -45,21 +43,27 @@ object TradeJourneyStatusesViewModel {
 
     val (abroadCompletionStatus, incomeCompletionStatus) = (getStatus(Abroad), getStatus(Income))
 
-    val abroadMode = if (abroadCompletionStatus.isEmpty) NormalMode else CheckMode
-    val incomeMode = if (incomeCompletionStatus.isEmpty) NormalMode else CheckMode
+    val (abroadUrlString, incomeUrlString) = {
 
-    val (abroadUrlString, incomeUrlString) =
-      (SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, abroadMode).url,
-        if (abroadCompletionStatus.getOrElse(false)) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId,incomeMode).url
-        else "#"
+      val abroadUrl =
+        if (abroadCompletionStatus.isEmpty) SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, NormalMode).url
+        else SelfEmploymentAbroadCYAController.onPageLoad(taxYear, business.businessId).url
+
+      val incomeUrl =
+        if (incomeCompletionStatus.isEmpty) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url
+        else IncomeCYAController.onPageLoad(taxYear, business.businessId).url
+
+      (
+        abroadUrl,
+        if (abroadCompletionStatus.getOrElse(false)) incomeUrl else "#"
       )
+    }
 
     val (abroadStatusString, incomeStatusString) =
       (
         if (abroadCompletionStatus.isEmpty) notStartedStatus
         else if (abroadCompletionStatus.get) completedStatus
         else inProgressStatus,
-
         if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
         else if (incomeCompletionStatus.isEmpty) notStartedStatus
         else if (incomeCompletionStatus.get) completedStatus
@@ -71,18 +75,19 @@ object TradeJourneyStatusesViewModel {
         buildRow("selfEmploymentAbroad", abroadUrlString, abroadStatusString),
         buildRow("income", incomeUrlString, incomeStatusString)
       ),
-      classes = "govuk-!-margin-bottom-7")
+      classes = "govuk-!-margin-bottom-7"
+    )
   }
 
   private def buildRow(rowKey: String, href: String, status: String)(implicit messages: Messages): SummaryListRow = {
 
-    val keyString = messages(s"common.$rowKey")
-    val statusString = messages(s"status.$status")
+    val keyString        = messages(s"common.$rowKey")
+    val statusString     = messages(s"status.$status")
     val optDeadlinkStyle = if (status.equals(cannotStartYetStatus)) s" class='govuk-deadlink'" else ""
 
     SummaryListRowViewModel(
-      key = KeyViewModel(HtmlContent(
-        s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
+      key = KeyViewModel(
+        HtmlContent(s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
       value = Value(),
       actions = Seq(ActionItemViewModel(
         href = href,
