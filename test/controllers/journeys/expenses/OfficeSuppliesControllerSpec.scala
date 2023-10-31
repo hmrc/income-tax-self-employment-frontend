@@ -43,9 +43,12 @@ import scala.concurrent.Future
 class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(NormalMode).url
+
   val formProvider = new OfficeSuppliesFormProvider()
   val businessId   = "SJPR05893938418"
+
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+
   val userScenarios = Seq(
     UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
     UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)

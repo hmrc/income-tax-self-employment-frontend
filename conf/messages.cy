@@ -320,8 +320,8 @@ officeSupplies.l5 = computer software costs
 officeSupplies.l6 = equipment and computer hardware
 officeSupplies.l7 = any amounts that cover personal use
 officeSupplies.l8 = new phones or computer hardware
-officeSupplies.subHeading.individual = Did you buy any office supplies?
-officeSupplies.subHeading.agent = Did your client buy any office supplies?
+officeSupplies.question.individual = Did you buy any office supplies?
+officeSupplies.question.agent = Did your client buy any office supplies?
 officeSupplies.checkYourAnswersLabel = Office supplies
 officeSupplies.error.required.individual = Select if all your office supplies expenses are allowable, some of them are disallowable or you do not have any office supplies expenses
 officeSupplies.error.required.agent = Select if all your client’s office supplies expenses are allowable, some of them are disallowable or they do not have any office supplies expenses
@@ -339,10 +339,21 @@ taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
 ## Goods to sell or use
 goodsToSellOrUse.title = Goods to sell or use
 goodsToSellOrUse.heading = Goods to sell or use
-goodsToSellOrUse.yesAllowable = Yes, all of my expenses are allowable
-goodsToSellOrUse.yesDisallowable = Yes, some of my expenses are disallowable
+goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
+goodsToSellOrUse.l1 = the cost of raw materials
+goodsToSellOrUse.l2 = stock bought for resale
+goodsToSellOrUse.l3 = direct costs of producing goods sold
+goodsToSellOrUse.l4 = commissions
+goodsToSellOrUse.l5 = discounts
+goodsToSellOrUse.l6 = costs of goods or materials bought for private use
+goodsToSellOrUse.l7 = depreciation of equipment
+goodsToSellOrUse.l8 = adjustments for opening and closing stock
+goodsToSellOrUse.l9 = fuel costs
 goodsToSellOrUse.checkYourAnswersLabel = Goods to sell or use
-goodsToSellOrUse.error.required = Select goodsToSellOrUse
+goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
+goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
+goodsToSellOrUse.error.required.individual = Select if all your goods to sell or use expenses are allowable, some of them are disallowable or you do not have any goods to sell or use expenses
+goodsToSellOrUse.error.required.agent = Select if all your client’s goods to sell or use expenses are allowable, some of them are disallowable or they do not have any goods to sell or use expenses
 goodsToSellOrUse.change.hidden = GoodsToSellOrUse
 
 ## Repairs and maintenance
