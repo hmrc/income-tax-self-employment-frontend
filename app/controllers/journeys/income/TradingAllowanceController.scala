@@ -21,8 +21,9 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
 import models.ModelUtils.userType
+import models.TradingAllowance.DeclareExpenses
 import navigation.IncomeNavigator
-import pages.income.TradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,7 +47,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData  andThen requireData) async {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
@@ -72,8 +73,18 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TradingAllowancePage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
+                  updatedAnswers <- Future.fromTry {
+                    val userAnswers =
+                      if (value.equals(DeclareExpenses))
+                        request.userAnswers
+                          .remove(HowMuchTradingAllowancePage, Some(businessId))
+                          .get
+                          .remove(TradingAllowanceAmountPage, Some(businessId))
+                          .get
+                      else request.userAnswers
+                    userAnswers.set(TradingAllowancePage, value, Some(businessId))
+                  }
+                  _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
             )
       }

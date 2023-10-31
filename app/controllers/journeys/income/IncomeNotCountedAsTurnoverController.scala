@@ -21,7 +21,7 @@ import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.IncomeNavigator
-import pages.income.IncomeNotCountedAsTurnoverPage
+import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -58,8 +58,13 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(IncomeNotCountedAsTurnoverPage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry {
+              val userAnswers =
+                if (!value) request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId)).get
+                else request.userAnswers.getOrElse(UserAnswers(request.userId))
+              userAnswers.set(IncomeNotCountedAsTurnoverPage, value, Some(businessId))
+            }
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, businessId))
       )
   }

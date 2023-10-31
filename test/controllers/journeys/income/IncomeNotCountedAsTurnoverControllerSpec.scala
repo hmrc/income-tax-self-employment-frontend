@@ -24,7 +24,7 @@ import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.income.IncomeNotCountedAsTurnoverPage
+import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -141,14 +141,15 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
         }
       }
 
-      "must redirect to the Turnover Income Amount page when a user answer 'No' is submitted" in {
+      "must clear NonTurnoverIncomeAmount data and redirect to the Turnover Income Amount page when a user answer 'No' is submitted" in {
 
-        val userAnswer = false
+        val userAnswer  = false
+        val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
@@ -164,6 +165,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
+          UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(businessId)) mustBe None
         }
       }
 

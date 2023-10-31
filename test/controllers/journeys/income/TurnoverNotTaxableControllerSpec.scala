@@ -25,7 +25,7 @@ import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.income.TurnoverNotTaxablePage
+import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -155,16 +155,17 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to the Trading Allowance page when a user answer 'No' is submitted" in {
+      "must redirect to the Trading Allowance page and clear any NotTaxableAmount data when a user answer 'No' is submitted" in {
 
-        val userAnswer = false
+        val userAnswer  = false
+        val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
 
         val mockSessionRepository = mock[SessionRepository]
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
@@ -180,6 +181,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual tradingAllowanceCall.url
+          UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(businessId)) mustBe None
         }
       }
 

@@ -20,13 +20,14 @@ import base.SpecBase
 import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
+import models.HowMuchTradingAllowance.LessThan
 import models.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import models.{CheckMode, NormalMode, TradingAllowance, UserAnswers}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.income.TradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -172,16 +173,23 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to the Income CYA page when 'DeclareExpenses' answer is submitted" in {
+      "must clear any old existing data and redirect to the Income CYA page when 'DeclareExpenses' answer is submitted" in {
 
         val userAnswer = DeclareExpenses
+        val userAnswers = UserAnswers(userAnswersId)
+          .set(HowMuchTradingAllowancePage, LessThan, Some(businessId))
+          .success
+          .value
+          .set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId))
+          .success
+          .value
 
         val mockSessionRepository = mock[SessionRepository]
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SelfEmploymentService].toInstance(mockService),
@@ -200,6 +208,8 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual incomeCyaCall.url
+          UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(businessId)) mustBe None
+          UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
         }
       }
 
