@@ -73,7 +73,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
     val legendContentString = buildLegendHeadingWithHintString(
       s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
       "site.selectAllTheApply",
-      headingClasses = "govuk-fieldset__legend--m govuk-fieldset__legend"
+      headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
     )
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))

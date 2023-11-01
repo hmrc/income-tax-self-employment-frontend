@@ -51,7 +51,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
   def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
     s"workFromBusinessPremises.title.$userType",
     s"workFromBusinessPremises.hint.$userType",
-    headingClasses = "govuk-heading-l govuk-!-margin-0 govuk-!-margin-bottom-2"
+    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--l"
   )
 
   case class UserScenario(isWelsh: Boolean, authUserType: String)

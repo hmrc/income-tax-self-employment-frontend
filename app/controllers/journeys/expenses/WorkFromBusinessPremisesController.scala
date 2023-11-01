@@ -66,7 +66,7 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
     val radioContentString = buildLegendHeadingWithHintString(
       s"workFromBusinessPremises.title.${userType(request.user.isAgent)}",
       s"workFromBusinessPremises.hint.${userType(request.user.isAgent)}",
-      headingClasses = "govuk-heading-l govuk-!-margin-0 govuk-!-margin-bottom-2"
+      headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--l"
     )
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
