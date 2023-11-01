@@ -17,16 +17,18 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.DisallowableIndustryCosts
+import models.journeys.ProfessionalServicesExpenses
 import play.api.data.Form
+import play.api.data.Forms.set
 
 import javax.inject.Inject
 
-class DisallowableIndustryCostsFormProvider @Inject() extends Mappings {
+class ProfessionalServicesExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DisallowableIndustryCosts] =
+  def apply(): Form[Set[ProfessionalServicesExpenses]] =
     Form(
-      "value" -> enumerable[DisallowableIndustryCosts]("disallowableIndustryCosts.error.required")
+      "value" -> set(enumerable[ProfessionalServicesExpenses]("professionalServicesExpenses.error.required"))
+        .verifying(nonEmptySet("professionalServicesExpenses.error.required"))
     )
 
 }

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package pages.expenses
 
-import forms.mappings.Mappings
 import models.journeys.DisallowableIndustryCosts
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case object disallowableIndustryCostsPage extends QuestionPage[DisallowableIndustryCosts] {
 
-class DisallowableIndustryCostsFormProvider @Inject() extends Mappings {
+  override def path(businessId: Option[String] = None): JsPath =
+    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
 
-  def apply(): Form[DisallowableIndustryCosts] =
-    Form(
-      "value" -> enumerable[DisallowableIndustryCosts]("disallowableIndustryCosts.error.required")
-    )
-
+  override def toString: String = "disallowableIndustryCosts"
 }

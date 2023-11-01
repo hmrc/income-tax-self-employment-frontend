@@ -28,4 +28,5 @@ class StaffCostsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[StaffCosts]("staffCosts.error.required")
     )
+
 }

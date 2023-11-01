@@ -17,29 +17,29 @@
 package controllers.journeys.expenses
 
 import controllers.actions._
-import forms.expenses.EntertainmentCostsFormProvider
+import forms.expenses.ProfessionalServicesExpensesFormProvider
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
-import pages.expenses.EntertainmentCostsPage
+import pages.expenses.ProfessionalServicesExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.EntertainmentCostsView
+import views.html.journeys.expenses.ProfessionalServicesExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EntertainmentCostsController @Inject() (
+class ProfessionalServicesExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     navigator: ExpensesNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: EntertainmentCostsFormProvider,
+    formProvider: ProfessionalServicesExpensesFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: EntertainmentCostsView
+    view: ProfessionalServicesExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -47,7 +47,7 @@ class EntertainmentCostsController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(EntertainmentCostsPage) match {
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(ProfessionalServicesExpensesPage) match {
       case None        => form
       case Some(value) => form.fill(value)
     }
@@ -62,9 +62,9 @@ class EntertainmentCostsController @Inject() (
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(EntertainmentCostsPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServicesExpensesPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EntertainmentCostsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ProfessionalServicesExpensesPage, mode, updatedAnswers))
       )
   }
 

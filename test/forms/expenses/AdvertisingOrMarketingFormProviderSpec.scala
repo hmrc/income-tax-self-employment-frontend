@@ -16,17 +16,30 @@
 
 package forms.expenses
 
-import forms.mappings.Mappings
+import forms.behaviours.OptionFieldBehaviours
 import models.journeys.AdvertisingOrMarketing
-import play.api.data.Form
+import play.api.data.FormError
 
-import javax.inject.Inject
+class AdvertisingOrMarketingFormProviderSpec extends OptionFieldBehaviours {
 
-class AdvertisingOrMarketingFormProvider @Inject() extends Mappings {
+  val form = new AdvertisingOrMarketingFormProvider()()
 
-  def apply(): Form[AdvertisingOrMarketing] =
-    Form(
-      "value" -> enumerable[AdvertisingOrMarketing]("advertisingOrMarketing.error.required")
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "advertisingOrMarketing.error.required"
+
+    behave like optionsField[AdvertisingOrMarketing](
+      form,
+      fieldName,
+      validValues  = AdvertisingOrMarketing.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
