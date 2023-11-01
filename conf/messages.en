@@ -385,6 +385,7 @@ travelForWork.yesDisallowable = Yes, some of my expenses are disallowable
 travelForWork.checkYourAnswersLabel = Travel and accommodation for work
 travelForWork.error.required = Select travelForWork
 travelForWork.change.hidden = TravelForWork
+travelForWork.no = No
 
 advertisingOrMarketing.title = Advertising or marketing
 advertisingOrMarketing.heading = Advertising or marketing
@@ -393,6 +394,7 @@ advertisingOrMarketing.yesDisallowable = Yes, some of my expenses are disallowab
 advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
 advertisingOrMarketing.error.required = Select advertisingOrMarketing
 advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+advertisingOrMarketing.no = No
 
 entertainmentCosts.title = Entertainment costs
 entertainmentCosts.heading = Entertainment costs
