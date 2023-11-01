@@ -18,9 +18,25 @@ package generators
 
 import models._
 import models.journeys._
+import models.journeys.expenses.{Depreciation, FinancialExpenses, OtherExpenses}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryDepreciation: Arbitrary[Depreciation] =
+    Arbitrary {
+      Gen.oneOf(Depreciation.values.toSeq)
+    }
+
+  implicit lazy val arbitraryOtherExpenses: Arbitrary[OtherExpenses] =
+    Arbitrary {
+      Gen.oneOf(OtherExpenses.values.toSeq)
+    }
+
+  implicit lazy val arbitraryFinancialExpenses: Arbitrary[FinancialExpenses] =
+    Arbitrary {
+      Gen.oneOf(FinancialExpenses.values)
+    }
 
   implicit lazy val arbitraryWorkFromHome: Arbitrary[WorkFromHome] =
     Arbitrary {

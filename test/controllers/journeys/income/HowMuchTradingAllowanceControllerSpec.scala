@@ -70,7 +70,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK with the correct view" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId)).success.value
@@ -88,7 +88,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -122,7 +122,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult = view(
                 userScenario.form.fill(HowMuchTradingAllowance.values.head),
                 CheckMode,
-                authUserType(userScenario.isAgent),
+                userType(userScenario.isAgent),
                 taxYear,
                 stubbedBusinessId,
                 userScenario.allowanceString
@@ -213,7 +213,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId)).success.value
@@ -235,7 +235,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -265,7 +265,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, authUserType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.allowanceString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 

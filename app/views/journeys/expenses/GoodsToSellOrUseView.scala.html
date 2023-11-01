@@ -16,30 +16,71 @@
 
 @import models.journeys.GoodsToSellOrUse
 @import controllers.journeys.expenses.routes.GoodsToSellOrUseController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
+    heading: Heading,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("goodsToSellOrUse.title"))) {
 
-    @formHelper(action = GoodsToSellOrUseController.onSubmit(mode), 'autoComplete -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+    @heading(messages("goodsToSellOrUse.title"), None, extraClasses = "no-padding-top")
+
+    @if(taxiDriver) {
+        <div class="govuk-inset-text">
+            <p>@messages("goodsToSellOrUse.insetText")</p>
+        </div>
+    }
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages(s"site.canInclude.$userType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            @if(taxiDriver) {
+                <li>@messages("goodsToSellOrUse.l9")</li>
+            }
+            <li>@messages("goodsToSellOrUse.l1")</li>
+            <li>@messages("goodsToSellOrUse.l2")</li>
+            <li>@messages("goodsToSellOrUse.l3")</li>
+            @if(accountingType.equals("ACCRUAL")) {
+                <li>@messages("goodsToSellOrUse.l8")</li>
+            }
+            <li>@messages("goodsToSellOrUse.l4")</li>
+            <li>@messages("goodsToSellOrUse.l5")</li>
+
+        </ul>
+        <p>
+        @messages(s"site.cannotInclude.$userType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        @if(accountingType.equals("CASH")) {
+            <li>@messages("goodsToSellOrUse.l6")</li>
+
         }
+            <li>@messages("goodsToSellOrUse.l7")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = GoodsToSellOrUseController.onSubmit(mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("goodsToSellOrUse.heading")).asPageHeading(),
-                items  = GoodsToSellOrUse.options
+                legend = LegendViewModel(messages(s"goodsToSellOrUse.question.$userType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = GoodsToSellOrUse.options(userType)
             )
         )
 

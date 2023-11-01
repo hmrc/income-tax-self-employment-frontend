@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class OfficeSuppliesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[OfficeSupplies] =
+  def apply(userType: String): Form[OfficeSupplies] =
     Form(
-      "value" -> enumerable[OfficeSupplies]("officeSupplies.error.required")
+      "value" -> enumerable[OfficeSupplies](s"officeSupplies.error.required.$userType")
     )
 
 }
