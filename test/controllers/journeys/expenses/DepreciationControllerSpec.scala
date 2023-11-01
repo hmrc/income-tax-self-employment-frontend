@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.DepreciationPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,121 +41,177 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val epreciationRoute = DepreciationController.onPageLoad(NormalMode).url
+  lazy val depreciationRoute = DepreciationController.onPageLoad(NormalMode).url
 
   val formProvider = new DepreciationFormProvider()
-  val form         = formProvider()
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[Depreciation])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+  )
 
   "Depreciation Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+          "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, epreciationRoute)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
-        val result = route(application, request).value
+            running(application) {
+              val request = FakeRequest(GET, depreciationRoute)
 
-        val view = application.injector.instanceOf[DepreciationView]
+              val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+              val view = application.injector.instanceOf[DepreciationView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head, Some(stubbedBusinessId)).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+
+            running(application) {
+              val request = FakeRequest(GET, depreciationRoute)
+
+              val view = application.injector.instanceOf[DepreciationView]
+
+              val result = route(application, request).value
+
+              val expectedResult =
+                view(userScenario.form.fill(Depreciation.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, depreciationRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head).success.value
+      "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockSessionRepository = mock[SessionRepository]
 
-      running(application) {
-        val request = FakeRequest(GET, epreciationRoute)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val view = application.injector.instanceOf[DepreciationView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, depreciationRoute)
+              .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Depreciation.values.head), NormalMode)(request, messages(application)).toString
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+          "must return a Bad Request and errors when an empty form is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            running(application) {
+              val request =
+                FakeRequest(POST, depreciationRoute)
+                  .withFormUrlEncodedBody(("value", ""))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, epreciationRoute)
-            .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
+              val view = application.injector.instanceOf[DepreciationView]
 
-        val result = route(application, request).value
+              val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, depreciationRoute)
+                  .withFormUrlEncodedBody(("value", "invalid value"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+
+              val view = application.injector.instanceOf[DepreciationView]
+
+              val result = route(application, request).value
+
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" ignore {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, epreciationRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        running(application) {
+          val request =
+            FakeRequest(POST, depreciationRoute)
+              .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+          val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DepreciationView]
+          status(result) mustEqual SEE_OTHER
 
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, epreciationRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "redirect to Journey Recovery for a POST if no existing data is found" ignore {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, epreciationRoute)
-            .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

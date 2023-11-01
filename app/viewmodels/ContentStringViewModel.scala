@@ -21,15 +21,14 @@ import play.api.i18n.Messages
 
 object ContentStringViewModel {
 
-  def buildLegendHeadingWithHintString(page: Page,
-                                       optAuthUserType: Option[String] = None,
-                                       headingExtraClasses: String = "",
+  def buildLegendHeadingWithHintString(headingText: String,
+                                       hintText: String,
+                                       headingClasses: String = "",
                                        hintExtraClasses: String = "")(implicit messages: Messages): String = {
-    val optAuthUserString = optAuthUserType.map(userType => s".${userType}").getOrElse("")
-    val heading           = messages(s"${page.toString}.title$optAuthUserString")
-    val hint              = messages(s"${page.toString}.hint$optAuthUserString")
+    val heading           = messages(s"$headingText")
+    val hint              = messages(s"$hintText")
 
-    s"<div> <legend class='govuk-heading-l govuk-!-margin-0 $headingExtraClasses'> $heading </legend>" +
+    s"<div> <legend class=$headingClasses> $heading </legend>" +
       s"<div class='govuk-hint $hintExtraClasses'> $hint </div> </div>"
   }
 

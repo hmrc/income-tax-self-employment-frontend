@@ -17,20 +17,26 @@
 package controllers.journeys.expenses
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.FinancialExpensesFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.FinancialExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.FinancialExpensesView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
+                                             selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
                                              navigator: ExpensesNavigator,
                                              identify: IdentifierAction,
@@ -42,28 +48,50 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear    = LocalDate.now.getYear
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(FinancialExpensesPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+      case Right(accountingType) =>
+        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(FinancialExpensesPage, Some(businessId)) match {
+          case None        => formProvider(userType(request.user.isAgent))
+          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+        }
+        val legendContentString = buildLegendHeadingWithHintString(
+          s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
+          "site.selectAllTheApply",
+          headingClasses = "govuk-fieldset__legend--m govuk-fieldset__legend"
+        ) // TODO why isn't 2nd class being used??
+
+        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContentString))
     }
-
-    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(FinancialExpensesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers))
-      )
+    val legendContentString = buildLegendHeadingWithHintString(
+      s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
+      "site.selectAllTheApply",
+      headingClasses = "govuk-fieldset__legend--m govuk-fieldset__legend"
+    )
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+      case Right(accountingType) =>
+        formProvider(userType(request.user.isAgent))
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContentString))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(FinancialExpensesPage, value, Some(businessId)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers))
+          )
+    }
   }
 
 }

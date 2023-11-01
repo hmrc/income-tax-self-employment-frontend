@@ -25,9 +25,10 @@ import javax.inject.Inject
 
 class FinancialExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[FinancialExpenses]] =
+  def apply(authUserType: String): Form[Set[FinancialExpenses]] =
     Form(
-      "value" -> set(enumerable[FinancialExpenses]("financialExpenses.error.required")).verifying(nonEmptySet("financialExpenses.error.required"))
+      "value" -> set(enumerable[FinancialExpenses](s"financialExpenses.error.required.$authUserType"))
+        .verifying(nonEmptySet(s"financialExpenses.error.required.$authUserType"))
     )
 
 }

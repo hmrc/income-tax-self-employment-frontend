@@ -26,29 +26,35 @@ sealed trait FinancialExpenses
 
 object FinancialExpenses extends Enumerable.Implicits {
 
-  case object Interest extends WithName("interest") with FinancialExpenses
-  case object Otherfinancialcharges extends WithName("otherFinancialCharges") with FinancialExpenses
-  case object IrrecoverableDebts extends WithName("irrecoverableDebts") with FinancialExpenses
-  case object NoFinancialExpenses extends WithName("noFinancialExpenses") with FinancialExpenses
+  case object Interest              extends WithName("interest") with FinancialExpenses
+  case object OtherFinancialCharges extends WithName("otherFinancialCharges") with FinancialExpenses
+  case object IrrecoverableDebts    extends WithName("irrecoverableDebts") with FinancialExpenses
+  case object NoFinancialExpenses   extends WithName("noFinancialExpenses") with FinancialExpenses
+  case object CheckboxDivider       extends WithName("or") with FinancialExpenses
 
   val values: Seq[FinancialExpenses] = Seq(
     Interest,
-    Otherfinancialcharges,
+    OtherFinancialCharges,
     IrrecoverableDebts,
+    CheckboxDivider,
     NoFinancialExpenses
   )
 
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map {
+  def checkboxItems(userType: String, accountingType: String)(implicit messages: Messages): Seq[CheckboxItem] = {
+    val filteredValues = if (accountingType.equals("CASH")) values.filterNot(_.equals(IrrecoverableDebts)) else values
+    filteredValues.zipWithIndex.map {
+      case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))
       case (value, index) =>
         CheckboxItemViewModel(
-          content = Text(messages(s"financialExpenses.${value.toString}")),
+          content = Text(messages(s"financialExpenses.${value.toString}${if (value.equals(NoFinancialExpenses)) s".$userType" else ""}")),
           fieldId = "value",
-          index   = index,
-          value   = value.toString
+          index = index,
+          value = value.toString
         )
     }
+  }
 
   implicit val enumerable: Enumerable[FinancialExpenses] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

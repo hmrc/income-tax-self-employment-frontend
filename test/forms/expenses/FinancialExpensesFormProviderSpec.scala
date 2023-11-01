@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class FinancialExpensesFormProviderSpec extends CheckboxFieldBehaviours {
 
-  val form = new FinancialExpensesFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "financialExpenses.error.required"
+    val fieldName = "value"
 
-    behave like checkboxField[FinancialExpenses](
-      form,
-      fieldName,
-      validValues = FinancialExpenses.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryCheckboxField(
-      form,
-      fieldName,
-      requiredKey
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new FinancialExpensesFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like checkboxField[FinancialExpenses](
+          form,
+          fieldName,
+          validValues = FinancialExpenses.values,
+          invalidError = FormError(s"$fieldName[0]", "error.invalid")
+        )
+
+        behave like mandatoryCheckboxField(
+          form,
+          fieldName,
+          s"financialExpenses.error.required.${userScenario.user}"
+        )
+      }
+    }
   }
 
 }

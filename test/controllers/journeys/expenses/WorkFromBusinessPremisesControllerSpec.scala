@@ -48,10 +48,11 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
   val businessId   = "SJPR05893938418"
 
-  def isAgent(authUserType: String) = authUserType.equals(agent)
-
-  def buildLegendContent(authUserType: String)(implicit messages: Messages) =
-    buildLegendHeadingWithHintString(WorkFromBusinessPremisesPage, Some(authUserType), "govuk-!-margin-bottom-2")
+  def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"workFromBusinessPremises.title.$userType",
+    s"workFromBusinessPremises.hint.$userType",
+    headingClasses = "govuk-heading-l govuk-!-margin-0 govuk-!-margin-bottom-2"
+  )
 
   case class UserScenario(isWelsh: Boolean, authUserType: String)
 

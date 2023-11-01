@@ -16,31 +16,112 @@
 
 @import models.journeys.expenses.FinancialExpenses
 @import controllers.journeys.expenses.routes.FinancialExpensesController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukCheckboxes: GovukCheckboxes,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, accountingType: String, legendContentString: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("financialExpenses.title"))) {
 
-    @formHelper(action = FinancialExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+    @heading(messages("financialExpenses.title"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+
+    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @messages("financialExpenses.d1.heading")
+                            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                @messages(s"site.canInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages(s"financialExpenses.d1.l1.${accountingType.toLowerCase}")</li>
+                <li>@messages("financialExpenses.d1.l2")</li>
+                <li>@messages("financialExpenses.d1.l3")</li>
+            </ul>
+            <p>
+                @messages(s"site.cannotInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("financialExpenses.d1.l4")</li>
+                <li>@messages("financialExpenses.d1.l5")</li>
+            </ul>
+        </div>
+    </details>
+
+    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @messages("financialExpenses.d2.heading")
+                            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                @messages(s"site.canInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("financialExpenses.d2.l1")</li>
+                <li>@messages("financialExpenses.d2.l2")</li>
+                <li>@messages("financialExpenses.d2.l3")</li>
+                <li>@messages("financialExpenses.d2.l4")</li>
+                <li>@messages("financialExpenses.d2.l5")</li>
+            </ul>
+            <p>
+                @messages(s"site.cannotInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("financialExpenses.d2.l6")</li>
+            </ul>
+        </div>
+    </details>
+
+    @if(accountingType.equals("ACCRUAL")){
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    @messages("financialExpenses.d3.heading")
+                                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p>
+                    @messages(s"site.canInclude.$authUserType")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("financialExpenses.d3.l1")</li>
+                </ul>
+                <p>
+                    @messages(s"site.cannotInclude.$authUserType")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("financialExpenses.d3.l2")</li>
+                    <li>@messages("financialExpenses.d3.l3")</li>
+                    <li>@messages("financialExpenses.d3.l4")</li>
+                </ul>
+            </div>
+        </details>
+    }
+
+    @formHelper(action = FinancialExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @govukCheckboxes(
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                legend = LegendViewModel(messages("financialExpenses.title")).asPageHeading(),
-                items  = FinancialExpenses.checkboxItems
+                items  = FinancialExpenses.checkboxItems(authUserType, accountingType),
+                legend = LegendViewModel(HtmlContent(legendContentString)).withCssClass("no-margin-bottom")
             )
         )
 

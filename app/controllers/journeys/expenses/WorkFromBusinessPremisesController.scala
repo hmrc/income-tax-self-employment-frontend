@@ -54,18 +54,20 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
     val radioContentString = buildLegendHeadingWithHintString(
-      WorkFromBusinessPremisesPage,
-      Some(userType(request.user.isAgent)),
-      headingExtraClasses = "govuk-!-margin-bottom-2")
+      s"workFromBusinessPremises.title.${userType(request.user.isAgent)}",
+      s"workFromBusinessPremises.hint.${userType(request.user.isAgent)}",
+      headingClasses = "govuk-heading-l govuk-!-margin-0 govuk-!-margin-bottom-2"
+    )
 
     Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, radioContentString))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val radioContentString = buildLegendHeadingWithHintString(
-      WorkFromBusinessPremisesPage,
-      Some(userType(request.user.isAgent)),
-      headingExtraClasses = "govuk-!-margin-bottom-2")
+      s"workFromBusinessPremises.title.${userType(request.user.isAgent)}",
+      s"workFromBusinessPremises.hint.${userType(request.user.isAgent)}",
+      headingClasses = "govuk-heading-l govuk-!-margin-0 govuk-!-margin-bottom-2"
+    )
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(

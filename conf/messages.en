@@ -18,6 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
+site.selectAllTheApply = Select all that apply.
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -400,25 +401,60 @@ workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 
 ## Financial expenses
 financialExpenses.title = Financial expenses
-financialExpenses.subheading = Did you have any financial expenses?
+financialExpenses.subHeading.individual = Did you have any financial expenses?
+financialExpenses.subHeading.agent = Did your client have any financial expenses?
+financialExpenses.d1.heading = Understanding interest on bank and other business loans
+financialExpenses.d1.l1.accrual = interest on bank and other business loans
+financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
+financialExpenses.d1.l2 = fees for buying goods
+financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
+financialExpenses.d1.l4 = repayments of loans
+financialExpenses.d1.l5 = overdraft or finance arrangements.
+financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
+financialExpenses.d2.l1 = bank charges
+financialExpenses.d2.l2 = overdraft charges
+financialExpenses.d2.l3 = credit card charges
+financialExpenses.d2.l4 = hire purchase and lease interest
+financialExpenses.d2.l5 = alternative finance payments
+financialExpenses.d2.l6 = capital repayments
+financialExpenses.d3.heading = Understanding irrecoverable debts written off
+financialExpenses.d3.l1 = amounts included in turnover but unpaid and written off (due to being irrecoverable)
+financialExpenses.d3.l2 = debts not included in turnover
+financialExpenses.d3.l3 = debts relating to fixed assets
+financialExpenses.d3.l4 = general bad debts
 financialExpenses.interest = Interest on bank and other business loans
 financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
 financialExpenses.irrecoverableDebts = Irrecoverable debts written off
-financialExpenses.noFinancialExpenses = No, I did not have any financial expenses
+financialExpenses.noFinancialExpenses.individual = No, I did not have any financial expenses
+financialExpenses.noFinancialExpenses.agent = No, my client did not have any financial expenses
 financialExpenses.checkYourAnswersLabel = Did you have any financial expenses?
-financialExpenses.error.required = Select financialExpenses
+financialExpenses.error.required.individual = Select the financial expenses you paid for, or select ‘No, I did not have any financial expenses’
+financialExpenses.error.required.agent = Select the financial expenses your client paid for, or select ‘No, my client did not have any financial expenses’
 financialExpenses.change.hidden = FinancialExpenses
 
 ## Depreciation
 depreciation.title = Depreciation and loss or profit on the sale of assets
-depreciation.subHeading = Do you need to report any depreciation costs?
+depreciation.subHeading.individual = Do you need to report any depreciation costs?
+depreciation.subHeading.agent = Does your client need to report any depreciation costs?
+depreciation.p1.individual = These are disallowable expenses, but you still need to tell us about them. They include:
+depreciation.p1.agent = These are disallowable expenses, but your client still needs to tell us about them. They include:
+depreciation.l1 = depreciation of equipment, cars and so on
+depreciation.l2 = losses (minus any profits) on sales of assets
 depreciation.checkYourAnswersLabel = Do you need to report any depreciation costs?
-depreciation.error.required = Select depreciation
+depreciation.error.required.individual = Select yes if you need to report and depreciation costs
+depreciation.error.required.agent = Select yes if your client needs to report and depreciation costs
 depreciation.change.hidden = Depreciation
 
 ## Other expenses
 otherExpenses.title = Other expenses
-otherExpenses.subHeading = Do you need to report any other expenses?
+otherExpenses.subHeading.individual = Do you need to report any other expenses?
+otherExpenses.subHeading.agent = Does your client need to report any other expenses?
+otherExpenses.l1 = trade or professional journals and subscriptions
+otherExpenses.l2 = other sundry business running expenses not included elsewhere
+otherExpenses.l3 = payments to clubs, charities or political parties
+otherExpenses.l4 = any non-work use
+otherExpenses.l5 = the cost of ordinary clothing
 otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
-otherExpenses.error.required = Select otherExpenses
+otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
+otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
