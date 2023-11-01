@@ -397,3 +397,28 @@ workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own busi
 workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
+
+## Financial expenses
+financialExpenses.title = Financial expenses
+financialExpenses.subheading = Did you have any financial expenses?
+financialExpenses.interest = Interest on bank and other business loans
+financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
+financialExpenses.irrecoverableDebts = Irrecoverable debts written off
+financialExpenses.noFinancialExpenses = No, I did not have any financial expenses
+financialExpenses.checkYourAnswersLabel = Did you have any financial expenses?
+financialExpenses.error.required = Select financialExpenses
+financialExpenses.change.hidden = FinancialExpenses
+
+## Depreciation
+depreciation.title = Depreciation and loss or profit on the sale of assets
+depreciation.subHeading = Do you need to report any depreciation costs?
+depreciation.checkYourAnswersLabel = Do you need to report any depreciation costs?
+depreciation.error.required = Select depreciation
+depreciation.change.hidden = Depreciation
+
+## Other expenses
+otherExpenses.title = Other expenses
+otherExpenses.subHeading = Do you need to report any other expenses?
+otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
+otherExpenses.error.required = Select otherExpenses
+otherExpenses.change.hidden = OtherExpenses
