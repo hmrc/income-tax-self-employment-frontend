@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.GoodsToSellOrUseFormProvider
 import models.ModelUtils.userType
+import models.journeys.TaxiMinicabOrRoadHaulage
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
@@ -58,7 +59,8 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
           case None => formProvider(userType(request.user.isAgent))
           case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
-        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(true)
+        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+          .contains(TaxiMinicabOrRoadHaulage.Yes)
         Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))
     }
   }
@@ -66,7 +68,8 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
-        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(true)
+        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+          .contains(TaxiMinicabOrRoadHaulage.Yes)
         val form = formProvider(userType(request.user.isAgent))
         form
           .bindFromRequest()

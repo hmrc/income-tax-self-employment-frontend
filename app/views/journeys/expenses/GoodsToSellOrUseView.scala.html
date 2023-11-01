@@ -48,6 +48,9 @@
         @messages(s"site.canInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            @if(taxiDriver) {
+                <li>@messages("goodsToSellOrUse.l9")</li>
+            }
             <li>@messages("goodsToSellOrUse.l1")</li>
             <li>@messages("goodsToSellOrUse.l2")</li>
             <li>@messages("goodsToSellOrUse.l3")</li>

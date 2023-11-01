@@ -63,7 +63,7 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TaxiMinicabOrRoadHaulagePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TaxiMinicabOrRoadHaulagePage, value, Some(businessId)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, mode, updatedAnswers))
       )

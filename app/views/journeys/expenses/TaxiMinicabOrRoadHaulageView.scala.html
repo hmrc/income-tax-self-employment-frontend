@@ -38,7 +38,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.heading.$userType")).asPageHeading(),
+                legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.heading.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
                 items  = TaxiMinicabOrRoadHaulage.options
             )
         )
