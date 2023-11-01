@@ -28,7 +28,7 @@ object ContentStringViewModel {
     val heading           = messages(s"$headingText")
     val hint              = messages(s"$hintText")
 
-    s"<div> <legend class=$headingClasses> $heading </legend>" +
+    s"<div> <legend class='$headingClasses'> $heading </legend>" +
       s"<div class='govuk-hint $hintExtraClasses'> $hint </div> </div>"
   }
 

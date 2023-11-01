@@ -62,8 +62,8 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
         val legendContentString = buildLegendHeadingWithHintString(
           s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
           "site.selectAllTheApply",
-          headingClasses = "govuk-fieldset__legend--m govuk-fieldset__legend"
-        ) // TODO why isn't 2nd class being used??
+          headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
+        )
 
         Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContentString))
     }
