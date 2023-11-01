@@ -147,11 +147,6 @@ POST       /expenses/entertainment-costs                                        
 GET        /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = CheckMode)
 POST       /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/professional-services                                         controllers.journeys.expenses.ProfessionalServicesController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/professional-services                                         controllers.journeys.expenses.ProfessionalServicesController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-professional-services                                  controllers.journeys.expenses.ProfessionalServicesController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-professional-services                                  controllers.journeys.expenses.ProfessionalServicesController.onSubmit(mode: Mode = CheckMode)
-
 GET        /expenses/staff-costs                                                   controllers.journeys.expenses.StaffCostsController.onPageLoad(mode: Mode = NormalMode)
 POST       /expenses/staff-costs                                                   controllers.journeys.expenses.StaffCostsController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses/change-staff-costs                                            controllers.journeys.expenses.StaffCostsController.onPageLoad(mode: Mode = CheckMode)
@@ -166,3 +161,8 @@ GET        /expenses/disallowable-fees                                          
 POST       /expenses/disallowable-fees                                             controllers.journeys.expenses.DisallowableFeesController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses/change-disallowable-fees                                      controllers.journeys.expenses.DisallowableFeesController.onPageLoad(mode: Mode = CheckMode)
 POST       /expenses/change-disallowable-fees                                      controllers.journeys.expenses.DisallowableFeesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/professional-services-expenses                                controllers.journeys.expenses.ProfessionalServicesExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/professional-services-expenses                                controllers.journeys.expenses.ProfessionalServicesExpensesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-professional-services-expenses                         controllers.journeys.expenses.ProfessionalServicesExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-professional-services-expenses                         controllers.journeys.expenses.ProfessionalServicesExpensesController.onSubmit(mode: Mode = CheckMode)

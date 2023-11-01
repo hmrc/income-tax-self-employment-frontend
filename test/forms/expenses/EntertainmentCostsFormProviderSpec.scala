@@ -16,17 +16,30 @@
 
 package forms.expenses
 
-import forms.mappings.Mappings
+import forms.behaviours.OptionFieldBehaviours
 import models.journeys.EntertainmentCosts
-import play.api.data.Form
+import play.api.data.FormError
 
-import javax.inject.Inject
+class EntertainmentCostsFormProviderSpec extends OptionFieldBehaviours {
 
-class EntertainmentCostsFormProvider @Inject() extends Mappings {
+  val form = new EntertainmentCostsFormProvider()()
 
-  def apply(): Form[EntertainmentCosts] =
-    Form(
-      "value" -> enumerable[EntertainmentCosts]("entertainmentCosts.error.required")
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "entertainmentCosts.error.required"
+
+    behave like optionsField[EntertainmentCosts](
+      form,
+      fieldName,
+      validValues  = EntertainmentCosts.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

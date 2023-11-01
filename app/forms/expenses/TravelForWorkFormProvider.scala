@@ -28,4 +28,5 @@ class TravelForWorkFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[TravelForWork]("travelForWork.error.required")
     )
+
 }

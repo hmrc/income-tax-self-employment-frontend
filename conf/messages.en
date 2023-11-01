@@ -428,8 +428,18 @@ disallowableIndustryCosts.change.hidden = disallowableIndustryCosts
 
 disallowableFees.title = Disallowable professional fees
 disallowableFees.heading = Disallowable professional fees
-disallowableFees.yes = YYes
-disallowableFees.no = NMNo
+disallowableFees.yes = Yes
+disallowableFees.no = No
 disallowableFees.checkYourAnswersLabel = Disallowable professional fees
 disallowableFees.error.required = Select disallowableFees
 disallowableFees.change.hidden = disallowableFees
+
+professionalServicesExpenses.title = Staff, construction industry and professional services expenses
+professionalServicesExpenses.heading = Staff, construction industry and professional services expenses
+professionalServicesExpenses.staff = Staff
+professionalServicesExpenses.subcontractors = Construction industry subcontractors
+professionalServicesExpenses.professionalFees = Professional fees
+professionalServicesExpenses.no = No, I did not pay for any of these professionals or services
+professionalServicesExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
+professionalServicesExpenses.error.required = Select professionalServicesExpenses
+professionalServicesExpenses.change.hidden = ProfessionalServicesExpenses

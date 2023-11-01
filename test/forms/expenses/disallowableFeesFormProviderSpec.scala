@@ -16,17 +16,30 @@
 
 package forms.expenses
 
-import forms.mappings.Mappings
+import forms.behaviours.OptionFieldBehaviours
 import models.journeys.DisallowableFees
-import play.api.data.Form
+import play.api.data.FormError
 
-import javax.inject.Inject
+class disallowableFeesFormProviderSpec extends OptionFieldBehaviours {
 
-class DisallowableFeesFormProvider @Inject() extends Mappings {
+  val form = new DisallowableFeesFormProvider()()
 
-  def apply(): Form[DisallowableFees] =
-    Form(
-      "value" -> enumerable[DisallowableFees]("disallowableFees.error.required")
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "disallowableFees.error.required"
+
+    behave like optionsField[DisallowableFees](
+      form,
+      fieldName,
+      validValues  = DisallowableFees.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

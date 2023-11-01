@@ -45,4 +45,3 @@ object EntertainmentCosts extends Enumerable.Implicits {
     Enumerable(values.map(v => v.toString -> v): _*)
 
 }
-

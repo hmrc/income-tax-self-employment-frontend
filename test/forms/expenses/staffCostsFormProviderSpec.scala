@@ -16,17 +16,30 @@
 
 package forms.expenses
 
-import forms.mappings.Mappings
-import models.journeys.DisallowableIndustryCosts
-import play.api.data.Form
+import forms.behaviours.OptionFieldBehaviours
+import models.journeys.StaffCosts
+import play.api.data.FormError
 
-import javax.inject.Inject
+class staffCostsFormProviderSpec extends OptionFieldBehaviours {
 
-class DisallowableIndustryCostsFormProvider @Inject() extends Mappings {
+  val form = new StaffCostsFormProvider()()
 
-  def apply(): Form[DisallowableIndustryCosts] =
-    Form(
-      "value" -> enumerable[DisallowableIndustryCosts]("disallowableIndustryCosts.error.required")
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "staffCosts.error.required"
+
+    behave like optionsField[StaffCosts](
+      form,
+      fieldName,
+      validValues  = StaffCosts.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

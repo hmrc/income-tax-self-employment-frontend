@@ -18,50 +18,48 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.AdvertisingOrMarketingFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
-import pages.AdvertisingOrMarketingPage
+import pages.expenses.AdvertisingOrMarketingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AdvertisingOrMarketingView
+import views.html.journeys.expenses.AdvertisingOrMarketingView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdvertisingOrMarketingController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: ExpensesNavigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AdvertisingOrMarketingFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: AdvertisingOrMarketingView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AdvertisingOrMarketingController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    navigator: ExpensesNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AdvertisingOrMarketingFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: AdvertisingOrMarketingView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(AdvertisingOrMarketingPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(AdvertisingOrMarketingPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingOrMarketingPage, value))
@@ -69,4 +67,5 @@ class AdvertisingOrMarketingController @Inject()(
           } yield Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers))
       )
   }
+
 }
