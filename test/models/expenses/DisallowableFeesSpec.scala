@@ -16,7 +16,7 @@
 
 package models.expenses
 
-import models.journeys.StaffCosts
+import models.journeys.DisallowableFees
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -25,40 +25,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class staffCostsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class DisallowableFeesSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "staffCosts" - {
+  "disallowableFees" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(StaffCosts.values)
+      val gen = Gen.oneOf(DisallowableFees.values)
 
       forAll(gen) {
-        staffCosts =>
+        disallowableFees =>
 
-          JsString(staffCosts.toString).validate[StaffCosts].asOpt.value mustEqual staffCosts
+          JsString(disallowableFees.toString).validate[DisallowableFees].asOpt.value mustEqual disallowableFees
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!StaffCosts.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!DisallowableFees.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[StaffCosts] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[DisallowableFees] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(StaffCosts.values)
+      val gen = Gen.oneOf(DisallowableFees.values)
 
       forAll(gen) {
-        staffCosts =>
+        disallowableFees =>
 
-          Json.toJson(staffCosts) mustEqual JsString(staffCosts.toString)
+          Json.toJson(disallowableFees) mustEqual JsString(disallowableFees.toString)
       }
     }
   }
