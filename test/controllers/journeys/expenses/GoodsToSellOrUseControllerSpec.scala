@@ -21,12 +21,13 @@ import controllers.journeys.expenses.routes.GoodsToSellOrUseController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.GoodsToSellOrUseFormProvider
 import models.journeys.GoodsToSellOrUse
+import models.journeys.TaxiMinicabOrRoadHaulage.Yes
 import models.{NormalMode, UserAnswers}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.GoodsToSellOrUsePage
+import pages.expenses.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -47,7 +48,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
   lazy val goodsToSellOrUseRoute = GoodsToSellOrUseController.onPageLoad(NormalMode).url
 
   val formProvider = new GoodsToSellOrUseFormProvider()
-  val businessId   = "SJPR05893938418"
   val taxiDriver   = false
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
@@ -66,14 +66,13 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
       userScenarios.foreach { userScenario =>
         s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
-
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, goodsToSellOrUseRoute)
 
@@ -84,7 +83,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType, taxiDriver)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -95,7 +94,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(businessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(stubbedBusinessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -103,7 +102,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, goodsToSellOrUseRoute)
 
@@ -119,7 +118,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  businessId,
+                  stubbedBusinessId,
                   userScenario.accountingType,
                   taxiDriver
                 )(request, messages(application, userScenario.isWelsh)).toString
@@ -128,6 +127,33 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
+
+      "must return OK and the correct view for a GET when user is taxi driver" in {
+        val taxiDriver = true
+        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .build()
+//        implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+        running(application) {
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+
+          val request = FakeRequest(GET, goodsToSellOrUseRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[GoodsToSellOrUseView]
+
+          val expectedResult =
+            view(formProvider(individual), NormalMode, userType(false), taxYear, stubbedBusinessId, cash, taxiDriver)(
+              request,
+              messages(application, false)).toString
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual expectedResult
         }
       }
 
@@ -163,7 +189,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, goodsToSellOrUseRoute)
@@ -186,7 +212,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, goodsToSellOrUseRoute)
@@ -201,7 +227,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, businessId, userScenario.accountingType, taxiDriver)(
+                taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
                 request,
                 messages(application)).toString
 
@@ -218,7 +244,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, goodsToSellOrUseRoute)
@@ -233,7 +259,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, businessId, userScenario.accountingType, taxiDriver)(
+                taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
                 request,
                 messages(application)).toString
 

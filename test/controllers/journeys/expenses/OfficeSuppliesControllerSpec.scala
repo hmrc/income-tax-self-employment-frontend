@@ -45,7 +45,6 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
   lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(NormalMode).url
 
   val formProvider = new OfficeSuppliesFormProvider()
-  val businessId   = "SJPR05893938418"
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -71,7 +70,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, officeSuppliesRoute)
 
@@ -82,7 +81,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -94,7 +93,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head, Some(businessId)).success.value
+              UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head, Some(stubbedBusinessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -102,7 +101,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, officeSuppliesRoute)
 
@@ -118,7 +117,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  businessId,
+                  stubbedBusinessId,
                   userScenario.accountingType
                 )(request, messages(application, userScenario.isWelsh)).toString
 
@@ -161,7 +160,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, officeSuppliesRoute)
@@ -184,7 +183,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, officeSuppliesRoute)
@@ -198,7 +197,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
                 request,
                 messages(application)).toString
 
@@ -215,7 +214,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, officeSuppliesRoute)
@@ -229,7 +228,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
                 request,
                 messages(application)).toString
 
