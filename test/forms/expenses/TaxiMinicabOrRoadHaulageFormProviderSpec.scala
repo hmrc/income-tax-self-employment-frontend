@@ -22,25 +22,32 @@ import play.api.data.FormError
 
 class TaxiMinicabOrRoadHaulageFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TaxiMinicabOrRoadHaulageFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "taxiMinicabOrRoadHaulage.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[TaxiMinicabOrRoadHaulage](
-      form,
-      fieldName,
-      validValues = TaxiMinicabOrRoadHaulage.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new TaxiMinicabOrRoadHaulageFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[TaxiMinicabOrRoadHaulage](
+          form,
+          fieldName,
+          validValues = TaxiMinicabOrRoadHaulage.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"taxiMinicabOrRoadHaulage.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
-
 }
