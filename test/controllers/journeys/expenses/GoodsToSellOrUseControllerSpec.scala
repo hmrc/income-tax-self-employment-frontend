@@ -136,7 +136,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .build()
-//        implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
         running(application) {
           when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
