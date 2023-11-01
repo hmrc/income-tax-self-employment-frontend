@@ -16,7 +16,7 @@
 
 package models.expenses
 
-import models.journeys.DisallowableFees
+import models.journeys.DisallowableIndustryCosts
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -25,40 +25,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class disallowableFeesSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class DisallowableIndustryCostsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "disallowableFees" - {
+  "disallowableIndustryCosts" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(DisallowableFees.values)
+      val gen = Gen.oneOf(DisallowableIndustryCosts.values)
 
       forAll(gen) {
-        disallowableFees =>
+        disallowableIndustryCosts =>
 
-          JsString(disallowableFees.toString).validate[DisallowableFees].asOpt.value mustEqual disallowableFees
+          JsString(disallowableIndustryCosts.toString).validate[DisallowableIndustryCosts].asOpt.value mustEqual disallowableIndustryCosts
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!DisallowableFees.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!DisallowableIndustryCosts.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[DisallowableFees] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[DisallowableIndustryCosts] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(DisallowableFees.values)
+      val gen = Gen.oneOf(DisallowableIndustryCosts.values)
 
       forAll(gen) {
-        disallowableFees =>
+        disallowableIndustryCosts =>
 
-          Json.toJson(disallowableFees) mustEqual JsString(disallowableFees.toString)
+          Json.toJson(disallowableIndustryCosts) mustEqual JsString(disallowableIndustryCosts.toString)
       }
     }
   }

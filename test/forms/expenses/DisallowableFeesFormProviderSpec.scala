@@ -17,22 +17,22 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.DisallowableIndustryCosts
+import models.journeys.DisallowableFees
 import play.api.data.FormError
 
-class disallowableIndustryCostsFormProviderSpec extends OptionFieldBehaviours {
+class DisallowableFeesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableIndustryCostsFormProvider()()
+  val form = new DisallowableFeesFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "disallowableIndustryCosts.error.required"
+    val requiredKey = "disallowableFees.error.required"
 
-    behave like optionsField[DisallowableIndustryCosts](
+    behave like optionsField[DisallowableFees](
       form,
       fieldName,
-      validValues  = DisallowableIndustryCosts.values,
+      validValues  = DisallowableFees.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
