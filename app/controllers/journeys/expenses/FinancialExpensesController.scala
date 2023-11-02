@@ -23,7 +23,7 @@ import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.FinancialExpensesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SelfEmploymentService
@@ -59,22 +59,12 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           case None        => formProvider(userType(request.user.isAgent))
           case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
-        val legendContentString = buildLegendHeadingWithHintString(
-          s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
-          "site.selectAllTheApply",
-          headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-        )
 
-        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContentString))
+        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContent(userType(request.user.isAgent))))
     }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val legendContentString = buildLegendHeadingWithHintString(
-      s"financialExpenses.subHeading.${userType(request.user.isAgent)}",
-      "site.selectAllTheApply",
-      headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-    )
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
@@ -83,7 +73,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContentString))),
+                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContent(userType(request.user.isAgent))))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
@@ -93,5 +83,11 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           )
     }
   }
+
+  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"financialExpenses.subHeading.$userType",
+    "site.selectAllThatApply",
+    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
+  )
 
 }

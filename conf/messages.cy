@@ -18,7 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
-site.selectAllTheApply = Select all that apply.
+site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS

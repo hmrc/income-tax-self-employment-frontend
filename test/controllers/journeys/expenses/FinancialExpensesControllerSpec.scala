@@ -52,7 +52,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
     s"financialExpenses.subHeading.$userType",
-    "site.selectAllTheApply",
+    "site.selectAllThatApply",
     headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
   )
 
