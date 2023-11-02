@@ -62,7 +62,7 @@ capitalAllowances.p1.individual = Capital allowances are a type of tax relief. T
 capitalAllowances.p1.agent = Capital allowances are a type of tax relief. They let your client deduct some or all of the value of an item from their profits before they pay tax.
 capitalAllowances.p2.individual = You can claim capital allowances on:
 capitalAllowances.p2.agent = Your client can claim capital allowances on:
-capitalAllowances.p3 = These are known as ‘plant and machinery’.
+capitalAllowances.p3 = These are known as ’plant and machinery’.
 capitalAllowances.l1 = equipment
 capitalAllowances.l2 = machinery
 capitalAllowances.l3 = business vehicles
@@ -168,7 +168,7 @@ turnoverIncomeAmount.p1.individual = Your turnover is income from your self-empl
 turnoverIncomeAmount.p1.agent = Your client’s turnover is income from their self-employment and includes:
 turnoverIncomeAmount.l1 = all payments – cash, card, cheque or any other method
 turnoverIncomeAmount.l2 = tips, fees and commissions
-turnoverIncomeAmount.l3 = any payments ‘in kind’ (not paid by cheque or cash) for work done or goods sold
+turnoverIncomeAmount.l3 = any payments ’in kind’ (not paid by cheque or cash) for work done or goods sold
 turnoverIncomeAmount.l4.individual = money owed to you for work already done
 turnoverIncomeAmount.l4.agent = money owed to your client for work already done
 turnoverIncomeAmount.subHeading.individual = What was your turnover?
@@ -265,7 +265,7 @@ tradingAllowance.change.hidden = Change trading allowance
 ## How much trading allowance
 howMuchTradingAllowance.title = Trading allowance for income under £1,000
 howMuchTradingAllowance.p1.individual = If your income was less than £1,000, you cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
-howMuchTradingAllowance.p1.agent = If your client‘s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
+howMuchTradingAllowance.p1.agent = If your client’s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
 howMuchTradingAllowance.p2 = Your choice will apply to any other self-employments you tell us about.
 howMuchTradingAllowance.subHeading.individual = How much of your trading allowance do you want to use?
 howMuchTradingAllowance.subHeading.agent = How much of your client’s trading allowance do you want to use?
@@ -435,32 +435,32 @@ financialExpenses.change.hidden = FinancialExpenses
 
 ## Disallowable interest
 disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
-disallowableInterest.title.agent = Is any of your client‘s interest on bank and other business loans disallowable?
+disallowableInterest.title.agent = Is any of your client’s interest on bank and other business loans disallowable?
 disallowableInterest.heading = Disallowable interest on bank and other business loans
 disallowableInterest.l1 = repayments of loans
 disallowableInterest.l2 = overdraft or finance arrangements
 disallowableInterest.checkYourAnswersLabel = Is any of your interest on bank and other business loans disallowable?
 disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
-disallowableInterest.error.required.agent = Select yes if any of your client‘s interest on bank and other business loans is disallowable
+disallowableInterest.error.required.agent = Select yes if any of your client’s interest on bank and other business loans is disallowable
 disallowableInterest.change.hidden = DisallowableInterest
 
 ## Disallowable other financial charges
 disallowableOtherFinancialCharges.title.individual = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.title.agent = Are any of your client‘s bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.agent = Are any of your client’s bank, credit card and other financial charges disallowable?
 disallowableOtherFinancialCharges.heading = Disallowable bank, credit card and other financial charges
 disallowableOtherFinancialCharges.p1 = These include capital repayments.
 disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
 disallowableOtherFinancialCharges.error.required.individual = Select yes if any of your bank, credit card and other financial charges are disallowable
-disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client‘s bank, credit card and other financial charges are disallowable
+disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client’s bank, credit card and other financial charges are disallowable
 disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
 
 ## Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.title.individual = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.title.agent = Are any of your client‘s irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.agent = Are any of your client’s irrecoverable debts disallowable?
 disallowableIrrecoverableDebts.heading = Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
 disallowableIrrecoverableDebts.error.required.individual = Select yes if any of your irrecoverable debts are disallowable
-disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client‘s irrecoverable debts are disallowable
+disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client’s irrecoverable debts are disallowable
 disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
 
 ## Depreciation
