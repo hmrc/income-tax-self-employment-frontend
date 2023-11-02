@@ -432,6 +432,27 @@ financialExpenses.error.required.individual = Select the financial expenses you 
 financialExpenses.error.required.agent = Select the financial expenses your client paid for, or select ‘No, my client did not have any financial expenses’
 financialExpenses.change.hidden = FinancialExpenses
 
+## Disallowable interest
+disallowableInterest.title = Disallowable interest on bank and other business loans
+disallowableInterest.heading = Disallowable interest on bank and other business loans
+disallowableInterest.checkYourAnswersLabel = Disallowable interest on bank and other business loans
+disallowableInterest.error.required = Select disallowableInterest
+disallowableInterest.change.hidden = DisallowableInterest
+
+## Disallowable other financial charges
+disallowableOtherFinancialCharges.title = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.heading = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.error.required = Select disallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
+
+## Disallowable irrecoverable debts
+disallowableIrrecoverableDebts.title = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.heading = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.error.required = Select disallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
+
 ## Depreciation
 depreciation.title = Depreciation and loss or profit on the sale of assets
 depreciation.subHeading.individual = Do you need to report any depreciation costs?
