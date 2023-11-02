@@ -22,7 +22,7 @@ import forms.income.AnyOtherIncomeFormProvider
 import models.Mode
 import models.ModelUtils.{accrual, userType}
 import navigation.IncomeNavigator
-import pages.income.AnyOtherIncomePage
+import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -67,8 +67,13 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyOtherIncomePage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
+                  updatedAnswers <- Future.fromTry {
+                    val userAnswers =
+                      if (!value) request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId)).get
+                      else request.userAnswers
+                    userAnswers.set(AnyOtherIncomePage, value, Some(businessId))
+                  }
+                  _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
                   navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(accrual)))
                 )
