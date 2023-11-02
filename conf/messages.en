@@ -263,7 +263,7 @@ tradingAllowance.change.hidden = Change trading allowance
 ## How much trading allowance
 howMuchTradingAllowance.title = Trading allowance for income under £1,000
 howMuchTradingAllowance.p1.individual = If your income was less than £1,000, you cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
-howMuchTradingAllowance.p1.agent = If your client‘s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
+howMuchTradingAllowance.p1.agent = If your client’s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
 howMuchTradingAllowance.p2 = Your choice will apply to any other self-employments you tell us about.
 howMuchTradingAllowance.subHeading.individual = How much of your trading allowance do you want to use?
 howMuchTradingAllowance.subHeading.agent = How much of your client’s trading allowance do you want to use?
