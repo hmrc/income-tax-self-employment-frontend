@@ -422,3 +422,63 @@ otherExpenses.subHeading = Do you need to report any other expenses?
 otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
 otherExpenses.error.required = Select otherExpenses
 otherExpenses.change.hidden = OtherExpenses
+
+advertisingOrMarketing.title = Advertising or marketing
+advertisingOrMarketing.heading = Advertising or marketing
+advertisingOrMarketing.yes.allowable = Yes, all of my expenses are allowable
+advertisingOrMarketing.yes.disallowable = Yes, some of my expenses are disallowable
+advertisingOrMarketing.no = No
+advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
+advertisingOrMarketing.error.required = Select advertisingOrMarketing
+advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+
+disallowableProfessionalFees.title = Disallowable professional fees
+disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.yes = Yes
+disallowableProfessionalFees.no = No
+disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
+disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
+disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
+
+disallowableStaffCosts.title = Disallowable staff costs
+disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.yes = Yes
+disallowableStaffCosts.no = No
+disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
+disallowableStaffCosts.error.required = Select disallowableStaffCosts
+disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+
+disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.yes = Yes
+disallowableSubcontractorCosts.no = No
+disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
+disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+
+entertainmentCosts.title = Entertainment costs
+entertainmentCosts.heading = Entertainment costs
+entertainmentCosts.yes = Yes
+entertainmentCosts.no = No
+entertainmentCosts.checkYourAnswersLabel = Entertainment costs
+entertainmentCosts.error.required = Select entertainmentCosts
+entertainmentCosts.change.hidden = EntertainmentCosts
+
+professionalServiceExpenses.title = Staff, construction industry and professional services expenses
+professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.staff = Staff
+professionalServiceExpenses.construction = Construction industry subcontractors
+professionalServiceExpenses.professional.fees = Professional Fees
+professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
+professionalServiceExpenses.error.required = Select professionalServiceExpenses
+professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+
+travelForWork.title = Travel for work and accommodation
+travelForWork.heading = Travel for work and accommodation
+travelForWork.yes.allowable = Yes, all of my expenses are allowable
+travelForWork.yes.disallowable = Yes, some of my expenses are disallowable
+travelForWork.no = No
+travelForWork.checkYourAnswersLabel = Travel for work and accommodation
+travelForWork.error.required = Select travelForWork
+travelForWork.change.hidden = TravelForWork
