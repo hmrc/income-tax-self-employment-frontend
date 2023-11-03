@@ -28,4 +28,5 @@ class DisallowableProfessionalFeesFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[DisallowableProfessionalFees]("disallowableProfessionalFees.error.required")
     )
+
 }

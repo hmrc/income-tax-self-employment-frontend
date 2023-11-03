@@ -26,21 +26,22 @@ sealed trait DisallowableSubcontractorCosts
 object DisallowableSubcontractorCosts extends Enumerable.Implicits {
 
   case object Yes extends WithName("yes") with DisallowableSubcontractorCosts
-  case object No extends WithName("no") with DisallowableSubcontractorCosts
+  case object No  extends WithName("no") with DisallowableSubcontractorCosts
 
   val values: Seq[DisallowableSubcontractorCosts] = Seq(
-    Yes, No
+    Yes,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"disallowableSubcontractorCosts.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"disallowableSubcontractorCosts.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[DisallowableSubcontractorCosts] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

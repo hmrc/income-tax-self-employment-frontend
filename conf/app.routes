@@ -153,7 +153,7 @@ POST        /expenses/advertising-or-marketing                                  
 GET         /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = CheckMode)
 POST        /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = CheckMode)
 
-GET         /expenses/disallowable-professional-feesc                               controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = NormalMode)
+GET         /expenses/disallowable-professional-fees                               controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = NormalMode)
 POST        /expenses/disallowable-professional-fees                                controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = NormalMode)
 GET         /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = CheckMode)
 POST        /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = CheckMode)

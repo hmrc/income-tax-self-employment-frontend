@@ -25,22 +25,25 @@ sealed trait AdvertisingOrMarketing
 
 object AdvertisingOrMarketing extends Enumerable.Implicits {
 
-  case object Yesallowable extends WithName("yes.allowable") with AdvertisingOrMarketing
+  case object Yesallowable    extends WithName("yes.allowable") with AdvertisingOrMarketing
   case object Yesdisallowable extends WithName("yes.disallowable") with AdvertisingOrMarketing
+  case object No              extends WithName("no") with AdvertisingOrMarketing
 
   val values: Seq[AdvertisingOrMarketing] = Seq(
-    Yesallowable, Yesdisallowable
+    Yesallowable,
+    Yesdisallowable,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"advertisingOrMarketing.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"advertisingOrMarketing.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[AdvertisingOrMarketing] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

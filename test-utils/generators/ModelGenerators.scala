@@ -18,7 +18,7 @@ package generators
 
 import models._
 import models.journeys._
-import models.journeys.expenses.{Depreciation, FinancialExpenses, OtherExpenses}
+import models.journeys.expenses.{AdvertisingOrMarketing, Depreciation, DisallowableProfessionalFees, DisallowableStaffCosts, DisallowableSubcontractorCosts, EntertainmentCosts, FinancialExpenses, OtherExpenses, ProfessionalServiceExpenses, TravelForWork}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {

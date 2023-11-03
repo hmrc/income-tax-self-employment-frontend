@@ -20,53 +20,51 @@ import controllers.actions._
 import forms.expenses.ProfessionalServiceExpensesFormProvider
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
-import pages.ProfessionalServiceExpensesPage
+import pages.expenses.ProfessionalServiceExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ProfessionalServiceExpensesView
+import views.html.journeys.expenses.ProfessionalServiceExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProfessionalServiceExpensesController @Inject()(
-                                                       override val messagesApi: MessagesApi,
-                                                       sessionRepository: SessionRepository,
-                                                       navigator: ExpensesNavigator,
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: ProfessionalServiceExpensesFormProvider,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: ProfessionalServiceExpensesView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ProfessionalServiceExpensesController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    navigator: ExpensesNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    formProvider: ProfessionalServiceExpensesFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: ProfessionalServiceExpensesView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(ProfessionalServiceExpensesPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(ProfessionalServiceExpensesPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(ProfessionalServiceExpensesPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers))
       )
   }
+
 }

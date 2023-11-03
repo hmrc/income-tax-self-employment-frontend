@@ -27,6 +27,8 @@ class ProfessionalServiceExpensesFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Set[ProfessionalServiceExpenses]] =
     Form(
-      "value" -> set(enumerable[ProfessionalServiceExpenses]("professionalServiceExpenses.error.required")).verifying(nonEmptySet("professionalServiceExpenses.error.required"))
+      "value" -> set(enumerable[ProfessionalServiceExpenses]("professionalServiceExpenses.error.required"))
+        .verifying(nonEmptySet("professionalServiceExpenses.error.required"))
     )
+
 }

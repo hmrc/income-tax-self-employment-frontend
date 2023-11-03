@@ -20,53 +20,52 @@ import controllers.actions._
 import forms.expenses.DisallowableSubcontractorCostsFormProvider
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
-import pages.DisallowableSubcontractorCostsPage
+import pages.expenses.DisallowableSubcontractorCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DisallowableSubcontractorCostsView
+import views.html.journeys.expenses.DisallowableSubcontractorCostsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisallowableSubcontractorCostsController @Inject()(
-                                                          override val messagesApi: MessagesApi,
-                                                          sessionRepository: SessionRepository,
-                                                          navigator: ExpensesNavigator,
-                                                          identify: IdentifierAction,
-                                                          getData: DataRetrievalAction,
-                                                          requireData: DataRequiredAction,
-                                                          formProvider: DisallowableSubcontractorCostsFormProvider,
-                                                          val controllerComponents: MessagesControllerComponents,
-                                                          view: DisallowableSubcontractorCostsView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DisallowableSubcontractorCostsController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    navigator: ExpensesNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    formProvider: DisallowableSubcontractorCostsFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: DisallowableSubcontractorCostsView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableSubcontractorCostsPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableSubcontractorCostsPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableSubcontractorCostsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableSubcontractorCostsPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DisallowableSubcontractorCostsPage, mode, updatedAnswers))
       )
   }
+
 }

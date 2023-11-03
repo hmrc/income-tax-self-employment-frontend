@@ -26,25 +26,29 @@ sealed trait ProfessionalServiceExpenses
 
 object ProfessionalServiceExpenses extends Enumerable.Implicits {
 
-  case object Staff extends WithName("staff") with ProfessionalServiceExpenses
-  case object Construction extends WithName("construction") with ProfessionalServiceExpenses
+  case object Staff            extends WithName("staff") with ProfessionalServiceExpenses
+  case object Construction     extends WithName("construction") with ProfessionalServiceExpenses
+  case object ProfessionalFees extends WithName("professional.fees") with ProfessionalServiceExpenses
+  case object No               extends WithName("no") with ProfessionalServiceExpenses
 
   val values: Seq[ProfessionalServiceExpenses] = Seq(
     Staff,
-    Construction
+    Construction,
+    ProfessionalFees,
+    No
   )
 
   def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map {
-      case (value, index) =>
-        CheckboxItemViewModel(
-          content = Text(messages(s"professionalServiceExpenses.${value.toString}")),
-          fieldId = "value",
-          index   = index,
-          value   = value.toString
-        )
+    values.zipWithIndex.map { case (value, index) =>
+      CheckboxItemViewModel(
+        content = Text(messages(s"professionalServiceExpenses.${value.toString}")),
+        fieldId = "value",
+        index = index,
+        value = value.toString
+      )
     }
 
   implicit val enumerable: Enumerable[ProfessionalServiceExpenses] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

@@ -28,4 +28,5 @@ class AdvertisingOrMarketingFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[AdvertisingOrMarketing]("advertisingOrMarketing.error.required")
     )
+
 }

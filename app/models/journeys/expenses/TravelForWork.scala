@@ -15,6 +15,7 @@
  */
 
 package models.journeys.expenses
+
 import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -24,22 +25,24 @@ sealed trait TravelForWork
 
 object TravelForWork extends Enumerable.Implicits {
 
-  case object Yesallowable extends WithName("yes.allowable") with TravelForWork
+  case object Yesallowable    extends WithName("yes.allowable") with TravelForWork
   case object Yesdisallowable extends WithName("yes.disallowable") with TravelForWork
+  case object No              extends WithName("no") with TravelForWork
 
   val values: Seq[TravelForWork] = Seq(
-    Yesallowable, Yesdisallowable
+    Yesallowable,
+    Yesdisallowable
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"travelForWork.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"travelForWork.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[TravelForWork] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }
