@@ -1,148 +1,184 @@
 # microservice specific routes
 
-->          /hmrc-frontend                                                        hmrcfrontend.Routes
+->          /hmrc-frontend                                                          hmrcfrontend.Routes
 
-GET         /                                                                     controllers.standard.IndexController.onPageLoad
+GET         /                                                                       controllers.standard.IndexController.onPageLoad
 
-GET         /assets/*file                                                         controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                                           controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                                                       controllers.standard.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                                         controllers.standard.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                                                      controllers.standard.KeepAliveController.keepAlive
+GET         /refresh-session                                                        controllers.standard.KeepAliveController.keepAlive
 
-GET         /there-is-a-problem                                                   controllers.standard.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                                                     controllers.standard.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                                                   controllers.standard.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers                                                     controllers.standard.CheckYourAnswersController.onPageLoad
 
-GET         /account/sign-out-survey                                              controllers.standard.auth.AuthController.signOut
-GET         /account/sign-out                                                     controllers.standard.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                                                   controllers.standard.auth.SignedOutController.onPageLoad
+GET         /account/sign-out-survey                                                controllers.standard.auth.AuthController.signOut
+GET         /account/sign-out                                                       controllers.standard.auth.AuthController.signOutNoSurvey
+GET         /account/signed-out                                                     controllers.standard.auth.SignedOutController.onPageLoad
 
-GET         /error/you-need-client-authorisation                                  controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
-GET         /error/you-need-to-sign-up                                            controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
-GET         /error/you-need-agent-services-account                                controllers.authorisationErrors.YouNeedAgentServicesController.onPageLoad
+GET         /error/you-need-client-authorisation                                    controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
+GET         /error/you-need-to-sign-up                                              controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
+GET         /error/you-need-agent-services-account                                  controllers.authorisationErrors.YouNeedAgentServicesController.onPageLoad
 
-GET         /unauthorised                                                         controllers.standard.UnauthorisedController.onPageLoad
+GET         /unauthorised                                                           controllers.standard.UnauthorisedController.onPageLoad
 
-GET         /:taxYear/task-list                                                   controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
+GET         /:taxYear/task-list                                                     controllers.journeys.TaskListController.onPageLoad(taxYear: Int)
 
-GET        /:taxYear/details/completed-section/:journey/:businessId               controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-POST       /:taxYear/details/completed-section/:journey/:businessId               controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
-GET        /:taxYear/details/change-completed-section/:journey/:businessId        controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
-POST       /:taxYear/details/change-completed-section/:journey/:businessId        controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+GET         /:taxYear/details/completed-section/:journey/:businessId                controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+POST        /:taxYear/details/completed-section/:journey/:businessId                controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = NormalMode)
+GET         /:taxYear/details/change-completed-section/:journey/:businessId         controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
+POST        /:taxYear/details/change-completed-section/:journey/:businessId         controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode = CheckMode)
 
 ########## Trade-details Journey ##########
 
-GET         /:taxYear/details/check/:businessId                                    controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/details/check/:businessId                                     controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: Int, businessId: String)
 
-GET         /:taxYear/self-employment-summary                                      controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
+GET         /:taxYear/self-employment-summary                                       controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: Int)
 
 ########## Abroad Journey ##########
 
-GET         /:taxYear/details/self-employment-abroad/:businessId                   controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/details/self-employment-abroad/:businessId                   controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/details/self-employment-abroad/change/:businessId            controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/details/self-employment-abroad/change/:businessId            controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/details/self-employment-abroad/:businessId                    controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/details/self-employment-abroad/:businessId                    controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/details/self-employment-abroad/change/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/details/self-employment-abroad/change/:businessId             controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /:taxYear/self-employment/details/check/:businessId                    controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/self-employment/details/check/:businessId                     controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: Int, businessId: String)
 
 ########## Income Journey ##########
 
-GET        /:taxYear/:businessId/income/not-counted-turnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/not-counted-turnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-not-counted-turnover                controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-not-counted-turnover                controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/not-counted-turnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/not-counted-turnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-not-counted-turnover                controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-not-counted-turnover                controllers.journeys.income.IncomeNotCountedAsTurnoverController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/not-counted-turnover/amount                controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/not-counted-turnover/amount                controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-not-counted-turnover/amount         controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-not-counted-turnover/amount         controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/not-counted-turnover/amount                controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/not-counted-turnover/amount                controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-not-counted-turnover/amount         controllers.journeys.income.NonTurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-not-counted-turnover/amount         controllers.journeys.income.NonTurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/turnover-amount                            controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/turnover-amount                            controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-turnover-amount                     controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-turnover-amount                     controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/turnover-amount                            controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/turnover-amount                            controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-turnover-amount                     controllers.journeys.income.TurnoverIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-turnover-amount                     controllers.journeys.income.TurnoverIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/other-income                               controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/other-income                               controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-other-income                        controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-other-income                        controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/other-income                               controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/other-income                               controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-other-income                        controllers.journeys.income.AnyOtherIncomeController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-other-income                        controllers.journeys.income.AnyOtherIncomeController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/other-income/amount                        controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/other-income/amount                        controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-other-income/amount                 controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-other-income/amount                 controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/other-income/amount                        controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/other-income/amount                        controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-other-income/amount                 controllers.journeys.income.OtherIncomeAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-other-income/amount                 controllers.journeys.income.OtherIncomeAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/turnover-exempt                            controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/turnover-exempt                            controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-turnover-exempt                     controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-turnover-exempt                     controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/turnover-exempt                            controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/turnover-exempt                            controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-turnover-exempt                     controllers.journeys.income.TurnoverNotTaxableController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-turnover-exempt                     controllers.journeys.income.TurnoverNotTaxableController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/turnover-exempt/amount                     controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/turnover-exempt/amount                     controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-turnover-exempt/amount              controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-turnover-exempt/amount              controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/turnover-exempt/amount                     controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/turnover-exempt/amount                     controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-turnover-exempt/amount              controllers.journeys.income.NotTaxableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-turnover-exempt/amount              controllers.journeys.income.NotTaxableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/trading-allowance                          controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/trading-allowance                          controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-trading-allowance                   controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-trading-allowance                   controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/trading-allowance                          controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/trading-allowance                          controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-trading-allowance                   controllers.journeys.income.TradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-trading-allowance                   controllers.journeys.income.TradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/trading-allowance/under-1000               controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/trading-allowance/under-1000               controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-trading-allowance/under-1000        controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-trading-allowance/under-1000        controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/trading-allowance/under-1000               controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/trading-allowance/under-1000               controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-trading-allowance/under-1000        controllers.journeys.income.HowMuchTradingAllowanceController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-trading-allowance/under-1000        controllers.journeys.income.HowMuchTradingAllowanceController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/trading-allowance/amount                   controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/income/trading-allowance/amount                   controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/income/trading-allowance/amount                   controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/income/trading-allowance/amount                   controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/income/change-trading-allowance/amount            controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: Int, businessId: String)
 
 ########## Expenses Journey ##########
 
-GET        /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/office-supplies                                               controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-office-supplies                                        controllers.journeys.expenses.OfficeSuppliesController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/taxi-minicab-road-haulage-industry-driver                     controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-taxi-minicab-road-haulage-industry-driver              controllers.journeys.expenses.TaxiMinicabOrRoadHaulageController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/goods-sell-use                                                controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-goods-sell-use                                         controllers.journeys.expenses.GoodsToSellOrUseController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/repairs-maintenance                                           controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-repairs-maintenance                                    controllers.journeys.expenses.RepairsAndMaintenanceController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/work-from-home                                                controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-work-from-home                                         controllers.journeys.expenses.WorkFromHomeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/work-from-business-premises                                   controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = CheckMode)
+GET         /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = CheckMode)
+
+
+GET         /expenses/advertising-or-marketing                                      controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/advertising-or-marketing                                      controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-professional-feesc                               controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-professional-fees                                controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-subcontractor-costs                              controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-subcontractor-costs                              controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-subcontractor-costs                       controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-subcontractor-costs                       controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/entertainment-costs                                           controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/entertainment-costs                                           controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/professional-service-expenses                                 controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/professional-service-expenses                                 controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-professional-service-expenses                          controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-professional-service-expenses                          controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = CheckMode)
