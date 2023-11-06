@@ -19,7 +19,8 @@ package controllers.journeys.expenses
 import base.SpecBase
 import forms.expenses.ProfessionalServiceExpensesFormProvider
 import models.journeys.expenses.ProfessionalServiceExpenses
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

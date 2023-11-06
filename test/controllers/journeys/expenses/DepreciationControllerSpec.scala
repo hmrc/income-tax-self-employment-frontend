@@ -21,7 +21,8 @@ import controllers.journeys.expenses.routes.DepreciationController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.DepreciationFormProvider
 import models.journeys.expenses.Depreciation
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

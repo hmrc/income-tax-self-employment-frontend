@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import play.api.data.FormError
 
 class TaxiMinicabOrRoadHaulageFormProviderSpec extends OptionFieldBehaviours {

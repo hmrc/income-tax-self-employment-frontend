@@ -23,7 +23,8 @@ import connectors.SelfEmploymentConnector
 import controllers.journeys.routes.SectionCompletedStateController
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.when
 import org.scalatestplus.mockito.MockitoSugar

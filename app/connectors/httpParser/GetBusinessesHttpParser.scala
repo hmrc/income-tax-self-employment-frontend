@@ -17,7 +17,7 @@
 package connectors.httpParser
 
 import models.errors.HttpError
-import models.mdtp.BusinessData
+import models.domain.BusinessData
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

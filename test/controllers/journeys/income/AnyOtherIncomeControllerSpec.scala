@@ -25,7 +25,8 @@ import controllers.journeys.income.routes.{
 }
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.AnyOtherIncomeFormProvider
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.database.UserAnswers
+import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

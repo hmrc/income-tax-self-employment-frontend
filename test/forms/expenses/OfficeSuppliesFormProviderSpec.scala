@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.OfficeSupplies
+import models.journeys.expenses.OfficeSupplies
 import play.api.data.FormError
 
 class OfficeSuppliesFormProviderSpec extends OptionFieldBehaviours {

@@ -20,7 +20,7 @@ import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import connectors.SelfEmploymentConnector
-import models.UserAnswers
+import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

@@ -21,7 +21,8 @@ import controllers.journeys.expenses.routes.OtherExpensesController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.OtherExpensesFormProvider
 import models.journeys.expenses.OtherExpenses
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

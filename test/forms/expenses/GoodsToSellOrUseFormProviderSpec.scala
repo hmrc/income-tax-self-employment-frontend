@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.GoodsToSellOrUse
+import models.journeys.expenses.GoodsToSellOrUse
 import play.api.data.FormError
 
 class GoodsToSellOrUseFormProviderSpec extends OptionFieldBehaviours {

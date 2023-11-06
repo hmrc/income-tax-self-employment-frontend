@@ -17,10 +17,9 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.CompletedSectionState
+import models.journeys.CompletedSectionState
 
 class SectionCompletedStateFormProvider @Inject() extends Mappings {
 

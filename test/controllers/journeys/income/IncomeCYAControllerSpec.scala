@@ -18,7 +18,9 @@ package controllers.journeys.income
 
 import base.SpecBase
 import controllers.journeys.income.routes.IncomeCYAController
-import models.{Income, NormalMode, UserAnswers}
+import models.journeys.Income
+import models.NormalMode
+import models.database.UserAnswers
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result

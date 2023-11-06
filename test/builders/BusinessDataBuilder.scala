@@ -17,8 +17,8 @@
 package builders
 
 import models.errors.HttpError
-import models.mdtp.BusinessData
-import models.mdtp.BusinessData.{AccountingPeriod, LatencyDetails}
+import models.domain.BusinessData
+import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
 
 object BusinessDataBuilder {
 

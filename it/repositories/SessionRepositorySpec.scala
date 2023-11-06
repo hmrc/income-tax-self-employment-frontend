@@ -1,7 +1,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.database.UserAnswers
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalatest.OptionValues

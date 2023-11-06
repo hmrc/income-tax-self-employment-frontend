@@ -20,8 +20,9 @@ import base.SpecBase
 import connectors.SelfEmploymentConnector
 import controllers.journeys.routes
 import forms.SectionCompletedStateFormProvider
+import models.NormalMode
 import models.errors.{HttpError, HttpErrorBody}
-import models.{CompletedSectionState, NormalMode}
+import models.journeys.CompletedSectionState
 import navigation._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

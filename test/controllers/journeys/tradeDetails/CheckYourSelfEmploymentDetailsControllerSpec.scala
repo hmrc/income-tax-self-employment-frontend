@@ -23,7 +23,7 @@ import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.mdtp.BusinessData
+import models.domain.BusinessData
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

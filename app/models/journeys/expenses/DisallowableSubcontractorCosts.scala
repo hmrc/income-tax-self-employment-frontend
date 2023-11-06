@@ -16,7 +16,7 @@
 
 package models.journeys.expenses
 
-import models.{Enumerable, WithName}
+import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem

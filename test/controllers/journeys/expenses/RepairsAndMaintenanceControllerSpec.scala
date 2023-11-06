@@ -20,8 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.RepairsAndMaintenanceController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.RepairsAndMaintenanceFormProvider
-import models.journeys.RepairsAndMaintenance
-import models.{NormalMode, UserAnswers}
+import models.journeys.expenses.RepairsAndMaintenance
+import models.NormalMode
+import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

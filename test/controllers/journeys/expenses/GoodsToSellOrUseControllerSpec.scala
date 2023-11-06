@@ -20,9 +20,10 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.GoodsToSellOrUseController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.GoodsToSellOrUseFormProvider
-import models.journeys.GoodsToSellOrUse
-import models.journeys.TaxiMinicabOrRoadHaulage.Yes
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.expenses.GoodsToSellOrUse
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage.Yes
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

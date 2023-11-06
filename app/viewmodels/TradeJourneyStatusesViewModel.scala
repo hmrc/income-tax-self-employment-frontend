@@ -19,6 +19,7 @@ package viewmodels
 import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, SelfEmploymentAbroadController}
 import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import models._
+import models.journeys.{Abroad, Income, Journey}
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

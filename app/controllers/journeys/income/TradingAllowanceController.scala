@@ -20,8 +20,8 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
-import models.ModelUtils.userType
-import models.TradingAllowance.DeclareExpenses
+import models.common.ModelUtils.userType
+import models.journeys.income.TradingAllowance.DeclareExpenses
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
 import play.api.i18n.{I18nSupport, MessagesApi}

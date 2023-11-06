@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.income
 
 import cats.data.EitherT
-import models.UserAnswers
+import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}

@@ -18,8 +18,9 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.WorkFromBusinessPremisesFormProvider
-import models.ModelUtils.userType
-import models.{Mode, UserAnswers}
+import models.common.ModelUtils.userType
+import models.Mode
+import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}

@@ -25,7 +25,8 @@ import helpers.WiremockSpec
 import models._
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
-import models.mdtp.BusinessData
+import models.journeys.{Abroad, Expenses, Income, NationalInsurance, TradeDetails}
+import models.domain.BusinessData
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.Configuration

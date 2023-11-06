@@ -20,8 +20,9 @@ import connectors.SelfEmploymentConnector
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
-import models.CompletedSectionState.{No, Yes}
-import models.{CompletedSectionState, Mode}
+import models.Mode
+import models.journeys.CompletedSectionState
+import models.journeys.CompletedSectionState.{No, Yes}
 import navigation.GeneralNavigator
 import pages.SectionCompletedStatePage
 import play.api.data.Form
