@@ -16,30 +16,53 @@
 
 @import models.journeys.expenses.OtherExpenses
 @import controllers.journeys.expenses.routes.OtherExpensesController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("otherExpenses.title"))) {
 
-    @formHelper(action = OtherExpensesController.onSubmit(mode), 'autoComplete -> "off") {
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+    @heading(messages("otherExpenses.title"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+            @messages(s"site.canInclude.$authUserType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("otherExpenses.l1")</li>
+            <li>@messages("otherExpenses.l2")</li>
+        </ul>
+        <p>
+            @messages(s"site.cannotInclude.$authUserType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("otherExpenses.l3")</li>
+            <li>@messages("otherExpenses.l4")</li>
+            <li>@messages("otherExpenses.l5")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = OtherExpensesController.onSubmit(mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("otherExpenses.title")).asPageHeading(),
-                items  = OtherExpenses.options
+                legend = LegendViewModel(messages(s"otherExpenses.subHeading.$authUserType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = OtherExpenses.options(authUserType)
             )
         )
 

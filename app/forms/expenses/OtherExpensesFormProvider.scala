@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class OtherExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[OtherExpenses] =
+  def apply(authUserType: String): Form[OtherExpenses] =
     Form(
-      "value" -> enumerable[OtherExpenses]("otherExpenses.error.required")
+      "value" -> enumerable[OtherExpenses](s"otherExpenses.error.required.$authUserType")
     )
 
 }

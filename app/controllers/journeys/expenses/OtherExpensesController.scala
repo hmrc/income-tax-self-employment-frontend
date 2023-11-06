@@ -18,6 +18,7 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.OtherExpensesFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.OtherExpensesPage
@@ -27,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.OtherExpensesView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,26 +44,28 @@ class OtherExpensesController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherExpensesPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OtherExpensesPage, Some(businessId)) match {
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherExpensesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OtherExpensesPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(OtherExpensesPage, mode, updatedAnswers))
       )
   }

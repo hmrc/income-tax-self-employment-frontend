@@ -22,7 +22,7 @@ import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,24 +53,18 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
-    val radioContentString = buildLegendHeadingWithHintString(
-      WorkFromBusinessPremisesPage,
-      Some(userType(request.user.isAgent)),
-      headingExtraClasses = "govuk-!-margin-bottom-2")
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, radioContentString))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, legendContent(userType(request.user.isAgent))))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val radioContentString = buildLegendHeadingWithHintString(
-      WorkFromBusinessPremisesPage,
-      Some(userType(request.user.isAgent)),
-      headingExtraClasses = "govuk-!-margin-bottom-2")
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, radioContentString))),
+          Future.successful(
+            BadRequest(
+              view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, legendContent(userType(request.user.isAgent))))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
@@ -79,5 +73,11 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
           } yield Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, updatedAnswers))
       )
   }
+
+  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"workFromBusinessPremises.title.$userType",
+    s"workFromBusinessPremises.hint.$userType",
+    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--l"
+  )
 
 }

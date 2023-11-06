@@ -165,9 +165,9 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               val request =
                 FakeRequest(POST, workFromHomeRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+                  .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
               val view = application.injector.instanceOf[WorkFromHomeView]
 
@@ -191,9 +191,9 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               val request =
                 FakeRequest(POST, workFromHomeRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+                  .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
               val view = application.injector.instanceOf[WorkFromHomeView]
 

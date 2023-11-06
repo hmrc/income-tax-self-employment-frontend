@@ -33,13 +33,13 @@ object OtherExpenses extends Enumerable.Implicits {
     YesAllowable, YesDisallowable, No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"expenses.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(authUserType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    val optUserType = if (value.equals(No)) "" else s".$authUserType"
+    RadioItem(
+      content = Text(messages(s"expenses.${value.toString}$optUserType")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[OtherExpenses] =

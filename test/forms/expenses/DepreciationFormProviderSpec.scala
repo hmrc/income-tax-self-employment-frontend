@@ -22,25 +22,34 @@ import play.api.data.FormError
 
 class DepreciationFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DepreciationFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "depreciation.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[Depreciation](
-      form,
-      fieldName,
-      validValues = Depreciation.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new DepreciationFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[Depreciation](
+          form,
+          fieldName,
+          validValues = Depreciation.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"depreciation.error.required.${userScenario.user}")
+        )
+      }
+    }
+
   }
 
 }
