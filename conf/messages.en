@@ -18,7 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
-site.selectAllTheApply = Select all that apply.
+site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -172,7 +172,7 @@ turnoverIncomeAmount.l4.individual = money owed to you for work already done
 turnoverIncomeAmount.l4.agent = money owed to your client for work already done
 turnoverIncomeAmount.subHeading.individual = What was your turnover?
 turnoverIncomeAmount.subHeading.agent = What was your client’s turnover?
-turnoverIncomeAmount.checkYourAnswersLabel.agent = What was your client's turnover?
+turnoverIncomeAmount.checkYourAnswersLabel.agent = What was your client’s turnover?
 turnoverIncomeAmount.checkYourAnswersLabel.individual = What was your turnover?
 turnoverIncomeAmount.error.required.individual = Enter your turnover
 turnoverIncomeAmount.error.required.agent = Enter your client’s turnover
@@ -211,7 +211,7 @@ otherIncomeAmount.change.hidden = Change other income amount
 ## Turnover not taxable
 turnoverNotTaxable.title = Turnover exempt from tax
 turnoverNotTaxable.p1.individual = Some self-employment income is not taxed in the same way as your usual profit. You should not include it here.
-turnoverNotTaxable.p1.agent = Some self-employment income is not taxed in the same way as your client's usual profit. You should not include it here.
+turnoverNotTaxable.p1.agent = Some self-employment income is not taxed in the same way as your client’s usual profit. You should not include it here.
 turnoverNotTaxable.p2 = This includes:
 turnoverNotTaxable.p3.individual = This does not include expenses that you’re claiming against profit. You can tell us about them later.
 turnoverNotTaxable.p3.agent = This does not include expenses that your client is claiming against profit. You can tell us about them later.
@@ -221,7 +221,7 @@ turnoverNotTaxable.l3 = payments for work done on a consultancy basis
 turnoverNotTaxable.subHeading.individual = Is any of your turnover exempt from being taxed as profit?
 turnoverNotTaxable.subHeading.agent = Is any of your client’s turnover exempt from being taxed as profit?
 turnoverNotTaxable.checkYourAnswersLabel.individual = Is any of your turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel.agent = Is any of your client's turnover exempt from being taxed as profit?
+turnoverNotTaxable.checkYourAnswersLabel.agent = Is any of your client’s turnover exempt from being taxed as profit?
 turnoverNotTaxable.error.required.individual = Select yes if any of your turnover is exempt from being taxed as profit
 turnoverNotTaxable.error.required.agent = Select yes if any of your client’s turnover is exempt from being taxed as profit
 turnoverNotTaxable.change.hidden = Change turnover exempt from tax
@@ -230,15 +230,15 @@ turnoverNotTaxable.change.hidden = Change turnover exempt from tax
 notTaxableAmount.title.individual = How much of your turnover is exempt from being taxed as profit?
 notTaxableAmount.title.agent = How much of your client’s turnover is exempt from being taxed as profit?
 notTaxableAmount.checkYourAnswersLabel.individual = How much of your turnover is exempt from being taxed as profit?
-notTaxableAmount.checkYourAnswersLabel.agent = How much of your client's turnover is exempt from being taxed as profit?
+notTaxableAmount.checkYourAnswersLabel.agent = How much of your client’s turnover is exempt from being taxed as profit?
 notTaxableAmount.error.required.individual = Enter the amount of your turnover exempt from being taxed as profit
-notTaxableAmount.error.required.agent = Enter the amount of your client's turnover exempt from being taxed as profit
+notTaxableAmount.error.required.agent = Enter the amount of your client’s turnover exempt from being taxed as profit
 notTaxableAmount.error.nonNumeric.individual = The amount of your turnover exempt from being taxed as profit must be a number
-notTaxableAmount.error.nonNumeric.agent = The amount of your client's turnover exempt from being taxed as profit must be a number
+notTaxableAmount.error.nonNumeric.agent = The amount of your client’s turnover exempt from being taxed as profit must be a number
 notTaxableAmount.error.lessThanZero.individual = The amount of your turnover exempt from being taxed as profit must be more than £0
-notTaxableAmount.error.lessThanZero.agent = The amount of your client's turnover exempt from being taxed as profit must be more than £0
+notTaxableAmount.error.lessThanZero.agent = The amount of your client’s turnover exempt from being taxed as profit must be more than £0
 notTaxableAmount.error.overMax.individual = The amount of your turnover exempt from being taxed as profit must be less than £100,000,000,000
-notTaxableAmount.error.overMax.agent = The amount of your client's turnover exempt from being taxed as profit must be less than £100,000,000,000
+notTaxableAmount.error.overMax.agent = The amount of your client’s turnover exempt from being taxed as profit must be less than £100,000,000,000
 notTaxableAmount.error.overTurnover.individual = The amount of your turnover exempt from being taxed as profit must be less than £{0}
 notTaxableAmount.error.overTurnover.agent = The amount of your client’s turnover exempt from being taxed as profit must be less than £{0}
 notTaxableAmount.change.hidden = Change turnover exempt from being taxed as profit
@@ -264,7 +264,7 @@ tradingAllowance.change.hidden = Change trading allowance
 ## How much trading allowance
 howMuchTradingAllowance.title = Trading allowance for income under £1,000
 howMuchTradingAllowance.p1.individual = If your income was less than £1,000, you cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
-howMuchTradingAllowance.p1.agent = If your client‘s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
+howMuchTradingAllowance.p1.agent = If your client’s income was less than £1,000, they cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
 howMuchTradingAllowance.p2 = Your choice will apply to any other self-employments you tell us about.
 howMuchTradingAllowance.subHeading.individual = How much of your trading allowance do you want to use?
 howMuchTradingAllowance.subHeading.agent = How much of your client’s trading allowance do you want to use?
@@ -398,6 +398,73 @@ workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own busi
 workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
+
+## Travel and accommodation for work
+travelForWork.title = Travel for work and accommodation
+travelForWork.heading = Travel for work and accommodation
+travelForWork.yes.allowable = Yes, all of my expenses are allowable
+travelForWork.yes.disallowable = Yes, some of my expenses are disallowable
+travelForWork.no = No
+travelForWork.checkYourAnswersLabel = Travel for work and accommodation
+travelForWork.error.required = Select travelForWork
+travelForWork.change.hidden = TravelForWork
+
+## Advertising or marketing
+advertisingOrMarketing.title = Advertising or marketing
+advertisingOrMarketing.heading = Advertising or marketing
+advertisingOrMarketing.yes.allowable = Yes, all of my expenses are allowable
+advertisingOrMarketing.yes.disallowable = Yes, some of my expenses are disallowable
+advertisingOrMarketing.no = No
+advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
+advertisingOrMarketing.error.required = Select advertisingOrMarketing
+advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+
+## Entertainment costs
+entertainmentCosts.title = Entertainment costs
+entertainmentCosts.heading = Entertainment costs
+entertainmentCosts.yes = Yes
+entertainmentCosts.no = No
+entertainmentCosts.checkYourAnswersLabel = Entertainment costs
+entertainmentCosts.error.required = Select entertainmentCosts
+entertainmentCosts.change.hidden = EntertainmentCosts
+
+## Staff, construction industry and professional services
+professionalServiceExpenses.title = Staff, construction industry and professional services expenses
+professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.staff = Staff
+professionalServiceExpenses.construction = Construction industry subcontractors
+professionalServiceExpenses.professional.fees = Professional Fees
+professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
+professionalServiceExpenses.error.required = Select professionalServiceExpenses
+professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+
+## Disallowable staff costs
+disallowableStaffCosts.title = Disallowable staff costs
+disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.yes = Yes
+disallowableStaffCosts.no = No
+disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
+disallowableStaffCosts.error.required = Select disallowableStaffCosts
+disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+
+## Disallowable subcontractor costs
+disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.yes = Yes
+disallowableSubcontractorCosts.no = No
+disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
+disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+
+## Disallowable professional fees
+disallowableProfessionalFees.title = Disallowable professional fees
+disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.yes = Yes
+disallowableProfessionalFees.no = No
+disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
+disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
+disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
 
 ## Financial expenses
 financialExpenses.title = Financial expenses

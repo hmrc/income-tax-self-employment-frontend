@@ -30,7 +30,7 @@ import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.income.AnyOtherIncomePage
+import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -194,14 +194,16 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "when a user answer 'No' is submitted, must redirect to" - {
+      "when a user answer 'No' is submitted, must clear OtherIncomeAmount data and redirect to" - {
+        val userAnswer  = false
+        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
-          val userAnswer     = false
           val accountingType = accrual
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
                 bind[SelfEmploymentService].toInstance(mockService),
@@ -220,15 +222,15 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverNotTaxableCall.url
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
           }
         }
         "the Trading Allowance page when journey is CASH accounting type" in {
 
-          val userAnswer     = false
           val accountingType = cash
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
                 bind[SelfEmploymentService].toInstance(mockService),
@@ -247,6 +249,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual tradingAllowanceCall.url
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
           }
         }
       }
