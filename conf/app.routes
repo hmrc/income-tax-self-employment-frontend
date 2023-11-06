@@ -172,6 +172,21 @@ POST        /expenses/financial-expenses                                        
 GET         /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = CheckMode)
 POST        /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = CheckMode)
 
+GET         /expenses/disallowable-interest-bank-other-business-loans               controllers.journeys.expenses.DisallowableInterestController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-interest-bank-other-business-loans               controllers.journeys.expenses.DisallowableInterestController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-interest-bank-other-business-loans        controllers.journeys.expenses.DisallowableInterestController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-interest-bank-other-business-loans        controllers.journeys.expenses.DisallowableInterestController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-bank-credit-card-other-financial-charges         controllers.journeys.expenses.DisallowableOtherFinancialChargesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-bank-credit-card-other-financial-charges         controllers.journeys.expenses.DisallowableOtherFinancialChargesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-bank-credit-card-other-financial-charges  controllers.journeys.expenses.DisallowableOtherFinancialChargesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-bank-credit-card-other-financial-charges  controllers.journeys.expenses.DisallowableOtherFinancialChargesController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-irrecoverable-debts                              controllers.journeys.expenses.DisallowableIrrecoverableDebtsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-irrecoverable-debts                              controllers.journeys.expenses.DisallowableIrrecoverableDebtsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-irrecoverable-debts                       controllers.journeys.expenses.DisallowableIrrecoverableDebtsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-irrecoverable-debts                       controllers.journeys.expenses.DisallowableIrrecoverableDebtsController.onSubmit(mode: Mode = CheckMode)
+
 GET         /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = NormalMode)
 POST        /expenses/depreciation                                                  controllers.journeys.expenses.DepreciationController.onSubmit(mode: Mode = NormalMode)
 GET         /expenses/change-depreciation                                           controllers.journeys.expenses.DepreciationController.onPageLoad(mode: Mode = CheckMode)
