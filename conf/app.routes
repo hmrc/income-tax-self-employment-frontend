@@ -132,6 +132,41 @@ POST        /expenses/work-from-business-premises                               
 GET         /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onPageLoad(mode: Mode = CheckMode)
 POST        /expenses/change-work-from-business-premises                            controllers.journeys.expenses.WorkFromBusinessPremisesController.onSubmit(mode: Mode = CheckMode)
 
+GET         /expenses/travel                                                        controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/travel                                                        controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-travel                                                 controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-travel                                                 controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/advertising-marketing                                         controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/advertising-marketing                                         controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-advertising-marketing                                  controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-advertising-marketing                                  controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/entertainment                                                 controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/entertainment                                                 controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-entertainment                                          controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-entertainment                                          controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/staff-construction-industry-professional-services             controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/staff-construction-industry-professional-services             controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-staff-construction-industry-professional-services      controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-staff-construction-industry-professional-services      controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-construction-industry-costs                      controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-construction-industry-costs                      controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-construction-industry-costs               controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-construction-industry-costs               controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /expenses/disallowable-professional-fees                                controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = NormalMode)
+POST        /expenses/disallowable-professional-fees                                controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = NormalMode)
+GET         /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = CheckMode)
+POST        /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = CheckMode)
+
 GET         /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = NormalMode)
 POST        /expenses/financial-expenses                                            controllers.journeys.expenses.FinancialExpensesController.onSubmit(mode: Mode = NormalMode)
 GET         /expenses/change-financial-expenses                                     controllers.journeys.expenses.FinancialExpensesController.onPageLoad(mode: Mode = CheckMode)
@@ -146,39 +181,3 @@ GET         /expenses/other-expenses                                            
 POST        /expenses/other-expenses                                                controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = NormalMode)
 GET         /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onPageLoad(mode: Mode = CheckMode)
 POST        /expenses/change-other-expenses                                         controllers.journeys.expenses.OtherExpensesController.onSubmit(mode: Mode = CheckMode)
-
-
-GET         /expenses/advertising-or-marketing                                      controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/advertising-or-marketing                                      controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-advertising-or-marketing                               controllers.journeys.expenses.AdvertisingOrMarketingController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/disallowable-professional-fees                               controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/disallowable-professional-fees                                controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-disallowable-professional-fees                         controllers.journeys.expenses.DisallowableProfessionalFeesController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/disallowable-staff-costs                                      controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-disallowable-staff-costs                               controllers.journeys.expenses.DisallowableStaffCostsController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/disallowable-subcontractor-costs                              controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/disallowable-subcontractor-costs                              controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-disallowable-subcontractor-costs                       controllers.journeys.expenses.DisallowableSubcontractorCostsController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-disallowable-subcontractor-costs                       controllers.journeys.expenses.DisallowableSubcontractorCostsController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/entertainment-costs                                           controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/entertainment-costs                                           controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-entertainment-costs                                    controllers.journeys.expenses.EntertainmentCostsController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/professional-service-expenses                                 controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/professional-service-expenses                                 controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-professional-service-expenses                          controllers.journeys.expenses.ProfessionalServiceExpensesController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-professional-service-expenses                          controllers.journeys.expenses.ProfessionalServiceExpensesController.onSubmit(mode: Mode = CheckMode)
-
-GET         /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/travel-for-work                                               controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-travel-for-work                                        controllers.journeys.expenses.TravelForWorkController.onSubmit(mode: Mode = CheckMode)
