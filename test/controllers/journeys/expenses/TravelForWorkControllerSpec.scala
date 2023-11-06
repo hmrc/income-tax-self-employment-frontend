@@ -18,9 +18,9 @@ package controllers.journeys.expenses
 
 import base.SpecBase
 import forms.expenses.TravelForWorkFormProvider
-import models.journeys.expenses.TravelForWork
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.TravelForWork
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

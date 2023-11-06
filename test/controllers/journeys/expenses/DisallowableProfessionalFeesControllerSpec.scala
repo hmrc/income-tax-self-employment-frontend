@@ -18,9 +18,9 @@ package controllers.journeys.expenses
 
 import base.SpecBase
 import forms.expenses.DisallowableProfessionalFeesFormProvider
-import models.journeys.expenses.DisallowableProfessionalFees
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.DisallowableProfessionalFees
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

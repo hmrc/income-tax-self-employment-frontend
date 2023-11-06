@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.TaxiMinicabOrRoadHaulageController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.TaxiMinicabOrRoadHaulageFormProvider
-import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

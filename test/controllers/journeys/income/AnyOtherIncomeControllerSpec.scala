@@ -17,12 +17,7 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{
-  AnyOtherIncomeController,
-  OtherIncomeAmountController,
-  TradingAllowanceController,
-  TurnoverNotTaxableController
-}
+import controllers.journeys.income.routes.{AnyOtherIncomeController, OtherIncomeAmountController, TradingAllowanceController, TurnoverNotTaxableController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.AnyOtherIncomeFormProvider
 import models.database.UserAnswers

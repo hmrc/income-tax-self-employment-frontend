@@ -17,9 +17,9 @@
 package controllers.journeys.income
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.requests.DataRequest
 import models.NormalMode
 import models.database.UserAnswers
+import models.requests.DataRequest
 import navigation._
 import pages.income.IncomeCYAPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}

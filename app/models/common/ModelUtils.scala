@@ -16,8 +16,8 @@
 
 package models.common
 
-import UserType.{Agent, Individual}
 import models.common.AccountingType.{Accrual, Cash}
+import models.common.UserType.{Agent, Individual}
 
 object ModelUtils {
 

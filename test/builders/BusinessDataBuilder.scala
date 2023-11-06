@@ -16,9 +16,9 @@
 
 package builders
 
-import models.errors.HttpError
 import models.domain.BusinessData
 import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
+import models.errors.HttpError
 
 object BusinessDataBuilder {
 

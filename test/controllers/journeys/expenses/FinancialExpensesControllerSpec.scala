@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.FinancialExpensesController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.FinancialExpensesFormProvider
-import models.journeys.expenses.FinancialExpenses
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.FinancialExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when

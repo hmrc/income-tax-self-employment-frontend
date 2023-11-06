@@ -18,10 +18,10 @@ package controllers.journeys.tradeDetails
 
 import connectors.SelfEmploymentConnector
 import controllers.actions._
-import models.domain.BusinessData
-import models.requests.OptionalDataRequest
 import models.NormalMode
 import models.database.UserAnswers
+import models.domain.BusinessData
+import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}

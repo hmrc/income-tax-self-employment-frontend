@@ -20,10 +20,10 @@ import connectors.SelfEmploymentConnector
 import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
-import models.journeys.TradeDetails
-import models.requests.OptionalDataRequest
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.TradeDetails
+import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}

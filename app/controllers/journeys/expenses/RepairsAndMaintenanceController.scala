@@ -19,8 +19,8 @@ package controllers.journeys.expenses
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.RepairsAndMaintenanceFormProvider
-import models.common.ModelUtils.userType
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.RepairsAndMaintenancePage

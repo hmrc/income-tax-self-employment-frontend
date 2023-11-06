@@ -18,8 +18,8 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.WorkFromHomeFormProvider
-import models.common.ModelUtils.userType
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.WorkFromHomePage

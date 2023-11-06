@@ -33,8 +33,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.govuk.SummaryListFluency
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
+import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
 import scala.concurrent.Future

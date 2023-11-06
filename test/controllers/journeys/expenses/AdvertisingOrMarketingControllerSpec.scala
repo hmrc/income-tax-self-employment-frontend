@@ -18,9 +18,9 @@ package controllers.journeys.expenses
 
 import base.SpecBase
 import forms.expenses.AdvertisingOrMarketingFormProvider
-import models.journeys.expenses.AdvertisingOrMarketing
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.AdvertisingOrMarketing
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
