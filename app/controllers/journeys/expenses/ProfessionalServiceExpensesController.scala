@@ -21,10 +21,11 @@ import forms.expenses.ProfessionalServiceExpensesFormProvider
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.ProfessionalServiceExpensesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.ProfessionalServiceExpensesView
 
 import javax.inject.Inject
@@ -51,14 +52,14 @@ class ProfessionalServiceExpensesController @Inject() (
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, legendContent))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, legendContent))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(ProfessionalServiceExpensesPage, value))
@@ -66,5 +67,11 @@ class ProfessionalServiceExpensesController @Inject() (
           } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers))
       )
   }
+
+  private def legendContent(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"professionalServiceExpenses.subheading",
+    "site.selectAllThatApply",
+    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
+  )
 
 }

@@ -15,31 +15,108 @@
  *@
 
 @import models.journeys.expenses.ProfessionalServiceExpenses
+@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukCheckboxes: GovukCheckboxes,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, legendContent: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        }
+
+        @heading(messages("professionalServiceExpenses.title"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+
+
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d1.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @messages(s"site.cannotInclude.individual")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d1.l1")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l2")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l3")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l4")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l5")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l6")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l7")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l8")</li>
+                </ul>
+                <p>
+                @messages(s"site.cannotInclude.individual")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d1.l9")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l10")</li>
+                </ul>
+            </div>
+        </details>
+
+        <details class="govuk-details govuk-!-margin-bottom-3">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d2.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <span>@messages("professionalServiceExpenses.d2.l1")</span>
+                </ul>
+            </div>
+        </details>
+
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d1.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @messages(s"site.cannotInclude.individual")
+            </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d3.l1")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l2")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l3")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l4")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l5")</li>
+                </ul>
+                <p>
+                @messages(s"site.cannotInclude.individual")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d3.l6")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l7")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l8")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l9")</li>
+                </ul>
+            </div>
+        </details>
+
+
         @formHelper(action = controllers.journeys.expenses.routes.ProfessionalServiceExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-            }
 
             @govukCheckboxes(
                 CheckboxesViewModel(
                     form = form,
                     name = "value",
-                    legend = LegendViewModel(messages("professionalServiceExpenses.heading")).asPageHeading(),
-                    items = ProfessionalServiceExpenses.checkboxItems
+                    items = ProfessionalServiceExpenses.checkboxItems,
+                    legend = LegendViewModel(HtmlContent(legendContent)).withCssClass("no-margin-bottom")
                 )
             )
 

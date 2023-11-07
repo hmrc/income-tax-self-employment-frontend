@@ -431,6 +431,7 @@ entertainmentCosts.change.hidden = EntertainmentCosts
 ## Staff, construction industry and professional services
 professionalServiceExpenses.title = Staff, construction industry and professional services expenses
 professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.subheading = Did you pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
 professionalServiceExpenses.professional.fees = Professional Fees
@@ -438,33 +439,70 @@ professionalServiceExpenses.no = No, I did not pay for any of these professional
 professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
 professionalServiceExpenses.error.required = Select professionalServiceExpenses
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+professionalServiceExpenses.d1.heading = Understanding staff expenses
+professionalServiceExpenses.d1.l1 = salaries
+professionalServiceExpenses.d1.l2 = wages
+professionalServiceExpenses.d1.l3 = bonuses
+professionalServiceExpenses.d1.l4 = pensions
+professionalServiceExpenses.d1.l5 = benefits for employees
+professionalServiceExpenses.d1.l6 = agency fees
+professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
+professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
+professionalServiceExpenses.d1.l9 = your own pay, pension or National Insurance contributions
+professionalServiceExpenses.d1.l10 = any amount that covers personal use
+professionalServiceExpenses.d2.heading = Understanding construction industry expenses
+professionalServiceExpenses.d2.l1 = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+professionalServiceExpenses.d3.heading = Understanding professional fees
+professionalServiceExpenses.d3.l1 = accountants
+professionalServiceExpenses.d3.l2 = solicitors
+professionalServiceExpenses.d3.l3 = surveyors
+professionalServiceExpenses.d3.l4 = architects
+professionalServiceExpenses.d3.l5 = indemnity insurance premiums
+professionalServiceExpenses.d3.l6 = legal costs of buying property
+professionalServiceExpenses.d3.l7 = legal costs of buying equipment
+professionalServiceExpenses.d3.l8 = costs of settling tax disputes
+professionalServiceExpenses.d3.l9 = fines for breaking the law
 
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.subheading = Are any of your staff costs disallowable?
 disallowableStaffCosts.yes = Yes
 disallowableStaffCosts.no = No
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
 disallowableStaffCosts.error.required = Select disallowableStaffCosts
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.p1 = These include:
+disallowableStaffCosts.l1 = your own pay, pension or National Insurance contributions
+disallowableStaffCosts.l2 = any amount that covers personal use
+disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.subheading = Are any of your construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.yes = Yes
 disallowableSubcontractorCosts.no = No
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+disallowableSubcontractorCosts.p1 = This includes any non-work amounts. For example, building work carried out on your home.
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.subheading = Are any of your professional fees disallowable?
 disallowableProfessionalFees.yes = Yes
 disallowableProfessionalFees.no = No
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
 disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
+disallowableProfessionalFees.p1 = These include:
+disallowableProfessionalFees.l1 = legal costs of buying property
+disallowableProfessionalFees.l2 = legal costs of buying equipment
+disallowableProfessionalFees.l3 = costs of settling tax disputes
+disallowableProfessionalFees.l4 = fines for breaking the law
+disallowableProfessionalFees.checkYourAnswersLabel = Are any of your professional fees disallowable?
 
 ## Financial expenses
 financialExpenses.title = Financial expenses
