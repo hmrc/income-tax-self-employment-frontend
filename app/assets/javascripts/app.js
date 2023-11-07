@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   var exclusiveCheckbox = document.querySelector('[data-behaviour="exclusive"]');
   if (exclusiveCheckbox !== null) {
      checkboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('click', function(){
+        checkbox.addEventListener('click', function() {
            if (checkbox === exclusiveCheckbox) {
               checkboxes.forEach(function (c) {
                  if (c !== exclusiveCheckbox) {
@@ -28,11 +28,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                  }
               });
            } else {
-              checkboxes.forEach(function (c) {
-                 if (c === exclusiveCheckbox) {
-                    c.checked = false;
-                 }
-              });
+              exclusiveCheckbox.checked = false;
            }
         });
      });
