@@ -44,9 +44,16 @@ object FinancialExpenses extends Enumerable.Implicits {
     val filteredValues = if (accountingType.equals("CASH")) values.filterNot(_.equals(IrrecoverableDebts)) else values
     filteredValues.zipWithIndex.map {
       case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))
+      case (value, index) if value.equals(NoFinancialExpenses) =>
+        CheckboxItemViewModel(
+          content = Text(messages(s"financialExpenses.${value.toString}.$userType")),
+          fieldId = "value",
+          index = index,
+          value = value.toString
+        ).withAttribute(("data-behaviour", "exclusive"))
       case (value, index) =>
         CheckboxItemViewModel(
-          content = Text(messages(s"financialExpenses.${value.toString}${if (value.equals(NoFinancialExpenses)) s".$userType" else ""}")),
+          content = Text(messages(s"financialExpenses.${value.toString}")),
           fieldId = "value",
           index = index,
           value = value.toString

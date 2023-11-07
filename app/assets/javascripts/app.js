@@ -14,4 +14,28 @@ document.addEventListener('DOMContentLoaded', function(event) {
       window.history.back();
     });
   }
+
+  // handle exclusive checkbox
+  var checkboxes = document.querySelectorAll('.govuk-checkboxes__input');
+  var exclusiveCheckbox = document.querySelector('[data-behaviour="exclusive"]');
+  if (exclusiveCheckbox !== null) {
+     checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('click', function(){
+           if (checkbox === exclusiveCheckbox) {
+              checkboxes.forEach(function (c) {
+                 if (c !== exclusiveCheckbox) {
+                    c.checked = false;
+                 }
+              });
+           } else {
+              checkboxes.forEach(function (c) {
+                 if (c === exclusiveCheckbox) {
+                    c.checked = false;
+                 }
+              });
+           }
+        });
+     });
+  }
+
 });
