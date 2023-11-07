@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.WorkFromBusinessPremises
+import models.journeys.expenses.WorkFromBusinessPremises
 import play.api.data.Form
 
 import javax.inject.Inject

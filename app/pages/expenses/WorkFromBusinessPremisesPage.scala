@@ -16,7 +16,7 @@
 
 package pages.expenses
 
-import models.journeys.WorkFromBusinessPremises
+import models.journeys.expenses.WorkFromBusinessPremises
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

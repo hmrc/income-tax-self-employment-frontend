@@ -18,7 +18,9 @@ package controllers.journeys.abroad
 
 import base.SpecBase
 import builders.UserBuilder
-import models.{Abroad, NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.Abroad
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json

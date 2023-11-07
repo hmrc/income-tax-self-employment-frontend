@@ -16,7 +16,7 @@
 
 package pages.expenses
 
-import models.journeys.RepairsAndMaintenance
+import models.journeys.expenses.RepairsAndMaintenance
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

@@ -16,9 +16,9 @@
 
 package generators
 
-import models._
 import models.journeys._
 import models.journeys.expenses._
+import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {

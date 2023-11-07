@@ -16,7 +16,6 @@
 
 package models.journeys.income
 
-import models.{HowMuchTradingAllowance, TradingAllowance}
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeJourneyAnswers(incomeNotCountedAsTurnover: Boolean,

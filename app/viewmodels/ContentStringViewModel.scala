@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import pages.Page
 import play.api.i18n.Messages
 
 object ContentStringViewModel {

@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.WorkFromHome
+import models.journeys.expenses.WorkFromHome
 import play.api.data.Form
 
 import javax.inject.Inject

@@ -18,6 +18,7 @@ package navigation
 
 import controllers.standard.routes._
 import models._
+import models.database.UserAnswers
 import pages._
 import play.api.mvc.Call
 

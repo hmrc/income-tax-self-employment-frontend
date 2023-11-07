@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.SelfEmploymentConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.standard.routes.JourneyRecoveryController
-import models.TradeDetails
+import models.journeys.TradeDetails
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

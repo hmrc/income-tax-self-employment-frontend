@@ -17,8 +17,8 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
+import models.database.UserAnswers
 import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
 
 case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
 

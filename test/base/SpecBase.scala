@@ -17,9 +17,9 @@
 package base
 
 import controllers.actions._
-import models.AccountingType.{Accrual, Cash}
-import models.UserAnswers
-import models.UserType.{Agent, Individual}
+import models.common.AccountingType.{Accrual, Cash}
+import models.common.UserType.{Agent, Individual}
+import models.database.UserAnswers
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec

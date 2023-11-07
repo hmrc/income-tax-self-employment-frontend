@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.GoodsToSellOrUse
+import models.journeys.expenses.GoodsToSellOrUse
 import play.api.data.Form
 
 import javax.inject.Inject

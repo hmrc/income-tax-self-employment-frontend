@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers.abroad
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}

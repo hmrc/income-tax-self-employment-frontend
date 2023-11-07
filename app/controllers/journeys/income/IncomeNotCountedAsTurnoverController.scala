@@ -18,8 +18,9 @@ package controllers.journeys.income
 
 import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
-import models.ModelUtils.userType
-import models.{Mode, UserAnswers}
+import models.Mode
+import models.common.ModelUtils.userType
+import models.database.UserAnswers
 import navigation.IncomeNavigator
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}

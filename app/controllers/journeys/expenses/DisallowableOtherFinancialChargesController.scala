@@ -18,7 +18,8 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.DisallowableOtherFinancialChargesFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
+import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.DisallowableOtherFinancialChargesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

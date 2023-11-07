@@ -16,7 +16,7 @@
 
 package pages.expenses
 
-import models.journeys.OfficeSupplies
+import models.journeys.expenses.OfficeSupplies
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

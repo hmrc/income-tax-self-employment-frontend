@@ -20,8 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.DisallowableInterestController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.DisallowableInterestFormProvider
+import models.NormalMode
+import models.database.UserAnswers
 import models.journeys.expenses.DisallowableInterest
-import models.{NormalMode, UserAnswers}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

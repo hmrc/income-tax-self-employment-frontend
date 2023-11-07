@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.OfficeSupplies
+import models.journeys.expenses.OfficeSupplies
 import play.api.data.Form
 
 import javax.inject.Inject

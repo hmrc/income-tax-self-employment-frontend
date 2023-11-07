@@ -20,8 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.WorkFromHomeController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.WorkFromHomeFormProvider
-import models.journeys.WorkFromHome
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.expenses.WorkFromHome
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

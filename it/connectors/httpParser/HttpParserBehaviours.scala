@@ -16,7 +16,6 @@
 
 package connectors.httpParser
 
-import connectors.httpParser.HttpParser
 import models.errors.HttpError
 import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
 import org.scalatest.freespec.AnyFreeSpec

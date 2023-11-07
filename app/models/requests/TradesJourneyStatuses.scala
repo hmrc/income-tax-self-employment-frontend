@@ -16,17 +16,14 @@
 
 package models.requests
 
-import models.Journey
+import models.journeys.Journey
 import models.requests.TradesJourneyStatuses.JourneyStatus
-import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import viewmodels.TradeJourneyStatusesViewModel
+import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
 
-case class TradesJourneyStatuses(businessId: String,
-                                 tradingName: Option[String],
-                                 journeyStatuses: Seq[JourneyStatus]
-                                )
+case class TradesJourneyStatuses(businessId: String, tradingName: Option[String], journeyStatuses: Seq[JourneyStatus])
 
 object TradesJourneyStatuses {
 

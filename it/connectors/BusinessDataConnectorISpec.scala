@@ -22,10 +22,10 @@ import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
-import models._
+import models.domain.BusinessData
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
-import models.mdtp.BusinessData
+import models.journeys._
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.Configuration
