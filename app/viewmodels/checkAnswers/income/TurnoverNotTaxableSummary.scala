@@ -33,7 +33,7 @@ object TurnoverNotTaxableSummary {
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
-        key = Key(content = s"turnoverNotTaxable.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"income.turnoverExemptFromTax.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)

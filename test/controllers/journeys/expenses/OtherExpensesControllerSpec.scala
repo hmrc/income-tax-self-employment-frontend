@@ -29,7 +29,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.OtherExpensesPage
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -177,7 +176,6 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               val request =
