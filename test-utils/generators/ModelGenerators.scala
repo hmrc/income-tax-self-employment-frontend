@@ -16,12 +16,27 @@
 
 package generators
 
-import models._
 import models.journeys._
-import models.journeys.expenses.{AdvertisingOrMarketing, Depreciation, DisallowableProfessionalFees, DisallowableStaffCosts, DisallowableSubcontractorCosts, EntertainmentCosts, FinancialExpenses, OtherExpenses, ProfessionalServiceExpenses, TravelForWork}
+import models.journeys.expenses._
+import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryDisallowableOtherFinancialCharges: Arbitrary[DisallowableOtherFinancialCharges] =
+    Arbitrary {
+      Gen.oneOf(DisallowableOtherFinancialCharges.values.toSeq)
+    }
+
+  implicit lazy val arbitraryDisallowableIrrecoverableDebts: Arbitrary[DisallowableIrrecoverableDebts] =
+    Arbitrary {
+      Gen.oneOf(DisallowableIrrecoverableDebts.values.toSeq)
+    }
+
+  implicit lazy val arbitraryDisallowableInterest: Arbitrary[DisallowableInterest] =
+    Arbitrary {
+      Gen.oneOf(DisallowableInterest.values.toSeq)
+    }
 
   implicit lazy val arbitraryTravelForWork: Arbitrary[TravelForWork] =
     Arbitrary {

@@ -18,7 +18,7 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.UserAnswers
+import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging

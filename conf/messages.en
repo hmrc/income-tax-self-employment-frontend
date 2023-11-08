@@ -399,7 +399,7 @@ workFromBusinessPremises.error.required.individual = Select if all your business
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 
-## Travel ans accommodation for work
+## Travel and accommodation for work
 travelForWork.title = Travel for work and accommodation
 travelForWork.heading = Travel for work and accommodation
 travelForWork.yes.allowable = Yes, all of my expenses are allowable
@@ -542,6 +542,27 @@ financialExpenses.checkYourAnswersLabel = Did you have any financial expenses?
 financialExpenses.error.required.individual = Select the financial expenses you paid for, or select ‘No, I did not have any financial expenses’
 financialExpenses.error.required.agent = Select the financial expenses your client paid for, or select ‘No, my client did not have any financial expenses’
 financialExpenses.change.hidden = FinancialExpenses
+
+## Disallowable interest
+disallowableInterest.title = Disallowable interest on bank and other business loans
+disallowableInterest.heading = Disallowable interest on bank and other business loans
+disallowableInterest.checkYourAnswersLabel = Disallowable interest on bank and other business loans
+disallowableInterest.error.required = Select disallowableInterest
+disallowableInterest.change.hidden = DisallowableInterest
+
+## Disallowable other financial charges
+disallowableOtherFinancialCharges.title = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.heading = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.error.required = Select disallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
+
+## Disallowable irrecoverable debts
+disallowableIrrecoverableDebts.title = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.heading = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.error.required = Select disallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
 
 ## Depreciation
 depreciation.title = Depreciation and loss or profit on the sale of assets

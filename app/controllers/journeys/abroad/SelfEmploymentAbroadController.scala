@@ -19,7 +19,8 @@ package controllers.journeys.abroad
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
+import models.database.UserAnswers
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}

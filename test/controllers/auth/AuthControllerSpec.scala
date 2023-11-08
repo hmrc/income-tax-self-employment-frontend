@@ -17,8 +17,8 @@
 package controllers.auth
 
 import base.SpecBase
-import controllers.standard.auth.routes
 import config.FrontendAppConfig
+import controllers.standard.auth.routes
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,7 +28,6 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 
 import java.net.URLEncoder
-
 import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase with MockitoSugar {

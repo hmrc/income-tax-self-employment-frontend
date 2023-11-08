@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import builders.UserBuilder.aNoddyUser
-import models.UserAnswers
+import models.database.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar

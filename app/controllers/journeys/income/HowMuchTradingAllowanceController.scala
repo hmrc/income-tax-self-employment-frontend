@@ -18,9 +18,9 @@ package controllers.journeys.income
 
 import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.HowMuchTradingAllowance.Maximum
 import models.Mode
-import models.ModelUtils.userType
+import models.common.ModelUtils.userType
+import models.journeys.income.HowMuchTradingAllowance.Maximum
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}

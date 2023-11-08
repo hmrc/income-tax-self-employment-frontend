@@ -20,8 +20,10 @@ import base.SpecBase
 import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.HowMuchTradingAllowance.{LessThan, Maximum}
-import models.{CheckMode, HowMuchTradingAllowance, NormalMode, UserAnswers}
+import models.database.UserAnswers
+import models.journeys.income.HowMuchTradingAllowance
+import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
+import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

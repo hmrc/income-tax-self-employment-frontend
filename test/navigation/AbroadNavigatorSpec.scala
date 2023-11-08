@@ -21,6 +21,8 @@ import controllers.journeys.abroad.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.database.UserAnswers
+import models.journeys.Abroad
 import pages._
 import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 

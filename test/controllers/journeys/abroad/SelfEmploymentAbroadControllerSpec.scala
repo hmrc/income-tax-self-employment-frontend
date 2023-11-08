@@ -18,8 +18,10 @@ package controllers.journeys.abroad
 
 import base.SpecBase
 import forms.abroad.SelfEmploymentAbroadFormProvider
-import models.{Abroad, NormalMode, UserAnswers}
-import navigation.{FakeAbroadNavigator, AbroadNavigator}
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.Abroad
+import navigation.{AbroadNavigator, FakeAbroadNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

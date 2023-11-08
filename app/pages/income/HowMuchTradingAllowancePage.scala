@@ -16,7 +16,7 @@
 
 package pages.income
 
-import models.HowMuchTradingAllowance
+import models.journeys.income.HowMuchTradingAllowance
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

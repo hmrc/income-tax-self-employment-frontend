@@ -16,7 +16,7 @@
 
 package models.journeys.expenses
 
-import models.{Enumerable, WithName}
+import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -44,6 +44,13 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
     values.zipWithIndex.map {
 
       case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))
+      case (value, index) if value.equals(No) =>
+        CheckboxItemViewModel(
+          content = Text(messages(s"professionalServiceExpenses.${value.toString}.$userType")),
+          fieldId = "value",
+          index = index,
+          value = value.toString
+        ).withAttribute(("data-behaviour", "exclusive"))
       case (value, index) =>
       CheckboxItemViewModel(
         content = Text(messages(s"professionalServiceExpenses.${value.toString}${if (value.equals(No)) s".$userType" else ""}")),

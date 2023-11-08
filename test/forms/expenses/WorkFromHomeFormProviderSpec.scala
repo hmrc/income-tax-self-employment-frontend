@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.WorkFromHome
+import models.journeys.expenses.WorkFromHome
 import play.api.data.FormError
 
 class WorkFromHomeFormProviderSpec extends OptionFieldBehaviours {

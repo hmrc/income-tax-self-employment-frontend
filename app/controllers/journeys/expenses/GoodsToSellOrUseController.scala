@@ -19,9 +19,10 @@ package controllers.journeys.expenses
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.GoodsToSellOrUseFormProvider
-import models.ModelUtils.userType
-import models.journeys.TaxiMinicabOrRoadHaulage
-import models.{Mode, UserAnswers}
+import models.Mode
+import models.common.ModelUtils.userType
+import models.database.UserAnswers
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
 import pages.expenses.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}

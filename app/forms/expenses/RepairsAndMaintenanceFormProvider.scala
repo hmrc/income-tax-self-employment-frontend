@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.RepairsAndMaintenance
+import models.journeys.expenses.RepairsAndMaintenance
 import play.api.data.Form
 
 import javax.inject.Inject

@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.CompletedSectionState
+import models.journeys.CompletedSectionState
 import play.api.data.FormError
 
 class SectionCompletedStateFormProviderSpec extends OptionFieldBehaviours {

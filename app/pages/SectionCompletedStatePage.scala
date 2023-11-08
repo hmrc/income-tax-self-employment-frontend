@@ -16,7 +16,7 @@
 
 package pages
 
-import models.CompletedSectionState
+import models.journeys.CompletedSectionState
 import play.api.libs.json.JsPath
 
 case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {

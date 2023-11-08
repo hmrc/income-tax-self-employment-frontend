@@ -20,6 +20,8 @@ import controllers.journeys.routes._
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import controllers.standard.routes._
 import models._
+import models.database.UserAnswers
+import models.journeys.TradeDetails
 import pages._
 import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 import play.api.mvc.Call

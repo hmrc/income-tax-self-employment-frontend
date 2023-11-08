@@ -17,7 +17,7 @@
 package forms.income
 
 import forms.behaviours.OptionFieldBehaviours
-import models.TradingAllowance
+import models.journeys.income.TradingAllowance
 import play.api.data.FormError
 
 class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {

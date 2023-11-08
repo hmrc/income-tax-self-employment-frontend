@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import models._
+import models.journeys.{Abroad, Income}
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}

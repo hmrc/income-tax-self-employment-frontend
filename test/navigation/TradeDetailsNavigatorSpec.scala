@@ -21,6 +21,8 @@ import controllers.journeys.routes._
 import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
 import models._
+import models.database.UserAnswers
+import models.journeys.TradeDetails
 import pages._
 import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSummaryPage}
 
