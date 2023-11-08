@@ -41,7 +41,7 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
   def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
     values.zipWithIndex.map { case (value, index) =>
       CheckboxItemViewModel(
-        content = Text(messages(s"professionalServiceExpenses.${value.toString}")),
+        content = Text(messages(if (value == No) "site.no" else s"professionalServiceExpenses.${value.toString}")),
         fieldId = "value",
         index = index,
         value = value.toString
