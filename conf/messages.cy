@@ -130,6 +130,10 @@ selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
 
 ###### Income Journey ######
 
+## Common
+income.turnoverExemptFromTax.individual = Is any of your turnover exempt from being taxed as profit?
+income.turnoverExemptFromTax.agent = Is any of your client’s turnover exempt from being taxed as profit?
+
 ## Income not counted as turnover
 incomeNotCountedAsTurnover.title = Income not counted as turnover
 incomeNotCountedAsTurnover.p1.individual = This is money you’ve received that counts as trading income but is not included in your turnover. It includes:
@@ -219,10 +223,6 @@ turnoverNotTaxable.p3.agent = This does not include expenses that your client is
 turnoverNotTaxable.l1 = certain grants or subsidies
 turnoverNotTaxable.l2 = compensation payments
 turnoverNotTaxable.l3 = payments for work done on a consultancy basis
-turnoverNotTaxable.subHeading.individual = Is any of your turnover exempt from being taxed as profit?
-turnoverNotTaxable.subHeading.agent = Is any of your client’s turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel.individual = Is any of your turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel.agent = Is any of your client’s turnover exempt from being taxed as profit?
 turnoverNotTaxable.error.required.individual = Select yes if any of your turnover is exempt from being taxed as profit
 turnoverNotTaxable.error.required.agent = Select yes if any of your client’s turnover is exempt from being taxed as profit
 turnoverNotTaxable.change.hidden = Change turnover exempt from tax
@@ -296,22 +296,6 @@ tradingAllowanceAmount.change.hidden = Change trading allowance amount
 ## Check your income (Income CYA)
 checkYourIncome.title.individual = Check your income
 checkYourIncome.title.agent = Check your client’s income
-checkYourIncome.r1.individual = Did you have any income you’re not counting as turnover?
-checkYourIncome.r1.agent = Did your client have any income they’re not counting as turnover?
-checkYourIncome.r2.individual = What was your turnover?
-checkYourIncome.r2.agent = What was your client’s turnover?
-checkYourIncome.r3.individual = Is there any other self-employment income you need to tell us about?
-checkYourIncome.r3.agent = Is there any other self-employment income your client needs to tell us about?
-checkYourIncome.r4.individual = How much other self-employment income did you get?
-checkYourIncome.r4.agent = How much other self-employment income did your client get?
-checkYourIncome.r5.individual = Is any of your turnover exempt from being taxed as profit?
-checkYourIncome.r5.agent = Is any of your client’s turnover exempt from being taxed as profit?
-checkYourIncome.r6.individual = Do you want to use the trading allowance or declare expenses?
-checkYourIncome.r6.agent = Does your client want to use the trading allowance or declare expenses?
-checkYourIncome.r7.individual = How much of your trading allowance do you want to use?
-checkYourIncome.r7.agent = How much of their trading allowance does your client want to use?
-checkYourIncome.r8.individual = How much trading allowance do you want to use?
-checkYourIncome.r8.agent = How much trading allowance does your client want to use?
 
 ###### Expenses Journey ######
 
@@ -320,10 +304,10 @@ expenses.yesAllowable.individual = Yes, all of my expenses are allowable
 expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
 expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
 expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
-expenses.no = No
 expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
+expenses.repaymentsOfLoans = repayments of loans
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -465,7 +449,6 @@ financialExpenses.d1.l1.accrual = interest on bank and other business loans
 financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
 financialExpenses.d1.l2 = fees for buying goods
 financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
-financialExpenses.d1.l4 = repayments of loans
 financialExpenses.d1.l5 = overdraft or finance arrangements.
 financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
 financialExpenses.d2.l1 = bank charges
@@ -490,7 +473,6 @@ financialExpenses.change.hidden = FinancialExpenses
 disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
 disallowableInterest.title.agent = Is any of your client’s interest on bank and other business loans disallowable?
 disallowableInterest.heading = Disallowable interest on bank and other business loans
-disallowableInterest.l1 = repayments of loans
 disallowableInterest.l2 = overdraft or finance arrangements
 disallowableInterest.checkYourAnswersLabel = Is any of your interest on bank and other business loans disallowable?
 disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
