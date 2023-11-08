@@ -546,3 +546,29 @@ otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
+
+########## Expenses - Goods to sell or use ##########
+
+## Goods to sell or use amount
+goodsToSellOrUseAmount.title = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.heading = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.checkYourAnswersLabel = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.error.nonNumeric = Enter your goodsToSellOrUseAmount using numbers
+goodsToSellOrUseAmount.error.required = Enter your goodsToSellOrUseAmount
+goodsToSellOrUseAmount.error.lessThanZero = Enter your goodsToSellOrUseAmount using whole numbers
+goodsToSellOrUseAmount.error.overMax = GoodsToSellOrUseAmount must be betwe
+goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmount
+
+## Disallowable goods to sell or use amount
+disallowableGoodsToSellOrUseAmount.title = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.heading = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.error.nonNumeric = Enter your disallowableGoodsToSellOrUseAmount using numbers
+disallowableGoodsToSellOrUseAmount.error.required = Enter your disallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.error.lessThanZero = Enter your disallowableGoodsToSellOrUseAmount using whole numbers
+disallowableGoodsToSellOrUseAmount.error.overMax = DisallowableGoodsToSellOrUseAmount must be bet
+disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
+
+## Goods to sell or use CYA
+goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
+goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
