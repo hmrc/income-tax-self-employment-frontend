@@ -23,11 +23,17 @@ import javax.inject.Inject
 
 class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BigDecimal] =
+  def apply(userType: String, goodsAmount: BigDecimal): Form[BigDecimal] = {
+    val goodsAmountString = goodsAmount.toString()
     Form(
-      "value" -> bigDecimal("disallowableGoodsToSellOrUseAmount.error.required", "disallowableGoodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(isBigDecimalGreaterThanZero("disallowableGoodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, "disallowableGoodsToSellOrUseAmount.error.overMax"))
+      "value" -> bigDecimal(
+        s"disallowableGoodsToSellOrUseAmount.error.required.$userType",
+        s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.$userType",
+        Seq(goodsAmountString)
+      )
+        .verifying(isBigDecimalGreaterThanZero(s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType"))
+        .verifying(isBigDecimalLessThanMax(goodsAmount, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType"))
     )
+  }
 
 }

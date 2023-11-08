@@ -19,15 +19,17 @@ package controllers.journeys.expenses.goodsToSellOrUse
 import controllers.actions._
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
-import pages.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountPage
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,26 +45,33 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val goodsAmount = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(GoodsToSellOrUseAmountPage, Some(businessId)).getOrElse(BigDecimal(0))
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+      case None => formProvider(userType(request.user.isAgent), goodsAmount)
+      case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
+    val goodsAmount = request.userAnswers.getOrElse(UserAnswers(request.userId))
+      .get(GoodsToSellOrUseAmountPage, Some(businessId)).getOrElse(BigDecimal(0))
+    formProvider(userType(request.user.isAgent), goodsAmount)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(
+          BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableGoodsToSellOrUseAmountPage, value))
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers))
       )

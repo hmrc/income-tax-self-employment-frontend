@@ -49,16 +49,16 @@
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             @if(taxiDriver) {
-                <li>@messages("goodsToSellOrUse.l9")</li>
+                <li>@messages("expenses.fuelCosts")</li>
             }
-            <li>@messages("goodsToSellOrUse.l1")</li>
-            <li>@messages("goodsToSellOrUse.l2")</li>
-            <li>@messages("goodsToSellOrUse.l3")</li>
+            <li>@messages("expenses.costOfRawMaterials")</li>
+            <li>@messages("expenses.stockBought")</li>
+            <li>@messages("expenses.directCostsOfProducing")</li>
             @if(accountingType.equals("ACCRUAL")) {
-                <li>@messages("goodsToSellOrUse.l8")</li>
+                <li>@messages("expenses.adjustments")</li>
             }
-            <li>@messages("goodsToSellOrUse.l4")</li>
-            <li>@messages("goodsToSellOrUse.l5")</li>
+            <li>@messages("expenses.commissions")</li>
+            <li>@messages("expenses.discounts")</li>
 
         </ul>
         <p>
@@ -66,10 +66,10 @@
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
         @if(accountingType.equals("CASH")) {
-            <li>@messages("goodsToSellOrUse.l6")</li>
+            <li>@messages("expenses.costsForPrivateUse")</li>
 
         }
-            <li>@messages("goodsToSellOrUse.l7")</li>
+            <li>@messages("expenses.depreciationOfEquipment")</li>
         </ul>
     </div>
 
