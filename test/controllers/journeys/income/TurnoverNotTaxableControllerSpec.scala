@@ -20,12 +20,13 @@ import base.SpecBase
 import controllers.journeys.income.routes.{NotTaxableAmountController, TradingAllowanceController, TurnoverNotTaxableController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverNotTaxableFormProvider
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.database.UserAnswers
+import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.income.TurnoverNotTaxablePage
+import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -40,9 +41,8 @@ import scala.concurrent.Future
 class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider         = new TurnoverNotTaxableFormProvider()
-  val businessId           = "SJPR05893938418"
-  val notTaxableAmountCall = NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-  val tradingAllowanceCall = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val notTaxableAmountCall = NotTaxableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+  val tradingAllowanceCall = TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
 
   val onwardRoute = (userAnswer: Boolean) => if (userAnswer) notTaxableAmountCall else tradingAllowanceCall
 
@@ -65,7 +65,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
+              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -74,7 +74,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[TurnoverNotTaxableView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -85,13 +85,13 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(businessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
+              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
 
               val view = application.injector.instanceOf[TurnoverNotTaxableView]
 
@@ -99,7 +99,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -115,7 +115,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
+          val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -145,7 +145,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
@@ -155,16 +155,17 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to the Trading Allowance page when a user answer 'No' is submitted" in {
+      "must redirect to the Trading Allowance page and clear any NotTaxableAmount data when a user answer 'No' is submitted" in {
 
-        val userAnswer = false
+        val userAnswer  = false
+        val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
 
         val mockSessionRepository = mock[SessionRepository]
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
               bind[SessionRepository].toInstance(mockSessionRepository)
@@ -173,13 +174,14 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual tradingAllowanceCall.url
+          UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(stubbedBusinessId)) mustBe None
         }
       }
 
@@ -192,7 +194,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -203,7 +205,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -219,7 +221,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
             running(application) {
               val request =
-                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -230,7 +232,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -247,7 +249,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value

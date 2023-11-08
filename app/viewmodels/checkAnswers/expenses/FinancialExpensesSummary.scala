@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers.expenses
 
 import controllers.journeys.expenses.routes.FinancialExpensesController
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.database.UserAnswers
 import pages.expenses.FinancialExpensesPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

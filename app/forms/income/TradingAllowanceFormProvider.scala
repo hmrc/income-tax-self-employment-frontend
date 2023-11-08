@@ -17,7 +17,7 @@
 package forms.income
 
 import forms.mappings.Mappings
-import models.TradingAllowance
+import models.journeys.income.TradingAllowance
 import play.api.data.Form
 
 import javax.inject.Inject

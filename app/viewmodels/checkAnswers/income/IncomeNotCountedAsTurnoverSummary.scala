@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.database.UserAnswers
 import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}

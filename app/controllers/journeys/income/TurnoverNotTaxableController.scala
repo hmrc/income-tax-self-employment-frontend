@@ -19,9 +19,9 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
 import models.Mode
-import models.ModelUtils.userType
+import models.common.ModelUtils.userType
 import navigation.IncomeNavigator
-import pages.income.TurnoverNotTaxablePage
+import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -61,8 +61,13 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- Future.fromTry {
+                val userAnswers =
+                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId)).get
+                  else request.userAnswers
+                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId))
+              }
+              _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))
         )
   }

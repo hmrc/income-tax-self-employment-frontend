@@ -18,8 +18,8 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
-site.selectAllTheApply = Select all that apply.
 site.theseInclude = These include:
+site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -402,6 +402,59 @@ workFromBusinessPremises.checkYourAnswersLabel = Did you work from your own busi
 workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
+
+## Travel and accommodation for work
+travelForWork.title = Travel for work and accommodation
+travelForWork.heading = Travel for work and accommodation
+travelForWork.checkYourAnswersLabel = Travel for work and accommodation
+travelForWork.error.required = Select travelForWork
+travelForWork.change.hidden = TravelForWork
+
+## Advertising or marketing
+advertisingOrMarketing.title = Advertising or marketing
+advertisingOrMarketing.heading = Advertising or marketing
+advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
+advertisingOrMarketing.error.required = Select advertisingOrMarketing
+advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+
+## Entertainment costs
+entertainmentCosts.title = Entertainment costs
+entertainmentCosts.heading = Entertainment costs
+entertainmentCosts.checkYourAnswersLabel = Entertainment costs
+entertainmentCosts.error.required = Select entertainmentCosts
+entertainmentCosts.change.hidden = EntertainmentCosts
+
+## Staff, construction industry and professional services
+professionalServiceExpenses.title = Staff, construction industry and professional services expenses
+professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.staff = Staff
+professionalServiceExpenses.construction = Construction industry subcontractors
+professionalServiceExpenses.professional.fees = Professional Fees
+professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
+professionalServiceExpenses.error.required = Select professionalServiceExpenses
+professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+
+## Disallowable staff costs
+disallowableStaffCosts.title = Disallowable staff costs
+disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
+disallowableStaffCosts.error.required = Select disallowableStaffCosts
+disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+
+## Disallowable subcontractor costs
+disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
+disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+
+## Disallowable professional fees
+disallowableProfessionalFees.title = Disallowable professional fees
+disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
+disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
+disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
 
 ## Financial expenses
 financialExpenses.title = Financial expenses

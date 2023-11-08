@@ -20,8 +20,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import config.FrontendAppConfig
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
-import models.TradeDetails
 import models.errors.{HttpError, HttpErrorBody}
+import models.journeys.TradeDetails
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json

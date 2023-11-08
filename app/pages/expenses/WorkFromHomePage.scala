@@ -16,7 +16,7 @@
 
 package pages.expenses
 
-import models.journeys.WorkFromHome
+import models.journeys.expenses.WorkFromHome
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

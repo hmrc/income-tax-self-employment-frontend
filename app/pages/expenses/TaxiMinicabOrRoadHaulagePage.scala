@@ -16,7 +16,7 @@
 
 package pages.expenses
 
-import models.journeys.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

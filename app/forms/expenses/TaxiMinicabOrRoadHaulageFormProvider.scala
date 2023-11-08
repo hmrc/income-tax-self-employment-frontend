@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.mappings.Mappings
-import models.journeys.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import play.api.data.Form
 
 import javax.inject.Inject

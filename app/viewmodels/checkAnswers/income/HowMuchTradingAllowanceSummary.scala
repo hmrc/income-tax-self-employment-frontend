@@ -17,7 +17,9 @@
 package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
-import models.{CheckMode, HowMuchTradingAllowance, UserAnswers}
+import models.CheckMode
+import models.database.UserAnswers
+import models.journeys.income.HowMuchTradingAllowance
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}

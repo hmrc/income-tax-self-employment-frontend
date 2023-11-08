@@ -19,9 +19,10 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
-import models.ModelUtils.userType
+import models.common.ModelUtils.userType
+import models.journeys.income.HowMuchTradingAllowance.Maximum
 import navigation.IncomeNavigator
-import pages.income.HowMuchTradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -48,7 +49,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance = getIncomeTradingAllowance(businessId, request.userAnswers)
+      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
       val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent), tradingAllowanceString)
@@ -66,12 +67,16 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(
-              BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
+            Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- Future.fromTry {
+                val userAnswers =
+                  if (value.equals(Maximum)) request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId)).get
+                  else request.userAnswers
+                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId))
+              }
+              _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
         )
   }

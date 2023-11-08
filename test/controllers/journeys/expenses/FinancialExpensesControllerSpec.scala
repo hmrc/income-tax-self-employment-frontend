@@ -20,8 +20,9 @@ import base.SpecBase
 import controllers.journeys.expenses.routes.FinancialExpensesController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.FinancialExpensesFormProvider
+import models.NormalMode
+import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses
-import models.{NormalMode, UserAnswers}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
@@ -52,7 +53,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
     s"financialExpenses.subHeading.$userType",
-    "site.selectAllTheApply",
+    "site.selectAllThatApply",
     headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
   )
 

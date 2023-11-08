@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.NotTaxableAmountFormProvider
 import models.Mode
-import models.ModelUtils.userType
+import models.common.ModelUtils.userType
 import navigation.IncomeNavigator
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}

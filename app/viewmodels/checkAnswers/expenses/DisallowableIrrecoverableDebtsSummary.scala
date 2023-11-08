@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers.expenses
 
 import controllers.journeys.expenses.routes.DisallowableIrrecoverableDebtsController
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.database.UserAnswers
 import pages.expenses.DisallowableIrrecoverableDebtsPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

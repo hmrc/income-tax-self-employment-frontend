@@ -23,7 +23,8 @@ import connectors.SelfEmploymentConnector
 import controllers.journeys.routes.SectionCompletedStateController
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
+import models.database.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,8 +33,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.govuk.SummaryListFluency
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
+import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
 import scala.concurrent.Future

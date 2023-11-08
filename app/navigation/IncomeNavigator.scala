@@ -19,9 +19,11 @@ package navigation
 import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
-import models.HowMuchTradingAllowance.{LessThan, Maximum}
-import models.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import models._
+import models.database.UserAnswers
+import models.journeys.Income
+import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
+import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import pages._
 import pages.income._
 import play.api.mvc.Call

@@ -17,7 +17,7 @@
 package forms.expenses
 
 import forms.behaviours.OptionFieldBehaviours
-import models.journeys.RepairsAndMaintenance
+import models.journeys.expenses.RepairsAndMaintenance
 import play.api.data.FormError
 
 class RepairsAndMaintenanceFormProviderSpec extends OptionFieldBehaviours {
