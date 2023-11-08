@@ -19,6 +19,7 @@ package controllers.journeys.expenses
 import controllers.actions._
 import forms.expenses.DisallowableOtherFinancialChargesFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.DisallowableOtherFinancialChargesPage
@@ -48,23 +49,23 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
   val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableOtherFinancialChargesPage) match {
-      case None        => formProvider()
-      case Some(value) => formProvider().fill(value)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider()
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableOtherFinancialChargesPage, value))
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableOtherFinancialChargesPage, value, Some(businessId)))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, updatedAnswers))
       )

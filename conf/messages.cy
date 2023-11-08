@@ -18,6 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
+site.theseInclude = These include:
 site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
@@ -303,6 +304,10 @@ expenses.yesAllowable.individual = Yes, all of my expenses are allowable
 expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
 expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
 expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.debtsNotIncludedInTurnover = debts not included in turnover
+expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
+expenses.generalBadDebts = general bad debts
+expenses.repaymentsOfLoans = repayments of loans
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -444,7 +449,6 @@ financialExpenses.d1.l1.accrual = interest on bank and other business loans
 financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
 financialExpenses.d1.l2 = fees for buying goods
 financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
-financialExpenses.d1.l4 = repayments of loans
 financialExpenses.d1.l5 = overdraft or finance arrangements.
 financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
 financialExpenses.d2.l1 = bank charges
@@ -455,9 +459,6 @@ financialExpenses.d2.l5 = alternative finance payments
 financialExpenses.d2.l6 = capital repayments
 financialExpenses.d3.heading = Understanding irrecoverable debts written off
 financialExpenses.d3.l1 = amounts included in turnover but unpaid and written off (due to being irrecoverable)
-financialExpenses.d3.l2 = debts not included in turnover
-financialExpenses.d3.l3 = debts relating to fixed assets
-financialExpenses.d3.l4 = general bad debts
 financialExpenses.interest = Interest on bank and other business loans
 financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
 financialExpenses.irrecoverableDebts = Irrecoverable debts written off
@@ -469,24 +470,32 @@ financialExpenses.error.required.agent = Select the financial expenses your clie
 financialExpenses.change.hidden = FinancialExpenses
 
 ## Disallowable interest
-disallowableInterest.title = Disallowable interest on bank and other business loans
+disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.title.agent = Is any of your client’s interest on bank and other business loans disallowable?
 disallowableInterest.heading = Disallowable interest on bank and other business loans
-disallowableInterest.checkYourAnswersLabel = Disallowable interest on bank and other business loans
-disallowableInterest.error.required = Select disallowableInterest
+disallowableInterest.l2 = overdraft or finance arrangements
+disallowableInterest.checkYourAnswersLabel = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
+disallowableInterest.error.required.agent = Select yes if any of your client’s interest on bank and other business loans is disallowable
 disallowableInterest.change.hidden = DisallowableInterest
 
 ## Disallowable other financial charges
-disallowableOtherFinancialCharges.title = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.heading = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.individual = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.agent = Are any of your client’s bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.heading = Disallowable bank, credit card and other financial charges
+disallowableOtherFinancialCharges.p1 = These include capital repayments.
 disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.error.required = Select disallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.error.required.individual = Select yes if any of your bank, credit card and other financial charges are disallowable
+disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client’s bank, credit card and other financial charges are disallowable
 disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
 
 ## Disallowable irrecoverable debts
-disallowableIrrecoverableDebts.title = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.heading = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.individual = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.agent = Are any of your client’s irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.heading = Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.error.required = Select disallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.error.required.individual = Select yes if any of your irrecoverable debts are disallowable
+disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client’s irrecoverable debts are disallowable
 disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
 
 ## Depreciation
