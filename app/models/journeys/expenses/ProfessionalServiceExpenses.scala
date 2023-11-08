@@ -40,13 +40,13 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
     No
   )
 
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
+  def checkboxItems(userType: String)(implicit messages: Messages): Seq[CheckboxItem] =
     values.zipWithIndex.map {
 
       case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))
       case (value, index) =>
       CheckboxItemViewModel(
-        content = Text(messages(s"professionalServiceExpenses.${value.toString}")),
+        content = Text(messages(s"professionalServiceExpenses.${value.toString}${if (value.equals(No)) s".$userType" else ""}")),
         fieldId = "value",
         index = index,
         value = value.toString

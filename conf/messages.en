@@ -435,7 +435,8 @@ professionalServiceExpenses.subheading = Did you pay for any of these profession
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
 professionalServiceExpenses.professional.fees = Professional Fees
-professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.individual = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
 professionalServiceExpenses.error.required = Select professionalServiceExpenses
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
@@ -466,32 +467,37 @@ professionalServiceExpenses.d3.l9 = fines for breaking the law
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.heading = Disallowable staff costs
-disallowableStaffCosts.subheading = Are any of your staff costs disallowable?
+disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
+disallowableStaffCosts.subheading.agent = Are any of your client's staff costs disallowable?
 disallowableStaffCosts.yes = Yes
 disallowableStaffCosts.no = No
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
 disallowableStaffCosts.error.required = Select disallowableStaffCosts
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
 disallowableStaffCosts.p1 = These include:
-disallowableStaffCosts.l1 = your own pay, pension or National Insurance contributions
+disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
+disallowableStaffCosts.l1.agent = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.l2 = any amount that covers personal use
 disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.subheading = Are any of your construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subheading.agent = Are any of your client's construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.yes = Yes
 disallowableSubcontractorCosts.no = No
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
-disallowableSubcontractorCosts.p1 = This includes any non-work amounts. For example, building work carried out on your home.
+disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
+disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client's home.
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
-disallowableProfessionalFees.subheading = Are any of your professional fees disallowable?
+disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
+disallowableProfessionalFees.subheading.agent = Are any of your client's professional fees disallowable?
 disallowableProfessionalFees.yes = Yes
 disallowableProfessionalFees.no = No
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees

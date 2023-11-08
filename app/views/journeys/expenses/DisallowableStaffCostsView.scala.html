@@ -26,7 +26,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("disallowableStaffCosts.title"))) {
 
@@ -41,7 +41,7 @@
             @messages(s"disallowableStaffCosts.p1")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages("disallowableStaffCosts.l1")</li>
+                <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
                 <li>@messages("disallowableStaffCosts.l2")</li>
             </ul>
         </div>
@@ -52,7 +52,8 @@
             @govukRadios(
                 RadiosViewModel(
                     field = form("value"),
-                    legend = LegendViewModel(messages("disallowableStaffCosts.subheading")).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                    legend = LegendViewModel(messages(s"disallowableStaffCosts.subheading.$authUserType"))
+                                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                     items = DisallowableStaffCosts.options
                 )
             )

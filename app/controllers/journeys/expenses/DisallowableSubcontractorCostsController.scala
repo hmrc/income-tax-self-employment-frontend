@@ -18,6 +18,7 @@ package controllers.journeys.expenses
 
 import controllers.actions._
 import forms.expenses.DisallowableSubcontractorCostsFormProvider
+import models.ModelUtils.userType
 import models.{Mode, UserAnswers}
 import navigation.ExpensesNavigator
 import pages.expenses.DisallowableSubcontractorCostsPage
@@ -43,22 +44,20 @@ class DisallowableSubcontractorCostsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableSubcontractorCostsPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(

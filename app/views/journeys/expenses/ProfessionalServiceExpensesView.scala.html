@@ -26,7 +26,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, legendContent: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, legendContent: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
@@ -44,7 +44,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                @messages(s"site.cannotInclude.individual")
+                @messages(s"site.cannotInclude.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("professionalServiceExpenses.d1.l1")</li>
@@ -57,7 +57,7 @@
                     <li>@messages("professionalServiceExpenses.d1.l8")</li>
                 </ul>
                 <p>
-                @messages(s"site.cannotInclude.individual")
+                @messages(s"site.cannotInclude.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("professionalServiceExpenses.d1.l9")</li>
@@ -86,7 +86,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                @messages(s"site.cannotInclude.individual")
+                @messages(s"site.cannotInclude.$authUserType")
             </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("professionalServiceExpenses.d3.l1")</li>
@@ -96,7 +96,7 @@
                     <li>@messages("professionalServiceExpenses.d3.l5")</li>
                 </ul>
                 <p>
-                @messages(s"site.cannotInclude.individual")
+                @messages(s"site.cannotInclude.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("professionalServiceExpenses.d3.l6")</li>
@@ -115,7 +115,7 @@
                 CheckboxesViewModel(
                     form = form,
                     name = "value",
-                    items = ProfessionalServiceExpenses.checkboxItems,
+                    items = ProfessionalServiceExpenses.checkboxItems(authUserType),
                     legend = LegendViewModel(HtmlContent(legendContent)).withCssClass("no-margin-bottom")
                 )
             )
