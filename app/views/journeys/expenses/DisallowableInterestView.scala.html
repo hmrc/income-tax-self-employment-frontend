@@ -16,29 +16,44 @@
 
 @import models.journeys.expenses.DisallowableInterest
 @import controllers.journeys.expenses.routes.DisallowableInterestController
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("disallowableInterest.title"))) {
+@layout(pageTitle = title(form, messages(s"disallowableInterest.title.$userType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    @heading(messages("disallowableInterest.heading"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+            @messages("site.theseInclude")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("expenses.repaymentsOfLoans")</li>
+            <li>@messages("disallowableInterest.l2")</li>
+        </ul>
+    </div>
 
     @formHelper(action = DisallowableInterestController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("disallowableInterest.heading")).asPageHeading(),
+                legend = LegendViewModel(messages(s"disallowableInterest.title.$userType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items  = DisallowableInterest.options
             )
         )

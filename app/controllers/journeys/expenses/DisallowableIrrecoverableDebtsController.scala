@@ -19,6 +19,7 @@ package controllers.journeys.expenses
 import controllers.actions._
 import forms.expenses.DisallowableIrrecoverableDebtsFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.DisallowableIrrecoverableDebtsPage
@@ -48,23 +49,23 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
   val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableIrrecoverableDebtsPage) match {
-      case None        => formProvider()
-      case Some(value) => formProvider().fill(value)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableIrrecoverableDebtsPage, Some(businessId)) match {
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider()
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableIrrecoverableDebtsPage, value))
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableIrrecoverableDebtsPage, value, Some(businessId)))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DisallowableIrrecoverableDebtsPage, mode, updatedAnswers))
       )

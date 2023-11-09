@@ -22,25 +22,34 @@ import play.api.data.FormError
 
 class DisallowableInterestFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableInterestFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "disallowableInterest.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[DisallowableInterest](
-      form,
-      fieldName,
-      validValues = DisallowableInterest.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableInterestFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[DisallowableInterest](
+          form,
+          fieldName,
+          validValues = DisallowableInterest.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableInterest.error.required.${userScenario.user}")
+        )
+      }
+    }
+
   }
 
 }

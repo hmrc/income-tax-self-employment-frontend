@@ -24,8 +24,9 @@ import javax.inject.Inject
 
 class DisallowableOtherFinancialChargesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DisallowableOtherFinancialCharges] =
+  def apply(userType: String): Form[DisallowableOtherFinancialCharges] =
     Form(
-      "value" -> enumerable[DisallowableOtherFinancialCharges]("disallowableOtherFinancialCharges.error.required")
+      "value" -> enumerable[DisallowableOtherFinancialCharges](s"disallowableOtherFinancialCharges.error.required.$userType")
     )
+
 }
