@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class DisallowableOtherFinancialChargesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableOtherFinancialChargesFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "disallowableOtherFinancialCharges.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[DisallowableOtherFinancialCharges](
-      form,
-      fieldName,
-      validValues = DisallowableOtherFinancialCharges.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableOtherFinancialChargesFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[DisallowableOtherFinancialCharges](
+          form,
+          fieldName,
+          validValues = DisallowableOtherFinancialCharges.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableOtherFinancialCharges.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

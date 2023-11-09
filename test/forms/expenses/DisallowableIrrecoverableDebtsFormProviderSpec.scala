@@ -22,25 +22,34 @@ import play.api.data.FormError
 
 class DisallowableIrrecoverableDebtsFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableIrrecoverableDebtsFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "disallowableIrrecoverableDebts.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[DisallowableIrrecoverableDebts](
-      form,
-      fieldName,
-      validValues = DisallowableIrrecoverableDebts.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableIrrecoverableDebtsFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[DisallowableIrrecoverableDebts](
+          form,
+          fieldName,
+          validValues = DisallowableIrrecoverableDebts.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableIrrecoverableDebts.error.required.${userScenario.user}")
+        )
+      }
+    }
+
   }
 
 }

@@ -24,8 +24,9 @@ import javax.inject.Inject
 
 class DisallowableIrrecoverableDebtsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DisallowableIrrecoverableDebts] =
+  def apply(userType: String): Form[DisallowableIrrecoverableDebts] =
     Form(
-      "value" -> enumerable[DisallowableIrrecoverableDebts]("disallowableIrrecoverableDebts.error.required")
+      "value" -> enumerable[DisallowableIrrecoverableDebts](s"disallowableIrrecoverableDebts.error.required.$userType")
     )
+
 }
