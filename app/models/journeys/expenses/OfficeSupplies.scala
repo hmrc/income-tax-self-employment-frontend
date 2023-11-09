@@ -38,7 +38,7 @@ object OfficeSupplies extends Enumerable.Implicits {
   def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     val optUserType = if (value.equals(No)) "" else s".$userType"
     RadioItem(
-      content = Text(messages(s"expenses.${value.toString}$optUserType")),
+      content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}$optUserType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
