@@ -63,13 +63,9 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
   "OfficeSuppliesDisallowableAmountController" - {
     userScenarios.foreach { userScenario =>
       s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
-        val isAgent = userScenario.authUser match {
-          case UserType.Individual => false
-          case UserType.Agent      => true
-        }
         "when loading a page" - {
           "must return OK and the correct view for a GET" in {
-            val application = applicationBuilder(Some(emptyUserAnswers), isAgent).build()
+            val application = applicationBuilder(Some(emptyUserAnswers), isAgent(userScenario.authUser.toString)).build()
 
             implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
             val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
@@ -87,7 +83,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           "must populate the view correctly on a GET when the question has previously been answered" in {
             val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesDisallowableAmountPage, validAnswer).success.value
 
-            val application = applicationBuilder(Some(userAnswers), isAgent).build()
+            val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser.toString)).build()
 
             implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
             val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
@@ -102,7 +98,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             }
           }
           "must redirect to Journey Recovery for a GET if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent).build()
+            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser.toString)).build()
 
             running(application) {
               val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
@@ -120,7 +116,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
             val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent)
+              applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser.toString))
                 .overrides(
                   bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
@@ -140,7 +136,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser.toString)).build()
 
             val view: OfficeSuppliesDisallowableAmountView    = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
             implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
@@ -161,7 +157,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
 
           "must redirect to Journey Recovery for a POST if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent).build()
+            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser.toString)).build()
 
             running(application) {
               val request =

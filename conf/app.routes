@@ -213,15 +213,15 @@ GET         /expenses/goods-sell-use/check                                      
 
 ########## Expenses - Office Supplies ##########
 
-GET        /expenses/office-equipment-costs/office-equipment-costs-amount                       controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/office-equipment-costs/office-equipment-costs-amount                       controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/office-equipment-costs/change-office-equipment-costs-amount                controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/office-equipment-costs/change-office-equipment-costs-amount                controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = CheckMode)
+GET        /expenses/office-supplies/amount	                                        controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/office-supplies/amount                                         controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-office-supplies/amount                                  controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-office-supplies/amount                                  controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/office-equipment-costs/office-equipment-disallowable-costs-amount          controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = NormalMode)
-POST       /expenses/office-equipment-costs/office-equipment-disallowable-costs-amount          controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = NormalMode)
-GET        /expenses/office-equipment-costs/change-office-equipment-disallowable-costs-amount   controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = CheckMode)
-POST       /expenses/office-equipment-costs/change-office-equipment-disallowable-costs-amount   controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = CheckMode)
+GET        /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = CheckMode)
 
-GET        /expenses/office-equipment-costs/check-answers                                       controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad()
+GET        /expenses/office-supplies/check                                          controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad()
 
