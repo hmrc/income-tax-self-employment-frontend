@@ -17,9 +17,9 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
+import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
@@ -51,52 +51,62 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId   = "SJPR05893938418"
-  val taxYear: Int = LocalDate.now.getYear
-  val isAccrual    = true
-  val isTaxiDriver = true
+  val businessId     = "SJPR05893938418"
+  val taxYear: Int   = LocalDate.now.getYear
+  val accountingType = "ACCRUAL"
+  val isTaxiDriver   = true
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-      case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
-      case Right(accountingType) =>
-        val user = userType(request.user.isAgent)
-        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-          case None        => formProvider(user)
-          case Some(value) => formProvider(user).fill(value)
-        }
-        val taxiDriver = request.userAnswers
-          .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-          .contains(TaxiMinicabOrRoadHaulage.Yes)
-        Ok(view(preparedForm, mode, user, taxYear, businessId, accountingType, taxiDriver, labelContent(user, isAccrual, isTaxiDriver)))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val user = userType(request.user.isAgent)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+      case None        => formProvider(user)
+      case Some(value) => formProvider(user).fill(value)
     }
+    val taxiDriver = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+      .contains(TaxiMinicabOrRoadHaulage.Yes)
+    Ok(
+      view(
+        preparedForm,
+        mode,
+        user,
+        taxYear,
+        businessId,
+        accountingType,
+        taxiDriver,
+        labelContent(user, accountingType.equals(Accrual.toString), isTaxiDriver)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-      case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-      case Right(accountingType) =>
-        val user = userType(request.user.isAgent)
-        val taxiDriver = request.userAnswers
-          .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-          .contains(TaxiMinicabOrRoadHaulage.Yes)
-        val form = formProvider(user)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(
-                view(formWithErrors, mode, user, taxYear, businessId, accountingType, taxiDriver, labelContent(user, isAccrual, isTaxiDriver)))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers))
-          )
-    }
+    val user = userType(request.user.isAgent)
+    val taxiDriver = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+      .contains(TaxiMinicabOrRoadHaulage.Yes)
+    val form = formProvider(user)
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          Future.successful(
+            BadRequest(
+              view(
+                formWithErrors,
+                mode,
+                user,
+                taxYear,
+                businessId,
+                accountingType,
+                taxiDriver,
+                labelContent(user, accountingType.equals(Accrual.toString), isTaxiDriver)))),
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers))
+      )
   }
 
   private def labelContent(userType: String, isAccrual: Boolean, isTaxiDriver: Boolean)(implicit messages: Messages): String = {

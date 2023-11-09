@@ -54,10 +54,11 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
       .getOrElse(UserAnswers(request.userId))
       .get(GoodsToSellOrUseAmountPage, Some(businessId))
       .getOrElse(BigDecimal(1000.50)) // TODO change this default
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage) match {
-      case None        => formProvider(userType(request.user.isAgent), goodsAmount)
-      case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
-    }
+    val preparedForm =
+      request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
+        case None        => formProvider(userType(request.user.isAgent), goodsAmount)
+        case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
+      }
 
     Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount, false)))
   }

@@ -32,9 +32,9 @@ class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings 
         s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.$userType",
         Seq(goodsAmountString)
       )
-        .verifying(isBigDecimalGreaterThanZero(s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType", goodsAmountString))
+        .verifying(isBigDecimalGreaterThanZero(s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType", Some(goodsAmountString)))
         .verifying(
-          isBigDecimalLessThanMax(goodsAmount + 0.01, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType", addDecimalsIfNotWhole = true))
+          isBigDecimalLessThanOrEqualToMax(goodsAmount, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType", addDecimalsIfNotWhole = true))
     )
   }
 
