@@ -25,11 +25,9 @@ sealed trait AdvertisingOrMarketing
 
 object AdvertisingOrMarketing extends Enumerable.Implicits {
 
-  case object YesAllowable extends WithName("yesAllowable") with AdvertisingOrMarketing
-
+  case object YesAllowable    extends WithName("yesAllowable") with AdvertisingOrMarketing
   case object YesDisallowable extends WithName("yesDisallowable") with AdvertisingOrMarketing
-
-  case object No extends WithName("no") with AdvertisingOrMarketing
+  case object No              extends WithName("no") with AdvertisingOrMarketing
 
   val values: Seq[AdvertisingOrMarketing] = Seq(
     YesAllowable,
