@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms.income
+package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class NotTaxableAmountFormProvider @Inject() extends Mappings {
+class OfficeSuppliesAmountFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
+  def apply(authUserType: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"notTaxableAmount.error.required.$authUserType", s"notTaxableAmount.error.nonNumeric.$authUserType")
-        .verifying(isBigDecimalGreaterThanZero(s"notTaxableAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanOrEqualToMax(turnoverAmount, s"notTaxableAmount.error.overTurnover.$authUserType"))
+      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$authUserType", s"officeSuppliesAmount.error.nonNumeric.$authUserType")
+        .verifying(isBigDecimalGreaterThanZero(s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"officeSuppliesAmount.error.overMax.$authUserType"))
     )
 
 }
