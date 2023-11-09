@@ -14,60 +14,54 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses
+package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
-import forms.expenses.DisallowableInterestFormProvider
+import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import navigation.ExpensesNavigator
-import pages.expenses.DisallowableInterestPage
+import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.DisallowableInterestView
+import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisallowableInterestController @Inject() (override val messagesApi: MessagesApi,
+class OfficeSuppliesAmountController @Inject() (override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
                                                 navigator: ExpensesNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: DisallowableInterestFormProvider,
+                                                formProvider: OfficeSuppliesAmountFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: DisallowableInterestView)(implicit ec: ExecutionContext)
+                                                view: OfficeSuppliesAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418"
-  val taxYear    = LocalDate.now.getYear
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableInterestPage, Some(businessId)) match {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(OfficeSuppliesAmountPage) match {
       case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableInterestPage, value, Some(businessId)))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesAmountPage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers))
       )
   }
 

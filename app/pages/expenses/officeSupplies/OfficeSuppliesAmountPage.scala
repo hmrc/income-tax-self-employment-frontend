@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package pages.expenses.officeSupplies
 
-import forms.mappings.Mappings
-import models.journeys.expenses.DisallowableOtherFinancialCharges
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case object OfficeSuppliesAmountPage extends QuestionPage[BigDecimal] {
 
-class DisallowableOtherFinancialChargesFormProvider @Inject() extends Mappings {
+  override def path(businessId: Option[String]): JsPath =
+    businessId match {
+      case Some(id) => JsPath \ id \ toString
+      case None     => JsPath \ toString
+    }
 
-  def apply(userType: String): Form[DisallowableOtherFinancialCharges] =
-    Form(
-      "value" -> enumerable[DisallowableOtherFinancialCharges](s"disallowableOtherFinancialCharges.error.required.$userType")
-    )
-
+  override def toString: String = "officeSuppliesAmount"
 }

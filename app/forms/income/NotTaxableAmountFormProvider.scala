@@ -27,7 +27,7 @@ class NotTaxableAmountFormProvider @Inject() extends Mappings {
     Form(
       "value" -> bigDecimal(s"notTaxableAmount.error.required.$authUserType", s"notTaxableAmount.error.nonNumeric.$authUserType")
         .verifying(isBigDecimalGreaterThanZero(s"notTaxableAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanMax(turnoverAmount, s"notTaxableAmount.error.overTurnover.$authUserType"))
+        .verifying(isBigDecimalLessThanOrEqualToMax(turnoverAmount, s"notTaxableAmount.error.overTurnover.$authUserType"))
     )
 
 }

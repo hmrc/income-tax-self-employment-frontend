@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
-import models.journeys.expenses.DisallowableOtherFinancialCharges
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DisallowableOtherFinancialChargesFormProvider @Inject() extends Mappings {
+class OfficeSuppliesAmountFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[DisallowableOtherFinancialCharges] =
+  def apply(authUserType: String): Form[BigDecimal] =
     Form(
-      "value" -> enumerable[DisallowableOtherFinancialCharges](s"disallowableOtherFinancialCharges.error.required.$userType")
+      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$authUserType", s"officeSuppliesAmount.error.nonNumeric.$authUserType")
+        .verifying(isBigDecimalGreaterThanZero(s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"officeSuppliesAmount.error.overMax.$authUserType"))
     )
 
 }

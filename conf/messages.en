@@ -18,6 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
+site.theseInclude = These include:
 site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
@@ -312,6 +313,10 @@ expenses.commissions = commissions
 expenses.discounts = discounts
 expenses.costsForPrivateUse = costs of goods or materials bought for private use
 expenses.depreciationOfEquipment = depreciation of equipment
+expenses.debtsNotIncludedInTurnover = debts not included in turnover
+expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
+expenses.generalBadDebts = general bad debts
+expenses.repaymentsOfLoans = repayments of loans
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -444,7 +449,6 @@ financialExpenses.d1.l1.accrual = interest on bank and other business loans
 financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
 financialExpenses.d1.l2 = fees for buying goods
 financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
-financialExpenses.d1.l4 = repayments of loans
 financialExpenses.d1.l5 = overdraft or finance arrangements.
 financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
 financialExpenses.d2.l1 = bank charges
@@ -455,9 +459,6 @@ financialExpenses.d2.l5 = alternative finance payments
 financialExpenses.d2.l6 = capital repayments
 financialExpenses.d3.heading = Understanding irrecoverable debts written off
 financialExpenses.d3.l1 = amounts included in turnover but unpaid and written off (due to being irrecoverable)
-financialExpenses.d3.l2 = debts not included in turnover
-financialExpenses.d3.l3 = debts relating to fixed assets
-financialExpenses.d3.l4 = general bad debts
 financialExpenses.interest = Interest on bank and other business loans
 financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
 financialExpenses.irrecoverableDebts = Irrecoverable debts written off
@@ -469,24 +470,32 @@ financialExpenses.error.required.agent = Select the financial expenses your clie
 financialExpenses.change.hidden = FinancialExpenses
 
 ## Disallowable interest
-disallowableInterest.title = Disallowable interest on bank and other business loans
+disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.title.agent = Is any of your client’s interest on bank and other business loans disallowable?
 disallowableInterest.heading = Disallowable interest on bank and other business loans
-disallowableInterest.checkYourAnswersLabel = Disallowable interest on bank and other business loans
-disallowableInterest.error.required = Select disallowableInterest
+disallowableInterest.l2 = overdraft or finance arrangements
+disallowableInterest.checkYourAnswersLabel = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
+disallowableInterest.error.required.agent = Select yes if any of your client’s interest on bank and other business loans is disallowable
 disallowableInterest.change.hidden = DisallowableInterest
 
 ## Disallowable other financial charges
-disallowableOtherFinancialCharges.title = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.heading = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.individual = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.agent = Are any of your client’s bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.heading = Disallowable bank, credit card and other financial charges
+disallowableOtherFinancialCharges.p1 = These include capital repayments.
 disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.error.required = Select disallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.error.required.individual = Select yes if any of your bank, credit card and other financial charges are disallowable
+disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client’s bank, credit card and other financial charges are disallowable
 disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
 
 ## Disallowable irrecoverable debts
-disallowableIrrecoverableDebts.title = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.heading = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.individual = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.agent = Are any of your client’s irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.heading = Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.error.required = Select disallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.error.required.individual = Select yes if any of your irrecoverable debts are disallowable
+disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client’s irrecoverable debts are disallowable
 disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
 
 ## Depreciation
@@ -515,6 +524,43 @@ otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
+
+########## Expenses - Office supplies ##########
+
+## Office Supplies Amount
+officeSuppliesAmount.title = OfficeSuppliesAmountTitle
+officeSuppliesAmount.heading = OfficeSuppliesAmountHeading
+officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
+officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
+officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
+officeSuppliesAmount.error.required.individual = Enter the amount you spent on office supplies
+officeSuppliesAmount.error.required.agent = Enter the amount your client spent on office supplies
+officeSuppliesAmount.change.hidden = OfficeSuppliesAmount
+officeSuppliesAmount.error.lessThanZero.individual = The amount you spent on office supplies must be more than £0
+officeSuppliesAmount.error.lessThanZero.agent = The amount your client spent on office supplies must be more than £0
+officeSuppliesAmount.error.overMax.individual = officeSuppliesAmountOverMaxIndividual
+officeSuppliesAmount.error.overMax.agent = officeSuppliesAmountOverMaxAgent
+
+## Office Supplies Disallowable Amount
+officeSuppliesDisallowableAmount.title = OfficeSuppliesDisallowableAmountTitle
+officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
+officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.nonNumeric.individual = Enter your officeSuppliesDisallowableAmount using numbers
+officeSuppliesDisallowableAmount.error.nonNumeric.agent = Enter your clients officeSuppliesDisallowableAmount using numbers
+officeSuppliesDisallowableAmount.error.required.agent = Enter your officeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.required.individual = Enter your clients officeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.wholeNumber = Enter your officeSuppliesDisallowableAmount using whole numbers
+officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.lessThanZero.individual = lessThanZeroIndividual
+officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZero
+officeSuppliesDisallowableAmount.error.overMax.individual = overMaxIndividual
+officeSuppliesDisallowableAmount.error.overMax.agent = overMaxAgent
+officeSuppliesDisallowableAmount.error.overAllowableMax.individual = officeSuppliesDisallowableAmountOverAllowableMaxIndividual
+officeSuppliesDisallowableAmount.error.overAllowableMax.agent = officeSuppliesDisallowableAmountOverAllowableMaxAgent
+
+## Office Supplies CYA
+officeSuppliesAmountCYA.title = officeSuppliesAmountCYA
+officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 
 ########## Expenses - Goods to sell or use ##########
 
