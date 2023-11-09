@@ -60,7 +60,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
         case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
       }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount, false)))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
@@ -73,7 +73,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
       .fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount, false)))),
+            BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(

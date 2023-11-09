@@ -122,17 +122,17 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
          |   <div class="govuk-details__text">
          |      <p>${messages(s"site.canInclude.$userType")}</p>
          |      <ul class="govuk-body govuk-list--bullet">
-         |        ${if (isTaxiDriver) s"""<li>${messages("expenses.fuelCosts")}</li>"""}
+         |        ${if (isTaxiDriver) s"""<li>${messages("expenses.fuelCosts")}</li>""" else ""}
          |        <li>${messages("expenses.costOfRawMaterials")}</li>
-         |        <li>${messages("expenses.stockBought")}</li>
+         |        ${if (!isAccrual) s"""<li>${messages("expenses.stockBought")}</li>""" else ""}
          |        <li>${messages("expenses.directCostsOfProducing")}</li>
-         |        ${if (!isAccrual) s"""<li>${messages("expenses.adjustments")}</li>"""}
+         |        ${if (isAccrual) s"""<li>${messages("expenses.adjustments")}</li>""" else ""}
          |        <li>${messages("expenses.commissions")}</li>
          |        <li>${messages("expenses.discounts")}</li>
          |      </ul>
          |      <p>${messages(s"site.cannotInclude.$userType")}</p>
          |      <ul class="govuk-body govuk-list--bullet">
-         |        ${if (!isAccrual) s"""<li>${messages("expenses.costsForPrivateUse")}</li>"""}
+         |        ${if (!isAccrual) s"""<li>${messages("expenses.costsForPrivateUse")}</li>""" else ""}
          |        <li>${messages("expenses.depreciationOfEquipment")}</li>
          |      </ul>
          |    </div>

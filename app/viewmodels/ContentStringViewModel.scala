@@ -28,7 +28,7 @@ object ContentStringViewModel {
 
   def buildLabelHeadingWithContentString(headingText: String, otherContent: String, headingClasses: String = "")(implicit
       messages: Messages): String = {
-    s"<div> <label class='$headingClasses'> ${messages(headingText)} </label>" +
+    s"<label class='$headingClasses'> ${messages(headingText)} </label>" +
       otherContent
   }
 

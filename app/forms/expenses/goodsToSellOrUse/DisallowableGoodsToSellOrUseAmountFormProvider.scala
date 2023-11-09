@@ -25,7 +25,7 @@ import javax.inject.Inject
 class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings {
 
   def apply(userType: String, goodsAmount: BigDecimal): Form[BigDecimal] = {
-    val goodsAmountString = formatMoney(goodsAmount, addDecimalForWholeNumbers = false)
+    val goodsAmountString = formatMoney(goodsAmount)
     Form(
       "value" -> bigDecimal(
         s"disallowableGoodsToSellOrUseAmount.error.required.$userType",
