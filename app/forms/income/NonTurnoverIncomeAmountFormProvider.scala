@@ -27,7 +27,7 @@ class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
     Form(
       "value" -> bigDecimal(s"nonTurnoverIncomeAmount.error.required.$authUserType", s"nonTurnoverIncomeAmount.error.nonNumeric.$authUserType")
         .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanOrEqualToMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$authUserType"))
     )
 
 }

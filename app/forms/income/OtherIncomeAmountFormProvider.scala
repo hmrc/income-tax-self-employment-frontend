@@ -27,7 +27,7 @@ class OtherIncomeAmountFormProvider @Inject() extends Mappings {
     Form(
       "value" -> bigDecimal(s"otherIncomeAmount.error.required.$authUserType", s"otherIncomeAmount.error.nonNumeric.$authUserType")
         .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanOrEqualToMax(100000000000.00, s"otherIncomeAmount.error.overMax.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"otherIncomeAmount.error.overMax.$authUserType"))
     )
 
 }
