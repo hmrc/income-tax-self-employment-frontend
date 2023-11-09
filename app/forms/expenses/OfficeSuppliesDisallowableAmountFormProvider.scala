@@ -29,7 +29,7 @@ class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings {
         s"officeSuppliesDisallowableAmount.error.required.$authUserType",
         s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUserType")
         .verifying(isBigDecimalGreaterThanZero(s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanMax(1000000000000.00, s"officeSuppliesDisallowableAmount.error.overMax.$authUserType"))
+        .verifying(isBigDecimalLessThanMax(100000000000.00, s"officeSuppliesDisallowableAmount.error.overMax.$authUserType"))
         .verifying(isBigDecimalLessThanOrEqualToMax(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$authUserType"))
     )
 

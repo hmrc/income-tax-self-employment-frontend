@@ -33,7 +33,7 @@ class OfficeSuppliesAmountFormProviderSpec extends BigDecimalFieldBehaviours {
           val fieldName = "value"
 
           val minimum: BigDecimal = 0
-          val maximum: BigDecimal = 1000000000000.00
+          val maximum: BigDecimal = 100000000000.00
 
           val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
