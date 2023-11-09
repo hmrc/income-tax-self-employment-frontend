@@ -24,8 +24,9 @@ import javax.inject.Inject
 
 class DisallowableInterestFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DisallowableInterest] =
+  def apply(userType: String): Form[DisallowableInterest] =
     Form(
-      "value" -> enumerable[DisallowableInterest]("disallowableInterest.error.required")
+      "value" -> enumerable[DisallowableInterest](s"disallowableInterest.error.required.$userType")
     )
+
 }

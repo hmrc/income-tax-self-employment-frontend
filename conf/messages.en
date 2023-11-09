@@ -18,6 +18,7 @@ site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
+site.theseInclude = These include:
 site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
@@ -129,6 +130,10 @@ selfEmploymentAbroad.change.hidden = SelfEmploymentAbroad
 
 ###### Income Journey ######
 
+## Common
+income.turnoverExemptFromTax.individual = Is any of your turnover exempt from being taxed as profit?
+income.turnoverExemptFromTax.agent = Is any of your client’s turnover exempt from being taxed as profit?
+
 ## Income not counted as turnover
 incomeNotCountedAsTurnover.title = Income not counted as turnover
 incomeNotCountedAsTurnover.p1.individual = This is money you’ve received that counts as trading income but is not included in your turnover. It includes:
@@ -218,10 +223,6 @@ turnoverNotTaxable.p3.agent = This does not include expenses that your client is
 turnoverNotTaxable.l1 = certain grants or subsidies
 turnoverNotTaxable.l2 = compensation payments
 turnoverNotTaxable.l3 = payments for work done on a consultancy basis
-turnoverNotTaxable.subHeading.individual = Is any of your turnover exempt from being taxed as profit?
-turnoverNotTaxable.subHeading.agent = Is any of your client’s turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel.individual = Is any of your turnover exempt from being taxed as profit?
-turnoverNotTaxable.checkYourAnswersLabel.agent = Is any of your client’s turnover exempt from being taxed as profit?
 turnoverNotTaxable.error.required.individual = Select yes if any of your turnover is exempt from being taxed as profit
 turnoverNotTaxable.error.required.agent = Select yes if any of your client’s turnover is exempt from being taxed as profit
 turnoverNotTaxable.change.hidden = Change turnover exempt from tax
@@ -295,22 +296,6 @@ tradingAllowanceAmount.change.hidden = Change trading allowance amount
 ## Check your income (Income CYA)
 checkYourIncome.title.individual = Check your income
 checkYourIncome.title.agent = Check your client’s income
-checkYourIncome.r1.individual = Did you have any income you’re not counting as turnover?
-checkYourIncome.r1.agent = Did your client have any income they’re not counting as turnover?
-checkYourIncome.r2.individual = What was your turnover?
-checkYourIncome.r2.agent = What was your client’s turnover?
-checkYourIncome.r3.individual = Is there any other self-employment income you need to tell us about?
-checkYourIncome.r3.agent = Is there any other self-employment income your client needs to tell us about?
-checkYourIncome.r4.individual = How much other self-employment income did you get?
-checkYourIncome.r4.agent = How much other self-employment income did your client get?
-checkYourIncome.r5.individual = Is any of your turnover exempt from being taxed as profit?
-checkYourIncome.r5.agent = Is any of your client’s turnover exempt from being taxed as profit?
-checkYourIncome.r6.individual = Do you want to use the trading allowance or declare expenses?
-checkYourIncome.r6.agent = Does your client want to use the trading allowance or declare expenses?
-checkYourIncome.r7.individual = How much of your trading allowance do you want to use?
-checkYourIncome.r7.agent = How much of their trading allowance does your client want to use?
-checkYourIncome.r8.individual = How much trading allowance do you want to use?
-checkYourIncome.r8.agent = How much trading allowance does your client want to use?
 
 ###### Expenses Journey ######
 
@@ -319,7 +304,10 @@ expenses.yesAllowable.individual = Yes, all of my expenses are allowable
 expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
 expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
 expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
-expenses.no = No
+expenses.debtsNotIncludedInTurnover = debts not included in turnover
+expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
+expenses.generalBadDebts = general bad debts
+expenses.repaymentsOfLoans = repayments of loans
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -402,9 +390,6 @@ workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 ## Travel and accommodation for work
 travelForWork.title = Travel for work and accommodation
 travelForWork.heading = Travel for work and accommodation
-travelForWork.yes.allowable = Yes, all of my expenses are allowable
-travelForWork.yes.disallowable = Yes, some of my expenses are disallowable
-travelForWork.no = No
 travelForWork.checkYourAnswersLabel = Travel for work and accommodation
 travelForWork.error.required = Select travelForWork
 travelForWork.change.hidden = TravelForWork
@@ -412,9 +397,6 @@ travelForWork.change.hidden = TravelForWork
 ## Advertising or marketing
 advertisingOrMarketing.title = Advertising or marketing
 advertisingOrMarketing.heading = Advertising or marketing
-advertisingOrMarketing.yes.allowable = Yes, all of my expenses are allowable
-advertisingOrMarketing.yes.disallowable = Yes, some of my expenses are disallowable
-advertisingOrMarketing.no = No
 advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
 advertisingOrMarketing.error.required = Select advertisingOrMarketing
 advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
@@ -422,8 +404,6 @@ advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
 ## Entertainment costs
 entertainmentCosts.title = Entertainment costs
 entertainmentCosts.heading = Entertainment costs
-entertainmentCosts.yes = Yes
-entertainmentCosts.no = No
 entertainmentCosts.checkYourAnswersLabel = Entertainment costs
 entertainmentCosts.error.required = Select entertainmentCosts
 entertainmentCosts.change.hidden = EntertainmentCosts
@@ -442,8 +422,6 @@ professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.heading = Disallowable staff costs
-disallowableStaffCosts.yes = Yes
-disallowableStaffCosts.no = No
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
 disallowableStaffCosts.error.required = Select disallowableStaffCosts
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
@@ -451,8 +429,6 @@ disallowableStaffCosts.change.hidden = DisallowableStaffCosts
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.yes = Yes
-disallowableSubcontractorCosts.no = No
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
@@ -460,8 +436,6 @@ disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
-disallowableProfessionalFees.yes = Yes
-disallowableProfessionalFees.no = No
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
 disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
@@ -475,7 +449,6 @@ financialExpenses.d1.l1.accrual = interest on bank and other business loans
 financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
 financialExpenses.d1.l2 = fees for buying goods
 financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
-financialExpenses.d1.l4 = repayments of loans
 financialExpenses.d1.l5 = overdraft or finance arrangements.
 financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
 financialExpenses.d2.l1 = bank charges
@@ -486,9 +459,6 @@ financialExpenses.d2.l5 = alternative finance payments
 financialExpenses.d2.l6 = capital repayments
 financialExpenses.d3.heading = Understanding irrecoverable debts written off
 financialExpenses.d3.l1 = amounts included in turnover but unpaid and written off (due to being irrecoverable)
-financialExpenses.d3.l2 = debts not included in turnover
-financialExpenses.d3.l3 = debts relating to fixed assets
-financialExpenses.d3.l4 = general bad debts
 financialExpenses.interest = Interest on bank and other business loans
 financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
 financialExpenses.irrecoverableDebts = Irrecoverable debts written off
@@ -500,24 +470,32 @@ financialExpenses.error.required.agent = Select the financial expenses your clie
 financialExpenses.change.hidden = FinancialExpenses
 
 ## Disallowable interest
-disallowableInterest.title = Disallowable interest on bank and other business loans
+disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.title.agent = Is any of your client’s interest on bank and other business loans disallowable?
 disallowableInterest.heading = Disallowable interest on bank and other business loans
-disallowableInterest.checkYourAnswersLabel = Disallowable interest on bank and other business loans
-disallowableInterest.error.required = Select disallowableInterest
+disallowableInterest.l2 = overdraft or finance arrangements
+disallowableInterest.checkYourAnswersLabel = Is any of your interest on bank and other business loans disallowable?
+disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
+disallowableInterest.error.required.agent = Select yes if any of your client’s interest on bank and other business loans is disallowable
 disallowableInterest.change.hidden = DisallowableInterest
 
 ## Disallowable other financial charges
-disallowableOtherFinancialCharges.title = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.heading = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.individual = Are any of your bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.title.agent = Are any of your client’s bank, credit card and other financial charges disallowable?
+disallowableOtherFinancialCharges.heading = Disallowable bank, credit card and other financial charges
+disallowableOtherFinancialCharges.p1 = These include capital repayments.
 disallowableOtherFinancialCharges.checkYourAnswersLabel = Are any of your bank, credit card and other financial charges disallowable?
-disallowableOtherFinancialCharges.error.required = Select disallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.error.required.individual = Select yes if any of your bank, credit card and other financial charges are disallowable
+disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client’s bank, credit card and other financial charges are disallowable
 disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
 
 ## Disallowable irrecoverable debts
-disallowableIrrecoverableDebts.title = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.heading = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.individual = Are any of your irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.title.agent = Are any of your client’s irrecoverable debts disallowable?
+disallowableIrrecoverableDebts.heading = Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.checkYourAnswersLabel = Are any of your irrecoverable debts disallowable?
-disallowableIrrecoverableDebts.error.required = Select disallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.error.required.individual = Select yes if any of your irrecoverable debts are disallowable
+disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client’s irrecoverable debts are disallowable
 disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
 
 ## Depreciation
@@ -546,3 +524,29 @@ otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
+
+########## Expenses - Goods to sell or use ##########
+
+## Goods to sell or use amount
+goodsToSellOrUseAmount.title = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.heading = GoodsToSellOrUseAmountHeading
+goodsToSellOrUseAmount.checkYourAnswersLabel = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.error.nonNumeric = Enter your goodsToSellOrUseAmount using numbers
+goodsToSellOrUseAmount.error.required = Enter your goodsToSellOrUseAmount
+goodsToSellOrUseAmount.error.lessThanZero = Enter your goodsToSellOrUseAmount using whole numbers
+goodsToSellOrUseAmount.error.overMax = GoodsToSellOrUseAmount must be betwe
+goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmoun
+
+## Disallowable goods to sell or use amount
+disallowableGoodsToSellOrUseAmount.title = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.heading = DisallowableGoodsToSellOrUseAmountHeading
+disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.error.nonNumeric = Enter your disallowableGoodsToSellOrUseAmount using numbers
+disallowableGoodsToSellOrUseAmount.error.required = Enter your disallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.error.lessThanZero = Enter your disallowableGoodsToSellOrUseAmount using whole numbers
+disallowableGoodsToSellOrUseAmount.error.overMax = DisallowableGoodsToSellOrUseAmount must be bet
+disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmoun
+
+## Goods to sell or use CYA
+goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
+goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
