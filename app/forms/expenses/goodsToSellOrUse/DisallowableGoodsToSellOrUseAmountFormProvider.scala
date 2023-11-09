@@ -18,21 +18,23 @@ package forms.expenses.goodsToSellOrUse
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
 
 class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings {
 
   def apply(userType: String, goodsAmount: BigDecimal): Form[BigDecimal] = {
-    val goodsAmountString = goodsAmount.toString()
+    val goodsAmountString = formatMoney(goodsAmount, addDecimalForWholeNumbers = false)
     Form(
       "value" -> bigDecimal(
         s"disallowableGoodsToSellOrUseAmount.error.required.$userType",
         s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.$userType",
         Seq(goodsAmountString)
       )
-        .verifying(isBigDecimalGreaterThanZero(s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType"))
-        .verifying(isBigDecimalLessThanMax(goodsAmount, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType"))
+        .verifying(isBigDecimalGreaterThanZero(s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType", goodsAmountString))
+        .verifying(
+          isBigDecimalLessThanMax(goodsAmount + 0.01, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType", addDecimalsIfNotWhole = true))
     )
   }
 

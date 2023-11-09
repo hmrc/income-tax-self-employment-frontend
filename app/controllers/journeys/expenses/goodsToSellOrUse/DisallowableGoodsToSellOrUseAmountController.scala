@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
 import java.time.LocalDate
@@ -46,28 +47,32 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     with I18nSupport {
 
   val businessId = "SJPR05893938418"
-  val taxYear = LocalDate.now.getYear
+  val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val goodsAmount = request.userAnswers
       .getOrElse(UserAnswers(request.userId))
-      .get(GoodsToSellOrUseAmountPage, Some(businessId)).getOrElse(BigDecimal(0))
+      .get(GoodsToSellOrUseAmountPage, Some(businessId))
+      .getOrElse(BigDecimal(1000.50)) // TODO change this default
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage) match {
-      case None => formProvider(userType(request.user.isAgent), goodsAmount)
+      case None        => formProvider(userType(request.user.isAgent), goodsAmount)
       case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount, false)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val goodsAmount = request.userAnswers.getOrElse(UserAnswers(request.userId))
-      .get(GoodsToSellOrUseAmountPage, Some(businessId)).getOrElse(BigDecimal(0))
+    val goodsAmount = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(GoodsToSellOrUseAmountPage, Some(businessId))
+      .getOrElse(BigDecimal(1000.50))
     formProvider(userType(request.user.isAgent), goodsAmount)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(
-          BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+        formWithErrors =>
+          Future.successful(
+            BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount, false)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(

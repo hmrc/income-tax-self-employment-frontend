@@ -543,8 +543,8 @@ disallowableGoodsToSellOrUseAmount.error.required.individual = Enter the amount 
 disallowableGoodsToSellOrUseAmount.error.required.agent = Enter the amount of the £{0} your client spent on goods to sell or use that is disallowable
 disallowableGoodsToSellOrUseAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on goods to sell or use must be more than £0
 disallowableGoodsToSellOrUseAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on goods to sell or use must be more than £0
-disallowableGoodsToSellOrUseAmount.error.overMax.individual = The disallowable amount you spent on on goods to sell or use must be the same as or less than £{0}
-disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount your client spent on on goods to sell or use must be the same as or less than £{0}
+disallowableGoodsToSellOrUseAmount.error.overMax.individual = The disallowable amount you spent on goods to sell or use must be the same as or less than £{0}
+disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount your client spent on goods to sell or use must be the same as or less than £{0}
 disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
 
 ## Goods to sell or use CYA

@@ -26,11 +26,12 @@ import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
 import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.ContentStringViewModel.buildLabelHeadingWithContentString
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 import java.time.LocalDate
@@ -50,22 +51,25 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418"
-  val taxYear    = LocalDate.now.getYear
+  val businessId   = "SJPR05893938418"
+  val taxYear: Int = LocalDate.now.getYear
+  val isAccrual    = true
+  val isTaxiDriver = true
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
+        val user = userType(request.user.isAgent)
         val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-          case None        => formProvider(userType(request.user.isAgent))
-          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+          case None        => formProvider(user)
+          case Some(value) => formProvider(user).fill(value)
         }
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
-        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))
+        Ok(view(preparedForm, mode, user, taxYear, businessId, accountingType, taxiDriver, labelContent(user, isAccrual, isTaxiDriver)))
     }
   }
 
@@ -73,17 +77,18 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
+        val user = userType(request.user.isAgent)
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
-        val form = formProvider(userType(request.user.isAgent))
+        val form = formProvider(user)
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))),
+              Future.successful(BadRequest(
+                view(formWithErrors, mode, user, taxYear, businessId, accountingType, taxiDriver, labelContent(user, isAccrual, isTaxiDriver)))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
@@ -92,6 +97,43 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
               } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers))
           )
     }
+  }
+
+  private def labelContent(userType: String, isAccrual: Boolean, isTaxiDriver: Boolean)(implicit messages: Messages): String = {
+
+    val detailsContent =
+      s"""
+         | <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+         |   <summary class="govuk-details__summary">
+         |     <span class="govuk-details__summary-text">
+         |       ${messages("goodsToSellOrUseAmount.d1.heading")}
+         |      </span>
+         |   </summary>
+         |   <div class="govuk-details__text">
+         |      <p>${messages(s"site.canInclude.$userType")}</p>
+         |      <ul class="govuk-body govuk-list--bullet">
+         |        ${if (isTaxiDriver) s"""<li>${messages("expenses.fuelCosts")}</li>"""}
+         |        <li>${messages("expenses.costOfRawMaterials")}</li>
+         |        <li>${messages("expenses.stockBought")}</li>
+         |        <li>${messages("expenses.directCostsOfProducing")}</li>
+         |        ${if (!isAccrual) s"""<li>${messages("expenses.adjustments")}</li>"""}
+         |        <li>${messages("expenses.commissions")}</li>
+         |        <li>${messages("expenses.discounts")}</li>
+         |      </ul>
+         |      <p>${messages(s"site.cannotInclude.$userType")}</p>
+         |      <ul class="govuk-body govuk-list--bullet">
+         |        ${if (!isAccrual) s"""<li>${messages("expenses.costsForPrivateUse")}</li>"""}
+         |        <li>${messages("expenses.depreciationOfEquipment")}</li>
+         |      </ul>
+         |    </div>
+         | </details>
+         |""".stripMargin
+
+    buildLabelHeadingWithContentString(
+      s"goodsToSellOrUseAmount.title.$userType",
+      detailsContent,
+      headingClasses = "govuk-label govuk-label--l"
+    )
   }
 
 }
