@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses
+package viewmodels.checkAnswers.expenses.officeSupplies
 
-import controllers.journeys.expenses.routes.OfficeSuppliesDisallowableAmountController
+import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 import models.CheckMode
 import models.database.UserAnswers
-import pages.expenses.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OfficeSuppliesDisallowableAmountSummary  {
+object OfficeSuppliesAmountSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OfficeSuppliesDisallowableAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "officeSuppliesDisallowableAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", OfficeSuppliesDisallowableAmountController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("officeSuppliesDisallowableAmount.change.hidden"))
-          )
+    answers.get(OfficeSuppliesAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "officeSuppliesAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", OfficeSuppliesAmountController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("officeSuppliesAmount.change.hidden"))
         )
+      )
     }
+
 }

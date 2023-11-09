@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package forms.expenses.officeSupplies
 
 import forms.behaviours.BigDecimalFieldBehaviours
 import play.api.data.FormError

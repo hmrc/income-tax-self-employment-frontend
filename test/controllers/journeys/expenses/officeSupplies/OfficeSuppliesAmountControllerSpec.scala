@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses
+package controllers.journeys.expenses.officeSupplies
 
 import base.SpecBase
-import controllers.journeys.expenses.routes.OfficeSuppliesDisallowableAmountController
+import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.OfficeSuppliesDisallowableAmountFormProvider
+import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
@@ -27,7 +27,7 @@ import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
@@ -36,31 +36,28 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.OfficeSuppliesDisallowableAmountView
+import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
 import scala.concurrent.Future
 
-class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with MockitoSugar {
+class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
+  private val formProvider = new OfficeSuppliesAmountFormProvider()
 
-  private val validAnswer     = BigDecimal.decimal(1000.00)
-  private val allowableAmount = BigDecimal.decimal(1000.00)
-
-  private val onwardRoute                                        = Call("GET", "/foo")
-  private lazy val officeSuppliesDisallowableAmountPageLoadRoute = OfficeSuppliesDisallowableAmountController.onPageLoad(NormalMode).url
-  private lazy val officeSuppliesDisallowableAmountOnSubmitRoute = OfficeSuppliesDisallowableAmountController.onSubmit(NormalMode).url
-
-  private val mockSessionRepository = mock[SessionRepository]
+  private val validAnswer                            = BigDecimal.decimal(100.00)
+  private val onwardRoute                            = Call("GET", "/foo")
+  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(NormalMode).url
+  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(NormalMode).url
+  private val mockSessionRepository                  = mock[SessionRepository]
 
   case class UserScenario(isWelsh: Boolean, authUser: UserType, form: Form[BigDecimal])
 
   private val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUser = UserType.Individual, formProvider(individual, allowableAmount)),
-    UserScenario(isWelsh = false, authUser = UserType.Agent, formProvider(agent, allowableAmount))
+    UserScenario(isWelsh = false, authUser = UserType.Individual, formProvider(individual)),
+    UserScenario(isWelsh = false, authUser = UserType.Agent, formProvider(agent))
   )
 
-  "OfficeSuppliesDisallowableAmountController" - {
+  "OfficeSuppliesAmountController" - {
     userScenarios.foreach { userScenario =>
       s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
         val isAgent = userScenario.authUser match {
@@ -71,11 +68,11 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           "must return OK and the correct view for a GET" in {
             val application = applicationBuilder(Some(emptyUserAnswers), isAgent).build()
 
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
 
             running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+              val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
               val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
@@ -85,15 +82,15 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
-            val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesDisallowableAmountPage, validAnswer).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer).success.value
 
             val application = applicationBuilder(Some(userAnswers), isAgent).build()
 
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
 
             running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+              val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
               val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
@@ -105,7 +102,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             val application = applicationBuilder(userAnswers = None, isAgent).build()
 
             running(application) {
-              val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+              val request = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
 
               val result = route(application, request).value
 
@@ -129,7 +126,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
             running(application) {
               val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
+                FakeRequest(POST, officeSuppliesAmountOnSubmitRoute)
                   .withFormUrlEncodedBody(("value", validAnswer.toString))
 
               val result = route(application, request).value
@@ -142,12 +139,12 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           "must return a Bad Request and errors when invalid data is submitted" in {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent).build()
 
-            val view: OfficeSuppliesDisallowableAmountView    = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
             implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
+                FakeRequest(POST, officeSuppliesAmountOnSubmitRoute)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -165,7 +162,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
             running(application) {
               val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
+                FakeRequest(POST, officeSuppliesAmountOnSubmitRoute)
                   .withFormUrlEncodedBody(("value", validAnswer.toString))
 
               val result = route(application, request).value

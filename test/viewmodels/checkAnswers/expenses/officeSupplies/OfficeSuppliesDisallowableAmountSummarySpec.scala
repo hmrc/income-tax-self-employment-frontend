@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses
+package viewmodels.checkAnswers.expenses.officeSupplies
 
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers

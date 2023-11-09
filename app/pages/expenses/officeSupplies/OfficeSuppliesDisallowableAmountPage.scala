@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pages.expenses
+package pages.expenses.officeSupplies
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object OfficeSuppliesAmountPage extends QuestionPage[BigDecimal] {
+case object OfficeSuppliesDisallowableAmountPage extends QuestionPage[BigDecimal] {
 
   override def path(businessId: Option[String]): JsPath =
     businessId match {
@@ -27,5 +27,5 @@ case object OfficeSuppliesAmountPage extends QuestionPage[BigDecimal] {
       case None     => JsPath \ toString
     }
 
-  override def toString: String = "officeSuppliesAmount"
+  override def toString: String = "officeSuppliesDisallowableAmount"
 }

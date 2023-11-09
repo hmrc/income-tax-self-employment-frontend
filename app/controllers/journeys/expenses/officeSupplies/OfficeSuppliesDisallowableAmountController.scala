@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses
+package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
-import forms.expenses.OfficeSuppliesDisallowableAmountFormProvider
+import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import navigation.ExpensesNavigator
-import pages.expenses.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.OfficeSuppliesDisallowableAmountView
+import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

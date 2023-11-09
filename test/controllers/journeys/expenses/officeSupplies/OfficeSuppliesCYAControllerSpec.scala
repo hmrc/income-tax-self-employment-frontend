@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses
+package controllers.journeys.expenses.officeSupplies
 
 import base.SpecBase
+import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesCYAController
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.journeys.expenses.OfficeSuppliesAmountCYAView
+import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
-class OfficeSuppliesAmountCYAControllerSpec extends SpecBase {
+class OfficeSuppliesCYAControllerSpec extends SpecBase {
 
-  "OfficeSuppliesAmountCYAController" - {
-
+  "OfficeSuppliesCYAController" - {
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.OfficeSuppliesAmountCYAController.onPageLoad().url)
+        val request = FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[OfficeSuppliesAmountCYAView]
+        val view = application.injector.instanceOf[OfficeSuppliesCYAView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }
   }
+
 }

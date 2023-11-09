@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
 import play.api.data.Form

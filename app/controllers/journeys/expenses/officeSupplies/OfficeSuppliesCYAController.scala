@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses
+package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.OfficeSuppliesAmountCYAView
+import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 import javax.inject.Inject
 
-class OfficeSuppliesAmountCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: OfficeSuppliesAmountCYAView)
+class OfficeSuppliesCYAController @Inject()(override val messagesApi: MessagesApi,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: OfficeSuppliesCYAView)
     extends FrontendBaseController
     with I18nSupport {
 
