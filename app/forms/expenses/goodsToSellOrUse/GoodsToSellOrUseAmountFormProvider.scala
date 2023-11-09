@@ -26,8 +26,8 @@ class GoodsToSellOrUseAmountFormProvider @Inject() extends Mappings {
   def apply(): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal("goodsToSellOrUseAmount.error.required", "goodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(isBigDecimalGreaterThanZero("goodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, "goodsToSellOrUseAmount.error.overMax"))
+        .verifying(greaterThan(BigDecimal(0),"goodsToSellOrUseAmount.error.lessThanZero"))
+        .verifying(lessThan(BigDecimal(100000000000.00), "goodsToSellOrUseAmount.error.overMax"))
     )
 
 }
