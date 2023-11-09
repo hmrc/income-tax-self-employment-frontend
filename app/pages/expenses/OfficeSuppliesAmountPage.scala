@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package forms.income
+package pages.expenses
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case object OfficeSuppliesAmountPage extends QuestionPage[BigDecimal] {
 
-class OtherIncomeAmountFormProvider @Inject() extends Mappings {
+  override def path(businessId: Option[String]): JsPath =
+    businessId match {
+      case Some(id) => JsPath \ id \ toString
+      case None     => JsPath \ toString
+    }
 
-  def apply(authUserType: String): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$authUserType", s"otherIncomeAmount.error.nonNumeric.$authUserType")
-        .verifying(isBigDecimalGreaterThanZero(s"otherIncomeAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanOrEqualToMax(100000000000.00, s"otherIncomeAmount.error.overMax.$authUserType"))
-    )
-
+  override def toString: String = "officeSuppliesAmount"
 }

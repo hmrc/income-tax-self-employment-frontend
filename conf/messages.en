@@ -546,3 +546,37 @@ otherExpenses.checkYourAnswersLabel = Do you need to report any other expenses?
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
+
+## Office Supplies Amount
+officeSuppliesAmount.title = OfficeSuppliesAmount
+officeSuppliesAmount.heading = OfficeSuppliesAmount
+officeSuppliesAmount.checkYourAnswersLabel = OfficeSuppliesAmount
+officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
+officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
+officeSuppliesAmount.error.required.individual = Enter the amount you spent on office supplies
+officeSuppliesAmount.error.required.agent = Enter the amount your client spent on office supplies
+officeSuppliesAmount.change.hidden = OfficeSuppliesAmount
+officeSuppliesAmount.error.lessThanZero.individual = The amount you spent on office supplies must be more than £0
+officeSuppliesAmount.error.lessThanZero.agent = TThe amount your client spent on office supplies must be more than £0
+officeSuppliesAmount.error.overMax.individual = The amount you spent on office supplies must be less than £100,000,000,000
+officeSuppliesAmount.error.overMax.agent = The amount your client spent on office supplies must be less than £100,000,000,000
+
+## Office Supplies Disallowable Amount
+officeSuppliesDisallowableAmount.title = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.nonNumeric.individual = Enter your officeSuppliesDisallowableAmount using numbers
+officeSuppliesDisallowableAmount.error.nonNumeric.agent = Enter your clients officeSuppliesDisallowableAmount using numbers
+officeSuppliesDisallowableAmount.error.required.agent = Enter your officeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.required.individual = Enter your clients officeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.wholeNumber = Enter your officeSuppliesDisallowableAmount using whole numbers
+officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.error.lessThanZero.individual = lessThanZero
+officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZero
+officeSuppliesDisallowableAmount.error.overMax.individual = overMax
+officeSuppliesDisallowableAmount.error.overMax.agent = overMax
+officeSuppliesDisallowableAmount.error.overAllowableMax.individual = overAllowableMax
+officeSuppliesDisallowableAmount.error.overAllowableMax.agent = overAllowableMax
+
+officeSuppliesAmountCYA.title = officeSuppliesAmountCYA
+officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
