@@ -17,17 +17,18 @@
 package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
+import models.common.MoneyBounds
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class OfficeSuppliesAmountFormProvider @Inject() extends Mappings {
+class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(authUserType: String): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$authUserType", s"officeSuppliesAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(BigDecimal(0), s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(BigDecimal(100000000000.00), s"officeSuppliesAmount.error.overMax.$authUserType"))
+        .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
+        .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$authUserType"))
     )
 
 }
