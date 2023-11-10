@@ -41,8 +41,7 @@ class IncomeNavigator @Inject() () {
           userAnswers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
             case Some(true)  => NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) => TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-            case _ =>
-              JourneyRecoveryController.onPageLoad()
+            case _           => JourneyRecoveryController.onPageLoad()
           }
 
     case NonTurnoverIncomeAmountPage => _ => (taxYear, businessId, _) => TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
@@ -106,8 +105,54 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = { case _ =>
-    _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
+  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+
+    case IncomeNotCountedAsTurnoverPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
+            case Some(true)  => NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
+            case _           => JourneyRecoveryController.onPageLoad()
+          }
+
+    case AnyOtherIncomePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
+            case Some(true)  => OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
+            case _           => JourneyRecoveryController.onPageLoad()
+          }
+
+    case TurnoverNotTaxablePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
+            case Some(true)  => NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
+            case _           => JourneyRecoveryController.onPageLoad()
+          }
+
+    case TradingAllowancePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(TradingAllowancePage, Some(businessId)) match {
+            case Some(UseTradingAllowance) => HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(DeclareExpenses)     => IncomeCYAController.onPageLoad(taxYear, businessId)
+            case _                         => JourneyRecoveryController.onPageLoad()
+          }
+
+    case HowMuchTradingAllowancePage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
+            case Some(LessThan) => TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(Maximum)  => IncomeCYAController.onPageLoad(taxYear, businessId)
+            case _              => JourneyRecoveryController.onPageLoad()
+          }
+
+    case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =
