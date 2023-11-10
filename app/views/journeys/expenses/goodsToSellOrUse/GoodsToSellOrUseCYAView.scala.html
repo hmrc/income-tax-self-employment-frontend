@@ -14,16 +14,25 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.expenses.goodsToSellOrUse.routes
+@import templates.helpers.Heading
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton
-)
+@this(layout: templates.Layout, govukButton: GovukButton, heading: Heading, govukSummaryList: GovukSummaryList)
 
-@()(implicit request: Request[_], messages: Messages)
+@(taxYear: Int, userType: String, summaryList: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("goodsToSellOrUseCYA.title"))) {
+@layout(pageTitle = titleNoForm(messages(s"goodsToSellOrUseCYA.title.$userType"))) {
 
-    <h1 class="govuk-heading-xl">@messages("goodsToSellOrUseCYA.heading")</h1>
+    @heading(
+       heading = messages(s"goodsToSellOrUseCYA.title.$userType"),
+       subheading = Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+       extraClasses = "govuk-!-margin-bottom-3"
+    )
+
+    @govukSummaryList(summaryList)
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+        @govukButton(ButtonViewModel(messages("site.saveAndContinue"))
+            .asLink(nextRoute))
+    </div>
+
 }

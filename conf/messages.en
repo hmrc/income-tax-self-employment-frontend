@@ -568,7 +568,6 @@ officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 goodsToSellOrUseAmount.title.individual = How much did you spend on goods to sell or use?
 goodsToSellOrUseAmount.title.agent = How much did your client spend on goods to sell or use?
 goodsToSellOrUseAmount.d1.heading = Understanding goods to sell or use expenses
-goodsToSellOrUseAmount.checkYourAnswersLabel = How much did you spend on goods to sell or use?
 goodsToSellOrUseAmount.error.nonNumeric.individual = The amount you spent on goods to sell or use must be a number
 goodsToSellOrUseAmount.error.nonNumeric.agent = The amount your client spent on goods to sell or use must be a number
 goodsToSellOrUseAmount.error.required.individual = Enter the amount you spent on goods to sell or use
@@ -577,7 +576,7 @@ goodsToSellOrUseAmount.error.lessThanZero.individual = The amount you spent on g
 goodsToSellOrUseAmount.error.lessThanZero.agent = The amount your client spent on goods to sell or use must be more than £0
 goodsToSellOrUseAmount.error.overMax.individual = The amount you spent on goods to sell or use must be less than 100,000,000,000
 goodsToSellOrUseAmount.error.overMax.agent = The amount your client spent on goods to sell or use must be less than 100,000,000,000
-goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.change.hidden = Change how much was spent on goods to sell or use
 
 ## Disallowable goods to sell or use amount
 disallowableGoodsToSellOrUseAmount.title.individual = How much of the £{0} you spent on goods to sell or use is disallowable?
@@ -594,5 +593,5 @@ disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount
 disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
 
 ## Goods to sell or use CYA
-goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
-goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
+goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
+goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses

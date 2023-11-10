@@ -62,6 +62,12 @@ class ExpensesNavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
+      "must go from the Goods To Sell Or Use Amount page to the Goods To Sell Or Use CYA page" in {
+
+        navigator.nextPage(GoodsToSellOrUseAmountPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
+          GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+      }
+
       "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" in {
 
         navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()

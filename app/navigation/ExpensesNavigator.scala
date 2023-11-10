@@ -44,8 +44,13 @@ class ExpensesNavigator @Inject() () {
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = { case _ =>
-    _ => (_, _) => JourneyRecoveryController.onPageLoad()
+  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = {
+
+    case GoodsToSellOrUseAmountPage =>
+      _ => (taxYear, businessId) => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
+    case _ =>
+      _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =

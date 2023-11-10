@@ -17,10 +17,15 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
+import models.NormalMode
+import models.common.ModelUtils.userType
 import navigation.ExpensesNavigator
+import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountSummary
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 import javax.inject.Inject
@@ -36,7 +41,18 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
     with I18nSupport {
 
   def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view())
+    val nextRoute = navigator
+      .nextPage(GoodsToSellOrUseCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
+      .url
+
+    val summaryList = SummaryList(
+      rows = Seq(
+        GoodsToSellOrUseAmountSummary.row(request.userAnswers, userType(request.user.isAgent), taxYear, businessId),
+      ).flatten,
+      classes = "govuk-!-margin-bottom-7"
+    )
+
+    Ok(view(taxYear, userType(request.user.isAgent), summaryList, nextRoute))
   }
 
 }
