@@ -72,7 +72,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

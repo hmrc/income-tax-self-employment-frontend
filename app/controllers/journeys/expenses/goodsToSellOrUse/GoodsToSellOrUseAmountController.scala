@@ -106,7 +106,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
     }
   }

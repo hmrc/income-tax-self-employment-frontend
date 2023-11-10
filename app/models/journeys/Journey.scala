@@ -27,7 +27,7 @@ object Journey {
     case JsString("self-employment-abroad") => JsSuccess(Abroad)
     case JsString("income") => JsSuccess(Income)
     case JsString("expenses-tailoring") => JsSuccess(ExpensesTailoring)
-    case JsString("expenses--goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
+    case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
     case JsString("national-insurance") => JsSuccess(NationalInsurance)
     case _ => JsError("Parsing error")
   }
