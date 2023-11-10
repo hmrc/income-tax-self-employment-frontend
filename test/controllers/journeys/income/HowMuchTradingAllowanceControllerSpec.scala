@@ -155,62 +155,123 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onSubmit" - {
 
-      "must redirect to the Trading Allowance Amount page when 'LessThan' answer is submitted" in {
+      "must redirect to the Trading Allowance Amount page when 'LessThan' answer is submitted" - {
+        "in NormalMode" in {
 
-        val userAnswer = LessThan
+          val userAnswer = LessThan
 
-        val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = mock[SessionRepository]
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", userAnswer.toString))
+          running(application) {
+            val request =
+              FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual tradingAllowanceAmountCall.url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual tradingAllowanceAmountCall.url
+          }
+        }
+        "in CheckMode" in {
+
+          val userAnswer = LessThan
+
+          val mockSessionRepository = mock[SessionRepository]
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
+
+          running(application) {
+            val request =
+              FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual tradingAllowanceAmountCall.url
+          }
         }
       }
 
-      "must clear TradingAllowanceAmount data and redirect to the Income CYA page when 'Maximum' answer is submitted" in {
+      "must clear TradingAllowanceAmount data and redirect to the Income CYA page when 'Maximum' answer is submitted" - {
+        "in NormalMode" in {
 
-        val userAnswer  = Maximum
-        val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswer  = Maximum
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
 
-        val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = mock[SessionRepository]
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-        running(application) {
+          running(application) {
 
-          val request =
-            FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", userAnswer.toString))
+            val request =
+              FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual incomeCyaCall.url
-          UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual incomeCyaCall.url
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+          }
+        }
+        "in CheckMode" in {
+
+          val userAnswer  = Maximum
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+
+          val mockSessionRepository = mock[SessionRepository]
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val application =
+            applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
+
+          running(application) {
+
+            val request =
+              FakeRequest(POST, HowMuchTradingAllowanceController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual incomeCyaCall.url
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+          }
         }
       }
 
