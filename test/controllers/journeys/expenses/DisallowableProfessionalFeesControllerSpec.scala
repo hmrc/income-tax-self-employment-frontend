@@ -51,7 +51,6 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
     UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
   )
 
-
   "DisallowableProfessionalFees Controller" - {
 
     "onPageLoad" - {
@@ -69,9 +68,8 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
               val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
-              val expectedResult = view(userScenario.form, NormalMode, userType(userScenario.isAgent))(request,
-                messages(application, userScenario.isWelsh))
-                .toString
+              val expectedResult =
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -92,8 +90,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableProfessionalFees.values.head), NormalMode,
-                  userType(userScenario.isAgent))(
+                view(userScenario.form.fill(DisallowableProfessionalFees.values.head), NormalMode, userType(userScenario.isAgent))(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -150,33 +147,32 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
       userScenarios.foreach { userScenario =>
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
-          //          "must return a Bad Request and errors when an empty form is submitted" in {
-          //
-          //            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-          //
-          //            running(application) {
-          //              val request =
-          //                FakeRequest(POST, disallowableProfessionalFeesRoute)
-          //                  .withFormUrlEncodedBody(("value", ""))
-          //
-          //              val boundForm = userScenario.form.bind(Map("value" -> ""))
-          //
-          //              val view = application.injector.instanceOf[DisallowableProfessionalFees]
-          //
-          //              val result = route(application, request).value
-          //
-          //              val expectedResult =
-          //                view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application, userScenario.isWelsh)).toString
-          //
-          //              status(result) mustEqual BAD_REQUEST
-          //              contentAsString(result) mustEqual expectedResult
-          //            }
-          //          }
+          "must return a Bad Request and errors when an empty form is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, disallowableProfessionalFeesRoute)
+                  .withFormUrlEncodedBody(("value", ""))
+
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
+
+              val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
+
+              val result = route(application, request).value
+
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers),
-              isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -214,4 +210,5 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
       }
     }
   }
+
 }

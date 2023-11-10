@@ -32,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.DisallowableStaffCostsView
+import views.html.journeys.expenses.{DisallowableProfessionalFeesView, DisallowableStaffCostsView}
 
 import scala.concurrent.Future
 
@@ -60,8 +60,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers),
-              isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableStaffCostsRoute)
@@ -70,10 +69,8 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
               val view = application.injector.instanceOf[DisallowableStaffCostsView]
 
-              val expectedResult = view(userScenario.form, NormalMode, userType(userScenario.isAgent))(request,
-                messages(application, userScenario.isWelsh))
-                .toString
-
+              val expectedResult =
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -82,11 +79,9 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage,
-              DisallowableStaffCosts.values.head).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers),
-              isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableStaffCostsRoute)
@@ -96,8 +91,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableStaffCosts.values.head), NormalMode,
-                  userType(userScenario.isAgent))(
+                view(userScenario.form.fill(DisallowableStaffCosts.values.head), NormalMode, userType(userScenario.isAgent))(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -154,7 +148,28 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       userScenarios.foreach { userScenario =>
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
 
-          //          "must return a Bad Request and errors when an empty form is submitted" in {
+          "must return a Bad Request and errors when an empty form is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, disallowableStaffCostsRoute)
+                  .withFormUrlEncodedBody(("value", ""))
+
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
+
+              val view = application.injector.instanceOf[DisallowableStaffCostsView]
+
+              val result = route(application, request).value
+
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
@@ -172,8 +187,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode,
-                userType(userScenario.isAgent))(request, messages(application)).toString
+              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application)).toString
             }
           }
 
@@ -197,4 +211,5 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

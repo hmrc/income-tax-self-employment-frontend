@@ -96,7 +96,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet).success.value
+            val userAnswers =
+              UserAnswers(userAnswersId)
+                .set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet, Some(stubbedBusinessId))
+                .success
+                .value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -110,12 +114,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
               val result = route(application, request).value
 
-              val expectedResult = view(userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
+              val expectedResult = view(
+                userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
                 NormalMode,
                 userScenario.userType,
-                legendContent)(
-                request,
-                messages(application)).toString
+                legendContent)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -123,7 +126,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
           }
         }
       }
-
 
       "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
 
@@ -139,7 +141,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         }
       }
     }
-
 
     "onSubmit" - {
 
@@ -176,8 +177,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers),
-              isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
             val legendContent = buildLegendContent(userScenario.userType)(messages(application))
@@ -193,8 +193,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode,
-                userScenario.userType, legendContent)(request, messages(application)).toString
+              val expectedResult = view(boundForm, NormalMode, userScenario.userType, legendContent)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -221,4 +220,5 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
     }
 
   }
+
 }
