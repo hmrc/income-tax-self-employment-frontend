@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{NotTaxableAmountController, TurnoverIncomeAmountController}
+import controllers.journeys.income.routes.{IncomeCYAController, NotTaxableAmountController, TurnoverIncomeAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.NotTaxableAmountFormProvider
 import models.database.UserAnswers
@@ -46,6 +46,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
   val formWithIndividual      = formProvider(individual, turnoverAmount)
   val formWithAgent           = formProvider(agent, turnoverAmount)
   val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+  val cyaCall                 = IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
@@ -128,29 +129,57 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
     "onSubmit" - {
 
-      "must redirect to the next page when valid data is submitted" in {
+      "when valid data is submitted must redirect to the" - {
+        "Turnover Income Amount page when in NormalMode" in {
 
-        val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = mock[SessionRepository]
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", validAnswer.toString))
+          running(application) {
+            val request =
+              FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual onwardRoute.url
+          }
+        }
+
+        "CYA page when in CheckMode and income model is now completed" in {
+
+          val mockSessionRepository = mock[SessionRepository]
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(cyaCall)),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
+
+          running(application) {
+            val request =
+              FakeRequest(POST, NotTaxableAmountController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+                .withFormUrlEncodedBody(("value", validAnswer.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual cyaCall.url
+          }
         }
       }
 
