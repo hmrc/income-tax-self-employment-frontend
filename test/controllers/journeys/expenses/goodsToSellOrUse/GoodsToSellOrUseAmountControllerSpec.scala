@@ -21,11 +21,14 @@ import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmo
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.database.UserAnswers
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage.{No, Yes}
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -34,6 +37,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import viewmodels.ContentStringViewModel.buildLabelHeadingWithContentString
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
@@ -45,11 +49,13 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer: BigDecimal = 10
   val onwardRoute             = Call("GET", "/foo")
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, isTaxiDriver: Boolean)
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  val userScenarios = Seq( // TODO change these defaults when data is dynamic in controller
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, isTaxiDriver = true),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), accrual, isTaxiDriver = true)
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, isDriver: TaxiMinicabOrRoadHaulage)
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, isDriver = Yes),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash, isDriver = No)
   )
 
   "GoodsToSellOrUseAmount Controller" - {
@@ -57,15 +63,25 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isTaxiDriver) "not "}a taxi driver" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isDriver.equals(Yes)) "not "
+          else ""}a taxi driver" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
+              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -79,8 +95,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
-                  label)(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.isDriver.equals(Yes),
+                  label
+                )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -89,14 +106,25 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(GoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(GoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId))
+              .success
+              .value
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(CheckMode).url)
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
+              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
 
               val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
 
@@ -110,7 +138,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
+                  userScenario.isDriver.equals(Yes),
                   label
                 )(request, messages(application, userScenario.isWelsh)).toString
 
@@ -123,10 +151,11 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .build()
 
         running(application) {
-          val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -148,13 +177,16 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
 
         running(application) {
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+
           val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+            FakeRequest(POST, GoodsToSellOrUseAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -165,16 +197,26 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isTaxiDriver) "not "}a taxi driver" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isDriver.equals(Yes)) "not "
+          else ""}a taxi driver" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -191,7 +233,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
+                  userScenario.isDriver.equals(Yes),
                   label)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
@@ -201,13 +243,22 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -224,7 +275,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
+                  userScenario.isDriver.equals(Yes),
                   label)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
@@ -234,13 +285,22 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when a zero or negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "0"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "0"))
@@ -257,7 +317,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
+                  userScenario.isDriver.equals(Yes),
                   label)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
@@ -267,13 +327,22 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when amount exceeds the maximum" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .success
+              .value
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isTaxiDriver)(messages(application))
+              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
+                messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "1006454566540"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "1006454566540"))
@@ -290,7 +359,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isTaxiDriver,
+                  userScenario.isDriver.equals(Yes),
                   label)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
@@ -302,11 +371,12 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .build()
 
         running(application) {
           val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -319,7 +389,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     }
   }
 
-  def labelContent(userType: String, isAccrual: Boolean, isTaxiDriver: Boolean)(implicit messages: Messages): String = {
+  def labelContent(userType: String, isAccrual: Boolean, isDriver: Boolean)(implicit messages: Messages): String = {
 
     val detailsContent =
       s"""
@@ -332,9 +402,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                |   <div class="govuk-details__text">
                |      <p>${messages(s"site.canInclude.$userType")}</p>
                |      <ul class="govuk-body govuk-list--bullet">
-               |        ${if (isTaxiDriver) s"""<li>${messages("expenses.fuelCosts")}</li>""" else ""}
+               |        ${if (isDriver) s"""<li>${messages("expenses.fuelCosts")}</li>""" else ""}
                |        <li>${messages("expenses.costOfRawMaterials")}</li>
-               |        ${if (!isAccrual) s"""<li>${messages(" expenses.stockBought")}</li>""" else ""}
+               |        ${if (!isAccrual) s"""<li>${messages("expenses.stockBought")}</li>""" else ""}
                |        <li>${messages("expenses.directCostsOfProducing")}</li>
                |        ${if (isAccrual) s"""<li>${messages("expenses.adjustments")}</li>""" else ""}
                |        <li>${messages("expenses.commissions")}</li>

@@ -64,7 +64,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
 
             running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -88,7 +88,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(CheckMode).url)
+              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
 
               val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
 
@@ -106,12 +106,13 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .build()
 
         running(application) {
-          val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -139,7 +140,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
         running(application) {
           val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -157,7 +158,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -181,7 +182,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -205,7 +206,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "-23"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "-23"))
@@ -229,7 +230,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", (goodsAmount + 0.01).toString()))
 
               val boundForm = userScenario.form.bind(Map("value" -> (goodsAmount + 0.01).toString()))
@@ -249,13 +250,14 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .build()
 
         running(application) {
           val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(NormalMode).url)
+            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value

@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,41 +44,36 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418"
-  val taxYear    = LocalDate.now.getYear
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val goodsAmount = request.userAnswers
+        .get(GoodsToSellOrUseAmountPage, Some(businessId))
+        .getOrElse(BigDecimal(1000.50)) // TODO change this default
+      val preparedForm =
+        request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
+          case None        => formProvider(userType(request.user.isAgent), goodsAmount)
+          case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
+        }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val goodsAmount = request.userAnswers
-      .getOrElse(UserAnswers(request.userId))
-      .get(GoodsToSellOrUseAmountPage, Some(businessId))
-      .getOrElse(BigDecimal(1000.50)) // TODO change this default
-    val preparedForm =
-      request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None        => formProvider(userType(request.user.isAgent), goodsAmount)
-        case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
-      }
-
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val goodsAmount = request.userAnswers
-      .getOrElse(UserAnswers(request.userId))
-      .get(GoodsToSellOrUseAmountPage, Some(businessId))
-      .getOrElse(BigDecimal(1000.50))
-    formProvider(userType(request.user.isAgent), goodsAmount)
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          Future.successful(
-            BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      val goodsAmount = request.userAnswers
+        .get(GoodsToSellOrUseAmountPage, Some(businessId))
+        .getOrElse(BigDecimal(1000.50))
+      formProvider(userType(request.user.isAgent), goodsAmount)
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers))
+        )
   }
 
 }

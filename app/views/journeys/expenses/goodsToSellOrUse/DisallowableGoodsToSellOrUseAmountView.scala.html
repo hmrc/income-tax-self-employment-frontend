@@ -34,7 +34,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @formHelper(action = routes.DisallowableGoodsToSellOrUseAmountController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DisallowableGoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(

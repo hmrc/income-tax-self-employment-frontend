@@ -34,7 +34,7 @@ class GoodsToSellOrUseCYAController @Inject()(override val messagesApi: Messages
                                        view: GoodsToSellOrUseCYAView
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       Ok(view())
   }
