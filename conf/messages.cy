@@ -555,7 +555,8 @@ goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
 
 ## Office Supplies Amount
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
-officeSuppliesAmount.heading = OfficeSuppliesAmountHeading
+officeSuppliesAmount.heading = How much did you spend on office supplies?
+officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
 officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
 officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
@@ -568,7 +569,8 @@ officeSuppliesAmount.error.overMax.individual = officeSuppliesAmountOverMaxIndiv
 officeSuppliesAmount.error.overMax.agent = officeSuppliesAmountOverMaxAgent
 
 ## Office Supplies Disallowable Amount
-officeSuppliesDisallowableAmount.title = OfficeSuppliesDisallowableAmountTitle
+officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
+officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
 officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
 officeSuppliesDisallowableAmount.error.nonNumeric.individual = Enter your officeSuppliesDisallowableAmount using numbers
@@ -578,7 +580,7 @@ officeSuppliesDisallowableAmount.error.required.individual = Enter your clients 
 officeSuppliesDisallowableAmount.error.wholeNumber = Enter your officeSuppliesDisallowableAmount using whole numbers
 officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
 officeSuppliesDisallowableAmount.error.lessThanZero.individual = lessThanZeroIndividual
-officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZeroAgent
+officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZero
 officeSuppliesDisallowableAmount.error.overMax.individual = overMaxIndividual
 officeSuppliesDisallowableAmount.error.overMax.agent = overMaxAgent
 officeSuppliesDisallowableAmount.error.overAllowableMax.individual = officeSuppliesDisallowableAmountOverAllowableMaxIndividual

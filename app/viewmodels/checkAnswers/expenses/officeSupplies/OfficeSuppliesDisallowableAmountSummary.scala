@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object OfficeSuppliesDisallowableAmountSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OfficeSuppliesDisallowableAmountPage).map {
       answer =>
 
@@ -35,7 +35,7 @@ object OfficeSuppliesDisallowableAmountSummary  {
           key     = "officeSuppliesDisallowableAmount.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", OfficeSuppliesDisallowableAmountController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("officeSuppliesDisallowableAmount.change.hidden"))
           )
         )

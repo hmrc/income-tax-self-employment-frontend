@@ -16,32 +16,69 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
+@import views.html.templates.helpers.Heading
 
-@this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
-)
+@this(layout: templates.Layout,
+      formHelper: FormWithCSRF,
+      govukErrorSummary: GovukErrorSummary,
+      govukInput: GovukInput,
+      govukButton: GovukButton,
+      heading: Heading)
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("officeSuppliesAmount.title"))) {
+@layout(pageTitle = title(form, messages("officeSuppliesAmount.heading"))) {
 
-    @formHelper(action = OfficeSuppliesAmountController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @heading(messages("officeSuppliesAmount.heading"), None)
+
+        <details class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-4" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses")
+                            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                @messages(s"site.canInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
+                <li>@messages("officeSupplies.l1")</li>
+                <li>@messages("officeSupplies.l2")</li>
+                <li>@messages("officeSupplies.l3")</li>
+                <li>@messages("officeSupplies.l4")</li>
+                <li>@messages("officeSupplies.l5")</li>
+                @if(accountingType == "CASH") {
+                    <li>@messages("officeSupplies.l6")</li>
+                }
+            </ul>
+            <p>
+                @messages(s"site.cannotInclude.$authUserType")
+            </p>
+            <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
+                @if(accountingType == "CASH") {
+                    <li>@messages("officeSupplies.l7")</li>
+                } else {
+                    <li>@messages("officeSupplies.l8")</li>
+                }
+            </ul>
+        </div>
+        </details>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("officeSuppliesAmount.heading")).asPageHeading()
+                label = LabelViewModel("")
+                        .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
             )
             .asNumeric()
             .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(

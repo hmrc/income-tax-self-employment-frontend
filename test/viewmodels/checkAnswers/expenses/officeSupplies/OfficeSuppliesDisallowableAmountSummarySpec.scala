@@ -26,7 +26,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesDisallowableAmountSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id = "some_id"
+  private val id         = "some_id"
+  private val taxYear    = 2024
+  private val businessId = "some_id"
 
   private val data      = Json.obj("officeSuppliesDisallowableAmount" -> 123.45)
   private val otherData = Json.obj("otherPage" -> 123.45)
@@ -42,7 +44,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends AnyWordSpec with Match
   "OfficeSuppliesDisallowableAmountSummary" when {
     "user answers for OfficeSuppliesDisallowableAmountPage exist" should {
       "generate a summary list row" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers)
+        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("officeSuppliesDisallowableAmount.checkYourAnswersLabel")
@@ -51,7 +53,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends AnyWordSpec with Match
     }
     "user answers do not exist for OfficeSuppliesDisallowableAmountPage" should {
       "return None" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers)
+        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId)
 
         result shouldBe None
       }
