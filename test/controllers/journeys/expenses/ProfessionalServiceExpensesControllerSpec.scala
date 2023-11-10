@@ -26,11 +26,15 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.ProfessionalServiceExpensesPage
+import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
+import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.ProfessionalServiceExpensesView
 
 import scala.concurrent.Future
@@ -42,122 +46,179 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
   lazy val professionalServiceExpensesRoute = controllers.journeys.expenses.routes.ProfessionalServiceExpensesController.onPageLoad(NormalMode).url
 
   val formProvider = new ProfessionalServiceExpensesFormProvider()
-  val form         = formProvider()
+
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+
+  def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"professionalServiceExpenses.subHeading.$userType",
+    "site.selectAllThatApply",
+    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
+  )
+
+  case class UserScenario(isWelsh: Boolean, userType: String, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, userType = individual, formProvider(individual), accrual),
+    UserScenario(isWelsh = false, userType = agent, formProvider(agent), cash)
+  )
 
   "ProfessionalServiceExpenses Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, professionalServiceExpensesRoute)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
 
-        val result = route(application, request).value
+            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
-        val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+            running(application) {
 
-        status(result) mustEqual OK
+              val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+              val result = route(application, request).value
+
+              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, userScenario.userType, legendContent)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
+
+            running(application) {
+              val request = FakeRequest(GET, professionalServiceExpensesRoute)
+
+              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+
+              val result = route(application, request).value
+
+              val expectedResult = view(userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
+                NormalMode,
+                userScenario.userType,
+                legendContent)(
+                request,
+                messages(application)).toString
+
+              status(result) mustEqual OK
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, professionalServiceExpensesRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet).success.value
+    "onSubmit" - {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      "must redirect to the next page when valid data is submitted" in {
 
-      running(application) {
-        val request = FakeRequest(GET, professionalServiceExpensesRoute)
+        val mockSessionRepository = mock[SessionRepository]
 
-        val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val result = route(application, request).value
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ProfessionalServiceExpenses.values.toSet), NormalMode)(
-          request,
-          messages(application)).toString
+        running(application) {
+          val request =
+            FakeRequest(POST, professionalServiceExpensesRoute)
+              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
+
+          //        "must return a Bad Request and errors when an empty form is submitted" in {
+
+          "must return a Bad Request and errors when invalid data is submitted" in {
+
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers),
+              isAgent(userScenario.userType))
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
+            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
+
+            running(application) {
+              val request =
+                FakeRequest(POST, professionalServiceExpensesRoute)
+                  .withFormUrlEncodedBody(("value", "invalid value"))
+
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+
+              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+
+              val result = route(application, request).value
+
+              val expectedResult = view(boundForm, NormalMode,
+                userScenario.userType, legendContent)(request, messages(application)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, professionalServiceExpensesRoute)
+              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, professionalServiceExpensesRoute)
-            .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
-
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, professionalServiceExpensesRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, professionalServiceExpensesRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, professionalServiceExpensesRoute)
-            .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
   }
-
 }

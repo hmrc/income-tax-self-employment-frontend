@@ -56,14 +56,15 @@ class ProfessionalServiceExpensesController @Inject() (
       ).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent),legendContent))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent),legendContent(userType(request.user.isAgent))))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent), legendContent))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent),
+          legendContent(userType(request.user.isAgent))))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(ProfessionalServiceExpensesPage, value))
@@ -72,8 +73,8 @@ class ProfessionalServiceExpensesController @Inject() (
       )
   }
 
-  private def legendContent(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"professionalServiceExpenses.subheading",
+  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
+    s"professionalServiceExpenses.subHeading.$userType",
     "site.selectAllThatApply",
     headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
   )
