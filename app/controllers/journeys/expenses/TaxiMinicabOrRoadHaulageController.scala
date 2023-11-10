@@ -21,7 +21,7 @@ import forms.expenses.TaxiMinicabOrRoadHaulageFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: MessagesApi,
                                                     sessionRepository: SessionRepository,
-                                                    navigator: ExpensesNavigator,
+                                                    navigator: ExpensesTailoringNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
@@ -64,8 +64,9 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TaxiMinicabOrRoadHaulagePage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TaxiMinicabOrRoadHaulagePage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, mode, updatedAnswers))
       )
   }

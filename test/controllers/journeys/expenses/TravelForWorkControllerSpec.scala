@@ -21,7 +21,7 @@ import forms.expenses.TravelForWorkFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.TravelForWork
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -89,7 +89,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

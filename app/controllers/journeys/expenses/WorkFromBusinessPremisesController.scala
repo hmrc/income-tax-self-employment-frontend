@@ -21,7 +21,7 @@ import forms.expenses.WorkFromBusinessPremisesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WorkFromBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
                                                     sessionRepository: SessionRepository,
-                                                    navigator: ExpensesNavigator,
+                                                    navigator: ExpensesTailoringNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
