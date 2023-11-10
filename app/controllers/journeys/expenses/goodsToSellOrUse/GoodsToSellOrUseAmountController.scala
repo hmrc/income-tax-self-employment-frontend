@@ -35,7 +35,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.ContentStringViewModel.buildLabelHeadingWithContentString
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -22,7 +22,7 @@ import forms.expenses.OfficeSuppliesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
                                           selfEmploymentService: SelfEmploymentService,
                                           sessionRepository: SessionRepository,
-                                          navigator: ExpensesNavigator,
+                                          navigator: ExpensesTailoringNavigator,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
