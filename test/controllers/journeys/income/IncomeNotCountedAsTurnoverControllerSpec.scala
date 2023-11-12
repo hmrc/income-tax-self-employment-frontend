@@ -17,7 +17,12 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{IncomeNotCountedAsTurnoverController, NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
+import controllers.journeys.income.routes.{
+  IncomeCYAController,
+  IncomeNotCountedAsTurnoverController,
+  NonTurnoverIncomeAmountController,
+  TurnoverIncomeAmountController
+}
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
@@ -42,8 +47,10 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
   val formProvider                = new IncomeNotCountedAsTurnoverFormProvider()
   val nonTurnoverIncomeAmountCall = NonTurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
   val turnoverIncomeAmountCall    = TurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+  val incomeCyaCall               = IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
 
-  val onwardRoute = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
+  val onwardRouteNormalMode = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
+  val onwardRouteCheckMode  = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else incomeCyaCall
 
   val mockSessionRepository = mock[SessionRepository]
 
@@ -115,57 +122,115 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
     "onSubmit" - {
 
-      "must redirect to the Non-Turnover Income Amount page when a user answer 'Yes' is submitted" in {
+      "when a user answer 'Yes' is submitted must redirect to the Non-Turnover Income Amount page when in" - {
+        "NormalMode" in {
 
-        val userAnswer = true
+          val userAnswer = true
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", userAnswer.toString))
+          running(application) {
+            val request =
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual nonTurnoverIncomeAmountCall.url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual nonTurnoverIncomeAmountCall.url
+          }
+        }
+
+        "CheckMode" in {
+
+          val userAnswer = true
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
+
+          running(application) {
+            val request =
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual nonTurnoverIncomeAmountCall.url
+          }
         }
       }
 
-      "must clear NonTurnoverIncomeAmount data and redirect to the Turnover Income Amount page when a user answer 'No' is submitted" in {
+      "when a user answer 'No' is submitted must clear NonTurnoverIncomeAmount data and redirect to the" - {
+        "Turnover Income Amount page when in NormalMode" in {
 
-        val userAnswer  = false
-        val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswer  = false
+          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(
-              bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", userAnswer.toString))
+          running(application) {
+            val request =
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
-          UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
+            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+          }
+        }
+
+        "CYA page when in CheckMode and journey model is now complete" in {
+
+          val userAnswer  = false
+          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val application =
+            applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
+
+          running(application) {
+            val request =
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+                .withFormUrlEncodedBody(("value", userAnswer.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual incomeCyaCall.url
+            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+          }
         }
       }
 

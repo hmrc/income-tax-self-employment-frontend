@@ -210,3 +210,18 @@ GET         /expenses/change-goods-sell-use/disallowable-amount                 
 POST        /expenses/change-goods-sell-use/disallowable-amount                     controllers.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountController.onSubmit(mode: Mode = CheckMode)
 
 GET         /expenses/goods-sell-use/check                                          controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAController.onPageLoad()
+
+########## Expenses - Office Supplies ##########
+
+GET        /expenses/office-supplies/amount	                                        controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/office-supplies/amount                                         controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-office-supplies/amount                                  controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-office-supplies/amount                                  controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/office-supplies/disallowable-amount                            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/office-supplies/check                                          controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad()
+

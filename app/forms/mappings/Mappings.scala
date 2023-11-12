@@ -64,9 +64,18 @@ trait Mappings extends Formatters with Constraints {
       }
     }
 
-  def isBigDecimalLessThanMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
+  def isBigDecimalLessThanOrEqualToMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
     Constraint { input: BigDecimal =>
       if (maximum >= input) {
+        Valid
+      } else {
+        Invalid(errorKey, maximum)
+      }
+    }
+
+  def isBigDecimalLessThanMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
+    Constraint { input: BigDecimal =>
+      if (maximum > input) {
         Valid
       } else {
         Invalid(errorKey, maximum)
