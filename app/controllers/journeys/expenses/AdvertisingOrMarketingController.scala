@@ -19,6 +19,7 @@ package controllers.journeys.expenses
 import controllers.actions._
 import forms.expenses.AdvertisingOrMarketingFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.AdvertisingOrMarketingPage
@@ -28,41 +29,41 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.AdvertisingOrMarketingView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdvertisingOrMarketingController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    formProvider: AdvertisingOrMarketingFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: AdvertisingOrMarketingView
-)(implicit ec: ExecutionContext)
+class AdvertisingOrMarketingController @Inject() (override val messagesApi: MessagesApi,
+                                                  sessionRepository: SessionRepository,
+                                                  navigator: ExpensesNavigator,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  formProvider: AdvertisingOrMarketingFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: AdvertisingOrMarketingView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(AdvertisingOrMarketingPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(AdvertisingOrMarketingPage, Some(businessId)) match {
+      case None => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(AdvertisingOrMarketingPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(AdvertisingOrMarketingPage, value, Some(businessId)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers))
       )
