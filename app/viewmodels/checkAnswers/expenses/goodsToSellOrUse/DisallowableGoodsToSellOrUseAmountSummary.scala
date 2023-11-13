@@ -27,13 +27,13 @@ import viewmodels.implicits._
 
 object DisallowableGoodsToSellOrUseAmountSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableGoodsToSellOrUseAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = "disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableGoodsToSellOrUseAmount.change.hidden"))
         )
       )

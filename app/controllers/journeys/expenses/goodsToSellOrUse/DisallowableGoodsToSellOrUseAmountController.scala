@@ -17,15 +17,17 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
-import models.database.UserAnswers
+import models.common.ModelUtils.userType
 import navigation.ExpensesNavigator
-import pages.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountPage
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
 import javax.inject.Inject
@@ -43,29 +45,39 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Some(goodsAmount) =>
+          val preparedForm =
+            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
+              case None        => formProvider(userType(request.user.isAgent), goodsAmount)
+              case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
+            }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableGoodsToSellOrUseAmountPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
-
-    Ok(view(preparedForm, mode))
+          Future.successful(Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount))))
+      }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableGoodsToSellOrUseAmountPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Some(goodsAmount) =>
+          formProvider(userType(request.user.isAgent), goodsAmount)
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+            )
+      }
   }
 
 }

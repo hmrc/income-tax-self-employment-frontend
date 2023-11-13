@@ -20,15 +20,10 @@ import play.api.i18n.Messages
 
 object ContentStringViewModel {
 
-  def buildLegendHeadingWithHintString(headingText: String,
-                                       hintText: String,
-                                       headingClasses: String = "",
-                                       hintExtraClasses: String = "")(implicit messages: Messages): String = {
-    val heading           = messages(s"$headingText")
-    val hint              = messages(s"$hintText")
-
-    s"<div> <legend class='$headingClasses'> $heading </legend>" +
-      s"<div class='govuk-hint $hintExtraClasses'> $hint </div> </div>"
+  def buildLegendHeadingWithHintString(headingText: String, hintText: String, headingClasses: String = "", hintExtraClasses: String = "")(implicit
+      messages: Messages): String = {
+    s"<div> <legend class='$headingClasses'> ${messages(headingText)} </legend>" +
+      s"<div class='govuk-hint $hintExtraClasses'> ${messages(hintText)} </div> </div>"
   }
 
 }
