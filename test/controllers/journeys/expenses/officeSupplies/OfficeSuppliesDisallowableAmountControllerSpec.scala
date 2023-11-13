@@ -27,9 +27,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
-import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
+import play.api.i18n._
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -59,12 +58,9 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(isWelsh: Boolean, authUser: String, form: Form[BigDecimal])
+  case class UserScenario(isWelsh: Boolean, authUser: String)
 
-  private val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUser = individual, formProvider(individual, allowableAmount)),
-    UserScenario(isWelsh = false, authUser = agent, formProvider(agent, allowableAmount))
-  )
+  private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
 
   private val data        = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
@@ -77,7 +73,9 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             "must return OK and the correct view" in {
               val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
 
-              implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              implicit val appMessages: Messages    = messages(application)
+
               val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
               running(application) {
@@ -88,12 +86,12 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 status(langResult) mustEqual OK
 
                 contentAsString(langResult) mustEqual view(
-                  userScenario.form,
+                  formProvider(userScenario.authUser, allowableAmount),
                   NormalMode,
                   taxYear,
                   businessId,
                   userScenario.authUser,
-                  allowableAmount)(request, messages(application)).toString
+                  allowableAmount)(request, appMessages).toString
               }
             }
 
@@ -103,6 +101,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
               val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
 
               implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+              implicit val appMessages: Messages             = messages(application)
               val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
               running(application) {
@@ -113,12 +112,12 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 status(langResult) mustEqual OK
 
                 contentAsString(langResult) mustEqual view(
-                  userScenario.form.fill(validAnswer),
+                  formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
                   NormalMode,
                   taxYear,
                   businessId,
                   userScenario.authUser,
-                  allowableAmount)(request, messages(application)).toString
+                  allowableAmount)(request, appMessages).toString
               }
             }
           }
@@ -163,10 +162,11 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
             val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
             implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+            implicit val appMessages: Messages             = messages(application)
 
             running(application) {
               val request    = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
-              val boundForm  = userScenario.form.bind(Map("value" -> "invalid value"))
+              val boundForm  = formProvider(userScenario.authUser, allowableAmount).bind(Map("value" -> "invalid value"))
               val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
@@ -174,7 +174,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, allowableAmount)(
                 request,
-                messages(application)).toString
+                appMessages).toString
             }
           }
 

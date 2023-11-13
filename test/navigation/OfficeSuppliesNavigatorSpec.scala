@@ -16,57 +16,53 @@
 
 package navigation
 
+import base.SpecBase
 import controllers.journeys.expenses.officeSupplies.routes.{OfficeSuppliesCYAController, OfficeSuppliesDisallowableAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.expenses.WorkFromHomePage
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 
-class OfficeSuppliesNavigatorSpec extends AnyWordSpec with Matchers {
+class OfficeSuppliesNavigatorSpec extends SpecBase {
 
   private val navigator = new OfficeSuppliesNavigator
 
-  private val taxYear     = 2024
   private val userAnswers = UserAnswers("some_id")
   private val businessId  = "some_businessId"
 
-  private val checkMode  = CheckMode
-  private val normalMode = NormalMode
-
-  "OfficeSuppliesNavigator" when {
-    "navigating to the next page" when {
-      "in CheckMode" must {
+  "OfficeSuppliesNavigator" - {
+    "navigating to the next page" - {
+      "in CheckMode" - {
         "navigate to the JourneyRecoveryController" in {
           val expectedResult = JourneyRecoveryController.onPageLoad()
 
-          navigator.nextPage(OfficeSuppliesAmountPage, checkMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+          navigator.nextPage(OfficeSuppliesAmountPage, CheckMode, userAnswers, taxYear, businessId) shouldBe expectedResult
         }
       }
-      "in NormalMode" when {
-        "the page is OfficeSuppliesAmountPage" must {
+      "in NormalMode" - {
+        "the page is OfficeSuppliesAmountPage" - {
           "navigate to the OfficeSuppliesDisallowableAmountController" in {
-            val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, normalMode)
+            val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-            navigator.nextPage(OfficeSuppliesAmountPage, normalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(OfficeSuppliesAmountPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
-        "the page is OfficeSuppliesDisallowableAmountPage" must {
+        "the page is OfficeSuppliesDisallowableAmountPage" - {
           "navigate to the OfficeSuppliesCYAController" in {
             val expectedResult = OfficeSuppliesCYAController.onPageLoad()
 
-            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, normalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
-        "there is no match on the page, mode, userAnswers, taxYear, or businessId" must {
+        "there is no match on the page, mode, userAnswers, taxYear, or businessId" - {
           "navigate to the JourneyRecoveryController" in {
             val someOtherJourneyPage = WorkFromHomePage
 
             val expectedResult = JourneyRecoveryController.onPageLoad()
 
-            navigator.nextPage(someOtherJourneyPage, normalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(someOtherJourneyPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
       }

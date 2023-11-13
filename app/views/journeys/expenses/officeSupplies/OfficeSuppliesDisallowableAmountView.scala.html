@@ -17,6 +17,7 @@
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController
 @import views.html.templates.helpers.Heading
+@import viewmodels.LabelSize
 
 @this(
     layout: templates.Layout,
@@ -37,12 +38,13 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @heading(messages(s"officeSuppliesDisallowableAmount.title.$authUserType", allowableAmount.toString), None, extraClasses = "govuk-!-margin-bottom-3")
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel("").asPageHeading()
+                label = LabelViewModel(messages(s"officeSuppliesDisallowableAmount.title.$authUserType", allowableAmount.toString))
+                          .asPageHeading(size = LabelSize.Large)
+                          .withCssClass("govuk-!-margin-bottom-3")
             )
             .asNumeric()
             .withWidth(Fixed10)
