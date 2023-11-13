@@ -19,15 +19,18 @@ package controllers.journeys.expenses
 import controllers.actions._
 import forms.expenses.TravelForWorkFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.TravelForWorkPage
+import pages.expenses.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.TravelForWorkView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,25 +45,34 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418"
+  val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TravelForWorkPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TravelForWorkPage, Some(businessId)) match {
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
-
-    Ok(view(preparedForm, mode))
+    val taxiDriver = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+      .contains(TaxiMinicabOrRoadHaulage.Yes)
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
+    val taxiDriver = request.userAnswers
+      .getOrElse(UserAnswers(request.userId))
+      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+      .contains(TaxiMinicabOrRoadHaulage.Yes)
+
+    formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TravelForWorkPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TravelForWorkPage, value, Some(businessId)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers))
       )
