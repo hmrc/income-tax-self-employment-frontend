@@ -19,7 +19,6 @@ package controllers.journeys.expenses.repairsandmaintenance
 import controllers.actions._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.requests.DataRequest
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
@@ -46,9 +45,11 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(implicit request: DataRequest[AnyContent]) = formProvider(request.user.userType)
+  private def form(implicit request: DataRequest[AnyContent]) = {
+    formProvider(request.user.userType, 1000.0) // TODO Remove hardcoded value in SASS-6115
+  }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get(RepairsAndMaintenanceDisallowableAmountPage) match {
       case None        => form
       case Some(value) => form.fill(value)
@@ -57,7 +58,7 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

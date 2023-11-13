@@ -47,7 +47,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
 
   private def form(implicit request: DataRequest[AnyContent]) = formProvider(request.user.userType)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get(RepairsAndMaintenanceAmountPage) match {
       case None        => form
       case Some(value) => form.fill(value)
@@ -56,7 +56,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
     Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

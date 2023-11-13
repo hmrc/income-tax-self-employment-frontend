@@ -237,14 +237,14 @@ GET         /expenses/simplified-expenses/check-answers                         
 
 ########## Expenses - Repairs and Maintenance ##########
 
-GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/amount                            controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/repairs-and-maintenance/amount                            controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-repairs-and-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-repairs-and-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/amount                            controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/repairs-and-maintenance/amount                            controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-repairs-and-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-repairs-and-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/repairs-and-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-repairs-and-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-repairs-and-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/repairs-and-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-repairs-and-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-repairs-and-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/check                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad()
+GET         /:taxYear/:businessId/expenses/repairs-and-maintenance/check                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: Int, businessId: String)
