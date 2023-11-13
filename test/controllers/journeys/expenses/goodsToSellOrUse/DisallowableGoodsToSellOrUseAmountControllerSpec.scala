@@ -26,7 +26,7 @@ import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountPage
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -43,8 +43,11 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
   val formProvider            = new DisallowableGoodsToSellOrUseAmountFormProvider()
   val validAnswer: BigDecimal = 10
   val goodsAmount: BigDecimal = 1000.50
-  val goodsAmountString       = formatMoney(goodsAmount, addDecimalForWholeNumbers = false)
+  val goodsAmountString       = formatMoney(goodsAmount)
   val onwardRoute             = Call("GET", "/foo")
+
+  val baseUserAnswers: UserAnswers =
+    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(stubbedBusinessId)).success.value
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
@@ -61,7 +64,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
@@ -83,7 +86,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
@@ -131,7 +134,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(baseUserAnswers))
             .overrides(
               bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
               bind[SessionRepository].toInstance(mockSessionRepository)
@@ -154,7 +157,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -178,7 +181,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -202,7 +205,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when a negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -226,7 +229,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when disallowable amount exceeds goods amount" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =

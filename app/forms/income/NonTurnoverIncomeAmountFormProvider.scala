@@ -17,17 +17,18 @@
 package forms.income
 
 import forms.mappings.Mappings
+import models.common.MoneyBounds
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings {
+class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(authUserType: String): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(s"nonTurnoverIncomeAmount.error.required.$authUserType", s"nonTurnoverIncomeAmount.error.nonNumeric.$authUserType")
-        .verifying(isBigDecimalGreaterThanZero(s"nonTurnoverIncomeAmount.error.lessThanZero.$authUserType"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, s"nonTurnoverIncomeAmount.error.overMax.$authUserType"))
+        .verifying(greaterThan(minimumValue, s"nonTurnoverIncomeAmount.error.lessThanZero.$authUserType"))
+        .verifying(lessThan(maximumValue, s"nonTurnoverIncomeAmount.error.overMax.$authUserType"))
     )
 
 }
