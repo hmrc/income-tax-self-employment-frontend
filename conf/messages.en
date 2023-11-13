@@ -313,7 +313,7 @@ expenses.repaymentsOfLoans = repayments of loans
 
 ## Office supplies
 officeSupplies.title = Office supplies
-#officeSupplies.heading = Office supplies
+officeSupplies.heading = Office supplies
 officeSupplies.l1 = phones, including mobiles
 officeSupplies.l2 = internet, email and fax running costs
 officeSupplies.l3 = postage, stationery and printing
