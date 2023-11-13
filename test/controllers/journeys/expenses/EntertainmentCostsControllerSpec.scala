@@ -159,6 +159,8 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
             running(application) {
 
               val request =
@@ -171,11 +173,13 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
+              contentAsString(langResult) mustEqual expectedResult
             }
           }
 

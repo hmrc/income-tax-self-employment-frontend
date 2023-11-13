@@ -18,7 +18,6 @@ package controllers.journeys.income
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
-import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation._
 import pages.income.IncomeCYAPage
@@ -46,24 +45,25 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     val nextRoute = navigator
       .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
+    val userType = userType(request.user.isAgent)
 
     val summaryList = SummaryList(
       rows = Seq(
-        IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        OtherIncomeAmountSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        NotTaxableAmountSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        TradingAllowanceSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        howMuchTradingAllowanceSummaryRow(request.userAnswers, taxYear, userType(request.user.isAgent), businessId),
-        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, userType(request.user.isAgent), businessId)
+        IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, userType, businessId),
+        NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, userType, businessId),
+        TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, userType, businessId),
+        AnyOtherIncomeSummary.row(request.userAnswers, taxYear, userType, businessId),
+        OtherIncomeAmountSummary.row(request.userAnswers, taxYear, userType, businessId),
+        TurnoverNotTaxableSummary.row(request.userAnswers, taxYear, userType, businessId),
+        NotTaxableAmountSummary.row(request.userAnswers, taxYear, userType, businessId),
+        TradingAllowanceSummary.row(request.userAnswers, taxYear, userType, businessId),
+        howMuchTradingAllowanceSummaryRow(request.userAnswers, taxYear, userType, businessId),
+        TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, userType, businessId)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )
 
-    Ok(view(taxYear, summaryList, nextRoute, userType(request.user.isAgent)))
+    Ok(view(taxYear, summaryList, nextRoute, userType))
   }
 
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
