@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package models.common
+package navigation
 
-import models.common.AccountingType.{Accrual, Cash}
-import models.common.UserType.{Agent, Individual}
+import models.Mode
+import models.database.UserAnswers
+import pages.Page
+import play.api.mvc.Call
 
-object ModelUtils {
+class FakeOfficeSuppliesNavigator(desiredRoute: Call) extends OfficeSuppliesNavigator {
 
-  val individual: String = Individual.toString
-  val agent: String      = Agent.toString
-
-  val accrual: String = Accrual.toString
-  val cash: String    = Cash.toString
-
-  def userType(isAgent: Boolean): String = if (isAgent) agent else individual
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call = desiredRoute
 }
