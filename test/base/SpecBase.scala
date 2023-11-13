@@ -18,14 +18,11 @@ package base
 
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.{Language, UserType}
-import models.common.Language.{English, Welsh}
+import models.common.Language
+import models.common.Language._
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import org.joda.time.LocalDate
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -35,13 +32,10 @@ import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
-import play.twirl.api.BaseScalaTemplate
-import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
-import scala.reflect.ClassTag
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 

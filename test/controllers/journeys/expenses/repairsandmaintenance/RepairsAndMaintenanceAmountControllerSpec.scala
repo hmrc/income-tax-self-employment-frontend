@@ -32,12 +32,12 @@ import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceA
 
 class RepairsAndMaintenanceAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("RepairsAndMaintenanceAmountController", RepairsAndMaintenanceAmountPage) {
-  lazy val onPageLoadRoute = RepairsAndMaintenanceAmountController.onPageLoad(NormalMode).url
-  lazy val onSubmitRoute   = RepairsAndMaintenanceAmountController.onSubmit(NormalMode).url
+  lazy val onPageLoadRoute = RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
-  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode) => HtmlFormat.Appendable =
+  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable =
     application.injector.instanceOf[RepairsAndMaintenanceAmountView].apply _
 
 }

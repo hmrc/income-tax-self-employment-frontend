@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object RepairsAndMaintenanceCostsCYASummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(RepairsAndMaintenanceCostsCYAPage).map {
       answer =>
 
@@ -35,7 +35,7 @@ object RepairsAndMaintenanceCostsCYASummary {
           key     = "repairsAndMaintenanceCostsCYA.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.RepairsAndMaintenanceCostsCYAController.onPageLoad().url)
+            ActionItemViewModel("site.change", routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url)
               .withVisuallyHiddenText(messages("repairsAndMaintenanceCostsCYA.change.hidden"))
           )
         )

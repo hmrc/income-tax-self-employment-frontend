@@ -32,12 +32,12 @@ import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceD
 
 class RepairsAndMaintenanceDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("RepairsAndMaintenanceAmountController", RepairsAndMaintenanceDisallowableAmountPage) {
-  lazy val onPageLoadRoute = RepairsAndMaintenanceDisallowableAmountController.onPageLoad(NormalMode).url
-  lazy val onSubmitRoute   = RepairsAndMaintenanceDisallowableAmountController.onSubmit(NormalMode).url
+  lazy val onPageLoadRoute = RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
-  def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType)
+  def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType, 1000.0)
 
-  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode) => HtmlFormat.Appendable =
+  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable =
     application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView].apply _
 
 }

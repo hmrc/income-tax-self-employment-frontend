@@ -35,7 +35,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
 
   def createForm(userType: UserType): Form[BigDecimal]
 
-  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode) => HtmlFormat.Appendable
+  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable
 
   val validAnswer: BigDecimal = 100.00
   val filledUserAnswers       = UserAnswers(userAnswersId).set(page, validAnswer).success.value
@@ -60,7 +60,11 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
           running(application) {
             val result = languageAwareResult(lang, route(application, getRequest).value)
             status(result) mustEqual OK
-            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(form, NormalMode).toString
+            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(
+              form,
+              NormalMode,
+              taxYear,
+              stubbedBusinessId).toString
           }
         }
 
@@ -68,7 +72,11 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
           running(application) {
             val result = languageAwareResult(lang, route(application, getRequest).value)
             status(result) mustEqual OK
-            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(form.fill(validAnswer), NormalMode).toString
+            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(
+              form.fill(validAnswer),
+              NormalMode,
+              taxYear,
+              stubbedBusinessId).toString
           }
 
         }
@@ -89,7 +97,11 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
             val result    = languageAwareResult(lang, route(application, request).value)
             val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual renderView(request, messages(application), application)(boundForm, NormalMode).toString
+            contentAsString(result) mustEqual renderView(request, messages(application), application)(
+              boundForm,
+              NormalMode,
+              taxYear,
+              stubbedBusinessId).toString
           }
         }
 

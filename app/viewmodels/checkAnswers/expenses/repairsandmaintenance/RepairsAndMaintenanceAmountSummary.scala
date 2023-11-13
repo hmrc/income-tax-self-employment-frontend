@@ -27,17 +27,16 @@ import viewmodels.implicits._
 
 object RepairsAndMaintenanceAmountSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RepairsAndMaintenanceAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "repairsAndMaintenanceAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("repairsAndMaintenanceAmount.change.hidden"))
-          )
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(RepairsAndMaintenanceAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "repairsAndMaintenanceAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("repairsAndMaintenanceAmount.change.hidden"))
         )
+      )
     }
+
 }
