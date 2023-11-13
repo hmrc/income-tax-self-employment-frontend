@@ -31,14 +31,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
-import viewmodels.ContentStringViewModel.buildLabelHeadingWithContentString
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 import scala.concurrent.Future
@@ -51,11 +49,11 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, isDriver: TaxiMinicabOrRoadHaulage)
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, isDriver = Yes),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash, isDriver = No)
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash, taxiDriver = No)
   )
 
   "GoodsToSellOrUseAmount Controller" - {
@@ -63,20 +61,17 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isDriver.equals(Yes)) "not "
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return OK and the correct view for a GET" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -95,8 +90,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label
+                  userScenario.taxiDriver.equals(Yes)
                 )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
@@ -110,16 +104,13 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(GoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId))
               .success
               .value
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -138,8 +129,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label
+                  userScenario.taxiDriver.equals(Yes)
                 )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
@@ -197,20 +187,17 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.isDriver.equals(Yes)) "not "
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -233,8 +220,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label)(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -244,15 +230,12 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -275,8 +258,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label)(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -286,15 +268,12 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when a zero or negative number is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -317,8 +296,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label)(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -328,15 +306,12 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when amount exceeds the maximum" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.isDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val label =
-              labelContent(userType(userScenario.isAgent), isAccrual(userScenario.accountingType), userScenario.isDriver.equals(Yes))(
-                messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -359,8 +334,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   stubbedBusinessId,
                   userScenario.accountingType,
-                  userScenario.isDriver.equals(Yes),
-                  label)(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -387,43 +361,6 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
         }
       }
     }
-  }
-
-  def labelContent(userType: String, isAccrual: Boolean, isDriver: Boolean)(implicit messages: Messages): String = {
-
-    val detailsContent =
-      s"""
-               | <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-               |   <summary class="govuk-details__summary">
-               |     <span class="govuk-details__summary-text">
-               |       ${messages("goodsToSellOrUseAmount.d1.heading")}
-               |      </span>
-               |   </summary>
-               |   <div class="govuk-details__text">
-               |      <p>${messages(s"site.canInclude.$userType")}</p>
-               |      <ul class="govuk-body govuk-list--bullet">
-               |        ${if (isDriver) s"""<li>${messages("expenses.fuelCosts")}</li>""" else ""}
-               |        <li>${messages("expenses.costOfRawMaterials")}</li>
-               |        ${if (!isAccrual) s"""<li>${messages("expenses.stockBought")}</li>""" else ""}
-               |        <li>${messages("expenses.directCostsOfProducing")}</li>
-               |        ${if (isAccrual) s"""<li>${messages("expenses.adjustments")}</li>""" else ""}
-               |        <li>${messages("expenses.commissions")}</li>
-               |        <li>${messages("expenses.discounts")}</li>
-               |      </ul>
-               |      <p>${messages(s"site.cannotInclude.$userType")}</p>
-               |      <ul class="govuk-body govuk-list--bullet">
-               |        ${if (!isAccrual) s"""<li>${messages("expenses.costsForPrivateUse")}</li>""" else ""}
-               |        <li>${messages("expenses.depreciationOfEquipment")}</li>
-               |      </ul>
-               |    </div>
-               | </details>
-               |""".stripMargin
-
-    buildLabelHeadingWithContentString(
-      s"goodsToSellOrUseAmount.title.$userType",
-      detailsContent,
-      headingClasses = "govuk-label govuk-label--l"
-    )
   }
 
 }

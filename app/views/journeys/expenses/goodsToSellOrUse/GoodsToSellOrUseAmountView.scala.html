@@ -26,16 +26,7 @@
     govukButton: GovukButton
 )
 
-@(
-    form: Form[_],
-    mode: Mode,
-    userType: String,
-    taxYear: Int,
-    businessId: String,
-    accountingType: String,
-    taxiDriver: Boolean,
-    labelContent: String
-)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"goodsToSellOrUseAmount.title.$userType"))) {
 
@@ -48,7 +39,35 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(labelContent))
+                label = LabelViewModel(HtmlContent(
+                    s"""
+                    <label class="govuk-label govuk-label--l"> ${messages(s"goodsToSellOrUseAmount.title.$userType")} </label>
+                    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                         <span class="govuk-details__summary-text">
+                           ${messages("goodsToSellOrUseAmount.d1.heading")}
+                          </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p>${messages(s"site.canInclude.$userType")}</p>
+                            <ul class="govuk-body govuk-list--bullet">
+                                ${if (taxiDriver) <li>{messages("expenses.fuelCosts")}</li> else ""}
+                                <li>${messages("expenses.costOfRawMaterials")}</li>
+                                ${if (accountingType.equals("CASH")) <li>{messages("expenses.stockBought")}</li> else ""}
+                                <li>${messages("expenses.directCostsOfProducing")}</li>
+                                ${if (accountingType.equals("ACCRUAL")) <li>{messages("expenses.adjustments")}</li> else ""}
+                                <li>${messages("expenses.commissions")}</li>
+                                <li>${messages("expenses.discounts")}</li>
+                            </ul>
+                            <p>${messages(s"site.cannotInclude.$userType")}</p>
+                            <ul class="govuk-body govuk-list--bullet">
+                                ${if (accountingType.equals("CASH")) <li>{messages("expenses.costsForPrivateUse")}</li> else ""}
+                                <li>${messages("expenses.depreciationOfEquipment")}</li>
+                            </ul>
+                        </div>
+                    </details>
+                    """
+                ))
             )
             .asNumeric()
             .withWidth(Fixed10)

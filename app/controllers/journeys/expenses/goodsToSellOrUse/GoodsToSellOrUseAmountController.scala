@@ -20,19 +20,17 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
-import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
 import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.ContentStringViewModel.buildLabelHeadingWithContentString
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 import javax.inject.Inject
@@ -59,20 +57,11 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
           case None        => formProvider(user)
           case Some(value) => formProvider(user).fill(value)
         }
-        val isDriver = request.userAnswers
+        val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
-        Ok(
-          view(
-            preparedForm,
-            mode,
-            user,
-            taxYear,
-            businessId,
-            accountingType,
-            isDriver,
-            labelContent(user, accountingType.equals(Accrual.toString), isDriver)))
+        Ok(view(preparedForm, mode, user, taxYear, businessId, accountingType, taxiDriver))
     }
   }
 
@@ -81,7 +70,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
-        val isDriver = request.userAnswers
+        val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
@@ -89,18 +78,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
         form
           .bindFromRequest()
           .fold(
-            formWithErrors =>
-              Future.successful(
-                BadRequest(
-                  view(
-                    formWithErrors,
-                    mode,
-                    user,
-                    taxYear,
-                    businessId,
-                    accountingType,
-                    isDriver,
-                    labelContent(user, accountingType.equals(Accrual.toString), isDriver)))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, user, taxYear, businessId, accountingType, taxiDriver))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
@@ -109,43 +87,6 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
               } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
     }
-  }
-
-  private def labelContent(userType: String, isAccrual: Boolean, isDriver: Boolean)(implicit messages: Messages): String = {
-
-    val detailsContent =
-      s"""
-         | <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-         |   <summary class="govuk-details__summary">
-         |     <span class="govuk-details__summary-text">
-         |       ${messages("goodsToSellOrUseAmount.d1.heading")}
-         |      </span>
-         |   </summary>
-         |   <div class="govuk-details__text">
-         |      <p>${messages(s"site.canInclude.$userType")}</p>
-         |      <ul class="govuk-body govuk-list--bullet">
-         |        ${if (isDriver) s"""<li>${messages("expenses.fuelCosts")}</li>""" else ""}
-         |        <li>${messages("expenses.costOfRawMaterials")}</li>
-         |        ${if (!isAccrual) s"""<li>${messages("expenses.stockBought")}</li>""" else ""}
-         |        <li>${messages("expenses.directCostsOfProducing")}</li>
-         |        ${if (isAccrual) s"""<li>${messages("expenses.adjustments")}</li>""" else ""}
-         |        <li>${messages("expenses.commissions")}</li>
-         |        <li>${messages("expenses.discounts")}</li>
-         |      </ul>
-         |      <p>${messages(s"site.cannotInclude.$userType")}</p>
-         |      <ul class="govuk-body govuk-list--bullet">
-         |        ${if (!isAccrual) s"""<li>${messages("expenses.costsForPrivateUse")}</li>""" else ""}
-         |        <li>${messages("expenses.depreciationOfEquipment")}</li>
-         |      </ul>
-         |    </div>
-         | </details>
-         |""".stripMargin
-
-    buildLabelHeadingWithContentString(
-      s"goodsToSellOrUseAmount.title.$userType",
-      detailsContent,
-      headingClasses = "govuk-label govuk-label--l"
-    )
   }
 
 }
