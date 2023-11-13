@@ -20,12 +20,16 @@ import base.SpecBase
 import forms.expenses.TravelForWorkFormProvider
 import models.NormalMode
 import models.database.UserAnswers
+import models.journeys.expenses.TaxiMinicabOrRoadHaulage.Yes
 import models.journeys.expenses.TravelForWork
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.TravelForWorkPage
+import pages.expenses.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -42,120 +46,221 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
   lazy val travelForWorkRoute = controllers.journeys.expenses.routes.TravelForWorkController.onPageLoad(NormalMode).url
 
   val formProvider = new TravelForWorkFormProvider()
-  val form         = formProvider()
+  val taxiDriver = false
+
+  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TravelForWork])
+
+  val userScenarios = Seq(
+    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
+    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+  )
 
   "TravelForWork Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad" - {
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .build()
 
-        val result = route(application, request).value
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        val view = application.injector.instanceOf[TravelForWorkView]
+            running(application) {
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+              val request = FakeRequest(GET, travelForWorkRoute)
+
+              val view = application.injector.instanceOf[TravelForWorkView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "must populate the view correctly on a GET when the question has previously been answered" in {
+
+            val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(stubbedBusinessId)).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+
+            running(application) {
+
+              val request = FakeRequest(GET, travelForWorkRoute)
+
+              val view = application.injector.instanceOf[TravelForWorkView]
+
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult =
+                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+        }
+      }
+
+      "must return OK and the correct view for a GET when user is taxi driver" in {
+        val taxiDriver = true
+        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        running(application) {
+
+          val request = FakeRequest(GET, travelForWorkRoute)
+
+          val view = application.injector.instanceOf[TravelForWorkView]
+
+          val result = route(application, request).value
+
+          val expectedResult =
+            view(formProvider(individual), NormalMode, userType(false), taxYear, stubbedBusinessId, taxiDriver)(
+              request,
+              messages(application)).toString
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual expectedResult
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, travelForWorkRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit" - {
+      "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head).success.value
+        val mockSessionRepository = mock[SessionRepository]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
-
-        val view = application.injector.instanceOf[TravelForWorkView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TravelForWork.values.head), NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, travelForWorkRoute)
-            .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
+        running(application) {
+          val request =
+            FakeRequest(POST, travelForWorkRoute)
+              .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      userScenarios.foreach { userScenario =>
+        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          "must return a Bad Request and errors when empty data is submitted" in {
 
-      running(application) {
-        val request =
-          FakeRequest(POST, travelForWorkRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-        val view = application.injector.instanceOf[TravelForWorkView]
+            running(application) {
+              val request =
+                FakeRequest(POST, travelForWorkRoute)
+                  .withFormUrlEncodedBody(("value", ""))
 
-        val result = route(application, request).value
+              val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
+              val view = application.injector.instanceOf[TravelForWorkView]
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+              val result = route(application, request).value
 
-      val application = applicationBuilder(userAnswers = None).build()
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-      running(application) {
-        val request = FakeRequest(GET, travelForWorkRoute)
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
+                taxYear, stubbedBusinessId, taxiDriver)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
 
-        val result = route(application, request).value
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
+          "must return a Bad Request and errors when invalid data is submitted" in {
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
-      val application = applicationBuilder(userAnswers = None).build()
+            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
-      running(application) {
-        val request =
-          FakeRequest(POST, travelForWorkRoute)
-            .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
+            running(application) {
+              val request =
+                FakeRequest(POST, travelForWorkRoute)
+                  .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val result = route(application, request).value
+              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-        status(result) mustEqual SEE_OTHER
+              val view = application.injector.instanceOf[TravelForWorkView]
 
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+              val result = route(application, request).value
+
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
+                taxYear, stubbedBusinessId, taxiDriver)(
+                request,
+                messages(application, userScenario.isWelsh)).toString
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(langResult) mustEqual expectedResult
+            }
+          }
+
+          "redirect to Journey Recovery for a POST if no existing data is found" in {
+
+            val application = applicationBuilder(userAnswers = None).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, travelForWorkRoute)
+                  .withFormUrlEncodedBody(("value", TravelForWork.values.head.toString))
+
+              val result = route(application, request).value
+
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+            }
+          }
+        }
       }
     }
   }
-
 }

@@ -23,13 +23,12 @@ import forms.expenses.OtherExpensesFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.OtherExpenses
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.OtherExpensesPage
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -132,7 +131,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
@@ -177,7 +176,6 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               val request =

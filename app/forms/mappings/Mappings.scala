@@ -55,22 +55,4 @@ trait Mappings extends Formatters with Constraints {
                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-  def isBigDecimalGreaterThanZero(errorKey: String): Constraint[BigDecimal] =
-    Constraint { input: BigDecimal =>
-      if (input > 0) {
-        Valid
-      } else {
-        Invalid(errorKey, 0)
-      }
-    }
-
-  def isBigDecimalLessThanMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint { input: BigDecimal =>
-      if (maximum >= input) {
-        Valid
-      } else {
-        Invalid(errorKey, maximum)
-      }
-    }
-
 }

@@ -21,7 +21,7 @@ import forms.expenses.DisallowableProfessionalFeesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.DisallowableProfessionalFeesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,16 +32,14 @@ import views.html.journeys.expenses.DisallowableProfessionalFeesView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisallowableProfessionalFeesController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    formProvider: DisallowableProfessionalFeesFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: DisallowableProfessionalFeesView
-)(implicit ec: ExecutionContext)
+class DisallowableProfessionalFeesController @Inject() (override val messagesApi: MessagesApi,
+                                                        sessionRepository: SessionRepository,
+                                                        navigator: ExpensesTailoringNavigator,
+                                                        identify: IdentifierAction,
+                                                        getData: DataRetrievalAction,
+                                                        formProvider: DisallowableProfessionalFeesFormProvider,
+                                                        val controllerComponents: MessagesControllerComponents,
+                                                        view: DisallowableProfessionalFeesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

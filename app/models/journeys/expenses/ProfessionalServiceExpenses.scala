@@ -53,7 +53,7 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
         ).withAttribute(("data-behaviour", "exclusive"))
       case (value, index) =>
       CheckboxItemViewModel(
-        content = Text(messages(s"professionalServiceExpenses.${value.toString}${if (value.equals(No)) s".$userType" else ""}")),
+        content = Text(messages(if (value == No) "site.no" else s"professionalServiceExpenses.${value.toString}")),
         fieldId = "value",
         index = index,
         value = value.toString

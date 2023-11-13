@@ -22,7 +22,7 @@ import forms.expenses.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.ProfessionalServiceExpensesPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ class ProfessionalServiceExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     selfEmploymentService: SelfEmploymentService,
     sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
+    navigator: ExpensesTailoringNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     formProvider: ProfessionalServiceExpensesFormProvider,

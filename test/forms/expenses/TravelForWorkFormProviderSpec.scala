@@ -22,25 +22,32 @@ import play.api.data.FormError
 
 class TravelForWorkFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TravelForWorkFormProvider()()
-
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "travelForWork.error.required"
 
-    behave like optionsField[TravelForWork](
-      form,
-      fieldName,
-      validValues = TravelForWork.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new TravelForWorkFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+        behave like optionsField[TravelForWork](
+          form,
+          fieldName,
+          validValues = TravelForWork.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"travelForWork.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

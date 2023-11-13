@@ -21,7 +21,7 @@ import forms.expenses.DisallowableStaffCostsFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.DisallowableStaffCosts
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -125,13 +125,13 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
 
         running(application) {
           val request =

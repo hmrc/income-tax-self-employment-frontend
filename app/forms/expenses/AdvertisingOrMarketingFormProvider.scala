@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class AdvertisingOrMarketingFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[AdvertisingOrMarketing] =
+  def apply(userType: String): Form[AdvertisingOrMarketing] =
     Form(
-      "value" -> enumerable[AdvertisingOrMarketing]("advertisingOrMarketing.error.required")
+      "value" -> enumerable[AdvertisingOrMarketing](s"advertisingOrMarketing.error.required.$userType")
     )
 
 }

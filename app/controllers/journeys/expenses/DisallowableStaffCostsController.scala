@@ -21,7 +21,7 @@ import forms.expenses.DisallowableStaffCostsFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.DisallowableStaffCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,16 +32,14 @@ import views.html.journeys.expenses.DisallowableStaffCostsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisallowableStaffCostsController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    formProvider: DisallowableStaffCostsFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: DisallowableStaffCostsView
-)(implicit ec: ExecutionContext)
+class DisallowableStaffCostsController @Inject() (override val messagesApi: MessagesApi,
+                                                  sessionRepository: SessionRepository,
+                                                  navigator: ExpensesTailoringNavigator,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  formProvider: DisallowableStaffCostsFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: DisallowableStaffCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.expenses
+package models.journeys.expenses
 
 import models.journeys.expenses.DisallowableIrrecoverableDebts
 import org.scalacheck.Arbitrary.arbitrary

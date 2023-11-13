@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ExpensesNavigator @Inject() () {
+class ExpensesNavigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = { case _ =>
     _ => JourneyRecoveryController.onPageLoad()

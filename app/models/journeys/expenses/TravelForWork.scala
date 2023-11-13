@@ -25,18 +25,20 @@ sealed trait TravelForWork
 
 object TravelForWork extends Enumerable.Implicits {
 
-  case object Yesallowable    extends WithName("yes.allowable") with TravelForWork
-  case object Yesdisallowable extends WithName("yes.disallowable") with TravelForWork
+  case object YesAllowable    extends WithName("yesAllowable") with TravelForWork
+  case object YesDisallowable extends WithName("yesDisallowable") with TravelForWork
   case object No              extends WithName("no") with TravelForWork
 
   val values: Seq[TravelForWork] = Seq(
-    Yesallowable,
-    Yesdisallowable
+    YesAllowable,
+    YesDisallowable,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+  def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(s"travelForWork.${value.toString}")),
+//      Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}")),
+      content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}.$userType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )

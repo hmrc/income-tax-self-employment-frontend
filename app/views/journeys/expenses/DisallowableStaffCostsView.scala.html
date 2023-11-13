@@ -38,11 +38,15 @@
 
         <div class="govuk-body govuk-!-margin-top-6">
             <p>
-            @messages(s"disallowableStaffCosts.p1")
+            @messages(s"site.theseInclude")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
-                <li>@messages("disallowableStaffCosts.l2")</li>
+                @if(authUserType.equals("INDIVIDUAL")){
+                    <li>@messages("common.expenses.NI.contribution")</li>
+                } else {
+                    <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
+                }
+                <li>@messages("common.expenses.listItem.anyAmount")</li>
             </ul>
         </div>
 
@@ -52,7 +56,8 @@
             @govukRadios(
                 RadiosViewModel(
                     field = form("value"),
-                    legend = LegendViewModel(messages(s"disallowableStaffCosts.subheading.$authUserType"))
+                    legend = LegendViewModel(messages(
+                        s"disallowableStaffCosts.subheading.$authUserType"))
                                     .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                     items = DisallowableStaffCosts.options
                 )
