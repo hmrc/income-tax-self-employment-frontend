@@ -24,12 +24,12 @@ import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 import javax.inject.Inject
 
-class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesApi,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: OfficeSuppliesCYAView)
+class OfficeSuppliesCYAController @Inject()(override val messagesApi: MessagesApi,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: OfficeSuppliesCYAView)
     extends FrontendBaseController
     with I18nSupport {
 
