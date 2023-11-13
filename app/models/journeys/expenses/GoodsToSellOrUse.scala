@@ -25,9 +25,9 @@ sealed trait GoodsToSellOrUse
 
 object GoodsToSellOrUse extends Enumerable.Implicits {
 
-  case object YesAllowable extends WithName("yesAllowable") with GoodsToSellOrUse
+  case object YesAllowable    extends WithName("yesAllowable") with GoodsToSellOrUse
   case object YesDisallowable extends WithName("yesDisallowable") with GoodsToSellOrUse
-  case object No extends WithName("no") with GoodsToSellOrUse
+  case object No              extends WithName("no") with GoodsToSellOrUse
 
   val values: Seq[GoodsToSellOrUse] = Seq(
     YesAllowable,
@@ -35,14 +35,13 @@ object GoodsToSellOrUse extends Enumerable.Implicits {
     No
   )
 
-  def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      val optUserType = if (value.equals(No)) "" else s".$userType"
-      RadioItem(
-        content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}")),
-        value = Some(value.toString),
-        id = Some(s"value_$index")
-      )
+  def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    val optUserType = if (value.equals(No)) "" else s".$userType"
+    RadioItem(
+      content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}$optUserType")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[GoodsToSellOrUse] =

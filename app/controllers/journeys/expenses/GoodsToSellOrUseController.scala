@@ -23,7 +23,7 @@ import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesApi,
                                             selfEmploymentService: SelfEmploymentService,
                                             sessionRepository: SessionRepository,
-                                            navigator: ExpensesNavigator,
+                                            navigator: ExpensesTailoringNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
@@ -50,38 +50,44 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport {
 
   val businessId = "SJPR05893938418"
-  val taxYear = LocalDate.now.getYear
+  val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
         val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUsePage, Some(businessId)) match {
-          case None => formProvider(userType(request.user.isAgent))
+          case None        => formProvider(userType(request.user.isAgent))
           case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
-        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        val taxiDriver = request.userAnswers
+          .getOrElse(UserAnswers(request.userId))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))
     }
   }
+
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
-        val taxiDriver = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        val taxiDriver = request.userAnswers
+          .getOrElse(UserAnswers(request.userId))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         val form = formProvider(userType(request.user.isAgent))
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(
-              BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))),
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUsePage, value, Some(businessId)))
-                _              <- sessionRepository.set(updatedAnswers)
+                _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updatedAnswers))
           )
     }

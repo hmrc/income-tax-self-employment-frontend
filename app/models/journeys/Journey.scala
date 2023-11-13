@@ -26,7 +26,8 @@ object Journey {
     case JsString("trade-details") => JsSuccess(TradeDetails)
     case JsString("self-employment-abroad") => JsSuccess(Abroad)
     case JsString("income") => JsSuccess(Income)
-    case JsString("expenses") => JsSuccess(Expenses)
+    case JsString("expenses-tailoring") => JsSuccess(ExpensesTailoring)
+    case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
     case JsString("national-insurance") => JsSuccess(NationalInsurance)
     case _ => JsError("Parsing error")
   }
@@ -50,8 +51,12 @@ case object Income extends Journey {
   override def toString: String = "income"
 }
 
-case object Expenses extends Journey {
-  override def toString: String = "expenses"
+case object ExpensesTailoring extends Journey {
+  override def toString: String = "expenses-tailoring"
+}
+
+case object ExpensesGoodsToSellOrUse extends Journey {
+  override def toString: String = "expenses-goods-to-sell-or-use"
 }
 
 case object NationalInsurance extends Journey {

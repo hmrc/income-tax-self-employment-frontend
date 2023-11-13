@@ -16,7 +16,7 @@
 
 package builders
 
-import models.journeys.{Abroad, Expenses, Income, NationalInsurance}
+import models.journeys.{Abroad, ExpensesGoodsToSellOrUse, ExpensesTailoring, Income, NationalInsurance}
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
 
@@ -25,7 +25,8 @@ object TradesJourneyStatusesBuilder {
   val aTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
     JourneyStatus(Abroad, Some(true)),
     JourneyStatus(Income, Some(false)),
-    JourneyStatus(Expenses, None),
+    JourneyStatus(ExpensesTailoring, None),
+    JourneyStatus(ExpensesGoodsToSellOrUse, None),
     JourneyStatus(NationalInsurance, None)
   ))
 

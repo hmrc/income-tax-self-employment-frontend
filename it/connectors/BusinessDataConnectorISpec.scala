@@ -189,7 +189,8 @@ class BusinessDataConnectorISpec extends WiremockSpec {
       TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
         JourneyStatus(Abroad, Some(true)),
         JourneyStatus(Income, Some(false)),
-        JourneyStatus(Expenses, None),
+        JourneyStatus(ExpensesTailoring, None),
+        JourneyStatus(ExpensesGoodsToSellOrUse, None),
         JourneyStatus(NationalInsurance, None)
       )),
       TradesJourneyStatuses("BusinessId2", None, Seq.empty)

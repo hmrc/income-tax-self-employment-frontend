@@ -24,7 +24,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.GoodsToSellOrUse
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage.Yes
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -182,7 +182,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
               bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )

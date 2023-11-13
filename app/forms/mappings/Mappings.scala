@@ -19,7 +19,6 @@ package forms.mappings
 import models.common.Enumerable
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 
@@ -54,32 +53,5 @@ trait Mappings extends Formatters with Constraints {
                           requiredKey: String,
                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
-
-  def isBigDecimalGreaterThanZero(errorKey: String): Constraint[BigDecimal] =
-    Constraint { input: BigDecimal =>
-      if (input > 0) {
-        Valid
-      } else {
-        Invalid(errorKey, 0)
-      }
-    }
-
-  def isBigDecimalLessThanOrEqualToMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint { input: BigDecimal =>
-      if (maximum >= input) {
-        Valid
-      } else {
-        Invalid(errorKey, maximum)
-      }
-    }
-
-  def isBigDecimalLessThanMax(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint { input: BigDecimal =>
-      if (maximum > input) {
-        Valid
-      } else {
-        Invalid(errorKey, maximum)
-      }
-    }
 
 }
