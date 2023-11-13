@@ -24,11 +24,11 @@ import javax.inject.Inject
 
 class GoodsToSellOrUseAmountFormProvider @Inject() () extends Mappings with MoneyBounds {
 
-  def apply(): Form[BigDecimal] =
+  def apply(userType: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal("goodsToSellOrUseAmount.error.required", "goodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(greaterThan(minimumValue, "goodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "goodsToSellOrUseAmount.error.overMax"))
+      "value" -> bigDecimal(s"goodsToSellOrUseAmount.error.required.$userType", s"goodsToSellOrUseAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"goodsToSellOrUseAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"goodsToSellOrUseAmount.error.overMax.$userType"))
     )
 
 }

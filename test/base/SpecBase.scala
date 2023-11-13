@@ -61,6 +61,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   protected def isAgent(authUserType: String): Boolean = authUserType.equals(agent)
 
+  protected def isAccrual(accountingType: String) = accountingType.equals(accrual)
+
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
     val fakeIdentifierAction = {
       if (isAgent) {

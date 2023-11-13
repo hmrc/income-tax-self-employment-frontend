@@ -35,9 +35,10 @@ object TravelForWork extends Enumerable.Implicits {
     No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+  def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}")),
+//      Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}")),
+      content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}.$userType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
