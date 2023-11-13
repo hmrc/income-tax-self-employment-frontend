@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package forms.expenses.goodsToSellOrUse
+package models.common
 
-import forms.mappings.Mappings
-import models.common.MoneyBounds
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class GoodsToSellOrUseAmountFormProvider @Inject() () extends Mappings with MoneyBounds {
-
-  def apply(): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal("goodsToSellOrUseAmount.error.required", "goodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(greaterThan(minimumValue, "goodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "goodsToSellOrUseAmount.error.overMax"))
-    )
+trait MoneyBounds {
+  final val minimumValue: BigDecimal = BigDecimal(0)
+  final val maximumValue: BigDecimal = BigDecimal(100000000000.00)
 
 }
