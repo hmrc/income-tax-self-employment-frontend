@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.officeSupplies
+package controllers.journeys.expenses.repairsandmaintenance
 
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
+import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
 
 import javax.inject.Inject
 
-class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesApi,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: OfficeSuppliesCYAView)
-    extends FrontendBaseController
+class RepairsAndMaintenanceCostsCYAController @Inject() (
+    override val messagesApi: MessagesApi,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: RepairsAndMaintenanceCostsCYAView
+) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     Ok(view())
   }
 

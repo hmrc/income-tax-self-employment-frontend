@@ -233,3 +233,18 @@ GET         /expenses/change-total-expenses                                     
 POST        /expenses/change-total-expenses                                                  controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(mode: Mode = CheckMode)
 
 GET         /expenses/simplified-expenses/check-answers                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesCYAController.onPageLoad()
+
+
+########## Expenses - Repairs and Maintenance ##########
+
+GET        /repairsAndMaintenanceAmount                                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /repairsAndMaintenanceAmount                                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /changeRepairsAndMaintenanceAmount                                       controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeRepairsAndMaintenanceAmount                                       controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /repairsAndMaintenanceDisallowableAmount                                 controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /repairsAndMaintenanceDisallowableAmount                                 controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /changeRepairsAndMaintenanceDisallowableAmount                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeRepairsAndMaintenanceDisallowableAmount                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /repairsAndMaintenanceCostsCYA                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad()
