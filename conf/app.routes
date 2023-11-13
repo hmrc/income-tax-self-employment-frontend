@@ -224,3 +224,12 @@ GET         /:taxYear/:businessId/expenses/change-goods-sell-use/disallowable-am
 POST        /:taxYear/:businessId/expenses/change-goods-sell-use/disallowable-amount            controllers.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/goods-sell-use/check                                 controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAController.onPageLoad(taxYear: Int, businessId: String)
+
+########## Expenses - Single Amount ##########
+
+GET        /expenses/simplified-expenses/single-figure-input                                    controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses/simplified-expenses/single-figure-input                                    controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses/change-simplified-expenses/single-figure-input                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses/change-simplified-expenses/single-figure-input                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /expenses/simplified-expenses/check-answers                                          controllers.journeys.expenses.simplifiedExpenses.TotalExpensesCYAController.onPageLoad()
