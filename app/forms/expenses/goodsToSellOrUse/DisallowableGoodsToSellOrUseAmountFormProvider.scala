@@ -17,17 +17,18 @@
 package forms.expenses.goodsToSellOrUse
 
 import forms.mappings.Mappings
+import models.common.MoneyBounds
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings {
+class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal("disallowableGoodsToSellOrUseAmount.error.required", "disallowableGoodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(isBigDecimalGreaterThanZero("disallowableGoodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(isBigDecimalLessThanMax(100000000000.00, "disallowableGoodsToSellOrUseAmount.error.overMax"))
+        .verifying(greaterThan(minimumValue, "disallowableGoodsToSellOrUseAmount.error.lessThanZero"))
+        .verifying(lessThan(maximumValue, "disallowableGoodsToSellOrUseAmount.error.overMax"))
     )
 
 }

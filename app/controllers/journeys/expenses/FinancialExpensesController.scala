@@ -22,7 +22,7 @@ import forms.expenses.FinancialExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.FinancialExpensesPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
-                                             navigator: ExpensesNavigator,
+                                             navigator: ExpensesTailoringNavigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
@@ -61,7 +61,15 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
 
-        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContent(userType(request.user.isAgent))))
+        Ok(
+          view(
+            preparedForm,
+            mode,
+            userType(request.user.isAgent),
+            taxYear,
+            businessId,
+            accountingType,
+            legendContent(userType(request.user.isAgent))))
     }
   }
 
@@ -74,7 +82,15 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, legendContent(userType(request.user.isAgent))))),
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    mode,
+                    userType(request.user.isAgent),
+                    taxYear,
+                    businessId,
+                    accountingType,
+                    legendContent(userType(request.user.isAgent))))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
