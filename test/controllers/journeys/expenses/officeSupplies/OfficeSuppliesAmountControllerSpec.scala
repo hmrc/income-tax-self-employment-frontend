@@ -21,16 +21,18 @@ import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountC
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
+import models.errors.{HttpError, HttpErrorBody}
 import navigation.{FakeOfficeSuppliesNavigator, OfficeSuppliesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
+import play.api.Application
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -42,133 +44,171 @@ import scala.concurrent.Future
 class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new OfficeSuppliesAmountFormProvider()
-  private val businessId   = "some_id"
 
-  private val validAnswer: BigDecimal                = 100.00
+  private val businessId  = "some_id"
+  private val validAnswer = BigDecimal(100.00)
+
   private val onwardRoute                            = Call("GET", "/foo")
   private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
-  private val mockSessionRepository                  = mock[SessionRepository]
-  private val mockSelfEmploymentService              = mock[SelfEmploymentService]
+
+  private val mockSessionRepository     = mock[SessionRepository]
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(isWelsh: Boolean, authUser: String, form: Form[BigDecimal])
 
   private val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUser = individual, formProvider(individual)),
-    UserScenario(isWelsh = false, authUser = agent, formProvider(agent))
+    UserScenario(isWelsh = false, authUser = individual, form = formProvider(individual)),
+    UserScenario(isWelsh = false, authUser = agent, form = formProvider(agent))
   )
+
+  private val someHttpError = HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason"))
+
+  private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
+    val isAgent = authUser match {
+      case "individual" => false
+      case "agent"      => true
+    }
+    applicationBuilder(userAnswers, isAgent)
+      .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
+      .build()
+  }
 
   "OfficeSuppliesAmountController" - {
     userScenarios.foreach { userScenario =>
       s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
         "when loading a page" - {
-          "must return OK and the correct view for a GET" in {
-            val application = applicationBuilder(Some(emptyUserAnswers), isAgent(userScenario.authUser))
-              .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
-              .build()
+          "when an accounting type is returned by the service" - {
+            "must return OK and the correct view" in {
+              val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
 
-            running(application) {
-              when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+              running(application) {
+                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
-              val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
+                val result                                                = route(application, request).value
+                val langResult                                            = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              status(langResult) mustEqual OK
+                status(langResult) mustEqual OK
 
-              contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
-                request,
-                messages(application)).toString
+                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                  request,
+                  messages(application)).toString
+              }
+            }
+
+            "must populate the view correctly when the question has previously been answered" in {
+              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
+
+              val application = buildApplication(Some(userAnswers), userScenario.authUser)
+
+              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+
+              running(application) {
+                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+
+                val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
+                val result     = route(application, request).value
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+                status(langResult) mustEqual OK
+
+                contentAsString(langResult) mustEqual view(
+                  userScenario.form.fill(validAnswer),
+                  NormalMode,
+                  userScenario.authUser,
+                  accrual,
+                  taxYear,
+                  businessId)(request, messages(application)).toString
+              }
+            }
+          }
+          "when no accounting type is returned by the service" - {
+            "must redirect to the journey recovery controller" in {
+              val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+
+              running(application) {
+                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Left(someHttpError))
+
+                val request = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
+                val result  = route(application, request).value
+
+                status(result) mustEqual 303
+              }
             }
           }
 
-          "must populate the view correctly on a GET when the question has previously been answered" in {
-            val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
+          "when submitting a page" - {
+            "when an accounting type is returned by the service" - {
+              "must redirect to the next page when valid data is submitted" in {
+                when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
 
-            val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser))
-              .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
-              .build()
+                val application =
+                  applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
+                    .overrides(
+                      bind[OfficeSuppliesNavigator].toInstance(new FakeOfficeSuppliesNavigator(onwardRoute)),
+                      bind[SessionRepository].toInstance(mockSessionRepository),
+                      bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+                    )
+                    .build()
 
-            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+                running(application) {
+                  val request = FakeRequest(POST, officeSuppliesAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+                  val result  = route(application, request).value
 
-            running(application) {
-              when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                  status(result) mustEqual SEE_OTHER
+                  redirectLocation(result).value mustEqual onwardRoute.url
+                }
+              }
 
-              val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              "must return a Bad Request and errors when invalid data is submitted" in {
+                val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-              status(langResult) mustEqual OK
-              contentAsString(langResult) mustEqual view(
-                userScenario.form.fill(validAnswer),
-                NormalMode,
-                userScenario.authUser,
-                accrual,
-                taxYear,
-                businessId)(request, messages(application)).toString
+                val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+                implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+
+                running(application) {
+                  when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+
+                  val request = FakeRequest(POST, officeSuppliesAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
+
+                  val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+
+                  val result     = route(application, request).value
+                  val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+                  status(langResult) mustEqual BAD_REQUEST
+                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                    request,
+                    messages(application)).toString
+                }
+              }
             }
-          }
-        }
+            "when no accounting type is returned by the service" - {
+              "must redirect to the journey recovery controller" in {
+                val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-        "when submitting a page" - {
-          "must redirect to the next page when valid data is submitted" in {
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                running(application) {
+                  when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Left(someHttpError))
 
-            val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
-                .overrides(
-                  bind[OfficeSuppliesNavigator].toInstance(new FakeOfficeSuppliesNavigator(onwardRoute)),
-                  bind[SessionRepository].toInstance(mockSessionRepository),
-                  bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
-                )
-                .build()
+                  val request = FakeRequest(POST, officeSuppliesAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+                  val result  = route(application, request).value
 
-            running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual onwardRoute.url
+                  status(result) mustEqual 303
+                }
+              }
             }
-          }
 
-          "must return a Bad Request and errors when invalid data is submitted" in {
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
-              .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
-              .build()
-
-            val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
-            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-
-            running(application) {
-              when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
-
-              val request =
-                FakeRequest(POST, officeSuppliesAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
-
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
-              status(langResult) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
-                request,
-                messages(application)).toString
-            }
           }
         }
       }
     }
+
   }
 
 }

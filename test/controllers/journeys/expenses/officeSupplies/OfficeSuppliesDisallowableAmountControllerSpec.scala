@@ -73,59 +73,66 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
     userScenarios.foreach { userScenario =>
       s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
         "when loading a page" - {
-          "must return OK and the correct view for a GET" in {
-            val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
+          "when office supplies allowable amount has been provided in the previous question" - {
+            "must return OK and the correct view" in {
+              val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
 
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+              implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
-            running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              running(application) {
+                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result     = route(application, request).value
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              status(langResult) mustEqual OK
+                status(langResult) mustEqual OK
 
-              contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, taxYear, businessId, userScenario.authUser, allowableAmount)(
-                request,
-                messages(application)).toString
+                contentAsString(langResult) mustEqual view(
+                  userScenario.form,
+                  NormalMode,
+                  taxYear,
+                  businessId,
+                  userScenario.authUser,
+                  allowableAmount)(request, messages(application)).toString
+              }
+            }
+
+            "must populate the view correctly when the question has already been answered" in {
+              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
+
+              val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
+
+              implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+
+              running(application) {
+                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result     = route(application, request).value
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+                status(langResult) mustEqual OK
+
+                contentAsString(langResult) mustEqual view(
+                  userScenario.form.fill(validAnswer),
+                  NormalMode,
+                  taxYear,
+                  businessId,
+                  userScenario.authUser,
+                  allowableAmount)(request, messages(application)).toString
+              }
             }
           }
+          "when the allowable amount of office supplies has not been provided" - {
+            "must redirect to Journey Recovery if no existing data is found" in {
+              val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
 
-          "must populate the view correctly on a GET when the question has already been answered" in {
-            val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
+              running(application) {
+                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result  = route(application, request).value
 
-            val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
-
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-
-            running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
-              status(langResult) mustEqual OK
-
-              contentAsString(langResult) mustEqual view(
-                userScenario.form.fill(validAnswer),
-                NormalMode,
-                taxYear,
-                businessId,
-                userScenario.authUser,
-                allowableAmount)(request, messages(application)).toString
-            }
-          }
-          "must redirect to Journey Recovery for a GET if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
-
-            running(application) {
-              val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+                status(result) mustEqual SEE_OTHER
+                redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+              }
             }
           }
         }
@@ -143,11 +150,8 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 .build()
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-              val result = route(application, request).value
+              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
               redirectLocation(result).value mustEqual onwardRoute.url
@@ -161,12 +165,8 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
-
+              val request    = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
+              val boundForm  = userScenario.form.bind(Map("value" -> "invalid value"))
               val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
@@ -178,15 +178,12 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             }
           }
 
-          "must redirect to Journey Recovery for a POST if no existing data is found" in {
+          "must redirect to Journey Recovery if no existing data is found" in {
             val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-              val result = route(application, request).value
+              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
               redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
