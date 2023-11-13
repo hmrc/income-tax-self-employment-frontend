@@ -16,31 +16,14 @@
 
 package navigation
 
-import controllers.standard.routes._
-import models._
+import models.Mode
 import models.database.UserAnswers
 import pages._
 import play.api.mvc.Call
 
-import javax.inject.{Inject, Singleton}
+class FakeExpensesTailoringNavigator(desiredRoute: Call) extends ExpensesTailoringNavigator {
 
-@Singleton
-class ExpensesNavigator @Inject()() {
-
-  private val normalRoutes: Page => UserAnswers => Call = { case _ =>
-    _ => JourneyRecoveryController.onPageLoad()
-  }
-
-  private val checkRouteMap: Page => UserAnswers => Call = { case _ =>
-    _ => JourneyRecoveryController.onPageLoad()
-  }
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    mode match {
-      case NormalMode =>
-        normalRoutes(page)(userAnswers)
-      case CheckMode =>
-        checkRouteMap(page)(userAnswers)
-    }
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    desiredRoute
 
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.EntertainmentCostsFormProvider
 import models.Mode
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.EntertainmentCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,16 +31,14 @@ import views.html.journeys.expenses.EntertainmentCostsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EntertainmentCostsController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    formProvider: EntertainmentCostsFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: EntertainmentCostsView
-)(implicit ec: ExecutionContext)
+class EntertainmentCostsController @Inject() (override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              navigator: ExpensesTailoringNavigator,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalAction,
+                                              formProvider: EntertainmentCostsFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: EntertainmentCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
