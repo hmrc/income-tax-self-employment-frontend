@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package forms.expenses
+package models.common
 
-import forms.mappings.Mappings
-import models.journeys.expenses.TravelForWork
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class TravelForWorkFormProvider @Inject() extends Mappings {
-
-  def apply(userType: String): Form[TravelForWork] =
-    Form(
-      "value" -> enumerable[TravelForWork](s"travelForWork.error.required.$userType")
-    )
+trait MoneyBounds {
+  final val minimumValue: BigDecimal = BigDecimal(0)
+  final val maximumValue: BigDecimal = BigDecimal(100000000000.00)
 
 }

@@ -26,10 +26,4 @@ object ContentStringViewModel {
       s"<div class='govuk-hint $hintExtraClasses'> ${messages(hintText)} </div> </div>"
   }
 
-  def buildLabelHeadingWithContentString(headingText: String, otherContent: String, headingClasses: String = "")(implicit
-      messages: Messages): String = {
-    s"<label class='$headingClasses'> ${messages(headingText)} </label>" +
-      otherContent
-  }
-
 }

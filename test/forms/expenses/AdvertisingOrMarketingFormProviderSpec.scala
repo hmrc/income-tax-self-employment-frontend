@@ -22,25 +22,32 @@ import play.api.data.FormError
 
 class AdvertisingOrMarketingFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new AdvertisingOrMarketingFormProvider()()
-
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "advertisingOrMarketing.error.required"
 
-    behave like optionsField[AdvertisingOrMarketing](
-      form,
-      fieldName,
-      validValues = AdvertisingOrMarketing.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    case class UserScenario(user: String)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+
+    userScenarios.foreach { userScenario =>
+      val form = new AdvertisingOrMarketingFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+        behave like optionsField[AdvertisingOrMarketing](
+          form,
+          fieldName,
+          validValues = AdvertisingOrMarketing.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"advertisingOrMarketing.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

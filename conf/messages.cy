@@ -19,6 +19,7 @@ site.canInclude.agent = Your client can include:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
 site.theseInclude = These include:
+site.theyInclude = They include:
 site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
@@ -73,6 +74,7 @@ common.checkYourDetails.title.individual = Check your details
 common.checkYourDetails.heading.agent = Check your client’s details
 common.checkYourDetails.heading.individual = Check your details
 
+common.expenses.listItem.anyAmount = any amounts that cover personal use
 
 index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -327,8 +329,7 @@ officeSupplies.l3 = postage, stationery and printing
 officeSupplies.l4 = small office equipment
 officeSupplies.l5 = computer software costs
 officeSupplies.l6 = equipment and computer hardware
-officeSupplies.l7 = any amounts that cover personal use
-officeSupplies.l8 = new phones or computer hardware
+officeSupplies.l7 = new phones or computer hardware
 officeSupplies.question.individual = Did you buy any office supplies?
 officeSupplies.question.agent = Did your client buy any office supplies?
 officeSupplies.checkYourAnswersLabel = Office supplies
@@ -388,24 +389,48 @@ workFromBusinessPremises.error.required.agent = Select if all your client’s bu
 workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 
 ## Travel and accommodation for work
-travelForWork.title = Travel for work and accommodation
-travelForWork.heading = Travel for work and accommodation
+travelForWork.title = Travel and accommodation for work
+travelForWork.heading = Travel and accommodation for work
+travelForWork.l1.individual = your own vehicles
+travelForWork.l1.agent = your client’s own vehicles
+travelForWork.l2 = leased vehicles
+travelForWork.l3 = public transport
+travelForWork.l4 = air and taxi fares
+travelForWork.l5 = hotel room costs
+travelForWork.l6 = meals on overnight work trips
+travelForWork.insetText = This does not include your fuel costs for taxi, minicab or road haulage industry driver work.
+travelForWork.question.individual = Did you travel for work?
+travelForWork.question.agent = Did your client travel for work?
 travelForWork.checkYourAnswersLabel = Travel for work and accommodation
-travelForWork.error.required = Select travelForWork
+travelForWork.error.required.individual = Select if all your travel expenses are allowable, some of them are disallowable or you do not have any travel expenses
+travelForWork.error.required.agent = Select if all your client’s travel expenses are allowable, some of them are disallowable or they do not have any travel expenses
 travelForWork.change.hidden = TravelForWork
 
 ## Advertising or marketing
 advertisingOrMarketing.title = Advertising or marketing
 advertisingOrMarketing.heading = Advertising or marketing
+advertisingOrMarketing.l1 = advertising in newspapers and directories
+advertisingOrMarketing.l2 = mailshots
+advertisingOrMarketing.l3 = the cost of providing free samples
+advertisingOrMarketing.l4 = website costs
+advertisingOrMarketing.question.individual = Did you spend anything on advertising or marketing?
+advertisingOrMarketing.question.agent = Did your client spend anything on advertising or marketing?
 advertisingOrMarketing.checkYourAnswersLabel = Advertising or marketing
-advertisingOrMarketing.error.required = Select advertisingOrMarketing
+advertisingOrMarketing.error.required.individual = Select if all your advertising or marketing expenses are allowable, some of them are disallowable or you do not have any advertising or marketing expenses
+advertisingOrMarketing.error.required.agent = Select if all your client’s advertising or marketing expenses are allowable, some of them are disallowable or they do not have any advertising or marketing expenses
 advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
 
 ## Entertainment costs
 entertainmentCosts.title = Entertainment costs
 entertainmentCosts.heading = Entertainment costs
+entertainmentCosts.para = These are disallowable expenses, but you still need to tell us about them.
+entertainmentCosts.l1 = entertaining clients, suppliers and customers
+entertainmentCosts.l2 = hospitality at events
+entertainmentCosts.question.individual = Did you spend anything on entertainment costs?
+entertainmentCosts.question.agent = Did your client spend anything on entertainment costs?
 entertainmentCosts.checkYourAnswersLabel = Entertainment costs
-entertainmentCosts.error.required = Select entertainmentCosts
+entertainmentCosts.error.required.individual = Select yes if you spent anything on entertainment costs
+entertainmentCosts.error.required.agent = Select yes if your client spent anything on entertainment costs
 entertainmentCosts.change.hidden = EntertainmentCosts
 
 ## Staff, construction industry and professional services

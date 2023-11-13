@@ -47,7 +47,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
 
     val summaryList = SummaryList(
       rows = Seq(
-        GoodsToSellOrUseAmountSummary.row(request.userAnswers, userType(request.user.isAgent), taxYear, businessId),
+        GoodsToSellOrUseAmountSummary.row(request.userAnswers, userType(request.user.isAgent), taxYear, businessId)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )

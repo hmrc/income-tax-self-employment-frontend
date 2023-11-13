@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
@@ -44,36 +45,39 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val goodsAmount = request.userAnswers
-        .get(GoodsToSellOrUseAmountPage, Some(businessId))
-        .getOrElse(BigDecimal(1000.50)) // TODO change this default
-      val preparedForm =
-        request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
-          case None        => formProvider(userType(request.user.isAgent), goodsAmount)
-          case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
-        }
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Some(goodsAmount) =>
+          val preparedForm =
+            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
+              case None        => formProvider(userType(request.user.isAgent), goodsAmount)
+              case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
+            }
 
-      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))
+          Future.successful(Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount))))
+      }
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val goodsAmount = request.userAnswers
-        .get(GoodsToSellOrUseAmountPage, Some(businessId))
-        .getOrElse(BigDecimal(1000.50))
-      formProvider(userType(request.user.isAgent), goodsAmount)
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Some(goodsAmount) =>
+          formProvider(userType(request.user.isAgent), goodsAmount)
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+            )
+      }
   }
 
 }

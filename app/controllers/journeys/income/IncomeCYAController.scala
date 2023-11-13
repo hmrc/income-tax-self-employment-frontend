@@ -20,7 +20,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.NormalMode
 import models.common.ModelUtils.userType
 import models.database.UserAnswers
-import models.requests.DataRequest
 import navigation._
 import pages.income.IncomeCYAPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
