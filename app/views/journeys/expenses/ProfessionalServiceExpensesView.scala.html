@@ -26,7 +26,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, legendContent: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, legendContent: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
@@ -100,7 +100,9 @@
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("professionalServiceExpenses.d3.l6")</li>
-                    <li>@messages("professionalServiceExpenses.d3.l7")</li>
+                        @if(accountingType.equals("ACCRUAL")){
+                            <li>@messages("professionalServiceExpenses.d3.l7")</li>
+                        }
                     <li>@messages("professionalServiceExpenses.d3.l8")</li>
                     <li>@messages("professionalServiceExpenses.d3.l9")</li>
                 </ul>

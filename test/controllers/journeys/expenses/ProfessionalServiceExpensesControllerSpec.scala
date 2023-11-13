@@ -22,7 +22,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.ProfessionalServiceExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.ProfessionalServiceExpensesPage
@@ -65,9 +65,9 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
   "ProfessionalServiceExpenses Controller" - {
 
     "onPageLoad" - {
+
       userScenarios.foreach { userScenario =>
         s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
-
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
@@ -77,6 +77,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -85,7 +86,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, legendContent)(
+                view(userScenario.form, NormalMode, userScenario.userType, userScenario.accountingType, legendContent)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -108,6 +109,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
@@ -118,6 +121,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
                 NormalMode,
                 userScenario.userType,
+                userScenario.accountingType,
                 legendContent)(request, messages(application)).toString
 
               status(result) mustEqual OK
@@ -154,11 +158,14 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
               bind[SessionRepository].toInstance(mockSessionRepository)
             )
             .build()
 
         running(application) {
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)
               .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
@@ -173,8 +180,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
       userScenarios.foreach { userScenario =>
         s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
 
-          //        "must return a Bad Request and errors when an empty form is submitted" in {
-
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
@@ -183,6 +188,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+
               val request =
                 FakeRequest(POST, professionalServiceExpensesRoute)
                   .withFormUrlEncodedBody(("value", "invalid value"))
@@ -193,7 +200,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userScenario.userType, legendContent)(request, messages(application)).toString
+              val expectedResult = view(boundForm, NormalMode, userScenario.userType,
+                userScenario.accountingType, legendContent)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

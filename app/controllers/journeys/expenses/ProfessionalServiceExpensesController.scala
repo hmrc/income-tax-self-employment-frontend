@@ -17,6 +17,7 @@
 package controllers.journeys.expenses
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
@@ -26,6 +27,7 @@ import pages.expenses.ProfessionalServiceExpensesPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.ProfessionalServiceExpensesView
@@ -35,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ProfessionalServiceExpensesController @Inject() (
     override val messagesApi: MessagesApi,
+    selfEmploymentService: SelfEmploymentService,
     sessionRepository: SessionRepository,
     navigator: ExpensesNavigator,
     identify: IdentifierAction,
@@ -48,29 +51,36 @@ class ProfessionalServiceExpensesController @Inject() (
 
   val businessId = "SJPR05893938418"
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+      case Right(accountingType) =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(ProfessionalServiceExpensesPage, Some(businessId)) match {
-      case None        => formProvider(userType(request.user.isAgent))
+      case None => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)
       ).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent),legendContent(userType(request.user.isAgent))))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), accountingType, legendContent(userType(request.user.isAgent))))
   }
+}
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+      case Right(accountingType) =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent),  accountingType,
           legendContent(userType(request.user.isAgent))))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(ProfessionalServiceExpensesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers))
       )
+  }
   }
 
   private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
