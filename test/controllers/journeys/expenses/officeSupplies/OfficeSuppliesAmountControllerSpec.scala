@@ -23,7 +23,7 @@ import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -115,7 +115,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser.toString))
                 .overrides(
-                  bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+                  bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
                 )
                 .build()

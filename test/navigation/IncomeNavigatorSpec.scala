@@ -211,9 +211,119 @@ class IncomeNavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
-      "must go from any Income journey page to the 'Check your details' page" in {
+      "Income Not Counted As Turnover Page must go to the" - {
+        "Non-Turnover Income Amount page when answer is 'Yes'" in {
 
-        navigator.nextPage(TradingAllowancePage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            NonTurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+        }
+        "CYA page when answer is 'No'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "Any Other Income Page must go to the" - {
+        "Other Income Amount page when answer is 'Yes'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            OtherIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+        }
+        "CYA page when answer is 'No'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, stubbedBusinessId, Some(true)) mustBe
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "Turnover Not Taxable Page must go to the" - {
+        "Non-Turnover Income Amount page when answer is 'Yes'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            NotTaxableAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+        }
+        "CYA page when answer is 'No'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "Trading Allowance Page must go to the" - {
+        "How Much Trading Allowance page when answer is 'UseTradingAllowance'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            HowMuchTradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+        }
+        "Trading Allowance page when answer is 'DeclareExpenses'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(TradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "How Much Trading Allowance Page must go to the" - {
+        "Trading Allowance Amount page when answer is 'LessThan'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            TradingAllowanceAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+        }
+        "Trading Allowance page when answer is 'Maximum'" in {
+
+          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
+
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "must go from any other Income journey page to the 'Check your details' page" in {
+
+        navigator.nextPage(NonTurnoverIncomeAmountPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
           IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
       }
     }

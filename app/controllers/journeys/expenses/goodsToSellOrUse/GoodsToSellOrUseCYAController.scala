@@ -25,17 +25,18 @@ import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 import javax.inject.Inject
 
-class GoodsToSellOrUseCYAController @Inject()(override val messagesApi: MessagesApi,
-                                       navigator: ExpensesNavigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: GoodsToSellOrUseCYAView
-                                     ) extends FrontendBaseController with I18nSupport {
+class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: MessagesApi,
+                                               navigator: ExpensesNavigator,
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: GoodsToSellOrUseCYAView)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
-      Ok(view())
+  def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
+    Ok(view())
   }
+
 }

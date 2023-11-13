@@ -59,7 +59,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
     userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
       case Some(amount) if amount < 1000  => Right(formatMoney(amount))
       case Some(amount) if amount >= 1000 => Right(formatMoney(1000))
-      case None                           => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))
+      case _                              => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))
     }
 
 }
