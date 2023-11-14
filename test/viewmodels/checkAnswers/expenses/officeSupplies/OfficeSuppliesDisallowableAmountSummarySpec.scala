@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
   private val authUserType = individual
-  private val businessId   = "some_business_id"
 
   private val validData   = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> 200.00, "officeSuppliesDisallowableAmount" -> 100.00))
   private val invalidData = Json.obj(businessId -> Json.obj("officeSuppliesDisallowableAmount" -> 100.00))

@@ -41,7 +41,6 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
   val nino       = "AA112233A"
   val journey    = "journeyId"
-  val businessId = "businessId-1"
   val mtditid    = "mtditid"
 
   val mockConnector                     = mock[SelfEmploymentConnector]

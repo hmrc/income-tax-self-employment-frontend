@@ -46,6 +46,7 @@ class OfficeSuppliesNavigator @Inject() () {
   }
 
   private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
+
     case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
       _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 

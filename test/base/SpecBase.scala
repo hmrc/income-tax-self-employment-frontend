@@ -35,15 +35,15 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: Int      = LocalDate.now().getYear
-  val userAnswersId     = "id"
-  val individual        = Individual.toString
-  val agent             = Agent.toString
-  val accrual           = Accrual.toString
-  val cash              = Cash.toString
-  val stubbedBusinessId = "SJPR05893938418"
-  val enLang: Lang      = Lang("en-EN")
-  val cyLang: Lang      = Lang("cy-CY")
+  val taxYear: Int  = LocalDate.now().getYear
+  val userAnswersId = "id"
+  val individual    = Individual.toString
+  val agent         = Agent.toString
+  val accrual       = Accrual.toString
+  val cash          = Cash.toString
+  val businessId    = "SJPR05893938418"
+  val enLang: Lang  = Lang("en-EN")
+  val cyLang: Lang  = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   def emptyUserAnswers: UserAnswers         = UserAnswers(userAnswersId)

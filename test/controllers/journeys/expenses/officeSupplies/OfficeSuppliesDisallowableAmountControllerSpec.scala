@@ -22,7 +22,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
-import navigation.{FakeOfficeSuppliesNavigator, OfficeSuppliesNavigator}
+import navigation.{FakeExpensesNavigator, ExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -42,8 +42,6 @@ import scala.concurrent.Future
 class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
-
-  private val businessId = "some_business_id"
 
   private val validAnswer     = BigDecimal(1000.00)
   private val allowableAmount = BigDecimal(1000.00)
@@ -143,7 +141,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             val application =
               applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser))
                 .overrides(
-                  bind[OfficeSuppliesNavigator].toInstance(new FakeOfficeSuppliesNavigator(onwardRoute)),
+                  bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
                 )
                 .build()

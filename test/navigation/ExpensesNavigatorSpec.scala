@@ -17,14 +17,16 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.expenses.goodsToSellOrUse.routes.{DisallowableGoodsToSellOrUseAmountController, GoodsToSellOrUseCYAController}
+import controllers.journeys.expenses.goodsToSellOrUse.routes._
+import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
-import models.database.UserAnswers
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 
 class ExpensesNavigatorSpec extends SpecBase {
 
@@ -32,41 +34,79 @@ class ExpensesNavigatorSpec extends SpecBase {
 
   case object UnknownPage extends Page
 
-  "Navigator" - {
+  "ExpensesNavigator" - {
+    "navigating to the next page" - {
+      "in NormalMode" - {
+        val mode = NormalMode
+        "the page is OfficeSuppliesAmountPage" - {
+          "navigate to the OfficeSuppliesDisallowableAmountController" in {
+            val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
 
-    "in Normal mode" - {
+            navigator.nextPage(OfficeSuppliesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is OfficeSuppliesDisallowableAmountPage" - {
+          "navigate to the OfficeSuppliesCYAController" in {
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-      "must go from the Goods To Sell Or Use Amount page to the Disallowable Goods To Sell Or Use Amount page" in {
+            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is GoodsToSellOrUseAmountPage" - {
+          "navigate to the DisallowableGoodsToSellOrUseAmountController" in {
+            val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-        navigator.nextPage(GoodsToSellOrUseAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            navigator.nextPage(GoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is DisallowableGoodsToSellOrUseAmountPage" - {
+          "navigate to the GoodsToSellOrUseCYAController" in {
+            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is GoodsToSellOrUseCYAPage" - {
+          "navigate to the SectionCompletedStateController" in {
+            val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, mode)
+
+            navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "page does not exist" - {
+          "navigate to the JourneyRecoveryController" in {
+            val expectedResult = JourneyRecoveryController.onPageLoad()
+
+            navigator.nextPage(UnknownPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
       }
+      "in CheckMode" - {
+        val mode = CheckMode
+        "the page is OfficeSuppliesAmountPage" - {
+          "navigate to the OfficeSuppliesCYAController" in {
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-      "must go from the Disallowable Goods To Sell Or Use Amount page to the Goods To Sell Or Use CYA page" in {
+            navigator.nextPage(OfficeSuppliesAmountPage, CheckMode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is OfficeSuppliesDisallowableAmountPage" - {
+          "navigate to the OfficeSuppliesCYAController" in {
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-        navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
-      }
+            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, CheckMode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "page does not exist" - {
+          "navigate to the JourneyRecoveryController" in {
+            val expectedResult = JourneyRecoveryController.onPageLoad()
 
-      "must go from the Goods To Sell Or Use CYA page to the Section Completed page with ExpensesGoodsToSellOrUse journey" in {
-
-        navigator.nextPage(GoodsToSellOrUseCYAPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
-      }
-
-      "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
-
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+            navigator.nextPage(UnknownPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
       }
     }
 
-    "in Check mode" - {
-
-      "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" in {
-
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
-      }
-    }
   }
 
 }

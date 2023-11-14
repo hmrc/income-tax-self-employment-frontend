@@ -31,7 +31,7 @@ class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+        val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url)
 
         val result = route(application, request).value
 

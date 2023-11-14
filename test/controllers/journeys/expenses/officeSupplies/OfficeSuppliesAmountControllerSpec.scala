@@ -22,7 +22,7 @@ import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
-import navigation.{FakeOfficeSuppliesNavigator, OfficeSuppliesNavigator}
+import navigation.{FakeExpensesNavigator, ExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -45,7 +45,6 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new OfficeSuppliesAmountFormProvider()
 
-  private val businessId  = "some_id"
   private val validAnswer = BigDecimal(100.00)
 
   private val onwardRoute                            = Call("GET", "/foo")
@@ -151,7 +150,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                 val application =
                   applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
                     .overrides(
-                      bind[OfficeSuppliesNavigator].toInstance(new FakeOfficeSuppliesNavigator(onwardRoute)),
+                      bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                       bind[SessionRepository].toInstance(mockSessionRepository),
                       bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
                     )

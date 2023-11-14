@@ -79,7 +79,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -90,7 +90,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
@@ -107,7 +107,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
               status(result) mustEqual OK
@@ -119,7 +119,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET when user is taxi driver" in {
         val taxiDriver = true
-        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(businessId)).success.value
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         running(application) {
@@ -131,7 +131,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           val expectedResult =
-            view(formProvider(individual), NormalMode, userType(false), taxYear, stubbedBusinessId, taxiDriver)(
+            view(formProvider(individual), NormalMode, userType(false), taxYear, businessId, taxiDriver)(
               request,
               messages(application)).toString
 
@@ -205,7 +205,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, taxiDriver)(
+                taxYear, businessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -234,7 +234,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, taxiDriver)(
+                taxYear, businessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

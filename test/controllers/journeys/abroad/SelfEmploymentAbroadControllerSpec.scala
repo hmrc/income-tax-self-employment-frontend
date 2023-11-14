@@ -41,7 +41,6 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
   val isAgent             = false
   val formProvider        = new SelfEmploymentAbroadFormProvider()
   val form: Form[Boolean] = formProvider(isAgent)
-  val businessId          = "businessId-1"
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url

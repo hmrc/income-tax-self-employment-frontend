@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class OfficeSuppliesAmountSummarySpec extends SpecBase {
 
   private val authUserType = individual
-  private val businessId   = "some_id"
 
   private val data      = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> 123.45))
   private val otherData = Json.obj("otherPage" -> 123.45)

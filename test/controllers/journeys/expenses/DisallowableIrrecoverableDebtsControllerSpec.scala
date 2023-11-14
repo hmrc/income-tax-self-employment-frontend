@@ -71,7 +71,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val view = application.injector.instanceOf[DisallowableIrrecoverableDebtsView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -83,7 +83,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.values.head, Some(stubbedBusinessId))
+              .set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.values.head, Some(businessId))
               .success
               .value
 
@@ -102,7 +102,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                  businessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -172,7 +172,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -195,7 +195,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -35,7 +35,6 @@ import scala.concurrent.Future
 class IncomeCYAControllerSpec extends SpecBase {
 
   private val authUserTypes = List("individual", "agent")
-  private val businessId    = "some_business_id"
 
   private val userAnswerData = Json.parse(s"""
        |{

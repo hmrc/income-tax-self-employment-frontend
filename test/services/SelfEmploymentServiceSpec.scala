@@ -50,7 +50,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
   val maxIncomeTradingAllowance: BigDecimal = 1000
   val smallTurnover: BigDecimal             = 450.00
   val largeTurnover: BigDecimal             = 45000.00
-  val businessId                            = "businessId"
 
   "getCompletedTradeDetails" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {

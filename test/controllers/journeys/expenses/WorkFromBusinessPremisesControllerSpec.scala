@@ -47,7 +47,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
   lazy val workFromBusinessPremisesRoute = WorkFromBusinessPremisesController.onPageLoad(NormalMode).url
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
-  val businessId   = "SJPR05893938418"
 
   def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
     s"workFromBusinessPremises.title.$userType",
