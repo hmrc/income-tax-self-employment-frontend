@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import models.Mode
-import models.common.onwardRoute
-import models.database.UserAnswers
-import pages._
+import enumeratum._
 import play.api.mvc.Call
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
+package object common {
+  sealed trait Language extends EnumEntry
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
+  object Language extends Enum[Language] {
+    val values = findValues
 
-}
+    case object English extends Language
+    case object Welsh   extends Language
+  }
 
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
+  def onwardRoute: Call = Call("GET", "/foo")
+
 }

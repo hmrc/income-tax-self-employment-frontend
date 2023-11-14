@@ -632,3 +632,35 @@ totalExpenses.change.hidden = TotalExpenses
 
 totalExpensesCYA.title = totalExpensesCYA
 totalExpensesCYA.heading = totalExpensesCYA
+
+########## Expenses - Repairs and Maintenance ##########
+
+## Repairs and maintenance amount
+repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
+repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
+repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
+repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
+repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenanceAmount using whole numbers
+repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
+repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+
+## Repairs and maintenance disallowable amount
+repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
+repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric = Enter your repairsAndMaintenanceDisallowableAmount using numbers
+repairsAndMaintenanceDisallowableAmount.error.required = Enter your repairsAndMaintenanceDisallowableAmount
+repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAndMaintenanceDisallowableAmount using whole numbers
+repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
+repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
+
+## Repairs and maintenanceCosts CYA
+repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
+repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
+repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.nonNumeric = Enter your repairsAndMaintenanceCostsCYA using numbers
+repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
+repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
+repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden
