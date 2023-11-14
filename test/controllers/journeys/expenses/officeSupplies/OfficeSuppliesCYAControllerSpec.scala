@@ -59,8 +59,7 @@ class OfficeSuppliesCYAControllerSpec extends SpecBase {
           running(application) {
             val view = application.injector.instanceOf[OfficeSuppliesCYAView]
 
-            implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-              FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url)
+            implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url)
 
             val expectedSummaryListRows = Seq(
               OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUser),

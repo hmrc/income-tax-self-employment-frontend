@@ -19,7 +19,7 @@ package controllers.journeys.expenses.officeSupplies
 import controllers.actions._
 import models.NormalMode
 import models.common.ModelUtils.userType
-import navigation.OfficeSuppliesNavigator
+import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             navigator: OfficeSuppliesNavigator,
+                                             navigator: ExpensesNavigator,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: OfficeSuppliesCYAView)
     extends FrontendBaseController
