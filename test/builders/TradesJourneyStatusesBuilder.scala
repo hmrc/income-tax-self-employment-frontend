@@ -16,7 +16,7 @@
 
 package builders
 
-import models.journeys.{Abroad, ExpensesGoodsToSellOrUse, ExpensesTailoring, Income, NationalInsurance}
+import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
 

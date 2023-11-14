@@ -32,37 +32,55 @@ class OfficeSuppliesNavigatorSpec extends SpecBase {
   private val userAnswers = UserAnswers("some_id")
   private val businessId  = "some_businessId"
 
+  private val someOtherJourneyPage = WorkFromHomePage
+
   "OfficeSuppliesNavigator" - {
     "navigating to the next page" - {
       "in CheckMode" - {
-        "navigate to the JourneyRecoveryController" in {
-          val expectedResult = JourneyRecoveryController.onPageLoad()
-
-          navigator.nextPage(OfficeSuppliesAmountPage, CheckMode, userAnswers, taxYear, businessId) shouldBe expectedResult
-        }
-      }
-      "in NormalMode" - {
+        val mode = CheckMode
         "the page is OfficeSuppliesAmountPage" - {
-          "navigate to the OfficeSuppliesDisallowableAmountController" in {
-            val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+          "navigate to the OfficeSuppliesCYAController" in {
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-            navigator.nextPage(OfficeSuppliesAmountPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(OfficeSuppliesAmountPage, CheckMode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
         "the page is OfficeSuppliesDisallowableAmountPage" - {
           "navigate to the OfficeSuppliesCYAController" in {
-            val expectedResult = OfficeSuppliesCYAController.onPageLoad()
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(OfficeSuppliesAmountPage, CheckMode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
         "there is no match on the page, mode, userAnswers, taxYear, or businessId" - {
           "navigate to the JourneyRecoveryController" in {
-            val someOtherJourneyPage = WorkFromHomePage
-
             val expectedResult = JourneyRecoveryController.onPageLoad()
 
-            navigator.nextPage(someOtherJourneyPage, NormalMode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(someOtherJourneyPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+      }
+      "in NormalMode" - {
+        val mode = NormalMode
+        "the page is OfficeSuppliesAmountPage" - {
+          "navigate to the OfficeSuppliesDisallowableAmountController" in {
+            val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+            navigator.nextPage(OfficeSuppliesAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is OfficeSuppliesDisallowableAmountPage" - {
+          "navigate to the OfficeSuppliesCYAController" in {
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "there is no match on the page, mode, userAnswers, taxYear, or businessId" - {
+          "navigate to the JourneyRecoveryController" in {
+            val expectedResult = JourneyRecoveryController.onPageLoad()
+
+            navigator.nextPage(someOtherJourneyPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
       }

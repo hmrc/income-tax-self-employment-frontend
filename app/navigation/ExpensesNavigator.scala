@@ -21,7 +21,7 @@ import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
-import models.journeys.ExpensesGoodsToSellOrUse
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import play.api.mvc.Call

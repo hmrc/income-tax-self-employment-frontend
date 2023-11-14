@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.Abroad
+import models.journeys.Journey.Abroad
 import navigation.{AbroadNavigator, FakeAbroadNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

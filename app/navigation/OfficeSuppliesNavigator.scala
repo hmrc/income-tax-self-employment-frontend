@@ -17,11 +17,13 @@
 package navigation
 
 import controllers.journeys.expenses.officeSupplies.routes.{OfficeSuppliesCYAController, OfficeSuppliesDisallowableAmountController}
+import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes.JourneyRecoveryController
 import models.database.UserAnswers
+import models.journeys.Journey.ExpensesOfficeSupplies
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
-import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -35,19 +37,25 @@ class OfficeSuppliesNavigator @Inject() () {
       _ => taxYear => businessId => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case OfficeSuppliesDisallowableAmountPage =>
-      _ => _ => _ => OfficeSuppliesCYAController.onPageLoad()
+      _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+    case OfficeSuppliesCYAPage =>
+      _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = { case _ =>
-    _ => JourneyRecoveryController.onPageLoad()
+  private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
+    case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
+      _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+    case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
     mode match {
       case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(businessId)
-      case CheckMode  => checkRouteMap(page)(userAnswers)
+      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
 }

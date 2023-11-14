@@ -32,8 +32,14 @@ object NonTurnoverIncomeAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"nonTurnoverIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
+        key = Key(
+          content = s"nonTurnoverIncomeAmount.checkYourAnswersLabel.$authUserType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = s"£${formatMoney(answer)}",
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("nonTurnoverIncomeAmount.change.hidden"))

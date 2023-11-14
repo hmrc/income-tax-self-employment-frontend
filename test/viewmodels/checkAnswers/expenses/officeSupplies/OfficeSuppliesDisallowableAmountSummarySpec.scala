@@ -26,13 +26,16 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
-  private val businessId = "some_business_id"
+  private val authUserType = individual
+  private val businessId   = "some_business_id"
 
-  private val data      = Json.obj("officeSuppliesDisallowableAmount" -> 123.45)
-  private val otherData = Json.obj("otherPage" -> 123.45)
+  private val validData   = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> 200.00, "officeSuppliesDisallowableAmount" -> 100.00))
+  private val invalidData = Json.obj(businessId -> Json.obj("officeSuppliesDisallowableAmount" -> 100.00))
+  private val otherData   = Json.obj(businessId -> Json.obj("otherPage" -> 300.00))
 
-  private val userAnswers      = UserAnswers(userAnswersId, data)
-  private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
+  private val validUserAnswers   = UserAnswers(userAnswersId, validData)
+  private val invalidUserAnswers = UserAnswers(userAnswersId, invalidData)
+  private val otherUserAnswers   = UserAnswers(userAnswersId, otherData)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
@@ -40,18 +43,27 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
   }
 
   "OfficeSuppliesDisallowableAmountSummary" - {
-    "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
-      "generate a summary list row" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId)
+    "user answers for OfficeSuppliesAmountPage exist" - {
+      "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
+        "generate a summary list row" in {
+          val result = OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, businessId, authUserType)
 
-        result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("officeSuppliesDisallowableAmount.checkYourAnswersLabel")
-        result.get.value.content shouldBe Text("123.45")
+          result.get shouldBe a[SummaryListRow]
+          result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType")
+          result.get.value.content shouldBe Text("£100.00")
+        }
+      }
+      "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
+        "return None" in {
+          val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId, authUserType)
+
+          result shouldBe None
+        }
       }
     }
-    "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
+    "no user answers exist for OfficeSuppliesAmountPage" - {
       "return None" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId)
+        val result = OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, businessId, authUserType)
 
         result shouldBe None
       }

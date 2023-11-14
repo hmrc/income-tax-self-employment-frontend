@@ -14,11 +14,28 @@
  * limitations under the License.
  *@
 
-@this(layout: templates.Layout,govukButton: GovukButton)
+@import templates.helpers.Heading
 
-@()(implicit request: Request[_], messages: Messages)
+@this(layout: templates.Layout,
+      govukButton: GovukButton,
+      heading: Heading,
+      govukSummaryList: GovukSummaryList)
+
+@(authUserType: String,
+  summaryList: SummaryList,
+  taxYear: Int,
+  nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("officeSuppliesAmountCYA.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("officeSuppliesAmountCYA.heading")</h1>
+    @heading(
+      heading = messages(s"officeSuppliesAmountCYA.title.$authUserType"),
+      subheading = Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+      extraClasses = "govuk-!-margin-bottom-3"
+    )
+
+    @govukSummaryList(summaryList)
+
+    <div class="govuk-button-group govuk-!-margin-top-9">@govukButton(ButtonViewModel(messages("site.saveAndContinue")).asLink(nextRoute))</div>
+
 }
