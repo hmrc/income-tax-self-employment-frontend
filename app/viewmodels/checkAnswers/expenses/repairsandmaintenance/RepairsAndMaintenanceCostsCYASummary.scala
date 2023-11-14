@@ -18,7 +18,6 @@ package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import controllers.journeys.expenses.repairsandmaintenance.routes
 import models.database.UserAnswers
-import models.CheckMode
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

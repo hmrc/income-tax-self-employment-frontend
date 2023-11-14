@@ -633,7 +633,9 @@ totalExpenses.change.hidden = TotalExpenses
 totalExpensesCYA.title = totalExpensesCYA
 totalExpensesCYA.heading = totalExpensesCYA
 
-## Repairs and Maintenance
+########## Expenses - Repairs and Maintenance ##########
+
+## Repairs and maintenance amount
 repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
 repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
 repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
@@ -643,6 +645,7 @@ repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenance
 repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
 repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
 
+## Repairs and maintenance disallowable amount
 repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
 repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
 repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
@@ -652,6 +655,7 @@ repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAn
 repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
 repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
 
+## Repairs and maintenanceCosts CYA
 repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
 repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
 repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA

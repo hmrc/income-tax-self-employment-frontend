@@ -30,9 +30,7 @@ class RepairsAndMaintenanceDisallowableAmountFormProvider @Inject() extends Mapp
         s"repairsAndMaintenanceDisallowableAmount.error.required.$authUserType",
         s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$authUserType")
         .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"repairsAndMaintenanceDisallowableAmount.error.overMax.$authUserType"))
         .verifying(maximumValue(allowableAmount, s"repairsAndMaintenanceDisallowableAmount.error.overAllowableMax.$authUserType"))
-
     )
 
 }
