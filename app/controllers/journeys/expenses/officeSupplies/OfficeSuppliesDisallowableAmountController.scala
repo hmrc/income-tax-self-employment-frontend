@@ -23,7 +23,7 @@ import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvide
 import models.Mode
 import models.common.ModelUtils.userType
 import models.requests.DataRequest
-import navigation.OfficeSuppliesNavigator
+import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                             sessionRepository: SessionRepository,
-                                                            navigator: OfficeSuppliesNavigator,
+                                                            navigator: ExpensesNavigator,
                                                             identify: IdentifierAction,
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
