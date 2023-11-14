@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class TravelForWorkFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[TravelForWork] =
+  def apply(userType: String): Form[TravelForWork] =
     Form(
-      "value" -> enumerable[TravelForWork]("travelForWork.error.required")
+      "value" -> enumerable[TravelForWork](s"travelForWork.error.required.$userType")
     )
 
 }

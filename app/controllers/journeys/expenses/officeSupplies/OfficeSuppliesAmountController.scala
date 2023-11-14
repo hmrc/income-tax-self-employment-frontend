@@ -17,14 +17,17 @@
 package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import navigation.ExpensesTailoringNavigator
+import models.database.UserAnswers
+import navigation.OfficeSuppliesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
@@ -33,36 +36,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeSuppliesAmountController @Inject() (override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
-                                                navigator: ExpensesTailoringNavigator,
+                                                selfEmploymentService: SelfEmploymentService,
+                                                navigator: OfficeSuppliesNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
                                                 formProvider: OfficeSuppliesAmountFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: OfficeSuppliesAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(OfficeSuppliesAmountPage) match {
-      case None        => formProvider(userType(request.user.isAgent))
-      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-    }
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).map {
+      case Right(accountingType) =>
+        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(businessId)) match {
+          case None        => formProvider(userType(request.user.isAgent))
+          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+        }
 
-    Ok(view(preparedForm, mode))
+        Ok(view(preparedForm, mode, userType(request.user.isAgent), accountingType, taxYear, businessId))
+
+      case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+    }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider(userType(request.user.isAgent))
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesAmountPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).flatMap {
+      case Right(accountingType) =>
+        formProvider(userType(request.user.isAgent))
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), accountingType, taxYear, businessId))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
+          )
+      case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+    }
+
   }
 
 }

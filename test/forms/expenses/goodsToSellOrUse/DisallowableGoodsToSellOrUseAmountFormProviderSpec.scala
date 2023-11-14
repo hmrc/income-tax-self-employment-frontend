@@ -18,51 +18,61 @@ package forms.expenses.goodsToSellOrUse
 
 import forms.behaviours.BigDecimalFieldBehaviours
 import play.api.data.FormError
+import utils.MoneyUtils.formatMoney
 
 class DisallowableGoodsToSellOrUseAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val form = new DisallowableGoodsToSellOrUseAmountFormProvider()()
-
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName         = "value"
+    val minimum           = 0
+    val goodsAmount       = 5623.50
+    val goodsAmountString = formatMoney(goodsAmount, false)
 
-    val minimum = 0
-    val maximum = 100000000000.00
+    case class UserScenario(user: String)
 
-    val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validDataGenerator
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableGoodsToSellOrUseAmountFormProvider()(userScenario.user, goodsAmount)
 
-    behave like bigDecimalField(
-      form,
-      fieldName,
-      nonNumericError = FormError(fieldName, "disallowableGoodsToSellOrUseAmount.error.nonNumeric")
-    )
+      s"when user is an ${userScenario.user}, form should " - {
 
-    behave like bigDecimalFieldWithMinimum(
-      form,
-      fieldName,
-      minimum,
-      expectedError = FormError(fieldName, "disallowableGoodsToSellOrUseAmount.error.lessThanZero", Seq(minimum))
-    )
+        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, goodsAmount)
 
-    behave like bigDecimalFieldWithMaximum(
-      form,
-      fieldName,
-      maximum,
-      expectedError = FormError(fieldName, "disallowableGoodsToSellOrUseAmount.error.overMax", Seq(maximum))
-    )
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          validDataGenerator
+        )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, "disallowableGoodsToSellOrUseAmount.error.required")
-    )
+        behave like bigDecimalField(
+          form,
+          fieldName,
+          nonNumericError = FormError(fieldName, s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.${userScenario.user}", Seq(goodsAmountString))
+        )
+
+        behave like bigDecimalFieldWithMinimum(
+          form,
+          fieldName,
+          minimum,
+          expectedError = FormError(fieldName, s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.${userScenario.user}", Seq(goodsAmountString))
+        )
+
+        behave like bigDecimalFieldWithMaximum(
+          form,
+          fieldName,
+          goodsAmount,
+          expectedError = FormError(fieldName, s"disallowableGoodsToSellOrUseAmount.error.overMax.${userScenario.user}", Seq(goodsAmountString))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableGoodsToSellOrUseAmount.error.required.${userScenario.user}", Seq(goodsAmountString))
+        )
+      }
+    }
   }
 
 }

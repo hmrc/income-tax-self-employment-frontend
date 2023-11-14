@@ -15,29 +15,48 @@
  *@
 
 @import models.journeys.expenses.EntertainmentCosts
+@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
+        heading: Heading,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("entertainmentCosts.title"))) {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        }
+
+        @heading(messages("entertainmentCosts.heading"), None, extraClasses = "no-padding-top")
+
+        <div class="govuk-body govuk-!-margin-top-6">
+            <p>
+            @messages("entertainmentCosts.para")
+            @messages("site.theyInclude")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("entertainmentCosts.l1")</li>
+                <li>@messages("entertainmentCosts.l2")</li>
+            </ul>
+        </div>
+
         @formHelper(action = controllers.journeys.expenses.routes.EntertainmentCostsController.onSubmit(mode), 'autoComplete -> "off") {
 
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-            }
+
 
             @govukRadios(
                 RadiosViewModel(
                     field = form("value"),
-                    legend = LegendViewModel(messages("entertainmentCosts.heading")).asPageHeading(),
+                    legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
+                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                     items = EntertainmentCosts.options
                 )
             )

@@ -27,13 +27,13 @@ import viewmodels.implicits._
 
 object GoodsToSellOrUseAmountSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(GoodsToSellOrUseAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = "goodsToSellOrUseAmount.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.GoodsToSellOrUseAmountController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("goodsToSellOrUseAmount.change.hidden"))
         )
       )

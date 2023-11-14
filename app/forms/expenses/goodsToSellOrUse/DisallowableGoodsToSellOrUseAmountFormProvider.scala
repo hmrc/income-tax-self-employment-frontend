@@ -19,16 +19,23 @@ package forms.expenses.goodsToSellOrUse
 import forms.mappings.Mappings
 import models.common.MoneyBounds
 import play.api.data.Form
+import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
 
 class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(): Form[BigDecimal] =
+  def apply(userType: String, goodsAmount: BigDecimal): Form[BigDecimal] = {
+    val goodsAmountString = formatMoney(goodsAmount)
     Form(
-      "value" -> bigDecimal("disallowableGoodsToSellOrUseAmount.error.required", "disallowableGoodsToSellOrUseAmount.error.nonNumeric")
-        .verifying(greaterThan(minimumValue, "disallowableGoodsToSellOrUseAmount.error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "disallowableGoodsToSellOrUseAmount.error.overMax"))
+      "value" -> bigDecimal(
+        s"disallowableGoodsToSellOrUseAmount.error.required.$userType",
+        s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.$userType",
+        Seq(goodsAmountString)
+      )
+        .verifying(greaterThan(minimumValue, s"disallowableGoodsToSellOrUseAmount.error.lessThanZero.$userType", Some(goodsAmountString)))
+        .verifying(lessThanOrEqualTo(goodsAmount, s"disallowableGoodsToSellOrUseAmount.error.overMax.$userType", Some(goodsAmountString)))
     )
+  }
 
 }

@@ -52,25 +52,36 @@ trait Constraints {
       }
     }
 
-  protected def greaterThan[A](value: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def greaterThan[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint { input =>
       import ev._
 
       if (input > value) {
         Valid
       } else {
-        Invalid(errorKey, value)
+        Invalid(errorKey, errorArgument.getOrElse(value))
       }
     }
 
-  protected def lessThan[A](value: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def lessThan[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint { input =>
       import ev._
 
       if (input < value) {
         Valid
       } else {
-        Invalid(errorKey, value)
+        Invalid(errorKey, errorArgument.getOrElse(value))
+      }
+    }
+
+  protected def lessThanOrEqualTo[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
+    Constraint { input =>
+      import ev._
+
+      if (input <= value) {
+        Valid
+      } else {
+        Invalid(errorKey, errorArgument.getOrElse(value))
       }
     }
 

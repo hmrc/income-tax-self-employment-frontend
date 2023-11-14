@@ -21,11 +21,11 @@ import models.common.UserType.{Agent, Individual}
 
 object ModelUtils {
 
-  val individual = Individual.toString
-  val agent      = Agent.toString
+  val individual: String = Individual.toString
+  val agent: String      = Agent.toString
 
-  val accrual = Accrual.toString
-  val cash    = Cash.toString
+  val accrual: String = Accrual.toString
+  val cash: String    = Cash.toString
 
   def userType(isAgent: Boolean): String = if (isAgent) agent else individual
 }
