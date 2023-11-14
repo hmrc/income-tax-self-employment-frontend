@@ -28,8 +28,8 @@ import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
+import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call

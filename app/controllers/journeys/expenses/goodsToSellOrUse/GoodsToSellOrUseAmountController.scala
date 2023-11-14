@@ -24,8 +24,8 @@ import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
-import pages.expenses.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
+import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

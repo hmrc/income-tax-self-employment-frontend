@@ -625,3 +625,13 @@ disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseA
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
 goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
+
+totalExpenses.title = totalExpenses
+totalExpenses.heading = totalExpenses
+totalExpenses.checkYourAnswersLabel = totalExpenses
+totalExpenses.error.required = Enter totalExpenses
+totalExpenses.error.length = TotalExpenses must be 100 characters or less
+totalExpenses.change.hidden = TotalExpenses
+
+totalExpensesCYA.title = totalExpensesCYA
+totalExpensesCYA.heading = totalExpensesCYA
