@@ -40,13 +40,14 @@ class OfficeSuppliesCYAControllerSpec extends SpecBase {
   private val userAnswerData = Json.parse(s"""
        |{
        |  "$businessId": {
+       |    "officeSupplies": "yesDisallowable",
        |    "officeSuppliesAmount": 200.00,
        |    "officeSuppliesDisallowableAmount": 100.00
        |  }
        |}
-       |""".stripMargin)
+       |""".stripMargin).as[JsObject]
 
-  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+  private val userAnswers = UserAnswers(userAnswersId, userAnswerData)
 
   "OfficeSuppliesCYAController" - {
     authUserTypes.foreach { authUser =>
@@ -62,9 +63,9 @@ class OfficeSuppliesCYAControllerSpec extends SpecBase {
             implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url)
 
             val expectedSummaryListRows = Seq(
-              OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUser),
-              OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, authUser)
-            ).flatten
+              OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUser).get,
+              OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, authUser).get
+            )
 
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
 

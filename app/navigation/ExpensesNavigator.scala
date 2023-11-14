@@ -23,7 +23,9 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
+import models.journeys.expenses.OfficeSupplies.{YesAllowable, YesDisallowable}
 import pages._
+import pages.expenses.OfficeSuppliesPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.mvc.Call
@@ -36,7 +38,14 @@ class ExpensesNavigator @Inject() () {
   private val normalRoutes: Page => UserAnswers => Int => String => Call = {
 
     case OfficeSuppliesAmountPage =>
-      _ => taxYear => businessId => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
+              case Some(YesAllowable)    => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+              case Some(YesDisallowable) => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case _                     => JourneyRecoveryController.onPageLoad()
+            }
 
     case OfficeSuppliesDisallowableAmountPage =>
       _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
