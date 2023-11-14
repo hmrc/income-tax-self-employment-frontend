@@ -18,6 +18,7 @@ package navigation
 
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
+import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
