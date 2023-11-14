@@ -25,9 +25,9 @@ import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
 import models.journeys.expenses.OfficeSupplies.{YesAllowable, YesDisallowable}
 import pages._
-import pages.expenses.OfficeSuppliesPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.tailoring.OfficeSuppliesPage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}

@@ -21,8 +21,8 @@ import models.CheckMode
 import models.database.UserAnswers
 import models.journeys.expenses.OfficeSupplies
 import models.journeys.expenses.OfficeSupplies.YesDisallowable
-import pages.expenses.OfficeSuppliesPage
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.tailoring.OfficeSuppliesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
