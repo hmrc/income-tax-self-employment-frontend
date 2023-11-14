@@ -621,3 +621,13 @@ disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseA
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
+
+totalExpenses.title = totalExpenses
+totalExpenses.heading = totalExpenses
+totalExpenses.checkYourAnswersLabel = totalExpenses
+totalExpenses.error.required = Enter totalExpenses
+totalExpenses.error.length = TotalExpenses must be 100 characters or less
+totalExpenses.change.hidden = TotalExpenses
+
+totalExpensesCYA.title = totalExpensesCYA
+totalExpensesCYA.heading = totalExpensesCYA
