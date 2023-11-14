@@ -17,6 +17,7 @@
 package navigation
 
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
+import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
@@ -24,14 +25,21 @@ import models.database.UserAnswers
 import models.journeys.ExpensesGoodsToSellOrUse
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ExpensesNavigator @Inject()() {
+class ExpensesNavigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => (Int, String) => Call = {
+
+    case OfficeSuppliesAmountPage =>
+      _ => (taxYear, businessId) => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case OfficeSuppliesDisallowableAmountPage =>
+      _ => (_, _) => OfficeSuppliesCYAController.onPageLoad()
 
     case GoodsToSellOrUseAmountPage =>
       _ => (taxYear, businessId) => DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
