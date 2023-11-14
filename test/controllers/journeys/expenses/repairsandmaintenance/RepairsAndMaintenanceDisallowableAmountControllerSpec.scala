@@ -47,7 +47,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView]
-    view(expectedForm, scenario.mode, scenario.taxYear, scenario.businessId).toString()
+    view(expectedForm, scenario.mode, scenario.taxYear.value, scenario.businessId.value).toString()
   }
 
 }

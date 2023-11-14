@@ -16,7 +16,7 @@
 
 package base
 
-import models.common.{AccountingType, Language, UserType}
+import models.common.{AccountingType, BusinessId, Language, TaxYear, UserType}
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -48,8 +48,8 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
       userType: UserType,
       answers: Option[UserAnswers],
       mode: Mode = NormalMode,
-      taxYear: Int = LocalDate.now().getYear,
-      businessId: String = stubbedBusinessId,
+      taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+      businessId: BusinessId = BusinessId(stubbedBusinessId),
       accountingType: Option[AccountingType] = None
   ) {
     private val mockSessionRepository = mock[SessionRepository]
