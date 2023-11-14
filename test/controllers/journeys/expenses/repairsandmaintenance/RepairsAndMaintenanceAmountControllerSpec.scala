@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import base.BigDecimalGetAndPostQuestionBaseSpec
-import controllers.journeys.expenses.repairsandmaintenance.{routes => genRoutes}
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.common.UserType
 import models.{Mode, NormalMode}
@@ -36,8 +35,8 @@ class RepairsAndMaintenanceAmountControllerSpec
       "RepairsAndMaintenanceAmountController",
       RepairsAndMaintenanceAmountPage
     ) {
-  lazy val onPageLoadRoute = genRoutes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = genRoutes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 
@@ -45,5 +44,13 @@ class RepairsAndMaintenanceAmountControllerSpec
 
   def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable =
     application.injector.instanceOf[RepairsAndMaintenanceAmountView].apply _
+
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
+    view(form, scenario.mode, scenario.taxYear, scenario.businessId).toString()
+  }
 
 }

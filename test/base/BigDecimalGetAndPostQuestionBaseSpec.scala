@@ -19,7 +19,6 @@ package base
 import controllers.standard.{routes => genRoutes}
 import models.common.{UserType, onwardRoute}
 import models.database.UserAnswers
-import models.{Mode, NormalMode}
 import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
@@ -27,7 +26,6 @@ import play.api.i18n.Messages
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
 
 abstract case class BigDecimalGetAndPostQuestionBaseSpec(
     controllerName: String,
@@ -38,10 +36,10 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
 
   def createForm(userType: UserType): Form[BigDecimal]
 
-  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable
+  def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  val validAnswer: BigDecimal = 100.00
-  val filledUserAnswers       = UserAnswers(userAnswersId).set(page, validAnswer).success.value
+  val validAnswer: BigDecimal        = 100.00
+  val filledUserAnswers: UserAnswers = UserAnswers(userAnswersId).set(page, validAnswer).success.value
 
   def getRequest  = FakeRequest(GET, onPageLoadRoute)
   def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -51,7 +49,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
       val form: Form[BigDecimal] = createForm(userType)
 
       "Loading page" - {
-        "Redirect to Journey Recover for a GET if prerequisite data is not found" in new TestApp(userType, None) {
+        "Redirect to Journey Recover for a GET if prerequisite data is not found" in new TestScenario(userType, None) {
           running(application) {
             val result = route(application, getRequest).value
             status(result) mustEqual SEE_OTHER
@@ -59,36 +57,28 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           }
         }
 
-        "Return OK for a GET if an empty page" in new TestApp(userType, Some(emptyUserAnswers)) {
+        "Return OK for a GET if an empty page" in new TestScenario(userType, Some(emptyUserAnswers)) {
           running(application) {
             val result = languageAwareResult(lang, route(application, getRequest).value)
             status(result) mustEqual OK
-            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(
-              form,
-              NormalMode,
-              taxYear,
-              stubbedBusinessId).toString
+            contentAsString(result) mustEqual expectedView(form, this)(getRequest, messages(application), application)
           }
         }
 
-        "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answe" in new TestApp(
+        "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answe" in new TestScenario(
           userType,
           Some(filledUserAnswers)) {
           running(application) {
             val result = languageAwareResult(lang, route(application, getRequest).value)
             status(result) mustEqual OK
-            contentAsString(result) mustEqual renderView(getRequest, messages(application), application)(
-              form.fill(validAnswer),
-              NormalMode,
-              taxYear,
-              stubbedBusinessId).toString
+            contentAsString(result) mustEqual expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
           }
 
         }
       }
 
       "Submitting page" - {
-        "Redirect to Journey Recovery for POST if no prerequisite data is found" in new TestApp(userType, None) {
+        "Redirect to Journey Recovery for POST if no prerequisite data is found" in new TestScenario(userType, None) {
           running(application) {
             val result = languageAwareResult(lang, route(application, postRequest).value)
             status(result) mustEqual SEE_OTHER
@@ -96,21 +86,17 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           }
         }
 
-        "Return a Bad Request when invalid data is submitted" in new TestApp(userType, Some(emptyUserAnswers)) {
+        "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(emptyUserAnswers)) {
           running(application) {
             val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val result    = languageAwareResult(lang, route(application, request).value)
             val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual renderView(request, messages(application), application)(
-              boundForm,
-              NormalMode,
-              taxYear,
-              stubbedBusinessId).toString
+            contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)
           }
         }
 
-        "Redirect to the next page on submit" in new TestApp(userType, Some(filledUserAnswers)) {
+        "Redirect to the next page on submit" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
             val result = route(application, postRequest).value
             status(result) mustEqual SEE_OTHER

@@ -16,16 +16,20 @@
 
 package base
 
-import models.common.{Language, UserType}
+import models.common.{AccountingType, Language, UserType}
 import models.database.UserAnswers
+import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.{Binding, bind}
 import repositories.SessionRepository
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks {
@@ -40,7 +44,14 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
   val bindings: List[Binding[_]] = Nil
 
-  abstract class TestApp(userType: UserType, answers: Option[UserAnswers]) {
+  case class TestScenario(
+      userType: UserType,
+      answers: Option[UserAnswers],
+      mode: Mode = NormalMode,
+      taxYear: Int = LocalDate.now().getYear,
+      businessId: String = stubbedBusinessId,
+      accountingType: Option[AccountingType] = None
+  ) {
     private val mockSessionRepository = mock[SessionRepository]
 
     implicit val application              = createApp(userType, answers, mockSessionRepository)
@@ -48,13 +59,14 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-    private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository) = {
+    private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
       val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings
 
       applicationBuilder(answers, isAgent(userType.toString))
         .overrides(overrideBindings)
         .build()
     }
+
   }
 
 }

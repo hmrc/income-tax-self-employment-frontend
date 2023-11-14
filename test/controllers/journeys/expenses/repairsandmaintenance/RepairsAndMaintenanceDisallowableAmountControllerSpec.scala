@@ -19,8 +19,8 @@ package controllers.journeys.expenses.repairsandmaintenance
 import base.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.repairsandmaintenance.{routes => genRoutes}
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
+import models.NormalMode
 import models.common.UserType
-import models.{Mode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
 import play.api.Application
@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
-import play.twirl.api.HtmlFormat
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
 class RepairsAndMaintenanceDisallowableAmountControllerSpec
@@ -43,7 +42,12 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType, 1000.0)
 
-  def renderView(implicit request: Request[_], messages: Messages, application: Application): (Form[_], Mode, Int, String) => HtmlFormat.Appendable =
-    application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView].apply _
+  override def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView]
+    view(expectedForm, scenario.mode, scenario.taxYear, scenario.businessId).toString()
+  }
 
 }
