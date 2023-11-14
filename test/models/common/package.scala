@@ -17,6 +17,7 @@
 package models
 
 import enumeratum._
+import play.api.mvc.Call
 
 package object common {
   sealed trait Language extends EnumEntry
@@ -27,5 +28,7 @@ package object common {
     case object English extends Language
     case object Welsh   extends Language
   }
+
+  def onwardRoute: Call = Call("GET", "/foo")
 
 }

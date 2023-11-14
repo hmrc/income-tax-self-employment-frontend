@@ -17,23 +17,29 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import base.BigDecimalGetAndPostQuestionBaseSpec
-import controllers.journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceDisallowableAmountController
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.journeys.expenses.repairsandmaintenance.{routes => genRoutes}
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
 import models.common.UserType
 import models.{Mode, NormalMode}
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
 import play.twirl.api.HtmlFormat
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
 class RepairsAndMaintenanceDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec("RepairsAndMaintenanceAmountController", RepairsAndMaintenanceDisallowableAmountPage) {
-  lazy val onPageLoadRoute = RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "RepairsAndMaintenanceAmountController",
+      RepairsAndMaintenanceDisallowableAmountPage
+    ) {
+  lazy val onPageLoadRoute = genRoutes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = genRoutes.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType, 1000.0)
 

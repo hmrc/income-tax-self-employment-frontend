@@ -16,10 +16,10 @@
 
 package base
 
-import models.common.UserType
+import controllers.standard.{routes => genRoutes}
+import models.common.{UserType, onwardRoute}
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
-import controllers.standard.routes.JourneyRecoveryController
 import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
@@ -29,7 +29,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 
-abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String, page: QuestionPage[BigDecimal]) extends ControllerSpec {
+abstract case class BigDecimalGetAndPostQuestionBaseSpec(
+    controllerName: String,
+    page: QuestionPage[BigDecimal]
+) extends ControllerSpec {
   val onPageLoadRoute: String
   val onSubmitRoute: String
 
@@ -52,7 +55,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
           running(application) {
             val result = route(application, getRequest).value
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
           }
         }
 
@@ -89,7 +92,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
           running(application) {
             val result = languageAwareResult(lang, route(application, postRequest).value)
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
           }
         }
 

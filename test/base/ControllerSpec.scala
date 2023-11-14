@@ -17,22 +17,16 @@
 package base
 
 import models.common.{Language, UserType}
-import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatestplus.mockito.MockitoSugar
-import play.twirl.api.BaseScalaTemplate
-import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
-import play.api.mvc.Call
-import play.twirl.api.BaseScalaTemplate
+import play.api.inject.{Binding, bind}
 import repositories.SessionRepository
-import play.api.inject.bind
 
 import scala.concurrent.Future
-import scala.reflect.ClassTag
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks {
 
@@ -44,6 +38,8 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     (Language.Welsh, UserType.Agent)
   )
 
+  val bindings: List[Binding[_]] = Nil
+
   abstract class TestApp(userType: UserType, answers: Option[UserAnswers]) {
     private val mockSessionRepository = mock[SessionRepository]
 
@@ -52,17 +48,13 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-  }
+    private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository) = {
+      val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings
 
-  def onwardRoute = Call("GET", "/foo")
-
-  private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository) = {
-    applicationBuilder(answers, isAgent(userType.toString))
-      .overrides(
-        bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-        bind[SessionRepository].toInstance(mockSessionRepository)
-      )
-      .build()
+      applicationBuilder(answers, isAgent(userType.toString))
+        .overrides(overrideBindings)
+        .build()
+    }
   }
 
 }

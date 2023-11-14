@@ -16,24 +16,30 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.{BigDecimalGetAndPostQuestionBaseSpec}
+import base.BigDecimalGetAndPostQuestionBaseSpec
+import controllers.journeys.expenses.repairsandmaintenance.{routes => genRoutes}
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
-import models.{Mode, NormalMode}
 import models.common.UserType
-import controllers.journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController
-import controllers.standard.routes.JourneyRecoveryController
+import models.{Mode, NormalMode}
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
 class RepairsAndMaintenanceAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec("RepairsAndMaintenanceAmountController", RepairsAndMaintenanceAmountPage) {
-  lazy val onPageLoadRoute = RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "RepairsAndMaintenanceAmountController",
+      RepairsAndMaintenanceAmountPage
+    ) {
+  lazy val onPageLoadRoute = genRoutes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = genRoutes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
