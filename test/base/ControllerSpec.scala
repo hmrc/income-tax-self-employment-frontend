@@ -38,7 +38,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
   val langUserTypeCases = Table(
     ("Language", "userType"),
-    (Language.English, UserType.Individual: UserType),
+    (Language.English, UserType.Individual),
     (Language.English, UserType.Agent),
     (Language.Welsh, UserType.Individual),
     (Language.Welsh, UserType.Agent)
@@ -49,8 +49,6 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
     implicit val application              = createApp(userType, answers, mockSessionRepository)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-
-    private val onwardRoute = Call("GET", "/foo")
 
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

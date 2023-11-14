@@ -48,7 +48,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
       val form: Form[BigDecimal] = createForm(userType)
 
       "Loading page" - {
-        "Redirect to Journey Recover for a GET if existing data not found " in new TestApp(userType, None) {
+        "Redirect to Journey Recover for a GET if prerequisite data is not found" in new TestApp(userType, None) {
           running(application) {
             val result = route(application, getRequest).value
             status(result) mustEqual SEE_OTHER
@@ -68,7 +68,9 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
           }
         }
 
-        "Return OK for a GET if previous answer exists" in new TestApp(userType, Some(filledUserAnswers)) {
+        "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answe" in new TestApp(
+          userType,
+          Some(filledUserAnswers)) {
           running(application) {
             val result = languageAwareResult(lang, route(application, getRequest).value)
             status(result) mustEqual OK
@@ -83,7 +85,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String,
       }
 
       "Submitting page" - {
-        "Redirect to Journey Recovery for POST if no existing data is found" in new TestApp(userType, None) {
+        "Redirect to Journey Recovery for POST if no prerequisite data is found" in new TestApp(userType, None) {
           running(application) {
             val result = languageAwareResult(lang, route(application, postRequest).value)
             status(result) mustEqual SEE_OTHER
