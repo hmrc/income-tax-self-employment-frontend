@@ -554,7 +554,8 @@ otherExpenses.change.hidden = OtherExpenses
 
 ## Office Supplies Amount
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
-officeSuppliesAmount.heading = OfficeSuppliesAmountHeading
+officeSuppliesAmount.heading = How much did you spend on office supplies?
+officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
 officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
 officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
@@ -563,25 +564,25 @@ officeSuppliesAmount.error.required.agent = Enter the amount your client spent o
 officeSuppliesAmount.change.hidden = OfficeSuppliesAmount
 officeSuppliesAmount.error.lessThanZero.individual = The amount you spent on office supplies must be more than £0
 officeSuppliesAmount.error.lessThanZero.agent = The amount your client spent on office supplies must be more than £0
-officeSuppliesAmount.error.overMax.individual = officeSuppliesAmountOverMaxIndividual
-officeSuppliesAmount.error.overMax.agent = officeSuppliesAmountOverMaxAgent
+officeSuppliesAmount.error.overMax.individual = The amount you spent on office supplies must be less than £100,000,000,000
+officeSuppliesAmount.error.overMax.agent = The amount your client spent on office supplies must be less than £100,000,000,000
 
 ## Office Supplies Disallowable Amount
-officeSuppliesDisallowableAmount.title = OfficeSuppliesDisallowableAmountTitle
+officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
+officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
 officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.nonNumeric.individual = Enter your officeSuppliesDisallowableAmount using numbers
-officeSuppliesDisallowableAmount.error.nonNumeric.agent = Enter your clients officeSuppliesDisallowableAmount using numbers
-officeSuppliesDisallowableAmount.error.required.agent = Enter your officeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.required.individual = Enter your clients officeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.wholeNumber = Enter your officeSuppliesDisallowableAmount using whole numbers
+officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on office supplies must be a number
+officeSuppliesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on office supplies must be a number
+officeSuppliesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on office supplies that is disallowable
+officeSuppliesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on office supplies that is disallowable
 officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.lessThanZero.individual = lessThanZeroIndividual
-officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZero
-officeSuppliesDisallowableAmount.error.overMax.individual = overMaxIndividual
-officeSuppliesDisallowableAmount.error.overMax.agent = overMaxAgent
-officeSuppliesDisallowableAmount.error.overAllowableMax.individual = officeSuppliesDisallowableAmountOverAllowableMaxIndividual
-officeSuppliesDisallowableAmount.error.overAllowableMax.agent = officeSuppliesDisallowableAmountOverAllowableMaxAgent
+officeSuppliesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on office supplies must be more than £0
+officeSuppliesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on office supplies must be more than £0
+officeSuppliesDisallowableAmount.error.overMax.individual = The disallowable amount of the £{0} you spent on office supplies must be less than £100,000,000,000
+officeSuppliesDisallowableAmount.error.overMax.agent = The disallowable amount of the £{0} your client spent on office supplies must be less than £100,000,000,000
+officeSuppliesDisallowableAmount.error.overAllowableMax.individual = The disallowable amount you spent on office supplies must be the same as or less than £{0}
+officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable amount your client spent on office supplies must be the same as or less than £{0}
 
 ## Office Supplies CYA
 officeSuppliesAmountCYA.title = officeSuppliesAmountCYA

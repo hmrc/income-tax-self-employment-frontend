@@ -21,17 +21,16 @@ import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallo
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
+import navigation.{FakeExpensesNavigator, ExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
-import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
+import play.api.i18n._
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -44,69 +43,95 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
 
-  private val validAnswer     = BigDecimal.decimal(1000.00)
-  private val allowableAmount = BigDecimal.decimal(1000.00)
+  private val businessId = "some_business_id"
 
-  private val onwardRoute                                        = Call("GET", "/foo")
-  private lazy val officeSuppliesDisallowableAmountPageLoadRoute = OfficeSuppliesDisallowableAmountController.onPageLoad(NormalMode).url
-  private lazy val officeSuppliesDisallowableAmountOnSubmitRoute = OfficeSuppliesDisallowableAmountController.onSubmit(NormalMode).url
+  private val validAnswer     = BigDecimal(1000.00)
+  private val allowableAmount = BigDecimal(1000.00)
+
+  private val onwardRoute = Call("GET", "/foo")
+
+  private lazy val officeSuppliesDisallowableAmountPageLoadRoute =
+    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+
+  private lazy val officeSuppliesDisallowableAmountOnSubmitRoute =
+    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   private val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(isWelsh: Boolean, authUser: UserType, form: Form[BigDecimal])
+  case class UserScenario(isWelsh: Boolean, authUser: String)
 
-  private val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUser = UserType.Individual, formProvider(individual, allowableAmount)),
-    UserScenario(isWelsh = false, authUser = UserType.Agent, formProvider(agent, allowableAmount))
-  )
+  private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
+
+  private val data        = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> allowableAmount))
+  private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
     userScenarios.foreach { userScenario =>
       s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
         "when loading a page" - {
-          "must return OK and the correct view for a GET" in {
-            val application = applicationBuilder(Some(emptyUserAnswers), isAgent(userScenario.authUser.toString)).build()
+          "when office supplies allowable amount has been provided in the previous question" - {
+            "must return OK and the correct view" in {
+              val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
 
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              implicit val appMessages: Messages    = messages(application)
 
-            running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
-              status(langResult) mustEqual OK
-              contentAsString(langResult) mustEqual view(userScenario.form, NormalMode)(request, messages(application)).toString
+              running(application) {
+                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result     = route(application, request).value
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+                status(langResult) mustEqual OK
+
+                contentAsString(langResult) mustEqual view(
+                  formProvider(userScenario.authUser, allowableAmount),
+                  NormalMode,
+                  taxYear,
+                  businessId,
+                  userScenario.authUser,
+                  allowableAmount)(request, appMessages).toString
+              }
+            }
+
+            "must populate the view correctly when the question has already been answered" in {
+              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
+
+              val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
+
+              implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+              implicit val appMessages: Messages             = messages(application)
+              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+
+              running(application) {
+                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result     = route(application, request).value
+                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+
+                status(langResult) mustEqual OK
+
+                contentAsString(langResult) mustEqual view(
+                  formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
+                  NormalMode,
+                  taxYear,
+                  businessId,
+                  userScenario.authUser,
+                  allowableAmount)(request, appMessages).toString
+              }
             }
           }
+          "when the allowable amount of office supplies has not been provided" - {
+            "must redirect to Journey Recovery if no existing data is found" in {
+              val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
 
-          "must populate the view correctly on a GET when the question has previously been answered" in {
-            val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesDisallowableAmountPage, validAnswer).success.value
+              running(application) {
+                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result  = route(application, request).value
 
-            val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser.toString)).build()
-
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-
-            running(application) {
-              val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
-              status(langResult) mustEqual OK
-              contentAsString(langResult) mustEqual view(userScenario.form.fill(validAnswer), NormalMode)(request, messages(application)).toString
-            }
-          }
-          "must redirect to Journey Recovery for a GET if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser.toString)).build()
-
-            running(application) {
-              val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+                status(result) mustEqual SEE_OTHER
+                redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+              }
             }
           }
         }
@@ -116,19 +141,16 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
             val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser.toString))
+              applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser))
                 .overrides(
-                  bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+                  bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
                 )
                 .build()
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-              val result = route(application, request).value
+              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
               redirectLocation(result).value mustEqual onwardRoute.url
@@ -136,38 +158,34 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser.toString)).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser)).build()
 
-            val view: OfficeSuppliesDisallowableAmountView    = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
+            implicit val appMessages: Messages             = messages(application)
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
-
+              val request    = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
+              val boundForm  = formProvider(userScenario.authUser, allowableAmount).bind(Map("value" -> "invalid value"))
               val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               status(langResult) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+
+              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, allowableAmount)(
+                request,
+                appMessages).toString
             }
           }
 
-          "must redirect to Journey Recovery for a POST if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser.toString)).build()
+          "must redirect to Journey Recovery if no existing data is found" in {
+            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
 
             running(application) {
-              val request =
-                FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute)
-                  .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-              val result = route(application, request).value
+              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
-
               redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
             }
           }

@@ -19,18 +19,20 @@ package forms.expenses.officeSupplies
 import forms.mappings.Mappings
 import models.common.MoneyBounds
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import javax.inject.Inject
 
 class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: String, allowableAmount: BigDecimal): Form[BigDecimal] =
+  def apply(authUserType: String, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        s"officeSuppliesDisallowableAmount.error.required.$authUserType",
-        s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"officeSuppliesDisallowableAmount.error.overMax.$authUserType"))
+        requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$authUserType", allowableAmount),
+        nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUserType", allowableAmount)
+      )
+        .verifying(greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUserType", allowableAmount)))
+        .verifying(lessThan(maximumValue, messages(s"officeSuppliesDisallowableAmount.error.overMax.$authUserType", allowableAmount)))
         .verifying(maximumValue(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$authUserType"))
     )
 

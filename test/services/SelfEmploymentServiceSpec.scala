@@ -24,10 +24,11 @@ import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
-import play.api.test.Helpers.await
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.SelfEmploymentService.getIncomeTradingAllowance
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,17 +57,17 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       when(mockConnector.getCompletedTradesWithStatuses(meq(nino), meq(taxYear), meq(mtditid))(any, any)) thenReturn Future(
         Right(aSequenceTadesJourneyStatusesModel))
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))(10.seconds)
+      val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))
 
-      result mustEqual Right(aSequenceTadesJourneyStatusesModel)
+      result shouldBe Right(aSequenceTadesJourneyStatusesModel)
     }
     "should return a Left(HttpError) when a this is returned from the backend" in {
       when(mockConnector.getCompletedTradesWithStatuses(meq(nino), meq(taxYear), meq(mtditid))(any, any)) thenReturn Future(
         Left(HttpError(404, HttpErrorBody.parsingError)))
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))(10.seconds)
+      val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))
 
-      result mustEqual Left(HttpError(404, HttpErrorBody.parsingError))
+      result shouldBe Left(HttpError(404, HttpErrorBody.parsingError))
     }
   }
 
@@ -75,11 +76,11 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
       when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessDataCashAccounting))
 
-      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
-      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))(10.seconds)
+      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
+      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))
 
-      resultAccrual mustEqual Right(accrual)
-      resultCash mustEqual Right(cash)
+      resultAccrual shouldBe Right(accrual)
+      resultCash shouldBe Right(cash)
     }
 
     "should return a Left(HttpError) when" - {
@@ -87,9 +88,9 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       "an empty sequence is returned from the backend" in {
         when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(Seq.empty))
 
-        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
 
-        result mustEqual Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
+        result shouldBe Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
       }
 
       "a Left(HttpError) is returned from the backend" in {
@@ -98,7 +99,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
         val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)
 
-        result mustEqual Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+        result shouldBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
       }
     }
   }
@@ -117,8 +118,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
         val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
 
-        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) mustEqual maxIncomeTradingAllowance
-        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) mustEqual maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
       }
     }
   }

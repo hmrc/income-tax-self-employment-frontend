@@ -16,42 +16,42 @@
 
 package viewmodels.checkAnswers.expenses.officeSupplies
 
+import base.SpecBase
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class OfficeSuppliesDisallowableAmountSummarySpec extends AnyWordSpec with Matchers {
+class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
-  private val id = "some_id"
+  private val businessId = "some_business_id"
 
   private val data      = Json.obj("officeSuppliesDisallowableAmount" -> 123.45)
   private val otherData = Json.obj("otherPage" -> 123.45)
 
-  private val userAnswers      = UserAnswers(id, data)
-  private val otherUserAnswers = UserAnswers(id, otherData)
+  private val userAnswers      = UserAnswers(userAnswersId, data)
+  private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  "OfficeSuppliesDisallowableAmountSummary" when {
-    "user answers for OfficeSuppliesDisallowableAmountPage exist" should {
+  "OfficeSuppliesDisallowableAmountSummary" - {
+    "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
       "generate a summary list row" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers)
+        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("officeSuppliesDisallowableAmount.checkYourAnswersLabel")
         result.get.value.content shouldBe Text("123.45")
       }
     }
-    "user answers do not exist for OfficeSuppliesDisallowableAmountPage" should {
+    "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
       "return None" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers)
+        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId)
 
         result shouldBe None
       }
