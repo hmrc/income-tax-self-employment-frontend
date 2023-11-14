@@ -31,7 +31,7 @@ class ProfessionalServiceExpensesFormProviderSpec extends CheckboxFieldBehaviour
       val form = new ProfessionalServiceExpensesFormProvider()(userScenario.user)
 
       val fieldName = "value"
-      val requiredKey = s"professionalServiceExpenses.error.required.${userScenario.user}"
+      val requiredKey = s"professionalServiceExpenses.error.required"
 
       s"when user is an ${userScenario.user}, form should " - {
 

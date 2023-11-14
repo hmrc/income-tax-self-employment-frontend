@@ -44,7 +44,7 @@ class DisallowableStaffCostsFormProviderSpec extends OptionFieldBehaviours {
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"disallowableStaffCosts.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"disallowableStaffCosts.error.required")
         )
       }
     }
