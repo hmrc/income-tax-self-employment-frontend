@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class OfficeSuppliesCYAControllerSpec extends SpecBase {
 
-  private val authUserTypes = List("individual", "agent")
+  private val authUserTypes = List(individual, agent)
 
   private val userAnswerData = Json.parse(s"""
        |{

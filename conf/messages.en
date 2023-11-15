@@ -588,7 +588,7 @@ officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable
 
 ## Office Supplies CYA
 officeSuppliesAmountCYA.title.individual = Check your office supplies expenses
-officeSuppliesAmountCYA.title.agent = Check your client's office supplies expenses
+officeSuppliesAmountCYA.title.agent = Check your client’s office supplies expenses
 officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 
 ########## Expenses - Goods to sell or use ##########
