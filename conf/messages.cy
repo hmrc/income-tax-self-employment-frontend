@@ -554,7 +554,8 @@ otherExpenses.change.hidden = OtherExpenses
 
 ## Office Supplies Amount
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
-officeSuppliesAmount.heading = How much did you spend on office supplies?
+officeSuppliesAmount.heading.individual = How much did you spend on office supplies?
+officeSuppliesAmount.heading.agent = How much did your client spend on office supplies?
 officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
 officeSuppliesAmount.checkYourAnswersLabel.individual = How much did you spend on office supplies?
 officeSuppliesAmount.checkYourAnswersLabel.agent = How much did your client spend on office supplies?

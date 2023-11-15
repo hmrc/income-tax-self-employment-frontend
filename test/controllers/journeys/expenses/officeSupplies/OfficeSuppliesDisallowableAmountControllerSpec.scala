@@ -22,7 +22,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
-import navigation.{FakeExpensesNavigator, ExpensesNavigator}
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,11 +35,12 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
 import scala.concurrent.Future
 
-class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with MockitoSugar {
+class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with MockitoSugar with MoneyUtils {
 
   private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
 
@@ -91,7 +92,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   taxYear,
                   businessId,
                   userScenario.authUser,
-                  allowableAmount)(request, appMessages).toString
+                  formatMoney(allowableAmount))(request, appMessages).toString
               }
             }
 
@@ -117,7 +118,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   taxYear,
                   businessId,
                   userScenario.authUser,
-                  allowableAmount)(request, appMessages).toString
+                  formatMoney(allowableAmount))(request, appMessages).toString
               }
             }
           }
@@ -172,7 +173,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               status(langResult) mustEqual BAD_REQUEST
 
-              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, allowableAmount)(
+              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, formatMoney(allowableAmount))(
                 request,
                 appMessages).toString
             }
