@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.expenses.repairsandmaintenance
 
-import models.Mode
-import models.common.onwardRoute
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
+case object RepairsAndMaintenanceDisallowableAmountPage extends QuestionPage[BigDecimal] {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
+  override def path(businessId: Option[String] = None): JsPath = JsPath \ toString
 
-}
-
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
+  override def toString: String = "repairsAndMaintenanceDisallowableAmount"
 }

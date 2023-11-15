@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigation
+@this(layout: templates.Layout, govukButton: GovukButton)
 
-import models.Mode
-import models.common.onwardRoute
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+@()(implicit request: Request[_], messages: Messages)
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
+@layout(pageTitle = titleNoForm(messages("repairsAndMaintenanceCostsCYA.title"))) {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
-
-}
-
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
+    <h1 class="govuk-heading-xl">@messages("repairsAndMaintenanceCostsCYA.heading")</h1>
 }
