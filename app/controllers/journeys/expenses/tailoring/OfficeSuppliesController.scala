@@ -52,7 +52,6 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
   val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    println("zzzz" + request.user.mtditid)
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
