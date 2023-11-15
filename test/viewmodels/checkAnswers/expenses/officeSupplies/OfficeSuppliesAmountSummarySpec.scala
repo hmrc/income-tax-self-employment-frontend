@@ -16,44 +16,42 @@
 
 package viewmodels.checkAnswers.expenses.officeSupplies
 
+import base.SpecBase
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class OfficeSuppliesAmountSummarySpec extends AnyWordSpec with Matchers {
+class OfficeSuppliesAmountSummarySpec extends SpecBase {
 
-  private val id         = "some_id"
-  private val taxYear    = 2024
-  private val businessId = "some_id"
+  private val authUserType = individual
 
-  private val data      = Json.obj("officeSuppliesAmount" -> 123.45)
+  private val data      = Json.obj(stubbedBusinessId -> Json.obj("officeSuppliesAmount" -> 123.45))
   private val otherData = Json.obj("otherPage" -> 123.45)
 
-  private val userAnswers      = UserAnswers(id, data)
-  private val otherUserAnswers = UserAnswers(id, otherData)
+  private val userAnswers      = UserAnswers(userAnswersId, data)
+  private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  "OfficeSuppliesAmountSummary" when {
-    "user answers for OfficeSuppliesAmountPage exist" should {
+  "OfficeSuppliesAmountSummary" - {
+    "user answers for OfficeSuppliesAmountPage exist" - {
       "generate a summary list row" in {
-        val result = OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId)
+        val result = OfficeSuppliesAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUserType)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("officeSuppliesAmount.checkYourAnswersLabel")
-        result.get.value.content shouldBe Text("123.45")
+        result.get.key.content shouldBe Text(s"officeSuppliesAmount.checkYourAnswersLabel.$authUserType")
+        result.get.value.content shouldBe Text("£123.45")
       }
     }
-    "user answers do not exist for OfficeSuppliesAmountPage" should {
+    "user answers do not exist for OfficeSuppliesAmountPage" - {
       "return None" in {
-        val result = OfficeSuppliesAmountSummary.row(otherUserAnswers, taxYear, businessId)
+        val result = OfficeSuppliesAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
         result shouldBe None
       }
