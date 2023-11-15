@@ -26,9 +26,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, contentString: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"workFromBusinessPremises.title.$authUserType"))) {
+@layout(pageTitle = title(form, messages(s"workFromBusinessPremises.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
@@ -39,8 +39,19 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                items  = WorkFromBusinessPremises.options(authUserType),
-                legend = LegendViewModel(HtmlContent(contentString)).withCssClass("no-margin-bottom")
+                items  = WorkFromBusinessPremises.options(userType),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                ${messages(s"workFromBusinessPremises.title.$userType")}
+                            </legend>
+                            <div class="govuk-hint">
+                                ${messages(s"workFromBusinessPremises.hint.$userType")}
+                            </div>
+                        </div>
+                    """
+                )).withCssClass("no-margin-bottom")
             )
         )
 

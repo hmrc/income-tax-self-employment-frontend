@@ -29,13 +29,12 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.WorkFromBusinessPremisesPage
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.WorkFromBusinessPremisesView
 
 import scala.concurrent.Future
@@ -48,12 +47,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
   val businessId   = "SJPR05893938418"
-
-  def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"workFromBusinessPremises.title.$userType",
-    s"workFromBusinessPremises.hint.$userType",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--l"
-  )
 
   case class UserScenario(isWelsh: Boolean, authUserType: String)
 
@@ -74,7 +67,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
             val form                 = formProvider(userScenario.authUserType)
-            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -86,9 +78,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -103,7 +93,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
             val form                 = formProvider(userScenario.authUserType)
-            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -115,7 +104,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(
+                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.authUserType, taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -176,7 +165,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
             val form                 = formProvider(userScenario.authUserType)
-            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request =
@@ -192,7 +180,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -204,7 +192,6 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
             val form                 = formProvider(userScenario.authUserType)
-            val legendContent        = buildLegendContent(userScenario.authUserType)(messages(application))
 
             running(application) {
               val request =
@@ -220,7 +207,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, legendContent)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

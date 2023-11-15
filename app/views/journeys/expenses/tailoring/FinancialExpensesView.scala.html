@@ -27,7 +27,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, accountingType: String, legendContent: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 
 @layout(pageTitle = title(form, messages("financialExpenses.title"))) {
@@ -46,7 +46,7 @@
         </summary>
         <div class="govuk-details__text">
             <p>
-                @messages(s"site.canInclude.$authUserType")
+                @messages(s"site.canInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages(s"financialExpenses.d1.l1.${accountingType.toLowerCase}")</li>
@@ -54,7 +54,7 @@
                 <li>@messages("financialExpenses.d1.l3")</li>
             </ul>
             <p>
-                @messages(s"site.cannotInclude.$authUserType")
+                @messages(s"site.cannotInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("expenses.repaymentsOfLoans")</li>
@@ -71,7 +71,7 @@
         </summary>
         <div class="govuk-details__text">
             <p>
-                @messages(s"site.canInclude.$authUserType")
+                @messages(s"site.canInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("financialExpenses.d2.l1")</li>
@@ -81,7 +81,7 @@
                 <li>@messages("financialExpenses.d2.l5")</li>
             </ul>
             <p>
-                @messages(s"site.cannotInclude.$authUserType")
+                @messages(s"site.cannotInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("financialExpenses.d2.l6")</li>
@@ -98,13 +98,13 @@
             </summary>
             <div class="govuk-details__text">
                 <p>
-                    @messages(s"site.canInclude.$authUserType")
+                    @messages(s"site.canInclude.$userType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("financialExpenses.d3.l1")</li>
                 </ul>
                 <p>
-                    @messages(s"site.cannotInclude.$authUserType")
+                    @messages(s"site.cannotInclude.$userType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("expenses.debtsNotIncludedInTurnover")</li>
@@ -121,8 +121,19 @@
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                items  = FinancialExpenses.checkboxItems(authUserType, accountingType),
-                legend = LegendViewModel(HtmlContent(legendContent)).withCssClass("no-margin-bottom")
+                items  = FinancialExpenses.checkboxItems(userType, accountingType),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                    <div>
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            ${messages(s"financialExpenses.subHeading.$userType")}
+                        </legend>
+                        <div class="govuk-hint">
+                            ${messages("site.selectAllThatApply")}
+                        </div>
+                    </div>
+                    """
+                )).withCssClass("no-margin-bottom")
             )
         )
 
