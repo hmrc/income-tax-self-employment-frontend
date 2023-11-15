@@ -209,7 +209,7 @@ POST        /:taxYear/:businessId/expenses/office-supplies/disallowable-amount  
 GET         /:taxYear/:businessId/expenses/change-office-supplies/disallowable-amount            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-office-supplies/disallowable-amount            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /expenses/office-supplies/check                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad()
+GET         /:taxYear/:businessId/expenses/office-supplies/check                                 controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad(taxYear: Int, businessId: String)
 
 ########## Expenses - Goods to sell or use ##########
 

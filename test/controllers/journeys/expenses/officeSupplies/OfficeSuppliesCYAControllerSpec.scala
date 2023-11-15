@@ -18,28 +18,76 @@ package controllers.journeys.expenses.officeSupplies
 
 import base.SpecBase
 import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesCYAController
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.Journey.ExpensesOfficeSupplies
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import viewmodels.checkAnswers.expenses.officeSupplies.{OfficeSuppliesAmountSummary, OfficeSuppliesDisallowableAmountSummary}
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
+
+import scala.concurrent.Future
 
 class OfficeSuppliesCYAControllerSpec extends SpecBase {
 
+  private val authUserTypes = List(individual, agent)
+
+  private val userAnswerData = Json
+    .parse(s"""
+     |{
+     |  "$stubbedBusinessId": {
+     |    "officeSupplies": "yesDisallowable",
+     |    "officeSuppliesAmount": 200.00,
+     |    "officeSuppliesDisallowableAmount": 100.00
+     |  }
+     |}
+     |""".stripMargin)
+    .as[JsObject]
+
+  private val userAnswers = UserAnswers(userAnswersId, userAnswerData)
+
   "OfficeSuppliesCYAController" - {
-    "must return OK and the correct view for a GET" in {
+    authUserTypes.foreach { authUser =>
+      s"when handling a request from a $authUser to load a page" - {
+        "must return a 200 OK with the view" in {
+          val application = applicationBuilder(Some(userAnswers), isAgent(authUser)).build()
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          implicit val appMessages: Messages = messages(application)
 
-      running(application) {
-        val request = FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad().url)
+          running(application) {
+            val view = application.injector.instanceOf[OfficeSuppliesCYAView]
 
-        val result = route(application, request).value
+            implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+              FakeRequest(GET, OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
 
-        val view = application.injector.instanceOf[OfficeSuppliesCYAView]
+            val expectedSummaryListRows = Seq(
+              OfficeSuppliesAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUser).get,
+              OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUser).get
+            )
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
+
+            val result: Future[Result] = route(application, request).value
+
+            status(result) shouldBe OK
+
+            val expectedNextRoute =
+              controllers.journeys.routes.SectionCompletedStateController
+                .onPageLoad(taxYear, stubbedBusinessId, ExpensesOfficeSupplies.toString, NormalMode)
+                .url
+
+            contentAsString(result) mustEqual view(authUser, expectedSummaryLists, taxYear, expectedNextRoute).toString
+          }
+        }
       }
+
     }
+
   }
 
 }
