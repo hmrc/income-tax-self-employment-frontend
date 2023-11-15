@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("officeSuppliesAmount.heading"))) {
+@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.heading.$authUserType"))) {
 
     @formHelper(action = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -54,14 +54,14 @@
 }
 
 @buildLabelContent(authUserType: String, accountingType: String) = {
-    <label class="govuk-label govuk-label--l"> @messages("officeSuppliesAmount.heading") </label>
-    <details class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-4" data-module="govuk-details">
+    <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.heading.$authUserType") </label>
+    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text"> @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses") </span>
         </summary>
         <div class="govuk-details__text">
             <p>@messages(s"site.canInclude.$authUserType")</p>
-            <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
+            <ul class="govuk-body govuk-list--bullet">
                 <li>@messages("officeSupplies.l1")</li>
                 <li>@messages("officeSupplies.l2")</li>
                 <li>@messages("officeSupplies.l3")</li>
@@ -72,11 +72,11 @@
                 }
             </ul>
             <p>@messages(s"site.cannotInclude.$authUserType")</p>
-            <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
+            <ul class="govuk-body govuk-list--bullet">
                 @if(accountingType == "CASH") {
-                    <li>@messages("officeSupplies.l7")</li>
+                    <li>@messages("common.expenses.listItem.anyAmount")</li>
                 } else {
-                    <li>@messages("officeSupplies.l8")</li>
+                    <li>@messages("officeSupplies.l7")</li>
                 }
             </ul>
         </div>
