@@ -66,6 +66,9 @@ class ExpensesNavigator @Inject() () {
     case GoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
+    case DisallowableGoodsToSellOrUseAmountPage =>
+      _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
     case _ =>
       _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
