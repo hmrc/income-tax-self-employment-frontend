@@ -22,7 +22,7 @@ import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generat
 import handlers.ErrorHandler
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.TradeDetails
+import models.journeys.Journey.TradeDetails
 import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage

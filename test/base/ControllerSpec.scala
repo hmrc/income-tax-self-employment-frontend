@@ -16,7 +16,7 @@
 
 package base
 
-import models.common.{AccountingType, BusinessId, Language, TaxYear, UserType}
+import models.common._
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -24,7 +24,6 @@ import org.mockito.Mockito.when
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.{Binding, bind}
 import repositories.SessionRepository
@@ -44,13 +43,12 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
   val bindings: List[Binding[_]] = Nil
 
-  case class TestScenario(
-      userType: UserType,
-      answers: Option[UserAnswers],
-      mode: Mode = NormalMode,
-      taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
-      businessId: BusinessId = BusinessId(stubbedBusinessId),
-      accountingType: Option[AccountingType] = None
+  case class TestScenario(userType: UserType,
+                          answers: Option[UserAnswers],
+                           mode: Mode = NormalMode,
+                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+                           businessId: BusinessId = BusinessId(stubbedBusinessId),
+                           accountingType: Option[AccountingType] = None
   ) {
     private val mockSessionRepository = mock[SessionRepository]
 
