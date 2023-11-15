@@ -251,8 +251,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         }
         "the CYA page when in CheckMode and income model is now completed" in {
 
-          val accountingType = cash
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(

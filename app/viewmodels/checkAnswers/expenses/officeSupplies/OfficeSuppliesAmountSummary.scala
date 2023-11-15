@@ -27,13 +27,13 @@ import viewmodels.implicits._
 
 object OfficeSuppliesAmountSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OfficeSuppliesAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = "officeSuppliesAmount.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),
         actions = Seq(
-          ActionItemViewModel("site.change", OfficeSuppliesAmountController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("officeSuppliesAmount.change.hidden"))
         )
       )

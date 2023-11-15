@@ -19,7 +19,6 @@ package forms.mappings
 import models.common.Enumerable
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 

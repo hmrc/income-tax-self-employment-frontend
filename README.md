@@ -33,6 +33,27 @@ This service runs on port: `localhost:10901`
 - Documentation of the scaffold and how it is used can be found here:
     https://github.com/hmrc/hmrc-frontend-scaffold.g8/wiki/Usage
 
+#### To add a new journey follow the below steps**
+
+- go to root project
+- call `sbt`
+- choose which gitter template you are going to use, e.g. `g8Scaffold journeyBigDecimalPage`
+    - the available list you can find in .g8 folder
+- repeat the process until you generated all the pages
+- at the end in root project call `./migrate.sh` to add necessary changes to app.routes and messages files
+- call `sbt compile` - fix issues if any
+- call `sbt test` - fix failing tests if any
+
+#### Limitations
+
+- Right now only templates with journey* require minimum rework, they compile. They just require few tests to add.
+- Other templates are standard scaffold, and may require a lot of manual tasks to move the files to appropriate packages
+
+#### Known Issues
+
+- the current scaffold templates generate a lot of duplicated cost, we must improve our g8 template to stop that
+- in the terminal, sometimes the cursor every few seconds is moved at the beginning. Keep typing, ignore that
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

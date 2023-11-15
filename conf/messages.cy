@@ -310,6 +310,15 @@ expenses.yesAllowable.individual = Yes, all of my expenses are allowable
 expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
 expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
 expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.fuelCosts = fuel costs
+expenses.costOfRawMaterials = the cost of raw materials
+expenses.stockBought = stock bought for resale
+expenses.directCostsOfProducing = direct costs of producing goods sold
+expenses.adjustments = adjustments for opening and closing stock
+expenses.commissions = commissions
+expenses.discounts = discounts
+expenses.costsForPrivateUse = costs of goods or materials bought for private use
+expenses.depreciationOfEquipment = depreciation of equipment
 expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
@@ -345,15 +354,6 @@ taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
 goodsToSellOrUse.title = Goods to sell or use
 goodsToSellOrUse.heading = Goods to sell or use
 goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
-goodsToSellOrUse.l1 = the cost of raw materials
-goodsToSellOrUse.l2 = stock bought for resale
-goodsToSellOrUse.l3 = direct costs of producing goods sold
-goodsToSellOrUse.l4 = commissions
-goodsToSellOrUse.l5 = discounts
-goodsToSellOrUse.l6 = costs of goods or materials bought for private use
-goodsToSellOrUse.l7 = depreciation of equipment
-goodsToSellOrUse.l8 = adjustments for opening and closing stock
-goodsToSellOrUse.l9 = fuel costs
 goodsToSellOrUse.checkYourAnswersLabel = Goods to sell or use
 goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
 goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
@@ -589,37 +589,12 @@ otherExpenses.error.required.individual = Select if all your other expenses are 
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
 
-########## Expenses - Goods to sell or use ##########
-
-## Goods to sell or use amount
-goodsToSellOrUseAmount.title = GoodsToSellOrUseAmount
-goodsToSellOrUseAmount.heading = GoodsToSellOrUseAmountHeading
-goodsToSellOrUseAmount.checkYourAnswersLabel = GoodsToSellOrUseAmount
-goodsToSellOrUseAmount.error.nonNumeric = Enter your goodsToSellOrUseAmount using numbers
-goodsToSellOrUseAmount.error.required = Enter your goodsToSellOrUseAmount
-goodsToSellOrUseAmount.error.lessThanZero = Enter your goodsToSellOrUseAmount using whole numbers
-goodsToSellOrUseAmount.error.overMax = GoodsToSellOrUseAmount must be betwe
-goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmoun
-
-## Disallowable goods to sell or use amount
-disallowableGoodsToSellOrUseAmount.title = DisallowableGoodsToSellOrUseAmount
-disallowableGoodsToSellOrUseAmount.heading = DisallowableGoodsToSellOrUseAmountHeading
-disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel = DisallowableGoodsToSellOrUseAmount
-disallowableGoodsToSellOrUseAmount.error.nonNumeric = Enter your disallowableGoodsToSellOrUseAmount using numbers
-disallowableGoodsToSellOrUseAmount.error.required = Enter your disallowableGoodsToSellOrUseAmount
-disallowableGoodsToSellOrUseAmount.error.lessThanZero = Enter your disallowableGoodsToSellOrUseAmount using whole numbers
-disallowableGoodsToSellOrUseAmount.error.overMax = DisallowableGoodsToSellOrUseAmount must be bet
-disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmoun
-
-## Goods to sell or use CYA
-goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
-goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
-
 ########## Expenses - Office supplies ##########
 
 ## Office Supplies Amount
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
-officeSuppliesAmount.heading = OfficeSuppliesAmountHeading
+officeSuppliesAmount.heading = How much did you spend on office supplies?
+officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
 officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
 officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
@@ -628,26 +603,103 @@ officeSuppliesAmount.error.required.agent = Enter the amount your client spent o
 officeSuppliesAmount.change.hidden = OfficeSuppliesAmount
 officeSuppliesAmount.error.lessThanZero.individual = The amount you spent on office supplies must be more than £0
 officeSuppliesAmount.error.lessThanZero.agent = The amount your client spent on office supplies must be more than £0
-officeSuppliesAmount.error.overMax.individual = officeSuppliesAmountOverMaxIndividual
-officeSuppliesAmount.error.overMax.agent = officeSuppliesAmountOverMaxAgent
+officeSuppliesAmount.error.overMax.individual = The amount you spent on office supplies must be less than £100,000,000,000
+officeSuppliesAmount.error.overMax.agent = The amount your client spent on office supplies must be less than £100,000,000,000
 
 ## Office Supplies Disallowable Amount
-officeSuppliesDisallowableAmount.title = OfficeSuppliesDisallowableAmountTitle
+officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
+officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
 officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.nonNumeric.individual = Enter your officeSuppliesDisallowableAmount using numbers
-officeSuppliesDisallowableAmount.error.nonNumeric.agent = Enter your clients officeSuppliesDisallowableAmount using numbers
-officeSuppliesDisallowableAmount.error.required.agent = Enter your officeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.required.individual = Enter your clients officeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.wholeNumber = Enter your officeSuppliesDisallowableAmount using whole numbers
+officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on office supplies must be a number
+officeSuppliesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on office supplies must be a number
+officeSuppliesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on office supplies that is disallowable
+officeSuppliesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on office supplies that is disallowable
 officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
-officeSuppliesDisallowableAmount.error.lessThanZero.individual = lessThanZeroIndividual
-officeSuppliesDisallowableAmount.error.lessThanZero.agent = lessThanZeroAgent
-officeSuppliesDisallowableAmount.error.overMax.individual = overMaxIndividual
-officeSuppliesDisallowableAmount.error.overMax.agent = overMaxAgent
-officeSuppliesDisallowableAmount.error.overAllowableMax.individual = officeSuppliesDisallowableAmountOverAllowableMaxIndividual
-officeSuppliesDisallowableAmount.error.overAllowableMax.agent = officeSuppliesDisallowableAmountOverAllowableMaxAgent
+officeSuppliesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on office supplies must be more than £0
+officeSuppliesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on office supplies must be more than £0
+officeSuppliesDisallowableAmount.error.overMax.individual = The disallowable amount of the £{0} you spent on office supplies must be less than £100,000,000,000
+officeSuppliesDisallowableAmount.error.overMax.agent = The disallowable amount of the £{0} your client spent on office supplies must be less than £100,000,000,000
+officeSuppliesDisallowableAmount.error.overAllowableMax.individual = The disallowable amount you spent on office supplies must be the same as or less than £{0}
+officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable amount your client spent on office supplies must be the same as or less than £{0}
 
 ## Office Supplies CYA
 officeSuppliesAmountCYA.title = officeSuppliesAmountCYA
 officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
+
+########## Expenses - Goods to sell or use ##########
+
+## Goods to sell or use amount
+goodsToSellOrUseAmount.title.individual = How much did you spend on goods to sell or use?
+goodsToSellOrUseAmount.title.agent = How much did your client spend on goods to sell or use?
+goodsToSellOrUseAmount.d1.heading = Understanding goods to sell or use expenses
+goodsToSellOrUseAmount.checkYourAnswersLabel = How much did you spend on goods to sell or use?
+goodsToSellOrUseAmount.error.nonNumeric.individual = The amount you spent on goods to sell or use must be a number
+goodsToSellOrUseAmount.error.nonNumeric.agent = The amount your client spent on goods to sell or use must be a number
+goodsToSellOrUseAmount.error.required.individual = Enter the amount you spent on goods to sell or use
+goodsToSellOrUseAmount.error.required.agent = Enter the amount your client spent on goods to sell or use
+goodsToSellOrUseAmount.error.lessThanZero.individual = The amount you spent on goods to sell or use must be more than £0
+goodsToSellOrUseAmount.error.lessThanZero.agent = The amount your client spent on goods to sell or use must be more than £0
+goodsToSellOrUseAmount.error.overMax.individual = The amount you spent on goods to sell or use must be less than 100,000,000,000
+goodsToSellOrUseAmount.error.overMax.agent = The amount your client spent on goods to sell or use must be less than 100,000,000,000
+goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmount
+
+## Disallowable goods to sell or use amount
+disallowableGoodsToSellOrUseAmount.title.individual = How much of the £{0} you spent on goods to sell or use is disallowable?
+disallowableGoodsToSellOrUseAmount.title.agent = How much of the £{0} your client spent on goods to sell or use is disallowable?
+disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel = How much of the £{0} you spent on goods to sell or use is disallowable?
+disallowableGoodsToSellOrUseAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on goods to sell or use must be a number
+disallowableGoodsToSellOrUseAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on goods to sell or use must be a number
+disallowableGoodsToSellOrUseAmount.error.required.individual = Enter the amount of the £{0} you spent on goods to sell or use that is disallowable
+disallowableGoodsToSellOrUseAmount.error.required.agent = Enter the amount of the £{0} your client spent on goods to sell or use that is disallowable
+disallowableGoodsToSellOrUseAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on goods to sell or use must be more than £0
+disallowableGoodsToSellOrUseAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on goods to sell or use must be more than £0
+disallowableGoodsToSellOrUseAmount.error.overMax.individual = The disallowable amount you spent on goods to sell or use must be the same as or less than £{0}
+disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount your client spent on goods to sell or use must be the same as or less than £{0}
+disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
+
+## Goods to sell or use CYA
+goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
+goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
+
+totalExpenses.title = totalExpenses
+totalExpenses.heading = totalExpenses
+totalExpenses.checkYourAnswersLabel = totalExpenses
+totalExpenses.error.required = Enter totalExpenses
+totalExpenses.error.length = TotalExpenses must be 100 characters or less
+totalExpenses.change.hidden = TotalExpenses
+
+totalExpensesCYA.title = totalExpensesCYA
+totalExpensesCYA.heading = totalExpensesCYA
+
+########## Expenses - Repairs and Maintenance ##########
+
+## Repairs and maintenance amount
+repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
+repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
+repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
+repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
+repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenanceAmount using whole numbers
+repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
+repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+
+## Repairs and maintenance disallowable amount
+repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
+repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric = Enter your repairsAndMaintenanceDisallowableAmount using numbers
+repairsAndMaintenanceDisallowableAmount.error.required = Enter your repairsAndMaintenanceDisallowableAmount
+repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAndMaintenanceDisallowableAmount using whole numbers
+repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
+repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
+
+## Repairs and maintenanceCosts CYA
+repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
+repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
+repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.nonNumeric = Enter your repairsAndMaintenanceCostsCYA using numbers
+repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
+repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
+repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden

@@ -2,18 +2,21 @@ import sbt._
 
 object AppDependencies {
 
-  private val bootstrapVersion = "7.15.0"
-  private val hmrcMongoVersion = "1.2.0"
+  private val bootstrapVersion  = "7.15.0"
+  private val hmrcMongoVersion  = "1.2.0"
+  private val enumeratumVersion = "1.7.3"
 
-  val compile = Seq(
+  val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "7.9.0-play-28",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.13.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion,
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % hmrcMongoVersion
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "7.9.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.13.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootstrapVersion,
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
+    "org.typelevel"     %% "cats-core"                     % "2.9.0",
+    "com.beachape"      %% "enumeratum"                    % enumeratumVersion
   )
 
-  val test = Seq(
+  val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"         %% "bootstrap-test-play-28"  % bootstrapVersion,
     "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % hmrcMongoVersion,
     "org.scalatest"       %% "scalatest"               % "3.2.10",
