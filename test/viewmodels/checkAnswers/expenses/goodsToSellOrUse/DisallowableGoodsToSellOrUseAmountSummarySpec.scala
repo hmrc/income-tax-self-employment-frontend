@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
 
   "DisallowableGoodsToSellOrUseAmountSummary" - {
-    "some GOTSOU were claimed to be disallowable" - {
+    "some GoodsToSellOrUse were claimed to be disallowable" - {
       "user answers for GoodsToSellOrUseAmountPage exist" - {
         "user answers for DisallowableGoodsToSellOrUseAmountPage exist" - {
           "generate a summary list row" in new Test {
@@ -54,7 +54,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
         }
       }
     }
-    "when no GOTSOU are disallowable" - {
+    "when no GoodsToSellOrUse are disallowable" - {
       "return None" in new Test {
         val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, stubbedBusinessId, individual)
 
