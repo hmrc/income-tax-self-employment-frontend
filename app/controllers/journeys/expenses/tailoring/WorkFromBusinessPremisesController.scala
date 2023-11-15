@@ -23,11 +23,10 @@ import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.WorkFromBusinessPremisesPage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.WorkFromBusinessPremisesView
 
 import java.time.LocalDate
@@ -55,17 +54,14 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, legendContent(userType(request.user.isAgent))))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          Future.successful(
-            BadRequest(
-              view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, legendContent(userType(request.user.isAgent))))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(
@@ -74,11 +70,5 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
           } yield Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, updatedAnswers))
       )
   }
-
-  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"workFromBusinessPremises.title.$userType",
-    s"workFromBusinessPremises.hint.$userType",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--l"
-  )
 
 }
