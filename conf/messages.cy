@@ -556,7 +556,8 @@ otherExpenses.change.hidden = OtherExpenses
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
 officeSuppliesAmount.heading = How much did you spend on office supplies?
 officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
-officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
+officeSuppliesAmount.checkYourAnswersLabel.individual = How much did you spend on office supplies?
+officeSuppliesAmount.checkYourAnswersLabel.agent = How much did your client spend on office supplies?
 officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
 officeSuppliesAmount.error.required.individual = Enter the amount you spent on office supplies
@@ -571,7 +572,8 @@ officeSuppliesAmount.error.overMax.agent = The amount your client spent on offic
 officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
-officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on office supplies is disallowable?
+officeSuppliesDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on office supplies must be a number
 officeSuppliesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on office supplies must be a number
 officeSuppliesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on office supplies that is disallowable
@@ -585,7 +587,8 @@ officeSuppliesDisallowableAmount.error.overAllowableMax.individual = The disallo
 officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable amount your client spent on office supplies must be the same as or less than £{0}
 
 ## Office Supplies CYA
-officeSuppliesAmountCYA.title = officeSuppliesAmountCYA
+officeSuppliesAmountCYA.title.individual = Check your office supplies expenses
+officeSuppliesAmountCYA.title.agent = Check your client’s office supplies expenses
 officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 
 ########## Expenses - Goods to sell or use ##########
@@ -631,3 +634,35 @@ totalExpenses.change.hidden = TotalExpenses
 
 totalExpensesCYA.title = totalExpensesCYA
 totalExpensesCYA.heading = totalExpensesCYA
+
+########## Expenses - Repairs and Maintenance ##########
+
+## Repairs and maintenance amount
+repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
+repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
+repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
+repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
+repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenanceAmount using whole numbers
+repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
+repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+
+## Repairs and maintenance disallowable amount
+repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
+repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric = Enter your repairsAndMaintenanceDisallowableAmount using numbers
+repairsAndMaintenanceDisallowableAmount.error.required = Enter your repairsAndMaintenanceDisallowableAmount
+repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAndMaintenanceDisallowableAmount using whole numbers
+repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
+repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
+
+## Repairs and maintenanceCosts CYA
+repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
+repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
+repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.nonNumeric = Enter your repairsAndMaintenanceCostsCYA using numbers
+repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
+repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
+repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden

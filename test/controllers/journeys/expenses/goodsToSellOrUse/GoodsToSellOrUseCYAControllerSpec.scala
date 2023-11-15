@@ -21,7 +21,7 @@ import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYA
 import controllers.journeys.routes.SectionCompletedStateController
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.ExpensesGoodsToSellOrUse
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest

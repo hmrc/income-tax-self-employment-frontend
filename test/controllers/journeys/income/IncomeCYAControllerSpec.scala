@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.IncomeCYAController
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.Income
+import models.journeys.Journey.Income
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
