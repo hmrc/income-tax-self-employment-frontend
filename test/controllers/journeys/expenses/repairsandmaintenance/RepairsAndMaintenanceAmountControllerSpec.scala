@@ -34,8 +34,8 @@ class RepairsAndMaintenanceAmountControllerSpec
       "RepairsAndMaintenanceAmountController",
       RepairsAndMaintenanceAmountPage
     ) {
-  lazy val onPageLoadRoute = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 

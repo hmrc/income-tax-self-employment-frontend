@@ -30,7 +30,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+        val request = FakeRequest(GET, RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url)
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
 
