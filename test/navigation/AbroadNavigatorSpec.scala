@@ -22,7 +22,7 @@ import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
-import models.journeys.Abroad
+import models.journeys.Journey.Abroad
 import pages._
 import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 

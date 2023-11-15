@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.errors.{HttpError, HttpErrorBody}
-import models.journeys.TradeDetails
+import models.journeys.Journey.TradeDetails
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
