@@ -43,7 +43,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
       userTypes.foreach { userType =>
         s"when user is an $userType should" - {
           "generate a summary list row" in {
-            val result = GoodsToSellOrUseAmountSummary.row(userAnswers, userType, taxYear, stubbedBusinessId)
+            val result = GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"goodsToSellOrUseAmount.title.$userType")
@@ -54,7 +54,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for OfficeSuppliesAmountPage should" - {
       "return None" in {
-        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, individual, taxYear, stubbedBusinessId)
+        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, individual)
 
         result mustBe None
       }

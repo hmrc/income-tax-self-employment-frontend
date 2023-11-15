@@ -27,7 +27,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
-import viewmodels.checkAnswers.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountSummary
+import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
@@ -36,8 +36,10 @@ class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
 
   private val userAnswerData = Json.parse(s"""
        |{
-       |  "goodsToSellOrUseAmount": 1235.4,
-       |  "disallowableGoodsToSellOrUseAmount": 12
+       |  "$stubbedBusinessId": {
+       |    "goodsToSellOrUseAmount": 1235.4,
+       |    "disallowableGoodsToSellOrUseAmount": 12
+       |  }
        |}
        |""".stripMargin)
 
@@ -58,7 +60,8 @@ class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
             val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
 
             val expectedSummaryListRows = Seq(
-              GoodsToSellOrUseAmountSummary.row(userAnswers, userType, taxYear, stubbedBusinessId)
+              GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType),
+              DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
             ).flatten
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
             val expectedNextRoute =

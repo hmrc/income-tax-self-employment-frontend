@@ -23,9 +23,11 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.GoodsToSellOrUse.{YesAllowable, YesDisallowable}
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.tailoring.GoodsToSellOrUsePage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -33,40 +35,47 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ExpensesNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (Int, String) => Call = {
+  private val normalRoutes: Page => UserAnswers => Int => String => Call = {
 
     case OfficeSuppliesAmountPage =>
-      _ => (taxYear, businessId) => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => taxYear => businessId => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case OfficeSuppliesDisallowableAmountPage =>
-      _ => (_, _) => OfficeSuppliesCYAController.onPageLoad()
+      _ => _ => _ => OfficeSuppliesCYAController.onPageLoad()
 
     case GoodsToSellOrUseAmountPage =>
-      _ => (taxYear, businessId) => DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
+              case Some(YesAllowable)    => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+              case Some(YesDisallowable) => DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case _                     => JourneyRecoveryController.onPageLoad()
+            }
 
-    case DisallowableGoodsToSellOrUseAmountPage => _ => (taxYear, businessId) => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+    case DisallowableGoodsToSellOrUseAmountPage => _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseCYAPage =>
-      _ => (taxYear, businessId) => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
+      _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
-    case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
+    case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = {
+  private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
 
     case GoodsToSellOrUseAmountPage =>
-      _ => (taxYear, businessId) => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
-      _ => (_, _) => JourneyRecoveryController.onPageLoad()
+      _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId)
+        normalRoutes(page)(userAnswers)(taxYear)(businessId)
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId)
+        checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
 }

@@ -16,7 +16,11 @@
 
 @import templates.helpers.Heading
 
-@this(layout: templates.Layout, govukButton: GovukButton, heading: Heading, govukSummaryList: GovukSummaryList)
+@this(layout: templates.Layout,
+      govukButton: GovukButton,
+      heading: Heading,
+      govukSummaryList: GovukSummaryList
+)
 
 @(taxYear: Int, userType: String, summaryList: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 

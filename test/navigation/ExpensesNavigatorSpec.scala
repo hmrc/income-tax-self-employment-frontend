@@ -22,10 +22,12 @@ import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.database.UserAnswers
 import models.journeys.ExpensesGoodsToSellOrUse
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import play.api.libs.json.Json
 
 class ExpensesNavigatorSpec extends SpecBase {
 
@@ -52,10 +54,23 @@ class ExpensesNavigatorSpec extends SpecBase {
       }
 
       "GoodsToSellOrUse journey" - {
-        "must go from the Goods To Sell Or Use Amount page to the Disallowable Goods To Sell Or Use Amount page" in {
+        "must go from the Goods To Sell Or Use Amount page to the" - {
+          "Disallowable Goods To Sell Or Use Amount page when some expenses were claimed to be disallowable" in {
+            val data        = Json.obj(stubbedBusinessId -> Json.obj("goodsToSellOrUse" -> "yesDisallowable"))
+            val userAnswers = UserAnswers(userAnswersId, data)
 
-          navigator.nextPage(GoodsToSellOrUseAmountPage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
-            DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+
+            navigator.nextPage(GoodsToSellOrUseAmountPage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe expectedResult
+          }
+          "Goods To Sell Or Use CYA page when all expenses were claimed as allowable" in {
+            val data        = Json.obj(stubbedBusinessId -> Json.obj("goodsToSellOrUse" -> "yesAllowable"))
+            val userAnswers = UserAnswers(userAnswersId, data)
+
+            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+
+            navigator.nextPage(GoodsToSellOrUseAmountPage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe expectedResult
+          }
         }
 
         "must go from the Disallowable Goods To Sell Or Use Amount page to the Goods To Sell Or Use CYA page" in {
@@ -82,6 +97,12 @@ class ExpensesNavigatorSpec extends SpecBase {
       "must go from the Goods To Sell Or Use Amount page to the Goods To Sell Or Use CYA page" in {
 
         navigator.nextPage(GoodsToSellOrUseAmountPage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+      }
+
+      "must go from the Disallowable Goods To Sell Or Use Amount page to the Goods To Sell Or Use CYA page" in {
+
+        navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
           GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
       }
 
