@@ -26,7 +26,7 @@
   taxYear: Int,
   nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("officeSuppliesAmountCYA.title.$authUserType"))) {
+@layout(pageTitle = titleNoForm(messages(s"officeSuppliesAmountCYA.title.$authUserType"))) {
 
     @heading(
       heading = messages(s"officeSuppliesAmountCYA.title.$authUserType"),
