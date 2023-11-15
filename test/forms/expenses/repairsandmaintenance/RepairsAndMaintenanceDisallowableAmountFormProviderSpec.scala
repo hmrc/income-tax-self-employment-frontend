@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package forms.expenses.repairsandmaintenance
 
-import models.Mode
-import models.common.onwardRoute
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+import forms.behaviours.BigDecimalFieldBehaviours
+import play.api.data.FormError
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
-    desiredRoute
-
-}
-
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
+class RepairsAndMaintenanceDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 }
