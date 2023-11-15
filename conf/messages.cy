@@ -78,7 +78,6 @@ common.expenses.listItem.anyAmount = any amounts that cover personal use
 common.expenses.legalCost.equipment = legal costs of buying equipment
 common.expenses.legalCost.property = legal costs of buying property
 common.expenses.fines = fines for breaking the law
-common.expenses.NI.contribution = your own pay, pension or National Insurance contributions
 common.expenses.taxDisputes = costs of settling tax disputes
 
 index.title = income-tax-self-employment-frontend
@@ -475,9 +474,11 @@ disallowableStaffCosts.heading = Disallowable staff costs
 disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
 disallowableStaffCosts.subheading.agent = Are any of your client`s staff costs disallowable?
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
-disallowableStaffCosts.error.required = Select yes if any of your staff costs are disallowable
+disallowableStaffCosts.error.required.agent = Select yes if any of your client`s staff costs are disallowable
+disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
 disallowableStaffCosts.l1.agent = your client`s own pay, pension or National Insurance contributions
+disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs

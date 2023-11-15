@@ -78,7 +78,6 @@ common.expenses.listItem.anyAmount = any amounts that cover personal use
 common.expenses.legalCost.equipment = legal costs of buying equipment
 common.expenses.legalCost.property = legal costs of buying property
 common.expenses.fines = fines for breaking the law
-common.expenses.NI.contribution = your own pay, pension or National Insurance contributions
 common.expenses.taxDisputes = costs of settling tax disputes
 
 index.title = income-tax-self-employment-frontend
@@ -475,19 +474,21 @@ disallowableStaffCosts.heading = Disallowable staff costs
 disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
 disallowableStaffCosts.subheading.agent = Are any of your client`s staff costs disallowable?
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
-disallowableStaffCosts.error.required = Select yes if any of your staff costs are disallowable
+disallowableStaffCosts.error.required.agent = Select yes if any of your client`s staff costs are disallowable
+disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
 disallowableStaffCosts.l1.agent = your client`s own pay, pension or National Insurance contributions
+disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
-disallowableSubcontractorCosts.subheading.agent = Are any of your client's construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subheading.agent = Are any of your client`s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.error.required.individual = Select yes if any of your construction industry subcontractors costs are disallowable
-disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client's construction industry subcontractors costs are disallowable
+disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client`s construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
 disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
 disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client's home.
@@ -496,10 +497,10 @@ disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. Fo
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
 disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
-disallowableProfessionalFees.subheading.agent = Are any of your client's professional fees disallowable?
+disallowableProfessionalFees.subheading.agent = Are any of your client`s professional fees disallowable?
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
 disallowableProfessionalFees.error.required.individual = Select yes if any of your professional fees are disallowable
-disallowableProfessionalFees.error.required.agent = Select yes if any of your client's professional fees are disallowable
+disallowableProfessionalFees.error.required.agent = Select yes if any of your client`s professional fees are disallowable
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
 disallowableProfessionalFees.checkYourAnswersLabel = Are any of your professional fees disallowable?
 

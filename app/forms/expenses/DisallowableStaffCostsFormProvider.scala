@@ -26,7 +26,7 @@ class DisallowableStaffCostsFormProvider @Inject() extends Mappings {
 
   def apply(authUserType: String): Form[DisallowableStaffCosts] =
     Form(
-      "value" -> enumerable[DisallowableStaffCosts](s"disallowableStaffCosts.error.required")
+      "value" -> enumerable[DisallowableStaffCosts](s"disallowableStaffCosts.error.required.$authUserType")
     )
 
 }
