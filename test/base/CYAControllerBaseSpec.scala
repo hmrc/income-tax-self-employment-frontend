@@ -33,17 +33,15 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
       "answers for the user exist" - {
         forAll(langUserTypeCases) { (lang, userType) =>
           s"language is $lang and user is an $userType" - {
-            "user answers exist" - {
-              "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
-                running(application) {
-                  val result = languageAwareResult(lang, route(application, getRequest).value)
+            "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
+              running(application) {
+                val result = languageAwareResult(lang, route(application, getRequest).value)
 
-                  status(result) shouldBe OK
-                  contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
-                }
+                status(result) shouldBe OK
+                contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
               }
-
             }
+
           }
 
         }
