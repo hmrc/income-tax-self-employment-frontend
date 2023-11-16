@@ -33,6 +33,7 @@ import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.RoundingMode
 
 class OfficeSuppliesAmountController @Inject() (override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
@@ -71,7 +72,9 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
+                  request.userAnswers
+                    .getOrElse(UserAnswers(request.userId))
+                    .set(OfficeSuppliesAmountPage, value.setScale(2, RoundingMode.HALF_UP), Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
           )

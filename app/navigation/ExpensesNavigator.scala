@@ -65,8 +65,23 @@ class ExpensesNavigator @Inject() () {
   }
 
   private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
-    case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
-      _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+    case OfficeSuppliesAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            val maybeNextCall = for {
+              allowableAmount    <- userAnswers.get(OfficeSuppliesAmountPage, Some(businessId))
+              disallowableAmount <- userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId))
+            } yield
+              if (allowableAmount < disallowableAmount) {
+                OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode)
+              } else {
+                OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+              }
+
+            maybeNextCall.getOrElse(JourneyRecoveryController.onPageLoad())
+
+    case OfficeSuppliesDisallowableAmountPage => _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
 

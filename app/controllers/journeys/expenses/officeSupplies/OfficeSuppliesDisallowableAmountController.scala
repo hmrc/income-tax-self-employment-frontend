@@ -34,6 +34,7 @@ import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmo
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.RoundingMode
 
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                             sessionRepository: SessionRepository,
@@ -71,8 +72,9 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
                   BadRequest(view(formWithErrors, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
+                  updatedAnswers <- Future.fromTry(
+                    request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value.setScale(2, RoundingMode.HALF_UP), Some(businessId)))
+                  _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
         }
