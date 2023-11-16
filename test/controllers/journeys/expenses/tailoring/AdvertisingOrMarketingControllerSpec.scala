@@ -42,7 +42,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val advertisingOrMarketingRoute = controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(NormalMode).url
+  lazy val advertisingOrMarketingRoute = controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new AdvertisingOrMarketingFormProvider()
 

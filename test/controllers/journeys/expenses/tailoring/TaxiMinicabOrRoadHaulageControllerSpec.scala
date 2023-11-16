@@ -44,7 +44,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val taxiMinicabOrRoadHaulageRoute = TaxiMinicabOrRoadHaulageController.onPageLoad(NormalMode).url
+  lazy val taxiMinicabOrRoadHaulageRoute = TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new TaxiMinicabOrRoadHaulageFormProvider()
 

@@ -44,7 +44,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(NormalMode).url
+  lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new WorkFromHomeFormProvider()
 

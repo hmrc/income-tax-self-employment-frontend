@@ -39,7 +39,8 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableStaffCostsRoute = controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(NormalMode).url
+  lazy val disallowableStaffCostsRoute =
+    controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableStaffCostsFormProvider()
   val form         = formProvider()
@@ -58,7 +59,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[DisallowableStaffCostsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 
@@ -76,7 +77,9 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(DisallowableStaffCosts.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(DisallowableStaffCosts.values.head), NormalMode, taxYear, stubbedBusinessId)(
+          request,
+          messages(application)).toString
       }
     }
 
@@ -122,7 +125,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 

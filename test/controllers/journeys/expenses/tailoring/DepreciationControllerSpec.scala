@@ -42,7 +42,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val depreciationRoute = DepreciationController.onPageLoad(NormalMode).url
+  lazy val depreciationRoute = DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DepreciationFormProvider()
 

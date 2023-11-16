@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.simplifiedExpenses.TotalExpensesView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,7 +68,7 @@ class TotalExpensesController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TotalExpensesPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TotalExpensesPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TotalExpensesPage, mode, updatedAnswers, LocalDate.now().getYear, "businessId"))
       )
   }
 }

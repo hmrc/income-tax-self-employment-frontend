@@ -39,7 +39,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val professionalServiceExpensesRoute = controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(NormalMode).url
+  lazy val professionalServiceExpensesRoute =
+    controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new ProfessionalServiceExpensesFormProvider()
   val form         = formProvider()
@@ -59,7 +60,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 
@@ -77,7 +78,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ProfessionalServiceExpenses.values.toSet), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(ProfessionalServiceExpenses.values.toSet), NormalMode, taxYear, stubbedBusinessId)(
           request,
           messages(application)).toString
       }
@@ -125,7 +126,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 

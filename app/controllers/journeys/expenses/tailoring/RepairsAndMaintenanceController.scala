@@ -31,7 +31,6 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.RepairsAndMaintenanceView
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,10 +47,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     extends FrontendBaseController
     with I18nSupport {
 
-  val businessId = "SJPR05893938418" // TODO SASS-5658 replace default BID and taxYear vals
-  val taxYear    = LocalDate.now.getYear
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
@@ -64,7 +60,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
@@ -78,7 +74,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(RepairsAndMaintenancePage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers, taxYear, businessId))
           )
     }
   }

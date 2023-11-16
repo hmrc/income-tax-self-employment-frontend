@@ -42,7 +42,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableInterestRoute = DisallowableInterestController.onPageLoad(NormalMode).url
+  lazy val disallowableInterestRoute = DisallowableInterestController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableInterestFormProvider()
 

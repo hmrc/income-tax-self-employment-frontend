@@ -46,7 +46,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val goodsToSellOrUseRoute = GoodsToSellOrUseController.onPageLoad(NormalMode).url
+  lazy val goodsToSellOrUseRoute = GoodsToSellOrUseController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new GoodsToSellOrUseFormProvider()
   val taxiDriver   = false

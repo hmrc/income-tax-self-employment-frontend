@@ -40,7 +40,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
   def onwardRoute = Call("GET", "/foo")
 
   lazy val disallowableSubcontractorCostsRoute =
-    controllers.journeys.expenses.tailoring.routes.DisallowableSubcontractorCostsController.onPageLoad(NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableSubcontractorCostsFormProvider()
   val form         = formProvider()
@@ -59,7 +59,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
         val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 
@@ -77,7 +77,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(DisallowableSubcontractorCosts.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(DisallowableSubcontractorCosts.values.head), NormalMode, taxYear, stubbedBusinessId)(
           request,
           messages(application)).toString
       }
@@ -125,7 +125,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 

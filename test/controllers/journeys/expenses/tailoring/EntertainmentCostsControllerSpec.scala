@@ -42,7 +42,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val entertainmentCostsRoute = controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(NormalMode).url
+  lazy val entertainmentCostsRoute = controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new EntertainmentCostsFormProvider()
 

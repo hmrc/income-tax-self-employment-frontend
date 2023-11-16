@@ -42,7 +42,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(NormalMode).url
+  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableIrrecoverableDebtsFormProvider()
 

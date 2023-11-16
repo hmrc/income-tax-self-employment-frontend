@@ -43,7 +43,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(NormalMode).url
+  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new FinancialExpensesFormProvider()
 

@@ -43,7 +43,7 @@ import scala.concurrent.Future
 
 class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(NormalMode).url
+  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new OfficeSuppliesFormProvider()
 

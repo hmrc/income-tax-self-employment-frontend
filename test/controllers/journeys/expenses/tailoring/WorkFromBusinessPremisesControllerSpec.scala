@@ -43,7 +43,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val workFromBusinessPremisesRoute = WorkFromBusinessPremisesController.onPageLoad(NormalMode).url
+  lazy val workFromBusinessPremisesRoute = WorkFromBusinessPremisesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
 

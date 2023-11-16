@@ -45,7 +45,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val repairsAndMaintenanceRoute = RepairsAndMaintenanceController.onPageLoad(NormalMode).url
+  lazy val repairsAndMaintenanceRoute = RepairsAndMaintenanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new RepairsAndMaintenanceFormProvider()
 

@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object RepairsAndMaintenanceSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(RepairsAndMaintenancePage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -41,7 +41,7 @@ object RepairsAndMaintenanceSummary {
         key = "repairsAndMaintenance.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("repairsAndMaintenance.change.hidden"))
         )
       )

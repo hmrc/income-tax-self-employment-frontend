@@ -42,7 +42,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val otherExpensesRoute = OtherExpensesController.onPageLoad(NormalMode).url
+  lazy val otherExpensesRoute = OtherExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new OtherExpensesFormProvider()
 
@@ -175,7 +175,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =

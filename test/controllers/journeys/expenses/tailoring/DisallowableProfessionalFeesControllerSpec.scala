@@ -39,7 +39,8 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableProfessionalFeesRoute = controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onPageLoad(NormalMode).url
+  lazy val disallowableProfessionalFeesRoute =
+    controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableProfessionalFeesFormProvider()
   val form         = formProvider()
@@ -58,7 +59,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
         val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 
@@ -76,7 +77,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(DisallowableProfessionalFees.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(DisallowableProfessionalFees.values.head), NormalMode, taxYear, stubbedBusinessId)(
           request,
           messages(application)).toString
       }
@@ -124,7 +125,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId)(request, messages(application)).toString
       }
     }
 

@@ -42,7 +42,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(NormalMode).url
+  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableOtherFinancialChargesFormProvider()
 
