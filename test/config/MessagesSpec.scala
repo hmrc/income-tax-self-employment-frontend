@@ -36,9 +36,7 @@ class MessagesSpec extends SpecBase {
     "global.error.fallbackClientError4xx.heading",
     "global.error.fallbackClientError4xx.title",
     "language.day.plural",
-    "language.day.singular",
-    "disallowableStaffCosts.l1.individual",
-    "professionalServiceExpenses.d1.l9.individual"
+    "language.day.singular"
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(

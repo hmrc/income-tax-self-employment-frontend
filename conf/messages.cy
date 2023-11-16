@@ -317,11 +317,12 @@ expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
 expenses.repaymentsOfLoans = repayments of loans
-common.expenses.listItem.anyAmount = any amounts that cover personal use
-common.expenses.legalCost.equipment = legal costs of buying equipment
-common.expenses.legalCost.property = legal costs of buying property
-common.expenses.fines = fines for breaking the law
-common.expenses.taxDisputes = costs of settling tax disputes
+expenses.listItem.anyAmount = any amounts that cover personal use
+expenses.legalCost.equipment = legal costs of buying equipment
+expenses.legalCost.property = legal costs of buying property
+expenses.fines = fines for breaking the law
+expenses.taxDisputes = costs of settling tax disputes
+expenses.contributions.individual = your own pay, pension or National Insurance contributions
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -459,8 +460,7 @@ professionalServiceExpenses.d1.l5 = benefits for employees
 professionalServiceExpenses.d1.l6 = agency fees
 professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
 professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
-professionalServiceExpenses.d1.l9.individual = your own pay, pension or National Insurance contributions
-professionalServiceExpenses.d1.l9.agent = your own client’s pay, pension or National Insurance contributions
+professionalServiceExpenses.d1.l9.agent = their own pay, pension or National Insurance contributions
 professionalServiceExpenses.d2.heading = Understanding construction industry expenses
 professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
@@ -481,7 +481,6 @@ disallowableStaffCosts.error.required.agent = Select yes if any of your client�
 disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
 disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
-disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs

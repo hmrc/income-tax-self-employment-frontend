@@ -41,8 +41,12 @@
             @messages(s"site.theseInclude")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
-                <li>@messages("common.expenses.listItem.anyAmount")</li>
+                @if(authUserType.equals("individual")) {
+                    <li>@messages(s"expenses.contributions.$authUserType")</li>
+                } else {
+                    <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
+                }
+                <li>@messages("expenses.listItem.anyAmount")</li>
             </ul>
         </div>
 

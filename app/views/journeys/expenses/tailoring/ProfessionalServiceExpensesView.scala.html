@@ -60,8 +60,12 @@
                 @messages(s"site.cannotInclude.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                    <li>@messages(s"professionalServiceExpenses.d1.l9.$authUserType")</li>
-                    <li>@messages("common.expenses.listItem.anyAmount")</li>
+                    @if(authUserType.equals("individual")) {
+                        <li>@messages(s"expenses.contributions.$authUserType")</li>
+                    } else {
+                        <li>@messages(s"professionalServiceExpenses.d1.l9.$authUserType")</li>
+                    }
+                    <li>@messages("expenses.listItem.anyAmount")</li>
                 </ul>
             </div>
         </details>
@@ -99,12 +103,12 @@
                 @messages(s"site.cannotInclude.$authUserType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                    <li>@messages("common.expenses.legalCost.property")</li>
+                    <li>@messages("expenses.legalCost.property")</li>
                         @if(accountingType.equals("ACCRUAL")){
-                            <li>@messages("common.expenses.legalCost.equipment")</li>
+                            <li>@messages("expenses.legalCost.equipment")</li>
                         }
-                    <li>@messages("common.expenses.taxDisputes")</li>
-                    <li>@messages("common.expenses.fines")</li>
+                    <li>@messages("expenses.taxDisputes")</li>
+                    <li>@messages("expenses.fines")</li>
                 </ul>
             </div>
         </details>
