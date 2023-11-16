@@ -24,12 +24,11 @@ import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.ProfessionalServiceExpensesView
 
 import javax.inject.Inject
@@ -61,7 +60,7 @@ class ProfessionalServiceExpensesController @Inject() (
       ).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), accountingType, legendContent(userType(request.user.isAgent))))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), accountingType))
   }
 }
 
@@ -72,8 +71,7 @@ class ProfessionalServiceExpensesController @Inject() (
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent),  accountingType,
-          legendContent(userType(request.user.isAgent))))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, authUserType = userType(request.user.isAgent),  accountingType))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(ProfessionalServiceExpensesPage, value))
@@ -82,11 +80,5 @@ class ProfessionalServiceExpensesController @Inject() (
       )
   }
   }
-
-  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"professionalServiceExpenses.subHeading.$userType",
-    "site.selectAllThatApply",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-  )
 
 }

@@ -35,7 +35,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
+import .buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.WorkFromBusinessPremisesView
 
 import scala.concurrent.Future

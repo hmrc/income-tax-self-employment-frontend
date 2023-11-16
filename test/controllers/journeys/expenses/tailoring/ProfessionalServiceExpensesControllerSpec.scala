@@ -34,7 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.ProfessionalServiceExpensesView
 
 import scala.concurrent.Future
@@ -48,12 +47,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
   val formProvider = new ProfessionalServiceExpensesFormProvider()
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
-
-  def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"professionalServiceExpenses.subHeading.$userType",
-    "site.selectAllThatApply",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-  )
 
   case class UserScenario(isWelsh: Boolean, userType: String, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
 
@@ -74,8 +67,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
-
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
@@ -86,7 +77,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, userScenario.accountingType, legendContent)(
+                view(userScenario.form, NormalMode, userScenario.userType, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -106,7 +97,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -121,8 +111,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
                 NormalMode,
                 userScenario.userType,
-                userScenario.accountingType,
-                legendContent)(request, messages(application)).toString
+                userScenario.accountingType)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -185,7 +174,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -201,7 +189,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val result = route(application, request).value
 
               val expectedResult = view(boundForm, NormalMode, userScenario.userType,
-                userScenario.accountingType, legendContent)(request, messages(application)).toString
+                userScenario.accountingType)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

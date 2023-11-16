@@ -26,7 +26,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, legendContent: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, accountingType: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
@@ -118,7 +118,18 @@
                     form = form,
                     name = "value",
                     items = ProfessionalServiceExpenses.checkboxItems(authUserType),
-                    legend = LegendViewModel(HtmlContent(legendContent)).withCssClass("no-margin-bottom")
+                    legend = LegendViewModel(HtmlContent(
+                        s"""
+                            <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            ${messages(s"professionalServiceExpenses.subHeading.$authUserType")}
+                        </legend>
+                        <div class="govuk-hint">
+                            ${messages("site.selectAllThatApply")}
+                        </div>
+                    </div>
+                        """
+                    )).withCssClass("no-margin-bottom")
                 )
             )
 

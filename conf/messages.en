@@ -74,12 +74,6 @@ common.checkYourDetails.title.individual = Check your details
 common.checkYourDetails.heading.agent = Check your client’s details
 common.checkYourDetails.heading.individual = Check your details
 
-common.expenses.listItem.anyAmount = any amounts that cover personal use
-common.expenses.legalCost.equipment = legal costs of buying equipment
-common.expenses.legalCost.property = legal costs of buying property
-common.expenses.fines = fines for breaking the law
-common.expenses.taxDisputes = costs of settling tax disputes
-
 index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
@@ -323,6 +317,11 @@ expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
 expenses.repaymentsOfLoans = repayments of loans
+common.expenses.listItem.anyAmount = any amounts that cover personal use
+common.expenses.legalCost.equipment = legal costs of buying equipment
+common.expenses.legalCost.property = legal costs of buying property
+common.expenses.fines = fines for breaking the law
+common.expenses.taxDisputes = costs of settling tax disputes
 
 ## Office supplies
 officeSupplies.title = Office supplies

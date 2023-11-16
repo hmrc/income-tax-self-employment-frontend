@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.ContentStringViewModel.buildLegendHeadingWithHintString
+import .buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.WorkFromBusinessPremisesView
 
 import java.time.LocalDate
