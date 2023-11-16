@@ -495,7 +495,7 @@ disallowableSubcontractorCosts.error.required.individual = Select yes if any of 
 disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client’s construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
 disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
-disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client's home.
+disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client’s home.
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
