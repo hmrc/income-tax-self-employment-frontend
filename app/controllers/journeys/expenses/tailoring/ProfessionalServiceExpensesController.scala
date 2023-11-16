@@ -17,13 +17,16 @@
 package controllers.journeys.expenses.tailoring
 
 import controllers.actions._
+import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.ProfessionalServiceExpensesFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.ProfessionalServiceExpensesView
 
@@ -32,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ProfessionalServiceExpensesController @Inject() (override val messagesApi: MessagesApi,
                                                        sessionRepository: SessionRepository,
+                                                       selfEmploymentService: SelfEmploymentService,
                                                        navigator: ExpensesTailoringNavigator,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
@@ -42,30 +46,37 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
-
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+        case Right(accountingType) =>
+          val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+            case None        => formProvider(userType(request.user.isAgent))
+            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+          }
 
-      Ok(view(preparedForm, mode, taxYear, businessId))
+          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
+      }
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Right(accountingType) =>
+          formProvider(userType(request.user.isAgent))
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
+            )
+      }
   }
 
 }

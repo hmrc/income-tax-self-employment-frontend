@@ -32,7 +32,6 @@ class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings wi
         nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUserType", allowableAmount)
       )
         .verifying(greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUserType", allowableAmount)))
-        .verifying(lessThan(maximumValue, messages(s"officeSuppliesDisallowableAmount.error.overMax.$authUserType", allowableAmount)))
         .verifying(maximumValue(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$authUserType"))
     )
 

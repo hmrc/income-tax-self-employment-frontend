@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import forms.expenses.tailoring.DisallowableStaffCostsFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableStaffCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,24 +43,22 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
-
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(userType(request.user.isAgent))
+        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxYear, businessId))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form
+      formProvider(userType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableStaffCostsPage, value, Some(businessId)))

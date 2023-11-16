@@ -15,35 +15,46 @@
  *@
 
 @import models.journeys.expenses.DisallowableSubcontractorCosts
+@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages("disallowableSubcontractorCosts.title"))) {
+@layout(pageTitle = title(form, messages("disallowableSubcontractorCosts.title"))) {
 
-        @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableSubcontractorCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
-
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-            }
-
-            @govukRadios(
-                RadiosViewModel(
-                    field = form("value"),
-                    legend = LegendViewModel(messages("disallowableSubcontractorCosts.heading")).asPageHeading(),
-                    items = DisallowableSubcontractorCosts.options
-                )
-            )
-
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
+
+    @heading(messages("disallowableSubcontractorCosts.title"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages(s"disallowableSubcontractorCosts.p1.$authUserType")
+        </p>
+    </div>
+
+    @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableSubcontractorCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"disallowableSubcontractorCosts.subheading.$authUserType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items = DisallowableSubcontractorCosts.options
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

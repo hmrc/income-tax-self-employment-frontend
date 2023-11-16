@@ -29,6 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
 import javax.inject.Inject
@@ -44,7 +45,8 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
                                                             val controllerComponents: MessagesControllerComponents,
                                                             view: OfficeSuppliesDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with MoneyUtils {
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -53,7 +55,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
           case Some(existingAnswer) => formProvider(userType(request.user.isAgent), allowableAmount).fill(existingAnswer)
           case None                 => formProvider(userType(request.user.isAgent), allowableAmount)
         }
-        Ok(view(preparedForm, mode, taxYear, businessId, userType(request.user.isAgent), allowableAmount))
+        Ok(view(preparedForm, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))
       }.merge
   }
 
@@ -65,7 +67,8 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId, userType(request.user.isAgent), allowableAmount))),
+                Future.successful(
+                  BadRequest(view(formWithErrors, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
