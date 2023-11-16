@@ -19,7 +19,6 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import forms.expenses.tailoring.DisallowableStaffCostsFormProvider
 import models.Mode
-import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableStaffCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,6 +35,7 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
                                                   navigator: ExpensesTailoringNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
                                                   formProvider: DisallowableStaffCostsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: DisallowableStaffCostsView)(implicit ec: ExecutionContext)
@@ -44,26 +44,28 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
 
   val form = formProvider()
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableStaffCostsPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-    Ok(view(preparedForm, mode, taxYear, businessId))
+      Ok(view(preparedForm, mode, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableStaffCostsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableStaffCostsPage, mode, updatedAnswers, taxYear, businessId))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableStaffCostsPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DisallowableStaffCostsPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 
 }

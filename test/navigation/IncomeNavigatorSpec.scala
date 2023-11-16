@@ -23,6 +23,7 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.Journey.Income
+import models.journeys.income.HowMuchTradingAllowance
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
 import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import pages._
@@ -172,7 +173,8 @@ class IncomeNavigatorSpec extends SpecBase {
       "How Much Trading Allowance Page must go to the" - {
         "Trading Allowance Amount page when answer is 'LessThan'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
+          val userAnswers =
+            UserAnswers(userAnswersId).set[HowMuchTradingAllowance](HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
             TradingAllowanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)

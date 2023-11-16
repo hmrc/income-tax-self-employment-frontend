@@ -65,7 +65,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DisallowableProfessionalFeesPage, DisallowableProfessionalFees.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DisallowableProfessionalFeesPage, DisallowableProfessionalFees.values.head, Some(stubbedBusinessId)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -129,7 +129,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 

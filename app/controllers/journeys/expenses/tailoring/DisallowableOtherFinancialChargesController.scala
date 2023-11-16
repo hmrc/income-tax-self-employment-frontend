@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.expenses.tailoring.DisallowableOtherFinancialChargesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableOtherFinancialChargesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,27 +43,28 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
-      case None        => formProvider(userType(request.user.isAgent))
-      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-    }
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
+        case None        => formProvider(userType(request.user.isAgent))
+        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+      }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider(userType(request.user.isAgent))
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableOtherFinancialChargesPage, value, Some(businessId)))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, updatedAnswers, taxYear, businessId))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      formProvider(userType(request.user.isAgent))
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableOtherFinancialChargesPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 
 }

@@ -130,7 +130,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -244,7 +244,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "redirect to Journey Recovery for a POST if no existing data is found" ignore {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 

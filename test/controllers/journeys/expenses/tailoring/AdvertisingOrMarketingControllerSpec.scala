@@ -22,7 +22,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.AdvertisingOrMarketing
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.AdvertisingOrMarketingPage
@@ -34,6 +34,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.AdvertisingOrMarketingView
 
 import scala.concurrent.Future
@@ -42,7 +43,11 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val advertisingOrMarketingRoute = controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val advertisingOrMarketingRoute =
+    controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+
+  val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
 
   val formProvider = new AdvertisingOrMarketingFormProvider()
 
@@ -87,9 +92,10 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head).success.value
+            val userAnswers =
+              UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head, Some(stubbedBusinessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -102,49 +108,79 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(
+                  userScenario.form.fill(AdvertisingOrMarketing.values.head),
+                  NormalMode,
+                  userType(userScenario.isAgent),
+                  taxYear,
+                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-          "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+        val application = applicationBuilder(userAnswers = None).build()
 
-            val application = applicationBuilder(userAnswers = None).build()
+        running(application) {
+          val request = FakeRequest(GET, advertisingOrMarketingRoute)
 
-            running(application) {
-              val request = FakeRequest(GET, advertisingOrMarketingRoute)
+          val result = route(application, request).value
 
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
 
     "onSubmit" - {
-      "must redirect to the next page when valid data is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
+      "must redirect to the EntertainmentCostsPage when valid data is submitted and accounting type is 'ACCRUAL'" in {
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
         running(application) {
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+
+          val request =
+            FakeRequest(POST, advertisingOrMarketingRoute)
+              .withFormUrlEncodedBody(("value", AdvertisingOrMarketing.values.head.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+      "must redirect to the ProfessionalServiceExpensesPage when valid data is submitted and accounting type is 'CASH'" in {
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(application) {
+          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+
           val request =
             FakeRequest(POST, advertisingOrMarketingRoute)
               .withFormUrlEncodedBody(("value", AdvertisingOrMarketing.values.head.toString))
@@ -160,11 +196,13 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
         s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when empty data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)
@@ -178,9 +216,8 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -189,11 +226,13 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
+              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)
@@ -207,33 +246,33 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
-          "redirect to Journey Recovery for a POST if no existing data is found" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
-            val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, advertisingOrMarketingRoute)
-                  .withFormUrlEncodedBody(("value", AdvertisingOrMarketing.values.head.toString))
+        running(application) {
+          val request =
+            FakeRequest(POST, advertisingOrMarketingRoute)
+              .withFormUrlEncodedBody(("value", AdvertisingOrMarketing.values.head.toString))
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
   }
+
 }

@@ -65,7 +65,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head, Some(stubbedBusinessId)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -129,7 +129,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 

@@ -21,7 +21,6 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.RepairsAndMaintenanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.RepairsAndMaintenancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,36 +46,37 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-      case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
-      case Right(accountingType) =>
-        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(RepairsAndMaintenancePage, Some(businessId)) match {
-          case None        => formProvider(userType(request.user.isAgent))
-          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-        }
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+        case Right(accountingType) =>
+          val preparedForm = request.userAnswers.get(RepairsAndMaintenancePage, Some(businessId)) match {
+            case None        => formProvider(userType(request.user.isAgent))
+            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+          }
 
-        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
-    }
+          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
+      }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-      case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-      case Right(accountingType) =>
-        formProvider(userType(request.user.isAgent))
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(RepairsAndMaintenancePage, value, Some(businessId)))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers, taxYear, businessId))
-          )
-    }
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Right(accountingType) =>
+          formProvider(userType(request.user.isAgent))
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenancePage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers, taxYear, businessId))
+            )
+      }
   }
 
 }

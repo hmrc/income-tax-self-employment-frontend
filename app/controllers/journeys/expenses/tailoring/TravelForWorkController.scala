@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.expenses.tailoring.TravelForWorkFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
@@ -38,40 +37,42 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
                                          navigator: ExpensesTailoringNavigator,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
                                          formProvider: TravelForWorkFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: TravelForWorkView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TravelForWorkPage, Some(businessId)) match {
-      case None        => formProvider(userType(request.user.isAgent))
-      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-    }
-    val taxiDriver = request.userAnswers
-      .getOrElse(UserAnswers(request.userId))
-      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-      .contains(TaxiMinicabOrRoadHaulage.Yes)
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(TravelForWorkPage, Some(businessId)) match {
+        case None        => formProvider(userType(request.user.isAgent))
+        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+      }
+      val taxiDriver = request.userAnswers
+        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        .contains(TaxiMinicabOrRoadHaulage.Yes)
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val taxiDriver = request.userAnswers
-      .getOrElse(UserAnswers(request.userId))
-      .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-      .contains(TaxiMinicabOrRoadHaulage.Yes)
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      val taxiDriver = request.userAnswers
+        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        .contains(TaxiMinicabOrRoadHaulage.Yes)
 
-    formProvider(userType(request.user.isAgent))
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TravelForWorkPage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, businessId))
-      )
+      formProvider(userType(request.user.isAgent))
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 
 }
