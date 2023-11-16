@@ -84,7 +84,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       )
   }
 
-  def languageAwareResult(lang: Language, result: Future[Result])(implicit messagesApi: MessagesApi) =
+  def languageAwareResult(lang: Language, result: Future[Result])(implicit messagesApi: MessagesApi): Future[Result] =
     lang match {
       case English => result
       case Welsh   => result.map(_.withLang(cyLang))

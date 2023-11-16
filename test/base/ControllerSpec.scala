@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
 import repositories.SessionRepository
 
@@ -32,6 +32,12 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks {
+
+  val authTypeCases = Table(
+    "userType",
+    UserType.Individual,
+    UserType.Agent
+  )
 
   val langUserTypeCases = Table(
     ("Language", "userType"),
@@ -45,15 +51,16 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
   case class TestScenario(userType: UserType,
                           answers: Option[UserAnswers],
-                           mode: Mode = NormalMode,
-                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
-                           businessId: BusinessId = BusinessId(stubbedBusinessId),
-                           accountingType: Option[AccountingType] = None
-  ) {
+                          mode: Mode = NormalMode,
+                          taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+                          businessId: BusinessId = BusinessId(stubbedBusinessId),
+                          accountingType: Option[AccountingType] = None) {
+
     private val mockSessionRepository = mock[SessionRepository]
 
-    implicit val application              = createApp(userType, answers, mockSessionRepository)
+    implicit val application: Application = createApp(userType, answers, mockSessionRepository)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+    implicit val appMessages: Messages    = messages(application)
 
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
