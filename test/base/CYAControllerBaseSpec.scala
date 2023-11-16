@@ -10,15 +10,14 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, redirectLocation, route, running, status, writeableOf_AnyContentAsEmpty}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 
 abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerSpec {
 
   protected val onPageLoadRoute: String
   protected val userAnswers: UserAnswers
-  protected val summaryStylingClass: String
 
-  def expectedSummaryRows(authUserType: UserType)(implicit messages: Messages): List[Option[SummaryListRow]]
+  def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList
 
   def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
       request: Request[_],
@@ -36,16 +35,11 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
           s"language is $lang and user is an $userType" - {
             "user answers exist" - {
               "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
-                val allRows: List[SummaryListRow] = expectedSummaryRows(userType).map {
-                  case Some(row) => row
-                  case None      => fail("Expected a row but got None")
-                }
-
                 running(application) {
                   val result = languageAwareResult(lang, route(application, getRequest).value)
 
                   status(result) shouldBe OK
-                  contentAsString(result) mustEqual expectedView(this, SummaryList(rows = allRows, classes = summaryStylingClass), nextRoute)
+                  contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
                 }
               }
 
