@@ -16,24 +16,32 @@
 
 package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
-import controllers.journeys.expenses.goodsToSellOrUse.routes
+import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
 import models.CheckMode
 import models.database.UserAnswers
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object GoodsToSellOrUseAmountSummary {
+object GoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GoodsToSellOrUseAmountPage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(GoodsToSellOrUseAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "goodsToSellOrUseAmount.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
+        key = Key(
+          content = s"goodsToSellOrUseAmount.title.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = s"£${formatMoney(answer)}",
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("goodsToSellOrUseAmount.change.hidden"))
         )
       )

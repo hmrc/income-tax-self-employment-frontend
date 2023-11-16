@@ -16,27 +16,46 @@
 
 package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
-import controllers.journeys.expenses.goodsToSellOrUse.routes
+import controllers.journeys.expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController
 import models.CheckMode
 import models.database.UserAnswers
-import pages.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountPage
+import models.journeys.expenses.GoodsToSellOrUse
+import models.journeys.expenses.GoodsToSellOrUse.YesDisallowable
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.tailoring.GoodsToSellOrUsePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DisallowableGoodsToSellOrUseAmountSummary {
+object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableGoodsToSellOrUseAmountPage).map { answer =>
-      SummaryListRowViewModel(
-        key = "disallowableGoodsToSellOrUseAmount.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("disallowableGoodsToSellOrUseAmount.change.hidden"))
-        )
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    for {
+      goodsToSellOrUse <- answers.get(GoodsToSellOrUsePage, Some(businessId))
+      if areAnyGoodsToSellOrUseDisallowable(goodsToSellOrUse)
+      disallowableAmount <- answers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(GoodsToSellOrUseAmountPage, Some(businessId))
+    } yield SummaryListRowViewModel(
+      key = Key(
+        content = messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", allowableAmount),
+        classes = "govuk-!-width-two-thirds"
+      ),
+      value = Value(
+        content = s"£${formatMoney(disallowableAmount)}",
+        classes = "govuk-!-width-one-third"
+      ),
+      actions = Seq(
+        ActionItemViewModel("site.change", DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          .withVisuallyHiddenText(messages("disallowableGoodsToSellOrUseAmount.change.hidden"))
       )
+    )
+
+  private def areAnyGoodsToSellOrUseDisallowable(goodsToSellOrUse: GoodsToSellOrUse): Boolean =
+    goodsToSellOrUse match {
+      case YesDisallowable => true
+      case _               => false
     }
 
 }

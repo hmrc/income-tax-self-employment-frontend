@@ -42,7 +42,8 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val entertainmentCostsRoute = controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val entertainmentCostsRoute =
+    controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new EntertainmentCostsFormProvider()
 
@@ -61,7 +62,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -87,7 +88,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(EntertainmentCostsPage, EntertainmentCosts.values.head).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -108,21 +109,20 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-          "must redirect to Journey Recovery for a GET if no existing data is found" in {
+        val application = applicationBuilder(userAnswers = None).build()
 
-            val application = applicationBuilder(userAnswers = None).build()
+        running(application) {
+          val request = FakeRequest(GET, entertainmentCostsRoute)
 
-            running(application) {
-              val request = FakeRequest(GET, entertainmentCostsRoute)
+          val result = route(application, request).value
 
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -176,9 +176,8 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -205,33 +204,33 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
-          "redirect to Journey Recovery for a POST if no existing data is found" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
-            val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, entertainmentCostsRoute)
-                  .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
+        running(application) {
+          val request =
+            FakeRequest(POST, entertainmentCostsRoute)
+              .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
   }
+
 }
