@@ -15,29 +15,50 @@
  *@
 
 @import models.journeys.expenses.DisallowableStaffCosts
+@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("disallowableStaffCosts.title"))) {
 
-        @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onSubmit(mode), 'autoComplete -> "off") {
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        }
 
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-            }
+        @heading(messages("disallowableStaffCosts.title"), None, extraClasses = "no-padding-top")
+
+        <div class="govuk-body govuk-!-margin-top-6">
+            <p>
+            @messages(s"site.theseInclude")
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                @if(authUserType.equals("individual")) {
+                    <li>@messages(s"expenses.contributions.$authUserType")</li>
+                } else {
+                    <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
+                }
+                <li>@messages("expenses.listItem.anyAmount")</li>
+            </ul>
+        </div>
+
+
+        @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onSubmit(mode), 'autoComplete -> "off") {
 
             @govukRadios(
                 RadiosViewModel(
                     field = form("value"),
-                    legend = LegendViewModel(messages("disallowableStaffCosts.heading")).asPageHeading(),
+                    legend = LegendViewModel(messages(
+                        s"disallowableStaffCosts.subheading.$authUserType"))
+                                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                     items = DisallowableStaffCosts.options
                 )
             )

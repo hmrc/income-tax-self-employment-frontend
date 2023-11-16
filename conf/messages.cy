@@ -74,8 +74,6 @@ common.checkYourDetails.title.individual = Check your details
 common.checkYourDetails.heading.agent = Check your client’s details
 common.checkYourDetails.heading.individual = Check your details
 
-common.expenses.listItem.anyAmount = any amounts that cover personal use
-
 index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
@@ -319,6 +317,12 @@ expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
 expenses.repaymentsOfLoans = repayments of loans
+expenses.listItem.anyAmount = any amounts that cover personal use
+expenses.legalCost.equipment = legal costs of buying equipment
+expenses.legalCost.property = legal costs of buying property
+expenses.fines = fines for breaking the law
+expenses.taxDisputes = costs of settling tax disputes
+expenses.contributions.individual = your own pay, pension or National Insurance contributions
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -436,34 +440,71 @@ entertainmentCosts.change.hidden = EntertainmentCosts
 ## Staff, construction industry and professional services
 professionalServiceExpenses.title = Staff, construction industry and professional services expenses
 professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.subHeading.individual = Did you pay for any of these professionals or services?
+professionalServiceExpenses.subHeading.agent = Did your client pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
 professionalServiceExpenses.professional.fees = Professional Fees
-professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.individual = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
-professionalServiceExpenses.error.required = Select professionalServiceExpenses
+professionalServiceExpenses.error.required.individual = Select the professionals or services you paid for, or select ‘No, I did not pay for any of these professionals or services’
+professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+professionalServiceExpenses.d1.heading = Understanding staff expenses
+professionalServiceExpenses.d1.l1 = salaries
+professionalServiceExpenses.d1.l2 = wages
+professionalServiceExpenses.d1.l3 = bonuses
+professionalServiceExpenses.d1.l4 = pensions
+professionalServiceExpenses.d1.l5 = benefits for employees
+professionalServiceExpenses.d1.l6 = agency fees
+professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
+professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
+professionalServiceExpenses.d1.l9.agent = their own pay, pension or National Insurance contributions
+professionalServiceExpenses.d2.heading = Understanding construction industry expenses
+professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
+professionalServiceExpenses.d3.heading = Understanding professional fees
+professionalServiceExpenses.d3.l1 = accountants
+professionalServiceExpenses.d3.l2 = solicitors
+professionalServiceExpenses.d3.l3 = surveyors
+professionalServiceExpenses.d3.l4 = architects
+professionalServiceExpenses.d3.l5 = indemnity insurance premiums
 
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
+disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
-disallowableStaffCosts.error.required = Select disallowableStaffCosts
+disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
+disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
+disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subheading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
+disallowableSubcontractorCosts.error.required.individual = Select yes if any of your construction industry subcontractors costs are disallowable
+disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client’s construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
+disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client’s home.
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
+disallowableProfessionalFees.subheading.agent = Are any of your client’s professional fees disallowable?
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
-disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
+disallowableProfessionalFees.error.required.individual = Select yes if any of your professional fees are disallowable
+disallowableProfessionalFees.error.required.agent = Select yes if any of your client’s professional fees are disallowable
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
+disallowableProfessionalFees.checkYourAnswersLabel = Are any of your professional fees disallowable?
 
 ## Financial expenses
 financialExpenses.title = Financial expenses
