@@ -23,11 +23,11 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
-import models.journeys.expenses.OfficeSupplies.{YesAllowable, YesDisallowable}
+import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
 import pages._
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
-import pages.expenses.tailoring.OfficeSuppliesPage
+import pages.expenses.tailoring.{GoodsToSellOrUsePage, OfficeSuppliesPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -42,9 +42,9 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
-              case Some(YesAllowable)    => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
-              case Some(YesDisallowable) => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case _                     => JourneyRecoveryController.onPageLoad()
+              case Some(OfficeSupplies.YesAllowable)    => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+              case Some(OfficeSupplies.YesDisallowable) => OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case _                                    => JourneyRecoveryController.onPageLoad()
             }
 
     case OfficeSuppliesDisallowableAmountPage =>
@@ -54,7 +54,14 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
+              case Some(GoodsToSellOrUse.YesAllowable)    => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+              case Some(GoodsToSellOrUse.YesDisallowable) => DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case _                                      => JourneyRecoveryController.onPageLoad()
+            }
 
     case DisallowableGoodsToSellOrUseAmountPage => _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
@@ -65,8 +72,12 @@ class ExpensesNavigator @Inject() () {
   }
 
   private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
+
     case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
       _ => taxYear => businessId => OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+    case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
+      _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
 
