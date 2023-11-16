@@ -14,38 +14,57 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import controllers.journeys.expenses.repairsandmaintenance.routes
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import views.html.components.{Amount, ErrorSummarySection, FoldableDetails, Heading}
 
-@this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+@this(layout: templates.Layout,
+        heading: Heading,
+        errorSummary: ErrorSummarySection,
+        foldableDetails: FoldableDetails,
+        amount: Amount,
+        formHelper: FormWithCSRF,
+        govukInput: GovukInput,
+        govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[BigDecimal],
+        mode: Mode,
+        userType: UserType,
+        taxYear: TaxYear,
+        businessId: BusinessId,
+        accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("repairsAndMaintenanceAmount.title"))) {
+    
+    @errorSummary(form)
 
-    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear.value, businessId.value, mode), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+        <div class="govuk-form-group">
+            @heading("repairsAndMaintenanceAmount.heading")
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("repairsAndMaintenanceAmount.heading")).asPageHeading()
-            )
-            .asNumeric()
-            .withWidth(Fixed10)
-        )
+            @foldableDetails(messages("repairsAndMaintenanceAmount.details")) {
+                <p>@messages("repairsAndMaintenanceAmount.details.include")</p>
+                <ul class="govuk-body govuk-list--bullet">
+                    <li>@messages("repairsAndMaintenanceAmount.details.include.item1")</li>
+                </ul>
+
+                <p>@messages("repairsAndMaintenanceAmount.details.notInclude")</p>
+
+                <ul class="govuk-body govuk-list--bullet">
+                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item1")</li>
+                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item2")</li>
+                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item3")</li>
+                </ul>
+            }
+
+            @amount(form)
+        </div>
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
     }
 }
+

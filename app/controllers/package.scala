@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package models.common
+import models.errors.HttpError
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
+import controllers.standard.{routes => genRoutes}
 
-import enumeratum._
+import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait AccountingType extends EnumEntry {
-  override def entryName: String = toString.toUpperCase
-}
+package object controllers {
 
-object AccountingType extends Enum[AccountingType] {
-  val values = findValues
+  def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
+    result.map {
+      case Left(_)         => Redirect(genRoutes.JourneyRecoveryController.onPageLoad())
+      case Right(okResult) => okResult
+    }
 
-  case object Accrual extends AccountingType
-  case object Cash    extends AccountingType
 }
