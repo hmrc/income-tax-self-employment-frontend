@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks {
 
-  val authTypeCases = Table(
+  val userTypeCases = Table(
     "userType",
     UserType.Individual,
     UserType.Agent

@@ -41,13 +41,11 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
                 contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
               }
             }
-
           }
-
         }
       }
       "no user answers exist" - {
-        forAll(authTypeCases) { userType =>
+        forAll(userTypeCases) { userType =>
           s"user is an $userType" - {
             "redirect to the journey recovery controller" in new TestScenario(userType, None) {
               running(application) {
@@ -59,10 +57,8 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
             }
           }
         }
-
       }
     }
-
   }
 
 }
