@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
+import play.api.i18n.MessagesApi
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
 import repositories.SessionRepository

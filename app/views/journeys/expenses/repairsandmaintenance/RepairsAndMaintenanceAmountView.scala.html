@@ -15,7 +15,7 @@
  *@
 
 @import controllers.journeys.expenses.repairsandmaintenance.routes
-@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.common.{BusinessId, TaxYear}
 @import views.html.components.{Amount, ErrorSummarySection, FoldableDetails, Heading}
 
 @this(layout: templates.Layout,
@@ -30,10 +30,8 @@
 
 @(form: Form[BigDecimal],
         mode: Mode,
-        userType: UserType,
         taxYear: TaxYear,
-        businessId: BusinessId,
-        accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
+        businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("repairsAndMaintenanceAmount.title"))) {
     

@@ -53,23 +53,18 @@ class RepairsAndMaintenanceAmountController @Inject() (
     with I18nSupport {
 
   // TODO Int => TaxYear in play route, same for businessId
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    val result = for {
-      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-      accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
-      userType       = request.userType
-      userAnswers    = request.answers
-      form           = formProvider(userType)
-      preparedForm = userAnswers
-        .get(RepairsAndMaintenanceAmountPage, Some(businessId))
-        .fold(form)(form.fill)
-    } yield Ok(view(preparedForm, mode, userType, TaxYear(taxYear), BusinessId(businessId), accountingType))
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val form = formProvider(request.userType)
+    val preparedForm = request.answers
+      .get(RepairsAndMaintenanceAmountPage, Some(businessId))
+      .fold(form)(form.fill)
 
-    handleResult(result.value)
+    Ok(view(preparedForm, mode, TaxYear(taxYear), BusinessId(businessId)))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      // TODO Fix in SASS-6116re
 //      form
 //        .bindFromRequest()
 //        .fold(
@@ -80,7 +75,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
 //              _              <- sessionRepository.set(updatedAnswers)
 //            } yield Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updatedAnswers, taxYear, businessId))
 //        )
-      ???
+      Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, request.userAnswers, taxYear, businessId))
   }
 
 }
