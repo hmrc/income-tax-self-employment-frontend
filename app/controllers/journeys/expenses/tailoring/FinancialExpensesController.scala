@@ -24,7 +24,7 @@ import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.FinancialExpensesPage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SelfEmploymentService
@@ -60,15 +60,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
         }
 
-        Ok(
-          view(
-            preparedForm,
-            mode,
-            userType(request.user.isAgent),
-            taxYear,
-            businessId,
-            accountingType,
-            legendContent(userType(request.user.isAgent))))
+        Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
     }
   }
 
@@ -80,16 +72,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(
-                BadRequest(
-                  view(
-                    formWithErrors,
-                    mode,
-                    userType(request.user.isAgent),
-                    taxYear,
-                    businessId,
-                    accountingType,
-                    legendContent(userType(request.user.isAgent))))),
+              Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
@@ -99,11 +82,5 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           )
     }
   }
-
-  private def legendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"financialExpenses.subHeading.$userType",
-    "site.selectAllThatApply",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-  )
 
 }

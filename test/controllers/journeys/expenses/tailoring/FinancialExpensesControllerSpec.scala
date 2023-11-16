@@ -29,14 +29,12 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.FinancialExpensesPage
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
-import .buildLegendHeadingWithHintString
 import views.html.journeys.expenses.tailoring.FinancialExpensesView
 
 import scala.concurrent.Future
@@ -50,12 +48,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new FinancialExpensesFormProvider()
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
-
-  def buildLegendContent(userType: String)(implicit messages: Messages) = buildLegendHeadingWithHintString(
-    s"financialExpenses.subHeading.$userType",
-    "site.selectAllThatApply",
-    headingClasses = "govuk-fieldset__legend govuk-fieldset__legend--m"
-  )
 
   case class UserScenario(isWelsh: Boolean, userType: String, form: Form[Set[FinancialExpenses]], accountingType: String)
 
@@ -75,7 +67,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -87,7 +78,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[FinancialExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType, legendContent)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -104,7 +95,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -122,8 +112,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
                   userScenario.userType,
                   taxYear,
                   stubbedBusinessId,
-                  userScenario.accountingType,
-                  legendContent
+                  userScenario.accountingType
                 )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
@@ -186,7 +175,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -202,7 +190,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType, legendContent)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -216,7 +204,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            val legendContent = buildLegendContent(userScenario.userType)(messages(application))
 
             running(application) {
               when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -232,7 +219,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType, legendContent)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
