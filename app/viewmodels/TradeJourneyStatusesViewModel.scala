@@ -20,7 +20,7 @@ import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, Se
 import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import models._
 import models.journeys.Journey
-import models.journeys.Journey.{Abroad, Income}
+import models.journeys.Journey.{Abroad, ExpensesTailoring, Income}
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -43,9 +43,13 @@ object TradeJourneyStatusesViewModel {
       if (optJourney.isEmpty) None else optJourney.head.completedState
     }
 
-    val (abroadCompletionStatus, incomeCompletionStatus) = (getStatus(Abroad), getStatus(Income))
+    val (abroadCompletionStatus, incomeCompletionStatus, expensesCompletionStatus) = (
+      getStatus(Abroad),
+      getStatus(Income),
+      getStatus(ExpensesTailoring)
+    )
 
-    val (abroadUrlString, incomeUrlString) = {
+    val (abroadUrlString, incomeUrlString, expensesUrlString) = {
 
       val abroadUrl =
         if (abroadCompletionStatus.isEmpty) SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, NormalMode).url
@@ -55,13 +59,18 @@ object TradeJourneyStatusesViewModel {
         if (incomeCompletionStatus.isEmpty) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url
         else IncomeCYAController.onPageLoad(taxYear, business.businessId).url
 
+      val expensesUrl =
+        if (expensesCompletionStatus.isEmpty) "IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url"
+        else "IncomeCYAController.onPageLoad(taxYear, business.businessId).url"
+
       (
         abroadUrl,
-        if (abroadCompletionStatus.getOrElse(false)) incomeUrl else "#"
+        if (abroadCompletionStatus.getOrElse(false)) incomeUrl else "#",
+        if (abroadCompletionStatus.getOrElse(false)) expensesUrl else "#"
       )
     }
 
-    val (abroadStatusString, incomeStatusString) =
+    val (abroadStatusString, incomeStatusString, expensesStatusString) =
       (
         if (abroadCompletionStatus.isEmpty) notStartedStatus
         else if (abroadCompletionStatus.get) completedStatus
@@ -69,13 +78,18 @@ object TradeJourneyStatusesViewModel {
         if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
         else if (incomeCompletionStatus.isEmpty) notStartedStatus
         else if (incomeCompletionStatus.get) completedStatus
+        else inProgressStatus,
+        if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
+        else if (expensesCompletionStatus.isEmpty) notStartedStatus
+        else if (expensesCompletionStatus.get) completedStatus
         else inProgressStatus
       )
 
     SummaryList(
       rows = Seq(
         buildRow("selfEmploymentAbroad", abroadUrlString, abroadStatusString),
-        buildRow("income", incomeUrlString, incomeStatusString)
+        buildRow("income", incomeUrlString, incomeStatusString),
+        buildRow("expensesCategories", expensesUrlString, expensesStatusString)
       ),
       classes = "govuk-!-margin-bottom-7"
     )

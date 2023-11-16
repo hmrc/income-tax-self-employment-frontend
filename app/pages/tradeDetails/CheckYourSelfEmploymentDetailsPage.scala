@@ -20,5 +20,5 @@ import pages.Page
 
 case object CheckYourSelfEmploymentDetailsPage extends Page {
 
-  override def toString: String = "selfEmploymentAbroad"
+  override def toString: String = "checkYourSelfEmploymentDetails"
 }
