@@ -35,7 +35,7 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
         forAll(langUserTypeCases) { (lang, userType) =>
           s"language is $lang and user is an $userType" - {
             "user answers exist" - {
-              "return a 200 OK with all answered questions present in the view" in new TestScenario(userType, Some(userAnswers)) {
+              "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
                 val allRows: List[SummaryListRow] = expectedSummaryRows(userType).map {
                   case Some(row) => row
                   case None      => fail("Expected a row but got None")
