@@ -679,8 +679,6 @@ totalExpensesCYA.heading = totalExpensesCYA
 
 ########## Expenses - Repairs and Maintenance ##########
 
-########## Expenses - Repairs and Maintenance ##########
-
 ## Repairs and maintenance amount
 repairsAndMaintenanceAmount.title = How much did you spend on repairs and maintenance?
 repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
@@ -713,7 +711,7 @@ repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidde
 
 ########## Expenses - Entertainment ##########
 
-## Repairs and maintenanceCosts CYA
+## Entertainment amount
 entertainment.title.individual = How much did you spend on entertainment?
 entertainment.title.agent = How much did your client spend on entertainment?
 entertainment.error.nonNumeric.individual = The amount you spent on entertainment must be a number
