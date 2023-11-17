@@ -92,7 +92,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
       form           = formProvider(userType)
-      finalResult <- EitherT.right[HttpError](handleForm(form, userType, accountingType, userAnswers).fold(identity, identity))
+      finalResult <- EitherT.right[HttpError](handleForm(form, userType, accountingType, userAnswers).merge)
     } yield finalResult
 
     handleResult(result.value)

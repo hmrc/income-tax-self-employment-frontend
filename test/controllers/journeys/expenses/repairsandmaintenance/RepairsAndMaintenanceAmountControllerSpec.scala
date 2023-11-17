@@ -18,13 +18,13 @@ package controllers.journeys.expenses.repairsandmaintenance
 
 import base.SpecBase
 import base.SpecBase._
+import controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountControllerSpec._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import gens._
 import models.common.{AccountingType, Language, UserType, onwardRoute}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
@@ -34,7 +34,6 @@ import play.api.test.{FakeRequest, PlayRunners}
 import services.SelfEmploymentServiceBase
 import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
-import RepairsAndMaintenanceAmountControllerSpec._
 
 class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with PlayRunners with OptionValues {
   private val validAnswer   = BigDecimal(100.00)
