@@ -32,51 +32,84 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.expenses.simplifiedExpenses.TotalExpensesView
 import controllers.standard.routes.JourneyRecoveryController
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.i18n.MessagesApi
 
 import scala.concurrent.Future
 
 class TotalExpensesControllerSpec extends SpecBase with MockitoSugar {
 
+  lazy val totalExpensesRoute = routes.TotalExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+  val formProvider            = new TotalExpensesFormProvider()
+
+  private val businessId  = "some_id"
+  private val validAnswer = BigDecimal(100.00)
+
+  private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
+    val isAgent = authUser match {
+      case "individual" => false
+      case "agent" => true
+    }
+    applicationBuilder(userAnswers, isAgent)
+      .build()
+  }
+
+  private val userScenarios = Seq(
+    UserScenario(isWelsh = false, authUser = individual, form = formProvider(individual)),
+    UserScenario(isWelsh = true, authUser = agent, form = formProvider(agent))
+  )
+
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new TotalExpensesFormProvider()
-  val form = formProvider()
-
-  lazy val totalExpensesRoute = routes.TotalExpensesController.onPageLoad(NormalMode).url
+  case class UserScenario(isWelsh: Boolean, authUser: String, form: Form[BigDecimal])
 
   "TotalExpenses Controller" - {
+    userScenarios.foreach { userScenario =>
+      s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
+        "when loading a page" - {
+          "must return OK and the correct view for a GET" in {
 
-    "must return OK and the correct view for a GET" in {
+            val application                       = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+            val view                              = application.injector.instanceOf[TotalExpensesView]
+            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+            running(application) {
+              val request = FakeRequest(GET, totalExpensesRoute)
 
-      running(application) {
-        val request = FakeRequest(GET, totalExpensesRoute)
+              val result     = route(application, request).value
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-        val result = route(application, request).value
+              status(result) mustEqual OK
+              contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, taxYear, businessId)(
+                request,
+                messages(application)).toString
+            }
+          }
 
-        val view = application.injector.instanceOf[TotalExpensesView]
+          "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
-      }
-    }
+            val userAnswers = UserAnswers(userAnswersId).set(TotalExpensesPage, validAnswer, Some(businessId)).success.value
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+            val application                       = buildApplication(Some(userAnswers), userScenario.authUser)
+            val view                              = application.injector.instanceOf[TotalExpensesView]
+            implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
 
-      val userAnswers = UserAnswers(userAnswersId).set(TotalExpensesPage, "answer").success.value
+            running(application) {
+              val request = FakeRequest(GET, totalExpensesRoute)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+              val result     = route(application, request).value
+              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-      running(application) {
-        val request = FakeRequest(GET, totalExpensesRoute)
+              status(result) mustEqual OK
 
-        val view = application.injector.instanceOf[TotalExpensesView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
+              contentAsString(langResult) mustEqual view(userScenario.form.fill(validAnswer), NormalMode, userScenario.authUser, taxYear, businessId)(
+                request,
+                messages(application)).toString
+            }
+          }
+        }
       }
     }
 
@@ -97,12 +130,33 @@ class TotalExpensesControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, totalExpensesRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must return a Bad Request and errors when empty data is submitted" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, totalExpensesRoute)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val form      = formProvider(individual)
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[TotalExpensesView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, NormalMode, individual, taxYear, businessId)(request, messages(application)).toString
       }
     }
 
@@ -113,16 +167,17 @@ class TotalExpensesControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, totalExpensesRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("value", "invalid"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val form      = formProvider(individual)
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val view = application.injector.instanceOf[TotalExpensesView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, individual, taxYear, businessId)(request, messages(application)).toString
       }
     }
 
@@ -142,12 +197,12 @@ class TotalExpensesControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = buildApplication(Some(emptyUserAnswers), individual)
 
       running(application) {
         val request =
           FakeRequest(POST, totalExpensesRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
@@ -156,4 +211,5 @@ class TotalExpensesControllerSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

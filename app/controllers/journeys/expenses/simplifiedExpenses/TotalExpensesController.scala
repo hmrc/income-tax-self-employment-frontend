@@ -19,6 +19,7 @@ package controllers.journeys.expenses.simplifiedExpenses
 import controllers.actions._
 import forms.expenses.simplifiedExpenses.TotalExpensesFormProvider
 import models.Mode
+import models.common.ModelUtils.userType
 import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.simplifiedExpenses.TotalExpensesPage
@@ -28,45 +29,43 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.simplifiedExpenses.TotalExpensesView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalExpensesController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: ExpensesTailoringNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: TotalExpensesFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: TotalExpensesView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TotalExpensesController @Inject() (override val messagesApi: MessagesApi,
+                                         sessionRepository: SessionRepository,
+                                         navigator: ExpensesTailoringNavigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         formProvider: TotalExpensesFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: TotalExpensesView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  val form = formProvider()
+  val businessId = "SJPR05893938418" // TODO SASS-5658 replace default businessId and taxYear values
+  val taxYear    = LocalDate.now.getYear
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TotalExpensesPage, Some(businessId)) match {
+      case None        => formProvider(userType(request.user.isAgent))
+      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+    }
 
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(TotalExpensesPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    formProvider(userType(request.user.isAgent))
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TotalExpensesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TotalExpensesPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TotalExpensesPage, mode, updatedAnswers))
       )
   }

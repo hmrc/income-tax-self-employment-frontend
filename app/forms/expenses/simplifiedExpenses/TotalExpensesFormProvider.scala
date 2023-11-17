@@ -17,15 +17,17 @@
 package forms.expenses.simplifiedExpenses
 
 import forms.mappings.Mappings
+import models.common.MoneyBounds
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TotalExpensesFormProvider @Inject() extends Mappings {
+class TotalExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(): Form[String] =
+  def apply(userType: String): Form[BigDecimal] =
     Form(
-      "value" -> text("totalExpenses.error.required")
-        .verifying(maxLength(100, "totalExpenses.error.length"))
+      "value" -> bigDecimal(s"totalExpenses.error.required.$userType", s"totalExpenses.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"totalExpenses.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"totalExpenses.error.overMax.$userType"))
     )
 }

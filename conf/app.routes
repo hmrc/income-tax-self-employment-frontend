@@ -227,10 +227,10 @@ GET         /:taxYear/:businessId/expenses/goods-sell-use/check                 
 
 ########## Expenses - Single Amount ##########
 
-GET         /expenses/total-expenses                                                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(mode: Mode = NormalMode)
-POST        /expenses/total-expenses                                                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(mode: Mode = NormalMode)
-GET         /expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(mode: Mode = CheckMode)
-POST        /expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/total-expenses                                        controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/total-expenses                                        controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-total-expenses                                 controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-total-expenses                                 controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
 GET         /expenses/simplified-expenses/check-answers                                          controllers.journeys.expenses.simplifiedExpenses.TotalExpensesCYAController.onPageLoad()
 

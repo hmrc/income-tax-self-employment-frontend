@@ -16,38 +16,60 @@
 
 package forms.expenses.simplifiedExpenses
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.{BigDecimalFieldBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 
-class TotalExpensesFormProviderSpec extends StringFieldBehaviours {
+class TotalExpensesFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val requiredKey = "totalExpenses.error.required"
-  val lengthKey = "totalExpenses.error.length"
-  val maxLength = 100
-
-  val form = new TotalExpensesFormProvider()()
+  private val userTypes = Seq("individual", "agent")
 
   ".value" - {
+    userTypes.foreach { authUser =>
+      s"when the user is $authUser" - {
+        "form provider should" - {
 
-    val fieldName = "value"
+          val form = new TotalExpensesFormProvider()(authUser)
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
+          val fieldName = "value"
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+          val minimum: BigDecimal = 0
+          val maximum: BigDecimal = 100000000000.00
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+          val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+
+          behave like fieldThatBindsValidData(
+            form,
+            fieldName,
+            validDataGenerator
+          )
+
+          behave like bigDecimalField(
+            form,
+            fieldName,
+            nonNumericError = FormError(fieldName, s"totalExpenses.error.nonNumeric.$authUser")
+          )
+
+          behave like bigDecimalFieldWithMinimum(
+            form,
+            fieldName,
+            minimum,
+            expectedError = FormError(fieldName, s"totalExpenses.error.lessThanZero.$authUser", Seq(minimum))
+          )
+
+          behave like bigDecimalFieldWithMaximum(
+            form,
+            fieldName,
+            maximum,
+            expectedError = FormError(fieldName, s"totalExpenses.error.overMax.$authUser", Seq(maximum))
+          )
+
+          behave like mandatoryField(
+            form,
+            fieldName,
+            requiredError = FormError(fieldName, s"totalExpenses.error.required.$authUser")
+          )
+        }
+      }
+    }
   }
 }
