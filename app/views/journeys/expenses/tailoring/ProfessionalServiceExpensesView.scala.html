@@ -15,6 +15,7 @@
  *@
 
 @import models.journeys.expenses.ProfessionalServiceExpenses
+@import controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -112,27 +113,30 @@
         </div>
     </details>
 
-    @govukCheckboxes(
-        CheckboxesViewModel(
-            form = form,
-            name = "value",
-            items = ProfessionalServiceExpenses.checkboxItems(authUserType),
-            legend = LegendViewModel(HtmlContent(
-                s"""
-                    <div>
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            ${messages(s"professionalServiceExpenses.subHeading.$authUserType")}
-                        </legend>
-                        <div class="govuk-hint">
-                            ${messages("site.selectAllThatApply")}
-                        </div>
-                    </div>
-                """
-            )).withCssClass("no-margin-bottom")
-        )
-    )
+    @formHelper(action = ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
-    @govukButton(
-        ButtonViewModel(messages("site.continue"))
-    )
+        @govukCheckboxes(
+            CheckboxesViewModel(
+                form = form,
+                name = "value",
+                items = ProfessionalServiceExpenses.checkboxItems(authUserType),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                ${messages(s"professionalServiceExpenses.subHeading.$authUserType")}
+                            </legend>
+                            <div class="govuk-hint">
+                                ${messages("site.selectAllThatApply")}
+                            </div>
+                        </div>
+                    """
+                )).withCssClass("no-margin-bottom")
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }
