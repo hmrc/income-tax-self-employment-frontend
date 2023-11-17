@@ -679,9 +679,11 @@ totalExpensesCYA.heading = totalExpensesCYA
 
 ########## Expenses - Repairs and Maintenance ##########
 
+########## Expenses - Repairs and Maintenance ##########
+
 ## Repairs and maintenance amount
-repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
-repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.title = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
 repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
 repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
 repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount

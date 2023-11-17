@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.Language
+import models.common.{BusinessId, Language, TaxYear, UserType}
 import models.common.Language._
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
@@ -40,17 +40,30 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
   val taxYear: Int      = LocalDate.now().getYear
+  val currTaxYear       = TaxYear(taxYear)
   val userAnswersId     = "id"
   val individual        = Individual.toString
   val agent             = Agent.toString
-  val accrual           = Accrual.toString
-  val cash              = Cash.toString
+  val accrual           = Accrual.entryName
+  val cash              = Cash.entryName
   val stubbedBusinessId = "SJPR05893938418"
-  val enLang: Lang      = Lang("en-EN")
-  val cyLang: Lang      = Lang("cy-CY")
+
+  val stubBusinessId = BusinessId(
+    stubbedBusinessId
+  ) // TODO Use richer types everywhere, not primitive, and then clean up different similar names here
+  val enLang: Lang = Lang("en-EN")
+  val cyLang: Lang = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   def emptyUserAnswers: UserAnswers         = UserAnswers(userAnswersId)
+
+  def messages(app: Application, lang: Language): Messages = {
+    val bool = lang match {
+      case Welsh   => true
+      case English => false
+    }
+    messages(app, bool)
+  }
 
   def messages(app: Application, isWelsh: Boolean = false): Messages =
     if (isWelsh) {
@@ -67,7 +80,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   protected def isAccrual(accountingType: String) = accountingType.equals(accrual)
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
+  def applicationBuilder(userAnswers: Option[UserAnswers], userType: UserType): GuiceApplicationBuilder =
+    applicationBuilder(userAnswers, isAgent(userType.toString))
+
+  def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
     val fakeIdentifierAction = {
       if (isAgent) {
         bind[IdentifierAction].to[FakeAgentIdentifierAction]
@@ -84,10 +100,12 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       )
   }
 
-  def languageAwareResult(lang: Language, result: Future[Result])(implicit messagesApi: MessagesApi): Future[Result] =
+  def languageAwareResult(lang: Language, result: Result)(implicit messagesApi: MessagesApi): Result =
     lang match {
       case English => result
-      case Welsh   => result.map(_.withLang(cyLang))
+      case Welsh   => result.withLang(cyLang)
     }
 
 }
+
+object SpecBase extends SpecBase

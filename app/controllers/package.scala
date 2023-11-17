@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package models.common
+import cats.data.EitherT
+import models.errors.HttpError
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
+import controllers.standard.{routes => genRoutes}
 
-import play.api.mvc.PathBindable
+import scala.concurrent.{ExecutionContext, Future}
 
-final case class TaxYear(value: Int) extends AnyVal
+package object controllers {
 
-object TaxYear {
-
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
+  def handleResult[A](result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
+    EitherT(result)
+      .leftMap(_ => Redirect(genRoutes.JourneyRecoveryController.onPageLoad()))
+      .merge
 
 }

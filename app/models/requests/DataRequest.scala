@@ -17,9 +17,16 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
+import models.common.UserType
 import models.database.UserAnswers
 import play.api.mvc.{Request, WrappedRequest}
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
+    extends WrappedRequest[A](request) {
+  val userType: UserType   = user.userType
+  val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
+}
 
-case class DataRequest[A] (request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+  def userType: UserType = user.userType
+}
