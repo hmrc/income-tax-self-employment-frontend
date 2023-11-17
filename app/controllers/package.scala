@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import cats.data.EitherT
 import models.errors.HttpError
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -24,9 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 package object controllers {
 
   def handleResult[A](result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
-    result.map {
-      case Left(_)         => Redirect(genRoutes.JourneyRecoveryController.onPageLoad())
-      case Right(result) => result
-    }
+    EitherT(result)
+      .leftMap(_ => Redirect(genRoutes.JourneyRecoveryController.onPageLoad()))
+      .merge
 
 }
