@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package models.common
+import org.scalacheck.Gen
+import models._
+import models.common.{AccountingType, Language, UserType}
 
-import play.api.mvc.PathBindable
+package object gens {
 
-final case class TaxYear(value: Int) extends AnyVal
-
-object TaxYear {
-
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
-
+  val userTypeGen: Gen[UserType]             = Gen.oneOf(UserType.Individual, UserType.Agent)
+  val accountingTypeGen: Gen[AccountingType] = Gen.oneOf(AccountingType.Accrual, AccountingType.Cash)
+  val modeGen: Gen[Mode]                     = Gen.oneOf(NormalMode, CheckMode)
+  val languageGen: Gen[Language]             = Gen.oneOf(Language.English, Language.Welsh)
 }

@@ -23,10 +23,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers {
 
-  def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
+  def handleResult[A](result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
     result.map {
       case Left(_)         => Redirect(genRoutes.JourneyRecoveryController.onPageLoad())
-      case Right(okResult) => okResult
+      case Right(result) => result
     }
 
 }

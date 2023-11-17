@@ -15,7 +15,7 @@
  *@
 
 @import controllers.journeys.expenses.repairsandmaintenance.routes
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.components.{Amount, ErrorSummarySection, FoldableDetails, Heading}
 
 @this(layout: templates.Layout,
@@ -28,32 +28,37 @@
         govukButton: GovukButton
 )
 
-@(form: Form[BigDecimal],
+@(form: Form[_],
         mode: Mode,
+        userType: UserType,
         taxYear: TaxYear,
-        businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+        businessId: BusinessId,
+        accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("repairsAndMaintenanceAmount.title"))) {
     
     @errorSummary(form)
 
-    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear.value, businessId.value, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         <div class="govuk-form-group">
-            @heading("repairsAndMaintenanceAmount.heading")
+            @heading("repairsAndMaintenanceAmount.title")
 
             @foldableDetails(messages("repairsAndMaintenanceAmount.details")) {
-                <p>@messages("repairsAndMaintenanceAmount.details.include")</p>
-                <ul class="govuk-body govuk-list--bullet">
-                    <li>@messages("repairsAndMaintenanceAmount.details.include.item1")</li>
+                <p>@messages(s"site.canInclude.$userType")</p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("repairsAndMaintenance.l1")</li>
+                    @if(accountingType == AccountingType.Cash){
+                        <li>@messages("repairsAndMaintenance.l2")</li>
+                    }
                 </ul>
-
-                <p>@messages("repairsAndMaintenanceAmount.details.notInclude")</p>
-
-                <ul class="govuk-body govuk-list--bullet">
-                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item1")</li>
-                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item2")</li>
-                    <li>@messages("repairsAndMaintenanceAmount.details.notInclude.item3")</li>
+                <p>@messages(s"site.cannotInclude.$userType")</p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("repairsAndMaintenance.l3")</li>
+                    <li>@messages("repairsAndMaintenance.l4")</li>
+                    @if(accountingType == AccountingType.Accrual){
+                        <li>@messages("repairsAndMaintenance.l2")</li>
+                    }
                 </ul>
             }
 

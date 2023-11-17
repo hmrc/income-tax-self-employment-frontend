@@ -27,4 +27,6 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
 }
 
-case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+  def userType: UserType = user.userType
+}

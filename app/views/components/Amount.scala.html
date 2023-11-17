@@ -20,7 +20,7 @@
         govukInput: GovukInput,
 )
 
-@(form: Form[BigDecimal])(implicit messages: Messages)
+@(form: Form[_])(implicit messages: Messages)
 
 @govukInput(
     InputViewModel(

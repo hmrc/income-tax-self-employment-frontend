@@ -46,7 +46,7 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     with I18nSupport {
 
   private def form(implicit request: DataRequest[AnyContent]) = {
-    formProvider(request.user.userType, 1000.0) // TODO Remove hardcoded value in SASS-6115
+    formProvider(request.userType, 1000.0) // TODO Remove hardcoded value in SASS-6115
   }
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -61,17 +61,16 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
 
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-//      form
-//        .bindFromRequest()
-//        .fold(
-//          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
-//          value =>
-//            for {
-//              updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenanceDisallowableAmountPage, value))
-//              _              <- sessionRepository.set(updatedAnswers)
-//            } yield Redirect(navigator.nextPage(RepairsAndMaintenanceDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
-//        )
-      ???
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenanceDisallowableAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(RepairsAndMaintenanceDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 
 }

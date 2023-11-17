@@ -16,16 +16,12 @@
 
 package models.common
 
-import models.common.AccountingType.{Accrual, Cash}
 import models.common.UserType.{Agent, Individual}
 
 object ModelUtils {
 
   val individual: String = Individual.toString
   val agent: String      = Agent.toString
-
-  val accrual: String = Accrual.toString
-  val cash: String    = Cash.toString
 
   def userType(isAgent: Boolean): String = if (isAgent) agent else individual
 }
