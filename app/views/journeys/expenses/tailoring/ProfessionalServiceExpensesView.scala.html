@@ -15,31 +15,125 @@
  *@
 
 @import models.journeys.expenses.ProfessionalServiceExpenses
+@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukCheckboxes: GovukCheckboxes,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, accountingType: String)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        }
+
+        @heading(messages("professionalServiceExpenses.title"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+
+
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d1.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @messages(s"site.cannotInclude.$authUserType")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d1.l1")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l2")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l3")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l4")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l5")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l6")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l7")</li>
+                    <li>@messages("professionalServiceExpenses.d1.l8")</li>
+                </ul>
+                <p>
+                @messages(s"site.cannotInclude.$authUserType")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    @if(authUserType.equals("individual")) {
+                        <li>@messages(s"expenses.contributions.$authUserType")</li>
+                    } else {
+                        <li>@messages(s"professionalServiceExpenses.d1.l9.$authUserType")</li>
+                    }
+                    <li>@messages("expenses.listItem.anyAmount")</li>
+                </ul>
+            </div>
+        </details>
+
+        <details class="govuk-details govuk-!-margin-bottom-3">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d2.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <span>@messages(s"professionalServiceExpenses.d2.l1.$authUserType")</span>
+                </ul>
+            </div>
+        </details>
+
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                @messages("professionalServiceExpenses.d1.heading")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @messages(s"site.cannotInclude.$authUserType")
+            </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("professionalServiceExpenses.d3.l1")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l2")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l3")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l4")</li>
+                    <li>@messages("professionalServiceExpenses.d3.l5")</li>
+                </ul>
+                <p>
+                @messages(s"site.cannotInclude.$authUserType")
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("expenses.legalCost.property")</li>
+                        @if(accountingType.equals("ACCRUAL")){
+                            <li>@messages("expenses.legalCost.equipment")</li>
+                        }
+                    <li>@messages("expenses.taxDisputes")</li>
+                    <li>@messages("expenses.fines")</li>
+                </ul>
+            </div>
+        </details>
+
+
         @formHelper(action = controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-            }
 
             @govukCheckboxes(
                 CheckboxesViewModel(
                     form = form,
                     name = "value",
-                    legend = LegendViewModel(messages("professionalServiceExpenses.heading")).asPageHeading(),
-                    items = ProfessionalServiceExpenses.checkboxItems
+                    items = ProfessionalServiceExpenses.checkboxItems(authUserType),
+                    legend = LegendViewModel(HtmlContent(
+                        s"""
+                            <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            ${messages(s"professionalServiceExpenses.subHeading.$authUserType")}
+                        </legend>
+                        <div class="govuk-hint">
+                            ${messages("site.selectAllThatApply")}
+                        </div>
+                    </div>
+                        """
+                    )).withCssClass("no-margin-bottom")
                 )
             )
 

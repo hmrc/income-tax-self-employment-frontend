@@ -72,8 +72,9 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TravelForWorkPage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(TravelForWorkPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers))
       )
   }

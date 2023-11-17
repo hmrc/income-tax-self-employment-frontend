@@ -22,25 +22,33 @@ import play.api.data.FormError
 
 class ProfessionalServiceExpensesFormProviderSpec extends CheckboxFieldBehaviours {
 
-  val form = new ProfessionalServiceExpensesFormProvider()()
-
   ".value" - {
+    case class UserScenario(user: String)
 
-    val fieldName   = "value"
-    val requiredKey = "professionalServiceExpenses.error.required"
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like checkboxField[ProfessionalServiceExpenses](
-      form,
-      fieldName,
-      validValues = ProfessionalServiceExpenses.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new ProfessionalServiceExpensesFormProvider()(userScenario.user)
 
-    behave like mandatoryCheckboxField(
-      form,
-      fieldName,
-      requiredKey
-    )
+      val fieldName = "value"
+      val requiredKey = s"professionalServiceExpenses.error.required.${userScenario.user}"
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like checkboxField[ProfessionalServiceExpenses](
+          form,
+          fieldName,
+          validValues = ProfessionalServiceExpenses.values,
+          invalidError = FormError(s"$fieldName[0]", "error.invalid")
+        )
+
+        behave like mandatoryCheckboxField(
+          form,
+          fieldName,
+          requiredKey
+        )
+      }
+    }
   }
 
 }
