@@ -23,7 +23,7 @@ trait MoneyUtils {
 
   def formatMoney(amount: BigDecimal, addDecimalForWholeNumbers: Boolean = true): String = {
     val numberFormat  = NumberFormat.getNumberInstance(Locale.UK)
-    val decimalFormat = new DecimalFormat("#,###.00", new java.text.DecimalFormatSymbols(Locale.UK))
+    val decimalFormat = new DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(Locale.UK))
 
     if (amount.isWhole && !addDecimalForWholeNumbers) {
       numberFormat.format(amount)
