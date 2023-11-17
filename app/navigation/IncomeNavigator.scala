@@ -21,7 +21,7 @@ import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
-import models.journeys.Income
+import models.journeys.Journey.Income
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
 import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import pages._

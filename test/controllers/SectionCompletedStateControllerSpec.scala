@@ -39,16 +39,15 @@ import scala.concurrent.Future
 
 class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
 
-  val nino       = "AA112233A"
-  val journey    = "journeyId"
-  val businessId = "businessId-1"
-  val mtditid    = "mtditid"
+  val nino    = "AA112233A"
+  val journey = "journeyId"
+  val mtditid = "mtditid"
 
   val mockConnector                     = mock[SelfEmploymentConnector]
   val formProvider                      = new SectionCompletedStateFormProvider()
   val form: Form[CompletedSectionState] = formProvider()
 
-  lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url
+  lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String       = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call          = Call("GET", journeyRecoveryRoute)
   lazy val taskListRoute: String              = routes.TaskListController.onPageLoad(taxYear).url
@@ -75,7 +74,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, businessId, journey, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, stubbedBusinessId, journey, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -95,7 +94,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(CompletedSectionState.values.head), taxYear, businessId, journey, NormalMode)(
+          contentAsString(result) mustEqual view(form.fill(CompletedSectionState.values.head), taxYear, stubbedBusinessId, journey, NormalMode)(
             request,
             messages(application)).toString
         }
@@ -144,7 +143,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, businessId, journey, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, stubbedBusinessId, journey, NormalMode)(request, messages(application)).toString
         }
       }
 

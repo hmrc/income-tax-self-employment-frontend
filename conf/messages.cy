@@ -74,8 +74,6 @@ common.checkYourDetails.title.individual = Check your details
 common.checkYourDetails.heading.agent = Check your client’s details
 common.checkYourDetails.heading.individual = Check your details
 
-common.expenses.listItem.anyAmount = any amounts that cover personal use
-
 index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
@@ -319,6 +317,12 @@ expenses.debtsNotIncludedInTurnover = debts not included in turnover
 expenses.debtsRelatingToFixedAssets = debts relating to fixed assets
 expenses.generalBadDebts = general bad debts
 expenses.repaymentsOfLoans = repayments of loans
+expenses.listItem.anyAmount = any amounts that cover personal use
+expenses.legalCost.equipment = legal costs of buying equipment
+expenses.legalCost.property = legal costs of buying property
+expenses.fines = fines for breaking the law
+expenses.taxDisputes = costs of settling tax disputes
+expenses.contributions.individual = your own pay, pension or National Insurance contributions
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -436,34 +440,71 @@ entertainmentCosts.change.hidden = EntertainmentCosts
 ## Staff, construction industry and professional services
 professionalServiceExpenses.title = Staff, construction industry and professional services expenses
 professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
+professionalServiceExpenses.subHeading.individual = Did you pay for any of these professionals or services?
+professionalServiceExpenses.subHeading.agent = Did your client pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
 professionalServiceExpenses.professional.fees = Professional Fees
-professionalServiceExpenses.no = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.individual = No, I did not pay for any of these professionals or services
+professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
-professionalServiceExpenses.error.required = Select professionalServiceExpenses
+professionalServiceExpenses.error.required.individual = Select the professionals or services you paid for, or select ‘No, I did not pay for any of these professionals or services’
+professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+professionalServiceExpenses.d1.heading = Understanding staff expenses
+professionalServiceExpenses.d1.l1 = salaries
+professionalServiceExpenses.d1.l2 = wages
+professionalServiceExpenses.d1.l3 = bonuses
+professionalServiceExpenses.d1.l4 = pensions
+professionalServiceExpenses.d1.l5 = benefits for employees
+professionalServiceExpenses.d1.l6 = agency fees
+professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
+professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
+professionalServiceExpenses.d1.l9.agent = their own pay, pension or National Insurance contributions
+professionalServiceExpenses.d2.heading = Understanding construction industry expenses
+professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
+professionalServiceExpenses.d3.heading = Understanding professional fees
+professionalServiceExpenses.d3.l1 = accountants
+professionalServiceExpenses.d3.l2 = solicitors
+professionalServiceExpenses.d3.l3 = surveyors
+professionalServiceExpenses.d3.l4 = architects
+professionalServiceExpenses.d3.l5 = indemnity insurance premiums
 
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.heading = Disallowable staff costs
+disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
+disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
-disallowableStaffCosts.error.required = Select disallowableStaffCosts
+disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
+disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
+disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disallowable?
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
+disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subheading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.error.required = Select disallowableSubcontractorCosts
+disallowableSubcontractorCosts.error.required.individual = Select yes if any of your construction industry subcontractors costs are disallowable
+disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client’s construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
+disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client’s home.
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
 disallowableProfessionalFees.heading = Disallowable professional fees
+disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
+disallowableProfessionalFees.subheading.agent = Are any of your client’s professional fees disallowable?
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
-disallowableProfessionalFees.error.required = Select disallowableProfessionalFees
+disallowableProfessionalFees.error.required.individual = Select yes if any of your professional fees are disallowable
+disallowableProfessionalFees.error.required.agent = Select yes if any of your client’s professional fees are disallowable
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
+disallowableProfessionalFees.checkYourAnswersLabel = Are any of your professional fees disallowable?
 
 ## Financial expenses
 financialExpenses.title = Financial expenses
@@ -554,9 +595,11 @@ otherExpenses.change.hidden = OtherExpenses
 
 ## Office Supplies Amount
 officeSuppliesAmount.title = OfficeSuppliesAmountTitle
-officeSuppliesAmount.heading = How much did you spend on office supplies?
+officeSuppliesAmount.heading.individual = How much did you spend on office supplies?
+officeSuppliesAmount.heading.agent = How much did your client spend on office supplies?
 officeSuppliesAmount.understandingOfficeSuppliesExpenses = Understanding office supplies expenses
-officeSuppliesAmount.checkYourAnswersLabel = checkYourAnswersLabel
+officeSuppliesAmount.checkYourAnswersLabel.individual = How much did you spend on office supplies?
+officeSuppliesAmount.checkYourAnswersLabel.agent = How much did your client spend on office supplies?
 officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on office supplies must be a number
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
 officeSuppliesAmount.error.required.individual = Enter the amount you spent on office supplies
@@ -571,7 +614,8 @@ officeSuppliesAmount.error.overMax.agent = The amount your client spent on offic
 officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
-officeSuppliesDisallowableAmount.checkYourAnswersLabel = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on office supplies is disallowable?
+officeSuppliesDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on office supplies must be a number
 officeSuppliesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on office supplies must be a number
 officeSuppliesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on office supplies that is disallowable
@@ -585,7 +629,8 @@ officeSuppliesDisallowableAmount.error.overAllowableMax.individual = The disallo
 officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable amount your client spent on office supplies must be the same as or less than £{0}
 
 ## Office Supplies CYA
-officeSuppliesAmountCYA.title = officeSuppliesAmountCYA
+officeSuppliesAmountCYA.title.individual = Check your office supplies expenses
+officeSuppliesAmountCYA.title.agent = Check your client’s office supplies expenses
 officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 
 ########## Expenses - Goods to sell or use ##########
@@ -594,7 +639,6 @@ officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 goodsToSellOrUseAmount.title.individual = How much did you spend on goods to sell or use?
 goodsToSellOrUseAmount.title.agent = How much did your client spend on goods to sell or use?
 goodsToSellOrUseAmount.d1.heading = Understanding goods to sell or use expenses
-goodsToSellOrUseAmount.checkYourAnswersLabel = How much did you spend on goods to sell or use?
 goodsToSellOrUseAmount.error.nonNumeric.individual = The amount you spent on goods to sell or use must be a number
 goodsToSellOrUseAmount.error.nonNumeric.agent = The amount your client spent on goods to sell or use must be a number
 goodsToSellOrUseAmount.error.required.individual = Enter the amount you spent on goods to sell or use
@@ -603,7 +647,7 @@ goodsToSellOrUseAmount.error.lessThanZero.individual = The amount you spent on g
 goodsToSellOrUseAmount.error.lessThanZero.agent = The amount your client spent on goods to sell or use must be more than £0
 goodsToSellOrUseAmount.error.overMax.individual = The amount you spent on goods to sell or use must be less than 100,000,000,000
 goodsToSellOrUseAmount.error.overMax.agent = The amount your client spent on goods to sell or use must be less than 100,000,000,000
-goodsToSellOrUseAmount.change.hidden = GoodsToSellOrUseAmount
+goodsToSellOrUseAmount.change.hidden = Change how much was spent on goods to sell or use
 
 ## Disallowable goods to sell or use amount
 disallowableGoodsToSellOrUseAmount.title.individual = How much of the £{0} you spent on goods to sell or use is disallowable?
@@ -620,8 +664,8 @@ disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount
 disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
 
 ## Goods to sell or use CYA
-goodsToSellOrUseCYA.title = goodsToSellOrUseCYA
-goodsToSellOrUseCYA.heading = goodsToSellOrUseCYA
+goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
+goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
 
 totalExpenses.title = totalExpenses
 totalExpenses.heading = totalExpenses
@@ -632,3 +676,35 @@ totalExpenses.change.hidden = TotalExpenses
 
 totalExpensesCYA.title = totalExpensesCYA
 totalExpensesCYA.heading = totalExpensesCYA
+
+########## Expenses - Repairs and Maintenance ##########
+
+## Repairs and maintenance amount
+repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
+repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
+repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
+repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
+repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenanceAmount using whole numbers
+repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
+repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+
+## Repairs and maintenance disallowable amount
+repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
+repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric = Enter your repairsAndMaintenanceDisallowableAmount using numbers
+repairsAndMaintenanceDisallowableAmount.error.required = Enter your repairsAndMaintenanceDisallowableAmount
+repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAndMaintenanceDisallowableAmount using whole numbers
+repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
+repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
+
+## Repairs and maintenanceCosts CYA
+repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
+repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
+repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.nonNumeric = Enter your repairsAndMaintenanceCostsCYA using numbers
+repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceCostsCYA
+repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
+repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
+repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden

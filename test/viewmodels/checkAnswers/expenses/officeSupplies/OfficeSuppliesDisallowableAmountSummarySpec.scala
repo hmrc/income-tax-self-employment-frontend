@@ -20,42 +20,106 @@ import base.SpecBase
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
-  private val businessId = "some_business_id"
-
-  private val data      = Json.obj("officeSuppliesDisallowableAmount" -> 123.45)
-  private val otherData = Json.obj("otherPage" -> 123.45)
-
-  private val userAnswers      = UserAnswers(userAnswersId, data)
-  private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
-
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
-
   "OfficeSuppliesDisallowableAmountSummary" - {
-    "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
-      "generate a summary list row" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(userAnswers, taxYear, businessId)
+    "some office supplies were claimed to be disallowable" - {
+      "user answers for OfficeSuppliesAmountPage exist" - {
+        "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
+          "generate a summary list row" in new Test {
+            val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
-        result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("officeSuppliesDisallowableAmount.checkYourAnswersLabel")
-        result.get.value.content shouldBe Text("123.45")
+            result.get shouldBe a[SummaryListRow]
+            result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType")
+            result.get.value.content shouldBe Text("£100.00")
+          }
+        }
+        "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
+          "return None" in new Test {
+            val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, authUserType)
+
+            result shouldBe None
+          }
+        }
+      }
+      "no user answers exist for OfficeSuppliesAmountPage" - {
+        "return None" in new Test {
+          val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, stubbedBusinessId, authUserType)
+
+          result shouldBe None
+        }
       }
     }
-    "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
-      "return None" in {
-        val result = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId)
+    "no office supplies are disallowable" - {
+      "return None" in new Test {
+        val result: Option[SummaryListRow] =
+          OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, stubbedBusinessId, authUserType)
 
         result shouldBe None
       }
     }
+  }
+
+  trait Test {
+    protected val authUserType: String = individual
+
+    protected val validData: JsObject = Json
+      .parse(s"""
+      |{
+      |  "$stubbedBusinessId": {
+      |    "officeSupplies": "yesDisallowable",
+      |    "officeSuppliesAmount": 200.00,
+      |    "officeSuppliesDisallowableAmount": 100.00
+      |  }
+      |}
+      |""".stripMargin)
+      .as[JsObject]
+
+    protected val invalidDataAllAllowable: JsObject = Json
+      .parse(s"""
+      |{
+      |  "$stubbedBusinessId": {
+      |    "officeSupplies": "yesAllowable"
+      |  }
+      |}
+      |""".stripMargin)
+      .as[JsObject]
+
+    protected val invalidData: JsObject = Json
+      .parse(s"""
+      |{
+      |  "$stubbedBusinessId": {
+      |    "officeSupplies": "yesDisallowable",
+      |    "officeSuppliesDisallowableAmount": 100.00
+      |  }
+      |}
+      |""".stripMargin)
+      .as[JsObject]
+
+    protected val otherData: JsObject = Json
+      .parse(s"""
+      |{
+      |  "$stubbedBusinessId": {
+      |    "otherPage": "otherAnswer"
+      |  }
+      |}
+      |""".stripMargin)
+      .as[JsObject]
+
+    protected val validUserAnswers: UserAnswers               = UserAnswers(userAnswersId, validData)
+    protected val invalidUserAnswers: UserAnswers             = UserAnswers(userAnswersId, invalidData)
+    protected val invalidUserAnswersAllAllowable: UserAnswers = UserAnswers(userAnswersId, invalidDataAllAllowable)
+    protected val otherUserAnswers: UserAnswers               = UserAnswers(userAnswersId, otherData)
+
+    protected implicit val messages: MessagesImpl = {
+      val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
+      MessagesImpl(Lang("en"), messagesApi)
+    }
+
   }
 
 }

@@ -22,25 +22,32 @@ import play.api.data.FormError
 
 class DisallowableProfessionalFeesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableProfessionalFeesFormProvider()()
-
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "disallowableProfessionalFees.error.required"
+    val fieldName = "value"
+    case class UserScenario(user: String)
 
-    behave like optionsField[DisallowableProfessionalFees](
-      form,
-      fieldName,
-      validValues = DisallowableProfessionalFees.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableProfessionalFeesFormProvider()(userScenario.user)
+
+      s"when user is an ${userScenario.user}, form should " - {
+
+        behave like optionsField[DisallowableProfessionalFees](
+          form,
+          fieldName,
+          validValues = DisallowableProfessionalFees.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableProfessionalFees.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

@@ -22,25 +22,32 @@ import play.api.data.FormError
 
 class DisallowableStaffCostsFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DisallowableStaffCostsFormProvider()()
-
   ".value" - {
+    case class UserScenario(user: String)
 
-    val fieldName   = "value"
-    val requiredKey = "disallowableStaffCosts.error.required"
+    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 
-    behave like optionsField[DisallowableStaffCosts](
-      form,
-      fieldName,
-      validValues = DisallowableStaffCosts.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new DisallowableStaffCostsFormProvider()(userScenario.user)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      s"when user is an ${userScenario.user}, form should " - {
+
+        val fieldName = "value"
+
+        behave like optionsField[DisallowableStaffCosts](
+          form,
+          fieldName,
+          validValues = DisallowableStaffCosts.values,
+          invalidError = FormError(fieldName, "error.invalid")
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"disallowableStaffCosts.error.required.${userScenario.user}")
+        )
+      }
+    }
   }
 
 }

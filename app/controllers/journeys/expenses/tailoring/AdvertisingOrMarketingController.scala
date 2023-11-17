@@ -45,11 +45,11 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
     with I18nSupport {
 
   val businessId = "SJPR05893938418" // TODO SASS-5658 replace default BID and taxYear vals
-  val taxYear = LocalDate.now.getYear
+  val taxYear    = LocalDate.now.getYear
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(AdvertisingOrMarketingPage, Some(businessId)) match {
-      case None => formProvider(userType(request.user.isAgent))
+      case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
 
@@ -63,8 +63,9 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(AdvertisingOrMarketingPage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(AdvertisingOrMarketingPage, value, Some(businessId)))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers))
       )
   }

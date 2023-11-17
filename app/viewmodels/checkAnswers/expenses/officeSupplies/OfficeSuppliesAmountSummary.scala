@@ -21,17 +21,25 @@ import models.CheckMode
 import models.database.UserAnswers
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OfficeSuppliesAmountSummary {
+object OfficeSuppliesAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OfficeSuppliesAmountPage).map { answer =>
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(OfficeSuppliesAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "officeSuppliesAmount.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
+        key = Key(
+          content = s"officeSuppliesAmount.checkYourAnswersLabel.$authUserType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = s"£${formatMoney(answer)}",
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("officeSuppliesAmount.change.hidden"))

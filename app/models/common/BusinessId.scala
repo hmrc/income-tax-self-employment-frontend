@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models.common
 
-import play.api.i18n.Messages
-
-object ContentStringViewModel {
-
-  def buildLegendHeadingWithHintString(headingText: String, hintText: String, headingClasses: String = "", hintExtraClasses: String = "")(implicit
-      messages: Messages): String = {
-    s"<div> <legend class='$headingClasses'> ${messages(headingText)} </legend>" +
-      s"<div class='govuk-hint $hintExtraClasses'> ${messages(hintText)} </div> </div>"
-  }
-
-}
+final case class BusinessId(value: String) extends AnyVal

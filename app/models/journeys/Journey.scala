@@ -22,43 +22,47 @@ sealed trait Journey
 
 object Journey {
 
-  val journeyReads: Reads[Journey] = Reads[Journey] {
-    case JsString("trade-details") => JsSuccess(TradeDetails)
-    case JsString("self-employment-abroad") => JsSuccess(Abroad)
-    case JsString("income") => JsSuccess(Income)
-    case JsString("expenses-tailoring") => JsSuccess(ExpensesTailoring)
-    case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
-    case JsString("national-insurance") => JsSuccess(NationalInsurance)
-    case _ => JsError("Parsing error")
+  case object TradeDetails extends Journey {
+    override def toString: String = "trade-details"
   }
 
-  val journeyWrites: Writes[Journey] = Writes[Journey] {
-    case journey @ _ => JsString(journey.toString)
+  case object Abroad extends Journey {
+    override def toString: String = "self-employment-abroad"
+  }
+
+  case object Income extends Journey {
+    override def toString: String = "income"
+  }
+
+  case object ExpensesTailoring extends Journey {
+    override def toString: String = "expenses-tailoring"
+  }
+
+  case object ExpensesGoodsToSellOrUse extends Journey {
+    override def toString: String = "expenses-goods-to-sell-or-use"
+  }
+
+  case object ExpensesOfficeSupplies extends Journey {
+    override def toString: String = "expenses-office-supplies"
+  }
+
+  case object NationalInsurance extends Journey {
+    override def toString: String = "national-insurance"
+  }
+
+  val journeyReads: Reads[Journey] = Reads[Journey] {
+    case JsString("trade-details")                 => JsSuccess(TradeDetails)
+    case JsString("self-employment-abroad")        => JsSuccess(Abroad)
+    case JsString("income")                        => JsSuccess(Income)
+    case JsString("expenses-tailoring")            => JsSuccess(ExpensesTailoring)
+    case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
+    case JsString("national-insurance")            => JsSuccess(NationalInsurance)
+    case _                                         => JsError("Parsing error")
+  }
+
+  val journeyWrites: Writes[Journey] = Writes[Journey] { case journey @ _ =>
+    JsString(journey.toString)
   }
 
   implicit val journeyFormat: Format[Journey] = Format(journeyReads, journeyWrites)
-}
-
-case object TradeDetails extends Journey {
-  override def toString: String = "trade-details"
-}
-
-case object Abroad extends Journey {
-  override def toString: String = "self-employment-abroad"
-}
-
-case object Income extends Journey {
-  override def toString: String = "income"
-}
-
-case object ExpensesTailoring extends Journey {
-  override def toString: String = "expenses-tailoring"
-}
-
-case object ExpensesGoodsToSellOrUse extends Journey {
-  override def toString: String = "expenses-goods-to-sell-or-use"
-}
-
-case object NationalInsurance extends Journey {
-  override def toString: String = "national-insurance"
 }

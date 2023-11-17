@@ -18,27 +18,63 @@ package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.SpecBase
 import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
+import controllers.journeys.routes.SectionCompletedStateController
+import models.NormalMode
+import models.database.UserAnswers
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
 
+  private val userTypes = List(individual, agent)
+
+  private val userAnswerData = Json.parse(s"""
+       |{
+       |  "$stubbedBusinessId": {
+       |    "goodsToSellOrUseAmount": 1235.4,
+       |    "disallowableGoodsToSellOrUseAmount": 12
+       |  }
+       |}
+       |""".stripMargin)
+
+  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+
   "GoodsToSellOrUseCYA Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    userTypes.foreach { userType =>
+      s".onPageLoad when user is an $userType should" - {
+        "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userType)).build()
 
-      running(application) {
-        val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+          implicit val appMessages: Messages = messages(application)
 
-        val result = route(application, request).value
+          running(application) {
+            val view    = application.injector.instanceOf[GoodsToSellOrUseCYAView]
+            val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
 
-        val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
+            val expectedSummaryListRows = Seq(
+              GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType),
+              DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
+            ).flatten
+            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
+            val expectedNextRoute =
+              SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, NormalMode).url
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
+              request,
+              messages(application)).toString
+          }
+        }
       }
     }
   }

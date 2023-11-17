@@ -30,16 +30,28 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
   case object Construction     extends WithName("construction") with ProfessionalServiceExpenses
   case object ProfessionalFees extends WithName("professional.fees") with ProfessionalServiceExpenses
   case object No               extends WithName("no") with ProfessionalServiceExpenses
+  case object CheckboxDivider       extends WithName("or") with ProfessionalServiceExpenses
 
   val values: Seq[ProfessionalServiceExpenses] = Seq(
     Staff,
     Construction,
     ProfessionalFees,
+    CheckboxDivider,
     No
   )
 
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map { case (value, index) =>
+  def checkboxItems(userType: String)(implicit messages: Messages): Seq[CheckboxItem] =
+    values.zipWithIndex.map {
+
+      case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))
+      case (value, index) if value.equals(No) =>
+        CheckboxItemViewModel(
+          content = Text(messages(s"professionalServiceExpenses.${value.toString}.$userType")),
+          fieldId = "value",
+          index = index,
+          value = value.toString
+        ).withAttribute(("data-behaviour", "exclusive"))
+      case (value, index) =>
       CheckboxItemViewModel(
         content = Text(messages(if (value == No) "site.no" else s"professionalServiceExpenses.${value.toString}")),
         fieldId = "value",
