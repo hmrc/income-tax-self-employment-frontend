@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.common
+@this()
 
-import play.api.mvc.PathBindable
+@(messageKey: String)(implicit messages: Messages)
 
-final case class TaxYear(value: Int) extends AnyVal
-
-object TaxYear {
-
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
-
-}
+<h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--l" for="event-name">@messages(messageKey)</label>
+</h1>

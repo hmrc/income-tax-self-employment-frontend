@@ -19,6 +19,7 @@ package viewmodels.checkAnswers.expenses.repairsandmaintenance
 import controllers.journeys.expenses.repairsandmaintenance.routes
 import models.database.UserAnswers
 import models.CheckMode
+import models.common.{BusinessId, TaxYear}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -33,7 +34,7 @@ object RepairsAndMaintenanceAmountSummary {
         key = "repairsAndMaintenanceAmount.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode).url)
             .withVisuallyHiddenText(messages("repairsAndMaintenanceAmount.change.hidden"))
         )
       )
