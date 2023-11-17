@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object DisallowableIrrecoverableDebtsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableIrrecoverableDebtsPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -41,7 +41,7 @@ object DisallowableIrrecoverableDebtsSummary {
         key = "disallowableIrrecoverableDebts.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", DisallowableIrrecoverableDebtsController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableIrrecoverableDebts.change.hidden"))
         )
       )
