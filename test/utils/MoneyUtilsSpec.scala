@@ -44,9 +44,9 @@ class MoneyUtilsSpec extends AnyWordSpec with Matchers with MoneyUtils {
       }
       "amount is not an integer" should {
         "retain 2dp when 2dp is provided" in {
-          val bigDecimals = List(1.23, 10.99)
+          val bigDecimals = List(1.23, 10.99, 0.98, 0.01)
 
-          val expectedResults = List("1.23", "10.99")
+          val expectedResults = List("1.23", "10.99", "0.98", "0.01")
 
           bigDecimals.map(formatMoney(_)) should contain theSameElementsInOrderAs expectedResults
         }
