@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class RepairsAndMaintenanceAmountController @Inject() (
     override val messagesApi: MessagesApi,
@@ -49,7 +49,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(RepairsAndMaintenanceAmountPage) match {
+      val preparedForm = request.userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -65,7 +65,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenanceAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenanceAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
