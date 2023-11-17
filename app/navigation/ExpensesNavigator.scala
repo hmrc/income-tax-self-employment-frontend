@@ -23,10 +23,10 @@ import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
+import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
 import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
 import pages._
-import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.tailoring.{GoodsToSellOrUsePage, OfficeSuppliesPage}
@@ -71,7 +71,10 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
+      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(taxYear, businessId)
+
+    case EntertainmentCYAPage =>
+      _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
@@ -85,7 +88,7 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
+      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
 

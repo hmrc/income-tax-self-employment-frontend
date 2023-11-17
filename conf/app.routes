@@ -254,3 +254,5 @@ GET         /:taxYear/:businessId/expenses/entertainment/disallowable-amount    
 POST        /:taxYear/:businessId/expenses/entertainment/disallowable-amount                     controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/entertainment/check                                   controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: Int, businessId: String)
