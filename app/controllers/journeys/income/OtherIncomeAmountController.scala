@@ -17,10 +17,11 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.{accrual, userType}
+import models.common.AccountingType.Accrual
+import models.common.ModelUtils.userType
 import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -56,10 +57,11 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
+  // TODO simplify by using EitherT + for comprehesion
   def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(userType(request.user.isAgent))
             .bindFromRequest()
@@ -70,7 +72,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(accrual)))
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName)))
                 )
             )
       }

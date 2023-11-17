@@ -16,9 +16,15 @@
 
 package models.common
 
-sealed trait AccountingType
+import enumeratum._
 
-object AccountingType {
-  case object Accrual extends WithName("ACCRUAL") with AccountingType
-  case object Cash    extends WithName("CASH") with AccountingType
+sealed trait AccountingType extends EnumEntry {
+  override def entryName: String = toString.toUpperCase
+}
+
+object AccountingType extends Enum[AccountingType] {
+  val values = findValues
+
+  case object Accrual extends AccountingType
+  case object Cash    extends AccountingType
 }

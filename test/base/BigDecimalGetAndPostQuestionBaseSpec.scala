@@ -59,7 +59,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
 
         "Return OK for a GET if an empty page" in new TestScenario(userType, Some(emptyUserAnswers)) {
           running(application) {
-            val result = languageAwareResult(lang, route(application, getRequest).value)
+            val response = route(application, getRequest).value
+            val result   = response.map(languageAwareResult(lang, _))
             status(result) mustEqual OK
             contentAsString(result) mustEqual expectedView(form, this)(getRequest, messages(application), application)
           }
@@ -69,7 +70,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           userType,
           Some(filledUserAnswers)) {
           running(application) {
-            val result = languageAwareResult(lang, route(application, getRequest).value)
+            val response = route(application, getRequest).value
+            val result   = response.map(languageAwareResult(lang, _))
             status(result) mustEqual OK
             contentAsString(result) mustEqual expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
           }
@@ -80,7 +82,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
       "Submitting page" - {
         "Redirect to Journey Recovery for POST if no prerequisite data is found" in new TestScenario(userType, None) {
           running(application) {
-            val result = languageAwareResult(lang, route(application, postRequest).value)
+            val response = route(application, postRequest).value
+            val result   = response.map(languageAwareResult(lang, _))
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
           }
@@ -89,7 +92,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
         "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(emptyUserAnswers)) {
           running(application) {
             val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-            val result    = languageAwareResult(lang, route(application, request).value)
+            val response  = route(application, request).value
+            val result    = response.map(languageAwareResult(lang, _))
             val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
             status(result) mustEqual BAD_REQUEST
             contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)

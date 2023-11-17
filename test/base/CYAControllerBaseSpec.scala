@@ -51,7 +51,7 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
           s"language is $lang and user is an $userType" - {
             "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
               running(application) {
-                val result = languageAwareResult(lang, route(application, getRequest).value)
+                val result = route(application, getRequest).value.map(languageAwareResult(lang, _))
 
                 status(result) shouldBe OK
                 contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)

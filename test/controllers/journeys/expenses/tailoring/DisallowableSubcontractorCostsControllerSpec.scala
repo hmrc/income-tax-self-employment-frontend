@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.tailoring
 
 import base.SpecBase
-import controllers.actions.AuthenticatedIdentifierActionSpec.fakeRequest
 import forms.expenses.tailoring.DisallowableSubcontractorCostsFormProvider
 import models.NormalMode
 import models.database.UserAnswers
@@ -128,13 +127,13 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
         running(application) {
           val request =

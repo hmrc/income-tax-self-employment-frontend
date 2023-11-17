@@ -27,7 +27,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -42,7 +41,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val professionalServiceExpensesRoute = controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(NormalMode).url
+  lazy val professionalServiceExpensesRoute =
+    controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(NormalMode).url
 
   val formProvider = new ProfessionalServiceExpensesFormProvider()
 
@@ -188,8 +188,8 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userScenario.userType,
-                userScenario.accountingType)(request, messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userScenario.userType, userScenario.accountingType)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
