@@ -74,7 +74,10 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
+                } yield {
+                  println("--------- submit: " + updatedAnswers)
+                    Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
+                }
             )
       }
   }

@@ -61,6 +61,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
+          println("--------- clicked")
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(No)    => FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(Staff) => DisallowableStaffCostsController.onPageLoad(taxYear, businessId, NormalMode)
