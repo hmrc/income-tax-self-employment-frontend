@@ -19,16 +19,14 @@ package viewmodels.checkAnswers.expenses.repairsandmaintenance
 import base.SpecBase
 import base.SpecBase.{currTaxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
 import builders.UserBuilder.aNoddyUser
-import models.common.BusinessId
 import models.database.UserAnswers
 import models.requests.DataRequest
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.i18n.Messages
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import play.api.libs.json.Json
 
 class RepairsAndMaintenanceDisallowableAmountSummarySpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
   implicit val messages: Messages = SpecBase.messagesEn
