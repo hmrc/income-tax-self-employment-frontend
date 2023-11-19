@@ -17,26 +17,47 @@
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import controllers.journeys.expenses.repairsandmaintenance.routes
-import models.database.UserAnswers
 import models.CheckMode
-import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
+import models.common.{BusinessId, TaxYear}
+import models.journeys.expenses.RepairsAndMaintenance
+import models.journeys.expenses.RepairsAndMaintenance._
+import models.requests.DataRequest
+import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
+import pages.expenses.tailoring.RepairsAndMaintenancePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object RepairsAndMaintenanceDisallowableAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RepairsAndMaintenanceDisallowableAmountPage).map { answer =>
-      SummaryListRowViewModel(
-        key = "repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("repairsAndMaintenanceDisallowableAmount.change.hidden"))
-        )
+  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] = {
+    for {
+      tailoringRepairsAndMaintenance <- request.getValue(RepairsAndMaintenancePage, businessId)
+      if areAnyDisallowable(tailoringRepairsAndMaintenance)
+      disallowableAmount <- request.getValue(RepairsAndMaintenanceDisallowableAmountPage, businessId)
+      allowableAmount    <- request.getValue(RepairsAndMaintenanceAmountPage, businessId)
+    } yield SummaryListRowViewModel(
+      key = Key(
+        content = messages(s"repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.${request.userType}", allowableAmount),
+        classes = "govuk-!-width-two-thirds"
+      ),
+      value = Value(
+        content = s"£${formatMoney(disallowableAmount)}",
+        classes = "govuk-!-width-one-third"
+      ),
+      actions = Seq(
+        ActionItemViewModel("site.change", routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          .withVisuallyHiddenText(messages("repairsAndMaintenanceDisallowableAmount.change.hidden"))
       )
+    )
+  }
+
+  private def areAnyDisallowable(repairsAndMaintenance: RepairsAndMaintenance): Boolean =
+    repairsAndMaintenance match {
+      case YesDisallowable   => true
+      case YesAllowable | No => false
     }
 
 }

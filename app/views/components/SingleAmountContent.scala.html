@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.expenses.repairsandmaintenance
+@import viewmodels.InputWidth._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-import pages.Page
+@this(govukInput: GovukInput)
 
-case object RepairsAndMaintenanceCostsCYAPage extends Page {
-  override def toString: String = "repairsAndMaintenanceCostsCYA"
-}
+@(form: Form[_])(content: Html)(implicit messages: Messages)
+
+<div class="govuk-form-group">
+    @govukInput(
+        InputViewModel(
+            field = form("value"),
+            label = LabelViewModel(
+              HtmlContent(content)
+            )
+        )
+        .asNumeric()
+        .withWidth(Fixed10)
+        .withPrefix(PrefixOrSuffix(content = Text("£")))
+    )
+</div>

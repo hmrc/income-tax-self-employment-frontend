@@ -16,13 +16,13 @@
 
 @import controllers.journeys.expenses.repairsandmaintenance.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
-@import views.html.components.{Amount, ErrorSummarySection, FoldableDetails, Heading}
+@import views.html.components.{SingleAmountContent, ErrorSummarySection, FoldableDetails, Heading}
 
 @this(layout: templates.Layout,
         heading: Heading,
         errorSummary: ErrorSummarySection,
         foldableDetails: FoldableDetails,
-        amount: Amount,
+        singleAmountContent: SingleAmountContent,
         formHelper: FormWithCSRF,
         govukInput: GovukInput,
         govukButton: GovukButton
@@ -35,20 +35,19 @@
         businessId: BusinessId,
         accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("repairsAndMaintenanceAmount.title"))) {
-    
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceAmount.heading.$userType"))) {
+
     @errorSummary(form)
 
     @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
-        <div class="govuk-form-group">
-            @heading("repairsAndMaintenanceAmount.title")
+        @singleAmountContent(form) {
+            @heading(messages(s"repairsAndMaintenanceAmount.heading.$userType"))
 
             @foldableDetails(messages("repairsAndMaintenanceAmount.details")) {
                 <p>@messages(s"site.canInclude.$userType")</p>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("repairsAndMaintenance.l1")</li>
-                    @if(accountingType == AccountingType.Cash){
+                    @if(accountingType == AccountingType.Cash) {
                         <li>@messages("repairsAndMaintenance.l2")</li>
                     }
                 </ul>
@@ -56,18 +55,15 @@
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                     <li>@messages("repairsAndMaintenance.l3")</li>
                     <li>@messages("repairsAndMaintenance.l4")</li>
-                    @if(accountingType == AccountingType.Accrual){
+                    @if(accountingType == AccountingType.Accrual) {
                         <li>@messages("repairsAndMaintenance.l2")</li>
                     }
                 </ul>
             }
-
-            @amount(form)
-        </div>
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
     }
 }
-

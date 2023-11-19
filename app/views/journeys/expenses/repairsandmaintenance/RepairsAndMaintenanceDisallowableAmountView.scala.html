@@ -14,35 +14,39 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import controllers.journeys.expenses.repairsandmaintenance.routes
+@import models.common.{BusinessId, TaxYear, TextAmount, UserType}
+@import views.html.components.{ErrorSummarySection, SingleAmountContent}
+@import views.html.components.Heading
 
 @this(
     layout: templates.Layout,
+    heading: Heading,
+    errorSummary: ErrorSummarySection,
     formHelper: FormWithCSRF,
+    singleAmountContent: SingleAmountContent,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],
+        mode: Mode,
+        taxYear: TaxYear,
+        businessId: BusinessId,
+        userType: UserType,
+        allowableAmount: TextAmount
+)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("repairsAndMaintenanceDisallowableAmount.title"))) {
+
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceDisallowableAmount.heading.$userType", allowableAmount.value))) {
+
+    @errorSummary(form)
 
     @formHelper(action = routes.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+        @singleAmountContent(form) {
+            @heading(messages(s"repairsAndMaintenanceDisallowableAmount.heading.$userType", allowableAmount.value))
         }
-
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("repairsAndMaintenanceDisallowableAmount.heading")).asPageHeading()
-            )
-            .asNumeric()
-            .withWidth(Fixed10)
-        )
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
