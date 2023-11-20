@@ -667,16 +667,6 @@ disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
 
-totalExpenses.title = totalExpenses
-totalExpenses.heading = totalExpenses
-totalExpenses.checkYourAnswersLabel = totalExpenses
-totalExpenses.error.required = Enter totalExpenses
-totalExpenses.error.length = TotalExpenses must be 100 characters or less
-totalExpenses.change.hidden = TotalExpenses
-
-totalExpensesCYA.title = totalExpensesCYA
-totalExpensesCYA.heading = totalExpensesCYA
-
 ########## Expenses - Repairs and Maintenance ##########
 
 ########## Expenses - Repairs and Maintenance ##########
@@ -710,3 +700,19 @@ repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceC
 repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
 repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
 repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden
+
+########## Expenses - Simple Journey ##########
+
+totalExpenses.title.individual = How much were your total expenses?
+totalExpenses.title.agent = How much were your client’s total expenses?
+totalExpenses.error.required.individual = Enter your total expenses
+totalExpenses.error.required.agent = Enter your client’s total expenses
+totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
+totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
+totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
+totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
+totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
+totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
+totalExpenses.change.hidden = Change how much the total expenses were
+
+totalExpensesCYA.title = totalExpensesCYA

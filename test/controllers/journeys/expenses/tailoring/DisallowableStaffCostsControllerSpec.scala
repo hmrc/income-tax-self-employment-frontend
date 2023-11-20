@@ -32,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.tailoring.{DisallowableProfessionalFeesView, DisallowableStaffCostsView}
+import views.html.journeys.expenses.tailoring.DisallowableStaffCostsView
 
 import scala.concurrent.Future
 
