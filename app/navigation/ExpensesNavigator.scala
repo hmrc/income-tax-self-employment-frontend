@@ -16,13 +16,8 @@
 
 package navigation
 
-import controllers.journeys.expenses.{goodsToSellOrUse, officeSupplies, repairsandmaintenance}
+import controllers.journeys.expenses.{entertainment, goodsToSellOrUse, officeSupplies, repairsandmaintenance}
 import controllers.{journeys, standard}
-import controllers.journeys.expenses.entertainment.routes._
-import controllers.journeys.expenses.goodsToSellOrUse.routes._
-import controllers.journeys.expenses.officeSupplies.routes._
-import controllers.journeys.routes.SectionCompletedStateController
-import controllers.standard.routes._
 import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
@@ -104,7 +99,14 @@ class ExpensesNavigator @Inject() () {
             }
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), NormalMode) // TODO to CYA page when created
+      _ =>
+        taxYear =>
+          businessId =>
+            entertainment.routes.EntertainmentAmountController.onPageLoad(
+              TaxYear(taxYear),
+              BusinessId(businessId),
+              NormalMode
+            ) // TODO to CYA page when created
 
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ =>
@@ -117,7 +119,7 @@ class ExpensesNavigator @Inject() () {
           businessId =>
             journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesRepairsAndMaintenance.toString, NormalMode)
 
-    case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
+    case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Int => String => Call = {
@@ -129,14 +131,21 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode) // TODO to CYA page when created
+      _ =>
+        taxYear =>
+          businessId =>
+            entertainment.routes.EntertainmentAmountController.onPageLoad(
+              TaxYear(taxYear),
+              BusinessId(businessId),
+              CheckMode
+            ) // TODO to CYA page when created
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ =>
         taxYear =>
           businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(TaxYear(taxYear), BusinessId(businessId))
 
-    case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
+    case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
   }
 
