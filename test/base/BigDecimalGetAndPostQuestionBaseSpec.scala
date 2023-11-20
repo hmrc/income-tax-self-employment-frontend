@@ -27,6 +27,7 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
+// TODO: It would be nice to have a common suite of tests for all all Question Controllers. This is just a starting point.
 abstract case class BigDecimalGetAndPostQuestionBaseSpec(
     controllerName: String,
     page: QuestionPage[BigDecimal]
