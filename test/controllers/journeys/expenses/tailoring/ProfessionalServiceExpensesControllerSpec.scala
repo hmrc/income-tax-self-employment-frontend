@@ -42,7 +42,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
   def onwardRoute = Call("GET", "/foo")
 
   lazy val professionalServiceExpensesRoute =
-    controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new ProfessionalServiceExpensesFormProvider()
 
@@ -77,7 +77,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -111,7 +111,10 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
                 NormalMode,
                 userScenario.userType,
-                userScenario.accountingType)(request, messages(application)).toString
+                taxYear,
+                stubbedBusinessId,
+                userScenario.accountingType
+              )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -120,7 +123,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -189,7 +192,9 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, userScenario.accountingType)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -198,7 +203,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -214,7 +219,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         }
       }
     }
-
   }
 
 }

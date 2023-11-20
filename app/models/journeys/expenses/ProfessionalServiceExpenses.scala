@@ -28,7 +28,7 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
 
   case object Staff            extends WithName("staff") with ProfessionalServiceExpenses
   case object Construction     extends WithName("construction") with ProfessionalServiceExpenses
-  case object ProfessionalFees extends WithName("professional.fees") with ProfessionalServiceExpenses
+  case object ProfessionalFees extends WithName("professionalFees") with ProfessionalServiceExpenses
   case object No               extends WithName("no") with ProfessionalServiceExpenses
   case object CheckboxDivider       extends WithName("or") with ProfessionalServiceExpenses
 

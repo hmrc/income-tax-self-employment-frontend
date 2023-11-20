@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object DisallowableOtherFinancialChargesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableOtherFinancialChargesPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -41,7 +41,7 @@ object DisallowableOtherFinancialChargesSummary {
         key = "disallowableOtherFinancialCharges.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", DisallowableOtherFinancialChargesController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableOtherFinancialCharges.change.hidden"))
         )
       )

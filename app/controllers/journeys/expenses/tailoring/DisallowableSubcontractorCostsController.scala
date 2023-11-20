@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.expenses.tailoring.DisallowableSubcontractorCostsFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.database.UserAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableSubcontractorCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,33 +36,35 @@ class DisallowableSubcontractorCostsController @Inject() (override val messagesA
                                                           navigator: ExpensesTailoringNavigator,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
+                                                          requireData: DataRequiredAction,
                                                           formProvider: DisallowableSubcontractorCostsFormProvider,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: DisallowableSubcontractorCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(DisallowableSubcontractorCostsPage) match {
-      case None        => formProvider(userType(request.user.isAgent))
-      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-    }
+  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)) match {
+        case None        => formProvider(userType(request.user.isAgent))
+        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+      }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent)))
+      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider(userType(request.user.isAgent))
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent)))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(DisallowableSubcontractorCostsPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DisallowableSubcontractorCostsPage, mode, updatedAnswers))
-      )
+  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      formProvider(userType(request.user.isAgent))
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableSubcontractorCostsPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DisallowableSubcontractorCostsPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 
 }

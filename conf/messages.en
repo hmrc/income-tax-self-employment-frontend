@@ -444,7 +444,7 @@ professionalServiceExpenses.subHeading.individual = Did you pay for any of these
 professionalServiceExpenses.subHeading.agent = Did your client pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
-professionalServiceExpenses.professional.fees = Professional Fees
+professionalServiceExpenses.professionalFees = Professional Fees
 professionalServiceExpenses.no.individual = No, I did not pay for any of these professionals or services
 professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.checkYourAnswersLabel = Staff, construction industry and professional services expenses
@@ -667,16 +667,6 @@ disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on good
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
 
-totalExpenses.title = totalExpenses
-totalExpenses.heading = totalExpenses
-totalExpenses.checkYourAnswersLabel = totalExpenses
-totalExpenses.error.required = Enter totalExpenses
-totalExpenses.error.length = TotalExpenses must be 100 characters or less
-totalExpenses.change.hidden = TotalExpenses
-
-totalExpensesCYA.title = totalExpensesCYA
-totalExpensesCYA.heading = totalExpensesCYA
-
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
@@ -723,3 +713,19 @@ entertainment.error.lessThanZero.agent = The amount your client spent on enterta
 entertainment.error.overMax.individual = The amount you spent on entertainment must be less than £100,000,000,000
 entertainment.error.overMax.agent = The amount your client spent on entertainment must be less than £100,000,000,000
 entertainment.change.hidden = Change how much was spent on entertainment
+
+########## Expenses - Simple Journey ##########
+
+totalExpenses.title.individual = How much were your total expenses?
+totalExpenses.title.agent = How much were your client’s total expenses?
+totalExpenses.error.required.individual = Enter your total expenses
+totalExpenses.error.required.agent = Enter your client’s total expenses
+totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
+totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
+totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
+totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
+totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
+totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
+totalExpenses.change.hidden = Change how much the total expenses were
+
+totalExpensesCYA.title = totalExpensesCYA

@@ -26,43 +26,41 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages("disallowableProfessionalFees.title"))) {
+@layout(pageTitle = title(form, messages("disallowableProfessionalFees.title"))) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
-
-        @heading(messages("disallowableProfessionalFees.title"), None, extraClasses = "no-padding-top")
-
-        <div class="govuk-body govuk-!-margin-top-6">
-            <p>
-            @messages(s"site.theseInclude")
-            </p>
-            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages("expenses.legalCost.property")</li>
-                <li>@messages("expenses.legalCost.equipment")</li>
-                <li>@messages("expenses.taxDisputes")</li>
-                <li>@messages("expenses.fines")</li>
-            </ul>
-        </div>
-
-        @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onSubmit(mode), 'autoComplete -> "off") {
-
-
-
-            @govukRadios(
-                RadiosViewModel(
-                    field = form("value"),
-                    legend = LegendViewModel(messages(s"disallowableProfessionalFees.subheading.$authUserType"))
-                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                    items = DisallowableProfessionalFees.options
-                )
-            )
-
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
+
+    @heading(messages("disallowableProfessionalFees.title"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages(s"site.theseInclude")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("expenses.legalCost.property")</li>
+            <li>@messages("expenses.legalCost.equipment")</li>
+            <li>@messages("expenses.taxDisputes")</li>
+            <li>@messages("expenses.fines")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"disallowableProfessionalFees.subheading.$authUserType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items = DisallowableProfessionalFees.options
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
