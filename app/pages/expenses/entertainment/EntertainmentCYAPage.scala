@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pages.abroad
+package pages.expenses.entertainment
 
-import pages.OneQuestionPage
+import pages.Page
 
-case object SelfEmploymentAbroadPage extends OneQuestionPage[Boolean] {
-  override def toString: String = "selfEmploymentAbroad"
+object EntertainmentCYAPage extends Page {
+  override def toString: String = "entertainmentCYA"
 }

@@ -719,6 +719,10 @@ entertainment.error.overMax.individual = The amount you spent on entertainment m
 entertainment.error.overMax.agent = The amount your client spent on entertainment must be less than £100,000,000,000
 entertainment.change.hidden = Change how much was spent on entertainment
 
+## Entertainment CYA
+entertainmentCya.title.individual = Check your entertainment expenses
+entertainmentCya.title.agent = Check your client’s entertainment expenses
+
 ########## Expenses - Simple Journey ##########
 
 totalExpenses.title.individual = How much were your total expenses?
