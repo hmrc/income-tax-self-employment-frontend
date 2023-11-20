@@ -42,7 +42,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(NormalMode).url
+  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableOtherFinancialChargesFormProvider()
 
@@ -112,7 +112,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -205,7 +205,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
         }
       }
 
-      "redirect to Journey Recovery for a POST if no existing data is found" ignore {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 

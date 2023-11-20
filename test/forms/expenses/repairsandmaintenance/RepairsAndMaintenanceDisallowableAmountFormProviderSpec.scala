@@ -18,5 +18,4 @@ package forms.expenses.repairsandmaintenance
 
 import forms.behaviours.BigDecimalFieldBehaviours
 
-class RepairsAndMaintenanceDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
-}
+class RepairsAndMaintenanceDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {}

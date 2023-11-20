@@ -33,7 +33,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @formHelper(action = TaxiMinicabOrRoadHaulageController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = TaxiMinicabOrRoadHaulageController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
