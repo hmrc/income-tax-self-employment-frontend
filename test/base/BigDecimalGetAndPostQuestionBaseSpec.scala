@@ -67,7 +67,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           }
         }
 
-        "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answe" in new TestScenario(
+        "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answer" in new TestScenario(
           userType,
           Some(filledUserAnswers)) {
           running(application) {
