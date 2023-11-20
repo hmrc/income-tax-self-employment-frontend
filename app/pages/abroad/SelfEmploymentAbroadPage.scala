@@ -16,8 +16,7 @@
 
 package pages.abroad
 
-import pages.{OneQuestionPage, QuestionPage}
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
 case object SelfEmploymentAbroadPage extends OneQuestionPage[Boolean] {
   override def toString: String = "selfEmploymentAbroad"
