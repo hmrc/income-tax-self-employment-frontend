@@ -19,6 +19,5 @@ package pages.tradeDetails
 import pages.Page
 
 case object CheckYourSelfEmploymentDetailsPage extends Page {
-
   override def toString: String = "selfEmploymentAbroad"
 }

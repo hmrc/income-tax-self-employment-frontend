@@ -17,13 +17,8 @@
 package pages.income
 
 import models.journeys.income.HowMuchTradingAllowance
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object HowMuchTradingAllowancePage extends QuestionPage[HowMuchTradingAllowance] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object HowMuchTradingAllowancePage extends OneQuestionPage[HowMuchTradingAllowance] {
   override def toString: String = "howMuchTradingAllowance"
 }
