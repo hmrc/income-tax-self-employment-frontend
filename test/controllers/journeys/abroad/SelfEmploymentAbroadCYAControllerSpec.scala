@@ -38,12 +38,12 @@ import scala.concurrent.Future
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
   private val isAgent    = false
-  private val businessId = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
+  private val businessID = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
-  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessID).url
 
   private lazy val nextRoute =
-    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
+    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, Abroad.toString, NormalMode).url
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -55,7 +55,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
         val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 
         running(application) {
-          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, userAnswers)(messages(application))
+          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessID, userAnswers)(messages(application))
           val expectedSummaryList         = SummaryList(Seq(expectedMaybeSummaryListRow))
 
           val request                = FakeRequest(GET, requestUrl)

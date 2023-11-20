@@ -661,13 +661,11 @@ disallowableGoodsToSellOrUseAmount.error.lessThanZero.individual = The disallowa
 disallowableGoodsToSellOrUseAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on goods to sell or use must be more than £0
 disallowableGoodsToSellOrUseAmount.error.overMax.individual = The disallowable amount you spent on goods to sell or use must be the same as or less than £{0}
 disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount your client spent on goods to sell or use must be the same as or less than £{0}
-disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on goods to sell or use was disallowable
 
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
-
-########## Expenses - Repairs and Maintenance ##########
 
 ########## Expenses - Repairs and Maintenance ##########
 
@@ -700,6 +698,21 @@ repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceC
 repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
 repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
 repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden
+
+########## Expenses - Entertainment ##########
+
+## Entertainment amount
+entertainment.title.individual = How much did you spend on entertainment?
+entertainment.title.agent = How much did your client spend on entertainment?
+entertainment.error.nonNumeric.individual = The amount you spent on entertainment must be a number
+entertainment.error.nonNumeric.agent = The amount your client spent on entertainment must be a number
+entertainment.error.required.individual = Enter the amount you spent on entertainment
+entertainment.error.required.agent = Enter the amount your client spent on entertainment
+entertainment.error.lessThanZero.individual = The amount you spent on entertainment must be more than £0
+entertainment.error.lessThanZero.agent = The amount your client spent on entertainment must be more than £0
+entertainment.error.overMax.individual = The amount you spent on entertainment must be less than £100,000,000,000
+entertainment.error.overMax.agent = The amount your client spent on entertainment must be less than £100,000,000,000
+entertainment.change.hidden = Change how much was spent on entertainment
 
 ########## Expenses - Simple Journey ##########
 

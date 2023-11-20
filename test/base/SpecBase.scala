@@ -18,9 +18,9 @@ package base
 
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.{BusinessId, Language, TaxYear, UserType}
 import models.common.Language._
 import models.common.UserType.{Agent, Individual}
+import models.common.{BusinessId, Language, TaxYear, UserType}
 import models.database.UserAnswers
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -35,7 +35,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
@@ -47,6 +47,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val accrual           = Accrual.entryName
   val cash              = Cash.entryName
   val stubbedBusinessId = "SJPR05893938418"
+  val businessId        = BusinessId(stubbedBusinessId)
 
   val stubBusinessId = BusinessId(
     stubbedBusinessId

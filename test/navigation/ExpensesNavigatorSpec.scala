@@ -119,6 +119,16 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
+        "Entertainment journey" - {
+          "the page is EntertainmentAmountPage" - {
+            "navigate to the EntertainmentCYAController" ignore { // TODO unignore and fix test when CYA page is built
+              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, mode)
+
+              navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+            }
+          }
+        }
+
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
             val expectedResult = JourneyRecoveryController.onPageLoad()
@@ -158,6 +168,14 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
 
             navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is EntertainmentAmountPage" - {
+          "navigate to the EntertainmentCYAController" ignore { // TODO unignore and fix test when CYA page is built
+            val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, mode)
+
+            navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
           }
         }
 

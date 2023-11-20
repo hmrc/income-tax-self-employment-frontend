@@ -22,7 +22,7 @@ import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
-import navigation.{FakeExpensesNavigator, ExpensesNavigator}
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,13 +44,11 @@ import scala.concurrent.Future
 class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new OfficeSuppliesAmountFormProvider()
-
-  private val businessId  = "some_id"
-  private val validAnswer = BigDecimal(100.00)
+  private val validAnswer  = BigDecimal(100.00)
 
   private val onwardRoute                            = Call("GET", "/foo")
-  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
@@ -86,7 +84,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
               val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
 
               running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
                 implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
                 val result                                                = route(application, request).value
@@ -94,14 +92,14 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 status(langResult) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
                   request,
                   messages(application)).toString
               }
             }
 
             "must populate the view correctly when the question has previously been answered" in {
-              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
+              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
 
               val application = buildApplication(Some(userAnswers), userScenario.authUser)
 
@@ -109,7 +107,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
               val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
 
               running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
                 val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
                 val result     = route(application, request).value
@@ -123,7 +121,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   userScenario.authUser,
                   accrual,
                   taxYear,
-                  businessId)(request, messages(application)).toString
+                  stubbedBusinessId)(request, messages(application)).toString
               }
             }
           }
@@ -132,7 +130,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
               val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
               running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Left(someHttpError))
+                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Left(someHttpError))
 
                 val request = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
                 val result  = route(application, request).value
@@ -146,7 +144,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             "when an accounting type is returned by the service" - {
               "must redirect to the next page when valid data is submitted" in {
                 when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-                when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
                 val application =
                   applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
@@ -173,7 +171,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                 implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
 
                 running(application) {
-                  when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Right(accrual))
+                  when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
                   val request = FakeRequest(POST, officeSuppliesAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
 
@@ -183,7 +181,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                   status(langResult) mustEqual BAD_REQUEST
-                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
                     request,
                     messages(application)).toString
                 }
@@ -194,7 +192,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                 val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
                 running(application) {
-                  when(mockSelfEmploymentService.getAccountingType(any, meq(businessId), any)(any)) thenReturn Future(Left(someHttpError))
+                  when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Left(someHttpError))
 
                   val request = FakeRequest(POST, officeSuppliesAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
                   val result  = route(application, request).value
