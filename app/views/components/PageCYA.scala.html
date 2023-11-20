@@ -14,15 +14,30 @@
  * limitations under the License.
  *@
 
+@import templates.helpers.Heading
 @import models.common.{TaxYear, UserType}
-@import views.html.components.PageCYA
 
-@this(pageCYA: PageCYA)
+@this(layout: templates.Layout,
+        govukButton: GovukButton,
+        heading: Heading,
+        govukSummaryList: GovukSummaryList)
 
-@(taxYear: TaxYear,
+@(pageName: String,
+        taxYear: TaxYear,
         userType: UserType,
         summaryList: SummaryList,
         nextRoute: String
 )(implicit request: Request[_], messages: Messages)
 
-@pageCYA("repairsAndMaintenanceCostsCYA", taxYear, userType, summaryList, nextRoute)
+@layout(pageTitle = titleNoForm(messages(s"$pageName.title.individual"))) {
+
+    @heading(
+        heading = messages(s"$pageName.title.$userType"),
+        subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
+        extraClasses = "govuk-!-margin-bottom-3"
+    )
+
+    @govukSummaryList(summaryList)
+
+    <div class="govuk-button-group govuk-!-margin-top-9">@govukButton(ButtonViewModel(messages("site.saveAndContinue")).asLink(nextRoute))</div>
+}

@@ -16,6 +16,7 @@
 
 package base
 
+import common.TestApp.buildAppWithMessages
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.Language._
@@ -29,7 +30,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{DefaultMessagesApi, Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
@@ -72,6 +73,12 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     } else {
       app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
     }
+
+  /** This does not load real values from messages.en */
+  def messagesStubbed: Messages = {
+    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
+    MessagesImpl(Lang("en"), messagesApi)
+  }
 
   protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
 

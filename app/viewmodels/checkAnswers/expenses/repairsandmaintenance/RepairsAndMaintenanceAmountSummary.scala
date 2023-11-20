@@ -17,27 +17,36 @@
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import controllers.journeys.expenses.repairsandmaintenance.routes
-import models.database.UserAnswers
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
+import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object RepairsAndMaintenanceAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RepairsAndMaintenanceAmountPage).map { answer =>
+  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] = {
+    request.getValue(RepairsAndMaintenanceAmountPage, businessId).map { answer =>
       SummaryListRowViewModel(
-        key = "repairsAndMaintenanceAmount.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode).url)
+        key = Key(
+          content = s"repairsAndMaintenanceAmount.checkYourAnswersLabel.${request.userType}",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = s"£${formatMoney(answer)}",
+          classes = "govuk-!-width-one-third"
+        ),
+        actions = List(
+          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("repairsAndMaintenanceAmount.change.hidden"))
         )
       )
     }
+  }
 
 }
