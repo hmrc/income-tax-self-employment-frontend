@@ -19,7 +19,7 @@ package controllers.journeys.expenses.entertainment
 import base.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{TaxYear, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.Application

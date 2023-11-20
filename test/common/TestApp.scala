@@ -22,7 +22,7 @@ import models.common.{AccountingType, Language, UserType, onwardRoute}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.inject.bind
 import services.SelfEmploymentServiceBase
 import stubs.services.SelfEmploymentServiceStub
