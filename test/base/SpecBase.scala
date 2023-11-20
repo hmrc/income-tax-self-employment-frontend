@@ -47,7 +47,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val accrual           = Accrual.entryName
   val cash              = Cash.entryName
   val stubbedBusinessId = "SJPR05893938418"
-  val businessId        = BusinessId("SJPR05893938418")
+  val businessId        = BusinessId(stubbedBusinessId)
 
   val stubBusinessId = BusinessId(
     stubbedBusinessId
