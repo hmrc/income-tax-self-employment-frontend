@@ -62,6 +62,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
     } yield Ok(view(preparedForm, mode, userType, taxYear, BusinessId(businessId.value), accountingType))
 
     handleResult(result.value)
+
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>

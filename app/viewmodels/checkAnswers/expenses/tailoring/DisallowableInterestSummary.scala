@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object DisallowableInterestSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableInterestPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -41,7 +41,7 @@ object DisallowableInterestSummary {
         key = "disallowableInterest.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", DisallowableInterestController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableInterest.change.hidden"))
         )
       )

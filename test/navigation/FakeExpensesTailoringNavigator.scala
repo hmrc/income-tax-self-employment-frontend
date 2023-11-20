@@ -23,7 +23,7 @@ import play.api.mvc.Call
 
 class FakeExpensesTailoringNavigator(desiredRoute: Call) extends ExpensesTailoringNavigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean]): Call =
     desiredRoute
 
 }

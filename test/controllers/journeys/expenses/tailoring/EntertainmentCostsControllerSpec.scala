@@ -42,7 +42,8 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val entertainmentCostsRoute = controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(NormalMode).url
+  lazy val entertainmentCostsRoute =
+    controllers.journeys.expenses.tailoring.routes.EntertainmentCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new EntertainmentCostsFormProvider()
 
@@ -108,20 +109,20 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
-          "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-            val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request = FakeRequest(GET, entertainmentCostsRoute)
+        running(application) {
+          val request = FakeRequest(GET, entertainmentCostsRoute)
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -210,23 +211,23 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
               contentAsString(langResult) mustEqual expectedResult
             }
           }
+        }
+      }
 
-          "redirect to Journey Recovery for a POST if no existing data is found" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
-            val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, entertainmentCostsRoute)
-                  .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
+        running(application) {
+          val request =
+            FakeRequest(POST, entertainmentCostsRoute)
+              .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

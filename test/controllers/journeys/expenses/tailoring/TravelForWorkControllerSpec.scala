@@ -43,7 +43,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val travelForWorkRoute = controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(NormalMode).url
+  lazy val travelForWorkRoute = controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new TravelForWorkFormProvider()
   val taxiDriver = false
@@ -140,7 +140,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 

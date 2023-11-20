@@ -18,11 +18,10 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.{BusinessId, UserId}
+import models.common.BusinessId
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import pages.QuestionPage
-import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
