@@ -17,9 +17,13 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.Reads
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Request, Result, WrappedRequest}
+import queries.Gettable
+import controllers.standard
 
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
     extends WrappedRequest[A](request) {
@@ -29,4 +33,11 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
   def userType: UserType = user.userType
+
+  def getValue[B: Reads](page: Gettable[B], businessId: BusinessId): Option[B] =
+    userAnswers.get(page, Some(businessId.value))
+
+  def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
+    getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
+
 }

@@ -18,19 +18,25 @@ package forms.expenses.repairsandmaintenance
 
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
+import play.api.data.Form
+import play.api.i18n.Messages
+import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
-import play.api.data.Form
 
 class RepairsAndMaintenanceDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] =
+  def apply(authUserType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] = {
+    val formattedMoney = formatMoney(allowableAmount)
+
     Form(
       "value" -> bigDecimal(
-        s"repairsAndMaintenanceDisallowableAmount.error.required.$authUserType",
-        s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$authUserType"))
-        .verifying(maximumValue(allowableAmount, s"repairsAndMaintenanceDisallowableAmount.error.overAllowableMax.$authUserType"))
+        messages(s"repairsAndMaintenanceDisallowableAmount.error.required.$authUserType", formattedMoney),
+        messages(s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$authUserType", formattedMoney)
+      )
+        .verifying(greaterThan(minimumValue, messages(s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$authUserType", formattedMoney)))
+        .verifying(maximumValue(allowableAmount, messages(s"repairsAndMaintenanceDisallowableAmount.error.overAmount.$authUserType", formattedMoney)))
     )
+  }
 
 }

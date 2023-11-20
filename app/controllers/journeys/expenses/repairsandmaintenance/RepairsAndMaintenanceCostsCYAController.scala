@@ -17,9 +17,14 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import controllers.actions._
+import models.common.{BusinessId, TaxYear}
+import navigation.ExpensesNavigator
+import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
 
 import javax.inject.Inject
@@ -29,13 +34,22 @@ class RepairsAndMaintenanceCostsCYAController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    navigator: ExpensesNavigator,
     val controllerComponents: MessagesControllerComponents,
     view: RepairsAndMaintenanceCostsCYAView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view())
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val nextRoute = navigator.nextNormalRoute(RepairsAndMaintenanceCostsCYAPage, request.userAnswers, taxYear, businessId).url
+    val summaryList = SummaryList(
+      rows = List(
+        RepairsAndMaintenanceAmountSummary.row(request, taxYear, businessId),
+        RepairsAndMaintenanceDisallowableAmountSummary.row(request, taxYear, businessId)
+      ).flatten
+    )
+
+    Ok(view(taxYear, request.userType, summaryList, nextRoute))
   }
 
 }
