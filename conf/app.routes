@@ -232,8 +232,6 @@ POST        /:taxYear/:businessId/expenses/total-expenses                       
 GET         /:taxYear/:businessId/expenses/change-total-expenses                                 controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-total-expenses                                 controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /expenses/simplified-expenses/check-answers                                          controllers.journeys.expenses.simplifiedExpenses.TotalExpensesCYAController.onPageLoad()
-
 ########## Expenses - Repairs and Maintenance ##########
 
 GET         /:taxYear/:businessId/expenses/repairs-maintenance/amount                            controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
