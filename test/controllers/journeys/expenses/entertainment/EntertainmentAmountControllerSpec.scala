@@ -34,6 +34,7 @@ class EntertainmentAmountControllerSpec
       "EntertainmentAmountController",
       EntertainmentAmountPage
     ) {
+
   lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(TaxYear(taxYear), stubBusinessId, NormalMode).url
   lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(TaxYear(taxYear), stubBusinessId, NormalMode).url
 
