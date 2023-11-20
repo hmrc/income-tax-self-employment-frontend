@@ -30,8 +30,8 @@ import viewmodels.implicits._
 
 object EntertainmentAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EntertainmentAmountPage, Some(businessId)).map { answer =>
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(EntertainmentAmountPage, Some(businessId.value)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
           content = s"entertainment.title.$userType",
@@ -42,7 +42,7 @@ object EntertainmentAmountSummary extends MoneyUtils {
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode).url)
+          ActionItemViewModel("site.change", EntertainmentAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("entertainment.change.hidden"))
         )
       )
