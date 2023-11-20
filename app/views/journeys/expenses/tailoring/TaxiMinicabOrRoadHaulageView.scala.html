@@ -27,7 +27,7 @@
 
 @(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("taxiMinicabOrRoadHaulage.title"))) {
+@layout(pageTitle = title(form, messages("taxiMinicabOrRoadHaulage.title.individual"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -38,7 +38,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.heading.$userType"))
+                legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.title.$userType"))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
                 items  = TaxiMinicabOrRoadHaulage.options
             )
