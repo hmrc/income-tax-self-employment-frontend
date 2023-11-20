@@ -16,8 +16,8 @@
 
 @this()
 
-@(messageKey: String)(implicit messages: Messages)
+@(value: String)
 
 <h1 class="govuk-label-wrapper">
-    <label class="govuk-label govuk-label--l" for="event-name">@messages(messageKey)</label>
+    <label class="govuk-label govuk-label--l" for="event-name">@value</label>
 </h1>

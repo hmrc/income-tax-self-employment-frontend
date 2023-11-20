@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package pages.expenses.repairsandmaintenance
+package pages
 
-import pages.Page
+import play.api.libs.json.JsPath
 
-case object RepairsAndMaintenanceCostsCYAPage extends Page {
-  override def toString: String = "repairsAndMaintenanceCostsCYA"
+trait OneQuestionPage[A] extends QuestionPage[A] {
+
+  override def path(businessId: Option[String] = None): JsPath =
+    businessId match {
+      case Some(id) => JsPath \ id \ toString
+      case None => JsPath \ toString
+    }
+
 }

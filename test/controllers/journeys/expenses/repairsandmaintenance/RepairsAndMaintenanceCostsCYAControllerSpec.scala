@@ -16,28 +16,87 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.SpecBase
-import controllers.journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController
+import base.SpecBase._
+import builders.UserBuilder.aNoddyUser
+import common.TestApp.buildAppFromUserAnswers
+import models.common.{Language, UserType, onwardRoute}
+import models.database.UserAnswers
+import models.requests.DataRequest
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.Application
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
+import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
 
-class RepairsAndMaintenanceCostsCYAControllerSpec extends SpecBase {
+import scala.concurrent.Future
 
-  "RepairsAndMaintenanceCostsCYAController" - {
-    "must return OK and the correct view for a GET" in {
+class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+  final case class RepairsAndMaintenanceInfo(repairsAndMaintenance: Option[String],
+                                             repairsAndMaintenanceAmount: Option[BigDecimal],
+                                             repairsAndMaintenanceDisallowableAmount: Option[BigDecimal])
 
-      running(application) {
-        val request = FakeRequest(GET, RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
-        val result  = route(application, request).value
-        val view    = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
+  object RepairsAndMaintenanceInfo {
+    implicit val format = Json.format[RepairsAndMaintenanceInfo]
+  }
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+  private def createUserAnswerData(info: RepairsAndMaintenanceInfo) = Json
+    .parse(s"""
+         |{
+         |  "$stubbedBusinessId": ${Json.toJson(info)}
+         |}
+         |""".stripMargin)
+    .as[JsObject]
+
+  lazy val routeUnderTest = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(currTaxYear, stubBusinessId).url
+  lazy val getRequest     = FakeRequest(GET, routeUnderTest)
+
+  "onPageLoad" should {
+    val cases = Table(
+      ("tailoring", "amount", "disallowable"),
+      ("yesAllowable", Some(BigDecimal(100.0)), None),
+      ("yesDisallowable", Some(BigDecimal(100.00)), None),
+      ("yesDisallowable", Some(BigDecimal(100.00)), Some(BigDecimal(50.00)))
+    )
+
+    forAll(cases) { case (tailoring, amount, disallowable) =>
+      s"return OK and render view for $tailoring, amount=$amount, and disallowable=$disallowable" in {
+        val existingData                       = RepairsAndMaintenanceInfo(Some(tailoring), amount, disallowable)
+        val (application, userAnswers, result) = callRoute(existingData)
+
+        status(result) mustBe OK
+
+        implicit val msg: Messages = messages(application, Language.English)
+        val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
+        val expectedRows = List(
+          RepairsAndMaintenanceAmountSummary.row(dataRequest, currTaxYear, stubBusinessId),
+          RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, currTaxYear, stubBusinessId)
+        ).flatten
+        contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }
     }
+  }
+
+  def callRoute(existingData: RepairsAndMaintenanceInfo): (Application, UserAnswers, Future[Result]) = {
+    val userAnswersData = createUserAnswerData(existingData)
+    val userAnswers     = UserAnswers(userAnswersId, userAnswersData)
+    val application     = buildAppFromUserAnswers(userAnswers)
+
+    (application, userAnswers, route(application, getRequest).value)
+  }
+
+  def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages) = {
+    val view        = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
+    val summaryList = SummaryList(expectedRows)
+    val nextRoute   = onwardRoute.url
+    view(currTaxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
   }
 
 }

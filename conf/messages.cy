@@ -667,37 +667,52 @@ disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on good
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
 
+totalExpenses.title = totalExpenses
+totalExpenses.heading = totalExpenses
+totalExpenses.checkYourAnswersLabel = totalExpenses
+totalExpenses.error.required = Enter totalExpenses
+totalExpenses.error.length = TotalExpenses must be 100 characters or less
+totalExpenses.change.hidden = TotalExpenses
+
+totalExpensesCYA.title = totalExpensesCYA
+totalExpensesCYA.heading = totalExpensesCYA
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
-repairsAndMaintenanceAmount.title = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.title.individual = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.title.agent = How much did your client spend on repairs and maintenance?
 repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
-repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
-repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
-repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
-repairsAndMaintenanceAmount.error.wholeNumber = Enter your repairsAndMaintenanceAmount using whole numbers
-repairsAndMaintenanceAmount.error.outOfRange = RepairsAndMaintenanceAmount must be between {0} and {1}
-repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+repairsAndMaintenanceAmount.checkYourAnswersLabel.individual = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.checkYourAnswersLabel.agent = How much did your client spend on repairs and maintenance?
+repairsAndMaintenanceAmount.error.required.individual = Enter the amount you spent on repairs and maintenance
+repairsAndMaintenanceAmount.error.required.agent = Enter the amount your client spent on repairs and maintenance
+repairsAndMaintenanceAmount.error.nonNumeric.individual = The amount you spent on repairs and maintenance must be a number
+repairsAndMaintenanceAmount.error.nonNumeric.agent = The amount your client spent on repairs and maintenance must be a number
+repairsAndMaintenanceAmount.error.overMax.individual = The amount you spent on repairs and maintenance must be less than £100,000,000,000
+repairsAndMaintenanceAmount.error.overMax.agent = The amount your client spent on repairs and maintenance must be less than  £100,000,000,000
+repairsAndMaintenanceAmount.error.lessThanZero.individual = The amount you spent on repairs and maintenance must be more than £0
+repairsAndMaintenanceAmount.error.lessThanZero.agent = The amount your client spent on repairs and maintenance must be more than £0
+repairsAndMaintenanceAmount.change.hidden = Change how much was spent on repairs and maintenance
 
 ## Repairs and maintenance disallowable amount
-repairsAndMaintenanceDisallowableAmount.title = RepairsAndMaintenanceDisallowableAmountTitle
-repairsAndMaintenanceDisallowableAmount.heading = RepairsAndMaintenanceDisallowableAmountHaedingcheckYourAnswersLabel
-repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel = RepairsAndMaintenanceDisallowableAmount checkYourAnswersLabel
-repairsAndMaintenanceDisallowableAmount.error.nonNumeric = Enter your repairsAndMaintenanceDisallowableAmount using numbers
-repairsAndMaintenanceDisallowableAmount.error.required = Enter your repairsAndMaintenanceDisallowableAmount
-repairsAndMaintenanceDisallowableAmount.error.wholeNumber = Enter your repairsAndMaintenanceDisallowableAmount using whole numbers
-repairsAndMaintenanceDisallowableAmount.error.outOfRange = RepairsAndMaintenanceDisallowableAmount must be between {0} and {1}
+repairsAndMaintenanceDisallowableAmount.title.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.title.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on repairs and maintenance that is disallowable
+repairsAndMaintenanceDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on repairs and maintenance that is disallowable
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on repairs and maintenance must be a number
+repairsAndMaintenanceDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on repairs and maintenance must be a number
+repairsAndMaintenanceDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on repairs and maintenance must be more than £0
+repairsAndMaintenanceDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on repairs and maintenance must be more than £0
+repairsAndMaintenanceDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on repairs and maintenance must be the same as or less than £{0}
+repairsAndMaintenanceDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on repairs and maintenance must be the same as or less than £{0}
 repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
 
 ## Repairs and maintenanceCosts CYA
-repairsAndMaintenanceCostsCYA.title = RepairsAndMaintenanceCostsCYATitle
-repairsAndMaintenanceCostsCYA.heading = RepairsAndMaintenanceCostsCYAHeading
-repairsAndMaintenanceCostsCYA.checkYourAnswersLabel = RepairsAndMaintenanceCostsCYA
-repairsAndMaintenanceCostsCYA.error.nonNumeric = Enter your repairsAndMaintenanceCostsCYA using numbers
-repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceCostsCYA
-repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
-repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
-repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden
+repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
+repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
 ########## Expenses - Entertainment ##########
 

@@ -17,7 +17,7 @@
 import cats.data.EitherT
 import models.errors.HttpError
 import play.api.mvc.Result
-import play.api.mvc.Results.Redirect
+import play.api.mvc.Results.{BadRequest, Redirect}
 import controllers.standard.{routes => genRoutes}
 
 import scala.concurrent.{ExecutionContext, Future}
