@@ -115,7 +115,7 @@
         </details>
     }
 
-    @formHelper(action = FinancialExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = FinancialExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukCheckboxes(
             CheckboxesViewModel(

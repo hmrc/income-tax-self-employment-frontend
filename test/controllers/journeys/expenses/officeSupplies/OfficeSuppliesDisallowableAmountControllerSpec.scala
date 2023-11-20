@@ -44,18 +44,16 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
 
-  private val businessId = "some_business_id"
-
   private val validAnswer     = BigDecimal(1000.00)
   private val allowableAmount = BigDecimal(1000.00)
 
   private val onwardRoute = Call("GET", "/foo")
 
   private lazy val officeSuppliesDisallowableAmountPageLoadRoute =
-    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   private lazy val officeSuppliesDisallowableAmountOnSubmitRoute =
-    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
+    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
   private val mockSessionRepository = mock[SessionRepository]
 
@@ -63,7 +61,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
 
-  private val data        = Json.obj(businessId -> Json.obj("officeSuppliesAmount" -> allowableAmount))
+  private val data        = Json.obj(stubbedBusinessId -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
@@ -90,14 +88,14 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   formProvider(userScenario.authUser, allowableAmount),
                   NormalMode,
                   taxYear,
-                  businessId,
+                  stubbedBusinessId,
                   userScenario.authUser,
                   formatMoney(allowableAmount))(request, appMessages).toString
               }
             }
 
             "must populate the view correctly when the question has already been answered" in {
-              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
+              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
 
               val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
 
@@ -116,7 +114,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
                   NormalMode,
                   taxYear,
-                  businessId,
+                  stubbedBusinessId,
                   userScenario.authUser,
                   formatMoney(allowableAmount))(request, appMessages).toString
               }
@@ -173,7 +171,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               status(langResult) mustEqual BAD_REQUEST
 
-              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, formatMoney(allowableAmount))(
+              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId, userScenario.authUser, formatMoney(allowableAmount))(
                 request,
                 appMessages).toString
             }

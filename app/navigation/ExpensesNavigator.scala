@@ -16,15 +16,18 @@
 
 package navigation
 
+import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
 import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
 import pages._
+import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.tailoring.{GoodsToSellOrUsePage, OfficeSuppliesPage}
@@ -68,6 +71,9 @@ class ExpensesNavigator @Inject() () {
     case GoodsToSellOrUseCYAPage =>
       _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
+    case EntertainmentAmountPage =>
+      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), NormalMode) // TODO to CYA page when created
+
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
@@ -78,6 +84,9 @@ class ExpensesNavigator @Inject() () {
 
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
+    case EntertainmentAmountPage =>
+      _ => taxYear => businessId => EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode) // TODO to CYA page when created
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
 
