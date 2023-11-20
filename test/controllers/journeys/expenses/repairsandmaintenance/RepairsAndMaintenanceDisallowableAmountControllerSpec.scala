@@ -30,19 +30,6 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountView, RepairsAndMaintenanceDisallowableAmountView}
-import base.BigDecimalGetAndPostQuestionBaseSpec
-import controllers.journeys.expenses.repairsandmaintenance.{routes => genRoutes}
-import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
-import models.NormalMode
-import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
-import play.api.mvc.Request
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
 class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val invalidAnswer   = "invalid value"
