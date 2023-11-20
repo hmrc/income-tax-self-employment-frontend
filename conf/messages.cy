@@ -681,7 +681,6 @@ totalExpensesCYA.heading = totalExpensesCYA
 
 ## Repairs and maintenance amount
 repairsAndMaintenanceAmount.heading.individual = How much did you spend on repairs and maintenance?
-repairsAndMaintenanceAmount.heading.agent = How much did your client spend on repairs and maintenance?
 repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
 repairsAndMaintenanceAmount.checkYourAnswersLabel.individual = How much did you spend on repairs and maintenance?
 repairsAndMaintenanceAmount.checkYourAnswersLabel.agent = How much did your client spend on repairs and maintenance?
@@ -693,11 +692,10 @@ repairsAndMaintenanceAmount.error.overMax.individual = The amount you spent on r
 repairsAndMaintenanceAmount.error.overMax.agent = The amount your client spent on repairs and maintenance must be less than  £100,000,000,000
 repairsAndMaintenanceAmount.error.lessThanZero.individual = The amount you spent on repairs and maintenance must be more than £0
 repairsAndMaintenanceAmount.error.lessThanZero.agent = The amount your client spent on repairs and maintenance must be more than £0
-repairsAndMaintenanceAmount.change.hidden = RepairsAndMaintenanceAmountChangeHidden
+repairsAndMaintenanceAmount.change.hidden = Change how much was spent on repairs and maintenance
 
 ## Repairs and maintenance disallowable amount
 repairsAndMaintenanceDisallowableAmount.heading.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
-repairsAndMaintenanceDisallowableAmount.heading.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on repairs and maintenance that is disallowable
@@ -712,7 +710,6 @@ repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDis
 
 ## Repairs and maintenanceCosts CYA
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
-repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
 ########## Expenses - Entertainment ##########
 

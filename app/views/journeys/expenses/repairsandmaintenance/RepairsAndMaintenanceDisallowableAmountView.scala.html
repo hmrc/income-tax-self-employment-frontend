@@ -39,7 +39,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 
-@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceDisallowableAmount.heading.$userType", allowableAmount.value))) {
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceDisallowableAmount.heading.individual", allowableAmount.value))) {
 
     @errorSummary(form)
 
