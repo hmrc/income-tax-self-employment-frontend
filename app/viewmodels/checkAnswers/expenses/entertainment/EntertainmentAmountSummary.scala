@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.entertainment
 
 import controllers.journeys.expenses.entertainment.routes.EntertainmentAmountController
 import models.CheckMode
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.i18n.Messages
@@ -41,7 +42,7 @@ object EntertainmentAmountSummary extends MoneyUtils {
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", EntertainmentAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", EntertainmentAmountController.onPageLoad(TaxYear(taxYear), BusinessId(businessId), CheckMode).url)
             .withVisuallyHiddenText(messages("entertainment.change.hidden"))
         )
       )
