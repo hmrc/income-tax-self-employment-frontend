@@ -16,13 +16,8 @@
 
 package pages.income
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object TradingAllowanceAmountPage extends QuestionPage[BigDecimal] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object TradingAllowanceAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "tradingAllowanceAmount"
 }

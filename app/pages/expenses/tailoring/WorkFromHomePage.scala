@@ -17,13 +17,8 @@
 package pages.expenses.tailoring
 
 import models.journeys.expenses.WorkFromHome
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object WorkFromHomePage extends QuestionPage[WorkFromHome] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object WorkFromHomePage extends OneQuestionPage[WorkFromHome] {
   override def toString: String = "workFromHome"
 }

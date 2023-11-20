@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package pages.expenses.entertainment
+package pages
 
-import pages.OneQuestionPage
+import play.api.libs.json.JsPath
 
-case object EntertainmentAmountPage extends OneQuestionPage[BigDecimal] {
-  override def toString: String = "entertainmentAmount"
+trait OneQuestionPage[A] extends QuestionPage[A] {
+
+  override def path(businessId: Option[String] = None): JsPath =
+    businessId match {
+      case Some(id) => JsPath \ id \ toString
+      case None => JsPath \ toString
+    }
+
 }

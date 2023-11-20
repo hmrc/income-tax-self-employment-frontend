@@ -15,10 +15,10 @@
  */
 
 import cats.data.EitherT
+import controllers.standard.{routes => genRoutes}
 import models.errors.HttpError
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import controllers.standard.{routes => genRoutes}
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -58,16 +58,22 @@ object Journey {
     override def toString: String = "national-insurance"
   }
 
+  case object ExpensesRepairsAndMaintenance extends Journey {
+    override def toString: String = "expenses-repairs-and-maintenance"
+  }
+
   val journeyReads: Reads[Journey] = Reads[Journey] {
-    case JsString("trade-details")                 => JsSuccess(TradeDetails)
-    case JsString("self-employment-abroad")        => JsSuccess(Abroad)
-    case JsString("income")                        => JsSuccess(Income)
+    case JsString("trade-details")                    => JsSuccess(TradeDetails)
+    case JsString("self-employment-abroad")           => JsSuccess(Abroad)
+    case JsString("income")                           => JsSuccess(Income)
     case JsString("expenses-total")                => JsSuccess(ExpensesTotal)
-    case JsString("expenses-tailoring")            => JsSuccess(ExpensesTailoring)
-    case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
+    case JsString("expenses-tailoring")               => JsSuccess(ExpensesTailoring)
+    case JsString("expenses-goods-to-sell-or-use")    => JsSuccess(ExpensesGoodsToSellOrUse)
     case JsString("expenses-entertainment")        => JsSuccess(ExpensesEntertainment)
-    case JsString("national-insurance")            => JsSuccess(NationalInsurance)
-    case _                                         => JsError("Parsing error")
+    case JsString("expenses-office-supplies")         => JsSuccess(ExpensesOfficeSupplies)
+    case JsString("expenses-repairs-and-maintenance") => JsSuccess(ExpensesRepairsAndMaintenance)
+    case JsString("national-insurance")               => JsSuccess(NationalInsurance)
+    case _                                            => JsError("Parsing error")
   }
 
   val journeyWrites: Writes[Journey] = Writes[Journey] { case journey @ _ =>

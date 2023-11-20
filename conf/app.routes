@@ -241,12 +241,12 @@ POST        /:taxYear/:businessId/expenses/repairs-maintenance/amount           
 GET         /:taxYear/:businessId/expenses/change-repairs-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/amount                     controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/repairs-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/repairs-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/repairs-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/repairs-maintenance/disallowable-amount               controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowable-amount        controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                             controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Entertainment ##########
 

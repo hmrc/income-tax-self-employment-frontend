@@ -17,13 +17,8 @@
 package pages.expenses.tailoring
 
 import models.journeys.expenses.WorkFromBusinessPremises
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object WorkFromBusinessPremisesPage extends QuestionPage[WorkFromBusinessPremises] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object WorkFromBusinessPremisesPage extends OneQuestionPage[WorkFromBusinessPremises] {
   override def toString: String = "workFromBusinessPremises"
 }

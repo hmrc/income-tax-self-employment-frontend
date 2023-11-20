@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.InputWidth._
+package models.common
 
-@this(
-        govukInput: GovukInput,
-)
+import utils.MoneyUtils.formatMoney
 
-@(form: Form[_])(implicit messages: Messages)
+final case class TextAmount private (value: String) extends AnyVal
 
-@govukInput(
-    InputViewModel(
-        field = form("value"),
-        label = Label()
-    )
-    .asNumeric()
-    .withWidth(Fixed10)
-    .withPrefix(PrefixOrSuffix(content = Text("£")))
-)
+object TextAmount {
+
+  def apply(amount: BigDecimal): TextAmount =
+    TextAmount(formatMoney(amount))
+
+}

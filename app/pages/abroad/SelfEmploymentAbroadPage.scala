@@ -16,13 +16,8 @@
 
 package pages.abroad
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object SelfEmploymentAbroadPage extends QuestionPage[Boolean] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object SelfEmploymentAbroadPage extends OneQuestionPage[Boolean] {
   override def toString: String = "selfEmploymentAbroad"
 }

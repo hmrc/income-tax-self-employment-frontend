@@ -55,10 +55,9 @@ class RepairsAndMaintenanceAmountController @Inject() (
       accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
+      existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
       form           = formProvider(userType)
-      preparedForm = userAnswers
-        .get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
-        .fold(form)(form.fill)
+      preparedForm   = existingAnswer.fold(form)(form.fill)
     } yield Ok(view(preparedForm, mode, userType, taxYear, BusinessId(businessId.value), accountingType))
 
     handleResult(result.value)
