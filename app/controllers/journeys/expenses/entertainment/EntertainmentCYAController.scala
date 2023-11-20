@@ -18,7 +18,7 @@ package controllers.journeys.expenses.entertainment
 
 import controllers.actions._
 import models.NormalMode
-import models.common.ModelUtils.userType
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,21 +40,19 @@ class EntertainmentCYAController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
+      .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear.value, businessId.value)
       .url
-
-    val user = userType(request.user.isAgent)
 
     val summaryList = SummaryList(
       rows = Seq(
-        EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+        EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )
 
-    Ok(view(taxYear, user, summaryList, nextRoute))
+    Ok(view(taxYear, request.user.userType, summaryList, nextRoute))
   }
 
 }

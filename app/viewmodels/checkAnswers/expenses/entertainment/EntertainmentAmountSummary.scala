@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.entertainment
 
 import controllers.journeys.expenses.entertainment.routes.EntertainmentAmountController
 import models.CheckMode
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.i18n.Messages
@@ -29,8 +30,8 @@ import viewmodels.implicits._
 
 object EntertainmentAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EntertainmentAmountPage, Some(businessId)).map { answer =>
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(EntertainmentAmountPage, Some(businessId.value)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
           content = s"entertainment.title.$userType",

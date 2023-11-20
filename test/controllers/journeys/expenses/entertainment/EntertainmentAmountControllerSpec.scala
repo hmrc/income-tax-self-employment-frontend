@@ -19,7 +19,7 @@ package controllers.journeys.expenses.entertainment
 import base.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.{TaxYear, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.Application
@@ -34,19 +34,19 @@ class EntertainmentAmountControllerSpec
       "EntertainmentAmountController",
       EntertainmentAmountPage
     ) {
-  lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(TaxYear(taxYear), stubBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(TaxYear(taxYear), stubBusinessId, NormalMode).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 
-  def createForm(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType.toString)
+  def createForm(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[EntertainmentAmountView]
-    view(form, scenario.mode, scenario.userType.toString, scenario.taxYear.value, scenario.businessId.value).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
 }

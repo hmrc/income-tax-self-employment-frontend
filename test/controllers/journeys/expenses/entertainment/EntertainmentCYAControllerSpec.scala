@@ -20,6 +20,8 @@ import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes.EntertainmentCYAController
 import controllers.journeys.routes.SectionCompletedStateController
 import models.NormalMode
+import models.common.TaxYear
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.Journey.ExpensesEntertainment
 import play.api.i18n.Messages
@@ -32,7 +34,7 @@ import views.html.journeys.expenses.entertainment.EntertainmentCYAView
 
 class EntertainmentCYAControllerSpec extends SpecBase {
 
-  private val userTypes = List(individual, agent)
+  private val userTypes = List(Individual, Agent)
 
   private val userAnswerData = Json.parse(s"""
        |{
@@ -50,16 +52,16 @@ class EntertainmentCYAControllerSpec extends SpecBase {
       s".onPageLoad when user is an $userType should" - {
         "must return OK and the correct view for a GET" in {
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userType)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           implicit val appMessages: Messages = messages(application)
 
           running(application) {
             val view    = application.injector.instanceOf[EntertainmentCYAView]
-            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId).url)
 
             val expectedSummaryListRows = Seq(
-              EntertainmentAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
+              EntertainmentAmountSummary.row(userAnswers, TaxYear(taxYear), stubBusinessId, userType)
             ).flatten
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
             val expectedNextRoute =
@@ -68,7 +70,7 @@ class EntertainmentCYAControllerSpec extends SpecBase {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
+            contentAsString(result) mustEqual view(TaxYear(taxYear), userType, expectedSummaryLists, expectedNextRoute)(
               request,
               messages(application)).toString
           }

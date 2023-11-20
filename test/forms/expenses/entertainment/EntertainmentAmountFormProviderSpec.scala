@@ -17,6 +17,8 @@
 package forms.expenses.entertainment
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class EntertainmentAmountFormProviderSpec extends BigDecimalFieldBehaviours {
@@ -28,9 +30,9 @@ class EntertainmentAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     val minimum = 0
     val maximum = 100000000000.00
 
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new EntertainmentAmountFormProvider()(userScenario.user)

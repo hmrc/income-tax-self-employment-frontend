@@ -22,6 +22,7 @@ import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes.SectionCompletedStateController
 import controllers.standard.routes._
 import models._
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
 import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
@@ -71,7 +72,7 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(TaxYear(taxYear), BusinessId(businessId))
 
     case EntertainmentCYAPage =>
       _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
@@ -88,7 +89,7 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => EntertainmentCYAController.onPageLoad(TaxYear(taxYear), BusinessId(businessId))
 
     case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
 

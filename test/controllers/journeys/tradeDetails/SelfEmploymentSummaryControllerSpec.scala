@@ -43,7 +43,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers                            = UserAnswers("1345566")
-  val businessId                             = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
+  val businessID                             = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -51,7 +51,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
     "onPageLoad" - {
 
-      def nextRoute = SectionCompletedStateController.onPageLoad(taxYear, businessId, "trade-details", NormalMode).url
+      def nextRoute = SectionCompletedStateController.onPageLoad(taxYear, businessID, "trade-details", NormalMode).url
 
       "must return OK and the correct view when there are no self-employments" in {
 

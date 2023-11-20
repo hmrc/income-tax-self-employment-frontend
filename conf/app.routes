@@ -250,9 +250,9 @@ GET         /:taxYear/:businessId/expenses/repairs-maintenance/check            
 
 ########## Expenses - Entertainment ##########
 
-GET         /:taxYear/:businessId/expenses/entertainment/disallowable-amount                     controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/entertainment/disallowable-amount                     controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/entertainment/disallowable-amount                     controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/entertainment/disallowable-amount                     controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount              controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/entertainment/check                                   controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/:businessId/expenses/entertainment/check                                   controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)

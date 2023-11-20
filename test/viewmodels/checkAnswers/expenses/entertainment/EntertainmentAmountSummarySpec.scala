@@ -17,6 +17,8 @@
 package viewmodels.checkAnswers.expenses.entertainment
 
 import base.SpecBase
+import models.common.TaxYear
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
@@ -36,14 +38,14 @@ class EntertainmentAmountSummarySpec extends SpecBase {
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  private val userTypes = List(individual, agent)
+  private val userTypes = List(Individual, Agent)
 
   "EntertainmentAmountSummary" - {
     "when user answers for EntertainmentAmountPage exist" - {
       userTypes.foreach { userType =>
         s"when user is an $userType should" - {
           "generate a summary list row" in {
-            val result = EntertainmentAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
+            val result = EntertainmentAmountSummary.row(userAnswers, TaxYear(taxYear), stubBusinessId, userType)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"entertainment.title.$userType")
@@ -54,7 +56,7 @@ class EntertainmentAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for EntertainmentAmountPage should" - {
       "return None" in {
-        val result = EntertainmentAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, individual)
+        val result = EntertainmentAmountSummary.row(otherUserAnswers, TaxYear(taxYear), stubBusinessId, Individual)
 
         result mustBe None
       }
