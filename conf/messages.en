@@ -701,8 +701,8 @@ repairsAndMaintenanceDisallowableAmount.error.overAmount.agent = The disallowabl
 repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
 
 ## Repairs and maintenanceCosts CYA
-repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance expenses
-repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance expenses
+repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
+repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
 ########## Expenses - Entertainment ##########
 

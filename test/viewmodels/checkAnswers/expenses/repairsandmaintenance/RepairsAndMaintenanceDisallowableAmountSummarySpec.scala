@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
-import base.SpecBase
 import base.SpecBase.{currTaxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
 import builders.UserBuilder.aNoddyUser
+import common.TestApp.buildAppWithMessages
 import models.database.UserAnswers
 import models.requests.DataRequest
 import org.scalatest.matchers.should.Matchers
@@ -27,47 +27,57 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
+import org.scalatest.OptionValues._
 
 class RepairsAndMaintenanceDisallowableAmountSummarySpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
-  implicit val messages: Messages = SpecBase.messagesEn
+  implicit val messages: Messages = buildAppWithMessages()
 
   // @formatter:off
   val cases = Table(
-    ("json", "expected"),
+    ("json", "expected", "expectedDisallowable"),
     (Json.obj(
       "repairsAndMaintenance" -> "no"
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesAllowable",
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesAllowable",
       "repairsAndMaintenanceAmount" -> BigDecimal(123.45)
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesDisallowable",
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesDisallowable",
       "repairsAndMaintenanceAmount" -> BigDecimal(123.45)
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesDisallowable",
       "repairsAndMaintenanceDisallowableAmount" -> BigDecimal(200.45)
-    ), 0),
+    ), 0, None),
     (Json.obj(
       "repairsAndMaintenance" -> "yesDisallowable",
-      "repairsAndMaintenanceAmount" -> BigDecimal(100.45),
-      "repairsAndMaintenanceDisallowableAmount" -> BigDecimal(200.45)
-    ), 1)
+      "repairsAndMaintenanceAmount" -> BigDecimal(100.456),
+      "repairsAndMaintenanceDisallowableAmount" -> BigDecimal(200.0)
+    ), 1, Some("100.46")),
+    (Json.obj(
+      "repairsAndMaintenance" -> "yesDisallowable",
+      "repairsAndMaintenanceAmount" -> BigDecimal(50.454),
+      "repairsAndMaintenanceDisallowableAmount" -> BigDecimal(200.0)
+    ), 1, Some("50.45"))
   )
   // @formatter:on
 
   "row" should {
     "return correct number of rows for different combination of data" in {
-      forAll(cases) { case (json, expected) =>
-        val request = createRequest(json)
-        RepairsAndMaintenanceDisallowableAmountSummary.row(request, currTaxYear, stubBusinessId).size shouldBe expected
+      forAll(cases) { case (json, expected, expectedDisallowable) =>
+        val request    = createRequest(json)
+        val actualList = RepairsAndMaintenanceDisallowableAmountSummary.row(request, currTaxYear, stubBusinessId)
+        actualList.size shouldBe expected
+        actualList.map(_.key).foreach { definedKey =>
+          definedKey.content.asHtml.toString() should include(expectedDisallowable.value)
+        }
       }
     }
   }

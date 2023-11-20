@@ -16,6 +16,7 @@
 
 package base
 
+import common.TestApp.buildAppWithMessages
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.Language._
@@ -73,7 +74,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
     }
 
-  def messagesEn: Messages = {
+  /** This does not load real values from messages.en */
+  def messagesStubbed: Messages = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }

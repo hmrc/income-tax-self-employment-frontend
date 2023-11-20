@@ -18,10 +18,11 @@ package common
 
 import base.SpecBase
 import base.SpecBase._
-import models.common.{AccountingType, UserType, onwardRoute}
+import models.common.{AccountingType, Language, UserType, onwardRoute}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import services.SelfEmploymentServiceBase
 import stubs.services.SelfEmploymentServiceStub
@@ -44,5 +45,11 @@ object TestApp {
 
   def buildAppFromUserAnswers(userAnswers: UserAnswers): Application =
     buildApp(AccountingType.Cash, UserType.Individual, Some(userAnswers))
+
+  def buildAppWithMessages() = {
+    implicit val application  = SpecBase.applicationBuilder(None, UserType.Individual).build()
+    val appMessages: Messages = messages(application, Language.English)
+    appMessages
+  }
 
 }

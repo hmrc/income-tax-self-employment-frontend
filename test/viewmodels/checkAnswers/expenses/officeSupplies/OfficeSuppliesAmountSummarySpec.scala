@@ -34,7 +34,7 @@ class OfficeSuppliesAmountSummarySpec extends SpecBase {
   private val userAnswers      = UserAnswers(userAnswersId, data)
   private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
 
-  private implicit val messages: Messages = messagesEn
+  private implicit val messages: Messages = messagesStubbed
 
   "OfficeSuppliesAmountSummary" - {
     "user answers for OfficeSuppliesAmountPage exist" - {

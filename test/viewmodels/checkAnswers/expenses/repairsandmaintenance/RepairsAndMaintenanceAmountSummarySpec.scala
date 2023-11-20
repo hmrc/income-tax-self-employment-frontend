@@ -29,10 +29,10 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 
 class RepairsAndMaintenanceAmountSummarySpec extends AnyWordSpecLike with Matchers {
-  private val data                = Json.obj(stubbedBusinessId -> Json.obj("repairsAndMaintenanceAmount" -> 123.45))
+  val data                        = Json.obj(stubbedBusinessId -> Json.obj("repairsAndMaintenanceAmount" -> 123.45))
   val userAnswers                 = UserAnswers(userAnswersId, data)
   val request                     = DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
-  implicit val messages: Messages = SpecBase.messagesEn
+  implicit val messages: Messages = SpecBase.messagesStubbed
 
   "row" should {
     "return defined rows for non empty value" in {
