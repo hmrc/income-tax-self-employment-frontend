@@ -20,7 +20,8 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.AdvertisingOrMarketingFormProvider
 import models.Mode
-import models.common.ModelUtils.{accrual, userType}
+import models.common.AccountingType.Accrual
+import models.common.ModelUtils.userType
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.AdvertisingOrMarketingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,7 +71,8 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingOrMarketingPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(accrual))))
+                  navigator
+                    .nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName))))
             )
       }
   }

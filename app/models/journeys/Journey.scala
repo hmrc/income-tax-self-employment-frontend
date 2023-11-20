@@ -34,6 +34,10 @@ object Journey {
     override def toString: String = "income"
   }
 
+  case object ExpensesTotal extends Journey {
+    override def toString: String = "expenses-total"
+  }
+
   case object ExpensesTailoring extends Journey {
     override def toString: String = "expenses-tailoring"
   }
@@ -46,6 +50,10 @@ object Journey {
     override def toString: String = "expenses-office-supplies"
   }
 
+  case object ExpensesEntertainment extends Journey {
+    override def toString: String = "expenses-entertainment"
+  }
+
   case object NationalInsurance extends Journey {
     override def toString: String = "national-insurance"
   }
@@ -54,8 +62,10 @@ object Journey {
     case JsString("trade-details")                 => JsSuccess(TradeDetails)
     case JsString("self-employment-abroad")        => JsSuccess(Abroad)
     case JsString("income")                        => JsSuccess(Income)
+    case JsString("expenses-total")                => JsSuccess(ExpensesTotal)
     case JsString("expenses-tailoring")            => JsSuccess(ExpensesTailoring)
     case JsString("expenses-goods-to-sell-or-use") => JsSuccess(ExpensesGoodsToSellOrUse)
+    case JsString("expenses-entertainment")        => JsSuccess(ExpensesEntertainment)
     case JsString("national-insurance")            => JsSuccess(NationalInsurance)
     case _                                         => JsError("Parsing error")
   }

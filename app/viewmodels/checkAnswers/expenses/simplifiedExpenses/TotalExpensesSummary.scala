@@ -16,28 +16,34 @@
 
 package viewmodels.checkAnswers.expenses.simplifiedExpenses
 
+import controllers.journeys.expenses.simplifiedExpenses.routes
 import models.CheckMode
 import models.database.UserAnswers
 import pages.expenses.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TotalExpensesSummary  {
+object TotalExpensesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TotalExpensesPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "totalExpenses.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", controllers.journeys.expenses.simplifiedExpenses.routes.TotalExpensesController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("totalExpenses.change.hidden"))
-          )
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(TotalExpensesPage, Some(businessId)).map { answer =>
+      SummaryListRowViewModel(
+        key = Key(
+          content = s"totalExpenses.title.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = s"£${formatMoney(answer)}",
+          classes = "govuk-!-width-one-third"
+        ),
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("totalExpenses.change.hidden"))
         )
+      )
     }
+
 }

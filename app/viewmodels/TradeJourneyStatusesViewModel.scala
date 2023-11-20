@@ -17,12 +17,11 @@
 package viewmodels
 
 import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, SelfEmploymentAbroadController}
-import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import controllers.journeys.expenses.tailoring.routes.OfficeSuppliesController
+import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
 import models._
 import models.journeys.Journey
 import models.journeys.Journey.{Abroad, ExpensesTailoring, Income}
-import models.journeys.expenses.OfficeSupplies
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -62,7 +61,8 @@ object TradeJourneyStatusesViewModel {
         else IncomeCYAController.onPageLoad(taxYear, business.businessId).url
 
       val expensesUrl =
-        if (expensesCompletionStatus.isEmpty) OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url // TODO expenses categories page when built
+        if (expensesCompletionStatus.isEmpty)
+          OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url    // TODO expenses categories page when built
         else OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url // TODO expenses CYA page when built
 
       (

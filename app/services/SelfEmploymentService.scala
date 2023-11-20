@@ -18,23 +18,41 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
+import models.common.BusinessId
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
+import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
+import play.api.libs.json.Writes
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(implicit ec: ExecutionContext) extends Logging {
+// TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
+trait SelfEmploymentServiceBase {
+  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse]
+  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
+  def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+}
+
+class SelfEmploymentService @Inject() (
+    connector: SelfEmploymentConnector,
+    sessionRepository: SessionRepository
+)(implicit ec: ExecutionContext)
+    extends SelfEmploymentServiceBase
+    with Logging {
 
   def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
 
     connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
   }
 
+  // TODO return AccountingType
+  // TODO HttpErrors in business layer may not be the best idea
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] = {
 
     connector.getBusiness(nino, businessId, mtditid).map {
@@ -43,6 +61,12 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector)(impli
       case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
     }
   }
+
+  def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
+    for {
+      updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId.value)))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield updatedAnswers
 
 }
 

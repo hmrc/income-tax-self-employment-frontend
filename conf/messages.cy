@@ -661,27 +661,17 @@ disallowableGoodsToSellOrUseAmount.error.lessThanZero.individual = The disallowa
 disallowableGoodsToSellOrUseAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on goods to sell or use must be more than £0
 disallowableGoodsToSellOrUseAmount.error.overMax.individual = The disallowable amount you spent on goods to sell or use must be the same as or less than £{0}
 disallowableGoodsToSellOrUseAmount.error.overMax.agent = The disallowable amount your client spent on goods to sell or use must be the same as or less than £{0}
-disallowableGoodsToSellOrUseAmount.change.hidden = DisallowableGoodsToSellOrUseAmount
+disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on goods to sell or use was disallowable
 
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
 
-totalExpenses.title = totalExpenses
-totalExpenses.heading = totalExpenses
-totalExpenses.checkYourAnswersLabel = totalExpenses
-totalExpenses.error.required = Enter totalExpenses
-totalExpenses.error.length = TotalExpenses must be 100 characters or less
-totalExpenses.change.hidden = TotalExpenses
-
-totalExpensesCYA.title = totalExpensesCYA
-totalExpensesCYA.heading = totalExpensesCYA
-
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
-repairsAndMaintenanceAmount.title = RepairsAndMaintenanceAmountTitle
-repairsAndMaintenanceAmount.heading = RepairsAndMaintenanceAmountHeading
+repairsAndMaintenanceAmount.title = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
 repairsAndMaintenanceAmount.checkYourAnswersLabel = RepairsAndMaintenanceAmountCheckYourAnswersLabel
 repairsAndMaintenanceAmount.error.nonNumeric = Enter your repairsAndMaintenanceAmount using numbers
 repairsAndMaintenanceAmount.error.required = Enter your repairsAndMaintenanceAmount
@@ -708,3 +698,34 @@ repairsAndMaintenanceCostsCYA.error.required = Enter your repairsAndMaintenanceC
 repairsAndMaintenanceCostsCYA.error.wholeNumber = Enter your repairsAndMaintenanceCostsCYA using whole numbers
 repairsAndMaintenanceCostsCYA.error.outOfRange = RepairsAndMaintenanceCostsCYA must be between {0} and {1}
 repairsAndMaintenanceCostsCYA.change.hidden = RepairsAndMaintenanceCostsCYAHidden
+
+########## Expenses - Entertainment ##########
+
+## Entertainment amount
+entertainment.title.individual = How much did you spend on entertainment?
+entertainment.title.agent = How much did your client spend on entertainment?
+entertainment.error.nonNumeric.individual = The amount you spent on entertainment must be a number
+entertainment.error.nonNumeric.agent = The amount your client spent on entertainment must be a number
+entertainment.error.required.individual = Enter the amount you spent on entertainment
+entertainment.error.required.agent = Enter the amount your client spent on entertainment
+entertainment.error.lessThanZero.individual = The amount you spent on entertainment must be more than £0
+entertainment.error.lessThanZero.agent = The amount your client spent on entertainment must be more than £0
+entertainment.error.overMax.individual = The amount you spent on entertainment must be less than £100,000,000,000
+entertainment.error.overMax.agent = The amount your client spent on entertainment must be less than £100,000,000,000
+entertainment.change.hidden = Change how much was spent on entertainment
+
+########## Expenses - Simple Journey ##########
+
+totalExpenses.title.individual = How much were your total expenses?
+totalExpenses.title.agent = How much were your client’s total expenses?
+totalExpenses.error.required.individual = Enter your total expenses
+totalExpenses.error.required.agent = Enter your client’s total expenses
+totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
+totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
+totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
+totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
+totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
+totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
+totalExpenses.change.hidden = Change how much the total expenses were
+
+totalExpensesCYA.title = totalExpensesCYA

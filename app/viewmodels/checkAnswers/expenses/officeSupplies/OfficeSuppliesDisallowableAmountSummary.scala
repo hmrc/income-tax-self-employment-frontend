@@ -15,6 +15,7 @@
  */
 
 package viewmodels.checkAnswers.expenses.officeSupplies
+
 import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController
 import models.CheckMode
 import models.database.UserAnswers
@@ -39,7 +40,7 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
       allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType", allowableAmount),
+        content = messages(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(
