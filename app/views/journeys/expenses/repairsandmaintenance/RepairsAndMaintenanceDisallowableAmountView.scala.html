@@ -39,13 +39,13 @@
 )(implicit request: Request[_], messages: Messages)
 
 
-@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceDisallowableAmount.heading.individual", allowableAmount.value))) {
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceDisallowableAmount.title.individual", allowableAmount.value))) {
 
     @errorSummary(form)
 
     @formHelper(action = routes.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
-            @heading(messages(s"repairsAndMaintenanceDisallowableAmount.heading.$userType", allowableAmount.value))
+            @heading(messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", allowableAmount.value))
         }
 
         @govukButton(

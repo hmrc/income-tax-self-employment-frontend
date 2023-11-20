@@ -35,13 +35,13 @@
         businessId: BusinessId,
         accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceAmount.heading"))) {
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceAmount.title.individual"))) {
 
     @errorSummary(form)
 
     @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
-            @heading(messages(s"repairsAndMaintenanceAmount.heading.individual"))
+            @heading(messages(s"repairsAndMaintenanceAmount.title.$userType"))
 
             @foldableDetails(messages("repairsAndMaintenanceAmount.details")) {
                 <p>@messages(s"site.canInclude.$userType")</p>

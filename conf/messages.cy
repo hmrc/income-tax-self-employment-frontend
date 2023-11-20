@@ -680,7 +680,8 @@ totalExpensesCYA.heading = totalExpensesCYA
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
-repairsAndMaintenanceAmount.heading.individual = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.title.individual = How much did you spend on repairs and maintenance?
+repairsAndMaintenanceAmount.title.agent = How much did your client spend on repairs and maintenance?
 repairsAndMaintenanceAmount.details = Understanding repairs and maintenance expenses
 repairsAndMaintenanceAmount.checkYourAnswersLabel.individual = How much did you spend on repairs and maintenance?
 repairsAndMaintenanceAmount.checkYourAnswersLabel.agent = How much did your client spend on repairs and maintenance?
@@ -695,7 +696,8 @@ repairsAndMaintenanceAmount.error.lessThanZero.agent = The amount your client sp
 repairsAndMaintenanceAmount.change.hidden = Change how much was spent on repairs and maintenance
 
 ## Repairs and maintenance disallowable amount
-repairsAndMaintenanceDisallowableAmount.heading.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.title.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
+repairsAndMaintenanceDisallowableAmount.title.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on repairs and maintenance is disallowable?
 repairsAndMaintenanceDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on repairs and maintenance that is disallowable
@@ -710,6 +712,7 @@ repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDis
 
 ## Repairs and maintenanceCosts CYA
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
+repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
 ########## Expenses - Entertainment ##########
 
