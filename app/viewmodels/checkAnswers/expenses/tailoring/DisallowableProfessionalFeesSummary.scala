@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object DisallowableProfessionalFeesSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableProfessionalFeesPage).map {
       answer =>
 
@@ -43,7 +43,7 @@ object DisallowableProfessionalFeesSummary  {
           key     = "disallowableProfessionalFees.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DisallowableProfessionalFeesController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("disallowableProfessionalFees.change.hidden"))
           )
         )

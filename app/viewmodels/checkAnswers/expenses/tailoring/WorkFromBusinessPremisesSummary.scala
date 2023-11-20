@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object WorkFromBusinessPremisesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(WorkFromBusinessPremisesPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -41,7 +41,7 @@ object WorkFromBusinessPremisesSummary {
         key = "workFromBusinessPremises.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", routes.WorkFromBusinessPremisesController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("workFromBusinessPremises.change.hidden"))
         )
       )

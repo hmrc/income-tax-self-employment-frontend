@@ -42,7 +42,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(NormalMode).url
+  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableIrrecoverableDebtsFormProvider()
 
@@ -111,7 +111,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -204,7 +204,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
         }
       }
 
-      "redirect to Journey Recovery for a POST if no existing data is found" ignore {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 

@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object EntertainmentCostsSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(EntertainmentCostsPage).map {
       answer =>
 
@@ -43,7 +43,7 @@ object EntertainmentCostsSummary  {
           key     = "entertainmentCosts.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.EntertainmentCostsController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
               .withVisuallyHiddenText(messages("entertainmentCosts.change.hidden"))
           )
         )

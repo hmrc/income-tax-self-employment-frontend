@@ -40,7 +40,8 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableStaffCostsRoute = controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(NormalMode).url
+  lazy val disallowableStaffCostsRoute =
+    controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new DisallowableStaffCostsFormProvider()
 
@@ -57,7 +58,6 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
       userScenarios.foreach { userScenario =>
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
-
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -70,7 +70,9 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[DisallowableStaffCostsView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent))(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -79,7 +81,8 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head).success.value
+            val userAnswers =
+              UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head, Some(stubbedBusinessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
@@ -91,9 +94,12 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableStaffCosts.values.head), NormalMode, userType(userScenario.isAgent))(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(
+                  userScenario.form.fill(DisallowableStaffCosts.values.head),
+                  NormalMode,
+                  userType(userScenario.isAgent),
+                  taxYear,
+                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -102,7 +108,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -147,7 +153,6 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
       userScenarios.foreach { userScenario =>
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
-
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -164,7 +169,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -187,26 +192,28 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent))(request, messages(application)).toString
+              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                request,
+                messages(application)).toString
             }
           }
+        }
+      }
 
-          "redirect to Journey Recovery for a POST if no existing data is found" in {
+      "redirect to Journey Recovery for a POST if no existing data is found" in {
 
-            val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableStaffCostsRoute)
-                  .withFormUrlEncodedBody(("value", DisallowableStaffCosts.values.head.toString))
+        running(application) {
+          val request =
+            FakeRequest(POST, disallowableStaffCostsRoute)
+              .withFormUrlEncodedBody(("value", DisallowableStaffCosts.values.head.toString))
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
-          }
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
