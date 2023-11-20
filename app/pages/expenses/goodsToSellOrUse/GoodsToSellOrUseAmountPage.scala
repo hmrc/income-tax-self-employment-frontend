@@ -16,13 +16,8 @@
 
 package pages.expenses.goodsToSellOrUse
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object GoodsToSellOrUseAmountPage extends QuestionPage[BigDecimal] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object GoodsToSellOrUseAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "goodsToSellOrUseAmount"
 }

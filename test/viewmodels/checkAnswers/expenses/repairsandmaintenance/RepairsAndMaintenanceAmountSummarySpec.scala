@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import base.SpecBase
-import base.SpecBase.{currTaxYear, defined, stubBusinessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{currTaxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import models.common.BusinessId
 import models.database.UserAnswers

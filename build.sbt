@@ -38,6 +38,7 @@ lazy val root = (project in file("."))
       "-feature",
       "-rootdir",
       baseDirectory.value.getCanonicalPath,
+      "-Wconf:cat=unused:e",
       "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
     ),
     libraryDependencies ++= AppDependencies(),

@@ -20,21 +20,16 @@ import cats.data.EitherT
 import controllers.actions._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear, TextAmount, UserType}
-import models.requests.DataRequest
+import models.common.{BusinessId, TaxYear, TextAmount, UserType}
+import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.SessionRepository
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
-import controllers.standard
-import models.database.UserAnswers
-import models.errors.HttpError
-import play.api.data.Form
-import services.SelfEmploymentServiceBase
-import controllers.handleResult
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
