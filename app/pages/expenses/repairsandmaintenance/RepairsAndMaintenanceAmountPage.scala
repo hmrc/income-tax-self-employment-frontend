@@ -16,12 +16,8 @@
 
 package pages.expenses.repairsandmaintenance
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object RepairsAndMaintenanceAmountPage extends QuestionPage[BigDecimal] {
-
-  override def path(businessId: Option[String] = None): JsPath = JsPath \ toString
-
+case object RepairsAndMaintenanceAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "repairsAndMaintenanceAmount"
 }

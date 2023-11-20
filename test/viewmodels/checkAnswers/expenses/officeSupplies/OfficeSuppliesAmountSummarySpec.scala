@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.expenses.officeSupplies
 import base.SpecBase
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -34,10 +34,7 @@ class OfficeSuppliesAmountSummarySpec extends SpecBase {
   private val userAnswers      = UserAnswers(userAnswersId, data)
   private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
 
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
+  private implicit val messages: Messages = messagesStubbed
 
   "OfficeSuppliesAmountSummary" - {
     "user answers for OfficeSuppliesAmountPage exist" - {

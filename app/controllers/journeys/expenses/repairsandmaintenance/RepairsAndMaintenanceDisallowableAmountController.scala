@@ -16,15 +16,18 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
+import cats.data.EitherT
 import controllers.actions._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountFormProvider
 import models.Mode
-import models.requests.DataRequest
+import models.common.{BusinessId, TaxYear, TextAmount, UserType}
+import models.database.UserAnswers
 import navigation.ExpensesNavigator
-import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountPage
+import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
@@ -33,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
+    selfEmploymentService: SelfEmploymentServiceBase,
     navigator: ExpensesNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -45,32 +48,46 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(implicit request: DataRequest[AnyContent]) = {
-    formProvider(request.userType, 1000.0) // TODO Remove hardcoded value in SASS-6115
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      (for {
+        allowableAmount <- request.valueOrRedirectDefault(RepairsAndMaintenanceAmountPage, businessId)
+        existingAnswer = request.getValue(RepairsAndMaintenanceDisallowableAmountPage, businessId)
+        form           = formProvider(request.userType, allowableAmount)
+        preparedForm   = existingAnswer.fold(form)(form.fill)
+      } yield Ok(view(preparedForm, mode, taxYear, businessId, request.userType, TextAmount(allowableAmount)))).merge
   }
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(RepairsAndMaintenanceDisallowableAmountPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, taxYear, businessId))
-  }
-
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenanceDisallowableAmountPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(RepairsAndMaintenanceDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+      def handleError(formWithErrors: Form[_], userType: UserType, allowableAmount: BigDecimal) =
+        Future.successful(
+          BadRequest(view(formWithErrors, mode, taxYear, businessId, userType, TextAmount(allowableAmount)))
         )
+
+      def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
+        selfEmploymentService
+          .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceDisallowableAmountPage)
+          .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceDisallowableAmountPage, mode, updated, taxYear.value, businessId.value)))
+
+      def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => handleError(formWithErrors, userType, allowableAmount),
+            value => handleSuccess(userAnswers, value)
+          )
+
+      val obtainedAllowableValue = request.valueOrRedirectDefault(RepairsAndMaintenanceAmountPage, businessId)
+      val result = for {
+        allowableAmount <- EitherT.fromEither[Future](obtainedAllowableValue)
+        userType    = request.userType
+        userAnswers = request.userAnswers
+        form        = formProvider(userType, allowableAmount)
+        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, allowableAmount))
+      } yield finalResult
+
+      result.merge
   }
 
 }

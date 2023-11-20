@@ -17,13 +17,8 @@
 package pages.expenses.tailoring
 
 import models.journeys.expenses.DisallowableIrrecoverableDebts
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object DisallowableIrrecoverableDebtsPage extends QuestionPage[DisallowableIrrecoverableDebts] {
-
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
-
+case object DisallowableIrrecoverableDebtsPage extends OneQuestionPage[DisallowableIrrecoverableDebts] {
   override def toString: String = "disallowableIrrecoverableDebts"
 }

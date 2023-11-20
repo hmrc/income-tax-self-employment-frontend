@@ -16,45 +16,38 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.SpecBase
 import base.SpecBase._
-import controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountControllerSpec._
+import common.TestApp._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import gens._
-import models.common.{AccountingType, Language, UserType, onwardRoute}
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.common.{Language, onwardRoute}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
-import play.api.inject.bind
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, PlayRunners}
-import services.SelfEmploymentServiceBase
-import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
-class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with PlayRunners with OptionValues {
+class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val validAnswer   = BigDecimal(100.00)
   private val invalidAnswer = "invalid value"
 
   "onPageLoad" should {
     "return OK and render view" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application = buildApp(accountingType, userType)
-        val form        = new RepairsAndMaintenanceAmountFormProvider()(userType)
-
+        val application    = buildApp(accountingType, userType)
+        val form           = new RepairsAndMaintenanceAmountFormProvider()(userType)
         val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onPageLoad(currTaxYear, stubBusinessId, mode).url
         val getRequest     = FakeRequest(GET, routeUnderTest)
-        val view           = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
-        val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, accountingType)(getRequest, messages(application, Language.English))
-            .toString()
 
         val result = route(application, getRequest).value
 
         status(result) mustBe OK
+
+        val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
+        val expectedView =
+          view(form, mode, userType, currTaxYear, stubBusinessId, accountingType)(getRequest, messages(application, Language.English)).toString()
         contentAsString(result) mustEqual expectedView
       }
     }
@@ -92,21 +85,6 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
       }
     }
 
-  }
-
-}
-
-object RepairsAndMaintenanceAmountControllerSpec {
-
-  def buildApp(accountingType: AccountingType, userType: UserType): Application = {
-    val selfEmploymentService = SelfEmploymentServiceStub(Right(accountingType), emptyUserAnswers)
-    SpecBase
-      .applicationBuilder(None, userType)
-      .overrides(
-        bind[SelfEmploymentServiceBase].toInstance(selfEmploymentService),
-        bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-      )
-      .build()
   }
 
 }
