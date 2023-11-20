@@ -17,7 +17,6 @@
 package forms.expenses.repairsandmaintenance
 
 import forms.behaviours.BigDecimalFieldBehaviours
-import play.api.data.FormError
 
 class RepairsAndMaintenanceDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 }

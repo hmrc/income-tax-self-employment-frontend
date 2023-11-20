@@ -30,4 +30,5 @@ class TotalExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
         .verifying(greaterThan(minimumValue, s"totalExpenses.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"totalExpenses.error.overMax.$userType"))
     )
+
 }

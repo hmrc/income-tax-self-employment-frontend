@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.tailoring
 
 import base.SpecBase
-import controllers.actions.AuthenticatedIdentifierActionSpec.fakeRequest
 import forms.expenses.tailoring.DisallowableSubcontractorCostsFormProvider
 import models.NormalMode
 import models.database.UserAnswers

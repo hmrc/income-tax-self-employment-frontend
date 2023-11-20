@@ -16,12 +16,12 @@
 
 package forms.expenses.simplifiedExpenses
 
-import forms.behaviours.{BigDecimalFieldBehaviours, StringFieldBehaviours}
+import forms.behaviours.BigDecimalFieldBehaviours
 import play.api.data.FormError
 
 class TotalExpensesFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val userTypes = Seq("individual", "agent")
+  private val userTypes = Seq(individual, agent)
 
   ".value" - {
     userTypes.foreach { authUser =>
@@ -72,4 +72,5 @@ class TotalExpensesFormProviderSpec extends BigDecimalFieldBehaviours {
       }
     }
   }
+
 }
