@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.entertainment
 
 import base.SpecBase
 import models.common.TaxYear
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
@@ -37,7 +38,7 @@ class EntertainmentAmountSummarySpec extends SpecBase {
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  private val userTypes = List(individual, agent)
+  private val userTypes = List(Individual, Agent)
 
   "EntertainmentAmountSummary" - {
     "when user answers for EntertainmentAmountPage exist" - {
@@ -55,7 +56,7 @@ class EntertainmentAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for EntertainmentAmountPage should" - {
       "return None" in {
-        val result = EntertainmentAmountSummary.row(otherUserAnswers, TaxYear(taxYear), stubBusinessId, individual)
+        val result = EntertainmentAmountSummary.row(otherUserAnswers, TaxYear(taxYear), stubBusinessId, Individual)
 
         result mustBe None
       }

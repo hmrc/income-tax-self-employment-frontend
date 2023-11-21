@@ -21,10 +21,10 @@ import controllers.{journeys, standard}
 import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesRepairsAndMaintenance}
+import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesRepairsAndMaintenance}
 import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
 import pages._
-import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{
@@ -98,16 +98,6 @@ class ExpensesNavigator @Inject() () {
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
-    case EntertainmentAmountPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            entertainment.routes.EntertainmentAmountController.onPageLoad(
-              TaxYear(taxYear),
-              BusinessId(businessId),
-              NormalMode
-            ) // TODO to CYA page when created
-
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ =>
         taxYear =>
@@ -118,6 +108,14 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesRepairsAndMaintenance.toString, NormalMode)
+
+    case EntertainmentAmountPage =>
+      _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(TaxYear(taxYear), BusinessId(businessId))
+
+    case EntertainmentCYAPage =>
+      _ =>
+        taxYear =>
+          businessId => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -131,14 +129,7 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            entertainment.routes.EntertainmentAmountController.onPageLoad(
-              TaxYear(taxYear),
-              BusinessId(businessId),
-              CheckMode
-            ) // TODO to CYA page when created
+      _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(TaxYear(taxYear), BusinessId(businessId))
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ =>

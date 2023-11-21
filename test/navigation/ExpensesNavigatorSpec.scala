@@ -17,15 +17,18 @@
 package navigation
 
 import base.SpecBase
+import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.common.TaxYear
 import models.database.UserAnswers
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
+import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
+import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.libs.json.Json
@@ -121,10 +124,17 @@ class ExpensesNavigatorSpec extends SpecBase {
 
         "Entertainment journey" - {
           "the page is EntertainmentAmountPage" - {
-            "navigate to the EntertainmentCYAController" ignore { // TODO unignore and fix test when CYA page is built
-              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, mode)
+            "navigate to the EntertainmentCYAController" in {
+              val expectedResult = EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId)
 
-              navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+              navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+            }
+          }
+          "the page is EntertainmentCYAPage" - {
+            "navigate to the SectionCompletedStateController" in {
+              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesEntertainment.toString, mode)
+
+              navigator.nextPage(EntertainmentCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
             }
           }
         }
@@ -172,10 +182,10 @@ class ExpensesNavigatorSpec extends SpecBase {
         }
 
         "the page is EntertainmentAmountPage" - {
-          "navigate to the EntertainmentCYAController" ignore { // TODO unignore and fix test when CYA page is built
-            val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, mode)
+          "navigate to the EntertainmentCYAController" in {
+            val expectedResult = EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId)
 
-            navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+            navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
           }
         }
 
