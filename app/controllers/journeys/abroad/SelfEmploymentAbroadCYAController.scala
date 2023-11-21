@@ -41,13 +41,12 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     with I18nSupport {
 
   def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val isAgent         = request.user.isAgent
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, request.userAnswers)
+    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, request.user.userType, businessId, request.userAnswers)
     val summaryList     = SummaryList(Seq(summaryListRows))
 
     val nextRoute = nextPageUrl(taxYear, businessId, navigator)
 
-    Ok(view(taxYear, summaryList, nextRoute, isAgent))
+    Ok(view(taxYear, summaryList, nextRoute, request.user.isAgent))
   }
 
   private def nextPageUrl(taxYear: Int, businessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
