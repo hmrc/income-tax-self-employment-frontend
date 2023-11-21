@@ -16,9 +16,7 @@
 
 package viewmodels
 
-import controllers.journeys.abroad.routes.{SelfEmploymentAbroadCYAController, SelfEmploymentAbroadController}
-import controllers.journeys.expenses.tailoring.routes.OfficeSuppliesController
-import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController}
+import controllers.journeys.{abroad, expenses, income}
 import models._
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
@@ -40,9 +38,9 @@ object TradeJourneyStatusesViewModel {
 
   def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: Int)(implicit messages: Messages): SummaryList = {
 
-    implicit val impTaxYear         = TaxYear(taxYear)
-    implicit val businessId         = BusinessId(tradesJourneyStatuses.businessId)
-    implicit val impJourneyStatuses = tradesJourneyStatuses
+    implicit val impTaxYear: TaxYear                       = TaxYear(taxYear)
+    implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
+    implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
     SummaryList(
       rows = Seq(
@@ -83,8 +81,8 @@ object TradeJourneyStatusesViewModel {
       case Some(false) => inProgressStatus
       case _ =>
         conditionalCompletedJourney match {
-          case Some(journey) if !getCompletedState(journeyStatuses, journey).getOrElse(true) => cannotStartYetStatus
-          case _                                                                             => notStartedStatus
+          case Some(journey) if !getCompletedState(journeyStatuses, journey).contains(true) => cannotStartYetStatus
+          case _                                                                            => notStartedStatus
         }
     }
 
@@ -92,22 +90,26 @@ object TradeJourneyStatusesViewModel {
     journeyStatuses.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
 
   private def getUrl(journey: Journey, journeyStatus: String, businessId: BusinessId, taxYear: TaxYear): String = {
-    implicit val status = journeyStatus
+    implicit val status: String = journeyStatus
     journey match {
       case Abroad =>
         determineUrl(
-          SelfEmploymentAbroadController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
-          SelfEmploymentAbroadCYAController.onPageLoad(taxYear.value, businessId.value).url
+          abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
+          abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear.value, businessId.value).url
         )
       case Income =>
         determineUrl(
-          IncomeNotCountedAsTurnoverController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
-          IncomeCYAController.onPageLoad(taxYear.value, businessId.value).url
+          income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
+          income.routes.IncomeCYAController.onPageLoad(taxYear.value, businessId.value).url
         )
       case ExpensesTailoring =>
         determineUrl(
-          OfficeSuppliesController.onPageLoad(taxYear.value, businessId.value, NormalMode).url, // TODO expenses categories page when built
-          OfficeSuppliesController.onPageLoad(taxYear.value, businessId.value, NormalMode).url  // TODO expenses CYA page when built
+          expenses.tailoring.routes.OfficeSuppliesController
+            .onPageLoad(taxYear.value, businessId.value, NormalMode)
+            .url, // TODO expenses categories page when built
+          expenses.tailoring.routes.OfficeSuppliesController
+            .onPageLoad(taxYear.value, businessId.value, NormalMode)
+            .url // TODO expenses CYA page when built
         )
     }
   }
