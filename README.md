@@ -57,9 +57,9 @@ This service runs on port: `localhost:10901`
 
 We use scalafmt to format our code. Please enable "Reformat on Save" in your IDE.
 
-Then, if you need to format all the code, call: `./bin/build.sh`
+Then, if you need to format all the code, call: `./build.sh`
 
-To make sure all tests are green: `./bin/test.sh` - besides tests it checks formatting and scala style.
+To make sure all tests are green: `./test.sh` - besides tests it checks formatting and scala style.
 
 ## License
 
