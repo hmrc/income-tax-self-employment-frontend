@@ -39,59 +39,35 @@ object TradeJourneyStatusesViewModel {
 
   def buildSummaryList(business: TradesJourneyStatuses, taxYear: Int)(implicit messages: Messages): SummaryList = {
 
-    val getStatus = (journey: Journey) => {
-      val optJourney = business.journeyStatuses.filter(_.journey.equals(journey))
-      if (optJourney.isEmpty) None else optJourney.head.completedState
-    }
-
     val (abroadCompletionStatus, incomeCompletionStatus, expensesCompletionStatus) = (
-      getStatus(Abroad),
-      getStatus(Income),
-      getStatus(ExpensesTailoring)
+      getStatus(business, Abroad),
+      getStatus(business, Income, Some(Abroad)),
+      getStatus(business, ExpensesTailoring, Some(Abroad))
     )
 
-    val (abroadUrlString, incomeUrlString, expensesUrlString) = {
-
-      val abroadUrl =
-        if (abroadCompletionStatus.isEmpty) SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, NormalMode).url
-        else SelfEmploymentAbroadCYAController.onPageLoad(taxYear, business.businessId).url
-
-      val incomeUrl =
-        if (incomeCompletionStatus.isEmpty) IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url
-        else IncomeCYAController.onPageLoad(taxYear, business.businessId).url
-
-      val expensesUrl =
-        if (expensesCompletionStatus.isEmpty)
-          OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url    // TODO expenses categories page when built
-        else OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url // TODO expenses CYA page when built
-
-      (
-        abroadUrl,
-        if (abroadCompletionStatus.getOrElse(false)) incomeUrl else "#",
-        if (abroadCompletionStatus.getOrElse(false)) expensesUrl else "#"
+    val (abroadUrl, incomeUrl, expensesUrl) = (
+      sortUrl(
+        abroadCompletionStatus,
+        SelfEmploymentAbroadController.onPageLoad(taxYear, business.businessId, NormalMode).url,
+        SelfEmploymentAbroadCYAController.onPageLoad(taxYear, business.businessId).url
+      ),
+      sortUrl(
+        incomeCompletionStatus,
+        IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, business.businessId, NormalMode).url,
+        IncomeCYAController.onPageLoad(taxYear, business.businessId).url
+      ),
+      sortUrl(
+        expensesCompletionStatus,
+        OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url, // TODO expenses categories page when built
+        OfficeSuppliesController.onPageLoad(taxYear, business.businessId, NormalMode).url // TODO expenses CYA page when built
       )
-    }
-
-    val (abroadStatusString, incomeStatusString, expensesStatusString) =
-      (
-        if (abroadCompletionStatus.isEmpty) notStartedStatus
-        else if (abroadCompletionStatus.get) completedStatus
-        else inProgressStatus,
-        if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
-        else if (incomeCompletionStatus.isEmpty) notStartedStatus
-        else if (incomeCompletionStatus.get) completedStatus
-        else inProgressStatus,
-        if (!abroadCompletionStatus.getOrElse(false)) cannotStartYetStatus
-        else if (expensesCompletionStatus.isEmpty) notStartedStatus
-        else if (expensesCompletionStatus.get) completedStatus
-        else inProgressStatus
-      )
+    )
 
     SummaryList(
       rows = Seq(
-        buildRow("selfEmploymentAbroad", abroadUrlString, abroadStatusString),
-        buildRow("income", incomeUrlString, incomeStatusString),
-        buildRow("expensesCategories", expensesUrlString, expensesStatusString)
+        buildRow("selfEmploymentAbroad", abroadUrl, abroadCompletionStatus),
+        buildRow("income", incomeUrl, incomeCompletionStatus),
+        buildRow("expensesCategories", expensesUrl, expensesCompletionStatus)
       ),
       classes = "govuk-!-margin-bottom-7"
     )
@@ -112,5 +88,31 @@ object TradeJourneyStatusesViewModel {
         content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>")).withCssClass("tag-float"))
     ).withCssClass("app-task-list__item no-wrap no-after-content")
   }
+
+  private def getStatus(business: TradesJourneyStatuses, journey: Journey, conditionalCompletedJourney: Option[Journey] = None): String =
+    getCompletedState(business, journey) match {
+      case Some(true)  => completedStatus
+      case Some(false) => inProgressStatus
+//      case _ =>
+//        conditionalCompletedJourney
+//          .filterNot(j => getCompletedState(business, j).contains(true))
+//          .map(_ => cannotStartYetStatus)
+//          .getOrElse(notStartedStatus)
+      case _ =>
+        conditionalCompletedJourney match { // if CCJ = Some(false) => CSYS else NSS
+          case Some(journey) if !getCompletedState(business, journey).getOrElse(true) => cannotStartYetStatus
+          case _ => notStartedStatus
+        }
+    }
+
+  private def getCompletedState(business: TradesJourneyStatuses, journey: Journey): Option[Boolean] =
+    business.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
+
+  private def sortUrl(status: String, startUrl: String, cyaUrl: String): String =
+    status match {
+      case `cannotStartYetStatus` => "#"
+      case `completedStatus`      => cyaUrl
+      case _                      => startUrl
+    }
 
 }
