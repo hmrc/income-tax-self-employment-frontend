@@ -28,10 +28,10 @@ status.notStarted = NOT STARTED
 status.cannotStartYet = CANNOT START YET
 status.checkOurRecords = CHECK OUR RECORDS
 
-common.selfEmploymentAbroad = Self-employment abroad
-common.income = Income
-common.expensesCategories = Expenses categories
-common.nationalInsurance = National Insurance
+journeys.self-employment-abroad = Self-employment abroad
+journeys.income = Income
+journeys.expenses-categories = Expenses categories
+journeys.national-insurance = National Insurance
 
 date.day = Day
 date.month = Month
@@ -666,16 +666,6 @@ disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on good
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
-
-totalExpenses.title = totalExpenses
-totalExpenses.heading = totalExpenses
-totalExpenses.checkYourAnswersLabel = totalExpenses
-totalExpenses.error.required = Enter totalExpenses
-totalExpenses.error.length = TotalExpenses must be 100 characters or less
-totalExpenses.change.hidden = TotalExpenses
-
-totalExpensesCYA.title = totalExpensesCYA
-totalExpensesCYA.heading = totalExpensesCYA
 
 ########## Expenses - Repairs and Maintenance ##########
 

@@ -60,7 +60,7 @@ object TradeJourneyStatusesViewModel {
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
 
-    val status           = getJourneyStatus(Income, conditionalCompletedJourney)
+    val status           = getJourneyStatus(journey, conditionalCompletedJourney)
     val keyString        = messages(s"journeys.$journey")
     val statusString     = messages(s"status.$status")
     val optDeadlinkStyle = if (status.equals(cannotStartYetStatus)) s" class='govuk-deadlink'" else ""
