@@ -24,7 +24,7 @@ class TravelForWorkFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName   = "value"
+    val fieldName = "value"
 
     case class UserScenario(user: String)
 

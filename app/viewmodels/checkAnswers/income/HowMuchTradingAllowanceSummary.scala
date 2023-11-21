@@ -31,8 +31,7 @@ import viewmodels.implicits._
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
   def row(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
-      messages: Messages): Option[Either[Exception, SummaryListRow]] = {
-
+      messages: Messages): Option[Either[Exception, SummaryListRow]] =
     userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val rowValueOrError = answer match {
         case HowMuchTradingAllowance.Maximum =>
@@ -53,7 +52,6 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
             .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden")))
       )
     }
-  }
 
   private def calculateMaxTradingAllowance(userAnswers: UserAnswers, businessId: String): Either[Exception, String] =
     userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {

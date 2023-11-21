@@ -25,12 +25,14 @@ sealed trait OtherExpenses
 
 object OtherExpenses extends Enumerable.Implicits {
 
-  case object YesAllowable extends WithName("yesAllowable") with OtherExpenses
+  case object YesAllowable    extends WithName("yesAllowable") with OtherExpenses
   case object YesDisallowable extends WithName("yesDisallowable") with OtherExpenses
-  case object No extends WithName("no") with OtherExpenses
+  case object No              extends WithName("no") with OtherExpenses
 
   val values: Seq[OtherExpenses] = Seq(
-    YesAllowable, YesDisallowable, No
+    YesAllowable,
+    YesDisallowable,
+    No
   )
 
   def options(authUserType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>

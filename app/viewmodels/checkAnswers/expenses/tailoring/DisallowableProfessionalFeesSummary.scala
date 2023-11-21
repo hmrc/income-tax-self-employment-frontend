@@ -27,25 +27,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DisallowableProfessionalFeesSummary  {
+object DisallowableProfessionalFeesSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableProfessionalFeesPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"disallowableProfessionalFees.$answer"))
-          )
+    answers.get(DisallowableProfessionalFeesPage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"disallowableProfessionalFees.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "disallowableProfessionalFees.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("disallowableProfessionalFees.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "disallowableProfessionalFees.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("disallowableProfessionalFees.change.hidden"))
         )
+      )
     }
 }

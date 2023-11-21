@@ -1,4 +1,3 @@
-
 # income-tax-self-employment-frontend
 
 This is where users can review and make changes to the Self-employment section of their income tax return.
@@ -54,6 +53,14 @@ This service runs on port: `localhost:10901`
 - the current scaffold templates generate a lot of duplicated cost, we must improve our g8 template to stop that
 - in the terminal, sometimes the cursor every few seconds is moved at the beginning. Keep typing, ignore that
 
-### License
+## Development
+
+We use scalafmt to format our code. Please enable "Reformat on Save" in your IDE.
+
+Then, if you need to format all the code, call: `./bin/build.sh`
+
+To make sure all tests are green: `./bin/test.sh` - besides tests it checks formatting and scala style.
+
+## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

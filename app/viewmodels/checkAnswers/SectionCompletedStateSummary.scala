@@ -27,26 +27,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SectionCompletedStateSummary  {
+object SectionCompletedStateSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String, journey: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SectionCompletedStatePage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"sectionCompletedState.$answer"))
-          )
+    answers.get(SectionCompletedStatePage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"sectionCompletedState.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "sectionCompletedState.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change",
-              routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, CheckMode).url)
-              .withVisuallyHiddenText(messages("sectionCompletedState.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "sectionCompletedState.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, CheckMode).url)
+            .withVisuallyHiddenText(messages("sectionCompletedState.change.hidden"))
         )
+      )
     }
 }

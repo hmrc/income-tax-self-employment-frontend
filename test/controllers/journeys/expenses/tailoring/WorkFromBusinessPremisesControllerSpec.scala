@@ -77,7 +77,9 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form, NormalMode, userScenario.authUserType, taxYear, stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(form, NormalMode, userScenario.authUserType, taxYear, stubbedBusinessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult

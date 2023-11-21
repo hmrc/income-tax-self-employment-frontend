@@ -28,7 +28,7 @@ import pages.tradeDetails.{CheckYourSelfEmploymentDetailsPage, SelfEmploymentSum
 
 class TradeDetailsNavigatorSpec extends SpecBase {
 
-  val navigator  = new TradeDetailsNavigator
+  val navigator = new TradeDetailsNavigator
 
   case object UnknownPage extends Page
 

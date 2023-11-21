@@ -26,13 +26,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
-  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
-
+  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None       => Future.successful(Left(Redirect(JourneyRecoveryController.onPageLoad())))
       case Some(data) => Future.successful(Right(DataRequest(request.request, request.userId, request.user, data)))
     }
-  }
 
 }
 
