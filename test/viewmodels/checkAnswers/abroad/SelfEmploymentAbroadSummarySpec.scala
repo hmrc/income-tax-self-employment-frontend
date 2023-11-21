@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.abroad
 
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,7 +29,6 @@ class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
 
   private val id         = "some_id"
   private val taxYear    = 2024
-  private val isAgent    = false
   private val businessId = "some_business_id"
 
   private val data = Json
@@ -62,7 +62,7 @@ class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
   "SelfEmploymentAbroadSummary" when {
     "user answers for SelfEmploymentAbroadPage exist" should {
       "generate a summary list row" in {
-        val result = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, userAnswers)
+        val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, userAnswers)
 
         result shouldBe a[SummaryListRow]
         result.key.content shouldBe Text("selfEmploymentAbroad.checkYourAnswersLabel.individual")
@@ -71,7 +71,7 @@ class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
     }
     "no user answers exist for SelfEmploymentAbroadPage" should {
       "return None and throw runtime exception" in {
-        lazy val result = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessId, someOtherUserAnswers)
+        lazy val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, someOtherUserAnswers)
 
         val exception = intercept[RuntimeException](result)
 

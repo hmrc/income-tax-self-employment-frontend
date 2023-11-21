@@ -29,7 +29,7 @@
 
 @(form: Form[_], taxYear: Int, businessId: String, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}"))) {
+@layout(pageTitle = title(form, messages("selfEmploymentAbroad.title.individual"))) {
 
     @formHelper(action = SelfEmploymentAbroadController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

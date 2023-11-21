@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.abroad
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.CheckMode
+import models.common.UserType
 import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
@@ -28,13 +29,13 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: Int, isAgent: Boolean, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(taxYear: Int, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
 
       case Some(answer) =>
         SummaryListRowViewModel(
           key = Key(
-            content = s"selfEmploymentAbroad.checkYourAnswersLabel.${if (isAgent) "agent" else "individual"}",
+            content = s"selfEmploymentAbroad.checkYourAnswersLabel.$userType",
             classes = "govuk-!-width-two-thirds"),
           value = Value(content = if (answer) "site.yes" else "site.no", classes = "govuk-!-width-one-third"),
           actions = Seq(
