@@ -33,7 +33,7 @@ object OfficeSuppliesAmountSummary extends MoneyUtils {
     answers.get(OfficeSuppliesAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
-          content = s"officeSuppliesAmount.checkYourAnswersLabel.$authUserType",
+          content = s"officeSuppliesAmount.title.$authUserType",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(

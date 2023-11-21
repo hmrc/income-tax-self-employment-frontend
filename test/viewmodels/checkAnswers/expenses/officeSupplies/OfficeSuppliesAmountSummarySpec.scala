@@ -42,7 +42,7 @@ class OfficeSuppliesAmountSummarySpec extends SpecBase {
         val result = OfficeSuppliesAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUserType)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text(s"officeSuppliesAmount.checkYourAnswersLabel.$authUserType")
+        result.get.key.content shouldBe Text(s"officeSuppliesAmount.title.$authUserType")
         result.get.value.content shouldBe Text("£123.45")
       }
     }

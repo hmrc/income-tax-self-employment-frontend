@@ -35,7 +35,7 @@ object SelfEmploymentAbroadSummary {
       case Some(answer) =>
         SummaryListRowViewModel(
           key = Key(
-            content = s"selfEmploymentAbroad.checkYourAnswersLabel.$userType",
+            content = s"selfEmploymentAbroad.title.$userType",
             classes = "govuk-!-width-two-thirds"),
           value = Value(content = if (answer) "site.yes" else "site.no", classes = "govuk-!-width-one-third"),
           actions = Seq(

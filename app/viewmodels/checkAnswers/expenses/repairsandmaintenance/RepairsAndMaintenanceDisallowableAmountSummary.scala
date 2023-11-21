@@ -40,7 +40,7 @@ object RepairsAndMaintenanceDisallowableAmountSummary {
       allowableAmount    <- request.getValue(RepairsAndMaintenanceAmountPage, businessId)
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"repairsAndMaintenanceDisallowableAmount.checkYourAnswersLabel.${request.userType}", formatMoney(allowableAmount)),
+        content = messages(s"repairsAndMaintenanceDisallowableAmount.title.${request.userType}", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(

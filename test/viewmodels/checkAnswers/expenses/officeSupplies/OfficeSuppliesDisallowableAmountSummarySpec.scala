@@ -34,7 +34,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
             val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
             result.get shouldBe a[SummaryListRow]
-            result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType")
+            result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$authUserType")
             result.get.value.content shouldBe Text("£100.00")
           }
         }

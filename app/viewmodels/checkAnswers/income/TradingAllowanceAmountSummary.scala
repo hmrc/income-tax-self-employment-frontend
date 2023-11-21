@@ -33,7 +33,7 @@ object TradingAllowanceAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TradingAllowanceAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"tradingAllowanceAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"tradingAllowanceAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

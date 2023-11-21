@@ -48,7 +48,7 @@ class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
         val result = TradingAllowanceAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("tradingAllowanceAmount.checkYourAnswersLabel.individual")
+        result.get.key.content shouldBe Text("tradingAllowanceAmount.title.individual")
         result.get.value.content shouldBe Text("£123.45")
       }
     }

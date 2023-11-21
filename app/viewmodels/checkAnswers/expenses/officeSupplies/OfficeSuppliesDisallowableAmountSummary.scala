@@ -40,7 +40,7 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
       allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"officeSuppliesDisallowableAmount.checkYourAnswersLabel.$authUserType", formatMoney(allowableAmount)),
+        content = messages(s"officeSuppliesDisallowableAmount.title.$authUserType", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(

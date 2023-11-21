@@ -38,7 +38,7 @@ object TaxiMinicabOrRoadHaulageSummary {
       )
 
       SummaryListRowViewModel(
-        key = "taxiMinicabOrRoadHaulage.checkYourAnswersLabel",
+        key = "taxiMinicabOrRoadHaulage.title",
         value = value,
         actions = Seq(
           ActionItemViewModel("site.change", routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, CheckMode).url)

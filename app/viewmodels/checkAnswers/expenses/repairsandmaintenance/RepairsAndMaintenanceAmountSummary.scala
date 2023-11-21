@@ -34,7 +34,7 @@ object RepairsAndMaintenanceAmountSummary {
     request.getValue(RepairsAndMaintenanceAmountPage, businessId).map { answer =>
       SummaryListRowViewModel(
         key = Key(
-          content = s"repairsAndMaintenanceAmount.checkYourAnswersLabel.${request.userType}",
+          content = s"repairsAndMaintenanceAmount.title.${request.userType}",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(

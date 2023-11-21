@@ -40,7 +40,7 @@ class MessagesSpec extends SpecBase {
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(
-    "checkYourAnswersLabel"
+    "checkYourAnswersLabel.individual"
   )
 
   private val illegalCharacters: Set[String] = Set("'", "`")
