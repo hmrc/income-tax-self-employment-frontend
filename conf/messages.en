@@ -28,11 +28,11 @@ status.notStarted = NOT STARTED
 status.cannotStartYet = CANNOT START YET
 status.checkOurRecords = CHECK OUR RECORDS
 
-common.selfEmployment = Self-employment
-common.selfEmploymentAbroad = Self-employment abroad
-common.income = Income
-common.expensesCategories = Expenses categories
-common.nationalInsurance = National Insurance
+journeys.selfEmployment = Self-employment
+journeys.self-employment-abroad = Self-employment abroad
+journeys.income = Income
+journeys.expenses-categories = Expenses categories
+journeys.national-insurance = National Insurance
 
 date.day = Day
 date.month = Month
