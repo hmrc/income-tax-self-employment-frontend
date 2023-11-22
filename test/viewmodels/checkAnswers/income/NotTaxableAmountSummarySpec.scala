@@ -47,7 +47,7 @@ class NotTaxableAmountSummarySpec extends AnyWordSpec with Matchers {
         val result = NotTaxableAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("notTaxableAmount.checkYourAnswersLabel.individual")
+        result.get.key.content shouldBe Text("notTaxableAmount.title.individual")
         result.get.value.content shouldBe Text("£123.45")
       }
     }

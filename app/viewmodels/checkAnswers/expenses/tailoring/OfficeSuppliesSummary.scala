@@ -38,7 +38,7 @@ object OfficeSuppliesSummary {
       )
 
       SummaryListRowViewModel(
-        key = "officeSupplies.checkYourAnswersLabel",
+        key = "officeSupplies.title",
         value = value,
         actions = Seq(
           ActionItemViewModel("site.change", routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode).url)

@@ -48,7 +48,7 @@ class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
         val result = TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("turnoverIncomeAmount.checkYourAnswersLabel.agent")
+        result.get.key.content shouldBe Text("turnoverIncomeAmount.subHeading.agent")
         result.get.value.content shouldBe Text("£123.45")
       }
     }
