@@ -46,11 +46,10 @@ class EnumerableSpec extends AnyFreeSpec with Matchers with EitherValues with Op
       implicitly[Reads[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"bind correctly for: $value" in {
-          Json.fromJson[Foo](JsString(value.toString)).asEither.value mustEqual value
-        }
+    Foo.values.foreach { value =>
+      s"bind correctly for: $value" in {
+        Json.fromJson[Foo](JsString(value.toString)).asEither.value mustEqual value
+      }
     }
 
     "must fail to bind for invalid values" in {
@@ -64,11 +63,10 @@ class EnumerableSpec extends AnyFreeSpec with Matchers with EitherValues with Op
       implicitly[Writes[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"write $value" in {
-          Json.toJson(value) mustEqual JsString(value.toString)
-        }
+    Foo.values.foreach { value =>
+      s"write $value" in {
+        Json.toJson(value) mustEqual JsString(value.toString)
+      }
     }
   }
 

@@ -28,7 +28,7 @@ import pages.abroad.{SelfEmploymentAbroadCYAPage, SelfEmploymentAbroadPage}
 
 class AbroadNavigatorSpec extends SpecBase {
 
-  val navigator  = new AbroadNavigator
+  val navigator = new AbroadNavigator
 
   case object UnknownPage extends Page
 

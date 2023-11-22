@@ -37,7 +37,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
   import AuthenticatedIdentifierActionSpec._
@@ -45,8 +44,8 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
   val app = applicationBuilder().build()
 
   val mockFrontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val mockBodyParsersDefault = app.injector.instanceOf[BodyParsers.Default]
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockBodyParsersDefault                   = app.injector.instanceOf[BodyParsers.Default]
+  val mockAuthConnector: AuthConnector         = mock[AuthConnector]
 
   val authenticatedIdentifierAction: AuthenticatedIdentifierAction =
     new AuthenticatedIdentifierAction(mockAuthConnector, mockFrontendAppConfig, mockBodyParsersDefault)
@@ -57,14 +56,11 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
       "the correct enrolment exist and nino exist" - {
         val block: IdentifierRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
-        val mtditid = "AAAAAA"
+        val mtditid                                                = "AAAAAA"
         val enrolments = Enrolments(
           Set(
-            Enrolment(EnrolmentKeys.Individual,
-              Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated"),
-            Enrolment(
-              EnrolmentKeys.nino,
-              Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, mtditid)), "Activated")
+            Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated"),
+            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, mtditid)), "Activated")
           )
         )
 
@@ -84,7 +80,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
       "the nino enrolment is missing" - {
         val block: IdentifierRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
-        val enrolments = Enrolments(Set())
+        val enrolments                                             = Enrolments(Set())
 
         lazy val result: Future[Result] = futureResult(enrolments, block)
         "returns a forbidden" in {
@@ -94,7 +90,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
       "the individual enrolment is missing but there is a nino" - {
         val block: IdentifierRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
-        val nino = "AA123456A"
+        val nino                                                   = "AA123456A"
         val enrolments = Enrolments(Set(Enrolment("HMRC-NI", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, nino)), "Activated")))
 
         lazy val result: Future[Result] = futureResult(enrolments, block)
@@ -112,9 +108,9 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
       "the confidence level is below minimum" - {
         val block: IdentifierRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
-        val mtditid = "1234567890"
+        val mtditid                                                = "1234567890"
 
-        val enrolFn = (optNino: Option[String]) => Enrolments(Set(individualIdEnrolment(mtditid), ninoEnrolment(optNino.get)))
+        val enrolFn                     = (optNino: Option[String]) => Enrolments(Set(individualIdEnrolment(mtditid), ninoEnrolment(optNino.get)))
         lazy val result: Future[Result] = futureResult(enrolFn(Some("AA123456A")), block, ConfidenceLevel.L50)
         "has a status of 303" in {
           status(result) mustBe SEE_OTHER
@@ -126,12 +122,14 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    def futureResult(enrolments: Enrolments, block: IdentifierRequest[AnyContent] => Future[Result],
+    def futureResult(enrolments: Enrolments,
+                     block: IdentifierRequest[AnyContent] => Future[Result],
                      cl: ConfidenceLevel = ConfidenceLevel.L250): Future[Result] = {
-      when(mockAuthConnector
-        .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments and Retrievals.confidenceLevel))(
-          any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(enrolments and cl)
-
+      when(
+        mockAuthConnector
+          .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments and Retrievals.confidenceLevel))(
+            any[HeaderCarrier],
+            any[ExecutionContext])) thenReturn Future.successful(enrolments and cl)
 
       val identifierRequest = IdentifierRequest[AnyContent](fakeRequest, userId, user)
       authenticatedIdentifierAction.individualAuthentication(block, userId, AffinityGroup.Individual)(identifierRequest, emptyHeaderCarrier)
@@ -141,13 +139,13 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
 
 object IndividualAuthenticatedSpec {
 
-  val individualEnrolments: Enrolments = Enrolments(Set(
-    Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
-    Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, "1234567890")), "Activated"))
-  )
+  val individualEnrolments: Enrolments = Enrolments(
+    Set(
+      Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
+      Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, "1234567890")), "Activated")
+    ))
 
   val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("MTDITID" -> "1234567890")
-  implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
-
+  implicit val emptyHeaderCarrier: HeaderCarrier                  = HeaderCarrier()
 
 }

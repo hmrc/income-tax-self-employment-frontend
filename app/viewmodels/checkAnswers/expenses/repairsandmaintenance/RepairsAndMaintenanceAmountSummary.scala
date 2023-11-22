@@ -30,7 +30,7 @@ import viewmodels.implicits._
 
 object RepairsAndMaintenanceAmountSummary {
 
-  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     request.getValue(RepairsAndMaintenanceAmountPage, businessId).map { answer =>
       SummaryListRowViewModel(
         key = Key(
@@ -47,6 +47,5 @@ object RepairsAndMaintenanceAmountSummary {
         )
       )
     }
-  }
 
 }

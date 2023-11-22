@@ -24,11 +24,12 @@ import views.html.added.AgentAuthErrorView
 
 import javax.inject.Inject
 
-class AgentAuthErrorController @Inject()(
-                                          val mcc: MessagesControllerComponents,
-                                          implicit val appConfig: FrontendAppConfig,
-                                          view: AgentAuthErrorView
-                                        ) extends FrontendController(mcc) with I18nSupport {
+class AgentAuthErrorController @Inject() (
+    val mcc: MessagesControllerComponents,
+    implicit val appConfig: FrontendAppConfig,
+    view: AgentAuthErrorView
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
     Unauthorized(view())

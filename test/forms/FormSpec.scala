@@ -26,8 +26,7 @@ trait FormSpec extends AnyFreeSpec with SpecBase with Matchers with OptionValues
 
   lazy val emptyForm: Map[String, String] = Map[String, String]()
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion = {
-
+  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion =
     form
       .bind(data)
       .fold(
@@ -35,11 +34,8 @@ trait FormSpec extends AnyFreeSpec with SpecBase with Matchers with OptionValues
           for (error <- expectedErrors) formWithErrors.errors must contain(FormError(error.key, error.message, error.args))
           formWithErrors.errors.size mustBe expectedErrors.size
         },
-        _ => {
-          fail("Expected a validation error when binding the form, but it was bound successfully.")
-        }
+        _ => fail("Expected a validation error when binding the form, but it was bound successfully.")
       )
-  }
 
   def error(key: String, value: String, args: Any*): Seq[FormError] = Seq(FormError(key, value, args))
 }

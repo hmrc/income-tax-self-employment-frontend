@@ -39,64 +39,73 @@ class JourneyStateConnectorISpec extends WiremockSpec {
     }
 
   val internalHost = "localhost"
-  val underTest = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
+  val underTest    = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
 
   val mtditid: String = "mtditid"
-  val journey = TradeDetails.toString
-  val taxYear = LocalDate.now().getYear
-  val businessId = "business-Id-01"
+  val journey         = TradeDetails.toString
+  val taxYear         = LocalDate.now().getYear
+  val businessId      = "business-Id-01"
 
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
+  implicit val hc: HeaderCarrier  = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
 
   val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid))
 
   ".getJourneyState" should {
     val getJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
-    val completeState = false
+    val completeState      = false
 
-    behave like journeyStateRequestIsSuccessful(NO_CONTENT,
+    behave like journeyStateRequestIsSuccessful(
+      NO_CONTENT,
       Right(None),
       () => stubGetWithoutResponseBody(getJourneyStateUrl, NO_CONTENT),
       () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
 
-    behave like journeyStateRequestIsSuccessful(OK,
+    behave like journeyStateRequestIsSuccessful(
+      OK,
       Right(Some(completeState)),
       () => stubGetWithResponseBody(getJourneyStateUrl, OK, completeState.toString, headersSentToBE),
       () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
-      () => stubGetWithResponseBody(getJourneyStateUrl, BAD_REQUEST,
-        Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(), headersSentToBE
-      ),
+      () =>
+        stubGetWithResponseBody(
+          getJourneyStateUrl,
+          BAD_REQUEST,
+          Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
+          headersSentToBE),
       () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
     )
   }
 
   ".saveJourneyState" should {
 
-    val completeState = true
+    val completeState       = true
     val saveJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/${completeState.toString}"
 
-    behave like journeyStateRequestIsSuccessful(NO_CONTENT,
+    behave like journeyStateRequestIsSuccessful(
+      NO_CONTENT,
       Right(None),
       () => stubPutWithoutResponseBody(saveJourneyStateUrl, NO_CONTENT),
       () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
-      () => stubPutWithResponseBody(saveJourneyStateUrl, BAD_REQUEST,
-        Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
-        headersSentToBE
-      ),
+      () =>
+        stubPutWithResponseBody(
+          saveJourneyStateUrl,
+          BAD_REQUEST,
+          Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
+          headersSentToBE),
       () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
   }
 
-
-  def journeyStateRequestIsSuccessful(expStatus: Int, expectedResult: JourneyStateResponse, stubs: () => Unit,
+  def journeyStateRequestIsSuccessful(expStatus: Int,
+                                      expectedResult: JourneyStateResponse,
+                                      stubs: () => Unit,
                                       block: () => Future[JourneyStateResponse]): Unit =
     s"return a $expStatus response and a SelfEmploymentResponse model" in {
       stubs()

@@ -31,7 +31,8 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
       "user answers for OfficeSuppliesAmountPage exist" - {
         "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
           "generate a summary list row" in new Test {
-            val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, authUserType)
+            val result: Option[SummaryListRow] =
+              OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$authUserType")
@@ -40,7 +41,8 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
         }
         "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
           "return None" in new Test {
-            val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, authUserType)
+            val result: Option[SummaryListRow] =
+              OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
             result shouldBe None
           }
@@ -48,7 +50,8 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
       }
       "no user answers exist for OfficeSuppliesAmountPage" - {
         "return None" in new Test {
-          val result: Option[SummaryListRow] = OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, stubbedBusinessId, authUserType)
+          val result: Option[SummaryListRow] =
+            OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, stubbedBusinessId, authUserType)
 
           result shouldBe None
         }

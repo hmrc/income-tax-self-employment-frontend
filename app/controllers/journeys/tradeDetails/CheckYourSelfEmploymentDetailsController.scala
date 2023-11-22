@@ -33,32 +33,33 @@ import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourSelfEmploymentDetailsController @Inject()(override val messagesApi: MessagesApi,
-                                                         identify: IdentifierAction,
-                                                         getData: DataRetrievalAction,
-                                                         selfEmploymentConnector: SelfEmploymentConnector,
-                                                         navigator: TradeDetailsNavigator,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         view: CheckYourSelfEmploymentDetailsView)
-                                                        (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesApi: MessagesApi,
+                                                          identify: IdentifierAction,
+                                                          getData: DataRetrievalAction,
+                                                          selfEmploymentConnector: SelfEmploymentConnector,
+                                                          navigator: TradeDetailsNavigator,
+                                                          val controllerComponents: MessagesControllerComponents,
+                                                          view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData) async {
-    implicit request =>
+  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    val isAgent = request.user.isAgent
+    selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
+      case Right(business: Seq[BusinessData]) =>
+        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
+        val nextRoute             = navigate(taxYear, businessId, navigator)
+        Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
+      // TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
+      case _ =>
+        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+    }
+  }
 
-      val isAgent = request.user.isAgent
-      selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
-        case Right(business: Seq[BusinessData]) =>
-          val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
-          val nextRoute = navigate(taxYear, businessId, navigator)
-          Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
-        //TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
-        case _ =>
-          Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
-      }
-  }
-  
-  private def navigate(taxYear: Int, businessId: String, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
-    navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId).url
-  }
+  private def navigate(taxYear: Int, businessId: String, navigator: TradeDetailsNavigator)(implicit
+      request: OptionalDataRequest[AnyContent]): String =
+    navigator
+      .nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
+      .url
 
 }

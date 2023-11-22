@@ -32,10 +32,8 @@ class HowMuchTradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = Gen.oneOf(HowMuchTradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        howMuchTradingAllowance =>
-
-          JsString(howMuchTradingAllowance.toString).validate[HowMuchTradingAllowance].asOpt.value mustEqual howMuchTradingAllowance
+      forAll(gen) { howMuchTradingAllowance =>
+        JsString(howMuchTradingAllowance.toString).validate[HowMuchTradingAllowance].asOpt.value mustEqual howMuchTradingAllowance
       }
     }
 
@@ -43,10 +41,8 @@ class HowMuchTradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[String] suchThat (!HowMuchTradingAllowance.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[HowMuchTradingAllowance] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[HowMuchTradingAllowance] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +50,8 @@ class HowMuchTradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = Gen.oneOf(HowMuchTradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        howMuchTradingAllowance =>
-
-          Json.toJson(howMuchTradingAllowance) mustEqual JsString(howMuchTradingAllowance.toString)
+      forAll(gen) { howMuchTradingAllowance =>
+        Json.toJson(howMuchTradingAllowance) mustEqual JsString(howMuchTradingAllowance.toString)
       }
     }
   }
