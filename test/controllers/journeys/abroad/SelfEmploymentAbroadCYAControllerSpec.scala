@@ -19,6 +19,7 @@ package controllers.journeys.abroad
 import base.SpecBase
 import builders.UserBuilder
 import models.NormalMode
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -37,7 +38,6 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
-  private val isAgent    = false
   private val businessID = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessID).url
@@ -55,7 +55,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
         val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
 
         running(application) {
-          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, isAgent, businessID, userAnswers)(messages(application))
+          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessID, userAnswers)(messages(application))
           val expectedSummaryList         = SummaryList(Seq(expectedMaybeSummaryListRow))
 
           val request                = FakeRequest(GET, requestUrl)
@@ -63,7 +63,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
 
           status(result) shouldBe OK
 
-          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, isAgent)(
+          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, isAgent(individual))(
             request,
             messages(application)).toString
         }

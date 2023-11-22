@@ -43,10 +43,11 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val travelForWorkRoute = controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val travelForWorkRoute =
+    controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
 
   val formProvider = new TravelForWorkFormProvider()
-  val taxiDriver = false
+  val taxiDriver   = false
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TravelForWork])
 
@@ -107,9 +108,13 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(
+                  userScenario.form.fill(TravelForWork.values.head),
+                  NormalMode,
+                  userType(userScenario.isAgent),
+                  taxYear,
+                  stubbedBusinessId,
+                  taxiDriver)(request, messages(application, userScenario.isWelsh)).toString
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
             }
@@ -118,7 +123,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       }
 
       "must return OK and the correct view for a GET when user is taxi driver" in {
-        val taxiDriver = true
+        val taxiDriver  = true
         val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -162,13 +167,13 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
 
         running(application) {
           val request =
@@ -204,8 +209,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, taxiDriver)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -233,8 +237,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, taxiDriver)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

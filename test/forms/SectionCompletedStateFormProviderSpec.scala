@@ -26,13 +26,13 @@ class SectionCompletedStateFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "sectionCompletedState.error.required"
 
     behave like optionsField[CompletedSectionState](
       form,
       fieldName,
-      validValues  = CompletedSectionState.values,
+      validValues = CompletedSectionState.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

@@ -22,7 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 case class HttpError(status: Int, body: HttpErrorBody) {
 
   def toJson: JsValue = body match {
-    case error: SingleErrorBody => Json.toJson(error)
+    case error: SingleErrorBody  => Json.toJson(error)
     case errors: MultiErrorsBody => Json.toJson(errors)
   }
 }

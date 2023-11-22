@@ -27,25 +27,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DisallowableSubcontractorCostsSummary  {
+object DisallowableSubcontractorCostsSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableSubcontractorCostsPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"disallowableSubcontractorCosts.$answer"))
-          )
+    answers.get(DisallowableSubcontractorCostsPage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"disallowableSubcontractorCosts.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "disallowableSubcontractorCosts.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("disallowableSubcontractorCosts.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "disallowableSubcontractorCosts.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("disallowableSubcontractorCosts.change.hidden"))
         )
+      )
     }
 }

@@ -30,7 +30,7 @@ class ProfessionalServiceExpensesFormProviderSpec extends CheckboxFieldBehaviour
     userScenarios.foreach { userScenario =>
       val form = new ProfessionalServiceExpensesFormProvider()(userScenario.user)
 
-      val fieldName = "value"
+      val fieldName   = "value"
       val requiredKey = s"professionalServiceExpenses.error.required.${userScenario.user}"
 
       s"when user is an ${userScenario.user}, form should " - {

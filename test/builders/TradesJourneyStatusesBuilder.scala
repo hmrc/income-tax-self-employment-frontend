@@ -22,13 +22,17 @@ import models.requests.TradesJourneyStatuses.JourneyStatus
 
 object TradesJourneyStatusesBuilder {
 
-  val aTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId1", Some("TradingName1"), Seq(
-    JourneyStatus(Abroad, Some(true)),
-    JourneyStatus(Income, Some(false)),
-    JourneyStatus(ExpensesTailoring, None),
-    JourneyStatus(ExpensesGoodsToSellOrUse, None),
-    JourneyStatus(NationalInsurance, None)
-  ))
+  val aTadesJourneyStatusesModel = TradesJourneyStatuses(
+    "BusinessId1",
+    Some("TradingName1"),
+    Seq(
+      JourneyStatus(Abroad, Some(true)),
+      JourneyStatus(Income, Some(false)),
+      JourneyStatus(ExpensesTailoring, None),
+      JourneyStatus(ExpensesGoodsToSellOrUse, None),
+      JourneyStatus(NationalInsurance, None)
+    )
+  )
 
   val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId2", None, Seq.empty)
 

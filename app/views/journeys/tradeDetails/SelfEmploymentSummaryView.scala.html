@@ -22,9 +22,9 @@
 
 @(taxYear: Int, tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("selfEmploymentSummary.title"))) {
+@layout(pageTitle = titleNoForm(messages("common.selfEmployment"))) {
 
-    <h1 class="govuk-heading-l">@messages("selfEmploymentSummary.title")</h1>
+    <h1 class="govuk-heading-l">@messages("common.selfEmployment")</h1>
 
      @govukSummaryList(tradingNames)
 

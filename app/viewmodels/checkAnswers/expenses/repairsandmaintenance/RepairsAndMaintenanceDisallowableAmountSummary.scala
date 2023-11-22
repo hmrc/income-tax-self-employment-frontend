@@ -32,7 +32,7 @@ import viewmodels.implicits._
 
 object RepairsAndMaintenanceDisallowableAmountSummary {
 
-  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     for {
       tailoringRepairsAndMaintenance <- request.getValue(RepairsAndMaintenancePage, businessId)
       if areAnyDisallowable(tailoringRepairsAndMaintenance)
@@ -52,7 +52,6 @@ object RepairsAndMaintenanceDisallowableAmountSummary {
           .withVisuallyHiddenText(messages("repairsAndMaintenanceDisallowableAmount.change.hidden"))
       )
     )
-  }
 
   private def areAnyDisallowable(repairsAndMaintenance: RepairsAndMaintenance): Boolean =
     repairsAndMaintenance match {

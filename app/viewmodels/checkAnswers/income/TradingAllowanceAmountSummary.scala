@@ -29,7 +29,6 @@ import viewmodels.implicits._
 
 object TradingAllowanceAmountSummary extends MoneyUtils {
 
-
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TradingAllowanceAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(

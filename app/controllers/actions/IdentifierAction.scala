@@ -71,8 +71,7 @@ class AuthenticatedIdentifierAction @Inject() (
 
   private[actions] def individualAuthentication[A](block: IdentifierRequest[A] => Future[Result],
                                                    internalId: String,
-                                                   affinityGroup: AffinityGroup)(implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
-
+                                                   affinityGroup: AffinityGroup)(implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
     authorised().retrieve(allEnrolments and confidenceLevel) {
       case enrolments ~ userConfidence if userConfidence.level >= minimumConfidenceLevel =>
         val optionalMtdItId: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments)
@@ -93,7 +92,6 @@ class AuthenticatedIdentifierAction @Inject() (
         logger.info("[AuthorisedAction][individualAuthentication] User has confidence level below 250.")
         Future(Redirect(config.incomeTaxSubmissionIvRedirect))
     }
-  }
 
   private[actions] def agentAuthentication[A](block: IdentifierRequest[A] => Future[Result], internalId: String)(implicit
       request: Request[A],

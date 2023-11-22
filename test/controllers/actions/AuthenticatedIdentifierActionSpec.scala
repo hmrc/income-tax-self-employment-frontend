@@ -41,17 +41,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {
   import AuthenticatedIdentifierActionSpec._
-  
+
   val app = applicationBuilder().build()
-  
+
   val mockFrontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val mockBodyParsersDefault = app.injector.instanceOf[BodyParsers.Default]
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  
+  val mockBodyParsersDefault                   = app.injector.instanceOf[BodyParsers.Default]
+  val mockAuthConnector: AuthConnector         = mock[AuthConnector]
+
   val authenticatedIdentifierAction: AuthenticatedIdentifierAction =
-     new AuthenticatedIdentifierAction(mockAuthConnector, mockFrontendAppConfig, mockBodyParsersDefault)
-     
-    ".invokeBlock" - {
+    new AuthenticatedIdentifierAction(mockAuthConnector, mockFrontendAppConfig, mockBodyParsersDefault)
+
+  ".invokeBlock" - {
 
     lazy val block: IdentifierRequest[AnyContent] => Future[Result] =
       request => Future.successful(Ok(s"mtditid: ${request.user.mtditid}${request.user.arn.fold("")(arn => " arn: " + arn)}"))
@@ -96,85 +96,90 @@ class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {
 }
 
 object AuthenticatedIdentifierActionSpec {
-  def agentEnrolment(ref: String): Enrolment = Enrolment(
-    EnrolmentKeys.Agent,
-    Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, ref)), "Activated")
-  
-  def individualIdEnrolment(id: String): Enrolment = Enrolment(
-    EnrolmentKeys.Individual,
-    Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, id)), "Activated")
-  def ninoEnrolment(nino: String): Enrolment = Enrolment(
-    EnrolmentKeys.nino,
-    Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, nino)), "Activated")
-  
+  def agentEnrolment(ref: String): Enrolment =
+    Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, ref)), "Activated")
+
+  def individualIdEnrolment(id: String): Enrolment =
+    Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, id)), "Activated")
+  def ninoEnrolment(nino: String): Enrolment = Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, nino)), "Activated")
+
   def ninoEnrolments(nino: Option[String]): Enrolments = Enrolments(
     agentEnrolments.enrolments ++ nino.fold(Seq.empty[Enrolment])(unwrappedNino => Seq(ninoEnrolment(unwrappedNino)))
   )
-  
+
   val agentEnrolments: Enrolments = Enrolments(
-    Set(individualIdEnrolment("1234567890"),  agentEnrolment("0987654321"))
+    Set(individualIdEnrolment("1234567890"), agentEnrolment("0987654321"))
   )
-  
+
   def mockAuthInvoke(mockAuthConnector: AuthConnector): Unit = {
-    val retrieval = rtr(Some(userId) , Some(AffinityGroup.Agent))
-    
-     when(mockAuthConnector
-      .authorise(ArgumentMatchers.eq(EmptyPredicate),
-        ArgumentMatchers.eq(Retrievals.internalId and Retrievals.affinityGroup))(any[HeaderCarrier], any[ExecutionContext]))
-       .thenReturn(Future.successful(retrieval))
+    val retrieval = rtr(Some(userId), Some(AffinityGroup.Agent))
+
+    when(
+      mockAuthConnector
+        .authorise(ArgumentMatchers.eq(EmptyPredicate), ArgumentMatchers.eq(Retrievals.internalId and Retrievals.affinityGroup))(
+          any[HeaderCarrier],
+          any[ExecutionContext]))
+      .thenReturn(Future.successful(retrieval))
   }
 
   def mockAuthAsAgent(mockAuthConnector: AuthConnector): Unit = {
-    when(mockAuthConnector
-      .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments))(
-        any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(agentEnrolments)
+    when(
+      mockAuthConnector
+        .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments))(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
+      .successful(agentEnrolments)
 
-  mockAuthAgentAffinityGroup(mockAuthConnector)
+    mockAuthAgentAffinityGroup(mockAuthConnector)
   }
-  
-  def mockAuthAsIndividual(mockAuthConnector: AuthConnector, nino: Option[String],
-                           cl: ConfidenceLevel = ConfidenceLevel.L250, enrolFn: Option[String] => Enrolments = ninoEnrolments): Unit = {
-    when(mockAuthConnector
-      .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments and Retrievals.confidenceLevel))(
-        any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(enrolFn(nino) and cl)
 
-  mockAuthIndividualAffinityGroup(mockAuthConnector)
+  def mockAuthAsIndividual(mockAuthConnector: AuthConnector,
+                           nino: Option[String],
+                           cl: ConfidenceLevel = ConfidenceLevel.L250,
+                           enrolFn: Option[String] => Enrolments = ninoEnrolments): Unit = {
+    when(
+      mockAuthConnector
+        .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.allEnrolments and Retrievals.confidenceLevel))(
+          any[HeaderCarrier],
+          any[ExecutionContext])) thenReturn Future.successful(enrolFn(nino) and cl)
+
+    mockAuthIndividualAffinityGroup(mockAuthConnector)
   }
-  
-  def mockAuthAgentAffinityGroup(mockAuthConnector: AuthConnector): Unit = {
-    when(mockAuthConnector
-      .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(
-        any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(Some(AffinityGroup.Agent))
-  }
-  
-  def mockAuthIndividualAffinityGroup(mockAuthConnector: AuthConnector): Unit = {
-    when(mockAuthConnector
-      .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(
-        any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(Some(AffinityGroup.Individual))
-  }
+
+  def mockAuthAgentAffinityGroup(mockAuthConnector: AuthConnector): Unit =
+    when(
+      mockAuthConnector
+        .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
+      .successful(Some(AffinityGroup.Agent))
+
+  def mockAuthIndividualAffinityGroup(mockAuthConnector: AuthConnector): Unit =
+    when(
+      mockAuthConnector
+        .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
+      .successful(Some(AffinityGroup.Individual))
 
   def mockAuthReturnException(mockAuthConnector: AuthConnector, exception: Exception): Unit =
-    when(mockAuthConnector
-      .authorise(any[Predicate], any[Retrieval[_]])(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.failed(exception)
+    when(
+      mockAuthConnector
+        .authorise(any[Predicate], any[Retrieval[_]])(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.failed(exception)
 
-
-  val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
+  val sessionId: String                                         = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("mtditid" -> "1234567890")
-  
-  val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    SessionValues.CLIENT_MTDITID -> "1234567890",
-    SessionValues.CLIENT_NINO -> "AA123456A",
-    SessionValues.TAX_YEAR -> taxYear.toString,
-    SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
-  ).withHeaders("X-Session-ID" -> sessionId)
-  
+
+  val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+    .withSession(
+      SessionValues.CLIENT_MTDITID  -> "1234567890",
+      SessionValues.CLIENT_NINO     -> "AA123456A",
+      SessionValues.TAX_YEAR        -> taxYear.toString,
+      SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+    )
+    .withHeaders("X-Session-ID" -> sessionId)
+
   val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    SessionValues.CLIENT_NINO -> "AA123456A",
+    SessionValues.CLIENT_NINO     -> "AA123456A",
     SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
   )
-  
+
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
-  
-  val user = User(mtditid =  "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
+
+  val user   = User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
   val userId = "987987987"
 }

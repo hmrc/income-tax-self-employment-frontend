@@ -29,11 +29,11 @@
 
 @selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
-@layout(pageTitle = titleNoForm(messages("taskList.title"))) {
+@layout(pageTitle = titleNoForm(messages("common.selfEmployment"))) {
 
     <div class="task-list">
 
-        <h2 class="app-task-list__section">@messages("taskList.title")</h2>
+        <h2 class="app-task-list__section">@messages("common.selfEmployment")</h2>
 
         <ul class="app-task-list__items govuk-!-padding-left-0">
             <li class="app-task-list__item">
@@ -51,7 +51,7 @@
 
         @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
             <h2 class="app-task-list__section">
-                @{s"${selfEmployment.tradingName}${messages("taskList.title")}"}
+                @{s"${selfEmployment.tradingName}${messages("common.selfEmployment")}"}
             </h2>
 
             @govukSummaryList(selfEmployment.statusList)

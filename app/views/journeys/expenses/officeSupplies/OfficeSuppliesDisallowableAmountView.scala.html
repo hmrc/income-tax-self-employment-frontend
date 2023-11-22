@@ -30,7 +30,7 @@
 
 @(form: Form[_], mode: Mode, taxYear: Int, businessId: String, authUserType: String, formattedAllowableAmount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"officeSuppliesDisallowableAmount.title.$authUserType", formattedAllowableAmount))) {
+@layout(pageTitle = title(form, messages("officeSuppliesDisallowableAmount.title.individual", formattedAllowableAmount))) {
 
     @formHelper(action = OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

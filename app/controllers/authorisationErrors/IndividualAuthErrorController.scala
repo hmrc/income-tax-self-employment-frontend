@@ -24,11 +24,12 @@ import views.html.added.IndividualAuthErrorView
 
 import javax.inject.Inject
 
-class IndividualAuthErrorController @Inject()(
-                                               val mcc: MessagesControllerComponents,
-                                               implicit val appConfig: FrontendAppConfig,
-                                               view: IndividualAuthErrorView
-                                             ) extends FrontendController(mcc) with I18nSupport {
+class IndividualAuthErrorController @Inject() (
+    val mcc: MessagesControllerComponents,
+    implicit val appConfig: FrontendAppConfig,
+    view: IndividualAuthErrorView
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
     Unauthorized(view())

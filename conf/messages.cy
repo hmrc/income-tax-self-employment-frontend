@@ -28,6 +28,7 @@ status.notStarted = NOT STARTED
 status.cannotStartYet = CANNOT START YET
 status.checkOurRecords = CHECK OUR RECORDS
 
+common.selfEmployment = Self-employment
 common.selfEmploymentAbroad = Self-employment abroad
 common.income = Income
 common.expensesCategories = Expenses categories
@@ -71,20 +72,15 @@ capitalAllowances.l3 = business vehicles
 common.insert = {0}
 common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourDetails.title.individual = Check your details
-common.checkYourDetails.heading.agent = Check your client’s details
-common.checkYourDetails.heading.individual = Check your details
 
-index.title = income-tax-self-employment-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-taskList.title = Self-employment
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 signedOut.title = For your security, we signed you out
@@ -109,8 +105,6 @@ checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a 
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
-
-selfEmploymentSummary.title = Self-employment
 
 sectionCompletedState.title = Have you completed this section?
 sectionCompletedState.yes = Yes, I’ve completed this section
@@ -326,7 +320,6 @@ expenses.contributions.individual = your own pay, pension or National Insurance 
 
 ## Office supplies
 officeSupplies.title = Office supplies
-officeSupplies.heading = Office supplies
 officeSupplies.l1 = phones, including mobiles
 officeSupplies.l2 = internet, email and fax running costs
 officeSupplies.l3 = postage, stationery and printing
@@ -342,9 +335,8 @@ officeSupplies.error.required.agent = Select if all your client’s office suppl
 officeSupplies.change.hidden = OfficeSupplies
 
 ## Taxi Minicab or Road Haulage
-taxiMinicabOrRoadHaulage.title = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.heading.individual = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.heading.agent = Was your client a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.title.individual = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.title.agent = Was your client a taxi, minicab or road haulage industry driver?
 taxiMinicabOrRoadHaulage.checkYourAnswersLabel = Were you a taxi, minicab or road haulage industry driver?
 taxiMinicabOrRoadHaulage.error.required.individual = Select yes if you were a taxi, minicab or road haulage industry driver
 taxiMinicabOrRoadHaulage.error.required.agent = Select yes if your client was a taxi, minicab or road haulage industry driver
@@ -352,7 +344,6 @@ taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
 
 ## Goods to sell or use
 goodsToSellOrUse.title = Goods to sell or use
-goodsToSellOrUse.heading = Goods to sell or use
 goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
 goodsToSellOrUse.checkYourAnswersLabel = Goods to sell or use
 goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
@@ -394,7 +385,6 @@ workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
 
 ## Travel and accommodation for work
 travelForWork.title = Travel and accommodation for work
-travelForWork.heading = Travel and accommodation for work
 travelForWork.l1.individual = your own vehicles
 travelForWork.l1.agent = your client’s own vehicles
 travelForWork.l2 = leased vehicles
@@ -412,7 +402,6 @@ travelForWork.change.hidden = TravelForWork
 
 ## Advertising or marketing
 advertisingOrMarketing.title = Advertising or marketing
-advertisingOrMarketing.heading = Advertising or marketing
 advertisingOrMarketing.l1 = advertising in newspapers and directories
 advertisingOrMarketing.l2 = mailshots
 advertisingOrMarketing.l3 = the cost of providing free samples
@@ -426,7 +415,6 @@ advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
 
 ## Entertainment costs
 entertainmentCosts.title = Entertainment costs
-entertainmentCosts.heading = Entertainment costs
 entertainmentCosts.para = These are disallowable expenses, but you still need to tell us about them.
 entertainmentCosts.l1 = entertaining clients, suppliers and customers
 entertainmentCosts.l2 = hospitality at events
@@ -439,7 +427,6 @@ entertainmentCosts.change.hidden = EntertainmentCosts
 
 ## Staff, construction industry and professional services
 professionalServiceExpenses.title = Staff, construction industry and professional services expenses
-professionalServiceExpenses.heading = Staff, construction industry and professional services expenses
 professionalServiceExpenses.subHeading.individual = Did you pay for any of these professionals or services?
 professionalServiceExpenses.subHeading.agent = Did your client pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
@@ -473,7 +460,6 @@ professionalServiceExpenses.d3.l5 = indemnity insurance premiums
 
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
-disallowableStaffCosts.heading = Disallowable staff costs
 disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
 disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.checkYourAnswersLabel = Disallowable staff costs
@@ -485,7 +471,6 @@ disallowableStaffCosts.checkYourAnswersLabel = Are any of your staff costs disal
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.heading = Disallowable construction industry subcontractors costs
 disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.subheading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.checkYourAnswersLabel = Disallowable construction industry subcontractors costs
@@ -497,7 +482,6 @@ disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. Fo
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
-disallowableProfessionalFees.heading = Disallowable professional fees
 disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
 disallowableProfessionalFees.subheading.agent = Are any of your client’s professional fees disallowable?
 disallowableProfessionalFees.checkYourAnswersLabel = Disallowable professional fees
@@ -613,7 +597,6 @@ officeSuppliesAmount.error.overMax.agent = The amount your client spent on offic
 ## Office Supplies Disallowable Amount
 officeSuppliesDisallowableAmount.title.individual = How much of the £{0} you spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.title.agent = How much of the £{0} your client spent on office supplies is disallowable?
-officeSuppliesDisallowableAmount.heading = OfficeSuppliesDisallowableAmountHeading
 officeSuppliesDisallowableAmount.checkYourAnswersLabel.individual = How much of the £{0} you spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.checkYourAnswersLabel.agent = How much of the £{0} your client spent on office supplies is disallowable?
 officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on office supplies must be a number
@@ -631,7 +614,6 @@ officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable
 ## Office Supplies CYA
 officeSuppliesAmountCYA.title.individual = Check your office supplies expenses
 officeSuppliesAmountCYA.title.agent = Check your client’s office supplies expenses
-officeSuppliesAmountCYA.heading = officeSuppliesAmountCYA
 
 ########## Expenses - Goods to sell or use ##########
 
@@ -666,16 +648,6 @@ disallowableGoodsToSellOrUseAmount.change.hidden = Change how much spent on good
 ## Goods to sell or use CYA
 goodsToSellOrUseCYA.title.individual = Check your goods to sell or use expenses
 goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use expenses
-
-totalExpenses.title = totalExpenses
-totalExpenses.heading = totalExpenses
-totalExpenses.checkYourAnswersLabel = totalExpenses
-totalExpenses.error.required = Enter totalExpenses
-totalExpenses.error.length = TotalExpenses must be 100 characters or less
-totalExpenses.change.hidden = TotalExpenses
-
-totalExpensesCYA.title = totalExpensesCYA
-totalExpensesCYA.heading = totalExpensesCYA
 
 ########## Expenses - Repairs and Maintenance ##########
 

@@ -32,10 +32,8 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
-      forAll(gen) {
-        sectionCompletedState =>
-
-          JsString(sectionCompletedState.toString).validate[CompletedSectionState].asOpt.value mustEqual sectionCompletedState
+      forAll(gen) { sectionCompletedState =>
+        JsString(sectionCompletedState.toString).validate[CompletedSectionState].asOpt.value mustEqual sectionCompletedState
       }
     }
 
@@ -43,10 +41,8 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = arbitrary[String] suchThat (!CompletedSectionState.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[CompletedSectionState] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[CompletedSectionState] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +50,8 @@ class CompletedSectionStateSpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(CompletedSectionState.values.toSeq)
 
-      forAll(gen) {
-        sectionCompletedState =>
-
-          Json.toJson(sectionCompletedState) mustEqual JsString(sectionCompletedState.toString)
+      forAll(gen) { sectionCompletedState =>
+        Json.toJson(sectionCompletedState) mustEqual JsString(sectionCompletedState.toString)
       }
     }
   }

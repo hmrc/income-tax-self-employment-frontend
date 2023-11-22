@@ -64,7 +64,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -88,23 +88,29 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.values.head, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.values.head, Some(stubbedBusinessId))
+              .success
+              .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               val request = FakeRequest(GET, taxiMinicabOrRoadHaulageRoute)
 
-              val result = route(application, request).value
+              val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
               val expectedResult =
-                view(userScenario.form.fill(TaxiMinicabOrRoadHaulage.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(
+                  userScenario.form.fill(TaxiMinicabOrRoadHaulage.values.head),
+                  NormalMode,
+                  userType(userScenario.isAgent),
+                  taxYear,
+                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -160,7 +166,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
@@ -177,7 +183,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
-              val result = route(application, request).value
+              val result     = route(application, request).value
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               status(result) mustEqual BAD_REQUEST
