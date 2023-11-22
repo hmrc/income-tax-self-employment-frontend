@@ -301,7 +301,16 @@ expenses.legalCost.equipment = legal costs of buying equipment
 expenses.legalCost.property = legal costs of buying property
 expenses.fines = fines for breaking the law
 expenses.taxDisputes = costs of settling tax disputes
+expenses.salaries = salaries
+expenses.wages = wages
+expenses.bonuses = bonuses
+expenses.pensions = pensions
+expenses.benefitsForEmployees = benefits for employees
+expenses.agencyFees = agency fees
+expenses.subcontractLabourCosts = subcontract labour costs (not included elsewhere)
+expenses.nationalInsuranceContributions = employer’s National Insurance Contributions
 expenses.contributions.individual = your own pay, pension or National Insurance contributions
+expenses.contributions.agent = their own pay, pension or National Insurance contributions
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -414,15 +423,6 @@ professionalServiceExpenses.error.required.individual = Select the professionals
 professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
 professionalServiceExpenses.d1.heading = Understanding staff expenses
-professionalServiceExpenses.d1.l1 = salaries
-professionalServiceExpenses.d1.l2 = wages
-professionalServiceExpenses.d1.l3 = bonuses
-professionalServiceExpenses.d1.l4 = pensions
-professionalServiceExpenses.d1.l5 = benefits for employees
-professionalServiceExpenses.d1.l6 = agency fees
-professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
-professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
-professionalServiceExpenses.d1.l9.agent = their own pay, pension or National Insurance contributions
 professionalServiceExpenses.d2.heading = Understanding construction industry expenses
 professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
@@ -658,6 +658,23 @@ entertainment.change.hidden = Change how much was spent on entertainment
 ## Entertainment CYA
 entertainmentCya.title.individual = Check your entertainment expenses
 entertainmentCya.title.agent = Check your client’s entertainment expenses
+
+########## Expenses - Staff Costs ##########
+
+## Staff costs amount
+staffCostsAmount.title.individual = How much did you spend on staff costs?
+staffCostsAmount.title.agent = How much did your client spend on staff costs?
+staffCostsAmount.d1.heading = Understanding staff costs
+staffCostsAmount.d2.l2 = any amount that covers personal use
+staffCostsAmount.error.required.individual = Enter the amount you spent on staff costs
+staffCostsAmount.error.required.agent = Enter the amount your client spent on staff costs
+staffCostsAmount.error.nonNumeric.individual = The amount you spent on staff costs must be a number
+staffCostsAmount.error.nonNumeric.agent = The amount your client spent on staff costs must be a number
+staffCostsAmount.error.lessThanZero.individual = The amount you spent on staff costs must be more than £0
+staffCostsAmount.error.lessThanZero.agent = The amount your client spent on staff costs must be more than £0
+staffCostsAmount.error.overMax.individual = The amount you spent on staff costs must be less than £100,000,000,000
+staffCostsAmount.error.overMax.agent = The amount your client spent on staff costs must be less than £100,000,000,000
+staffCostsAmount.change.hidden = Change how much was spent on staff costs
 
 ########## Expenses - Simple Journey ##########
 
