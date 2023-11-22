@@ -46,21 +46,17 @@ class SelfEmploymentService @Inject() (
     extends SelfEmploymentServiceBase
     with Logging {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = {
-
+  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] =
     connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
-  }
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] = {
-
+  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
     connector.getBusiness(nino, businessId, mtditid).map {
       case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)
       case Left(error)                                                       => Left(error)
       case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
     }
-  }
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     for {

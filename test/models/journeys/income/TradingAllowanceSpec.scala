@@ -32,10 +32,8 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = Gen.oneOf(TradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        tradingAllowance =>
-
-          JsString(tradingAllowance.toString).validate[TradingAllowance].asOpt.value mustEqual tradingAllowance
+      forAll(gen) { tradingAllowance =>
+        JsString(tradingAllowance.toString).validate[TradingAllowance].asOpt.value mustEqual tradingAllowance
       }
     }
 
@@ -43,10 +41,8 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = arbitrary[String] suchThat (!TradingAllowance.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[TradingAllowance] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[TradingAllowance] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +50,8 @@ class TradingAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       val gen = Gen.oneOf(TradingAllowance.values.toSeq)
 
-      forAll(gen) {
-        tradingAllowance =>
-
-          Json.toJson(tradingAllowance) mustEqual JsString(tradingAllowance.toString)
+      forAll(gen) { tradingAllowance =>
+        Json.toJson(tradingAllowance) mustEqual JsString(tradingAllowance.toString)
       }
     }
   }

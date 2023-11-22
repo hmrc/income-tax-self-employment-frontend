@@ -26,19 +26,19 @@ sealed trait Depreciation
 object Depreciation extends Enumerable.Implicits {
 
   case object Yes extends WithName("yes") with Depreciation
-  case object No extends WithName("no") with Depreciation
+  case object No  extends WithName("no") with Depreciation
 
   val values: Seq[Depreciation] = Seq(
-    Yes, No
+    Yes,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"site.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"site.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[Depreciation] =

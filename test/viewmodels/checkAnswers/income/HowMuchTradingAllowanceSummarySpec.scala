@@ -70,8 +70,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
           "return a run-time exception bundled in a Left" in {
             val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser, businessId)
 
-            result should matchPattern {
-              case Some(Left(_: RuntimeException)) =>
+            result should matchPattern { case Some(Left(_: RuntimeException)) =>
             }
           }
         }

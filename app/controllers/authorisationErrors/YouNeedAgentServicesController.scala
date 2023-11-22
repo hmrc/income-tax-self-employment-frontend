@@ -24,9 +24,11 @@ import views.html.added.YouNeedAgentServicesView
 
 import javax.inject.Inject
 
-class YouNeedAgentServicesController @Inject()(val mcc: MessagesControllerComponents,
-                                               youNeedAgentServicesPage: YouNeedAgentServicesView,
-                                               implicit val appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
+class YouNeedAgentServicesController @Inject() (val mcc: MessagesControllerComponents,
+                                                youNeedAgentServicesPage: YouNeedAgentServicesView,
+                                                implicit val appConfig: FrontendAppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport {
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
     Unauthorized(youNeedAgentServicesPage())
   }

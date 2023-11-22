@@ -27,7 +27,7 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 
 object SelfEmploymentDetailsViewModel {
 
-  def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList =
     SummaryList(
       rows = Seq(
         row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
@@ -39,13 +39,12 @@ object SelfEmploymentDetailsViewModel {
         row("farmerOrMarketGardener", "No", Some(isAgent)),
         row("profitFromLiteraryOrCreativeWorks", "No", Some(isAgent))
       ),
-      classes = "govuk-!-margin-bottom-7")
-  }
+      classes = "govuk-!-margin-bottom-7"
+    )
 
-  private def row(rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)
-                 (implicit messages: Messages): SummaryListRow = {
+  private def row(rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)(implicit messages: Messages): SummaryListRow = {
     val agentIndividual = userIsAgent match {
-      case None => ""
+      case None          => ""
       case Some(isAgent) => if (isAgent) ".agent" else ".individual"
     }
     SummaryListRowViewModel(
@@ -61,9 +60,9 @@ object SelfEmploymentDetailsViewModel {
     )
   }
 
-  private def handleDateString(date: Option[String]): String = try {
-      LocalDate.parse(date.getOrElse("")).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
-    } catch {
-      case _: Throwable => ""
-    }
+  private def handleDateString(date: Option[String]): String = try
+    LocalDate.parse(date.getOrElse("")).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
+  catch {
+    case _: Throwable => ""
+  }
 }

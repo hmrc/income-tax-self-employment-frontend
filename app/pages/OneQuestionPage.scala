@@ -23,7 +23,7 @@ trait OneQuestionPage[A] extends QuestionPage[A] {
   override def path(businessId: Option[String] = None): JsPath =
     businessId match {
       case Some(id) => JsPath \ id \ toString
-      case None => JsPath \ toString
+      case None     => JsPath \ toString
     }
 
 }

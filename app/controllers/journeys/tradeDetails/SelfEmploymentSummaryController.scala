@@ -68,10 +68,9 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
 
 object SelfEmploymentSummaryController {
 
-  def generateRowList(taxYear: Int, model: Seq[(String, String)])(implicit messages: Messages): SummaryList = {
+  def generateRowList(taxYear: Int, model: Seq[(String, String)])(implicit messages: Messages): SummaryList =
     SummaryList(rows = model.map { case (tradingName, businessId) =>
       row(tradingName, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
     })
-  }
 
 }

@@ -198,9 +198,10 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -229,9 +230,10 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

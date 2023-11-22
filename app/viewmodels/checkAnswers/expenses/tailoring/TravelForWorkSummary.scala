@@ -27,26 +27,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-
-object TravelForWorkSummary  {
+object TravelForWorkSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelForWorkPage).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"travelForWork.$answer"))
-          )
+    answers.get(TravelForWorkPage).map { answer =>
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"travelForWork.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "travelForWork.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.TravelForWorkController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("travelForWork.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "travelForWork.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.TravelForWorkController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("travelForWork.change.hidden"))
         )
+      )
     }
 }

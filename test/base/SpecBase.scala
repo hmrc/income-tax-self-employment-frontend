@@ -90,13 +90,12 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     applicationBuilder(userAnswers, isAgent(userType.toString))
 
   def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
-    val fakeIdentifierAction = {
+    val fakeIdentifierAction =
       if (isAgent) {
         bind[IdentifierAction].to[FakeAgentIdentifierAction]
       } else {
         bind[IdentifierAction].to[FakeIndividualIdentifierAction]
       }
-    }
 
     new GuiceApplicationBuilder()
       .overrides(
