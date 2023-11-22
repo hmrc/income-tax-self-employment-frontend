@@ -39,7 +39,6 @@ import scala.concurrent.Future
 class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
   val nino       = "AA370343B"
-  val mtditid    = "mtditid"
   val user: User = User(mtditid, None, nino, AffinityGroup.Individual.toString)
 
   val mockService: SelfEmploymentService     = mock[SelfEmploymentService]

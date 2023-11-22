@@ -38,8 +38,7 @@ trait WiremockSpec
     with GuiceOneServerPerSuite
     with FutureAwaits
     with DefaultAwaitTimeout
-    with WiremockStubHelpers
-    with AuthStub {
+    with WiremockStubHelpers {
   self: PlaySpec =>
 
   val wireMockPort                   = 11111

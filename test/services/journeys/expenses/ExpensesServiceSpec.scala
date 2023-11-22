@@ -28,7 +28,6 @@ import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.BAD_REQUEST
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.Future
 
@@ -36,15 +35,9 @@ class ExpensesServiceSpec extends SpecBase {
 
   private val journeyAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
-  private val mtditid = "someId"
-
-  // Below is common so move out
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
   private val mockSEConnector = mock[SelfEmploymentConnector]
   private val service         = new ExpensesService(mockSEConnector)
 
-  // Pull out this error if it is commonly used elsewhere
   private val httpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
   "ExpensesService" - {
