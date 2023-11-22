@@ -20,7 +20,7 @@ import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.Language._
 import models.common.UserType.{Agent, Individual}
-import models.common.{BusinessId, Language, TaxYear, UserType}
+import models.common.{BusinessId, Language, Nino, TaxYear, UserType}
 import models.database.UserAnswers
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -47,6 +47,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val accrual           = Accrual.entryName
   val cash              = Cash.entryName
   val stubbedBusinessId = "SJPR05893938418"
+  val someNino          = Nino("someNino")
 
   val stubBusinessId = BusinessId(
     stubbedBusinessId

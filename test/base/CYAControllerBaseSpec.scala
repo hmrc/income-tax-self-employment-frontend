@@ -23,10 +23,12 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.Application
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, redirectLocation, route, running, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+
+import scala.concurrent.Future
 
 abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerSpec {
 
@@ -50,12 +52,10 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
         forAll(langUserTypeCases) { (lang, userType) =>
           s"language is $lang and user is an $userType" - {
             "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
-              running(application) {
-                val result = route(application, getRequest).value.map(languageAwareResult(lang, _))
+              val result: Future[Result] = route(application, getRequest).value.map(languageAwareResult(lang, _))
 
-                status(result) shouldBe OK
-                contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
-              }
+              status(result) shouldBe OK
+              contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
             }
           }
         }
@@ -64,12 +64,10 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
         forAll(userTypeCases) { userType =>
           s"user is an $userType" - {
             "redirect to the journey recovery controller" in new TestScenario(userType, None) {
-              running(application) {
-                val result = route(application, getRequest).value
+              val result: Future[Result] = route(application, getRequest).value
 
-                status(result) shouldBe SEE_OTHER
-                redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
-              }
+              status(result) shouldBe SEE_OTHER
+              redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
             }
           }
         }

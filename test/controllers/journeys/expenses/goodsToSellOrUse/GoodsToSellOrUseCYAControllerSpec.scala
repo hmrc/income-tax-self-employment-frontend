@@ -16,67 +16,127 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import base.SpecBase
-import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
-import controllers.journeys.routes.SectionCompletedStateController
+import base.CYAControllerBaseSpec
+import builders.UserBuilder
+import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
+import controllers.journeys.routes._
+import controllers.standard.routes._
 import models.NormalMode
+import models.common._
 import models.database.UserAnswers
+import models.errors.HttpError
+import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.MockitoSugar.when
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.Application
+import play.api.http.Status.BAD_REQUEST
 import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{POST, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
+import services.journeys.expenses.ExpensesService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
-class GoodsToSellOrUseCYAControllerSpec extends SpecBase {
+import scala.concurrent.Future
 
-  private val userTypes = List(individual, agent)
+class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSellOrUseCYAController") {
+  private val mockExpensesService = mock[ExpensesService]
 
-  private val userAnswerData = Json.parse(s"""
+  override val bindings: List[Binding[_]] =
+    List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)), bind[ExpensesService].toInstance(mockExpensesService))
+
+  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+
+  private val userAnswerData = Json
+    .parse(s"""
        |{
        |  "$stubbedBusinessId": {
-       |    "goodsToSellOrUseAmount": 1235.4,
-       |    "disallowableGoodsToSellOrUseAmount": 12
+       |    "goodsToSellOrUse": "yesDisallowable",
+       |    "goodsToSellOrUseAmount": 100.00,
+       |    "disallowableGoodsToSellOrUseAmount": 100.00
        |  }
        |}
        |""".stripMargin)
+    .as[JsObject]
 
-  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  "GoodsToSellOrUseCYA Controller" - {
+  override def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
+    rows = Seq(
+      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, user.toString).value,
+      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, user.toString).value
+    ),
+    classes = "govuk-!-margin-bottom-7"
+  )
 
-    userTypes.foreach { userType =>
-      s".onPageLoad when user is an $userType should" - {
-        "must return OK and the correct view for a GET" in {
+  override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
+    view(taxYear, stubbedBusinessId, scenario.userType.toString, summaryList).toString()
+  }
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userType)).build()
+  private val goodsToSellJourneyAnswers =
+    GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
-          implicit val appMessages: Messages = messages(application)
+  private val httpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
-          running(application) {
-            val view    = application.injector.instanceOf[GoodsToSellOrUseCYAView]
-            val request = FakeRequest(GET, GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+  // TODO pull this into a base test class once we have additional CYA controllers persisting.
+  "GoodsToSellOrUseCYAController" - {
+    "on page submission" - {
+      "goods to sell journey answers are submitted successfully" in new TestScenario(UserType.Individual, userAnswers.some) {
+        lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
-            val expectedSummaryListRows = Seq(
-              GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType),
-              DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
-            ).flatten
-            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
-            val expectedNextRoute =
-              SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesGoodsToSellOrUse.toString, NormalMode).url
+        when(
+          mockExpensesService
+            .sendExpensesAnswers(
+              eqTo(taxYear),
+              eqTo(businessId),
+              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
+              eqTo(UserBuilder.aNoddyUser.mtditid),
+              eqTo(goodsToSellJourneyAnswers))(any(), any(), any()))
+          .thenReturn(Future.successful(().asRight))
 
-            val result = route(application, request).value
+        val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
-              request,
-              messages(application)).toString
-          }
+        status(result) shouldBe 303
+        redirectLocation(result).value shouldBe SectionCompletedStateController
+          .onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+          .url
+      }
+      // Stand-in test until unhappy path ticket is picked up.
+      "goods to sell journey answers unsuccessfully submitted" - {
+        "redirect to the Journey Recovery controller" in new TestScenario(UserType.Individual, userAnswers.some) {
+          lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+
+          when(
+            mockExpensesService
+              .sendExpensesAnswers(
+                eqTo(taxYear),
+                eqTo(businessId),
+                eqTo(Nino(UserBuilder.aNoddyUser.nino)),
+                eqTo(UserBuilder.aNoddyUser.mtditid),
+                eqTo(goodsToSellJourneyAnswers))(any(), any(), any()))
+            .thenReturn(Future.successful(httpError.asLeft))
+
+          val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
+
+          status(result) shouldBe 303
+          redirectLocation(result).value shouldBe JourneyRecoveryController.onPageLoad().url
         }
       }
     }
   }
+  private lazy val postRequestWithPath = (route: String) => FakeRequest(POST, route)
 
 }

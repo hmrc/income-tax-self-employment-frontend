@@ -20,6 +20,9 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
+import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersResponse, SendIncomeAnswersHttpReads}
+import models.common.{BusinessId, Nino, TaxYear}
+import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -29,7 +32,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
 
   def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/list"
+    val url = buildUrl(s"/income-tax-self-employment/individuals/business/details/$nino/list")
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
@@ -37,7 +40,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+    val url = buildUrl(s"/income-tax-self-employment/individuals/business/details/$nino/$businessId")
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
@@ -45,7 +48,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
+    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear")
     http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
@@ -53,7 +56,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/$complete"
+    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/$complete")
 
     http.PUT[String, JourneyStateResponse](url, "")(
       JourneyStateHttpWrites,
@@ -66,8 +69,24 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetTradesStatusResponse] = {
 
-    val url = appConfig.selfEmploymentBEBaseUrl + s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear"
+    val url = buildUrl(s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear")
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
+
+  def sendExpensesAnswers[T](taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: String, answers: T)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      writes: Writes[T]): Future[SendExpensesAnswersResponse] = {
+
+    val url = buildUrl(s"/income-tax-self-employment/send-expenses-answers/${taxYear.value}/${businessId.value}/${nino.value}")
+
+    http.POST[T, SendExpensesAnswersResponse](url, answers)(
+      wts = writes,
+      rds = SendIncomeAnswersHttpReads,
+      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid),
+      ec = ec)
+  }
+
+  private def buildUrl(url: String) = appConfig.selfEmploymentBEBaseUrl + url
 
 }
