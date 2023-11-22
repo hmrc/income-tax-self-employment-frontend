@@ -57,11 +57,6 @@ class BusinessDataConnectorISpec extends WiremockSpec {
 
   val taxYear = LocalDate.now().getYear
 
-  def a = {
-    println("just for test")
-  }
-
-
   ".getBusiness" should {
     val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
 
