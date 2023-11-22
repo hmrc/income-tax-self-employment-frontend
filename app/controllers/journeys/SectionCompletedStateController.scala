@@ -67,12 +67,11 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
-          value => {
+          value =>
             selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes), request.user.mtditid) map {
               case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, taxYear))
               case _        => Redirect(JourneyRecoveryController.onPageLoad())
             }
-          }
         )
   }
 

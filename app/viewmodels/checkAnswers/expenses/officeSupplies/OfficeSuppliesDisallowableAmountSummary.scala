@@ -32,7 +32,7 @@ import viewmodels.implicits._
 
 object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
     for {
       officeSupplies <- answers.get(OfficeSuppliesPage, Some(businessId))
       if areAnyOfficeSuppliesDisallowable(officeSupplies)
@@ -52,7 +52,6 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
           .withVisuallyHiddenText(messages("officeSuppliesDisallowableAmount.change.hidden"))
       )
     )
-  }
 
   private def areAnyOfficeSuppliesDisallowable(officeSupplies: OfficeSupplies): Boolean =
     officeSupplies match {

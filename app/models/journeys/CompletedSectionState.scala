@@ -26,19 +26,19 @@ sealed trait CompletedSectionState
 object CompletedSectionState extends Enumerable.Implicits {
 
   case object Yes extends WithName("yes") with CompletedSectionState
-  case object No extends WithName("no") with CompletedSectionState
+  case object No  extends WithName("no") with CompletedSectionState
 
   val values: Seq[CompletedSectionState] = Seq(
-    Yes, No
+    Yes,
+    No
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"sectionCompletedState.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"sectionCompletedState.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[CompletedSectionState] =

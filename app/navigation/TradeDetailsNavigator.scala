@@ -41,9 +41,8 @@ class TradeDetailsNavigator @Inject() () {
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = {
-
-    case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
+  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = { case _ =>
+    _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call = mode match {

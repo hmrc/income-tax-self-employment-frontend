@@ -38,11 +38,11 @@ import scala.concurrent.Future
 
 class TaskListControllerSpec extends SpecBase with MockitoSugar {
 
-  val nino = "AA370343B"
-  val mtditid = "mtditid"
+  val nino       = "AA370343B"
+  val mtditid    = "mtditid"
   val user: User = User(mtditid, None, nino, AffinityGroup.Individual.toString)
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockService: SelfEmploymentService     = mock[SelfEmploymentService]
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
 
   "TaskListController .onPageLoad" - {
@@ -60,8 +60,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
         when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-        val result = route(application, request).value
-        val view = application.injector.instanceOf[TaskListView]
+        val result  = route(application, request).value
+        val view    = application.injector.instanceOf[TaskListView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(taxYear, aNoddyUser, "completed", selfEmploymentList)(request, messages(application)).toString
@@ -82,8 +82,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-          val result = route(application, request).value
-          val view = application.injector.instanceOf[TaskListView]
+          val result  = route(application, request).value
+          val view    = application.injector.instanceOf[TaskListView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(taxYear, aNoddyUser, "completed", selfEmploymentList)(request, messages(application)).toString
@@ -101,8 +101,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(false)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-          val result = route(application, request).value
-          val view = application.injector.instanceOf[TaskListView]
+          val result  = route(application, request).value
+          val view    = application.injector.instanceOf[TaskListView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(taxYear, aNoddyUser, "inProgress", selfEmploymentList)(request, messages(application)).toString
@@ -120,8 +120,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(None))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-          val result = route(application, request).value
-          val view = application.injector.instanceOf[TaskListView]
+          val result  = route(application, request).value
+          val view    = application.injector.instanceOf[TaskListView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(taxYear, aNoddyUser, "checkOurRecords", selfEmploymentList)(request, messages(application)).toString
@@ -143,7 +143,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-          val result = route(application, request).value
+          val result  = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
@@ -162,7 +162,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
             Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
-          val result = route(application, request).value
+          val result  = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url

@@ -30,7 +30,7 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
   case object Construction     extends WithName("construction") with ProfessionalServiceExpenses
   case object ProfessionalFees extends WithName("professionalFees") with ProfessionalServiceExpenses
   case object No               extends WithName("no") with ProfessionalServiceExpenses
-  case object CheckboxDivider       extends WithName("or") with ProfessionalServiceExpenses
+  case object CheckboxDivider  extends WithName("or") with ProfessionalServiceExpenses
 
   val values: Seq[ProfessionalServiceExpenses] = Seq(
     Staff,
@@ -52,12 +52,12 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
           value = value.toString
         ).withAttribute(("data-behaviour", "exclusive"))
       case (value, index) =>
-      CheckboxItemViewModel(
-        content = Text(messages(if (value == No) "site.no" else s"professionalServiceExpenses.${value.toString}")),
-        fieldId = "value",
-        index = index,
-        value = value.toString
-      )
+        CheckboxItemViewModel(
+          content = Text(messages(if (value == No) "site.no" else s"professionalServiceExpenses.${value.toString}")),
+          fieldId = "value",
+          index = index,
+          value = value.toString
+        )
     }
 
   implicit val enumerable: Enumerable[ProfessionalServiceExpenses] =

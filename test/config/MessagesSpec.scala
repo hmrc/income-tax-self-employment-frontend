@@ -163,7 +163,7 @@ class MessagesSpec extends SpecBase {
   @tailrec
   private def checkMessagesAreUnique(keysToTest: List[(String, String)],
                                      remaining: List[(String, String)],
-                                     result: Set[String] = Set.empty): Set[String] = {
+                                     result: Set[String] = Set.empty): Set[String] =
     remaining match {
       case Nil => result
       case (currentKey, currentMessage) :: tail =>
@@ -174,12 +174,11 @@ class MessagesSpec extends SpecBase {
 
         checkMessagesAreUnique(keysToTest, tail, duplicate ++ result)
     }
-  }
 
   @tailrec
   private def checkForIllegalCharacters(remaining: List[(String, String)],
                                         illegalCharacters: Set[String],
-                                        result: Set[String] = Set.empty): Set[String] = {
+                                        result: Set[String] = Set.empty): Set[String] =
     remaining match {
       case Nil => result
       case (key, value) :: tail =>
@@ -187,6 +186,5 @@ class MessagesSpec extends SpecBase {
         if (containsForbiddenChar) checkForIllegalCharacters(tail, illegalCharacters, result + key)
         else checkForIllegalCharacters(tail, illegalCharacters, result)
     }
-  }
 
 }

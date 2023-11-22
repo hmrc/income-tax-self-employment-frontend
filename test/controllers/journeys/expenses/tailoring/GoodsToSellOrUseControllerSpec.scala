@@ -84,9 +84,14 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(
+                  userScenario.form,
+                  NormalMode,
+                  userType(userScenario.isAgent),
+                  taxYear,
+                  stubbedBusinessId,
+                  userScenario.accountingType,
+                  taxiDriver)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -95,7 +100,8 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(stubbedBusinessId)).success.value
+            val userAnswers =
+              UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(stubbedBusinessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -132,7 +138,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
       }
 
       "must return OK and the correct view for a GET when user is taxi driver" in {
-        val taxiDriver = true
+        val taxiDriver  = true
         val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -226,10 +232,10 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -258,10 +264,10 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent),
-                taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

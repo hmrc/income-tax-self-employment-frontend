@@ -116,7 +116,8 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   taxYear,
                   stubbedBusinessId,
                   userScenario.authUser,
-                  formatMoney(allowableAmount))(request, appMessages).toString
+                  formatMoney(allowableAmount)
+                )(request, appMessages).toString
               }
             }
           }
@@ -171,9 +172,13 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               status(langResult) mustEqual BAD_REQUEST
 
-              contentAsString(langResult) mustEqual view(boundForm, NormalMode, taxYear, stubbedBusinessId, userScenario.authUser, formatMoney(allowableAmount))(
-                request,
-                appMessages).toString
+              contentAsString(langResult) mustEqual view(
+                boundForm,
+                NormalMode,
+                taxYear,
+                stubbedBusinessId,
+                userScenario.authUser,
+                formatMoney(allowableAmount))(request, appMessages).toString
             }
           }
 
