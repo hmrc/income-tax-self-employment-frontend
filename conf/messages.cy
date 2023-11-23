@@ -720,3 +720,18 @@ totalExpenses.error.overMax.agent = Your client’s total expenses must be less 
 totalExpenses.change.hidden = Change how much the total expenses were
 
 totalExpensesCYA.title = totalExpensesCYA
+
+########## Expenses - Construction Industry ##########
+
+constructionIndustryAmount.title.individual = How much did you spend on construction industry expenses?
+constructionIndustryAmount.title.agent = How much did your client spend on construction industry expenses?
+constructionIndustryAmount.heading.individual = How much did you spend on construction industry expenses?
+constructionIndustryAmount.heading.agent = How much did your client spend on construction industry expenses?
+constructionIndustryAmount.checkYourAnswersLabel = ConstructionIndustryAmount
+constructionIndustryAmount.error.nonNumeric = Enter your constructionIndustryAmount using numbers
+constructionIndustryAmount.error.required = Enter your constructionIndustryAmount
+constructionIndustryAmount.error.wholeNumber = Enter your constructionIndustryAmount using whole numbers
+constructionIndustryAmount.error.outOfRange = ConstructionIndustryAmount must be between {0} and {1}
+constructionIndustryAmount.change.hidden = ConstructionIndustryAmount
+constructionIndustryAmount.includes = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+constructionIndustryAmount.understandingConstructionIndustryExpenses = Understanding construction industry expenses
