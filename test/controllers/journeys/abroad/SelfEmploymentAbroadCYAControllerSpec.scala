@@ -29,7 +29,6 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
 import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
@@ -44,8 +43,6 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
 
   private lazy val nextRoute =
     controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, Abroad.toString, NormalMode).url
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentAbroadCYAController" - {
     "when user answers are present" - {

@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.json.Writes
 
 trait WiremockStubHelpers {
 
@@ -51,7 +52,30 @@ trait WiremockStubHelpers {
             .withStatus(status)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
 
-  def stubPutWithResponseBody(url: String, status: Int, response: String, requestHeaders: Seq[HttpHeader] = Seq.empty): StubMapping = {
+  // TODO Reduce duplication here
+  def stubPostWithRequestBody[T](url: String, requestBody: T, expectedStatus: Int, requestHeaders: Seq[HttpHeader] = Seq.empty)(implicit
+      writes: Writes[T]): StubMapping = {
+
+    val stringBody = writes.writes(requestBody).toString()
+
+    val mapping: MappingBuilder = requestHeaders
+      .foldLeft(post(urlMatching(url))) { (result, nxt) =>
+        result.withHeader(nxt.key(), equalTo(nxt.firstValue()))
+      }
+      .withRequestBody(equalTo(stringBody))
+
+    stubFor(
+      mapping
+        .willReturn(
+          aResponse()
+            .withStatus(expectedStatus)
+            .withHeader("Content-Type", "application/json; charset=utf-8")))
+  }
+
+  def stubPutWithResponseBody(url: String,
+                              expectedStatus: Int,
+                              expectedResponse: String,
+                              requestHeaders: Seq[HttpHeader] = Seq.empty): StubMapping = {
     val mappingWithHeaders: MappingBuilder = requestHeaders.foldLeft(put(urlMatching(url))) { (result, nxt) =>
       result.withHeader(nxt.key(), equalTo(nxt.firstValue()))
     }
@@ -60,8 +84,8 @@ trait WiremockStubHelpers {
       mappingWithHeaders
         .willReturn(
           aResponse()
-            .withStatus(status)
-            .withBody(response)
+            .withStatus(expectedStatus)
+            .withBody(expectedResponse)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
   }
 
@@ -78,4 +102,5 @@ trait WiremockStubHelpers {
     stubPostWithoutResponseAndRequestBody("/write/audit", auditResponseCode)
     stubPostWithoutResponseAndRequestBody("/write/audit/merged", auditResponseCode)
   }
+
 }

@@ -16,26 +16,24 @@
 
 package connectors.httpParser
 
-import models.domain.BusinessData
+import cats.implicits.catsSyntaxEitherId
 import models.errors.HttpError
-import play.api.http.Status._
+import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object GetBusinessesHttpParser extends HttpParser {
-  type GetBusinessesResponse = Either[HttpError, Seq[BusinessData]]
+object SendExpensesAnswersHttpParser extends HttpParser {
+  type SendExpensesAnswersResponse = Either[HttpError, Unit]
 
-  override val parserName: String = "GetBusinessHttpParser"
+  override def parserName: String = "SendExpensesAnswersHttpParser"
 
-  implicit object GetBusinessesHttpReads extends HttpReads[GetBusinessesResponse] {
+  implicit object SendExpensesAnswersHttpReads extends HttpReads[SendExpensesAnswersResponse] {
 
-    override def read(method: String, url: String, response: HttpResponse): GetBusinessesResponse =
+    override def read(method: String, url: String, response: HttpResponse): SendExpensesAnswersResponse =
       response.status match {
-        case OK =>
-          response.json
-            .validate[Seq[BusinessData]]
-            .fold[GetBusinessesResponse](_ => Left(nonModelValidatingJsonFromAPI), parsedModel => Right(parsedModel))
-
-        case _ => Left(pagerDutyError(response))
+        case NO_CONTENT => ().asRight
+        case _          => pagerDutyError(response).asLeft
       }
+
   }
+
 }

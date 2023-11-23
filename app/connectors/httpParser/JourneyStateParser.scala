@@ -33,7 +33,7 @@ object JourneyStateParser extends HttpParser {
         case OK         => Right(Some(response.body.toBoolean))
         case CREATED    => Right(None)
         case NO_CONTENT => Right(None)
-        case _          => pagerDutyError(response)
+        case _          => Left(pagerDutyError(response))
       }
   }
 
