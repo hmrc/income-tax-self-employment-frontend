@@ -63,8 +63,8 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
   "onSubmit" should {
     "redirect to next when valid data is submitted" in {
       forAll(userTypeGen, modeGen) { (userType, mode) =>
-        val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(stubbedBusinessId)).success.value
-        val application = buildAppFromUserType(userType, Some(userAnswers))
+        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(stubbedBusinessId)).success.value
+        val application    = buildAppFromUserType(userType, Some(userAnswers))
         val routeUnderTest = routes.StaffCostsAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
 
