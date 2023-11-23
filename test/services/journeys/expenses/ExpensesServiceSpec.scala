@@ -19,9 +19,11 @@ package services.journeys.expenses
 import base.SpecBase
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, Nino, TaxYear}
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
+import models.journeys.Journey
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -33,7 +35,10 @@ import scala.concurrent.Future
 
 class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
 
-  private val journeyAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
+  private val someExpensesData    = ExpensesData(currTaxYear, someNino, stubBusinessId, mtditid)
+  private val someExpensesJourney = ExpensesGoodsToSellOrUse
+
+  private val someExpensesAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
   private val mockSEConnector = mock[SelfEmploymentConnector]
   private val service         = new ExpensesService(mockSEConnector)
@@ -45,19 +50,19 @@ class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
       "connector returns no errors" - {
         "evaluate to unit" in {
           mockSEConnector
-            .sendExpensesAnswers(*[TaxYear], *[BusinessId], *[Nino], *, *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .sendExpensesAnswers(*[ExpensesData], *[Journey], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
             .successful(().asRight)
 
-          service.sendExpensesAnswers(currTaxYear, stubBusinessId, someNino, mtditid, journeyAnswers).futureValue shouldBe ().asRight
+          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers, someExpensesJourney).futureValue shouldBe ().asRight
         }
       }
       "connector returns an error" - {
         "return that error" in {
           mockSEConnector
-            .sendExpensesAnswers(*[TaxYear], *[BusinessId], *[Nino], *, *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .sendExpensesAnswers(*[ExpensesData], *[Journey], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
             .successful(httpError.asLeft)
 
-          service.sendExpensesAnswers(currTaxYear, stubBusinessId, someNino, mtditid, journeyAnswers).futureValue shouldBe httpError.asLeft
+          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers, someExpensesJourney).futureValue shouldBe httpError.asLeft
         }
       }
     }

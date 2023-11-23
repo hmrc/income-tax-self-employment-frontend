@@ -27,6 +27,7 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchersSugar
@@ -95,15 +96,12 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
     "on page submission" - {
       "goods to sell journey answers are submitted successfully" - {
         "redirect to the section completed controller" in new TestScenario(UserType.Individual, userAnswers.some) {
-          lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+          lazy val onSubmitPath: String  = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+          val expensesData: ExpensesData = ExpensesData(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, UserBuilder.aNoddyUser.mtditid)
 
           mockExpensesService
-            .sendExpensesAnswers(
-              eqTo(taxYear),
-              eqTo(businessId),
-              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
-              eqTo(UserBuilder.aNoddyUser.mtditid),
-              eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(().asRight)
+            .sendExpensesAnswers(eqTo(expensesData), eqTo(goodsToSellJourneyAnswers), eqTo(ExpensesGoodsToSellOrUse))(*, *, *) returns Future
+            .successful(().asRight)
 
           val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 
@@ -116,15 +114,12 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
       // Stand-in test until unhappy path ticket is picked up.
       "goods to sell journey answers unsuccessfully submitted" - {
         "redirect to the Journey Recovery controller" in new TestScenario(UserType.Individual, userAnswers.some) {
-          lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+          lazy val onSubmitPath: String  = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+          val expensesData: ExpensesData = ExpensesData(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, UserBuilder.aNoddyUser.mtditid)
 
           mockExpensesService
-            .sendExpensesAnswers(
-              eqTo(taxYear),
-              eqTo(businessId),
-              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
-              eqTo(UserBuilder.aNoddyUser.mtditid),
-              eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(httpError.asLeft)
+            .sendExpensesAnswers(eqTo(expensesData), eqTo(goodsToSellJourneyAnswers), eqTo(ExpensesGoodsToSellOrUse))(*, *, *) returns Future
+            .successful(httpError.asLeft)
 
           val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 

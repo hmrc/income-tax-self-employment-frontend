@@ -17,8 +17,9 @@
 package services.journeys.expenses
 
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, Nino, TaxYear}
 import models.errors.HttpError
+import models.journeys.Journey
+import models.journeys.expenses.ExpensesData
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -27,10 +28,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ExpensesService @Inject() (connector: SelfEmploymentConnector) {
 
-  def sendExpensesAnswers[T](taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtdid: String, answers: T)(implicit
+  def sendExpensesAnswers[T](data: ExpensesData, answers: T, journey: Journey)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       writes: Writes[T]): Future[Either[HttpError, Unit]] =
-    connector.sendExpensesAnswers(taxYear, businessId, nino, mtdid, answers)
+    connector.sendExpensesAnswers(data, journey, answers)
 
 }

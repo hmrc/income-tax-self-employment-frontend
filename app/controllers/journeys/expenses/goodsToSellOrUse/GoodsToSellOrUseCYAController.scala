@@ -24,6 +24,7 @@ import models.NormalMode
 import models.common.ModelUtils.userType
 import models.common.{BusinessId, Nino, TaxYear}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import navigation.ExpensesNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,11 +66,12 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val journeyAnswers = (request.userAnswers.data \ businessId.value).as[GoodsToSellOrUseJourneyAnswers]
+      val data           = ExpensesData(taxYear, Nino(request.user.nino), businessId, request.user.mtditid)
 
       // What we decide to do with the unhappy path of receiving a downstream http error should be implemented at a later
       // date (awaiting a JIRA ticket), however we need to do something now.
       (for {
-        _ <- EitherT(expensesService.sendExpensesAnswers(taxYear, businessId, Nino(request.user.nino), request.user.mtditid, journeyAnswers))
+        _ <- EitherT(expensesService.sendExpensesAnswers(data, journeyAnswers, ExpensesGoodsToSellOrUse))
       } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)))
         .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
         .merge

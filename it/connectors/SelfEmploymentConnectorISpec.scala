@@ -21,6 +21,8 @@ import cats.implicits.catsSyntaxEitherId
 import helpers.WiremockSpec
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
@@ -28,9 +30,14 @@ import play.api.libs.json.Json
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private val downstreamUrl = s"/income-tax-self-employment/send-expenses-answers/${taxYear.value}/${businessId.value}/${nino.value}"
+  private val someExpensesData    = ExpensesData(taxYear, nino, businessId, mtditid)
+  private val someExpensesJourney = ExpensesGoodsToSellOrUse
 
-  private val goodsToSellJourneyAnswers =
+  private val downstreamUrl =
+    s"/income-tax-self-employment/send-expenses-answers/${someExpensesJourney.toString}" +
+      s"/${someExpensesData.taxYear.value}/${someExpensesData.businessId.value}/${someExpensesData.nino.value}"
+
+  private val someExpensesJourneyAnswers =
     GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
   private val httpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
@@ -43,27 +50,28 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
         "return a successful result" in {
           stubPostWithRequestBody(
             url = downstreamUrl,
-            requestBody = Json.toJson(goodsToSellJourneyAnswers),
+            requestBody = Json.toJson(someExpensesJourneyAnswers),
             expectedStatus = NO_CONTENT,
             requestHeaders = headersSentToBE)
 
           await(
-            connector.sendExpensesAnswers(taxYear, businessId, nino, mtditid, goodsToSellJourneyAnswers)(
-              hc,
-              ec,
-              GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+            connector
+              .sendExpensesAnswers(someExpensesData, someExpensesJourney, someExpensesJourneyAnswers)(
+                hc,
+                ec,
+                GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
         }
       }
       "downstream returns an error" must {
         "return a failure result" in {
           stubPostWithRequestBody(
             url = downstreamUrl,
-            requestBody = Json.toJson(goodsToSellJourneyAnswers),
+            requestBody = Json.toJson(someExpensesJourneyAnswers),
             expectedStatus = BAD_REQUEST,
             requestHeaders = headersSentToBE)
 
           await(
-            connector.sendExpensesAnswers(taxYear, businessId, nino, mtditid, goodsToSellJourneyAnswers)(
+            connector.sendExpensesAnswers(someExpensesData, someExpensesJourney, someExpensesJourneyAnswers)(
               hc,
               ec,
               GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
