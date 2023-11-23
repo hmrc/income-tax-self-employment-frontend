@@ -65,12 +65,14 @@
                                 <li>${messages("expenses.nationalInsuranceContributions")}</li>
                             </ul>
                             ${if (disallowable == Yes) {
-                                <p>{messages(s"site.cannotInclude.$userType")}</p>
+                                s"""
+                                <p>${messages(s"site.cannotInclude.$userType")}</p>
                                 <ul class="govuk-body govuk-list--bullet">
-                                    <li>{messages(s"expenses.contributions.$userType")}</li>
-                                    <li>{messages("staffCostsAmount.d2.l2")}</li>
+                                    <li>${messages(s"expenses.contributions.$userType")}</li>
+                                    <li>${messages("staffCostsAmount.d2.l2")}</li>
                                 </ul>
-                            } else "" }
+                                """
+                            } else { "" } }
                         </div>
                     </details>
                     """
