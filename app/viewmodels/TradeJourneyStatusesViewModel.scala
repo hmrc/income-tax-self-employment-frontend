@@ -20,7 +20,19 @@ import controllers.journeys.{abroad, expenses, income}
 import models._
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
-import models.journeys.Journey.{Abroad, ExpensesTailoring, Income}
+import models.journeys.Journey.{
+  Abroad,
+  ExpensesEntertainment,
+  ExpensesGoodsToSellOrUse,
+  ExpensesOfficeSupplies,
+  ExpensesRepairsAndMaintenance,
+  ExpensesStaffCosts,
+  ExpensesTailoring,
+  ExpensesTotal,
+  Income,
+  NationalInsurance,
+  TradeDetails
+}
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -111,6 +123,10 @@ object TradeJourneyStatusesViewModel {
             .onPageLoad(taxYear.value, businessId.value, NormalMode)
             .url // TODO expenses CYA page when built
         )
+      case ExpensesEntertainment | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance | ExpensesTotal |
+          NationalInsurance | TradeDetails | ExpensesStaffCosts =>
+        ??? // TODO Other Journeys not yet implemented
+
     }
   }
 

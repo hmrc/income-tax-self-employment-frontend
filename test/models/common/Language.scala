@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.common
 
-import play.api.mvc.Call
+import enumeratum.{EnumEntry, _}
 
-package object common {
-  def onwardRoute: Call = Call("GET", "/foo")
+sealed trait Language extends EnumEntry
 
+object Language extends Enum[Language] {
+  val values = findValues
+
+  case object English extends Language
+
+  case object Welsh extends Language
 }

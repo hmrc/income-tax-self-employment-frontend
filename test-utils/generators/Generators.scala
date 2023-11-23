@@ -68,7 +68,7 @@ trait Generators extends ModelGenerators {
         total += weight
         builder += ((total, value))
       }
-      val tree = builder.result
+      val tree = builder.result()
       choose(BigDecimal(1.00), total).flatMap(r => tree.rangeFrom(r).head._2)
     }
   }

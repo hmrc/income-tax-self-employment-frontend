@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package models.test
 
-import play.api.mvc.Call
+import play.api.libs.json.Json
 
-package object common {
-  def onwardRoute: Call = Call("GET", "/foo")
+final case class RepairsAndMaintenanceInfo(repairsAndMaintenance: Option[String],
+                                           repairsAndMaintenanceAmount: Option[BigDecimal],
+                                           repairsAndMaintenanceDisallowableAmount: Option[BigDecimal])
 
+object RepairsAndMaintenanceInfo {
+  implicit val format = Json.format[RepairsAndMaintenanceInfo]
 }

@@ -34,11 +34,12 @@ lazy val root = (project in file("."))
     ),
     PlayKeys.playDefaultPort := 10901,
     scalacOptions ++= Seq(
+      "-Xfatal-warnings",
       "-feature",
+      "-unchecked",
       "-rootdir",
       baseDirectory.value.getCanonicalPath,
-      "-Wconf:cat=unused:e",
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
+      "-Wconf:src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,

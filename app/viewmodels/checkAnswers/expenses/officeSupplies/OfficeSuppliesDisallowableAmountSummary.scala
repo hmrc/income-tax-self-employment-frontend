@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.officeSupplies
 
-import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController
+import controllers.journeys.expenses
 import models.CheckMode
 import models.database.UserAnswers
 import models.journeys.expenses.OfficeSupplies
@@ -32,15 +32,19 @@ import viewmodels.implicits._
 
 object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(OfficeSuppliesPage, Some(businessId))
+      .filter(areAnyOfficeSuppliesDisallowable)
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
+
+  private def createSummaryListRow(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages) =
     for {
-      officeSupplies <- answers.get(OfficeSuppliesPage, Some(businessId))
-      if areAnyOfficeSuppliesDisallowable(officeSupplies)
       disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId))
       allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"officeSuppliesDisallowableAmount.title.$authUserType", formatMoney(allowableAmount)),
+        content = messages(s"officeSuppliesDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(
@@ -48,7 +52,9 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
         classes = "govuk-!-width-one-third"
       ),
       actions = Seq(
-        ActionItemViewModel("site.change", OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+        ActionItemViewModel(
+          "site.change",
+          expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
           .withVisuallyHiddenText(messages("officeSuppliesDisallowableAmount.change.hidden"))
       )
     )
