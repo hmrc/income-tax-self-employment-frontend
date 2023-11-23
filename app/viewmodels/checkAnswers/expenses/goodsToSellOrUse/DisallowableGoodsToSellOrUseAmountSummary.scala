@@ -51,7 +51,9 @@ object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
         classes = "govuk-!-width-one-third"
       ),
       actions = Seq(
-        ActionItemViewModel("site.change", expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+        ActionItemViewModel(
+          "site.change",
+          expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
           .withVisuallyHiddenText(messages("disallowableGoodsToSellOrUseAmount.change.hidden"))
       )
     )

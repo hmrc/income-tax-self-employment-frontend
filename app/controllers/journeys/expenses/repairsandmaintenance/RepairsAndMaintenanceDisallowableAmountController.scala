@@ -78,7 +78,7 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
             value => handleSuccess(userAnswers, value)
           )
 
-      val obtainedAllowableValue: Either[Result, BigDecimal] = request.valueOrRedirectDefault(RepairsAndMaintenanceAmountPage, businessId)
+      val obtainedAllowableValue = request.valueOrRedirectDefault(RepairsAndMaintenanceAmountPage, businessId)
       val result = for {
         allowableAmount <- EitherT.fromEither[Future](obtainedAllowableValue)
         userType    = request.userType
