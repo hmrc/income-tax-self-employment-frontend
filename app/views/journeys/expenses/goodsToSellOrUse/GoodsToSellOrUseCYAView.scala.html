@@ -24,7 +24,7 @@
 
 @(taxYear: Int, userType: String, summaryList: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("goodsToSellOrUseCYA.title.individual"))) {
+@layout(pageTitle = titleNoForm(messages(s"goodsToSellOrUseCYA.title.$userType"))) {
 
     @heading(
        heading = messages(s"goodsToSellOrUseCYA.title.$userType"),

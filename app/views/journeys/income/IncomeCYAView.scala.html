@@ -20,7 +20,7 @@
 
 @(taxYear: Int, summaryList: SummaryList, nextRoute: String, authUserType: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("checkYourIncome.title.individual"))) {
+@layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$authUserType"))) {
 
     @heading(
         heading = messages(s"checkYourIncome.title.$authUserType"),
