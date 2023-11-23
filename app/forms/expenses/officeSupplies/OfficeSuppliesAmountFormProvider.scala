@@ -30,5 +30,4 @@ class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBoun
         .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
         .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$authUserType"))
     )
-
 }

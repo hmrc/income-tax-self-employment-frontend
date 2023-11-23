@@ -25,8 +25,8 @@ class ConstructionIndustryAmountFormProvider @Inject() extends Mappings with Mon
 
   def apply(userType: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"entertainment.error.required.$userType", s"entertainment.error.nonNumeric.$userType")
-        .verifying(greaterThan(minimumValue, s"entertainment.error.lessThanZero.$userType"))
-        .verifying(lessThan(maximumValue, s"entertainment.error.overMax.$userType"))
+      "value" -> bigDecimal(s"constructionIndustryAmount.error.required.$userType", s"constructionIndustryAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"constructionIndustryAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"constructionIndustryAmount.error.overMax.$userType"))
     )
 }

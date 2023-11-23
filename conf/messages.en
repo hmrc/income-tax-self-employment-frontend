@@ -317,6 +317,8 @@ expenses.legalCost.property = legal costs of buying property
 expenses.fines = fines for breaking the law
 expenses.taxDisputes = costs of settling tax disputes
 expenses.contributions.individual = your own pay, pension or National Insurance contributions
+expenses.includes.construction = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+expenses.understanding.construction = Understanding construction industry expenses
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -448,8 +450,6 @@ professionalServiceExpenses.d1.l6 = agency fees
 professionalServiceExpenses.d1.l7 = subcontract labour costs (not included elsewhere)
 professionalServiceExpenses.d1.l8 = employer’s National Insurance Contributions
 professionalServiceExpenses.d1.l9.agent = their own pay, pension or National Insurance contributions
-professionalServiceExpenses.d2.heading = Understanding construction industry expenses
-professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d3.heading = Understanding professional fees
 professionalServiceExpenses.d3.l1 = accountants
@@ -723,15 +723,15 @@ totalExpensesCYA.title = totalExpensesCYA
 
 ########## Expenses - Construction Industry ##########
 
-constructionIndustryAmount.title.individual = How much did you spend on construction industry expenses?
-constructionIndustryAmount.title.agent = How much did your client spend on construction industry expenses?
 constructionIndustryAmount.heading.individual = How much did you spend on construction industry expenses?
 constructionIndustryAmount.heading.agent = How much did your client spend on construction industry expenses?
 constructionIndustryAmount.checkYourAnswersLabel = ConstructionIndustryAmount
-constructionIndustryAmount.error.nonNumeric = Enter your constructionIndustryAmount using numbers
-constructionIndustryAmount.error.required = Enter your constructionIndustryAmount
-constructionIndustryAmount.error.wholeNumber = Enter your constructionIndustryAmount using whole numbers
-constructionIndustryAmount.error.outOfRange = ConstructionIndustryAmount must be between {0} and {1}
+constructionIndustryAmount.error.required.individual = Enter your constructionIndustryAmount
+constructionIndustryAmount.error.required.agent = Enter your client’s constructionIndustryAmount
+constructionIndustryAmount.error.nonNumeric.individual = Enter your constructionIndustryAmount using numbers
+constructionIndustryAmount.error.nonNumeric.agent = Enter your client’s constructionIndustryAmount using numbers
+constructionIndustryAmount.error.lessThanZero.individual = Your constructionIndustryAmount must be more than £0
+constructionIndustryAmount.error.lessThanZero.agent = Your client’s constructionIndustryAmount must be more than £0
+constructionIndustryAmount.error.overMax.individual = Your constructionIndustryAmount must be less than £100,000,000,000
+constructionIndustryAmount.error.overMax.agent = Your client’s constructionIndustryAmount must be less than £100,000,000,000
 constructionIndustryAmount.change.hidden = ConstructionIndustryAmount
-constructionIndustryAmount.includes = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
-constructionIndustryAmount.understandingConstructionIndustryExpenses = Understanding construction industry expenses

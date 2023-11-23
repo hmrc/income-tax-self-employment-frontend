@@ -18,12 +18,11 @@ package controllers
 
 import base.SpecBase
 import forms.ConstructionIndustryAmountFormProvider
-import controllers.journeys.expenses.construction.routes
+import controllers.journeys.expenses.construction.routes.ConstructionIndustryAmountController
 import models.NormalMode
 import models.database.UserAnswers
-import models.errors.{HttpError, HttpErrorBody}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.ConstructionIndustryAmountPage
@@ -38,8 +37,6 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.ConstructionIndustryAmountView
-import views.html.helper.form
-
 import scala.concurrent.Future
 
 class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSugar {
@@ -60,8 +57,6 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
     UserScenario(isWelsh = false, authUser = individual, form = formProvider(individual)),
     UserScenario(isWelsh = false, authUser = agent, form = formProvider(agent))
   )
-
-  private val someHttpError = HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason"))
 
   private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
     val isAgent = authUser match {
@@ -85,7 +80,6 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
               val view: ConstructionIndustryAmountView = application.injector.instanceOf[ConstructionIndustryAmountView]
 
               running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
                 implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
                 val result = route(application, request).value
@@ -93,7 +87,7 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
 
                 status(langResult) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, taxYear, stubbedBusinessId)(
                   request,
                   messages(application)).toString
               }
@@ -108,9 +102,8 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
               val view: ConstructionIndustryAmountView = application.injector.instanceOf[ConstructionIndustryAmountView]
 
               running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
 
-                val request = FakeRequest(GET, ConstructionIndustryAmountPage)
+                val request = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
                 val result = route(application, request).value
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
@@ -122,20 +115,6 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
                   userScenario.authUser,
                   taxYear,
                   stubbedBusinessId)(request, messages(application)).toString
-              }
-            }
-          }
-          "when no accounting type is returned by the service" - {
-            "must redirect to the journey recovery controller" in {
-              val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
-
-              running(application) {
-                when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Left(someHttpError))
-
-                val request = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
-                val result = route(application, request).value
-
-                status(result) mustEqual 303
               }
             }
           }
@@ -184,20 +163,6 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
                   contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, taxYear, stubbedBusinessId)(
                     request,
                     messages(application)).toString
-                }
-              }
-            }
-            "when no accounting type is returned by the service" - {
-              "must redirect to the journey recovery controller" in {
-                val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
-
-                running(application) {
-                  when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Left(someHttpError))
-
-                  val request = FakeRequest(POST, constructionIndustryAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
-                  val result = route(application, request).value
-
-                  status(result) mustEqual 303
                 }
               }
             }

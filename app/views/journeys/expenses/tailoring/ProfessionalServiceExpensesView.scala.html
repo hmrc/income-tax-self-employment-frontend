@@ -73,12 +73,16 @@
     <details class="govuk-details govuk-!-margin-bottom-3">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-            @messages("professionalServiceExpenses.d2.heading")
+            @messages("expenses.understanding.construction")
             </span>
         </summary>
         <div class="govuk-details__text">
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <span>@messages(s"professionalServiceExpenses.d2.l1.$authUserType")</span>
+                @if(authUserType.equals("individual")) {
+                    <span>@messages(s"expenses.includes.construction")</span>
+                } else {
+                    <span>@messages(s"professionalServiceExpenses.d2.l1.agent")</span>
+                }
             </ul>
         </div>
     </details>
