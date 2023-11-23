@@ -46,12 +46,11 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
   private val validAnswer  = BigDecimal(100.00)
 
   private val onwardRoute = Call("GET", "/foo")
-  private lazy val constructionIndustryAmountPageLoadRoute = ConstructionIndustryAmountController.onPageLoad(
-    taxYear, stubbedBusinessId, NormalMode).url
-  private lazy val constructionIndustryAmountOnSubmitRoute = ConstructionIndustryAmountController.onSubmit(
-    taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val constructionIndustryAmountPageLoadRoute =
+    ConstructionIndustryAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val constructionIndustryAmountOnSubmitRoute = ConstructionIndustryAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
 
-  private val mockSessionRepository = mock[SessionRepository]
+  private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(isWelsh: Boolean, authUser: String, form: Form[BigDecimal])
@@ -64,7 +63,7 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
   private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
     val isAgent = authUser match {
       case "individual" => false
-      case "agent" => true
+      case "agent"      => true
     }
     applicationBuilder(userAnswers, isAgent)
       .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
@@ -79,14 +78,14 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
             "must return OK and the correct view" in {
               val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              implicit val messagesApi: MessagesApi    = application.injector.instanceOf[MessagesApi]
               val view: ConstructionIndustryAmountView = application.injector.instanceOf[ConstructionIndustryAmountView]
 
               running(application) {
 
                 implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
-                val result = route(application, request).value
-                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val result                                                = route(application, request).value
+                val langResult                                            = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 status(langResult) mustEqual OK
 
@@ -101,13 +100,13 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
 
               val application = buildApplication(Some(userAnswers), userScenario.authUser)
 
-              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+              implicit val messagesApi: MessagesApi    = application.injector.instanceOf[MessagesApi]
               val view: ConstructionIndustryAmountView = application.injector.instanceOf[ConstructionIndustryAmountView]
 
               running(application) {
 
-                val request = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
-                val result = route(application, request).value
+                val request    = FakeRequest(GET, constructionIndustryAmountPageLoadRoute)
+                val result     = route(application, request).value
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 status(langResult) mustEqual OK
@@ -139,7 +138,7 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
 
                 running(application) {
                   val request = FakeRequest(POST, constructionIndustryAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
-                  val result = route(application, request).value
+                  val result  = route(application, request).value
 
                   status(result) mustEqual SEE_OTHER
                   redirectLocation(result).value mustEqual onwardRoute.url
@@ -150,7 +149,7 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
                 val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
                 val view: ConstructionIndustryAmountView = application.injector.instanceOf[ConstructionIndustryAmountView]
-                implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+                implicit val messagesApi: MessagesApi    = application.injector.instanceOf[MessagesApi]
 
                 running(application) {
                   when(mockSelfEmploymentService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
@@ -159,7 +158,7 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
 
                   val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-                  val result = route(application, request).value
+                  val result     = route(application, request).value
                   val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                   status(langResult) mustEqual BAD_REQUEST
