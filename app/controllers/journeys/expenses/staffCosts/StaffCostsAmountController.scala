@@ -20,12 +20,14 @@ import controllers.actions._
 import controllers.standard.routes
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear}
+import models.journeys.expenses.DisallowableStaffCosts
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.DisallowableStaffCostsPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView
@@ -49,30 +51,46 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
     implicit request =>
       request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
         case None => Redirect(routes.JourneyRecoveryController.onPageLoad())
-        case Some(disallowable) =>
+        case Some(disallowableStaffCosts) =>
           val preparedForm = request.userAnswers.get(StaffCostsAmountPage, Some(businessId.value)) match {
             case None        => formProvider(request.userType)
             case Some(value) => formProvider(request.userType).fill(value)
           }
 
-          Ok(view(preparedForm, mode, request.userType, taxYear, BusinessId(businessId.value), disallowable))
+          Ok(view(preparedForm, mode, request.userType, taxYear, BusinessId(businessId.value), disallowableStaffCosts))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Some(disallowable) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowable))),
-              value =>
-                selfEmploymentService
-                  .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-                  .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear.value, businessId.value)))
-            )
+      def handleError(formWithErrors: Form[_], disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+        Future.successful(
+          BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
+        )
+
+      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+        selfEmploymentService
+          .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
+          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear.value, businessId.value, Some(accountingType))))
+
+      def handleForm(accountingType: String, disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+        formProvider(request.userType)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
+            value => handleSuccess(value, AccountingType.withName(accountingType.toUpperCase))
+          )
+
+      val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value))
+
+      selfEmploymentService.getAccountingType(request.user.nino, businessId.value, request.user.mtditid) flatMap { getAccountingType =>
+        (getAccountingType, getDisallowableStaffCosts) match {
+          case (Right(accountingType), Some(disallowableStaffCosts)) =>
+            handleForm(accountingType, disallowableStaffCosts)
+          case (_, _) =>
+            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        }
+
       }
   }
 
