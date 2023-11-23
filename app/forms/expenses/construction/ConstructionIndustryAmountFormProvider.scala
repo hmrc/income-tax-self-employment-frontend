@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.construction
 
 import forms.mappings.Mappings
 import models.common.MoneyBounds
-import javax.inject.Inject
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class ConstructionIndustryAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 

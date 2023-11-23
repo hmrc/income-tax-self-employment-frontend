@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.expenses.construction
+
+import pages.OneQuestionPage
 
 case object ConstructionIndustryAmountPage extends OneQuestionPage[BigDecimal] {
 

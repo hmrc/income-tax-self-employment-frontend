@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.tailoring
 
 import base.SpecBase
-import forms.ConstructionIndustryAmountFormProvider
-import controllers.journeys.expenses.construction.routes.ConstructionIndustryAmountController
 import models.NormalMode
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConstructionIndustryAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
@@ -36,7 +33,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
-import views.html.ConstructionIndustryAmountView
+import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
+import controllers.journeys.expenses.construction.routes.ConstructionIndustryAmountController
+import forms.expenses.construction.ConstructionIndustryAmountFormProvider
+import pages.expenses.construction.ConstructionIndustryAmountPage
+
 import scala.concurrent.Future
 
 class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSugar {
@@ -45,8 +46,10 @@ class ConstructionIndustryAmountControllerSpec extends SpecBase with MockitoSuga
   private val validAnswer  = BigDecimal(100.00)
 
   private val onwardRoute = Call("GET", "/foo")
-  private lazy val constructionIndustryAmountPageLoadRoute = ConstructionIndustryAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  private lazy val constructionIndustryAmountOnSubmitRoute = ConstructionIndustryAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val constructionIndustryAmountPageLoadRoute = ConstructionIndustryAmountController.onPageLoad(
+    taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val constructionIndustryAmountOnSubmitRoute = ConstructionIndustryAmountController.onSubmit(
+    taxYear, stubbedBusinessId, NormalMode).url
 
   private val mockSessionRepository = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]

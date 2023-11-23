@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.tailoring
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import play.api.data.FormError
 
 class ConstructionIndustryAmountFormProviderSpec extends BigDecimalFieldBehaviours {

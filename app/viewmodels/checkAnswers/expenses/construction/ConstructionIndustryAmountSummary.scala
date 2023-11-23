@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.expenses.construction
 
 import controllers.journeys.expenses.construction.routes
 import models.CheckMode
 import models.common.UserType
 import models.database.UserAnswers
-import pages.ConstructionIndustryAmountPage
+import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConstructionIndustryAmountSummary  {
+object ConstructionIndustryAmountSummary {
 
   def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConstructionIndustryAmountPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "constructionIndustryAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("constructionIndustryAmount.change.hidden"))
-          )
+    answers.get(ConstructionIndustryAmountPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "constructionIndustryAmount.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+            .withVisuallyHiddenText(messages("constructionIndustryAmount.change.hidden"))
         )
+      )
     }
 }

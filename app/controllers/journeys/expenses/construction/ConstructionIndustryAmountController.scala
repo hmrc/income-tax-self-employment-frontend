@@ -17,37 +17,38 @@
 package controllers.journeys.expenses.construction
 
 import controllers.actions._
-import forms.ConstructionIndustryAmountFormProvider
+import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import navigation.ExpensesNavigator
-import pages.ConstructionIndustryAmountPage
+import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConstructionIndustryAmountView
+import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConstructionIndustryAmountController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: ExpensesNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ConstructionIndustryAmountFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ConstructionIndustryAmountView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+class ConstructionIndustryAmountController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    navigator: ExpensesNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: ConstructionIndustryAmountFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: ConstructionIndustryAmountView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ConstructionIndustryAmountPage, Some(businessId)) match {
-        case None => formProvider(userType(request.user.isAgent))
+        case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
 
@@ -59,12 +60,12 @@ class ConstructionIndustryAmountController @Inject()(
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()
         .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear, businessId))
-      )
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 }
