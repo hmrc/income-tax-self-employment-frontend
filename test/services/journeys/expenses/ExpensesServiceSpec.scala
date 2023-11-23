@@ -44,25 +44,23 @@ class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
 
   private val httpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
-  "ExpensesService" - {
-    "sending expenses answers" - {
-      "connector returns no errors" - {
-        "evaluate to unit" in {
-          mockSEConnector
-            .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
-            .successful(().asRight)
+  "sending expenses answers" - {
+    "connector returns no errors" - {
+      "evaluate to unit" in {
+        mockSEConnector
+          .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+          .successful(().asRight)
 
-          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe ().asRight
-        }
+        service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe ().asRight
       }
-      "connector returns an error" - {
-        "return that error" in {
-          mockSEConnector
-            .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
-            .successful(httpError.asLeft)
+    }
+    "connector returns an error" - {
+      "return that error" in {
+        mockSEConnector
+          .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+          .successful(httpError.asLeft)
 
-          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe httpError.asLeft
-        }
+        service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe httpError.asLeft
       }
     }
   }

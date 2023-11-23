@@ -44,36 +44,28 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
-  "SelfEmploymentConnector" when {
-    "sending expenses answers" when {
-      "downstream returns a success response" must {
-        "return a successful result" in {
-          stubPostWithRequestBody(
-            url = downstreamUrl,
-            requestBody = Json.toJson(someExpensesJourneyAnswers),
-            expectedStatus = NO_CONTENT,
-            requestHeaders = headersSentToBE)
+  "sending expenses answers" must {
+    "return a successful result when downstream returns a success response" in {
+      stubPostWithRequestBody(
+        url = downstreamUrl,
+        requestBody = Json.toJson(someExpensesJourneyAnswers),
+        expectedStatus = NO_CONTENT,
+        requestHeaders = headersSentToBE)
 
-          await(
-            connector
-              .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
-        }
-      }
-      "downstream returns an error" must {
-        "return a failure result" in {
-          stubPostWithRequestBody(
-            url = downstreamUrl,
-            requestBody = Json.toJson(someExpensesJourneyAnswers),
-            expectedStatus = BAD_REQUEST,
-            requestHeaders = headersSentToBE)
+      await(
+        connector
+          .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+    }
+    "return a failure result when downstream returns a error" in {
+      stubPostWithRequestBody(
+        url = downstreamUrl,
+        requestBody = Json.toJson(someExpensesJourneyAnswers),
+        expectedStatus = BAD_REQUEST,
+        requestHeaders = headersSentToBE)
 
-          await(
-            connector.sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(
-              hc,
-              ec,
-              GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
-        }
-      }
+      await(
+        connector
+          .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
     }
   }
 

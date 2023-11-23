@@ -16,4 +16,4 @@
 
 package models.common
 
-final case class Nino(value: String)
+final case class Nino(value: String) extends AnyVal
