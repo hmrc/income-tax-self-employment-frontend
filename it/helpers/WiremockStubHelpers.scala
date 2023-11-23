@@ -24,7 +24,7 @@ import play.api.libs.json.Writes
 
 trait WiremockStubHelpers {
 
-  def stubGetWithResponseBody(url: String, status: Int, response: String, requestHeaders: Seq[HttpHeader] = Seq.empty): StubMapping = {
+  def stubGetWithResponseBody(url: String, status: Int, response: String, requestHeaders: Seq[HttpHeader] = Seq.empty): Unit = {
     val mappingWithHeaders: MappingBuilder = requestHeaders.foldLeft(get(urlMatching(url))) { (result, nxt) =>
       result.withHeader(nxt.key(), equalTo(nxt.firstValue()))
     }
@@ -36,21 +36,27 @@ trait WiremockStubHelpers {
             .withStatus(status)
             .withBody(response)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
+
+    ()
   }
 
-  def stubGetWithoutResponseBody(url: String, status: Int): StubMapping =
+  def stubGetWithoutResponseBody(url: String, status: Int): Unit = {
     stubFor(
       get(urlMatching(url))
         .willReturn(aResponse()
           .withStatus(status)))
+    ()
+  }
 
-  def stubPostWithoutResponseAndRequestBody(url: String, status: Int): StubMapping =
+  def stubPostWithoutResponseAndRequestBody(url: String, status: Int): Unit = {
     stubFor(
       post(urlEqualTo(url))
         .willReturn(
           aResponse()
             .withStatus(status)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
+    ()
+  }
 
   // TODO Reduce duplication here
   def stubPostWithRequestBody[T](url: String, requestBody: T, expectedStatus: Int, requestHeaders: Seq[HttpHeader] = Seq.empty)(implicit
@@ -87,15 +93,18 @@ trait WiremockStubHelpers {
             .withStatus(expectedStatus)
             .withBody(expectedResponse)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
+    ()
   }
 
-  def stubPutWithoutResponseBody(url: String, status: Int): StubMapping =
+  def stubPutWithoutResponseBody(url: String, status: Int): Unit = {
     stubFor(
       put(urlEqualTo(url))
         .willReturn(
           aResponse()
             .withStatus(status)
             .withHeader("Content-Type", "application/json; charset=utf-8")))
+    ()
+  }
 
   def auditStubs(): Unit = {
     val auditResponseCode = 204
