@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersResponse, SendIncomeAnswersHttpReads}
+import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersResponse, SendExpensesAnswersHttpReads}
 import models.journeys.expenses.ExpensesData
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -83,7 +83,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
 
     http.POST[T, SendExpensesAnswersResponse](url, answers)(
       wts = writes,
-      rds = SendIncomeAnswersHttpReads,
+      rds = SendExpensesAnswersHttpReads,
       hc = hc.withExtraHeaders(headers = "mtditid" -> data.mtditid),
       ec = ec)
   }

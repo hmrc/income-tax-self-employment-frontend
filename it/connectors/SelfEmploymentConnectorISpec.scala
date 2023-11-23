@@ -56,10 +56,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
           await(
             connector
-              .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(
-                hc,
-                ec,
-                GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+              .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
         }
       }
       "downstream returns an error" must {

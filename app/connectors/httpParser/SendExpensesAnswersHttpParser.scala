@@ -24,9 +24,9 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 object SendExpensesAnswersHttpParser extends HttpParser {
   type SendExpensesAnswersResponse = Either[HttpError, Unit]
 
-  override def parserName: String = "SendIncomeAnswersHttpParser"
+  override def parserName: String = "SendExpensesAnswersHttpParser"
 
-  implicit object SendIncomeAnswersHttpReads extends HttpReads[SendExpensesAnswersResponse] {
+  implicit object SendExpensesAnswersHttpReads extends HttpReads[SendExpensesAnswersResponse] {
 
     override def read(method: String, url: String, response: HttpResponse): SendExpensesAnswersResponse =
       response.status match {
