@@ -144,17 +144,18 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is StaffCostsAmountPage" - {
             "expenses were claimed to be disallowable" - {
               "navigate to the DisallowableStaffCostsAmountController" ignore {
-                val data = Json.obj(stubbedBusinessId -> Json.obj("staffCosts" -> "Yes"))
+                val data        = Json.obj(stubbedBusinessId -> Json.obj("staffCosts" -> "Yes"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, mode) // TODO change when page created
+                val expectedResult =
+                  DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, mode) // TODO change when page created
 
                 navigator.nextPage(StaffCostsAmountPage, mode, userAnswers, taxYear, stubbedBusinessId) mustBe expectedResult
               }
             }
             "expenses were claimed as allowable" - {
               "navigate to the StaffCostsCYAController" ignore {
-                val data = Json.obj(stubbedBusinessId -> Json.obj("StaffCosts" -> "No"))
+                val data        = Json.obj(stubbedBusinessId -> Json.obj("StaffCosts" -> "No"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId) // TODO change when page created
@@ -172,7 +173,12 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
           "the page is StaffCostsCYAPage" - {
             "navigate to the SectionCompletedStateController" ignore {
-              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesStaffCosts.toString, mode) // TODO change when page created
+              val expectedResult = SectionCompletedStateController.onPageLoad(
+                taxYear,
+                stubbedBusinessId,
+                ExpensesStaffCosts.toString,
+                mode
+              ) // TODO change when page created
 
               navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
             }

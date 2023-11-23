@@ -150,7 +150,9 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
     case StaffCostsAmountPage =>
-      _ => taxYear => businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
+      _ =>
+        taxYear =>
+          businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
