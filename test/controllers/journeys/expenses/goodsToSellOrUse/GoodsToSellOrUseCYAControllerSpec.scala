@@ -93,23 +93,25 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
   // TODO pull this into a base test class once we have additional CYA controllers persisting.
   "GoodsToSellOrUseCYAController" - {
     "on page submission" - {
-      "goods to sell journey answers are submitted successfully" in new TestScenario(UserType.Individual, userAnswers.some) {
-        lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+      "goods to sell journey answers are submitted successfully" - {
+        "redirect to the section completed controller" in new TestScenario(UserType.Individual, userAnswers.some) {
+          lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
-        mockExpensesService
-          .sendExpensesAnswers(
-            eqTo(taxYear),
-            eqTo(businessId),
-            eqTo(Nino(UserBuilder.aNoddyUser.nino)),
-            eqTo(UserBuilder.aNoddyUser.mtditid),
-            eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(().asRight)
+          mockExpensesService
+            .sendExpensesAnswers(
+              eqTo(taxYear),
+              eqTo(businessId),
+              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
+              eqTo(UserBuilder.aNoddyUser.mtditid),
+              eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(().asRight)
 
-        val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
+          val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 
-        status(result) shouldBe 303
-        redirectLocation(result).value shouldBe SectionCompletedStateController
-          .onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
-          .url
+          status(result) shouldBe 303
+          redirectLocation(result).value shouldBe SectionCompletedStateController
+            .onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+            .url
+        }
       }
       // Stand-in test until unhappy path ticket is picked up.
       "goods to sell journey answers unsuccessfully submitted" - {
