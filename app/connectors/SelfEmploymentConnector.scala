@@ -21,7 +21,6 @@ import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, Ge
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
 import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersResponse, SendIncomeAnswersHttpReads}
-import models.journeys.Journey
 import models.journeys.expenses.ExpensesData
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -74,13 +73,13 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def sendExpensesAnswers[T](data: ExpensesData, journey: Journey, answers: T)(implicit
+  def sendExpensesAnswers[T](data: ExpensesData, answers: T)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       writes: Writes[T]): Future[SendExpensesAnswersResponse] = {
 
     val url = buildUrl(
-      s"/income-tax-self-employment/send-expenses-answers/${journey.toString}/${data.taxYear.value}/${data.businessId.value}/${data.nino.value}")
+      s"/income-tax-self-employment/send-expenses-answers/${data.journey.toString}/${data.taxYear.value}/${data.businessId.value}/${data.nino.value}")
 
     http.POST[T, SendExpensesAnswersResponse](url, answers)(
       wts = writes,

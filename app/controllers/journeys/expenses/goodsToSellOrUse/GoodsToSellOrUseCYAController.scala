@@ -66,12 +66,12 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val journeyAnswers = (request.userAnswers.data \ businessId.value).as[GoodsToSellOrUseJourneyAnswers]
-      val data           = ExpensesData(taxYear, Nino(request.user.nino), businessId, request.user.mtditid)
+      val data           = ExpensesData(taxYear, Nino(request.user.nino), businessId, ExpensesGoodsToSellOrUse, request.user.mtditid)
 
       // What we decide to do with the unhappy path of receiving a downstream http error should be implemented at a later
       // date (awaiting a JIRA ticket), however we need to do something now.
       (for {
-        _ <- EitherT(expensesService.sendExpensesAnswers(data, journeyAnswers, ExpensesGoodsToSellOrUse))
+        _ <- EitherT(expensesService.sendExpensesAnswers(data, journeyAnswers))
       } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)))
         .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
         .merge

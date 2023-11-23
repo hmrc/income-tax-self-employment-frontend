@@ -17,5 +17,6 @@
 package models.journeys.expenses
 
 import models.common._
+import models.journeys.Journey
 
-case class ExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: String)
+case class ExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, journey: Journey, mtditid: String)

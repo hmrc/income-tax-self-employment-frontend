@@ -21,7 +21,6 @@ import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.journeys.Journey
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
@@ -35,8 +34,8 @@ import scala.concurrent.Future
 
 class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
 
-  private val someExpensesData    = ExpensesData(currTaxYear, someNino, stubBusinessId, mtditid)
   private val someExpensesJourney = ExpensesGoodsToSellOrUse
+  private val someExpensesData    = ExpensesData(currTaxYear, someNino, stubBusinessId, someExpensesJourney, mtditid)
 
   private val someExpensesAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
@@ -50,19 +49,19 @@ class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
       "connector returns no errors" - {
         "evaluate to unit" in {
           mockSEConnector
-            .sendExpensesAnswers(*[ExpensesData], *[Journey], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
             .successful(().asRight)
 
-          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers, someExpensesJourney).futureValue shouldBe ().asRight
+          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe ().asRight
         }
       }
       "connector returns an error" - {
         "return that error" in {
           mockSEConnector
-            .sendExpensesAnswers(*[ExpensesData], *[Journey], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .sendExpensesAnswers(*[ExpensesData], *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
             .successful(httpError.asLeft)
 
-          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers, someExpensesJourney).futureValue shouldBe httpError.asLeft
+          service.sendExpensesAnswers(someExpensesData, someExpensesAnswers).futureValue shouldBe httpError.asLeft
         }
       }
     }

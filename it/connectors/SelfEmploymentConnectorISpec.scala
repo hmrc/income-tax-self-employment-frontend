@@ -30,11 +30,11 @@ import play.api.libs.json.Json
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private val someExpensesData    = ExpensesData(taxYear, nino, businessId, mtditid)
   private val someExpensesJourney = ExpensesGoodsToSellOrUse
+  private val someExpensesData    = ExpensesData(taxYear, nino, businessId, someExpensesJourney, mtditid)
 
   private val downstreamUrl =
-    s"/income-tax-self-employment/send-expenses-answers/${someExpensesJourney.toString}" +
+    s"/income-tax-self-employment/send-expenses-answers/${someExpensesData.journey.toString}" +
       s"/${someExpensesData.taxYear.value}/${someExpensesData.businessId.value}/${someExpensesData.nino.value}"
 
   private val someExpensesJourneyAnswers =
@@ -56,7 +56,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
           await(
             connector
-              .sendExpensesAnswers(someExpensesData, someExpensesJourney, someExpensesJourneyAnswers)(
+              .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(
                 hc,
                 ec,
                 GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
@@ -71,7 +71,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
             requestHeaders = headersSentToBE)
 
           await(
-            connector.sendExpensesAnswers(someExpensesData, someExpensesJourney, someExpensesJourneyAnswers)(
+            connector.sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(
               hc,
               ec,
               GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
