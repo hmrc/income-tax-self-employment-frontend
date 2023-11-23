@@ -26,7 +26,6 @@ import models.common.{BusinessId, Nino, TaxYear}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import navigation.ExpensesNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.expenses.ExpensesService
@@ -39,7 +38,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: MessagesApi,
-                                               navigator: ExpensesNavigator,
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,

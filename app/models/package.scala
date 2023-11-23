@@ -44,10 +44,10 @@ package object models {
         case ((n: KeyPathNode) :: Nil, _) =>
           setKeyNode(n, jsValue, value)
 
-        case (first :: second :: rest, oldValue) =>
+        case (first :: second :: rest, _) =>
           Reads
             .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
-            .reads(oldValue)
+            .reads(jsValue)
             .flatMap { opt =>
               opt
                 .map(JsSuccess(_))
@@ -63,7 +63,7 @@ package object models {
                 }
                 .flatMap {
                   _.set(JsPath(second :: rest), value).flatMap { newValue =>
-                    oldValue.set(JsPath(first :: Nil), newValue)
+                    jsValue.set(JsPath(first :: Nil), newValue)
                   }
                 }
             }
@@ -111,36 +111,48 @@ package object models {
       }
     }
 
-    def remove(path: JsPath): JsResult[JsValue] =
-      (path.path, jsValue) match {
-        case (Nil, _)                                                                  => JsError("path cannot be empty")
-        case ((n: KeyPathNode) :: Nil, value: JsObject) if value.keys.contains(n.key)  => JsSuccess(value - n.key)
-        case ((n: KeyPathNode) :: Nil, value: JsObject) if !value.keys.contains(n.key) => JsError("cannot find value at path")
-        case ((n: IdxPathNode) :: Nil, value: JsArray)                                 => removeIndexNode(n, value)
-        case ((_: KeyPathNode) :: Nil, _)                                              => JsError(s"cannot remove a key on $jsValue")
-        case (first :: second :: rest, oldValue) =>
-          Reads
-            .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
-            .reads(oldValue)
-            .flatMap { opt: Option[JsValue] =>
-              opt
-                .map(JsSuccess(_))
-                .getOrElse {
-                  second match {
-                    case _: KeyPathNode =>
-                      JsSuccess(Json.obj())
-                    case _: IdxPathNode =>
-                      JsSuccess(Json.arr())
-                    case _: RecursiveSearch =>
-                      JsError("recursive search is not supported")
-                  }
-                }
-                .flatMap {
-                  _.remove(JsPath(second :: rest)).flatMap { newValue =>
-                    oldValue.set(JsPath(first :: Nil), newValue)
-                  }
-                }
-            }
+    private[models] def remove(path: JsPath): JsResult[JsValue] =
+      path.path match {
+        case Nil                     => JsError("path cannot be empty")
+        case first :: Nil            => handleOne(first)
+        case first :: second :: rest => handleFurther(first, second, rest)
       }
+
+    private def handleOne(path: PathNode) =
+      (path, jsValue) match {
+        case (n: KeyPathNode, value: JsObject) =>
+          if (value.keys.contains(n.key)) {
+            JsSuccess(value - n.key)
+          } else {
+            JsError("cannot find value at path")
+          }
+        case (n: IdxPathNode, value: JsArray) => removeIndexNode(n, value)
+        case (_, _)                           => JsError(s"cannot remove a key on $jsValue")
+      }
+
+    private def handleFurther(first: PathNode, second: PathNode, rest: List[PathNode]) =
+      Reads
+        .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
+        .reads(jsValue)
+        .flatMap { opt: Option[JsValue] =>
+          opt
+            .map(JsSuccess(_))
+            .getOrElse {
+              second match {
+                case _: KeyPathNode =>
+                  JsSuccess(Json.obj())
+                case _: IdxPathNode =>
+                  JsSuccess(Json.arr())
+                case _: RecursiveSearch =>
+                  JsError("recursive search is not supported")
+              }
+            }
+            .flatMap {
+              _.remove(JsPath(second :: rest)).flatMap { newValue =>
+                jsValue.set(JsPath(first :: Nil), newValue)
+              }
+            }
+        }
+
   }
 }
