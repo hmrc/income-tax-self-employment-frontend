@@ -37,6 +37,13 @@ lazy val root = (project in file("."))
       "-Xfatal-warnings",
       "-feature",
       "-unchecked",
+      "-Ywarn-unused:implicits",
+      "-Ywarn-unused:imports",
+      "-Ywarn-unused:locals",
+      "-Ywarn-unused:params",
+      "-Ywarn-unused:patvars",
+      "-Ywarn-unused:privates",
+      "-Ywarn-value-discard",
       "-rootdir",
       baseDirectory.value.getCanonicalPath,
       "-Wconf:src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
