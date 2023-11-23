@@ -19,19 +19,19 @@ package services.journeys.expenses
 import base.SpecBase
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
+import models.common.{BusinessId, Nino, TaxYear}
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.MockitoSugar.mock
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.BAD_REQUEST
 
 import scala.concurrent.Future
 
-class ExpensesServiceSpec extends SpecBase {
+class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
 
   private val journeyAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
@@ -44,20 +44,18 @@ class ExpensesServiceSpec extends SpecBase {
     "sending expenses answers" - {
       "connector returns no errors" - {
         "evaluate to unit" in {
-          when(
-            mockSEConnector
-              .sendExpensesAnswers(eqTo(currTaxYear), eqTo(stubBusinessId), eqTo(someNino), eqTo(mtditid), eqTo(journeyAnswers))(any(), any(), any()))
-            .thenReturn(Future.successful(().asRight))
+          mockSEConnector
+            .sendExpensesAnswers(*[TaxYear], *[BusinessId], *[Nino], *, *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .successful(().asRight)
 
           service.sendExpensesAnswers(currTaxYear, stubBusinessId, someNino, mtditid, journeyAnswers).futureValue shouldBe ().asRight
         }
       }
       "connector returns an error" - {
         "return that error" in {
-          when(
-            mockSEConnector
-              .sendExpensesAnswers(eqTo(currTaxYear), eqTo(stubBusinessId), eqTo(someNino), eqTo(mtditid), eqTo(journeyAnswers))(any(), any(), any()))
-            .thenReturn(Future.successful(httpError.asLeft))
+          mockSEConnector
+            .sendExpensesAnswers(*[TaxYear], *[BusinessId], *[Nino], *, *[GoodsToSellOrUseJourneyAnswers])(*, *, *) returns Future
+            .successful(httpError.asLeft)
 
           service.sendExpensesAnswers(currTaxYear, stubBusinessId, someNino, mtditid, journeyAnswers).futureValue shouldBe httpError.asLeft
         }

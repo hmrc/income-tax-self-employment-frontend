@@ -29,9 +29,8 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
-import org.mockito.MockitoSugar.when
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.Application
 import play.api.http.Status.BAD_REQUEST
@@ -48,7 +47,7 @@ import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 import scala.concurrent.Future
 
-class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSellOrUseCYAController") {
+class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSellOrUseCYAController") with ArgumentMatchersSugar {
   private val mockExpensesService = mock[ExpensesService]
 
   override val bindings: List[Binding[_]] =
@@ -97,15 +96,13 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
       "goods to sell journey answers are submitted successfully" in new TestScenario(UserType.Individual, userAnswers.some) {
         lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
-        when(
-          mockExpensesService
-            .sendExpensesAnswers(
-              eqTo(taxYear),
-              eqTo(businessId),
-              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
-              eqTo(UserBuilder.aNoddyUser.mtditid),
-              eqTo(goodsToSellJourneyAnswers))(any(), any(), any()))
-          .thenReturn(Future.successful(().asRight))
+        mockExpensesService
+          .sendExpensesAnswers(
+            eqTo(taxYear),
+            eqTo(businessId),
+            eqTo(Nino(UserBuilder.aNoddyUser.nino)),
+            eqTo(UserBuilder.aNoddyUser.mtditid),
+            eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(().asRight)
 
         val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 
@@ -119,15 +116,13 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
         "redirect to the Journey Recovery controller" in new TestScenario(UserType.Individual, userAnswers.some) {
           lazy val onSubmitPath: String = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
-          when(
-            mockExpensesService
-              .sendExpensesAnswers(
-                eqTo(taxYear),
-                eqTo(businessId),
-                eqTo(Nino(UserBuilder.aNoddyUser.nino)),
-                eqTo(UserBuilder.aNoddyUser.mtditid),
-                eqTo(goodsToSellJourneyAnswers))(any(), any(), any()))
-            .thenReturn(Future.successful(httpError.asLeft))
+          mockExpensesService
+            .sendExpensesAnswers(
+              eqTo(taxYear),
+              eqTo(businessId),
+              eqTo(Nino(UserBuilder.aNoddyUser.nino)),
+              eqTo(UserBuilder.aNoddyUser.mtditid),
+              eqTo(goodsToSellJourneyAnswers))(*, *, *) returns Future.successful(httpError.asLeft)
 
           val result: Future[Result] = route(application, postRequestWithPath(onSubmitPath)).value
 
