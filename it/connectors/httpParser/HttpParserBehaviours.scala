@@ -68,13 +68,13 @@ trait HttpParserBehaviours extends AnyFreeSpec with Matchers {
   def handleSingleError(): Unit =
     "handle a single error" in {
       val result = FakeParser.handleHttpError(failureHttpResponse(Json.parse(svrErrJs)))
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("SERVER_ERROR", serverErrorReason)))
+      result mustBe HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("SERVER_ERROR", serverErrorReason))
     }
 
   def handleMultpleError(): Unit =
     "handle a multiple error" in {
       val result = FakeParser.handleHttpError(failureHttpResponse(Json.parse(multiErrJs)))
-      result mustBe Left(
+      result mustBe
         HttpError(
           INTERNAL_SERVER_ERROR,
           MultiErrorsBody(
@@ -82,25 +82,25 @@ trait HttpParserBehaviours extends AnyFreeSpec with Matchers {
               SingleErrorBody("SERVICE_UNAVAILABLE", serviceUnavailableReason),
               SingleErrorBody("SERVER_ERROR", serverErrorReason)
             ))
-        ))
+        )
     }
 
   def returnJsonValidationError(): Unit =
     "return a non model validating json error" in {
       val result = FakeParser.handleHttpError(failureHttpResponse(Json.parse(nonValidatingJs)))
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason)))
+      result mustBe HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason))
     }
 
   def handleNonSingleOrMultiErrorResponseError(): Unit =
     "handling a response that is neither a single or a multiple error" in {
       val result = FakeParser.handleHttpError(failureHttpResponse(Json.obj()))
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason)))
+      result mustBe HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason))
     }
 
   def handleNonJsonResponseBodyError(): Unit =
     "handling a response where the response body is not json" in {
       val result = FakeParser.handleHttpError(HttpResponse(INTERNAL_SERVER_ERROR, "", Map("CorrelationId" -> Seq("1234645654645"))))
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason)))
+      result mustBe HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", parsingErrorReason))
     }
 
 }

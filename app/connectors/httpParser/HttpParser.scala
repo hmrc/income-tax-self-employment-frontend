@@ -31,26 +31,28 @@ trait HttpParser {
   def logMessage(response: HttpResponse): String =
     s"[$parserName][read] Received ${response.status} from $parserName. Body:${response.body} ${getCorrelationId(response)}"
 
-  def nonModelValidatingJsonFromAPI[Response]: Either[HttpError, Response] = {
+  def nonModelValidatingJsonFromAPI: HttpError = {
     pagerDutyLog(BAD_SUCCESS_JSON_FROM_CONNECTOR, s"[$parserName][read] Invalid Json from $parserName")
-    Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+    HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)
   }
 
-  def handleHttpError[Response](response: HttpResponse, statusOverride: Option[Int] = None): Either[HttpError, Response] = {
+  def handleHttpError(response: HttpResponse, statusOverride: Option[Int] = None): HttpError = {
     val status = statusOverride.getOrElse(response.status)
     Try {
-      val json          = response.json
-      lazy val apiError = json.asOpt[SingleErrorBody]
-      if (apiError.nonEmpty) Left(HttpError(status, apiError.get)) else Left(HttpError(status, json.asOpt[MultiErrorsBody].get))
+      response.json.asOpt[SingleErrorBody] match {
+        case Some(singleError) => HttpError(status, singleError)
+        case None              => HttpError(status, response.json.as[MultiErrorsBody])
+      }
     } match {
       case Success(leftError) => leftError
       case Failure(t) =>
         pagerDutyLog(UNEXPECTED_RESPONSE_FROM_CONNECTOR, s"[$parserName][read] Unexpected Json error: ${t.getMessage} from $parserName.")
-        Left(HttpError(status, HttpErrorBody.parsingError))
+        HttpError(status, HttpErrorBody.parsingError)
     }
+
   }
 
-  def pagerDutyError[A](response: HttpResponse): Either[HttpError, A] =
+  def pagerDutyError(response: HttpResponse): HttpError =
     response.status match {
       case BAD_REQUEST =>
         pagerDutyLog(FOURXX_RESPONSE_FROM_CONNECTOR, logMessage(response))

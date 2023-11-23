@@ -31,7 +31,7 @@ object SendExpensesAnswersHttpParser extends HttpParser {
     override def read(method: String, url: String, response: HttpResponse): SendExpensesAnswersResponse =
       response.status match {
         case NO_CONTENT => ().asRight
-        case _          => pagerDutyError(response)
+        case _          => pagerDutyError(response).asLeft
       }
 
   }
