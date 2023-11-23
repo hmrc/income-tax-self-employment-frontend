@@ -42,7 +42,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
       .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
@@ -67,7 +67,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     Ok(view(taxYear, summaryList, nextRoute, user))
   }
 
-  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
+  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: String)(implicit
       messages: Messages): Option[SummaryListRow] =
     HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId).map {
       case Right(value)    => value

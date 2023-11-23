@@ -15,10 +15,11 @@
  *@
 
 @import templates.helpers.Heading
+@import models.common.{TaxYear}
 
 @this(layout: templates.Layout, govukButton: GovukButton, heading: Heading, govukSummaryList: GovukSummaryList)
 
-@(taxYear: Int, summaryList: SummaryList, nextRoute: String, authUserType: String)(implicit request: Request[_], messages: Messages)
+@(taxYear: TaxYear, summaryList: SummaryList, nextRoute: String, authUserType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$authUserType"))) {
 

@@ -47,7 +47,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AdvertisingOrMarketingPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -57,7 +57,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))

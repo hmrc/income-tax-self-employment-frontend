@@ -47,7 +47,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -58,7 +58,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
   }
 
   // TODO simplify by using EitherT + for comprehesion
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))

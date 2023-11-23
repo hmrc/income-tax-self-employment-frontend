@@ -44,7 +44,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
       val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
@@ -55,7 +55,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
       formProvider(userType(request.user.isAgent), tradingAllowance)

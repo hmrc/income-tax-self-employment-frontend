@@ -43,7 +43,7 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DisallowableInterestPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -53,7 +53,7 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()

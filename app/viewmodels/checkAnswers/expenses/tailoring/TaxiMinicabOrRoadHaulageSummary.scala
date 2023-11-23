@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object TaxiMinicabOrRoadHaulageSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TaxiMinicabOrRoadHaulagePage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(

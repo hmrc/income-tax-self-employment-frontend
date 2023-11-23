@@ -155,7 +155,7 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
         normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)

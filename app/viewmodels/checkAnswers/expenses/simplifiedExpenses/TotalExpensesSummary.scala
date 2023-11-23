@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object TotalExpensesSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TotalExpensesPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(

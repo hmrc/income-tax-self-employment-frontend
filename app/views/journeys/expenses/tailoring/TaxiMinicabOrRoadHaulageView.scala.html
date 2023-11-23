@@ -25,7 +25,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"taxiMinicabOrRoadHaulage.title.$userType"))) {
 

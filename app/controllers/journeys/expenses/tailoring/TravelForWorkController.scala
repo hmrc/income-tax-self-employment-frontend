@@ -44,7 +44,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TravelForWorkPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -56,7 +56,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val taxiDriver = request.userAnswers
         .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))

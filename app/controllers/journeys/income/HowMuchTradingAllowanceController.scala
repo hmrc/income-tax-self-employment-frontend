@@ -47,7 +47,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     with I18nSupport
     with MoneyUtils {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
@@ -59,7 +59,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)

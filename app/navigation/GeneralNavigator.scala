@@ -33,6 +33,6 @@ class GeneralNavigator @Inject() () {
     case _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, taxYear: Int): Call = normalRoutes(page)(taxYear)
+  def nextPage(page: Page, taxYear: TaxYear): Call = normalRoutes(page)(taxYear)
 
 }

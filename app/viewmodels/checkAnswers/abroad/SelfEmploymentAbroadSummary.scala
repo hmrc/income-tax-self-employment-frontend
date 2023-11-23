@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: Int, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
+  def row(taxYear: TaxYear, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case Some(answer) =>
         SummaryListRowViewModel(

@@ -32,7 +32,7 @@ case class SelfEmploymentServiceStub(
     saveAnswerResult: UserAnswers
 ) extends SelfEmploymentServiceBase {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = ???
+  def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = ???
 
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
     Future.successful(accountingType.map(_.entryName))

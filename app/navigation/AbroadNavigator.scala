@@ -48,7 +48,7 @@ class AbroadNavigator @Inject() () {
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)(taxYear, businessId)
     case CheckMode =>

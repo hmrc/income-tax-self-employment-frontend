@@ -16,6 +16,7 @@
 
 package models.requests
 
+import models.common.TaxYear
 import models.journeys.Journey
 import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ object TradesJourneyStatuses {
 
   implicit val format: OFormat[TradesJourneyStatuses] = Json.format[TradesJourneyStatuses]
 
-  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: Int)(implicit message: Messages): TradeJourneyStatusesViewModel =
+  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       if (tradeDetails.tradingName.isEmpty) "" else s"${tradeDetails.tradingName.get} - ",
       tradeDetails.businessId,

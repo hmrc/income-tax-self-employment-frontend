@@ -47,7 +47,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
@@ -61,7 +61,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
       }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))

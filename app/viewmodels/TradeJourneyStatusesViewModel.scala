@@ -48,9 +48,9 @@ object TradeJourneyStatusesViewModel {
   private val notStartedStatus     = "notStarted"
   private val cannotStartYetStatus = "cannotStartYet"
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: Int)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
 
-    implicit val impTaxYear: TaxYear                       = TaxYear(taxYear)
+    implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
