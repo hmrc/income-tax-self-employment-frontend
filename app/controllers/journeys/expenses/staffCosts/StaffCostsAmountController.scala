@@ -63,16 +63,6 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
-        Future.successful(
-          BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
-        )
-
-      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
-        selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear.value, businessId.value, Some(accountingType))))
-
       def handleForm(accountingType: String, disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
         formProvider(request.userType)
           .bindFromRequest()
@@ -80,6 +70,14 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
             formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
             value => handleSuccess(value, AccountingType.withName(accountingType.toUpperCase))
           )
+      def handleError(formWithErrors: Form[_], disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+        Future.successful(
+          BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
+        )
+      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+        selfEmploymentService
+          .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
+          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear.value, businessId.value, Some(accountingType))))
 
       val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value))
 

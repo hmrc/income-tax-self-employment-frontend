@@ -70,7 +70,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   "row" should {
     "return correct number of rows for different combination of data" in {
       forAll(cases) { case (json, expected, expectedDisallowableStaffCosts) =>
-        val request = createRequest(json)
+        val request    = createRequest(json)
         val actualList = StaffCostsDisallowableAmountSummary.row(request, currTaxYear, stubBusinessId)
         actualList.size shouldBe expected
         actualList.map(_.key).foreach { definedKey =>
@@ -81,7 +81,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   }
 
   def createRequest(json: JsObject): DataRequest[AnyContentAsEmpty.type] = {
-    val data = Json.obj(stubbedBusinessId -> json)
+    val data        = Json.obj(stubbedBusinessId -> json)
     val userAnswers = UserAnswers(userAnswersId, data)
     DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   }
