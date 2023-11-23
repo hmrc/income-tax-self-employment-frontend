@@ -29,7 +29,7 @@
         nextRoute: String
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"$pageName.title.individual"))) {
+@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
 
     @heading(
         heading = messages(s"$pageName.title.$userType"),

@@ -25,7 +25,7 @@
 
 @(taxYear: Int, summaryList: SummaryList, nextRoute: String, isAgent: Boolean)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("common.checkYourDetails.title.individual"))) {
+@layout(pageTitle = titleNoForm(messages(s"common.checkYourDetails.title.${if (isAgent) "agent" else "individual"}"))) {
 
     @heading(
         messages(s"common.checkYourDetails.heading.${if (isAgent) "agent" else "individual"}"),
