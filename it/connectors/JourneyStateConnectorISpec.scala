@@ -16,57 +16,38 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.http.HttpHeader
-import config.FrontendAppConfig
+import base.IntegrationBaseSpec
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
-import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, SessionId}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class JourneyStateConnectorISpec extends WiremockSpec {
+class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
-    new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
-      override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
-    }
+  private val journey = TradeDetails.toString
 
-  val internalHost = "localhost"
-  val underTest    = new SelfEmploymentConnector(httpClient, appConfig(internalHost))
-
-  val mtditid: String = "mtditid"
-  val journey         = TradeDetails.toString
-  val taxYear         = LocalDate.now().getYear
-  val businessId      = "business-Id-01"
-
-  lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  implicit val hc: HeaderCarrier  = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
-  val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid))
+  private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
   ".getJourneyState" should {
-    val getJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
+    val getJourneyStateUrl = s"/income-tax-self-employment/completed-section/${businessId.value}/$journey/${taxYear.value}"
     val completeState      = false
 
     behave like journeyStateRequestIsSuccessful(
       NO_CONTENT,
       Right(None),
       () => stubGetWithoutResponseBody(getJourneyStateUrl, NO_CONTENT),
-      () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId.value, journey, taxYear.value, mtditid)
     )
 
     behave like journeyStateRequestIsSuccessful(
       OK,
       Right(Some(completeState)),
       () => stubGetWithResponseBody(getJourneyStateUrl, OK, completeState.toString, headersSentToBE),
-      () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId.value, journey, taxYear.value, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -76,20 +57,20 @@ class JourneyStateConnectorISpec extends WiremockSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => underTest.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId.value, journey, taxYear.value, mtditid)
     )
   }
 
   ".saveJourneyState" should {
 
     val completeState       = true
-    val saveJourneyStateUrl = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear/${completeState.toString}"
+    val saveJourneyStateUrl = s"/income-tax-self-employment/completed-section/${businessId.value}/$journey/${taxYear.value}/${completeState.toString}"
 
     behave like journeyStateRequestIsSuccessful(
       NO_CONTENT,
       Right(None),
       () => stubPutWithoutResponseBody(saveJourneyStateUrl, NO_CONTENT),
-      () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId.value, journey, taxYear.value, completeState, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -99,7 +80,7 @@ class JourneyStateConnectorISpec extends WiremockSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => underTest.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId.value, journey, taxYear.value, completeState, mtditid)
     )
   }
 

@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notTaxableAmount.title.individual"))) {
+@layout(pageTitle = title(form, messages(s"notTaxableAmount.title.$authUserType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
