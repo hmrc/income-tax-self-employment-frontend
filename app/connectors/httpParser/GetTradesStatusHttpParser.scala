@@ -33,11 +33,9 @@ object GetTradesStatusHttpParser extends HttpParser {
         case OK =>
           response.json
             .validate[Seq[TradesJourneyStatuses]]
-            .fold[GetTradesStatusResponse](
-              _ => nonModelValidatingJsonFromAPI,
-              parsedModel => Right(parsedModel)
-            )
-        case _ => pagerDutyError(response)
+            .fold[GetTradesStatusResponse](_ => Left(nonModelValidatingJsonFromAPI), parsedModel => Right(parsedModel))
+
+        case _ => Left(pagerDutyError(response))
       }
   }
 }

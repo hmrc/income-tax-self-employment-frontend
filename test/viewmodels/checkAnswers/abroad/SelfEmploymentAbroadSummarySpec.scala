@@ -65,7 +65,7 @@ class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
         val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, userAnswers)
 
         result shouldBe a[SummaryListRow]
-        result.key.content shouldBe Text("selfEmploymentAbroad.checkYourAnswersLabel.individual")
+        result.key.content shouldBe Text("selfEmploymentAbroad.title.individual")
         result.value.content shouldBe Text("site.yes")
       }
     }

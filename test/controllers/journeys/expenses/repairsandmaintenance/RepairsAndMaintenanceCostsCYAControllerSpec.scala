@@ -22,6 +22,7 @@ import common.TestApp.buildAppFromUserAnswers
 import models.common.{Language, UserType, onwardRoute}
 import models.database.UserAnswers
 import models.requests.DataRequest
+import models.test.RepairsAndMaintenanceInfo
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -38,14 +39,6 @@ import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceC
 import scala.concurrent.Future
 
 class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
-
-  final case class RepairsAndMaintenanceInfo(repairsAndMaintenance: Option[String],
-                                             repairsAndMaintenanceAmount: Option[BigDecimal],
-                                             repairsAndMaintenanceDisallowableAmount: Option[BigDecimal])
-
-  object RepairsAndMaintenanceInfo {
-    implicit val format = Json.format[RepairsAndMaintenanceInfo]
-  }
 
   private def createUserAnswerData(info: RepairsAndMaintenanceInfo) = Json
     .parse(s"""

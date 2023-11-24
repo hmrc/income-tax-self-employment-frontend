@@ -16,8 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.http.HttpHeader
-import config.FrontendAppConfig
+import base.IntegrationBaseSpec
 import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
@@ -28,75 +27,55 @@ import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyStatus
-import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, SessionId}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class BusinessDataConnectorISpec extends WiremockSpec {
+class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  def appConfig(businessApiHost: String = "localhost"): FrontendAppConfig =
-    new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
-      override val selfEmploymentBEBaseUrl: String = s"http://$businessApiHost:$wireMockPort"
-    }
-
-  val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader(HeaderNames.xSessionId, "sessionIdValue"))
-
-  lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  implicit val hc: HeaderCarrier  = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
-
-  val underTest = new SelfEmploymentConnector(httpClient, appConfig())
-
-  val nino       = "AA370343B"
-  val mtditid    = "mtditid"
-  val businessId = "ABC123"
-
-  val taxYear = LocalDate.now().getYear
+  val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
   ".getBusiness" should {
-    val getBusiness = s"/income-tax-self-employment/individuals/business/details/$nino/$businessId"
+    val getBusiness = s"/income-tax-self-employment/individuals/business/details/${nino.value}/${businessId.value}"
 
-    behave like businessRequestReturnsOk(getBusiness, () => await(underTest.getBusiness(nino, businessId, mtditid)))
-    behave like businessRequestReturnsError(getBusiness, () => underTest.getBusiness(nino, businessId, mtditid))
+    behave like businessRequestReturnsOk(getBusiness, () => await(connector.getBusiness(nino.value, businessId.value, mtditid)))
+    behave like businessRequestReturnsError(getBusiness, () => connector.getBusiness(nino.value, businessId.value, mtditid))
   }
 
   ".getBusinesses" should {
-    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/$nino/list"
+    val getBusinesses = s"/income-tax-self-employment/individuals/business/details/${nino.value}/list"
 
-    behave like businessRequestReturnsOk(getBusinesses, () => await(underTest.getBusinesses(nino, mtditid)))
-    behave like businessRequestReturnsError(getBusinesses, () => underTest.getBusinesses(nino, mtditid))
+    behave like businessRequestReturnsOk(getBusinesses, () => await(connector.getBusinesses(nino.value, mtditid)))
+    behave like businessRequestReturnsError(getBusinesses, () => connector.getBusinesses(nino.value, mtditid))
   }
 
   ".saveJourneyState" should {
 
     val tradeDetailsJourney = TradeDetails.toString
-    val saveJourneyState    = s"/income-tax-self-employment/completed-section/$businessId/$tradeDetailsJourney/$taxYear/true"
+    val saveJourneyState    = s"/income-tax-self-employment/completed-section/${businessId.value}/$tradeDetailsJourney/${taxYear.value}/true"
 
     behave like journeyStateRequestReturnsNoContent(() => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(() =>
-      await(underTest.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec)))
+      await(connector.saveJourneyState(businessId.value, tradeDetailsJourney, taxYear.value, complete = true, mtditid)(hc, ec)))
 
     behave like journeyStateRequestReturnsError(() =>
       stubPutWithResponseBody(
         saveJourneyState,
         BAD_REQUEST,
         Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
-        headersSentToBE))(() => underTest.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec))
+        headersSentToBE))(() => connector.saveJourneyState(businessId.value, tradeDetailsJourney, taxYear.value, complete = true, mtditid)(hc, ec))
   }
 
   ".getCompletedTradesWithStatuses" should {
 
-    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/individuals/business/journey-states/$nino/$taxYear"
+    val getCompletedTradesWithStatuses = s"/income-tax-self-employment/individuals/business/journey-states/${nino.value}/${taxYear.value}"
 
     behave like tradesWithStatusesRequestReturnsOk(
       getCompletedTradesWithStatuses,
-      () => await(underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid)(hc, ec)))
+      () => await(connector.getCompletedTradesWithStatuses(nino.value, taxYear.value, mtditid)(hc, ec)))
     behave like tradesWithStatusesRequestReturnsError(
       getCompletedTradesWithStatuses,
-      () => underTest.getCompletedTradesWithStatuses(nino, taxYear, mtditid))
+      () => connector.getCompletedTradesWithStatuses(nino.value, taxYear.value, mtditid))
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {

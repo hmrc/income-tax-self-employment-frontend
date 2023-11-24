@@ -31,10 +31,9 @@ object SelfEmploymentAbroadSummary {
 
   def row(taxYear: Int, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
-
       case Some(answer) =>
         SummaryListRowViewModel(
-          key = Key(content = s"selfEmploymentAbroad.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
+          key = Key(content = s"selfEmploymentAbroad.title.$userType", classes = "govuk-!-width-two-thirds"),
           value = Value(content = if (answer) "site.yes" else "site.no", classes = "govuk-!-width-one-third"),
           actions = Seq(
             ActionItemViewModel("site.change", SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)

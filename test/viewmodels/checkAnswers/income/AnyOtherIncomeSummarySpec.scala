@@ -48,7 +48,7 @@ class AnyOtherIncomeSummarySpec extends AnyWordSpec with Matchers {
         val result = AnyOtherIncomeSummary.row(userAnswers, taxYear, authUser, businessId)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("anyOtherIncome.checkYourAnswersLabel.individual")
+        result.get.key.content shouldBe Text("anyOtherIncome.title.individual")
         result.get.value.content shouldBe Text("site.yes")
       }
     }

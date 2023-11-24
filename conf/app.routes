@@ -223,7 +223,8 @@ POST        /:taxYear/:businessId/expenses/goods-sell-use/disallowable-amount   
 GET         /:taxYear/:businessId/expenses/change-goods-sell-use/disallowable-amount                           controllers.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-goods-sell-use/disallowable-amount                           controllers.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/goods-sell-use/check                                                controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAController.onPageLoad(taxYear: Int, businessId: String)
+GET         /:taxYear/:businessId/expenses/goods-sell-use/check                                                 controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAController.onPageLoad(taxYear: Int, businessId: String)
+POST        /:taxYear/:businessId/expenses/goods-sell-use/check                                                 controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Single Amount ##########
 
@@ -254,6 +255,13 @@ GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amo
 POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount                            controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/entertainment/check                                                 controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
+########## Expenses - Staff Costs ##########
+
+GET         /:taxYear/:businessId/expenses/staff/amount                                                         controllers.journeys.expenses.staffCosts.StaffCostsAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/staff/amount                                                         controllers.journeys.expenses.staffCosts.StaffCostsAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-staff/amount                                                  controllers.journeys.expenses.staffCosts.StaffCostsAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-staff/amount                                                  controllers.journeys.expenses.staffCosts.StaffCostsAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 ########## Expenses - Construction Industry ##########
 

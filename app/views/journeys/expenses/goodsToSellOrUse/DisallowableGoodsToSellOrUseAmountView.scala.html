@@ -28,7 +28,7 @@
 
 @(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String, goodsAmount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("disallowableGoodsToSellOrUseAmount.title.individual", goodsAmount))) {
+@layout(pageTitle = title(form, messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", goodsAmount))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))

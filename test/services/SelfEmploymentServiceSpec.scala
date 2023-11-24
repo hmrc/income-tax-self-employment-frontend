@@ -31,7 +31,6 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
 import services.SelfEmploymentService.getIncomeTradingAllowance
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -42,12 +41,9 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
   val mockSessionRepository                  = mock[SessionRepository]
   val service: SelfEmploymentService         = new SelfEmploymentService(mockConnector, mockSessionRepository)
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
   val nino              = "nino"
   val businessIdAccrual = "businessIdAccrual"
   val businessIdCash    = "businessIdCash"
-  val mtditid           = "mtditid"
 
   val maxIncomeTradingAllowance: BigDecimal = 1000
   val smallTurnover: BigDecimal             = 450.00

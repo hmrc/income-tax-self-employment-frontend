@@ -20,7 +20,7 @@ import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.Language._
 import models.common.UserType.{Agent, Individual}
-import models.common.{BusinessId, Language, TaxYear, UserType}
+import models.common._
 import models.database.UserAnswers
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -34,6 +34,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
@@ -47,6 +48,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val accrual           = Accrual.entryName
   val cash              = Cash.entryName
   val stubbedBusinessId = "SJPR05893938418"
+  val someNino          = Nino("someNino")
+  val mtditid           = "someId"
 
   val stubBusinessId = BusinessId(
     stubbedBusinessId
@@ -55,7 +58,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val cyLang: Lang = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
-  def emptyUserAnswers: UserAnswers         = UserAnswers(userAnswersId)
+  implicit val hc: HeaderCarrier            = HeaderCarrier()
+
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application, lang: Language): Messages = {
     val bool = lang match {

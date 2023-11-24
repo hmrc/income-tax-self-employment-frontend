@@ -32,7 +32,7 @@ object NotTaxableAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"notTaxableAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"notTaxableAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

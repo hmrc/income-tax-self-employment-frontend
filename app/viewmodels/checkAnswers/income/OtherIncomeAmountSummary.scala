@@ -32,7 +32,7 @@ object OtherIncomeAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"otherIncomeAmount.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"otherIncomeAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

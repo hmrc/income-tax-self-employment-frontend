@@ -40,7 +40,7 @@ class MessagesSpec extends SpecBase {
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(
-    "checkYourAnswersLabel"
+    "checkYourAnswersLabel.individual"
   )
 
   private val illegalCharacters: Set[String] = Set("'", "`")
@@ -183,8 +183,11 @@ class MessagesSpec extends SpecBase {
       case Nil => result
       case (key, value) :: tail =>
         val containsForbiddenChar = illegalCharacters.exists(value.contains(_))
-        if (containsForbiddenChar) checkForIllegalCharacters(tail, illegalCharacters, result + key)
-        else checkForIllegalCharacters(tail, illegalCharacters, result)
+        if (containsForbiddenChar) {
+          checkForIllegalCharacters(tail, illegalCharacters, result + key)
+        } else {
+          checkForIllegalCharacters(tail, illegalCharacters, result)
+        }
     }
 
 }

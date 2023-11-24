@@ -32,7 +32,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
 import viewmodels.govuk.SummaryListFluency
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
@@ -44,8 +43,6 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers                            = UserAnswers("1345566")
   val businessID                             = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "SelfEmploymentSummary Controller" - {
 

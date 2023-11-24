@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.heading.$authUserType"))) {
+@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$authUserType"))) {
 
     @formHelper(action = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -54,7 +54,7 @@
 }
 
 @buildLabelContent(authUserType: String, accountingType: String) = {
-    <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.heading.$authUserType") </label>
+    <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.title.$authUserType") </label>
     <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text"> @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses") </span>
