@@ -261,6 +261,8 @@ POST        /:taxYear/:businessId/expenses/staff/disallowable-amount            
 GET         /:taxYear/:businessId/expenses/change-staff/disallowable-amount                      controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-staff/disallowable-amount                      controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/staff/check                                           controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Single Amount ##########
 
 GET         /:taxYear/:businessId/expenses/total-expenses                                        controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)

@@ -28,13 +28,13 @@ import models.common.AccountingType.{Accrual, Cash}
 import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesStaffCosts}
-import models.journeys.expenses.DisallowableStaffCosts.Yes
+import models.journeys.expenses.DisallowableStaffCosts
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
-import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.DisallowableStaffCostsPage
 import play.api.libs.json.Json
 
@@ -148,7 +148,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is StaffCostsAmountPage" - {
             "should navigate to the StaffCostsDisallowableAmountController" - {
               "when expenses are disallowable and accounting type is ACCRUAL" in {
-                val userAnswers = UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, Yes, Some(stubbedBusinessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(stubbedBusinessId)).success.value
 
                 val expectedResult =
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(currTaxYear, stubBusinessId, mode)
@@ -157,41 +157,39 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "should navigate to the StaffCostsCYAController" - {
-              "when expenses are allowable" ignore {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("disallowableStaffCosts" -> "No"))
-                val userAnswers = UserAnswers(userAnswersId, data)
+              "when expenses are not disallowable" in {
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.No, Some(stubbedBusinessId)).success.value
 
-                val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId) // TODO change when CYA page created
+                val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(currTaxYear, stubBusinessId)
 
                 navigator.nextPage(StaffCostsAmountPage, mode, userAnswers, taxYear, stubbedBusinessId, Some(Accrual)) mustBe expectedResult
               }
-              "when accounting type is CASH" ignore {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("disallowableStaffCosts" -> "Yes"))
-                val userAnswers = UserAnswers(userAnswersId, data)
+              "when accounting type is CASH" in {
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(stubbedBusinessId)).success.value
 
-                val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId) // TODO change when CYA page created
+                val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(currTaxYear, stubBusinessId)
 
                 navigator.nextPage(StaffCostsAmountPage, mode, userAnswers, taxYear, stubbedBusinessId, Some(Cash)) mustBe expectedResult
               }
             }
           }
           "the page is StaffCostsDisallowableAmountController" - {
-            "navigate to the StaffCostsCYAController" ignore {
-              val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId) // TODO change when CYA page created
+            "navigate to the StaffCostsCYAController" in {
+              val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(currTaxYear, stubBusinessId)
 
               navigator.nextPage(StaffCostsDisallowableAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
             }
           }
           "the page is StaffCostsCYAPage" - {
-            "navigate to the SectionCompletedStateController" ignore {
+            "navigate to the SectionCompletedStateController" in {
               val expectedResult = SectionCompletedStateController.onPageLoad(
                 taxYear,
                 stubbedBusinessId,
                 ExpensesStaffCosts.toString,
                 mode
-              ) // TODO change when page created
+              )
 
-              navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
+              navigator.nextPage(StaffCostsCYAPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
             }
           }
         }

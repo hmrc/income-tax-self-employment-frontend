@@ -691,6 +691,10 @@ staffCostsDisallowableAmount.error.overMax.individual = The disallowable amount 
 staffCostsDisallowableAmount.error.overMax.agent = The disallowable amount your client spent on staff costs must be the same as or less than £{0}
 staffCostsDisallowableAmount.change.hidden = Change how much spent on staff costs is disallowable
 
+## Staff costs CYA
+staffCostsCya.title.individual = Check your staff costs
+staffCostsCya.title.agent = Check your client’s staff costs
+
 ########## Expenses - Simple Journey ##########
 
 totalExpenses.title.individual = How much were your total expenses?
