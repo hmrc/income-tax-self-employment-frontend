@@ -28,7 +28,7 @@ import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.{SelfEmploymentService, SelfEmploymentServiceBase}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
-                                    service: SelfEmploymentService,
+                                    service: SelfEmploymentServiceBase,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController

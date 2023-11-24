@@ -23,6 +23,7 @@ import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
 import org.joda.time.LocalDate
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -49,6 +50,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val stubbedBusinessId = "SJPR05893938418"
   val someNino          = Nino("someNino")
   val mtditid           = "someId"
+
+  def anyNino: Nino       = Nino(any)
+  def anyMtditid: Mtditid = Mtditid(any)
+  def anyTaxYear: TaxYear = TaxYear(any)
 
   val stubBusinessId = BusinessId(
     stubbedBusinessId

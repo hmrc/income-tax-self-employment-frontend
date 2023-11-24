@@ -30,10 +30,8 @@ object JourneyStatus extends Enum[JourneyStatus] {
   case object Completed       extends JourneyStatus("completed")
 
   def fromBooleanOpt(value: Option[Boolean]): JourneyStatus =
-    value
-      .map {
-        case false => InProgress
-        case true  => Completed
-      }
-      .getOrElse(CheckOurRecords)
+    value.fold[JourneyStatus](CheckOurRecords) {
+      case false => InProgress
+      case true  => Completed
+    }
 }

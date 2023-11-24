@@ -44,5 +44,4 @@ case class SelfEmploymentServiceStub(
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
-
 }
