@@ -16,7 +16,6 @@
 
 package models.journeys
 
-import models.common.{Nino, TradeId}
 import play.api.libs.json._
 
 sealed trait Journey
