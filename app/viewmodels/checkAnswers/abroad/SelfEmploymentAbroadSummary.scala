@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.abroad
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.CheckMode
+import models.common.TaxYear
 import models.common.UserType
 import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage

@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.NotTaxableAmountController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.Messages

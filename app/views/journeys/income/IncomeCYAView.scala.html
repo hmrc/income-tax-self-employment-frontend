@@ -25,7 +25,7 @@
 
     @heading(
         heading = messages(s"checkYourIncome.title.$authUserType"),
-        subheading = Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+        subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
         extraClasses = "govuk-!-margin-bottom-3"
     )
 

@@ -20,6 +20,7 @@ import controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
 import pages._
@@ -31,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AbroadNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (Int, String) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, String) => Call = {
 
     case SelfEmploymentAbroadPage => _ => (taxYear, businessId) => SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
@@ -41,7 +42,7 @@ class AbroadNavigator @Inject() () {
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, String) => Call = {
 
     case SelfEmploymentAbroadPage => _ => (taxYear, businessId) => SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 

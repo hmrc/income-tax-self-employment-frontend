@@ -22,6 +22,7 @@ import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
 import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}

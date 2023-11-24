@@ -17,7 +17,7 @@
 package stubs.services
 
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.{AccountingType, BusinessId}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.errors.HttpError
 import pages.QuestionPage

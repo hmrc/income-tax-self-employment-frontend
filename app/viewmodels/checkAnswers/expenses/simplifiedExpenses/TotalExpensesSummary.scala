@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.simplifiedExpenses
 
 import controllers.journeys.expenses.simplifiedExpenses.routes
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.expenses.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.Messages

@@ -18,6 +18,7 @@ package controllers.journeys.abroad
 
 import controllers.actions._
 import models.NormalMode
+import models.common.TaxYear
 import models.requests.DataRequest
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadCYAPage

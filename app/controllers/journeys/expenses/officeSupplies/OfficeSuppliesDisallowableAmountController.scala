@@ -22,6 +22,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.requests.DataRequest
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -48,7 +49,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
     with I18nSupport
     with MoneyUtils {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       obtainAllowableAmount(businessId).map { allowableAmount =>
         val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId)) match {
@@ -59,7 +60,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
       }.merge
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       obtainAllowableAmount(businessId)
         .map { allowableAmount =>

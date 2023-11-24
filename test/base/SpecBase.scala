@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear      = TaxYear(LocalDate.now().getYear)
+  val taxYear: TaxYear  = TaxYear(LocalDate.now().getYear)
   val userAnswersId     = "id"
   val individual        = Individual.toString
   val agent             = Agent.toString

@@ -66,7 +66,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
     val journey = TradeDetails.toString
     val tradeId = journey + "-" + request.user.nino
 
-    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear.value, request.user.mtditid) map {
+    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear, request.user.mtditid) map {
       case Left(_) => None
       case Right(status) =>
         Some(

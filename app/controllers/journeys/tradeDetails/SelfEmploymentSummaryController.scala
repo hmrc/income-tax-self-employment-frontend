@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
 import models.NormalMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.TradeDetails
 import models.requests.OptionalDataRequest
@@ -53,7 +54,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
       case Right(model) =>
         val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), bd.businessId)))
         val nextRoute = navigate(taxYear, navigator)
-        Ok(view(taxYear, viewModel, nextRoute))
+        Ok(view(viewModel, nextRoute))
     }
   }
 

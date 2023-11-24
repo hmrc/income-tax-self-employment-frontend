@@ -20,6 +20,7 @@ import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.Income
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
@@ -33,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class IncomeNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
@@ -105,7 +106,7 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>

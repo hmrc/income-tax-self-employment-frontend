@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}

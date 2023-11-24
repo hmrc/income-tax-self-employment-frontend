@@ -19,6 +19,7 @@ package controllers.journeys.tradeDetails
 import connectors.SelfEmploymentConnector
 import controllers.actions._
 import models.NormalMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.domain.BusinessData
 import models.requests.OptionalDataRequest

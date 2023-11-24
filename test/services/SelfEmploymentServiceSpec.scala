@@ -70,8 +70,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "getBusinessAccountingType" - {
     "should return a BusinessID's accounting type in a Right when this is returned from the backend" in {
-      when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
-      when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessDataCashAccounting))
+      when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))) thenReturn Future(Right(aBusinessData))
+      when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))) thenReturn Future(Right(aBusinessDataCashAccounting))
 
       val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
       val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))

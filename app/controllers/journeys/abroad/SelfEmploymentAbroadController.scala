@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.Mode
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage

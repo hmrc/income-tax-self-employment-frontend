@@ -21,6 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.GoodsToSellOrUseFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}

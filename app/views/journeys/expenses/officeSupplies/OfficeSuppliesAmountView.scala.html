@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import models.common.{TaxYear}
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 @import views.html.templates.helpers.Heading
@@ -27,7 +28,7 @@
       govukButton: GovukButton,
       heading: Heading)
 
-@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: TaxYear, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$authUserType"))) {
 

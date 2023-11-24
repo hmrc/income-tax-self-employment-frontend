@@ -71,7 +71,7 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
               value =>
                 selfEmploymentService
                   .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-                  .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear.value, businessId.value)))
+                  .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId.value)))
             )
       }
   }

@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes.DisallowableIrrecoverableDebtsController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.expenses.tailoring.DisallowableIrrecoverableDebtsPage
 import play.api.i18n.Messages

@@ -47,7 +47,7 @@ class SelfEmploymentService @Inject() (
     with Logging {
 
   def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] =
-    connector.getCompletedTradesWithStatuses(nino, taxYear.value, mtditid)
+    connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea

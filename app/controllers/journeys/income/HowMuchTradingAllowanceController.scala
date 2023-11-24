@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.journeys.income.HowMuchTradingAllowance.Maximum
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}

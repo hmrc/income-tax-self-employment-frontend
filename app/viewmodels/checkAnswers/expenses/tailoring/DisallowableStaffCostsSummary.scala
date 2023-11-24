@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.expenses.tailoring.DisallowableStaffCostsPage
 import play.api.i18n.Messages

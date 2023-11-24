@@ -19,6 +19,7 @@ package controllers.journeys.income
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation._
 import pages.income.IncomeCYAPage

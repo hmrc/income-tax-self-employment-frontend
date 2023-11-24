@@ -21,6 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.journeys.income.TradingAllowance.DeclareExpenses
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
