@@ -23,6 +23,7 @@ import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey
+import models.journeys.Journey.TradeDetails
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
@@ -51,7 +52,7 @@ class SelfEmploymentService @Inject() (
     with Logging {
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = {
-    val tradeId   = journey.tradeId(nino)
+    val tradeId   = TradeId(s"${TradeDetails.toString}-${nino.value}")
     val journeyId = journey.toString
 
     EitherT(connector.getJourneyState(tradeId.value, journeyId, taxYear.value, mtditid.value))
@@ -85,5 +86,4 @@ object SelfEmploymentService {
     val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
     if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
   }
-
 }
