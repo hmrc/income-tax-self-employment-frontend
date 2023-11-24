@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.SpecBase._
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import builders.UserBuilder.aNoddyUser
 import common.{apiResultT, leftApiResultT}
@@ -28,7 +28,6 @@ import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
 import models.requests.TradesJourneyStatuses
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.BDDMockito.`given`
 import org.mockito.Mockito.when
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,11 +36,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.TaskListView
-
-import scala.concurrent.Future
-import SpecBase._
 
 class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 

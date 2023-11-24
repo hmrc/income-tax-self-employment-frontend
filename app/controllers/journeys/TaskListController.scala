@@ -28,7 +28,7 @@ import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{SelfEmploymentService, SelfEmploymentServiceBase}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
