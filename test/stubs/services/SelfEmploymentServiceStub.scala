@@ -16,10 +16,12 @@
 
 package stubs.services
 
-import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common._
 import models.database.UserAnswers
+import models.domain.ApiResultT
 import models.errors.HttpError
+import models.journeys.Journey
+import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
 import play.api.libs.json.Writes
 import services.SelfEmploymentServiceBase
@@ -32,7 +34,10 @@ case class SelfEmploymentServiceStub(
     saveAnswerResult: UserAnswers
 ) extends SelfEmploymentServiceBase {
 
-  def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = ???
+  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
+
+  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
+    ???
 
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
     Future.successful(accountingType.map(_.entryName))

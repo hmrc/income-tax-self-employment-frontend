@@ -17,8 +17,8 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.routes._
-import controllers.standard.routes._
+import controllers.journeys
+import controllers.standard
 import pages._
 
 class GeneralNavigatorSpec extends SpecBase {
@@ -33,13 +33,12 @@ class GeneralNavigatorSpec extends SpecBase {
 
       "must go from a Section Completed page to the Task List page" in {
 
-        navigator.nextPage(SectionCompletedStatePage, taxYear) mustBe TaskListController
-          .onPageLoad(taxYear)
+        navigator.nextPage(SectionCompletedStatePage, taxYear) mustBe journeys.routes.TaskListController.onPageLoad(currTaxYear)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, taxYear) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, taxYear) mustBe standard.routes.JourneyRecoveryController.onPageLoad()
       }
     }
   }

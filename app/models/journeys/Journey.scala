@@ -16,9 +16,12 @@
 
 package models.journeys
 
+import models.common.{Nino, TradeId}
 import play.api.libs.json._
 
-sealed trait Journey
+sealed trait Journey {
+  def tradeId(nino: Nino): TradeId = TradeId(s"${toString}-${nino.value}")
+}
 
 object Journey {
 

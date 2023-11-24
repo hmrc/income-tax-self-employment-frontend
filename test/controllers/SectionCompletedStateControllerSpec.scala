@@ -49,7 +49,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar wit
   lazy val sectionCompletedStateRoute: String = routes.SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String       = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call          = Call("GET", journeyRecoveryRoute)
-  lazy val taskListRoute: String              = routes.TaskListController.onPageLoad(taxYear).url
+  lazy val taskListRoute: String              = routes.TaskListController.onPageLoad(currTaxYear).url
   lazy val taskListCall: Call                 = Call("GET", taskListRoute)
 
   "SectionCompletedStateController" - {

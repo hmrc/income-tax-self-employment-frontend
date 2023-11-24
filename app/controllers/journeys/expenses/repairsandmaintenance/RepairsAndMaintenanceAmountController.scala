@@ -26,6 +26,7 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -48,6 +49,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private implicit val logger: Logger = Logger(this.getClass)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     val result = for {

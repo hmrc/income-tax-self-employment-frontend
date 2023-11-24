@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+package models
+
 import cats.data.EitherT
+import controllers.standard
 import models.errors.HttpError
 import play.api.Logger
 import play.api.mvc.Result
@@ -22,13 +25,18 @@ import play.api.mvc.Results.Redirect
 
 import scala.concurrent.{ExecutionContext, Future}
 
-package object controllers {
-  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+package object domain {
+  type ApiResultT[A] = EitherT[Future, HttpError, A]
 
-  def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
-    EitherT(result).leftMap { httpError =>
-      logger.error(s"HttpError encountered: $httpError")
-      redirectJourneyRecovery()
-    }.merge
+  implicit class ApiResultOps[A](underlying: ApiResultT[A]) {
+
+    /** Helper method to handle HttpError which should be logged and recovered by redirecting to the journey recovery page
+      */
+    def result(implicit ec: ExecutionContext, logger: Logger): EitherT[Future, Result, A] =
+      underlying.leftMap { httpError =>
+        logger.error(s"HttpError encountered: $httpError")
+        Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+      }
+  }
 
 }

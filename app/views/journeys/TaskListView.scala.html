@@ -14,21 +14,20 @@
  * limitations under the License.
  *@
 
-@import templates.Layout
-@import models.domain.BusinessData
 @import controllers.actions.AuthenticatedIdentifierAction.User
+@import models.common.JourneyStatus
+@import templates.Layout
 @import viewmodels.TradeJourneyStatusesViewModel
-@import models.common.{TaxYear}
-@import models.Mode
+@import models.common.TaxYear
 
 @this(
     layout: Layout,
     govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: TaxYear, user: User, statusMsg: String, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
+@(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 
-@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
+@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear.value).url}
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
@@ -44,7 +43,7 @@
                     </a>
                 </span>
                 <a href=@selfEmploymentSummaryLink>
-                    <strong class="govuk-tag tag-float app-task-list__tag govuk-tag--@statusMsg">@messages(s"status.$statusMsg")</strong>
+                    <strong class="govuk-tag tag-float app-task-list__tag govuk-tag--@status">@messages(s"status.$status")</strong>
                 </a>
             </li>
         </ul>
