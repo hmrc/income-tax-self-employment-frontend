@@ -45,7 +45,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  // TODO Let's move away from Option[Boolean] towards proper state in the backend
   def getJourneyState(businessId: String, journey: String, taxYear: TaxYear, mtditid: String)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
