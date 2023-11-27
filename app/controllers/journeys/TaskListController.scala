@@ -50,7 +50,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       for {
         status          <- service.getJourneyStatus(TradeDetails, request.nino, taxYear, request.mtditid)
         completedTrades <- getViewModelList(taxYear, status)
-        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear.value))
+        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear))
       } yield Ok(view(taxYear, request.user, status, viewModelList))
     ).result
 

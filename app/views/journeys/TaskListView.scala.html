@@ -27,7 +27,7 @@
 
 @(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 
-@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear.value).url}
+@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 

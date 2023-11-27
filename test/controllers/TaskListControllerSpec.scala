@@ -56,12 +56,12 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
   "onPageLoad" should {
     "must return OK and display Self-employments when review of trade details has been completed" in {
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(currTaxYear, aNoddyUser, JourneyStatus.Completed, selfEmploymentList)(
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, selfEmploymentList)(
         request,
         messages(application)).toString
     }
@@ -69,33 +69,33 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
       when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(Nil)
 
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(currTaxYear, aNoddyUser, JourneyStatus.Completed, Nil)(request, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, Nil)(request, messages(application)).toString
     }
     "must return OK and display no Self-employments when the review of trade details has not been completed" in {
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn apiResultT(
         JourneyStatus.InProgress)
 
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(currTaxYear, aNoddyUser, JourneyStatus.InProgress, Nil)(request, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.InProgress, Nil)(request, messages(application)).toString
     }
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn apiResultT(
         JourneyStatus.CheckOurRecords)
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(currTaxYear, aNoddyUser, JourneyStatus.CheckOurRecords, Nil)(request, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.CheckOurRecords, Nil)(request, messages(application)).toString
     }
   }
 
@@ -106,7 +106,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn apiResultT(
         JourneyStatus.Completed)
 
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
@@ -117,7 +117,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn
         leftApiResultT(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error")))
 
-      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(currTaxYear).url)
+      val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER

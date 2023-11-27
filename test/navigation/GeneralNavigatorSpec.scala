@@ -33,7 +33,7 @@ class GeneralNavigatorSpec extends SpecBase {
 
       "must go from a Section Completed page to the Task List page" in {
 
-        navigator.nextPage(SectionCompletedStatePage, taxYear) mustBe journeys.routes.TaskListController.onPageLoad(currTaxYear)
+        navigator.nextPage(SectionCompletedStatePage, taxYear) mustBe journeys.routes.TaskListController.onPageLoad(taxYear)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {

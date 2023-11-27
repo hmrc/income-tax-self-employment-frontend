@@ -55,12 +55,12 @@ class SelfEmploymentService @Inject() (
     val tradeId   = TradeId(s"${TradeDetails.toString}-${nino.value}")
     val journeyId = journey.toString
 
-    EitherT(connector.getJourneyState(tradeId.value, journeyId, taxYear.value, mtditid.value))
+    EitherT(connector.getJourneyState(tradeId.value, journeyId, taxYear, mtditid.value))
       .map(JourneyStatus.fromBooleanOpt)
   }
 
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
-    EitherT(connector.getCompletedTradesWithStatuses(nino.value, taxYear.value, mtditid.value))
+    EitherT(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea
