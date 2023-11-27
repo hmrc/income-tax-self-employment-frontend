@@ -78,4 +78,3 @@ class ConstructionIndustryAmountFormProviderSpec extends BigDecimalFieldBehaviou
   }
 
 }
-

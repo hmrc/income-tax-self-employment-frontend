@@ -26,25 +26,26 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
-import models.common.{TaxYear, UserType}
+import models.common.UserType
 import pages.expenses.construction.ConstructionIndustryAmountPage
 
-class ConstructionIndustryAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec(
-  "ConstructionIndustryAmountController",
-  ConstructionIndustryAmountPage
-) {
+class ConstructionIndustryAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "ConstructionIndustryAmountController",
+      ConstructionIndustryAmountPage
+    ) {
 
-  lazy val onPageLoadRoute = routes.ConstructionIndustryAmountController.onPageLoad(TaxYear(taxYear), stubBusinessId, NormalMode).url
-  lazy val onSubmitRoute = routes.ConstructionIndustryAmountController.onSubmit(TaxYear(taxYear), stubBusinessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, stubBusinessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, stubBusinessId, NormalMode).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 
   def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[ConstructionIndustryAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
