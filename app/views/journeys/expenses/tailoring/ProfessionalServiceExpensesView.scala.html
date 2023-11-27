@@ -74,11 +74,7 @@
         </summary>
         <div class="govuk-details__text">
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                @if(authUserType.equals("individual")) {
-                    <span>@messages(s"expenses.includes.construction.individual")</span>
-                } else {
-                    <span>@messages(s"professionalServiceExpenses.d2.l1.agent")</span>
-                }
+                <span>@messages(s"expenses.includes.construction.$authUserType")</span>
             </ul>
         </div>
     </details>

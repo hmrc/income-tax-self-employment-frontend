@@ -65,7 +65,7 @@ class ConstructionIndustryAmountController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId.value)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear.value, BusinessId(businessId.value).value))
+            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear.value, businessId.value))
         )
   }
 }

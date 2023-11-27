@@ -29,7 +29,7 @@ import viewmodels.implicits._
 object ConstructionIndustryAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConstructionIndustryAmountPage).map { answer =>
+    answers.get(ConstructionIndustryAmountPage, Some(businessId.value)).map { answer =>
       SummaryListRowViewModel(
         key = "constructionIndustryAmount.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),

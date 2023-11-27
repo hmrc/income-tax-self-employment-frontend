@@ -312,6 +312,7 @@ expenses.nationalInsuranceContributions = employer’s National Insurance Contri
 expenses.contributions.individual = your own pay, pension or National Insurance contributions
 expenses.contributions.agent = their own pay, pension or National Insurance contributions
 expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+expenses.includes.construction.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 expenses.understanding.construction = Understanding construction industry expenses
 
 ## Office supplies
@@ -425,7 +426,6 @@ professionalServiceExpenses.error.required.individual = Select the professionals
 professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
 professionalServiceExpenses.d1.heading = Understanding staff expenses
-professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d3.heading = Understanding professional fees
 professionalServiceExpenses.d3.l1 = accountants
 professionalServiceExpenses.d3.l2 = solicitors
