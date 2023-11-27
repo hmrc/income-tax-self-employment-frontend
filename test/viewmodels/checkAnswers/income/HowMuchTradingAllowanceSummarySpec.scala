@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.income
 
 import cats.data.EitherT
+import models.common.TaxYear
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,7 +29,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
   private val id         = "some_id"
   private val businessId = "some_business_id"
-  private val taxYear    = 2024
+  private val taxYear    = TaxYear(2024)
   private val authUser   = "individual"
 
   private val turnoverIncomeAmountPageData     = Json.obj("turnoverIncomeAmount" -> 456.00)

@@ -17,6 +17,7 @@
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.TurnoverIncomeAmountController
 @import views.html.templates.helpers.Heading
+@import models.common.{TaxYear}
 @import viewmodels.LabelSize
 
 @this(
@@ -28,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: String, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverIncomeAmount.title"))) {
 

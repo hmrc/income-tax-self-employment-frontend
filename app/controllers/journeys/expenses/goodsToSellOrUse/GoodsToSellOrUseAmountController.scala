@@ -21,6 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
@@ -48,7 +49,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
@@ -65,7 +66,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>

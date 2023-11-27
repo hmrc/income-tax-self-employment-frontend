@@ -44,7 +44,7 @@ class StaffCostsCYAController @Inject() (override val messagesApi: MessagesApi,
     val summaryList = SummaryList(
       rows = List(
         StaffCostsAmountSummary.row(request, taxYear, businessId),
-        StaffCostsDisallowableAmountSummary.row(request, taxYear, businessId)
+        StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
       ).flatten
     )
 

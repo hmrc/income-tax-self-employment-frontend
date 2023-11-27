@@ -19,6 +19,7 @@ package navigation
 import controllers.journeys.expenses.tailoring.routes._
 import controllers.standard.routes._
 import models._
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -31,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ExpensesTailoringNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
 
     case OfficeSuppliesPage => _ => (taxYear, businessId, _) => TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -139,11 +140,11 @@ class ExpensesTailoringNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = { case _ =>
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = { case _ =>
     _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
         normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)

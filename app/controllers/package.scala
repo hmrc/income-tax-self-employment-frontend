@@ -15,18 +15,20 @@
  */
 
 import cats.data.EitherT
-import controllers.standard.{routes => genRoutes}
 import models.errors.HttpError
+import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers {
+  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
-  def handleResult[A](result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext): Future[Result] =
-    EitherT(result)
-      .leftMap(_ => Redirect(genRoutes.JourneyRecoveryController.onPageLoad()))
-      .merge
+  def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
+    EitherT(result).leftMap { httpError =>
+      logger.error(s"HttpError encountered: $httpError")
+      redirectJourneyRecovery()
+    }.merge
 
 }

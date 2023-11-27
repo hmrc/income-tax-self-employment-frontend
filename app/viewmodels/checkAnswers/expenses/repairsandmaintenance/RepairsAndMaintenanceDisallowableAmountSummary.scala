@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import controllers.journeys.expenses.repairsandmaintenance.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
 import models.journeys.expenses.RepairsAndMaintenance
 import models.journeys.expenses.RepairsAndMaintenance._
 import models.requests.DataRequest
@@ -33,14 +34,19 @@ import viewmodels.implicits._
 object RepairsAndMaintenanceDisallowableAmountSummary {
 
   def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+    request.userAnswers
+      .get(RepairsAndMaintenancePage, Some(businessId.value))
+      .filter(areAnyDisallowable)
+      .flatMap(_ => createSummaryListRow(request.userAnswers, taxYear, businessId, request.userType))
+
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
     for {
-      tailoringRepairsAndMaintenance <- request.getValue(RepairsAndMaintenancePage, businessId)
-      if areAnyDisallowable(tailoringRepairsAndMaintenance)
-      disallowableAmount <- request.getValue(RepairsAndMaintenanceDisallowableAmountPage, businessId)
-      allowableAmount    <- request.getValue(RepairsAndMaintenanceAmountPage, businessId)
+      disallowableAmount <- answers.get(RepairsAndMaintenanceDisallowableAmountPage, Some(businessId.value))
+      allowableAmount    <- answers.get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"repairsAndMaintenanceDisallowableAmount.title.${request.userType}", formatMoney(allowableAmount)),
+        content = messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(

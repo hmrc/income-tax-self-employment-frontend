@@ -28,7 +28,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,12 +39,6 @@ import scala.concurrent.Future
 
 class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
 
-  final case class StaffCostsInfo(staffCosts: Option[String], staffCostsAmount: Option[BigDecimal], staffCostsDisallowableAmount: Option[BigDecimal])
-
-  object StaffCostsInfo {
-    implicit val format: OFormat[StaffCostsInfo] = Json.format[StaffCostsInfo]
-  }
-
   private def createUserAnswers(amount: BigDecimal, disallowableAmount: Option[BigDecimal]): UserAnswers = {
     val answers = emptyUserAnswers.set(StaffCostsAmountPage, amount, Some(stubbedBusinessId)).success.value
     disallowableAmount match {
@@ -54,7 +47,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
     }
   }
 
-  lazy val routeUnderTest: String                          = routes.StaffCostsCYAController.onPageLoad(currTaxYear, stubBusinessId).url
+  lazy val routeUnderTest: String                          = routes.StaffCostsCYAController.onPageLoad(taxYear, stubBusinessId).url
   lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routeUnderTest)
 
   "onPageLoad" should {
@@ -75,8 +68,8 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
         implicit val msg: Messages = messages(application, Language.English)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
-          StaffCostsAmountSummary.row(dataRequest, currTaxYear, stubBusinessId),
-          StaffCostsDisallowableAmountSummary.row(dataRequest, currTaxYear, stubBusinessId)
+          StaffCostsAmountSummary.row(dataRequest, taxYear, stubBusinessId),
+          StaffCostsDisallowableAmountSummary.row(dataRequest.userAnswers, taxYear, stubBusinessId, dataRequest.userType)
         ).flatten
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }
@@ -93,7 +86,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
     val view        = application.injector.instanceOf[StaffCostsCYAView]
     val summaryList = SummaryList(expectedRows)
     val nextRoute   = onwardRoute.url
-    view(currTaxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
+    view(taxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
   }
 
 }

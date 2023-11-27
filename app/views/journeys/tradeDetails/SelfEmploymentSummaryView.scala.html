@@ -20,7 +20,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: Int, tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
+@(tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 

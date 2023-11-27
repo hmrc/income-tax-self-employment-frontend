@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation.IncomeNavigator
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
@@ -43,7 +44,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
       case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
@@ -52,7 +53,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(

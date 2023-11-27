@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class ExpensesServiceSpec extends SpecBase with ArgumentMatchersSugar {
 
   private val someExpensesJourney = ExpensesGoodsToSellOrUse
-  private val someExpensesData    = ExpensesData(currTaxYear, someNino, stubBusinessId, someExpensesJourney, mtditid)
+  private val someExpensesData    = ExpensesData(taxYear, someNino, stubBusinessId, someExpensesJourney, mtditid)
 
   private val someExpensesAnswers = GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 

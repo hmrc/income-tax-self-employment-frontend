@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.abroad
 
+import models.common.TaxYear
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
@@ -28,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
 
   private val id         = "some_id"
-  private val taxYear    = 2024
+  private val taxYear    = TaxYear(2024)
   private val businessId = "some_business_id"
 
   private val data = Json

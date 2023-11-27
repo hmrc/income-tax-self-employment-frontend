@@ -27,7 +27,7 @@ class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
   override def nextPage(page: Page,
                         mode: Mode,
                         userAnswers: UserAnswers,
-                        taxYear: Int,
+                        taxYear: TaxYear,
                         businessId: String,
                         accountingType: Option[AccountingType] = None): Call =
     desiredRoute

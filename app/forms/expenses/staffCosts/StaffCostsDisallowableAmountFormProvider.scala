@@ -17,7 +17,7 @@
 package forms.expenses.staffCosts
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 import utils.MoneyUtils
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class StaffCostsDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds with MoneyUtils {
 
-  def apply(userType: String, staffCosts: BigDecimal): Form[BigDecimal] = {
+  def apply(userType: UserType, staffCosts: BigDecimal): Form[BigDecimal] = {
 
     val staffCostsString = formatMoney(staffCosts)
     Form(

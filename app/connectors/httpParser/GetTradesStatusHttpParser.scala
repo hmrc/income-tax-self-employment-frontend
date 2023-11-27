@@ -22,7 +22,7 @@ import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetTradesStatusHttpParser extends HttpParser {
-  type GetTradesStatusResponse = Either[HttpError, Seq[TradesJourneyStatuses]]
+  type GetTradesStatusResponse = Either[HttpError, List[TradesJourneyStatuses]]
 
   override val parserName: String = "GetTradesStatusHttpParser"
 
@@ -32,7 +32,7 @@ object GetTradesStatusHttpParser extends HttpParser {
       response.status match {
         case OK =>
           response.json
-            .validate[Seq[TradesJourneyStatuses]]
+            .validate[List[TradesJourneyStatuses]]
             .fold[GetTradesStatusResponse](_ => Left(nonModelValidatingJsonFromAPI), parsedModel => Right(parsedModel))
 
         case _ => Left(pagerDutyError(response))

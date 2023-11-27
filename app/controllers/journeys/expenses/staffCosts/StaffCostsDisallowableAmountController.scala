@@ -21,14 +21,13 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.staffCosts.StaffCostsDisallowableAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear, TextAmount}
 import models.requests.DataRequest
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.expenses.staffCosts.StaffCostsDisallowableAmountView
@@ -37,7 +36,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StaffCostsDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                        sessionRepository: SessionRepository,
+                                                        selfEmploymentService: SelfEmploymentService,
                                                         navigator: ExpensesNavigator,
                                                         identify: IdentifierAction,
                                                         getData: DataRetrievalAction,
@@ -53,8 +52,8 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
     implicit request =>
       getStaffCostsAmount(businessId).map { allowableAmount =>
         val preparedForm = request.userAnswers.get(StaffCostsDisallowableAmountPage, Some(businessId.value)) match {
-          case Some(existingAnswer) => formProvider(userType(request.user.isAgent), allowableAmount).fill(existingAnswer)
-          case None                 => formProvider(userType(request.user.isAgent), allowableAmount)
+          case Some(existingAnswer) => formProvider(request.userType, allowableAmount).fill(existingAnswer)
+          case None                 => formProvider(request.userType, allowableAmount)
         }
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId, TextAmount(allowableAmount)))
       }.merge
@@ -64,16 +63,15 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
     implicit request =>
       getStaffCostsAmount(businessId)
         .map { staffCostsAmount =>
-          formProvider(userType(request.user.isAgent), staffCostsAmount)
+          formProvider(request.userType, staffCostsAmount)
             .bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, TextAmount(staffCostsAmount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(StaffCostsDisallowableAmountPage, value, Some(businessId.value)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(StaffCostsDisallowableAmountPage, mode, updatedAnswers, taxYear.value, businessId.value))
+                selfEmploymentService
+                  .saveAnswer(businessId, request.userAnswers, value, StaffCostsDisallowableAmountPage)
+                  .map(updated => Redirect(navigator.nextPage(StaffCostsDisallowableAmountPage, mode, updated, taxYear, businessId.value)))
             )
         }
         .leftMap(Future.successful)

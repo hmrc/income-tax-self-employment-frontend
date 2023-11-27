@@ -16,6 +16,7 @@
 
 @import models.journeys.expenses.WorkFromBusinessPremises
 @import controllers.journeys.expenses.tailoring.routes.WorkFromBusinessPremisesController
+@import models.common.{TaxYear}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 @this(
@@ -26,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"workFromBusinessPremises.title.$userType"))) {
 

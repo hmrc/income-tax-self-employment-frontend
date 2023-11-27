@@ -15,7 +15,7 @@
  */
 
 package viewmodels.checkAnswers.income
-
+import models.common.TaxYear
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,7 +28,7 @@ class AnyOtherIncomeSummarySpec extends AnyWordSpec with Matchers {
 
   private val id         = "some_id"
   private val businessId = "some_business_id"
-  private val taxYear    = 2024
+  private val taxYear    = TaxYear(2024)
   private val authUser   = "individual"
 
   private val data          = Json.obj(businessId -> Json.obj("anyOtherIncome" -> true))

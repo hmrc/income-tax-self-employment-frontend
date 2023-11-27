@@ -22,6 +22,7 @@ import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
 import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,7 +48,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -58,7 +59,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
   }
 
   // TODO simplify by using EitherT + for comprehesion
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))

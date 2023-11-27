@@ -21,6 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.RepairsAndMaintenanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.RepairsAndMaintenancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +47,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
@@ -60,7 +61,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
       }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
