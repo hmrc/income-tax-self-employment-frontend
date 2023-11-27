@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.staffCosts
 
-import base.SpecBase.{currTaxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{stubbedBusinessId, taxYear, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppWithMessages
 import models.database.UserAnswers
@@ -70,8 +70,8 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   "row" should {
     "return correct number of rows for different combination of data" in {
       forAll(cases) { case (json, expected, expectedDisallowableStaffCosts) =>
-        val request    = createRequest(json)
-        val actualList = StaffCostsDisallowableAmountSummary.row(request, currTaxYear, stubBusinessId)
+        val request = createRequest(json)
+        val actualList = StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, stubbedBusinessId, request.userType.toString)
         actualList.size shouldBe expected
         actualList.map(_.key).foreach { definedKey =>
           definedKey.content.asHtml.toString() should include(expectedDisallowableStaffCosts.value)
@@ -81,7 +81,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   }
 
   def createRequest(json: JsObject): DataRequest[AnyContentAsEmpty.type] = {
-    val data        = Json.obj(stubbedBusinessId -> json)
+    val data = Json.obj(stubbedBusinessId -> json)
     val userAnswers = UserAnswers(userAnswersId, data)
     DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   }

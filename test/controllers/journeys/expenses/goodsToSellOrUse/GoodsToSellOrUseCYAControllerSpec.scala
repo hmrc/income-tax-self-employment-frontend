@@ -108,7 +108,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
 
           status(result) shouldBe 303
           redirectLocation(result).value shouldBe SectionCompletedStateController
-            .onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+            .onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
             .url
         }
       }

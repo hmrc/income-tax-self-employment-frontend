@@ -120,6 +120,8 @@ object AuthenticatedIdentifierActionSpec {
           any[HeaderCarrier],
           any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
+
+    ()
   }
 
   def mockAuthAsAgent(mockAuthConnector: AuthConnector): Unit = {
@@ -129,6 +131,7 @@ object AuthenticatedIdentifierActionSpec {
       .successful(agentEnrolments)
 
     mockAuthAgentAffinityGroup(mockAuthConnector)
+    ()
   }
 
   def mockAuthAsIndividual(mockAuthConnector: AuthConnector,
@@ -144,22 +147,28 @@ object AuthenticatedIdentifierActionSpec {
     mockAuthIndividualAffinityGroup(mockAuthConnector)
   }
 
-  def mockAuthAgentAffinityGroup(mockAuthConnector: AuthConnector): Unit =
+  def mockAuthAgentAffinityGroup(mockAuthConnector: AuthConnector): Unit = {
     when(
       mockAuthConnector
         .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
       .successful(Some(AffinityGroup.Agent))
+    ()
+  }
 
-  def mockAuthIndividualAffinityGroup(mockAuthConnector: AuthConnector): Unit =
+  def mockAuthIndividualAffinityGroup(mockAuthConnector: AuthConnector): Unit = {
     when(
       mockAuthConnector
         .authorise(any[Predicate], ArgumentMatchers.eq(Retrievals.affinityGroup))(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
       .successful(Some(AffinityGroup.Individual))
+    ()
+  }
 
-  def mockAuthReturnException(mockAuthConnector: AuthConnector, exception: Exception): Unit =
+  def mockAuthReturnException(mockAuthConnector: AuthConnector, exception: Exception): Unit = {
     when(
       mockAuthConnector
         .authorise(any[Predicate], any[Retrieval[_]])(any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.failed(exception)
+    ()
+  }
 
   val sessionId: String                                         = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("mtditid" -> "1234567890")

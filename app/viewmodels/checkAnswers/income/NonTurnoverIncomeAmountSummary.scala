@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.NonTurnoverIncomeAmountController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ import viewmodels.implicits._
 
 object NonTurnoverIncomeAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"nonTurnoverIncomeAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),

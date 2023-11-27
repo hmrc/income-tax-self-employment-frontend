@@ -19,9 +19,9 @@ package viewmodels.checkAnswers.expenses.staffCosts
 import controllers.journeys.expenses.staffCosts.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.journeys.expenses.DisallowableStaffCosts
 import models.journeys.expenses.DisallowableStaffCosts._
-import models.requests.DataRequest
 import pages.expenses.staffCosts._
 import pages.expenses.tailoring.DisallowableStaffCostsPage
 import play.api.i18n.Messages
@@ -32,15 +32,19 @@ import viewmodels.implicits._
 
 object StaffCostsDisallowableAmountSummary {
 
-  def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(DisallowableStaffCostsPage, Some(businessId))
+      .filter(isDisallowable)
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
+
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages) =
     for {
-      tailoringDisallowableStaffCosts <- request.getValue(DisallowableStaffCostsPage, businessId)
-      if isDisallowable(tailoringDisallowableStaffCosts)
-      disallowableAmount <- request.getValue(StaffCostsDisallowableAmountPage, businessId)
-      allowableAmount    <- request.getValue(StaffCostsAmountPage, businessId)
+      disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
-        content = messages(s"staffCostsDisallowableAmount.title.${request.userType}", formatMoney(allowableAmount)),
+        content = messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
         classes = "govuk-!-width-two-thirds"
       ),
       value = Value(
@@ -48,7 +52,7 @@ object StaffCostsDisallowableAmountSummary {
         classes = "govuk-!-width-one-third"
       ),
       actions = Seq(
-        ActionItemViewModel("site.change", routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+        ActionItemViewModel("site.change", routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, BusinessId(businessId), CheckMode).url)
           .withVisuallyHiddenText(messages("staffCostsDisallowableAmount.change.hidden"))
       )
     )

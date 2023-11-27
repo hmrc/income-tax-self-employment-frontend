@@ -40,7 +40,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
     updatedData.flatMap { d =>
       val updatedAnswers = copy(data = d)
-      page.cleanup(Some(value), updatedAnswers)
+      page.cleanup(updatedAnswers)
     }
   }
 
@@ -55,7 +55,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
     updatedData.flatMap { d =>
       val updatedAnswers = copy(data = d)
-      page.cleanup(None, updatedAnswers)
+      page.cleanup(updatedAnswers)
     }
   }
 

@@ -4,6 +4,7 @@ import controllers.actions._
 import forms.$journeyName$.$className$FormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.requests.DataRequest
 import navigation.$journeyName;format="cap"$Navigator
 import pages.$journeyName$.$className$Page

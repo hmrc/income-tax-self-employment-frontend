@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.expenses.simplifiedExpenses.TotalExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +44,7 @@ class TotalExpensesController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TotalExpensesPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -53,7 +54,7 @@ class TotalExpensesController @Inject() (override val messagesApi: MessagesApi,
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()
@@ -63,7 +64,7 @@ class TotalExpensesController @Inject() (override val messagesApi: MessagesApi,
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalExpensesPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TotalExpensesPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(TotalExpensesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

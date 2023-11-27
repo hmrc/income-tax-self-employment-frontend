@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.WorkFromBusinessPremisesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +44,7 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(WorkFromBusinessPremisesPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -53,7 +54,7 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()

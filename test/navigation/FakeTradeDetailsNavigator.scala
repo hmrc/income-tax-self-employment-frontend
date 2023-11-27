@@ -17,12 +17,13 @@
 package navigation
 
 import models.Mode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages._
 import play.api.mvc.Call
 
 class FakeTradeDetailsNavigator(desiredRoute: Call) extends TradeDetailsNavigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call =
     desiredRoute
 }

@@ -26,7 +26,6 @@ import models.common.{BusinessId, Nino, TaxYear}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import navigation.ExpensesNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.expenses.ExpensesService
@@ -39,7 +38,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: MessagesApi,
-                                               navigator: ExpensesNavigator,
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
@@ -49,7 +47,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)
 
     val summaryList = SummaryList(
@@ -72,7 +70,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
       // date (awaiting a JIRA ticket), however we need to do something now.
       (for {
         _ <- EitherT(expensesService.sendExpensesAnswers(data, journeyAnswers))
-      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)))
+      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)))
         .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
         .merge
   }

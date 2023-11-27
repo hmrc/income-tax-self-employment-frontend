@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes.OtherExpensesController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import pages.expenses.tailoring.OtherExpensesPage
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ import viewmodels.implicits._
 
 object OtherExpensesSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherExpensesPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(

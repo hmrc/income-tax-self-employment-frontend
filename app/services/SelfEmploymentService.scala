@@ -18,7 +18,7 @@ package services
 
 import connectors.SelfEmploymentConnector
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.BusinessId
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import pages.QuestionPage
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 // TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentServiceBase {
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse]
+  def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse]
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
 }
@@ -46,7 +46,7 @@ class SelfEmploymentService @Inject() (
     extends SelfEmploymentServiceBase
     with Logging {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] =
+  def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] =
     connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
 
   // TODO return AccountingType

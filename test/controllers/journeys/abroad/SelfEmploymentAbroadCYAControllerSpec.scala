@@ -60,7 +60,7 @@ class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFlu
 
           status(result) shouldBe OK
 
-          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, isAgent(individual))(
+          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, Individual)(
             request,
             messages(application)).toString
         }

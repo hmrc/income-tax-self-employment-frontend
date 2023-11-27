@@ -20,6 +20,7 @@ import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.Income
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
@@ -33,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class IncomeNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
@@ -105,7 +106,7 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (Int, String, Option[Boolean]) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
@@ -155,7 +156,7 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String, isAccrual: Option[Boolean] = None): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
         normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)

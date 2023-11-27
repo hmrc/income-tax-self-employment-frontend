@@ -41,7 +41,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
     "return OK and render view" in {
       forAll(userTypeGen, modeGen) { (userType, mode) =>
         val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, stubBusinessId, mode).url
         val getRequest     = FakeRequest(GET, routeUnderTest)
 
         val result = route(application, getRequest).value
@@ -51,7 +51,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
         val view         = application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView]
         val msg          = messages(application, Language.English)
         val form         = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType, allowableAmount)(msg)
-        val expectedView = view(form, mode, currTaxYear, stubBusinessId, userType, TextAmount(allowableAmount))(getRequest, msg).toString()
+        val expectedView = view(form, mode, taxYear, stubBusinessId, userType, TextAmount(allowableAmount))(getRequest, msg).toString()
         contentAsString(result) mustEqual expectedView
       }
     }
@@ -61,7 +61,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
     "redirect to next when valid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType)
-        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val validAnswer    = BigDecimal(100.00)
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
 
@@ -75,7 +75,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
     "return bad request when invalid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType)
-        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
 
         val result = route(application, postRequest).value
@@ -85,7 +85,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
         val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val form = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, accountingType)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, stubBusinessId, accountingType)(postRequest, messages(application, Language.English))
             .toString()
         contentAsString(result) mustEqual expectedView
       }

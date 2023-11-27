@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
-)
+package models.test
 
-@(tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
+import play.api.libs.json.Json
 
-@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
+final case class RepairsAndMaintenanceInfo(repairsAndMaintenance: Option[String],
+                                           repairsAndMaintenanceAmount: Option[BigDecimal],
+                                           repairsAndMaintenanceDisallowableAmount: Option[BigDecimal])
 
-    <h1 class="govuk-heading-l">@messages("journeys.selfEmployment")</h1>
-
-     @govukSummaryList(tradingNames)
-
-     <p class="govuk-body">
-         @govukButton(ButtonViewModel(messages("site.continue"))
-           .asLink(nextRoute)
-         )
-     </p>
+object RepairsAndMaintenanceInfo {
+  implicit val format = Json.format[RepairsAndMaintenanceInfo]
 }
