@@ -43,7 +43,7 @@ case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String
 
 object TradeJourneyStatusesViewModel {
 
-  private val completedStatus      = "completed"
+  private val completedStatus      = "completed" // TODO replace with sealed trait, is this same as common.JourneyStatus?
   private val inProgressStatus     = "inProgress"
   private val notStartedStatus     = "notStarted"
   private val cannotStartYetStatus = "cannotStartYet"

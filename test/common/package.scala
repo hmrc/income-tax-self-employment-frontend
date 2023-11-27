@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+import cats.data.EitherT
+import models.domain.ApiResultT
+import models.errors.HttpError
 
-import controllers.journeys
-import controllers.standard
-import models.common.TaxYear
-import pages._
-import play.api.mvc.Call
+import scala.concurrent.{ExecutionContext, Future}
 
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class GeneralNavigator @Inject() () {
-
-  private val normalRoutes: Page => TaxYear => Call = {
-
-    case SectionCompletedStatePage => taxYear => journeys.routes.TaskListController.onPageLoad(taxYear)
-    case _                         => _ => standard.routes.JourneyRecoveryController.onPageLoad()
-  }
-
-  def nextPage(page: Page, taxYear: TaxYear): Call = normalRoutes(page)(taxYear)
-
+package object common {
+  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]               = EitherT.rightT[Future, HttpError](a)
+  def leftApiResultT[A](err: HttpError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
 }

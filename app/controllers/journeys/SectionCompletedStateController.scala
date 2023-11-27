@@ -35,6 +35,7 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO Don't call connector directly, go via service
 class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
                                                  selfEmploymentConnector: SelfEmploymentConnector,
                                                  navigator: GeneralNavigator,
