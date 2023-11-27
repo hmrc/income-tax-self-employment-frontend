@@ -16,10 +16,11 @@
 
 package navigation
 
+import models.common.TaxYear
 import pages._
 import play.api.mvc.Call
 
 class FakeGeneralNavigator(desiredRoute: Call) extends GeneralNavigator {
 
-  override def nextPage(page: Page, taxYear: Int): Call = desiredRoute
+  override def nextPage(page: Page, taxYear: TaxYear): Call = desiredRoute
 }

@@ -17,7 +17,7 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
-import models.common.{BusinessId, UserType}
+import models.common.{BusinessId, Mtditid, Nino, UserType}
 import models.database.UserAnswers
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
@@ -28,7 +28,9 @@ import controllers.standard
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
     extends WrappedRequest[A](request) {
   val userType: UserType   = user.userType
+  val nino: Nino           = Nino(user.nino)
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
+  val mtditid: Mtditid     = Mtditid(user.mtditid)
 }
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {

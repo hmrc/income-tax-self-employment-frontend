@@ -16,11 +16,15 @@
 
 package services
 
+import cats.data.EitherT
 import connectors.SelfEmploymentConnector
-import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.BusinessId
+import models.common._
 import models.database.UserAnswers
+import models.domain.ApiResultT
 import models.errors.{HttpError, HttpErrorBody}
+import models.journeys.Journey
+import models.journeys.Journey.TradeDetails
+import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
@@ -34,7 +38,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 // TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentServiceBase {
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse]
+  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
+  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
 }
@@ -46,8 +51,16 @@ class SelfEmploymentService @Inject() (
     extends SelfEmploymentServiceBase
     with Logging {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] =
-    connector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)
+  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = {
+    val tradeId   = TradeId(s"${TradeDetails.toString}-${nino.value}")
+    val journeyId = journey.toString
+
+    EitherT(connector.getJourneyState(tradeId.value, journeyId, taxYear, mtditid.value))
+      .map(JourneyStatus.fromBooleanOpt)
+  }
+
+  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
+    EitherT(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea
@@ -63,7 +76,6 @@ class SelfEmploymentService @Inject() (
       updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId.value)))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
-
 }
 
 object SelfEmploymentService {
@@ -74,5 +86,4 @@ object SelfEmploymentService {
     val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
     if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
   }
-
 }

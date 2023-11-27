@@ -16,17 +16,20 @@
 
 package controllers.journeys
 
+import cats.data.EitherT
 import com.google.inject.Inject
-import connectors.SelfEmploymentConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.standard.routes.JourneyRecoveryController
+import models.common.JourneyStatus._
+import models.common.{JourneyStatus, TaxYear}
+import models.domain._
+import models.errors.HttpError
 import models.journeys.Journey.TradeDetails
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.TradeJourneyStatusesViewModel
 import views.html.journeys.TaskListView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,48 +37,29 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
-                                    selfEmploymentService: SelfEmploymentService,
-                                    selfEmploymentConnector: SelfEmploymentConnector,
+                                    service: SelfEmploymentServiceBase,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private implicit val logger: Logger = Logger(this.getClass)
 
-  def onPageLoad(taxYear: Int): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    for {
-      statusMsg <- getStatusMsg(taxYear, selfEmploymentConnector)
-      viewModelList <-
-        if (statusMsg.exists(_.equals("completed"))) getViewModelList(taxYear)
-        else Future(Some(Seq.empty))
-    } yield
-      if (statusMsg.isEmpty || viewModelList.isEmpty) Redirect(JourneyRecoveryController.onPageLoad())
-      else Ok(view(taxYear, request.user, statusMsg.get, viewModelList.get))
+  // TODO can we do one call to backend? Probably yes. Get List of completed
+  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    val result = (
+      for {
+        status          <- service.getJourneyStatus(TradeDetails, request.nino, taxYear, request.mtditid)
+        completedTrades <- getViewModelList(taxYear, status)
+        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear))
+      } yield Ok(view(taxYear, request.user, status, viewModelList))
+    ).result
+
+    result.merge
   }
 
-  private def getStatusMsg(taxYear: Int, selfEmploymentConnector: SelfEmploymentConnector)(implicit
-      request: OptionalDataRequest[AnyContent],
-      ec: ExecutionContext): Future[Option[String]] = {
-
-    val journey = TradeDetails.toString
-    val tradeId = journey + "-" + request.user.nino
-
-    selfEmploymentConnector.getJourneyState(tradeId, journey, taxYear, request.user.mtditid) map {
-      case Left(_) => None
-      case Right(status) =>
-        Some(
-          if (status.isEmpty) "checkOurRecords"
-          else if (status.get) "completed"
-          else "inProgress"
-        )
-    }
-  }
-
-  private def getViewModelList(taxYear: Int)(implicit request: OptionalDataRequest[AnyContent]): Future[Option[Seq[TradeJourneyStatusesViewModel]]] =
-    selfEmploymentService.getCompletedTradeDetails(request.user.nino, taxYear, request.user.mtditid) map {
-      case Left(_) => None
-      case Right(list) =>
-        Some(
-          if (list.isEmpty) Seq.empty else list.map(TradesJourneyStatuses.toViewModel(_, taxYear))
-        )
+  private def getViewModelList(taxYear: TaxYear, status: JourneyStatus)(implicit request: OptionalDataRequest[AnyContent]) =
+    status match {
+      case Completed                    => service.getCompletedTradeDetails(request.nino, taxYear, request.mtditid)
+      case CheckOurRecords | InProgress => EitherT.rightT[Future, HttpError](Nil)
     }
 }

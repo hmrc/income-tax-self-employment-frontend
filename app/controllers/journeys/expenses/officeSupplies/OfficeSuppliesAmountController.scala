@@ -21,6 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
@@ -46,7 +47,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).map {
       case Right(accountingType) =>
         val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(businessId)) match {
@@ -60,7 +61,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
     }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).flatMap {
       case Right(accountingType) =>
         formProvider(userType(request.user.isAgent))

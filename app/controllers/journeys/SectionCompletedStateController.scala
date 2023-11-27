@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
 import models.Mode
+import models.common.TaxYear
 import models.journeys.CompletedSectionState
 import models.journeys.CompletedSectionState.{No, Yes}
 import navigation.GeneralNavigator
@@ -34,6 +35,7 @@ import views.html.journeys.SectionCompletedStateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO Don't call connector directly, go via service
 class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
                                                  selfEmploymentConnector: SelfEmploymentConnector,
                                                  navigator: GeneralNavigator,
@@ -47,7 +49,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
 
   val form: Form[CompletedSectionState] = formProvider()
 
-  def onPageLoad(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
         case Right(Some(true))  => form.fill(Yes)
@@ -61,7 +63,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
       }
   }
 
-  def onSubmit(taxYear: Int, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+  def onSubmit(taxYear: TaxYear, businessId: String, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       form
         .bindFromRequest()

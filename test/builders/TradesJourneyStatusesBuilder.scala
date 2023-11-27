@@ -36,6 +36,6 @@ object TradesJourneyStatusesBuilder {
 
   val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId2", None, Seq.empty)
 
-  val aSequenceTadesJourneyStatusesModel = Seq(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
+  val aSequenceTadesJourneyStatusesModel = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
 
 }

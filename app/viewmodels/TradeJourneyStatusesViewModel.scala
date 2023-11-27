@@ -43,14 +43,14 @@ case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String
 
 object TradeJourneyStatusesViewModel {
 
-  private val completedStatus      = "completed"
+  private val completedStatus      = "completed" // TODO replace with sealed trait, is this same as common.JourneyStatus?
   private val inProgressStatus     = "inProgress"
   private val notStartedStatus     = "notStarted"
   private val cannotStartYetStatus = "cannotStartYet"
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: Int)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
 
-    implicit val impTaxYear: TaxYear                       = TaxYear(taxYear)
+    implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
@@ -106,21 +106,21 @@ object TradeJourneyStatusesViewModel {
     journey match {
       case Abroad =>
         determineUrl(
-          abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
-          abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear.value, businessId.value).url
+          abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId.value, NormalMode).url,
+          abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId.value).url
         )
       case Income =>
         determineUrl(
-          income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear.value, businessId.value, NormalMode).url,
-          income.routes.IncomeCYAController.onPageLoad(taxYear.value, businessId.value).url
+          income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId.value, NormalMode).url,
+          income.routes.IncomeCYAController.onPageLoad(taxYear, businessId.value).url
         )
       case ExpensesTailoring =>
         determineUrl(
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear.value, businessId.value, NormalMode)
+            .onPageLoad(taxYear, businessId.value, NormalMode)
             .url, // TODO expenses categories page when built
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear.value, businessId.value, NormalMode)
+            .onPageLoad(taxYear, businessId.value, NormalMode)
             .url // TODO expenses CYA page when built
         )
       case ExpensesEntertainment | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance | ExpensesTotal |

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
-)
+import cats.data.EitherT
+import models.domain.ApiResultT
+import models.errors.HttpError
 
-@(tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
+import scala.concurrent.{ExecutionContext, Future}
 
-@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
-
-    <h1 class="govuk-heading-l">@messages("journeys.selfEmployment")</h1>
-
-     @govukSummaryList(tradingNames)
-
-     <p class="govuk-body">
-         @govukButton(ButtonViewModel(messages("site.continue"))
-           .asLink(nextRoute)
-         )
-     </p>
+package object common {
+  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]               = EitherT.rightT[Future, HttpError](a)
+  def leftApiResultT[A](err: HttpError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
 }

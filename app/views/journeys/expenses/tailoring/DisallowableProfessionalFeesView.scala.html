@@ -15,6 +15,7 @@
  *@
 
 @import models.journeys.expenses.DisallowableProfessionalFees
+@import models.common.{TaxYear}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -26,7 +27,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("disallowableProfessionalFees.title"))) {
 

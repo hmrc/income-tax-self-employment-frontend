@@ -44,7 +44,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
         val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(stubbedBusinessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
         val form           = new StaffCostsAmountFormProvider()(userType)
-        val routeUnderTest = routes.StaffCostsAmountController.onPageLoad(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsAmountController.onPageLoad(taxYear, stubBusinessId, mode).url
         val getRequest     = FakeRequest(GET, routeUnderTest)
 
         val result = route(application, getRequest).value
@@ -53,7 +53,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
 
         val view = application.injector.instanceOf[StaffCostsAmountView]
         val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, disallowable)(getRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, stubBusinessId, disallowable)(getRequest, messages(application, Language.English))
             .toString()
         contentAsString(result) mustEqual expectedView
       }
@@ -65,7 +65,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
       forAll(userTypeGen, modeGen) { (userType, mode) =>
         val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(stubbedBusinessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, postRequest).value
@@ -79,12 +79,12 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
       forAll(userTypeGen, modeGen, disallowableGen) { (userType, mode, disallowable) =>
         val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(stubbedBusinessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
         val view           = application.injector.instanceOf[StaffCostsAmountView]
         val form           = new StaffCostsAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, disallowable)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, stubBusinessId, disallowable)(postRequest, messages(application, Language.English))
             .toString()
 
         val result = route(application, postRequest).value

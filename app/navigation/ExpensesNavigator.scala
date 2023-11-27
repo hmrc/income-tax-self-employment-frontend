@@ -49,21 +49,21 @@ class ExpensesNavigator @Inject() () {
           businessId =>
             userAnswers.get(OfficeSuppliesPage, Some(businessId.value)) match {
               case Some(OfficeSupplies.YesAllowable) =>
-                officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear.value, businessId.value)
+                officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
               case Some(OfficeSupplies.YesDisallowable) =>
-                officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear.value, businessId.value, NormalMode)
+                officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
               case _ =>
                 standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case OfficeSuppliesDisallowableAmountPage =>
-      _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear.value, businessId.value)
+      _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
 
     case OfficeSuppliesCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesOfficeSupplies.toString, NormalMode)
+            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesOfficeSupplies.toString, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
@@ -71,20 +71,20 @@ class ExpensesNavigator @Inject() () {
           businessId =>
             userAnswers.get(GoodsToSellOrUsePage, Some(businessId.value)) match {
               case Some(GoodsToSellOrUse.YesAllowable) =>
-                goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear.value, businessId.value)
+                goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
               case Some(GoodsToSellOrUse.YesDisallowable) =>
-                goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear.value, businessId.value, NormalMode)
+                goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case DisallowableGoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear.value, businessId.value)
+      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
 
     case GoodsToSellOrUseCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
     case RepairsAndMaintenanceAmountPage =>
       userAnswers =>
@@ -105,11 +105,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(
-              taxYear.value,
-              businessId.value,
-              ExpensesRepairsAndMaintenance.toString,
-              NormalMode)
+            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesRepairsAndMaintenance.toString, NormalMode)
 
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
@@ -118,7 +114,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear.value, businessId.value, ExpensesEntertainment.toString, NormalMode)
+            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesEntertainment.toString, NormalMode)
 
     case StaffCostsAmountPage =>
       userAnswers =>
@@ -138,10 +134,10 @@ class ExpensesNavigator @Inject() () {
   private val checkRouteMap: Page => UserAnswers => TaxYear => BusinessId => Call = {
 
     case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
-      _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear.value, businessId.value)
+      _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
 
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear.value, businessId.value)
+      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
 
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
@@ -158,10 +154,10 @@ class ExpensesNavigator @Inject() () {
 
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: Int, businessId: String): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call =
     mode match {
-      case NormalMode => normalRoutes(page)(userAnswers)(TaxYear(taxYear))(BusinessId(businessId))
-      case CheckMode  => checkRouteMap(page)(userAnswers)(TaxYear(taxYear))(BusinessId(businessId))
+      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(BusinessId(businessId))
+      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(BusinessId(businessId))
     }
 
   /** User also for CYA pages

@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
@@ -30,7 +31,7 @@ import viewmodels.implicits._
 
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
-  def row(userAnswers: UserAnswers, taxYear: Int, authUserType: String, businessId: String)(implicit
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: String)(implicit
       messages: Messages): Option[Either[Exception, SummaryListRow]] =
     userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val rowValueOrError = answer match {

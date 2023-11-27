@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
-import base.SpecBase.{currTaxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{taxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppWithMessages
 import models.database.UserAnswers
@@ -73,7 +73,7 @@ class RepairsAndMaintenanceDisallowableAmountSummarySpec extends AnyWordSpecLike
     "return correct number of rows for different combination of data" in {
       forAll(cases) { case (json, expected, expectedDisallowable) =>
         val request    = createRequest(json)
-        val actualList = RepairsAndMaintenanceDisallowableAmountSummary.row(request, currTaxYear, stubBusinessId)
+        val actualList = RepairsAndMaintenanceDisallowableAmountSummary.row(request, taxYear, stubBusinessId)
         actualList.size shouldBe expected
         actualList.map(_.key).foreach { definedKey =>
           definedKey.content.asHtml.toString() should include(expectedDisallowable.value)
