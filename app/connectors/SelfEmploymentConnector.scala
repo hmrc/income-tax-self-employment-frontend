@@ -50,7 +50,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear")
+    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/${taxYear.value}")
     http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
@@ -58,7 +58,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
 
-    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/${taxYear}/$complete")
+    val url = buildUrl(s"/income-tax-self-employment/completed-section/$businessId/$journey/${taxYear.value}/$complete")
 
     http.PUT[String, JourneyStateResponse](url, "")(
       JourneyStateHttpWrites,
@@ -71,7 +71,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetTradesStatusResponse] = {
 
-    val url = buildUrl(s"/income-tax-self-employment/individuals/business/journey-states/$nino/${taxYear}")
+    val url = buildUrl(s"/income-tax-self-employment/individuals/business/journey-states/$nino/${taxYear.value}")
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
@@ -81,7 +81,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       writes: Writes[T]): Future[SendExpensesAnswersResponse] = {
 
     val url = buildUrl(
-      s"/income-tax-self-employment/send-expenses-answers/${data.journey.toString}/${data.taxYear}/${data.businessId.value}/${data.nino.value}")
+      s"/income-tax-self-employment/send-expenses-answers/${data.journey.toString}/${data.taxYear.value}/${data.businessId.value}/${data.nino.value}")
 
     http.POST[T, SendExpensesAnswersResponse](url, answers)(
       wts = writes,
