@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes.EntertainmentCYAController
 import controllers.journeys.routes.SectionCompletedStateController
 import models.NormalMode
-import models.common.TaxYear
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.Journey.ExpensesEntertainment
@@ -58,10 +57,10 @@ class EntertainmentCYAControllerSpec extends SpecBase {
 
           running(application) {
             val view    = application.injector.instanceOf[EntertainmentCYAView]
-            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId).url)
+            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(taxYear, stubBusinessId).url)
 
             val expectedSummaryListRows = Seq(
-              EntertainmentAmountSummary.row(userAnswers, TaxYear(taxYear), stubBusinessId, userType)
+              EntertainmentAmountSummary.row(userAnswers, taxYear, stubBusinessId, userType)
             ).flatten
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
             val expectedNextRoute =
@@ -70,7 +69,7 @@ class EntertainmentCYAControllerSpec extends SpecBase {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(TaxYear(taxYear), userType, expectedSummaryLists, expectedNextRoute)(
+            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
               request,
               messages(application)).toString
           }

@@ -46,7 +46,7 @@ class TotalExpensesControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[TotalExpensesView]
-    view(form, scenario.mode, scenario.userType.toString, scenario.taxYear.value, scenario.businessId.value).toString()
+    view(form, scenario.mode, scenario.userType.toString, scenario.taxYear, scenario.businessId.value).toString()
   }
 
 }

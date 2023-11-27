@@ -18,6 +18,7 @@ package navigation
 
 import controllers.journeys.routes._
 import controllers.standard.routes._
+import models.common.TaxYear
 import pages._
 import play.api.mvc.Call
 
@@ -26,13 +27,13 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class GeneralNavigator @Inject() () {
 
-  private val normalRoutes: Page => Int => Call = {
+  private val normalRoutes: Page => TaxYear => Call = {
 
     case SectionCompletedStatePage => taxYear => TaskListController.onPageLoad(taxYear)
 
     case _ => _ => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, taxYear: Int): Call = normalRoutes(page)(taxYear)
+  def nextPage(page: Page, taxYear: TaxYear): Call = normalRoutes(page)(taxYear)
 
 }

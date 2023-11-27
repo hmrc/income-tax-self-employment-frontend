@@ -18,6 +18,7 @@ package controllers.journeys.abroad
 
 import controllers.actions._
 import models.NormalMode
+import models.common.TaxYear
 import models.requests.DataRequest
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadCYAPage
@@ -40,7 +41,7 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, request.user.userType, businessId, request.userAnswers)
     val summaryList     = SummaryList(Seq(summaryListRows))
 
@@ -49,7 +50,7 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     Ok(view(taxYear, summaryList, nextRoute, request.userType))
   }
 
-  private def nextPageUrl(taxYear: Int, businessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
+  private def nextPageUrl(taxYear: TaxYear, businessId: String, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
     navigator
       .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url

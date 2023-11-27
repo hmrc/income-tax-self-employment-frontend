@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.Mode
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
@@ -43,7 +44,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case None        => formProvider(request.user.isAgent)
       case Some(value) => formProvider(request.user.isAgent).fill(value)
@@ -52,7 +53,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
     Ok(view(preparedForm, taxYear, businessId, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     formProvider(request.user.isAgent)
       .bindFromRequest()
       .fold(

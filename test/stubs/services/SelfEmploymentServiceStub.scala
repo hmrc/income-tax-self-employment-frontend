@@ -17,7 +17,7 @@
 package stubs.services
 
 import connectors.httpParser.GetTradesStatusHttpParser.GetTradesStatusResponse
-import models.common.{AccountingType, BusinessId}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.errors.HttpError
 import pages.QuestionPage
@@ -32,7 +32,7 @@ case class SelfEmploymentServiceStub(
     saveAnswerResult: UserAnswers
 ) extends SelfEmploymentServiceBase {
 
-  def getCompletedTradeDetails(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = ???
+  def getCompletedTradeDetails(nino: String, taxYear: TaxYear, mtditid: String)(implicit hc: HeaderCarrier): Future[GetTradesStatusResponse] = ???
 
   def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
     Future.successful(accountingType.map(_.entryName))

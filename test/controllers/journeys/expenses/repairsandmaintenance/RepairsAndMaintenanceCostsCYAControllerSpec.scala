@@ -48,7 +48,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
          |""".stripMargin)
     .as[JsObject]
 
-  lazy val routeUnderTest = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(currTaxYear, stubBusinessId).url
+  lazy val routeUnderTest = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, stubBusinessId).url
   lazy val getRequest     = FakeRequest(GET, routeUnderTest)
 
   "onPageLoad" should {
@@ -69,8 +69,8 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
         implicit val msg: Messages = messages(application, Language.English)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
-          RepairsAndMaintenanceAmountSummary.row(dataRequest, currTaxYear, stubBusinessId),
-          RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, currTaxYear, stubBusinessId)
+          RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, stubBusinessId),
+          RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, taxYear, stubBusinessId)
         ).flatten
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }
@@ -89,7 +89,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
     val view        = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
     val summaryList = SummaryList(expectedRows)
     val nextRoute   = onwardRoute.url
-    view(currTaxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
+    view(taxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
   }
 
 }

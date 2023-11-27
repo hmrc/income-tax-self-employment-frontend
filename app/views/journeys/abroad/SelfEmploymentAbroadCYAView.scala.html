@@ -15,7 +15,7 @@
  *@
 
 @import templates.helpers.Heading
-@import models.common.{UserType}
+@import models.common.{TaxYear, UserType}
 
 @this(
         layout: templates.Layout,
@@ -24,13 +24,13 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: Int, summaryList: SummaryList, nextRoute: String, userType: UserType)(implicit request: Request[_], messages: Messages)
+@(taxYear: TaxYear, summaryList: SummaryList, nextRoute: String, userType: UserType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"common.checkYourDetails.title.$userType"))) {
 
     @heading(
         messages(s"common.checkYourDetails.title.$userType"),
-        Some(messages("site.taxYearCaption", (taxYear - 1).toString, taxYear.toString)),
+        Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
         extraClasses = "govuk-!-margin-bottom-3"
     )
 

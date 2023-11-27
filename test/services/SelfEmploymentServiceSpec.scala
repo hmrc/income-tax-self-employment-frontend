@@ -22,8 +22,8 @@ import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import connectors.SelfEmploymentConnector
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
@@ -35,7 +35,7 @@ import services.SelfEmploymentService.getIncomeTradingAllowance
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
+class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val mockSessionRepository                  = mock[SessionRepository]
@@ -51,15 +51,14 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "getCompletedTradeDetails" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
-      when(mockConnector.getCompletedTradesWithStatuses(meq(nino), meq(taxYear), meq(mtditid))(any, any)) thenReturn Future(
-        Right(aSequenceTadesJourneyStatusesModel))
+      mockConnector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)(*, *) returns Future.successful(Right(aSequenceTadesJourneyStatusesModel))
 
       val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))
 
       result shouldBe Right(aSequenceTadesJourneyStatusesModel)
     }
     "should return a Left(HttpError) when a this is returned from the backend" in {
-      when(mockConnector.getCompletedTradesWithStatuses(meq(nino), meq(taxYear), meq(mtditid))(any, any)) thenReturn Future(
+      mockConnector.getCompletedTradesWithStatuses(nino, taxYear, mtditid)(*, *) returns Future.successful(
         Left(HttpError(404, HttpErrorBody.parsingError)))
 
       val result = await(service.getCompletedTradeDetails(nino, taxYear, mtditid))
@@ -70,8 +69,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
 
   "getBusinessAccountingType" - {
     "should return a BusinessID's accounting type in a Right when this is returned from the backend" in {
-      when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessData))
-      when(mockConnector.getBusiness(meq(nino), meq(businessIdCash), meq(mtditid))(any, any)) thenReturn Future(Right(aBusinessDataCashAccounting))
+      mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns Future.successful(Right(aBusinessData))
+      mockConnector.getBusiness(nino, businessIdCash, mtditid) returns Future.successful(Right(aBusinessDataCashAccounting))
 
       val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
       val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))
@@ -83,7 +82,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
     "should return a Left(HttpError) when" - {
 
       "an empty sequence is returned from the backend" in {
-        when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(Right(Seq.empty))
+        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns Future.successful(Right(Seq.empty))
 
         val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
 
@@ -91,7 +90,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar {
       }
 
       "a Left(HttpError) is returned from the backend" in {
-        when(mockConnector.getBusiness(meq(nino), meq(businessIdAccrual), meq(mtditid))(any, any)) thenReturn Future(
+        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns Future.successful(
           Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
 
         val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))(10.seconds)

@@ -54,7 +54,7 @@ class StaffCostsAmountSummarySpec extends SpecBase {
       userScenarios.foreach { userScenario =>
         s"when user is an ${userScenario.userType} should" - {
           "generate a summary list row" in {
-            val result = StaffCostsAmountSummary.row(userScenario.request, currTaxYear, stubBusinessId)
+            val result = StaffCostsAmountSummary.row(userScenario.request, taxYear, stubBusinessId)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"staffCostsAmount.title.${userScenario.userType}")
@@ -65,7 +65,7 @@ class StaffCostsAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for StaffCostsAmountPage should" - {
       "return None" in {
-        val result = StaffCostsAmountSummary.row(DataRequest(FakeRequest(), userAnswersId, aNoddyUser, otherUserAnswers), currTaxYear, stubBusinessId)
+        val result = StaffCostsAmountSummary.row(DataRequest(FakeRequest(), userAnswersId, aNoddyUser, otherUserAnswers), taxYear, stubBusinessId)
 
         result mustBe None
       }

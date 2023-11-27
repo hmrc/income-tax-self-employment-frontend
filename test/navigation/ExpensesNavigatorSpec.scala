@@ -23,7 +23,6 @@ import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
-import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesStaffCosts}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -126,7 +125,7 @@ class ExpensesNavigatorSpec extends SpecBase {
         "Entertainment journey" - {
           "the page is EntertainmentAmountPage" - {
             "navigate to the EntertainmentCYAController" in {
-              val expectedResult = EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId)
+              val expectedResult = EntertainmentCYAController.onPageLoad(taxYear, stubBusinessId)
 
               navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
             }
@@ -229,7 +228,7 @@ class ExpensesNavigatorSpec extends SpecBase {
 
         "the page is EntertainmentAmountPage" - {
           "navigate to the EntertainmentCYAController" in {
-            val expectedResult = EntertainmentCYAController.onPageLoad(TaxYear(taxYear), stubBusinessId)
+            val expectedResult = EntertainmentCYAController.onPageLoad(taxYear, stubBusinessId)
 
             navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, stubbedBusinessId) shouldBe expectedResult
           }

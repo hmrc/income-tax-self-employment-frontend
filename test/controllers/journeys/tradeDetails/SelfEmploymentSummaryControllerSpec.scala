@@ -70,7 +70,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val emptySummaryList = SummaryList(rows = emptyTradingNames.map(name => row(s"${name.getOrElse("")}")(messages(application))))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, emptySummaryList, nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(emptySummaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
@@ -94,7 +94,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val noneSummaryList  = generateRowList(taxYear, noneTradingNames)(messages(application))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, noneSummaryList, nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(noneSummaryList, nextRoute)(request, messages(application)).toString
         }
       }
 
@@ -118,7 +118,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
           val summaryList  = generateRowList(taxYear, tradingNames)(messages(application))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(taxYear, summaryList, nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(summaryList, nextRoute)(request, messages(application)).toString
         }
       }
 

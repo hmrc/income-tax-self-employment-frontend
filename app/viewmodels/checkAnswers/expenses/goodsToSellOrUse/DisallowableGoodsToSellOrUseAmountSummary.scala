@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
 import controllers.journeys.expenses
 import models.CheckMode
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.expenses.GoodsToSellOrUse
 import models.journeys.expenses.GoodsToSellOrUse.YesDisallowable
@@ -31,13 +32,13 @@ import viewmodels.implicits._
 
 object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(GoodsToSellOrUsePage, Some(businessId))
       .filter(areAnyGoodsToSellOrUseDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
-  private def createSummaryListRow(answers: UserAnswers, taxYear: Int, businessId: String, userType: String)(implicit messages: Messages) =
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages) =
     for {
       disallowableAmount <- answers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId))
       allowableAmount    <- answers.get(GoodsToSellOrUseAmountPage, Some(businessId))

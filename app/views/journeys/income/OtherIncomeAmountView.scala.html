@@ -16,6 +16,7 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.OtherIncomeAmountController
+@import models.common.{TaxYear}
 @import viewmodels.LabelSize.Large
 
 @this(
@@ -26,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"otherIncomeAmount.title.$authUserType"))) {
 

@@ -38,7 +38,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType)
         val form           = new RepairsAndMaintenanceAmountFormProvider()(userType)
-        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onPageLoad(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, stubBusinessId, mode).url
         val getRequest     = FakeRequest(GET, routeUnderTest)
 
         val result = route(application, getRequest).value
@@ -47,7 +47,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
 
         val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, accountingType)(getRequest, messages(application, Language.English)).toString()
+          view(form, mode, userType, taxYear, stubBusinessId, accountingType)(getRequest, messages(application, Language.English)).toString()
         contentAsString(result) mustEqual expectedView
       }
     }
@@ -57,7 +57,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
     "redirect to next when valid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType)
-        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, postRequest).value
@@ -70,12 +70,12 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
     "return bad request when invalid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType)
-        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(currTaxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, stubBusinessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
         val view           = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val form           = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, currTaxYear, stubBusinessId, accountingType)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, stubBusinessId, accountingType)(postRequest, messages(application, Language.English))
             .toString()
 
         val result = route(application, postRequest).value

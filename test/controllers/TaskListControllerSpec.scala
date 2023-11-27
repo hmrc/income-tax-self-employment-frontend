@@ -24,8 +24,8 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.errors.{HttpError, HttpErrorBody}
 import models.requests.TradesJourneyStatuses
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,7 +36,7 @@ import views.html.journeys.TaskListView
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec extends SpecBase with MockitoSugar {
+class TaskListControllerSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
   val nino       = "AA370343B"
   val user: User = User(mtditid, None, nino, AffinityGroup.Individual.toString)
@@ -55,8 +55,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
       val selfEmploymentList = aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear)(messages(application)))
 
       running(application) {
-        when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
-        when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
+        mockService.getCompletedTradeDetails(*[String], taxYear, *[String])(*) returns Future.successful(Right(aSequenceTadesJourneyStatusesModel))
+        mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(Right(Some(true)))
 
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
         val result  = route(application, request).value
@@ -77,8 +77,8 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
         val selfEmploymentList = Seq.empty
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(selfEmploymentList))
-          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
+          mockService.getCompletedTradeDetails(*[String], taxYear, *[String])(*) returns Future.successful(Right(selfEmploymentList))
+          mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
           val result  = route(application, request).value
@@ -97,7 +97,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
         val selfEmploymentList = Seq.empty
 
         running(application) {
-          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(false)))
+          mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(Right(Some(false)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
           val result  = route(application, request).value
@@ -116,7 +116,7 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
         val selfEmploymentList = Seq.empty
 
         running(application) {
-          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(None))
+          mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(Right(None))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
           val result  = route(application, request).value
@@ -137,9 +137,9 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn
-            Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
-          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn Future(Right(Some(true)))
+          mockService.getCompletedTradeDetails(*[String], taxYear, *[String])(*) returns Future.successful(
+            Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
+          mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(Right(Some(true)))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
           val result  = route(application, request).value
@@ -156,9 +156,9 @@ class TaskListControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          when(mockService.getCompletedTradeDetails(any, meq(taxYear), any)(any)) thenReturn Future(Right(aSequenceTadesJourneyStatusesModel))
-          when(mockConnector.getJourneyState(any, any, any, any)(any, any)) thenReturn
-            Future(Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
+          mockService.getCompletedTradeDetails(*[String], taxYear, *[String])(*) returns Future.successful(Right(aSequenceTadesJourneyStatusesModel))
+          mockConnector.getJourneyState(*[String], *[String], taxYear, *[String])(*, *) returns Future.successful(
+            Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
 
           val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
           val result  = route(application, request).value

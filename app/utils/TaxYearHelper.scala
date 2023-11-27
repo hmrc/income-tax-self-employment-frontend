@@ -16,14 +16,17 @@
 
 package utils
 
+import models.common.TaxYear
+
 import java.time.LocalDate
 
 object TaxYearHelper {
   private val dateNow: LocalDate           = LocalDate.now()
   private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
 
-  val taxYear: Int                  = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
-  val taxYearEOY: Int               = taxYear - 1
-  val taxYearEndOfYearMinusOne: Int = taxYearEOY - 1
-  val validTaxYearList: Seq[Int]    = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
+  val taxYearInt: Int                   = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
+  val taxYear: TaxYear                  = TaxYear(taxYearInt)
+  val taxYearEOY: TaxYear               = TaxYear(taxYearInt - 1)
+  val taxYearEndOfYearMinusOne: TaxYear = TaxYear(taxYearInt - 2)
+  val validTaxYearList: Seq[TaxYear]    = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
 }

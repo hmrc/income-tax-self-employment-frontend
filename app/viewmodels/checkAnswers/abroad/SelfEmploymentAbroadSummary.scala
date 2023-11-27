@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.abroad
 
 import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
 import models.CheckMode
+import models.common.TaxYear
 import models.common.UserType
 import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage
@@ -29,7 +30,7 @@ import viewmodels.implicits._
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: Int, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
+  def row(taxYear: TaxYear, userType: UserType, businessId: String, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case Some(answer) =>
         SummaryListRowViewModel(
