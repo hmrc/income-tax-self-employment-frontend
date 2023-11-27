@@ -18,59 +18,64 @@ package forms.expenses.tailoring
 
 import forms.behaviours.BigDecimalFieldBehaviours
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class ConstructionIndustryAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val authUserTypes = Seq("individual", "agent")
-
   ".value" - {
-    authUserTypes.foreach { authUser =>
-      s"when the user is $authUser" - {
-        "form provider should" - {
 
-          val form = new ConstructionIndustryAmountFormProvider()(authUser)
+    val fieldName = "value"
 
-          val fieldName = "value"
+    val minimum = 0
+    val maximum = 100000000000.00
 
-          val minimum: BigDecimal = 0
-          val maximum: BigDecimal = 100000000000.00
+    case class UserScenario(user: UserType)
 
-          val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
+    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
 
-          behave like fieldThatBindsValidData(
-            form,
-            fieldName,
-            validDataGenerator
-          )
+    userScenarios.foreach { userScenario =>
+      val form = new ConstructionIndustryAmountFormProvider()(userScenario.user)
 
-          behave like bigDecimalField(
-            form,
-            fieldName,
-            nonNumericError = FormError(fieldName, s"constructionIndustryAmount.error.nonNumeric.$authUser")
-          )
+      s"when user is an ${userScenario.user}, form should " - {
 
-          behave like bigDecimalFieldWithMinimum(
-            form,
-            fieldName,
-            minimum,
-            expectedError = FormError(fieldName, s"constructionIndustryAmount.error.lessThanZero.$authUser", Seq(minimum))
-          )
+        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
-          behave like bigDecimalFieldWithMaximum(
-            form,
-            fieldName,
-            maximum,
-            expectedError = FormError(fieldName, s"constructionIndustryAmount.error.overMax.$authUser", Seq(maximum))
-          )
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          validDataGenerator
+        )
 
-          behave like mandatoryField(
-            form,
-            fieldName,
-            requiredError = FormError(fieldName, s"constructionIndustryAmount.error.required.$authUser")
-          )
-        }
+        behave like bigDecimalField(
+          form,
+          fieldName,
+          nonNumericError = FormError(fieldName, s"constructionIndustryAmount.error.nonNumeric.${userScenario.user}")
+        )
+
+        behave like bigDecimalFieldWithMinimum(
+          form,
+          fieldName,
+          minimum,
+          expectedError = FormError(fieldName, s"constructionIndustryAmount.error.lessThanZero.${userScenario.user}", Seq(minimum))
+        )
+
+        behave like bigDecimalFieldWithMaximum(
+          form,
+          fieldName,
+          maximum,
+          expectedError = FormError(fieldName, s"constructionIndustryAmount.error.overMax.${userScenario.user}", Seq(maximum))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"constructionIndustryAmount.error.required.${userScenario.user}")
+        )
       }
     }
   }
+
 }
+

@@ -265,7 +265,7 @@ POST        /:taxYear/:businessId/expenses/change-staff/amount                  
 
 ########## Expenses - Construction Industry ##########
 
-GET         /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: Int, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onSubmit(taxYear: Int, businessId: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)

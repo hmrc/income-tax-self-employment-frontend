@@ -19,7 +19,7 @@ package controllers.journeys.expenses.construction
 import controllers.actions._
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,27 +45,27 @@ class ConstructionIndustryAmountController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ConstructionIndustryAmountPage, Some(businessId)) match {
-        case None        => formProvider(userType(request.user.isAgent))
-        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+      val preparedForm = request.userAnswers.get(ConstructionIndustryAmountPage, Some(businessId.value)) match {
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
       }
 
-      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, request.userType, taxYear, BusinessId(businessId.value)))
   }
 
-  def onSubmit(taxYear: Int, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(userType(request.user.isAgent))
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId.value)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear.value, BusinessId(businessId.value).value))
         )
   }
 }

@@ -28,40 +28,41 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: Int, businessId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"constructionIndustryAmount.heading.$userType"))) {
-
-    @formHelper(action = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @layout(pageTitle = title(form, messages(s"constructionIndustryAmount.heading.$userType"))) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(HtmlContent(buildLabelContent(userType))).asPageHeading()
+        @formHelper(action = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+            @govukInput(
+                InputViewModel(
+                    field = form("value"),
+                    label = LabelViewModel(HtmlContent(
+                        s"""
+                <label class="govuk-label govuk-label--l"> ${messages(s"constructionIndustryAmount.heading.$userType")} </label>
+                   <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                       <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                ${messages("expenses.understanding.construction")} </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p>${messages(s"expenses.includes.construction.individual")}</p>
+                        </div>
+                    </details>
+                """
+                    ))
+                )
+                .asNumeric()
+                .withWidth(Fixed10)
+                .withPrefix(PrefixOrSuffix(content = Text("£")))
             )
-            .asNumeric()
-            .withWidth(Fixed10)
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-        )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
     }
-}
-@buildLabelContent(authUserType: String) = {
-    <label class="govuk-label govuk-label--l"> @messages(s"constructionIndustryAmount.heading.$authUserType") </label>
-    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text"> @messages("expenses.understanding.construction") </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p>@messages(s"expenses.includes.construction")</p>
-        </div>
-    </details>
-
-}

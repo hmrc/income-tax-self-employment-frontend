@@ -310,9 +310,9 @@ expenses.agencyFees = agency fees
 expenses.subcontractLabourCosts = subcontract labour costs (not included elsewhere)
 expenses.nationalInsuranceContributions = employer’s National Insurance Contributions
 expenses.contributions.individual = your own pay, pension or National Insurance contributions
-expenses.includes.construction = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
-expenses.understanding.construction = Understanding construction industry expenses
 expenses.contributions.agent = their own pay, pension or National Insurance contributions
+expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+expenses.understanding.construction = Understanding construction industry expenses
 
 ## Office supplies
 officeSupplies.title = Office supplies

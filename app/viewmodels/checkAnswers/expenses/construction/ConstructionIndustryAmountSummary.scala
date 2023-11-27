@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.expenses.construction
 
 import controllers.journeys.expenses.construction.routes
 import models.CheckMode
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.Messages
@@ -27,7 +28,7 @@ import viewmodels.implicits._
 
 object ConstructionIndustryAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: Int, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ConstructionIndustryAmountPage).map { answer =>
       SummaryListRowViewModel(
         key = "constructionIndustryAmount.checkYourAnswersLabel",
