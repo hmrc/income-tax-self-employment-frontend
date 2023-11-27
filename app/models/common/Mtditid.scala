@@ -14,25 +14,6 @@
  * limitations under the License.
  */
 
-package navigation
+package models.common
 
-import controllers.journeys
-import controllers.standard
-import models.common.TaxYear
-import pages._
-import play.api.mvc.Call
-
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class GeneralNavigator @Inject() () {
-
-  private val normalRoutes: Page => TaxYear => Call = {
-
-    case SectionCompletedStatePage => taxYear => journeys.routes.TaskListController.onPageLoad(taxYear)
-    case _                         => _ => standard.routes.JourneyRecoveryController.onPageLoad()
-  }
-
-  def nextPage(page: Page, taxYear: TaxYear): Call = normalRoutes(page)(taxYear)
-
-}
+final case class Mtditid(value: String) extends AnyVal

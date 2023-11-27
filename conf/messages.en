@@ -311,6 +311,9 @@ expenses.subcontractLabourCosts = subcontract labour costs (not included elsewhe
 expenses.nationalInsuranceContributions = employer’s National Insurance Contributions
 expenses.contributions.individual = your own pay, pension or National Insurance contributions
 expenses.contributions.agent = their own pay, pension or National Insurance contributions
+expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
+expenses.includes.construction.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
+expenses.understanding.construction = Understanding construction industry expenses
 
 ## Office supplies
 officeSupplies.title = Office supplies
@@ -423,9 +426,6 @@ professionalServiceExpenses.error.required.individual = Select the professionals
 professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
 professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
 professionalServiceExpenses.d1.heading = Understanding staff expenses
-professionalServiceExpenses.d2.heading = Understanding construction industry expenses
-professionalServiceExpenses.d2.l1.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
-professionalServiceExpenses.d2.l1.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 professionalServiceExpenses.d3.heading = Understanding professional fees
 professionalServiceExpenses.d3.l1 = accountants
 professionalServiceExpenses.d3.l2 = solicitors
@@ -706,3 +706,17 @@ totalExpenses.error.overMax.agent = Your client’s total expenses must be less 
 totalExpenses.change.hidden = Change how much the total expenses were
 
 totalExpensesCYA.title = totalExpensesCYA
+
+########## Expenses - Construction Industry ##########
+
+constructionIndustryAmount.heading.individual = How much did you spend on construction industry expenses?
+constructionIndustryAmount.heading.agent = How much did your client spend on construction industry expenses?
+constructionIndustryAmount.error.required.individual = Enter the amount you spent on construction industry expenses
+constructionIndustryAmount.error.required.agent = Enter the amount your client spent on construction industry expenses
+constructionIndustryAmount.error.nonNumeric.individual = The amount you spent on construction industry expenses must be a number
+constructionIndustryAmount.error.nonNumeric.agent = The amount your client spent on construction industry expenses must be a number
+constructionIndustryAmount.error.lessThanZero.individual = The amount you spent on construction industry expenses must be more than £0
+constructionIndustryAmount.error.lessThanZero.agent = The amount your client spent on construction industry expenses must be more than £0
+constructionIndustryAmount.error.overMax.individual = The amount you spent on construction industry expenses must be less than £100,000,000,000
+constructionIndustryAmount.error.overMax.agent = The amount your client spent on construction industry expenses must be less than £100,000,000,000
+constructionIndustryAmount.change.hidden = Change how much was spent on construction industry

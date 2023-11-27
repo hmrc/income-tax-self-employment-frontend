@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms.expenses.officeSupplies
+package forms.expenses.construction
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBounds {
+class ConstructionIndustryAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: String): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$authUserType", s"officeSuppliesAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$authUserType"))
+      "value" -> bigDecimal(s"constructionIndustryAmount.error.required.$userType", s"constructionIndustryAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"constructionIndustryAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"constructionIndustryAmount.error.overMax.$userType"))
     )
 }
