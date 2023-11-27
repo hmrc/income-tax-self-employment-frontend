@@ -185,11 +185,11 @@ class ExpensesNavigator @Inject() () {
                mode: Mode,
                userAnswers: UserAnswers,
                taxYear: TaxYear,
-               businessId: BusinessId,
+               businessId: String,
                accountingType: Option[AccountingType] = None): Call =
     mode match {
-      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(businessId)(accountingType)
-      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
+      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(BusinessId(businessId))(accountingType)
+      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(BusinessId(businessId))
     }
 
   /** User also for CYA pages

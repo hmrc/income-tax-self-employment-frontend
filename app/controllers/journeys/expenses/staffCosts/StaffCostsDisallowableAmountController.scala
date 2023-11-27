@@ -73,7 +73,7 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(StaffCostsDisallowableAmountPage, value, Some(businessId.value)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(StaffCostsDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(StaffCostsDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId.value))
             )
         }
         .leftMap(Future.successful)

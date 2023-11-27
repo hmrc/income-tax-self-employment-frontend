@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
@@ -74,7 +74,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+              } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
     }

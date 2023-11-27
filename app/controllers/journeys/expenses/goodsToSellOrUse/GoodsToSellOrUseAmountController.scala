@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
@@ -85,7 +85,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
     }
   }

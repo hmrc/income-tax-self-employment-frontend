@@ -73,7 +73,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
     def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
       selfEmploymentService
         .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
-        .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId)))
+        .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId.value)))
 
     def handleForm(form: Form[BigDecimal],
                    userType: UserType,
