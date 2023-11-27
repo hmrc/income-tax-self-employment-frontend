@@ -135,7 +135,7 @@ class ExpensesNavigator @Inject() () {
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case Some(DisallowableStaffCosts.Yes | DisallowableStaffCosts.No) =>
                   staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
-                case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+                case None => standard.routes.JourneyRecoveryController.onPageLoad()
               }
 
     case StaffCostsDisallowableAmountPage =>

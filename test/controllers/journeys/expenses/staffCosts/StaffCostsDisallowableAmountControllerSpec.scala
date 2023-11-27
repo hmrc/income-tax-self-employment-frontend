@@ -50,7 +50,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
 
         val view         = application.injector.instanceOf[StaffCostsDisallowableAmountView]
         val msg          = messages(application, Language.English)
-        val form         = new StaffCostsDisallowableAmountFormProvider()(userType.toString, validAnswer)
+        val form         = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer)
         val expectedView = view(form, mode, userType, taxYear, stubBusinessId, TextAmount(validAnswer))(getRequest, msg).toString()
         contentAsString(result) mustEqual expectedView
       }
@@ -82,7 +82,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
         status(result) mustBe BAD_REQUEST
 
         val view = application.injector.instanceOf[StaffCostsDisallowableAmountView]
-        val form = new StaffCostsDisallowableAmountFormProvider()(userType.toString, validAnswer).bind(Map("value" -> invalidAnswer))
+        val form = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer).bind(Map("value" -> invalidAnswer))
         val expectedView =
           view(form, mode, userType, taxYear, stubBusinessId, TextAmount(validAnswer))(postRequest, messages(application, Language.English))
             .toString()

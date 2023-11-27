@@ -17,6 +17,7 @@
 package forms.expenses.staffCosts
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 import utils.MoneyUtils.formatMoney
 
@@ -29,7 +30,7 @@ class StaffCostsDisallowableAmountFormProviderSpec extends BigDecimalFieldBehavi
     val staffCosts       = 5623.50
     val staffCostsString = formatMoney(staffCosts)
 
-    val users = List(individual, agent)
+    val users = List(Individual, Agent)
 
     users.foreach { user =>
       val form = new StaffCostsDisallowableAmountFormProvider()(user, staffCosts)
