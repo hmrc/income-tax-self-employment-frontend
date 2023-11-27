@@ -17,17 +17,26 @@
 package navigation
 
 import models.Mode
-import models.common.{BusinessId, TaxYear, onwardRoute}
+import models.common.{AccountingType, BusinessId, TaxYear, onwardRoute}
 import models.database.UserAnswers
 import pages._
 import play.api.mvc.Call
 
 class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call =
+  override def nextPage(page: Page,
+                        mode: Mode,
+                        userAnswers: UserAnswers,
+                        taxYear: TaxYear,
+                        businessId: String,
+                        accountingType: Option[AccountingType] = None): Call =
     desiredRoute
 
-  override def nextNormalRoute(sourcePage: Page, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
+  override def nextNormalRoute(sourcePage: Page,
+                               userAnswers: UserAnswers,
+                               taxYear: TaxYear,
+                               businessId: BusinessId,
+                               accountingType: Option[AccountingType] = None): Call =
     desiredRoute
 
 }

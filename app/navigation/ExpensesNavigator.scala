@@ -19,7 +19,8 @@ package navigation
 import controllers.journeys.expenses._
 import controllers.{journeys, standard}
 import models._
-import models.common.{BusinessId, TaxYear}
+import models.common.AccountingType.{Accrual, Cash}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesRepairsAndMaintenance}
 import models.journeys.expenses.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
@@ -32,7 +33,7 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceCostsCYAPage,
   RepairsAndMaintenanceDisallowableAmountPage
 }
-import pages.expenses.staffCosts.StaffCostsAmountPage
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
 import play.api.mvc.Call
 
@@ -41,94 +42,108 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ExpensesNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
+  private val normalRoutes: Page => UserAnswers => TaxYear => BusinessId => Option[AccountingType] => Call = {
 
     case OfficeSuppliesAmountPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(OfficeSuppliesPage, Some(businessId.value)) match {
-              case Some(OfficeSupplies.YesAllowable) =>
-                officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
-              case Some(OfficeSupplies.YesDisallowable) =>
-                officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
-              case _ =>
-                standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+            _ =>
+              userAnswers.get(OfficeSuppliesPage, Some(businessId.value)) match {
+                case Some(OfficeSupplies.YesAllowable) =>
+                  officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
+                case Some(OfficeSupplies.YesDisallowable) =>
+                  officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
+                case _ =>
+                  standard.routes.JourneyRecoveryController.onPageLoad()
+              }
 
     case OfficeSuppliesDisallowableAmountPage =>
-      _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
+      _ => taxYear => businessId => _ => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
 
     case OfficeSuppliesCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesOfficeSupplies.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesOfficeSupplies.toString, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(GoodsToSellOrUsePage, Some(businessId.value)) match {
-              case Some(GoodsToSellOrUse.YesAllowable) =>
-                goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
-              case Some(GoodsToSellOrUse.YesDisallowable) =>
-                goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+            _ =>
+              userAnswers.get(GoodsToSellOrUsePage, Some(businessId.value)) match {
+                case Some(GoodsToSellOrUse.YesAllowable) =>
+                  goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
+                case Some(GoodsToSellOrUse.YesDisallowable) =>
+                  goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId.value, NormalMode)
+                case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
 
     case DisallowableGoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
+      _ => taxYear => businessId => _ => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
 
     case GoodsToSellOrUseCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
     case RepairsAndMaintenanceAmountPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(RepairsAndMaintenancePage, Some(businessId.value)) match {
-              case Some(RepairsAndMaintenance.YesAllowable) =>
-                repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
-              case Some(RepairsAndMaintenance.YesDisallowable) =>
-                repairsandmaintenance.routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+            _ =>
+              userAnswers.get(RepairsAndMaintenancePage, Some(businessId.value)) match {
+                case Some(RepairsAndMaintenance.YesAllowable) =>
+                  repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+                case Some(RepairsAndMaintenance.YesDisallowable) =>
+                  repairsandmaintenance.routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
 
     case RepairsAndMaintenanceDisallowableAmountPage =>
-      _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => _ => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
     case RepairsAndMaintenanceCostsCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesRepairsAndMaintenance.toString, NormalMode)
+            _ =>
+              journeys.routes.SectionCompletedStateController.onPageLoad(
+                taxYear,
+                businessId.value,
+                ExpensesRepairsAndMaintenance.toString,
+                NormalMode)
 
     case EntertainmentAmountPage =>
-      _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => _ => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentCYAPage =>
       _ =>
         taxYear =>
           businessId =>
-            journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesEntertainment.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesEntertainment.toString, NormalMode)
 
     case StaffCostsAmountPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
-              case Some(DisallowableStaffCosts.Yes) =>
-                staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to disallowable page when created
-              case Some(DisallowableStaffCosts.No) =>
-                staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+            optAccountingType =>
+              userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
+                case Some(DisallowableStaffCosts.Yes) if optAccountingType.getOrElse(Cash) == Accrual =>
+                  staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case Some(DisallowableStaffCosts.Yes | DisallowableStaffCosts.No) =>
+                  staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
+                case None => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
 
-    case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
+    case StaffCostsDisallowableAmountPage =>
+      _ =>
+        taxYear =>
+          businessId => _ => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
+
+    case _ => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => TaxYear => BusinessId => Call = {
@@ -150,19 +165,33 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
 
+    case StaffCostsDisallowableAmountPage =>
+      _ =>
+        taxYear =>
+          businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
+
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call =
+  def nextPage(page: Page,
+               mode: Mode,
+               userAnswers: UserAnswers,
+               taxYear: TaxYear,
+               businessId: String,
+               accountingType: Option[AccountingType] = None): Call =
     mode match {
-      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(BusinessId(businessId))
+      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(BusinessId(businessId))(accountingType)
       case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(BusinessId(businessId))
     }
 
   /** User also for CYA pages
     */
-  def nextNormalRoute(sourcePage: Page, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
-    normalRoutes(sourcePage)(userAnswers)(taxYear)(businessId)
+  def nextNormalRoute(sourcePage: Page,
+                      userAnswers: UserAnswers,
+                      taxYear: TaxYear,
+                      businessId: BusinessId,
+                      accountingType: Option[AccountingType] = None): Call =
+    normalRoutes(sourcePage)(userAnswers)(taxYear)(businessId)(accountingType)
 
 }

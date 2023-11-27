@@ -20,6 +20,7 @@ site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
 site.theseInclude = These include:
 site.theyInclude = They include:
+site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
 
 status.completed = COMPLETED
@@ -200,7 +201,6 @@ otherIncomeAmount.change.hidden = Change other income amount
 turnoverNotTaxable.title = Turnover exempt from tax
 turnoverNotTaxable.p1.individual = Some self-employment income is not taxed in the same way as your usual profit. You should not include it here.
 turnoverNotTaxable.p1.agent = Some self-employment income is not taxed in the same way as your client’s usual profit. You should not include it here.
-turnoverNotTaxable.p2 = This includes:
 turnoverNotTaxable.p3.individual = This does not include expenses that you’re claiming against profit. You can tell us about them later.
 turnoverNotTaxable.p3.agent = This does not include expenses that your client is claiming against profit. You can tell us about them later.
 turnoverNotTaxable.l1 = certain grants or subsidies
@@ -661,11 +661,12 @@ entertainmentCya.title.agent = Check your client’s entertainment expenses
 
 ########## Expenses - Staff Costs ##########
 
+staffCosts.personalUse = any amount that covers personal use
+
 ## Staff costs amount
 staffCostsAmount.title.individual = How much did you spend on staff costs?
 staffCostsAmount.title.agent = How much did your client spend on staff costs?
 staffCostsAmount.d1.heading = Understanding staff costs
-staffCostsAmount.d2.l2 = any amount that covers personal use
 staffCostsAmount.error.required.individual = Enter the amount you spent on staff costs
 staffCostsAmount.error.required.agent = Enter the amount your client spent on staff costs
 staffCostsAmount.error.nonNumeric.individual = The amount you spent on staff costs must be a number
@@ -675,6 +676,20 @@ staffCostsAmount.error.lessThanZero.agent = The amount your client spent on staf
 staffCostsAmount.error.overMax.individual = The amount you spent on staff costs must be less than £100,000,000,000
 staffCostsAmount.error.overMax.agent = The amount your client spent on staff costs must be less than £100,000,000,000
 staffCostsAmount.change.hidden = Change how much was spent on staff costs
+
+## Staff costs disallowable amount
+staffCostsDisallowableAmount.title.individual = How much of the £{0} you spent on staff costs is disallowable?
+staffCostsDisallowableAmount.title.agent = How much of the £{0} your client spent on staff costs is disallowable?
+staffCostsDisallowableAmount.d1.heading = Understanding disallowable staff costs
+staffCostsDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on staff costs that is disallowable
+staffCostsDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on staff costs that is disallowable
+staffCostsDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on staff costs must be a number
+staffCostsDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on staff costs must be a number
+staffCostsDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on staff costs must be more than £0
+staffCostsDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on staff costs must be more than £0
+staffCostsDisallowableAmount.error.overMax.individual = The disallowable amount you spent on staff costs must be the same as or less than £{0}
+staffCostsDisallowableAmount.error.overMax.agent = The disallowable amount your client spent on staff costs must be the same as or less than £{0}
+staffCostsDisallowableAmount.change.hidden = Change how much spent on staff costs is disallowable
 
 ########## Expenses - Simple Journey ##########
 
