@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package models.common
+package forms.expenses.tailoring
 
-import play.api.mvc.PathBindable
+import forms.mappings.Mappings
+import play.api.data.Form
 
-final case class TaxYear(value: Int) extends AnyVal {
-  override def toString: String = value.toString()
-}
+import javax.inject.Inject
 
-object TaxYear {
+class ExpensesTailoringCYAFormProvider @Inject() extends Mappings {
 
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
-
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("expensesTailoringCYA.error.required")
+        .verifying(maxLength(100, "expensesTailoringCYA.error.length"))
+    )
 }

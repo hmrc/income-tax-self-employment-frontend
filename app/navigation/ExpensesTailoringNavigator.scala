@@ -26,7 +26,7 @@ import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, P
 import pages._
 import pages.expenses.tailoring._
 import play.api.mvc.Call
-
+import controllers.journeys.expenses.tailoring
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -136,7 +136,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DepreciationPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case OtherExpensesPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+    case OtherExpensesPage => _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, BusinessId(businessId))
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
@@ -153,4 +153,12 @@ class ExpensesTailoringNavigator @Inject() () {
         checkRouteMap(page)(userAnswers)(taxYear, businessId.value, isAccrual)
     }
 
+  /** User also for CYA pages
+    */
+  def nextNormalRoute(sourcePage: Page,
+                      userAnswers: UserAnswers,
+                      taxYear: TaxYear,
+                      businessId: BusinessId,
+                      accountingType: Option[AccountingType]): Call =
+    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId.value, accountingType.map(_ == Accrual))
 }
