@@ -22,6 +22,7 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.journeys.Journey.{
   Abroad,
+  ExpensesConstruction,
   ExpensesEntertainment,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
@@ -123,8 +124,8 @@ object TradeJourneyStatusesViewModel {
             .onPageLoad(taxYear, businessId.value, NormalMode)
             .url // TODO expenses CYA page when built
         )
-      case ExpensesEntertainment | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance | ExpensesTotal |
-          NationalInsurance | TradeDetails | ExpensesStaffCosts =>
+      case ExpensesEntertainment | ExpensesConstruction | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance |
+          ExpensesTotal | NationalInsurance | TradeDetails | ExpensesStaffCosts =>
         ??? // TODO Other Journeys not yet implemented
 
     }
