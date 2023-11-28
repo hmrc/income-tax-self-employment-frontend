@@ -21,6 +21,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import viewmodels.journeys.SummaryListCYA
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, FormatStyle}
@@ -28,8 +29,8 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 object SelfEmploymentDetailsViewModel {
 
   def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList =
-    SummaryList(
-      rows = Seq(
+    SummaryListCYA.summaryList(
+      List(
         row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
         row("typeOfBusiness", business.typeOfBusiness, Some(isAgent)),
         row("accountingType", business.accountingType.getOrElse("")),
@@ -38,8 +39,7 @@ object SelfEmploymentDetailsViewModel {
         row("fosterCare", "No", Some(isAgent)),
         row("farmerOrMarketGardener", "No", Some(isAgent)),
         row("profitFromLiteraryOrCreativeWorks", "No", Some(isAgent))
-      ),
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
   private def row(rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)(implicit messages: Messages): SummaryListRow = {

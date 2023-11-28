@@ -23,9 +23,9 @@ import navigation.ExpensesNavigator
 import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.entertainment.EntertainmentAmountSummary
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.entertainment.EntertainmentCYAView
 
 import javax.inject.Inject
@@ -45,11 +45,10 @@ class EntertainmentCYAController @Inject() (override val messagesApi: MessagesAp
       .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
-    val summaryList = SummaryList(
-      rows = Seq(
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
         EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
     Ok(view(taxYear, request.user.userType, summaryList, nextRoute))

@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear}
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
@@ -42,7 +41,7 @@ class ExpensesTailoringCYAController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val userType    = request.userType
-    val summaryList = SummaryListCYA.summaryList(Nil) // TODO Add during Expenses tailoring CYA story
+    val summaryList = SummaryListCYA.summaryListOpt(Nil) // TODO Add during Expenses tailoring CYA story
 
     Ok(
       view(

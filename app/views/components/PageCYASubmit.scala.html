@@ -15,12 +15,11 @@
  *@
 
 @import models.common._
-@import templates.helpers.{Button, Heading}
+@import templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukButton: GovukButton,
-        button: Button,
         heading: Heading,
         govukSummaryList: GovukSummaryList)
 
@@ -42,6 +41,8 @@
     @govukSummaryList(summaryList)
 
     @formHelper(submitCall) {
-        @button("site.saveAndContinue")
+        @govukButton(
+            ButtonViewModel(messages("site.saveAndContinue"))
+        )
     }
 }
