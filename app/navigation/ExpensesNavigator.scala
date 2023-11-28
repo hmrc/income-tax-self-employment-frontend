@@ -135,7 +135,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesConstruction.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesConstruction.toString, NormalMode)
 
     case StaffCostsAmountPage =>
       userAnswers =>

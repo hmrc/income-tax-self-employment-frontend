@@ -23,9 +23,9 @@ import navigation.ExpensesNavigator
 import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
 
 import javax.inject.Inject
@@ -42,14 +42,13 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(ConstructionIndustryCYAPage, NormalMode, request.userAnswers, taxYear, businessId.value)
+      .nextPage(ConstructionIndustryCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
-    val summaryList = SummaryList(
-      rows = Seq(
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
         ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
     Ok(view(taxYear, request.userType, summaryList, nextRoute))
