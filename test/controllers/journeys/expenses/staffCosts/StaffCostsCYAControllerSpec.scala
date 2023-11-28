@@ -47,7 +47,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
     }
   }
 
-  lazy val routeUnderTest: String                          = routes.StaffCostsCYAController.onPageLoad(taxYear, stubBusinessId).url
+  lazy val routeUnderTest: String                          = routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
   lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routeUnderTest)
 
   "onPageLoad" should {
@@ -68,8 +68,8 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
         implicit val msg: Messages = messages(application, Language.English)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
-          StaffCostsAmountSummary.row(dataRequest, taxYear, stubBusinessId),
-          StaffCostsDisallowableAmountSummary.row(dataRequest.userAnswers, taxYear, stubBusinessId, dataRequest.userType)
+          StaffCostsAmountSummary.row(dataRequest, taxYear, businessId),
+          StaffCostsDisallowableAmountSummary.row(dataRequest.userAnswers, taxYear, businessId, dataRequest.userType)
         ).flatten
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }

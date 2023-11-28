@@ -42,7 +42,7 @@ class EntertainmentCYAController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear, businessId.value)
+      .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
     val summaryList = SummaryList(

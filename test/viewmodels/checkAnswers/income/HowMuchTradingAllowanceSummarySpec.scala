@@ -16,8 +16,8 @@
 
 package viewmodels.checkAnswers.income
 
+import base.SpecBase.{businessId, stubbedBusinessId, taxYear}
 import cats.data.EitherT
-import models.common.TaxYear
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -27,24 +27,22 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id         = "some_id"
-  private val businessId = "some_business_id"
-  private val taxYear    = TaxYear(2024)
-  private val authUser   = "individual"
+  private val id       = "some_id"
+  private val authUser = "individual"
 
   private val turnoverIncomeAmountPageData     = Json.obj("turnoverIncomeAmount" -> 456.00)
   private val maxTradingAllowancePageData      = Json.obj("howMuchTradingAllowance" -> "maximum")
   private val lessThanTradingAllowancePageData = Json.obj("howMuchTradingAllowance" -> "lessThan")
 
-  private val otherData = Json.obj(businessId -> Json.obj("otherPage" -> 123.45))
+  private val otherData = Json.obj(stubbedBusinessId -> Json.obj("otherPage" -> 123.45))
 
   private val completeUserAnswersWithMaxTradingAllowance =
-    UserAnswers(id, Json.obj(businessId -> (turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)))
+    UserAnswers(id, Json.obj(stubbedBusinessId -> (turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)))
 
   private val completeUserAnswersWithMinimumTradingAllowance =
-    UserAnswers(id, Json.obj(businessId -> (turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)))
+    UserAnswers(id, Json.obj(stubbedBusinessId -> (turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)))
 
-  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, Json.obj(businessId -> maxTradingAllowancePageData))
+  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, Json.obj(stubbedBusinessId -> maxTradingAllowancePageData))
 
   private val otherUserAnswers = UserAnswers(id, otherData)
 

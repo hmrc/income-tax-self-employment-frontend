@@ -22,7 +22,7 @@ import forms.income.AnyOtherIncomeFormProvider
 import models.Mode
 import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,9 +48,9 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
+      val preparedForm = request.userAnswers.get(AnyOtherIncomePage, Some(businessId.value)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -59,7 +59,7 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
   }
 
   // TODO simplify by using EitherT + for comprehension
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
@@ -72,9 +72,12 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
                 for {
                   updatedAnswers <- Future.fromTry {
                     val userAnswers =
-                      if (!value) request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId)).get
-                      else request.userAnswers
-                    userAnswers.set(AnyOtherIncomePage, value, Some(businessId))
+                      if (!value) {
+                        request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId.value)).get
+                      } else {
+                        request.userAnswers
+                      }
+                    userAnswers.set(AnyOtherIncomePage, value, Some(businessId.value))
                   }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(

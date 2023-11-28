@@ -59,14 +59,14 @@ class IncomeCYAControllerSpec extends SpecBase {
 
           running(application) {
             val view    = application.injector.instanceOf[IncomeCYAView]
-            val request = FakeRequest(GET, IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId).url)
+            val request = FakeRequest(GET, IncomeCYAController.onPageLoad(taxYear, businessId).url)
 
             val expectedSummaryListRows = Seq(
-              AnyOtherIncomeSummary.row(userAnswers, taxYear, authUser, stubbedBusinessId),
-              IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, authUser, stubbedBusinessId),
-              TradingAllowanceSummary.row(userAnswers, taxYear, authUser, stubbedBusinessId),
-              TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, stubbedBusinessId),
-              TurnoverNotTaxableSummary.row(userAnswers, taxYear, authUser, stubbedBusinessId)
+              AnyOtherIncomeSummary.row(userAnswers, taxYear, authUser, businessId),
+              IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, authUser, businessId),
+              TradingAllowanceSummary.row(userAnswers, taxYear, authUser, businessId),
+              TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, businessId),
+              TurnoverNotTaxableSummary.row(userAnswers, taxYear, authUser, businessId)
             ).flatten
 
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
@@ -76,7 +76,7 @@ class IncomeCYAControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             val expectedNextRoute =
-              controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, Income.toString, NormalMode).url
+              controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode).url
 
             contentAsString(result) mustEqual view(taxYear, expectedSummaryLists, expectedNextRoute, authUser)(
               request,

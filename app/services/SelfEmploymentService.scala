@@ -40,22 +40,19 @@ import scala.concurrent.{ExecutionContext, Future}
 trait SelfEmploymentServiceBase {
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
-  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
 }
 
-class SelfEmploymentService @Inject() (
-    connector: SelfEmploymentConnector,
-    sessionRepository: SessionRepository
-)(implicit ec: ExecutionContext)
+class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessionRepository: SessionRepository)(implicit ec: ExecutionContext)
     extends SelfEmploymentServiceBase
     with Logging {
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = {
-    val tradeId   = TradeId(s"${TradeDetails.toString}-${nino.value}")
+    val tradeId   = BusinessId(s"${TradeDetails.toString}-${nino.value}")
     val journeyId = journey.toString
 
-    EitherT(connector.getJourneyState(tradeId.value, journeyId, taxYear, mtditid.value))
+    EitherT(connector.getJourneyState(tradeId, journeyId, taxYear, mtditid.value))
       .map(JourneyStatus.fromBooleanOpt)
   }
 
@@ -64,7 +61,7 @@ class SelfEmploymentService @Inject() (
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: String, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
     connector.getBusiness(nino, businessId, mtditid).map {
       case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)
       case Left(error)                                                       => Left(error)
@@ -82,8 +79,8 @@ object SelfEmploymentService {
 
   private val maxIncomeTradingAllowance: BigDecimal = 1000
 
-  def getIncomeTradingAllowance(businessId: String, userAnswers: UserAnswers): BigDecimal = {
-    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
+  def getIncomeTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): BigDecimal = {
+    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId.value)).getOrElse(maxIncomeTradingAllowance)
     if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
   }
 }

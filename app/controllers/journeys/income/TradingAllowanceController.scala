@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.journeys.income.TradingAllowance.DeclareExpenses
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
@@ -48,12 +48,12 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId)) match {
+          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId.value)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -62,7 +62,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -76,14 +76,16 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
                 for {
                   updatedAnswers <- Future.fromTry {
                     val userAnswers =
-                      if (value.equals(DeclareExpenses))
+                      if (value.equals(DeclareExpenses)) {
                         request.userAnswers
-                          .remove(HowMuchTradingAllowancePage, Some(businessId))
+                          .remove(HowMuchTradingAllowancePage, Some(businessId.value))
                           .get
-                          .remove(TradingAllowanceAmountPage, Some(businessId))
+                          .remove(TradingAllowanceAmountPage, Some(businessId.value))
                           .get
-                      else request.userAnswers
-                    userAnswers.set(TradingAllowancePage, value, Some(businessId))
+                      } else {
+                        request.userAnswers
+                      }
+                    userAnswers.set(TradingAllowancePage, value, Some(businessId.value))
                   }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))

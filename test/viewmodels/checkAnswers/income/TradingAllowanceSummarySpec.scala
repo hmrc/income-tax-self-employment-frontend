@@ -15,7 +15,7 @@
  */
 
 package viewmodels.checkAnswers.income
-import models.common.TaxYear
+import base.SpecBase.{businessId, stubbedBusinessId, taxYear}
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -26,13 +26,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id         = "some_id"
-  private val businessId = "some_business_id"
-  private val taxYear    = TaxYear(2024)
-  private val authUser   = "agent"
+  private val id       = "some_id"
+  private val authUser = "agent"
 
-  private val data          = Json.obj(businessId -> Json.obj("tradingAllowance" -> "useTradingAllowance"))
-  private val someOtherData = Json.obj(businessId -> Json.obj("someOtherPage" -> "some_other_value"))
+  private val data          = Json.obj(stubbedBusinessId -> Json.obj("tradingAllowance" -> "useTradingAllowance"))
+  private val someOtherData = Json.obj(stubbedBusinessId -> Json.obj("someOtherPage" -> "some_other_value"))
 
   private val userAnswers          = UserAnswers(id, data)
   private val someOtherUserAnswers = UserAnswers(id, someOtherData)

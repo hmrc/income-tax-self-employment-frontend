@@ -15,49 +15,44 @@
  */
 
 package viewmodels.checkAnswers.income
-import models.common.TaxYear
+import base.SpecBase
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class AnyOtherIncomeSummarySpec extends AnyWordSpec with Matchers {
+class AnyOtherIncomeSummarySpec extends SpecBase {
 
-  private val id         = "some_id"
-  private val businessId = "some_business_id"
-  private val taxYear    = TaxYear(2024)
-  private val authUser   = "individual"
+  private val authUser = "individual"
 
-  private val data          = Json.obj(businessId -> Json.obj("anyOtherIncome" -> true))
+  private val data          = Json.obj(stubbedBusinessId -> Json.obj("anyOtherIncome" -> true))
   private val someOtherData = Json.obj("someOtherPage" -> true)
 
-  private val userAnswers          = UserAnswers(id, data)
-  private val someOtherUserAnswers = UserAnswers(id, someOtherData)
+  private val userAnswers          = UserAnswers(userAnswersId, data)
+  private val someOtherUserAnswers = UserAnswers(userAnswersId, someOtherData)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  "AnyOtherIncomeSummary" when {
-    "user answers for AnyOtherIncomePage exist" should {
-      "generate a summary list row" in {
+  "AnyOtherIncomeSummary" - {
+    "when user answers for AnyOtherIncomePage exist" - {
+      "should generate a summary list row" in {
         val result = AnyOtherIncomeSummary.row(userAnswers, taxYear, authUser, businessId)
 
-        result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text("anyOtherIncome.title.individual")
-        result.get.value.content shouldBe Text("site.yes")
+        result.get mustBe a[SummaryListRow]
+        result.get.key.content mustBe Text("anyOtherIncome.title.individual")
+        result.get.value.content mustBe Text("site.yes")
       }
     }
 
-    "user answers do not exist for AnyOtherIncomePage" should {
-      "return None" in {
+    "when user answers do not exist for AnyOtherIncomePage" - {
+      "should return None" in {
         val result = AnyOtherIncomeSummary.row(someOtherUserAnswers, taxYear, authUser, businessId)
 
-        result shouldBe None
+        result mustBe None
       }
     }
 

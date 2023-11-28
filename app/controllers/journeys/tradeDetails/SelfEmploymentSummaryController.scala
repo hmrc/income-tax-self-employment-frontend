@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import handlers.ErrorHandler
 import models.NormalMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.TradeDetails
 import models.requests.OptionalDataRequest
@@ -52,7 +52,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
       case Left(_) => errorHandler.internalServerError()
       case Right(model) =>
-        val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), bd.businessId)))
+        val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
         val nextRoute = navigate(taxYear, navigator)
         Ok(view(viewModel, nextRoute))
     }
@@ -60,7 +60,9 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
 
   private def navigate(taxYear: TaxYear, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
     val businessId =
-      TradeDetails.toString + "-" + request.user.nino // TODO Replace with correct one - we will get it from backend / get business endpoint
+      BusinessId(
+        TradeDetails.toString + "-" + request.user.nino
+      ) // TODO Replace with correct one - we will get it from backend / get business endpoint
     navigator
       .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
       .url
@@ -70,7 +72,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
 
 object SelfEmploymentSummaryController {
 
-  def generateRowList(taxYear: TaxYear, model: Seq[(String, String)])(implicit messages: Messages): SummaryList =
+  def generateRowList(taxYear: TaxYear, model: Seq[(String, BusinessId)])(implicit messages: Messages): SummaryList =
     SummaryList(rows = model.map { case (tradingName, businessId) =>
       row(tradingName, routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
     })

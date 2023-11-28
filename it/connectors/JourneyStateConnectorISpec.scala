@@ -40,14 +40,14 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       NO_CONTENT,
       Right(None),
       () => stubGetWithoutResponseBody(getJourneyStateUrl, NO_CONTENT),
-      () => connector.getJourneyState(businessId.value, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
     )
 
     behave like journeyStateRequestIsSuccessful(
       OK,
       Right(Some(completeState)),
       () => stubGetWithResponseBody(getJourneyStateUrl, OK, completeState.toString, headersSentToBE),
-      () => connector.getJourneyState(businessId.value, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -57,7 +57,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => connector.getJourneyState(businessId.value, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
     )
   }
 
@@ -70,7 +70,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       NO_CONTENT,
       Right(None),
       () => stubPutWithoutResponseBody(saveJourneyStateUrl, NO_CONTENT),
-      () => connector.saveJourneyState(businessId.value, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -80,7 +80,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => connector.saveJourneyState(businessId.value, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
     )
   }
 

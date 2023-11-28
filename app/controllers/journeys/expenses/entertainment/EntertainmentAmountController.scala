@@ -62,7 +62,7 @@ class EntertainmentAmountController @Inject() (override val messagesApi: Message
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(EntertainmentAmountPage, value, Some(businessId.value)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(EntertainmentAmountPage, mode, updatedAnswers, taxYear, businessId.value))
+            } yield Redirect(navigator.nextPage(EntertainmentAmountPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

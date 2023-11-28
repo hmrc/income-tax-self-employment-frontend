@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.TaxiMinicabOrRoadHaulageFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +64,7 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TaxiMinicabOrRoadHaulagePage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

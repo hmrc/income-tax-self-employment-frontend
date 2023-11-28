@@ -19,7 +19,7 @@ package navigation
 import controllers.journeys.expenses.tailoring.routes._
 import controllers.standard.routes._
 import models._
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -53,11 +53,12 @@ class ExpensesTailoringNavigator @Inject() () {
         (taxYear, businessId, optIsAccrual) =>
           optIsAccrual match {
             case Some(true)  => EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) => ProfessionalServiceExpensesController.onPageLoad(taxYear, BusinessId(businessId), NormalMode)
             case _           => JourneyRecoveryController.onPageLoad()
           }
 
-    case EntertainmentCostsPage => _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+    case EntertainmentCostsPage =>
+      _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, BusinessId(businessId), NormalMode)
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
@@ -144,12 +145,12 @@ class ExpensesTailoringNavigator @Inject() () {
     _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String, isAccrual: Option[Boolean] = None): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)
+        normalRoutes(page)(userAnswers)(taxYear, businessId.value, isAccrual)
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual)
+        checkRouteMap(page)(userAnswers)(taxYear, businessId.value, isAccrual)
     }
 
 }

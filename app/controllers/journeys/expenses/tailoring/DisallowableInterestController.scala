@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.DisallowableInterestFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableInterestPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +64,7 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableInterestPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

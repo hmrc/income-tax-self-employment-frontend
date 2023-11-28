@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -76,7 +76,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )
       }
   }

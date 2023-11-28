@@ -70,7 +70,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
       // date (awaiting a JIRA ticket), however we need to do something now.
       (for {
         _ <- EitherT(expensesService.sendExpensesAnswers(data, journeyAnswers))
-      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)))
+      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)))
         .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
         .merge
   }

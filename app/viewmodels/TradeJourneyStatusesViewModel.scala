@@ -106,13 +106,13 @@ object TradeJourneyStatusesViewModel {
     journey match {
       case Abroad =>
         determineUrl(
-          abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId.value, NormalMode).url,
-          abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId.value).url
+          abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
+          abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
         )
       case Income =>
         determineUrl(
-          income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId.value, NormalMode).url,
-          income.routes.IncomeCYAController.onPageLoad(taxYear, businessId.value).url
+          income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
+          income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesTailoring =>
         determineUrl(

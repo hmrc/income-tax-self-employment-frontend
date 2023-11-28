@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverIncomeAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,12 +47,12 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
+          val preparedForm = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId.value)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -61,7 +61,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -73,7 +73,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId.value)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
             )

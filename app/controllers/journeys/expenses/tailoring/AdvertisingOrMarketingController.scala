@@ -22,7 +22,7 @@ import forms.expenses.tailoring.AdvertisingOrMarketingFormProvider
 import models.Mode
 import models.common.AccountingType.Accrual
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.AdvertisingOrMarketingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -60,7 +60,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(userType(request.user.isAgent))
@@ -73,7 +73,13 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
                   navigator
-                    .nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName))))
+                    .nextPage(
+                      AdvertisingOrMarketingPage,
+                      mode,
+                      updatedAnswers,
+                      taxYear,
+                      BusinessId(businessId),
+                      Some(accountingType.equals(Accrual.entryName))))
             )
       }
   }

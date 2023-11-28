@@ -53,14 +53,14 @@ class RepairsAndMaintenanceAmountController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     val result = for {
-      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId.value, request.user.mtditid))
+      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
       accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
       existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
       form           = formProvider(userType)
       preparedForm   = existingAnswer.fold(form)(form.fill)
-    } yield Ok(view(preparedForm, mode, userType, taxYear, BusinessId(businessId.value), accountingType))
+    } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
 
     handleResult(result.value)
 
@@ -75,7 +75,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
     def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
       selfEmploymentService
         .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
-        .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId.value)))
+        .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId)))
 
     def handleForm(form: Form[BigDecimal],
                    userType: UserType,
@@ -89,7 +89,7 @@ class RepairsAndMaintenanceAmountController @Inject() (
         )
 
     val result = for {
-      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId.value, request.user.mtditid))
+      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
       accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))

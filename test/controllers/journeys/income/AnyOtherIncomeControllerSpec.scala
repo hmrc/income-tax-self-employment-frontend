@@ -23,7 +23,7 @@ import forms.income.AnyOtherIncomeFormProvider
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
@@ -42,10 +42,10 @@ import scala.concurrent.Future
 class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider           = new AnyOtherIncomeFormProvider()
-  val otherIncomeAmountCall  = OtherIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
-  val turnoverNotTaxableCall = TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
-  val tradingAllowanceCall   = TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
-  val incomeCyaCall          = IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+  val otherIncomeAmountCall  = OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val turnoverNotTaxableCall = TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceCall   = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val incomeCyaCall          = IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
@@ -75,7 +75,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -84,7 +84,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[AnyOtherIncomeView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -101,7 +101,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
+              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[AnyOtherIncomeView]
 
@@ -109,7 +109,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -125,7 +125,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+          val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -153,9 +153,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -179,9 +179,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -211,9 +211,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accountingType))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accountingType))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -238,9 +238,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -263,9 +263,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -287,9 +287,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
-              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -300,7 +300,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -316,9 +316,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
-              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -329,7 +329,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -345,7 +345,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+          val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
