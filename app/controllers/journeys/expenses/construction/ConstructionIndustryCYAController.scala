@@ -52,7 +52,7 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
       classes = "govuk-!-margin-bottom-7"
     )
 
-    Ok(view(taxYear, request.user.userType, summaryList, nextRoute))
+    Ok(view(taxYear, request.userType, summaryList, nextRoute))
   }
 
 }
