@@ -45,7 +45,7 @@ class ConstructionIndustryCYAControllerSpec extends SpecBase {
 
   private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
 
-  "ConstructionIndustryCYAController Controller" - {
+  "ConstructionIndustryCYA Controller" - {
 
     userTypes.foreach { userType =>
       s".onPageLoad when user is an $userType should" - {

@@ -726,5 +726,5 @@ constructionIndustryAmount.error.overMax.agent = The amount your client spent on
 constructionIndustryAmount.change.hidden = Change how much was spent on construction industry
 
 ## Construction Industry CYA
-constructionIndustryAmount.title.individual = Check your construction industry subcontractors expenses
-constructionIndustryAmount.title.agent = Check your client’s construction industry subcontractors expenses
+constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
+constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
