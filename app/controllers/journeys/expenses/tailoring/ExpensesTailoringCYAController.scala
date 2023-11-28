@@ -17,16 +17,15 @@
 package controllers.journeys.expenses.tailoring
 
 import controllers.actions._
-import forms.expenses.tailoring.ExpensesTailoringCYAFormProvider
+import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear}
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.tailoring.AdvertisingOrMarketingSummary
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
-import controllers.journeys.expenses.tailoring
 
 import javax.inject.Inject
 import scala.annotation.nowarn
@@ -36,22 +35,14 @@ class ExpensesTailoringCYAController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: ExpensesTailoringCYAFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: ExpensesTailoringCYAView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val userType = request.userType
-
-    val summaryList = SummaryList(
-      rows = Seq( // TODO Add during Expenses tailoring CYA story
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
-    )
+    val userType    = request.userType
+    val summaryList = SummaryListCYA.summaryList(Nil) // TODO Add during Expenses tailoring CYA story
 
     Ok(
       view(

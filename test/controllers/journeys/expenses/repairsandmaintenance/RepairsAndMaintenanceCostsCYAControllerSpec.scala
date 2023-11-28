@@ -29,7 +29,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
@@ -85,8 +85,8 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
     (application, userAnswers, route(application, getRequest).value)
   }
 
-  def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages) = {
-    val view        = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
+  def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
+    val view: RepairsAndMaintenanceCostsCYAView = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
     val summaryList = SummaryList(expectedRows)
     val nextRoute   = onwardRoute.url
     view(taxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
