@@ -16,8 +16,8 @@
 
 package controllers.journeys.expenses.tailoring
 
+import base.CYAOnPageLoadControllerSpec
 import base.SpecBase.{stubBusinessId, taxYear}
-import controllers.base.CYAOnPageLoadControllerSpec
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import org.scalatest.prop.TableFor2

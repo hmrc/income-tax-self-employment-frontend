@@ -136,7 +136,8 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DepreciationPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case OtherExpensesPage => _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, BusinessId(businessId))
+    case OtherExpensesPage =>
+      _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, BusinessId(businessId))
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }

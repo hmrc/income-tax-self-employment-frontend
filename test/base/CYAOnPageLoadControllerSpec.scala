@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.base
+package base
 
-import base.SpecBase
-import base.SpecBase.{taxYear, _}
+import SpecBase._
 import common.TestApp.buildAppFromUserAnswers
 import models.common.{BusinessId, Language, TaxYear}
 import models.database.UserAnswers
