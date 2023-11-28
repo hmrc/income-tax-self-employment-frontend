@@ -54,6 +54,10 @@ object Journey {
     override def toString: String = "expenses-entertainment"
   }
 
+  case object ExpensesConstruction extends Journey {
+    override def toString: String = "expenses-construction"
+  }
+
   case object ExpensesStaffCosts extends Journey {
     override def toString: String = "expenses-staff-costs"
   }
