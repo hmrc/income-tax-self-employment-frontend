@@ -42,9 +42,9 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppl
          |""".stripMargin)
     .as[JsObject]
 
-  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  override protected lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+  override lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)))
 
