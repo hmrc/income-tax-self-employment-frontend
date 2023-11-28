@@ -23,11 +23,12 @@ import models.common.AccountingType.{Accrual, Cash}
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{
-  ExpensesConstruction,
   ExpensesEntertainment,
+  ExpensesConstruction,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
-  ExpensesRepairsAndMaintenance
+  ExpensesRepairsAndMaintenance,
+  ExpensesStaffCosts
 }
 import models.journeys.expenses.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
 import pages._
@@ -40,7 +41,7 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceCostsCYAPage,
   RepairsAndMaintenanceDisallowableAmountPage
 }
-import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
 import play.api.mvc.Call
 
@@ -133,7 +134,7 @@ class ExpensesNavigator @Inject() () {
             _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesEntertainment.toString, NormalMode)
 
     case ConstructionIndustryAmountPage =>
-      _ => taxYear => businessId => _ => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => _ => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
     case ConstructionIndustryCYAPage =>
       _ =>
@@ -150,14 +151,18 @@ class ExpensesNavigator @Inject() () {
                 case Some(DisallowableStaffCosts.Yes) if optAccountingType.getOrElse(Cash) == Accrual =>
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case Some(DisallowableStaffCosts.Yes | DisallowableStaffCosts.No) =>
-                  staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
-                case None => standard.routes.JourneyRecoveryController.onPageLoad()
+                  staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
+                case _ => standard.routes.JourneyRecoveryController.onPageLoad()
               }
 
     case StaffCostsDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case StaffCostsCYAPage =>
       _ =>
         taxYear =>
-          businessId => _ => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO to CYA page when created
+          businessId =>
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesStaffCosts.toString, NormalMode)
 
     case _ => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -180,14 +185,10 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
     case StaffCostsAmountPage =>
-      _ =>
-        taxYear =>
-          businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
+      _ => taxYear => businessId => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 
     case StaffCostsDisallowableAmountPage =>
-      _ =>
-        taxYear =>
-          businessId => staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, CheckMode) // TODO to CYA page when created
+      _ => taxYear => businessId => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 

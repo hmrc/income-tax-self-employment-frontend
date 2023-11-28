@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.staffCosts
 
 import controllers.journeys.expenses.staffCosts.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.DisallowableStaffCosts
 import models.journeys.expenses.DisallowableStaffCosts._
@@ -32,16 +32,16 @@ import viewmodels.implicits._
 
 object StaffCostsDisallowableAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(DisallowableStaffCostsPage, Some(businessId))
+      .get(DisallowableStaffCostsPage, Some(businessId.value))
       .filter(isDisallowable)
-      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId.value, userType))
 
-  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages) =
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: UserType)(implicit messages: Messages) =
     for {
-      disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId))
-      allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId))
+      disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId.value))
+      allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId.value))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),

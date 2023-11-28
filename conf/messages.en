@@ -276,7 +276,23 @@ tradingAllowanceAmount.change.hidden = Change trading allowance amount
 checkYourIncome.title.individual = Check your income
 checkYourIncome.title.agent = Check your client’s income
 
-###### Expenses Journey ######
+########## Expenses - Simple Journey ##########
+
+totalExpenses.title.individual = How much were your total expenses?
+totalExpenses.title.agent = How much were your client’s total expenses?
+totalExpenses.error.required.individual = Enter your total expenses
+totalExpenses.error.required.agent = Enter your client’s total expenses
+totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
+totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
+totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
+totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
+totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
+totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
+totalExpenses.change.hidden = Change how much the total expenses were
+
+totalExpensesCYA.title = totalExpensesCYA
+
+###### Expenses - Tailoring ######
 
 ## Common
 expenses.yesAllowable.individual = Yes, all of my expenses are allowable
@@ -691,21 +707,9 @@ staffCostsDisallowableAmount.error.overMax.individual = The disallowable amount 
 staffCostsDisallowableAmount.error.overMax.agent = The disallowable amount your client spent on staff costs must be the same as or less than £{0}
 staffCostsDisallowableAmount.change.hidden = Change how much spent on staff costs is disallowable
 
-########## Expenses - Simple Journey ##########
-
-totalExpenses.title.individual = How much were your total expenses?
-totalExpenses.title.agent = How much were your client’s total expenses?
-totalExpenses.error.required.individual = Enter your total expenses
-totalExpenses.error.required.agent = Enter your client’s total expenses
-totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
-totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
-totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
-totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
-totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
-totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
-totalExpenses.change.hidden = Change how much the total expenses were
-
-totalExpensesCYA.title = totalExpensesCYA
+## Staff costs CYA
+staffCostsCya.title.individual = Check your staff costs
+staffCostsCya.title.agent = Check your client’s staff costs
 
 ########## Expenses - Construction Industry ##########
 

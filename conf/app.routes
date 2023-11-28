@@ -100,7 +100,14 @@ POST        /:taxYear/:businessId/income/change-trading-allowance/amount        
 
 GET         /:taxYear/:businessId/income/check-your-income                                       controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: String)
 
-########## Expenses Journey ##########
+########## Expenses - Single Amount ##########
+
+GET         /:taxYear/:businessId/expenses/total-expenses                                                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/total-expenses                                                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: TaxYear, businessId: String, mode: Mode = CheckMode)
+
+########## Expenses - Tailoring ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies                                                            controllers.journeys.expenses.tailoring.OfficeSuppliesController.onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/office-supplies                                                            controllers.journeys.expenses.tailoring.OfficeSuppliesController.onSubmit(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
@@ -261,6 +268,7 @@ POST        /:taxYear/:businessId/expenses/staff/disallowable-amount            
 GET         /:taxYear/:businessId/expenses/change-staff/disallowable-amount                                    controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-staff/disallowable-amount                                    controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 ########## Expenses - Construction Industry ##########
 
 GET         /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -270,9 +278,3 @@ POST        /:taxYear/:businessId/expenses/change-construction-industry/amount  
 
 GET         /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
-########## Expenses - Single Amount ##########
-
-GET         /:taxYear/:businessId/expenses/total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: TaxYear, businessId: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-total-expenses                                               controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-total-expenses                                               controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: TaxYear, businessId: String, mode: Mode = CheckMode)
