@@ -83,7 +83,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(DisallowableSubcontractorCostsPage, DisallowableSubcontractorCosts.values.head, Some(stubbedBusinessId))
+                .set(DisallowableSubcontractorCostsPage, DisallowableSubcontractorCosts.values.head, Some(businessId))
                 .success
                 .value
 

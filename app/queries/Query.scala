@@ -16,6 +16,7 @@
 
 package queries
 
+import models.common.BusinessId
 import models.database.UserAnswers
 import play.api.libs.json.JsPath
 
@@ -23,7 +24,7 @@ import scala.util.{Success, Try}
 
 sealed trait Query {
 
-  def path(businessId: Option[String]): JsPath
+  def path(businessId: Option[BusinessId]): JsPath
 }
 
 trait Gettable[A] extends Query

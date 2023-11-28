@@ -75,7 +75,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK with the correct view" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -102,10 +102,10 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId))
+              .set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId))
               .success
               .value
-              .set(HowMuchTradingAllowancePage, HowMuchTradingAllowance.values.head, Some(stubbedBusinessId))
+              .set(HowMuchTradingAllowancePage, HowMuchTradingAllowance.values.head, Some(businessId))
               .success
               .value
 
@@ -216,7 +216,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         "in NormalMode" in {
 
           val userAnswer  = Maximum
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           val mockSessionRepository = mock[SessionRepository]
 
@@ -240,13 +240,13 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
         "in CheckMode" in {
 
           val userAnswer  = Maximum
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           val mockSessionRepository = mock[SessionRepository]
 
@@ -270,7 +270,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
       }
@@ -279,7 +279,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -309,7 +309,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]

@@ -90,7 +90,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.head, Some(stubbedBusinessId))
+                .set(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.head, Some(businessId))
                 .success
                 .value
 

@@ -47,12 +47,12 @@ class ConstructionIndustryAmountController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ConstructionIndustryAmountPage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(ConstructionIndustryAmountPage, Some(businessId)) match {
         case None        => formProvider(request.userType)
         case Some(value) => formProvider(request.userType).fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.userType, taxYear, BusinessId(businessId.value)))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -63,7 +63,7 @@ class ConstructionIndustryAmountController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId.value)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear, businessId))
         )

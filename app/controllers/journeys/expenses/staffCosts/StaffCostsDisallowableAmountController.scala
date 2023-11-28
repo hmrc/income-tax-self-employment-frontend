@@ -51,7 +51,7 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getStaffCostsAmount(businessId).map { allowableAmount =>
-        val preparedForm = request.userAnswers.get(StaffCostsDisallowableAmountPage, Some(businessId.value)) match {
+        val preparedForm = request.userAnswers.get(StaffCostsDisallowableAmountPage, Some(businessId)) match {
           case Some(existingAnswer) => formProvider(request.userType, allowableAmount).fill(existingAnswer)
           case None                 => formProvider(request.userType, allowableAmount)
         }
@@ -79,6 +79,6 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
   }
 
   private def getStaffCostsAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(StaffCostsAmountPage, Some(businessId.value)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
+    request.userAnswers.get(StaffCostsAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
 
 }

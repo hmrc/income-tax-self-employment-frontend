@@ -34,14 +34,14 @@ object StaffCostsDisallowableAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(DisallowableStaffCostsPage, Some(businessId.value))
+      .get(DisallowableStaffCostsPage, Some(businessId))
       .filter(isDisallowable)
-      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId.value, userType))
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
-  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: UserType)(implicit messages: Messages) =
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages) =
     for {
-      disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId.value))
-      allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId.value))
+      disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
@@ -52,7 +52,7 @@ object StaffCostsDisallowableAmountSummary {
         classes = "govuk-!-width-one-third"
       ),
       actions = Seq(
-        ActionItemViewModel("site.change", routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, BusinessId(businessId), CheckMode).url)
+        ActionItemViewModel("site.change", routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
           .withVisuallyHiddenText(messages("staffCostsDisallowableAmount.change.hidden"))
       )
     )

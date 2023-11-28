@@ -52,7 +52,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
       selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+          val preparedForm = request.userAnswers.get(FinancialExpensesPage, Some(BusinessId(businessId))) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -73,7 +73,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(FinancialExpensesPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(FinancialExpensesPage, value, Some(BusinessId(businessId))))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )

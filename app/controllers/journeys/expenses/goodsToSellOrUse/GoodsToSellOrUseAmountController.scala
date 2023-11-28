@@ -54,13 +54,14 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
-        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-          case None        => formProvider(user)
-          case Some(value) => formProvider(user).fill(value)
-        }
+        val preparedForm =
+          request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(BusinessId(businessId))) match {
+            case None        => formProvider(user)
+            case Some(value) => formProvider(user).fill(value)
+          }
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         Ok(view(preparedForm, mode, user, taxYear, businessId, accountingType, taxiDriver))
     }
@@ -73,7 +74,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
         val user = userType(request.user.isAgent)
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         val form = formProvider(user)
         form
@@ -83,7 +84,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(BusinessId(businessId))))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
           )

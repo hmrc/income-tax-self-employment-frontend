@@ -45,7 +45,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId.value)) match {
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case None        => formProvider(request.user.isAgent)
       case Some(value) => formProvider(request.user.isAgent).fill(value)
     }
@@ -61,7 +61,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
         value =>
           for {
             updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId.value)))
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId)))
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =

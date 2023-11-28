@@ -95,7 +95,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             }
 
             "must populate the view correctly when the question has already been answered" in {
-              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
 
               val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
 

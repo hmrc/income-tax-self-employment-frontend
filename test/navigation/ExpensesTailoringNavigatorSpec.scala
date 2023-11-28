@@ -108,10 +108,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableStaffCostsPage when 'Staff' checkbox is checked" in {
 
           val userAnswers = emptyUserAnswers
-            .set[Set[ProfessionalServiceExpenses]](
-              ProfessionalServiceExpensesPage,
-              Set(Staff): Set[ProfessionalServiceExpenses],
-              Some(stubbedBusinessId))
+            .set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(Staff): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
@@ -121,7 +118,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableSubcontractorCostsPage when 'Construction' checkbox is checked but not 'Staff'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
@@ -131,7 +128,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableProfessionalFeesPage when 'ProfessionalFees' checkbox is checked but not 'Staff' or 'Construction'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
@@ -141,7 +138,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -157,7 +154,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableSubcontractorCostsPage when 'Construction' checkbox is checked" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
@@ -167,7 +164,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableProfessionalFeesPage when 'ProfessionalFees' checkbox is checked but not 'Construction'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
@@ -177,7 +174,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableStaffCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -194,7 +191,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
 
           val userAnswers =
             emptyUserAnswers
-              .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+              .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
               .success
               .value
 
@@ -204,7 +201,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableSubcontractorCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -225,7 +222,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
       "FinancialExpensesPage must go to the" - {
         "DisallowableInterestPage when 'Interest' checkbox is checked" in {
 
-          val userAnswers = emptyUserAnswers.set(FinancialExpensesPage, Set(Interest): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+          val userAnswers = emptyUserAnswers.set(FinancialExpensesPage, Set(Interest): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableInterestController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -233,7 +230,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableOtherFinancialChargesPage when 'OtherFinancialCharges' checkbox is checked but not 'Interest'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -241,7 +238,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked but not 'Interest' or 'OtherFinancialCharges'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -249,7 +246,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -265,7 +262,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableOtherFinancialChargesPage when 'OtherFinancialCharges' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -273,7 +270,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked but not 'OtherFinancialCharges'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -281,7 +278,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -297,7 +294,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableOtherFinancialChargesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
@@ -305,7 +302,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableOtherFinancialChargesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)

@@ -105,16 +105,16 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   "getIncomeTradingAllowance" - {
     "should return a BigDecimal trading allowance that is" - {
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
-        val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(stubbedBusinessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
 
         getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
       }
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
         val userAnswersLargeTurnover =
-          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(stubbedBusinessId)).success.value
+          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(businessId)).success.value
         val userAnswersEqualToMax =
-          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(stubbedBusinessId)).success.value
+          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
 
         getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
         getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance

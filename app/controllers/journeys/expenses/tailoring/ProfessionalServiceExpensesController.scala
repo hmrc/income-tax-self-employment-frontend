@@ -52,7 +52,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId.value)) match {
+          val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -73,7 +73,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(BusinessId(businessId))))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )

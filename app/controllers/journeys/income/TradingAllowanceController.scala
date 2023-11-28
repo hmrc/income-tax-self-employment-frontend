@@ -53,7 +53,7 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId.value)) match {
+          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -78,14 +78,14 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
                     val userAnswers =
                       if (value.equals(DeclareExpenses)) {
                         request.userAnswers
-                          .remove(HowMuchTradingAllowancePage, Some(businessId.value))
+                          .remove(HowMuchTradingAllowancePage, Some(businessId))
                           .get
-                          .remove(TradingAllowanceAmountPage, Some(businessId.value))
+                          .remove(TradingAllowanceAmountPage, Some(businessId))
                           .get
                       } else {
                         request.userAnswers
                       }
-                    userAnswers.set(TradingAllowancePage, value, Some(businessId.value))
+                    userAnswers.set(TradingAllowancePage, value, Some(businessId))
                   }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))

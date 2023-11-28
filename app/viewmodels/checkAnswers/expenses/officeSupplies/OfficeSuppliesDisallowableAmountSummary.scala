@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.officeSupplies
 
 import controllers.journeys.expenses
 import models.CheckMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.OfficeSupplies
 import models.journeys.expenses.OfficeSupplies.YesDisallowable
@@ -35,14 +35,14 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(OfficeSuppliesPage, Some(businessId))
+      .get(OfficeSuppliesPage, Some(BusinessId(businessId)))
       .filter(areAnyOfficeSuppliesDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages) =
     for {
-      disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId))
-      allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
+      disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(BusinessId(businessId)))
+      allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(BusinessId(businessId)))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"officeSuppliesDisallowableAmount.title.$userType", formatMoney(allowableAmount)),

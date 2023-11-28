@@ -50,7 +50,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(OtherIncomeAmountPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -70,7 +70,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId.value)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
                   navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName)))

@@ -33,7 +33,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit
       messages: Messages): Option[Either[Exception, SummaryListRow]] =
-    userAnswers.get(HowMuchTradingAllowancePage, Some(businessId.value)).map { answer =>
+    userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val rowValueOrError = answer match {
         case HowMuchTradingAllowance.Maximum =>
           calculateMaxTradingAllowance(userAnswers, businessId)
@@ -55,7 +55,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
     }
 
   private def calculateMaxTradingAllowance(userAnswers: UserAnswers, businessId: BusinessId): Either[Exception, String] =
-    userAnswers.get(TurnoverIncomeAmountPage, Some(businessId.value)) match {
+    userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
       case Some(amount) if amount < 1000  => Right(formatMoney(amount))
       case Some(amount) if amount >= 1000 => Right(formatMoney(1000))
       case _                              => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))

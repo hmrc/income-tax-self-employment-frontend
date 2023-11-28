@@ -82,7 +82,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 

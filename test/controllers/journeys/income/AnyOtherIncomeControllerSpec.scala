@@ -95,7 +95,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -194,7 +194,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
       "when a user answer 'No' is submitted, must clear OtherIncomeAmount data and redirect to" - {
         val userAnswer  = false
-        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
@@ -220,7 +220,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverNotTaxableCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
         "the Trading Allowance page when journey is CASH accounting type" in {
@@ -247,7 +247,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual tradingAllowanceCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
         "the CYA page when in CheckMode and income model is now completed" in {
@@ -272,7 +272,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
       }

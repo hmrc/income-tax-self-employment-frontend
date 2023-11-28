@@ -47,7 +47,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
   val onwardRoute             = Call("GET", "/foo")
 
   val baseUserAnswers: UserAnswers =
-    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(stubbedBusinessId)).success.value
+    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId)).success.value
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
@@ -86,7 +86,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 

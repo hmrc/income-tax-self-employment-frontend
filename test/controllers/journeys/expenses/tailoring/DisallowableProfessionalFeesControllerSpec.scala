@@ -82,7 +82,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(DisallowableProfessionalFeesPage, DisallowableProfessionalFees.values.head, Some(stubbedBusinessId))
+              .set(DisallowableProfessionalFeesPage, DisallowableProfessionalFees.values.head, Some(businessId))
               .success
               .value
 

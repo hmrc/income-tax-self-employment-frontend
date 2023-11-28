@@ -17,6 +17,7 @@
 package models.database
 
 import models.RichJsObject
+import models.common.BusinessId
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -26,10 +27,10 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdated: Instant = Instant.now) {
 
-  def get[A](page: Gettable[A], businessId: Option[String] = None)(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: Gettable[A], businessId: Option[BusinessId] = None)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path(businessId))).reads(data).getOrElse(None)
 
-  def set[A](page: Settable[A], value: A, businessId: Option[String] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: Settable[A], value: A, businessId: Option[BusinessId] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path(businessId), Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
@@ -44,7 +45,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
     }
   }
 
-  def remove[A](page: Settable[A], businessId: Option[String] = None): Try[UserAnswers] = {
+  def remove[A](page: Settable[A], businessId: Option[BusinessId] = None): Try[UserAnswers] = {
 
     val updatedData = data.removeObject(page.path(businessId)) match {
       case JsSuccess(jsValue, _) =>

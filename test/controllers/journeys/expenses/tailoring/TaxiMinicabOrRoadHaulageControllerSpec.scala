@@ -89,7 +89,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.values.head, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.values.head, Some(businessId))
               .success
               .value
 

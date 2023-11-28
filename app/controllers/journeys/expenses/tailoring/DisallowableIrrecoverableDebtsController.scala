@@ -46,7 +46,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)) match {
+      val preparedForm = request.userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(BusinessId(businessId))) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -62,7 +62,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableIrrecoverableDebtsPage, value, Some(businessId)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableIrrecoverableDebtsPage, value, Some(BusinessId(businessId))))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(DisallowableIrrecoverableDebtsPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )

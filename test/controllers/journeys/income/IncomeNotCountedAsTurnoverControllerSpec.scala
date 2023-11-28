@@ -94,7 +94,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -180,7 +180,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
         "Turnover Income Amount page when in NormalMode" in {
 
           val userAnswer  = false
-          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -201,14 +201,14 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
-            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
 
         "CYA page when in CheckMode and journey model is now complete" in {
 
           val userAnswer  = false
-          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -229,7 +229,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
       }

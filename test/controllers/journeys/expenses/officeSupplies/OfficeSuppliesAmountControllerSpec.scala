@@ -99,7 +99,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             }
 
             "must populate the view correctly when the question has previously been answered" in {
-              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
 
               val application = buildApplication(Some(userAnswers), userScenario.authUser)
 

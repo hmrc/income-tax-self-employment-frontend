@@ -66,7 +66,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return OK and the correct view for a GET" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
@@ -101,10 +101,10 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(GoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId))
+              .set(GoodsToSellOrUseAmountPage, validAnswer, Some(businessId))
               .success
               .value
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
 
@@ -192,7 +192,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
@@ -230,7 +230,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
@@ -268,7 +268,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when a zero or negative number is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
@@ -306,7 +306,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           "must return a Bad Request and errors when amount exceeds the maximum" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(stubbedBusinessId))
+              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
