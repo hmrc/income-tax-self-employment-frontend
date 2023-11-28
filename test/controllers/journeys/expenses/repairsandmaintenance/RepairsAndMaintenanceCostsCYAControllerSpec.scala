@@ -87,8 +87,8 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
 
   def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
     val view: RepairsAndMaintenanceCostsCYAView = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
-    val summaryList = SummaryList(expectedRows)
-    val nextRoute   = onwardRoute.url
+    val summaryList                             = SummaryList(expectedRows)
+    val nextRoute                               = onwardRoute.url
     view(taxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
   }
 
