@@ -199,8 +199,7 @@ class ExpensesNavigator @Inject() () {
       case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
-  /** User also for CYA pages
-    */
+  /** User also for CYA pages */
   def nextNormalRoute(sourcePage: Page,
                       userAnswers: UserAnswers,
                       taxYear: TaxYear,

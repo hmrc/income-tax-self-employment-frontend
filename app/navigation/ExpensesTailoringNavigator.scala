@@ -154,7 +154,7 @@ class ExpensesTailoringNavigator @Inject() () {
         checkRouteMap(page)(userAnswers)(taxYear, businessId.value, isAccrual)
     }
 
-  /** User also for CYA pages
+  /** The "normal" route is also used for CYA pages
     */
   def nextNormalRoute(sourcePage: Page,
                       userAnswers: UserAnswers,
