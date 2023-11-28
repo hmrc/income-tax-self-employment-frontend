@@ -31,13 +31,13 @@ import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
 import javax.inject.Inject
 
 class ConstructionIndustryCYAController @Inject() (override val messagesApi: MessagesApi,
-                                            navigator: ExpensesNavigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: ConstructionIndustryCYAView)
-  extends FrontendBaseController
+                                                   navigator: ExpensesNavigator,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: ConstructionIndustryCYAView)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
