@@ -47,7 +47,7 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
 
     val summaryList = SummaryList(
       rows = Seq(
-        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)
+        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
       ).flatten,
       classes = "govuk-!-margin-bottom-7"
     )
