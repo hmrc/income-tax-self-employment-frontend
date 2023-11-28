@@ -29,9 +29,9 @@ import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.expenses.ExpensesService
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 import javax.inject.Inject
@@ -50,12 +50,11 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
   def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)
 
-    val summaryList = SummaryList(
-      rows = Seq(
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
         GoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user),
         DisallowableGoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user)
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
     Ok(view(taxYear, businessId, user, summaryList))

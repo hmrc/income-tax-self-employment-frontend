@@ -16,22 +16,6 @@
 
 package models.common
 
-import play.api.mvc.PathBindable
-
-final case class TaxYear(value: Int) extends AnyVal {
-  override def toString: String = value.toString()
-}
-
-object TaxYear {
-
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
-
+final case class PageName(value: String) extends AnyVal {
+  override def toString: String = value
 }

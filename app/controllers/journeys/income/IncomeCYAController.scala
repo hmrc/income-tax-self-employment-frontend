@@ -25,10 +25,10 @@ import navigation._
 import pages.income.IncomeCYAPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.income._
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
 
 import javax.inject.Inject
@@ -49,8 +49,8 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       .url
     val user = userType(request.user.isAgent)
 
-    val summaryList = SummaryList(
-      rows = Seq(
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
         IncomeNotCountedAsTurnoverSummary.row(request.userAnswers, taxYear, user, businessId),
         NonTurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, user, businessId),
         TurnoverIncomeAmountSummary.row(request.userAnswers, taxYear, user, businessId),
@@ -61,8 +61,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
         TradingAllowanceSummary.row(request.userAnswers, taxYear, user, businessId),
         howMuchTradingAllowanceSummaryRow(request.userAnswers, taxYear, user, businessId),
         TradingAllowanceAmountSummary.row(request.userAnswers, taxYear, user, businessId)
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
     Ok(view(taxYear, summaryList, nextRoute, user))

@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package models.common
+package viewmodels.journeys
 
-import play.api.mvc.PathBindable
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-final case class TaxYear(value: Int) extends AnyVal {
-  override def toString: String = value.toString()
-}
+object SummaryListCYA {
 
-object TaxYear {
+  def summaryList(rows: List[SummaryListRow]): SummaryList = SummaryList(
+    rows = rows,
+    classes = "govuk-!-margin-bottom-7"
+  )
 
-  implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
-
-    override def bind(key: String, value: String): Either[String, TaxYear] =
-      intBinder.bind(key, value).map(TaxYear.apply)
-
-    override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
-
-  }
+  def summaryListOpt(rows: List[Option[SummaryListRow]]): SummaryList =
+    summaryList(rows.flatten)
 
 }

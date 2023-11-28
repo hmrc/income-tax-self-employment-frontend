@@ -24,6 +24,7 @@ import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{
   ExpensesEntertainment,
+  ExpensesConstruction,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
   ExpensesRepairsAndMaintenance,
@@ -31,6 +32,7 @@ import models.journeys.Journey.{
 }
 import models.journeys.expenses.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
 import pages._
+import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage}
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
@@ -126,6 +128,15 @@ class ExpensesNavigator @Inject() () {
           businessId =>
             _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
 
+    case ConstructionIndustryAmountPage =>
+      _ => taxYear => businessId => _ => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+
+    case ConstructionIndustryCYAPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesConstruction.toString, NormalMode)
+
     case StaffCostsAmountPage =>
       userAnswers =>
         taxYear =>
@@ -161,6 +172,9 @@ class ExpensesNavigator @Inject() () {
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
+    case ConstructionIndustryAmountPage =>
+      _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
@@ -185,8 +199,7 @@ class ExpensesNavigator @Inject() () {
       case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
-  /** User also for CYA pages
-    */
+  /** User also for CYA pages */
   def nextNormalRoute(sourcePage: Page,
                       userAnswers: UserAnswers,
                       taxYear: TaxYear,

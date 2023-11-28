@@ -22,6 +22,7 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.journeys.Journey.{
   Abroad,
+  ExpensesConstruction,
   ExpensesEntertainment,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
@@ -38,6 +39,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
+import viewmodels.journeys.SummaryListCYA
 
 case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String, statusList: SummaryList)
 
@@ -54,13 +56,12 @@ object TradeJourneyStatusesViewModel {
     implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
-    SummaryList(
-      rows = Seq(
+    SummaryListCYA.summaryList(
+      List(
         buildRow(Abroad),
         buildRow(Income, Some(Abroad)),
         buildRow(ExpensesTailoring, Some(Abroad))
-      ),
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
   }
 
@@ -123,8 +124,8 @@ object TradeJourneyStatusesViewModel {
             .onPageLoad(taxYear, businessId.value, NormalMode)
             .url // TODO expenses CYA page when built
         )
-      case ExpensesEntertainment | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance | ExpensesTotal |
-          NationalInsurance | TradeDetails | ExpensesStaffCosts =>
+      case ExpensesEntertainment | ExpensesConstruction | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance |
+          ExpensesTotal | NationalInsurance | TradeDetails | ExpensesStaffCosts =>
         ??? // TODO Other Journeys not yet implemented
 
     }

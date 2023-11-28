@@ -724,3 +724,12 @@ constructionIndustryAmount.error.lessThanZero.agent = The amount your client spe
 constructionIndustryAmount.error.overMax.individual = The amount you spent on construction industry expenses must be less than £100,000,000,000
 constructionIndustryAmount.error.overMax.agent = The amount your client spent on construction industry expenses must be less than £100,000,000,000
 constructionIndustryAmount.change.hidden = Change how much was spent on construction industry
+
+## Construction Industry CYA
+constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
+constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
+
+########## Expenses Tailoring CYA ##########
+
+expensesTailoringCYA.title.individual = Check your expenses
+expensesTailoringCYA.title.agent = Check your client’s expenses
