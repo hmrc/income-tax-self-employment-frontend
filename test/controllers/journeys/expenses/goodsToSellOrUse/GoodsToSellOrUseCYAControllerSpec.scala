@@ -54,7 +54,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)), bind[ExpensesService].toInstance(mockExpensesService))
 
-  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+  override lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url
 
   private val userAnswerData = Json
     .parse(s"""
@@ -68,7 +68,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
        |""".stripMargin)
     .as[JsObject]
 
-  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
   override def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
