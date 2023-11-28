@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerSpec {
 
-  val onPageLoadRoute: String
-  val userAnswers: UserAnswers
+  protected val onPageLoadRoute: String
+  protected val userAnswers: UserAnswers
 
   def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList
 
