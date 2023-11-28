@@ -20,7 +20,7 @@ import controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
 import pages._
@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AbroadNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (TaxYear, String) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
 
     case SelfEmploymentAbroadPage => _ => (taxYear, businessId) => SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
@@ -42,14 +42,14 @@ class AbroadNavigator @Inject() () {
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, String) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
 
     case SelfEmploymentAbroadPage => _ => (taxYear, businessId) => SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: String): Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)(taxYear, businessId)
     case CheckMode =>

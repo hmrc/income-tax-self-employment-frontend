@@ -19,7 +19,7 @@ package controllers.journeys.income
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import navigation._
 import pages.income.IncomeCYAPage
@@ -43,7 +43,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
       .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
@@ -68,7 +68,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     Ok(view(taxYear, summaryList, nextRoute, user))
   }
 
-  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: String)(implicit
+  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
     HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId).map {
       case Right(value)    => value

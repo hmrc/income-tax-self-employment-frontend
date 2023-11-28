@@ -24,7 +24,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.RepairsAndMaintenance
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.RepairsAndMaintenancePage
@@ -72,7 +72,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
@@ -103,7 +103,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
@@ -163,7 +163,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, repairsAndMaintenanceRoute)
@@ -186,7 +186,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, repairsAndMaintenanceRoute)
@@ -218,7 +218,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, repairsAndMaintenanceRoute)

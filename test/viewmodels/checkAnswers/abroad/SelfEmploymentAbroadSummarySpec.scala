@@ -16,26 +16,20 @@
 
 package viewmodels.checkAnswers.abroad
 
-import models.common.TaxYear
+import base.SpecBase
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
-
-  private val id         = "some_id"
-  private val taxYear    = TaxYear(2024)
-  private val businessId = "some_business_id"
+class SelfEmploymentAbroadSummarySpec extends SpecBase {
 
   private val data = Json
     .parse(s"""
        |{
-       |"$businessId": {
+       |"$stubbedBusinessId": {
        |  "selfEmploymentAbroad": true
        |  }
        |}
@@ -45,38 +39,38 @@ class SelfEmploymentAbroadSummarySpec extends AnyWordSpec with Matchers {
   private val someOtherData = Json
     .parse(s"""
        |{
-       |"$businessId": {
+       |"$stubbedBusinessId": {
        |  "someOtherPage": true
        |  }
        |}
        |""".stripMargin)
     .as[JsObject]
 
-  private val userAnswers          = UserAnswers(id, data)
-  private val someOtherUserAnswers = UserAnswers(id, someOtherData)
+  private val userAnswers          = UserAnswers(userAnswersId, data)
+  private val someOtherUserAnswers = UserAnswers(userAnswersId, someOtherData)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  "SelfEmploymentAbroadSummary" when {
-    "user answers for SelfEmploymentAbroadPage exist" should {
-      "generate a summary list row" in {
+  "SelfEmploymentAbroadSummary" - {
+    "when user answers for SelfEmploymentAbroadPage exist" - {
+      "should generate a summary list row" in {
         val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, userAnswers)
 
-        result shouldBe a[SummaryListRow]
-        result.key.content shouldBe Text("selfEmploymentAbroad.title.individual")
-        result.value.content shouldBe Text("site.yes")
+        result mustBe a[SummaryListRow]
+        result.key.content mustBe Text("selfEmploymentAbroad.title.individual")
+        result.value.content mustBe Text("site.yes")
       }
     }
-    "no user answers exist for SelfEmploymentAbroadPage" should {
-      "return None and throw runtime exception" in {
+    "when no user answers exist for SelfEmploymentAbroadPage" - {
+      "should return None and throw runtime exception" in {
         lazy val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, someOtherUserAnswers)
 
         val exception = intercept[RuntimeException](result)
 
-        exception.getMessage shouldBe "No UserAnswers retrieved for SelfEmploymentAbroadPage"
+        exception.getMessage mustBe "No UserAnswers retrieved for SelfEmploymentAbroadPage"
       }
     }
 

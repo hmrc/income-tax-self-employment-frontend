@@ -19,7 +19,7 @@ package controllers.journeys.tradeDetails
 import connectors.SelfEmploymentConnector
 import controllers.actions._
 import models.NormalMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.domain.BusinessData
 import models.requests.OptionalDataRequest
@@ -44,7 +44,7 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val isAgent = request.user.isAgent
     selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
       case Right(business: Seq[BusinessData]) =>
@@ -57,7 +57,7 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
     }
   }
 
-  private def navigate(taxYear: TaxYear, businessId: String, navigator: TradeDetailsNavigator)(implicit
+  private def navigate(taxYear: TaxYear, businessId: BusinessId, navigator: TradeDetailsNavigator)(implicit
       request: OptionalDataRequest[AnyContent]): String =
     navigator
       .nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)

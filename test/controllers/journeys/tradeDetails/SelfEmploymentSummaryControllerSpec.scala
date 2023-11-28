@@ -24,6 +24,7 @@ import controllers.journeys.routes.SectionCompletedStateController
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import models.NormalMode
+import models.common.BusinessId
 import models.database.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.when
@@ -42,7 +43,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers                            = UserAnswers("1345566")
-  val businessID                             = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
+  val businessID                             = BusinessId("trade-details" + "-" + UserBuilder.aNoddyUser.nino)
 
   "SelfEmploymentSummary Controller" - {
 
@@ -90,7 +91,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           val view = application.injector.instanceOf[SelfEmploymentSummaryView]
 
-          val noneTradingNames = Seq(("", "businessId-0-1"), ("", "businessId-0-2"))
+          val noneTradingNames = Seq(("", BusinessId("businessId-0-1")), ("", BusinessId("businessId-0-2")))
           val noneSummaryList  = generateRowList(taxYear, noneTradingNames)(messages(application))
 
           status(result) mustEqual OK
@@ -114,7 +115,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           val view = application.injector.instanceOf[SelfEmploymentSummaryView]
 
-          val tradingNames = Seq(("Trade one", "businessId-1"), ("Trade two", "businessId-2"))
+          val tradingNames = Seq(("Trade one", BusinessId("businessId-1")), ("Trade two", BusinessId("businessId-2")))
           val summaryList  = generateRowList(taxYear, tradingNames)(messages(application))
 
           status(result) mustEqual OK

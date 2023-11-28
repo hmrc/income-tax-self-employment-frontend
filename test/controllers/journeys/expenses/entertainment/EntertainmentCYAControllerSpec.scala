@@ -57,14 +57,14 @@ class EntertainmentCYAControllerSpec extends SpecBase {
 
           running(application) {
             val view    = application.injector.instanceOf[EntertainmentCYAView]
-            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(taxYear, stubBusinessId).url)
+            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(taxYear, businessId).url)
 
             val expectedSummaryListRows = Seq(
-              EntertainmentAmountSummary.row(userAnswers, taxYear, stubBusinessId, userType)
+              EntertainmentAmountSummary.row(userAnswers, taxYear, businessId, userType)
             ).flatten
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
             val expectedNextRoute =
-              SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesEntertainment.toString, NormalMode).url
+              SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode).url
 
             val result = route(application, request).value
 

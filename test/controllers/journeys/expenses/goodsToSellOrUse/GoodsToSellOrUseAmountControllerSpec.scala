@@ -25,7 +25,7 @@ import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage.{No, Yes}
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
@@ -74,7 +74,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
 
@@ -113,7 +113,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
 
@@ -173,7 +173,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, GoodsToSellOrUseAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
@@ -200,7 +200,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
@@ -238,7 +238,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
@@ -276,7 +276,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
@@ -314,7 +314,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)

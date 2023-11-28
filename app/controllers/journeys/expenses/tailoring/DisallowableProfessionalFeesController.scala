@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.DisallowableProfessionalFeesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DisallowableProfessionalFeesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +64,7 @@ class DisallowableProfessionalFeesController @Inject() (override val messagesApi
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableProfessionalFeesPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableProfessionalFeesPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(DisallowableProfessionalFeesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

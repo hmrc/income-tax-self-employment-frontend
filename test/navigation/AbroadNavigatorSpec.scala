@@ -38,19 +38,19 @@ class AbroadNavigatorSpec extends SpecBase {
 
       "must go from the Self-employment Abroad page to the Self Employment Abroad CYA page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SelfEmploymentAbroadCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        navigator.nextPage(SelfEmploymentAbroadPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
       }
 
       "must go from the Abroad CYA page to the Section Completed page with Abroad journey" in {
 
-        navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, Abroad.toString, NormalMode)
+        navigator.nextPage(SelfEmploymentAbroadCYAPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
 
@@ -58,13 +58,13 @@ class AbroadNavigatorSpec extends SpecBase {
 
       "must go from Self-employment Abroad page to the 'Check your details' page" in {
 
-        navigator.nextPage(SelfEmploymentAbroadPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SelfEmploymentAbroadCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        navigator.nextPage(SelfEmploymentAbroadPage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe
+          SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
       }
 
       "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
   }

@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.GoodsToSellOrUseFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
@@ -50,7 +50,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
@@ -66,7 +66,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           val taxiDriver = request.userAnswers
@@ -83,7 +83,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsToSellOrUsePage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )
       }
   }

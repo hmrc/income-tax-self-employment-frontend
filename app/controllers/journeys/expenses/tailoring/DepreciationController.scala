@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.DepreciationFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.DepreciationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +64,7 @@ class DepreciationController @Inject() (override val messagesApi: MessagesApi,
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DepreciationPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DepreciationPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(DepreciationPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

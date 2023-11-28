@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.FinancialExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.FinancialExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,7 +49,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
@@ -63,7 +63,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(userType(request.user.isAgent))
@@ -75,7 +75,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(FinancialExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )
       }
   }

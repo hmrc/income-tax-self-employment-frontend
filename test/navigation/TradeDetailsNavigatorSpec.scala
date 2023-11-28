@@ -38,19 +38,19 @@ class TradeDetailsNavigatorSpec extends SpecBase {
 
       "must go from the Check Your Self Employment Details page to the Self Employment Summary page" in {
 
-        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
+        navigator.nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
           SelfEmploymentSummaryController.onPageLoad(taxYear)
       }
 
       "must go from the Self Employment Summary page to the Section Completed page with TradeDetails journey" in {
 
-        navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, TradeDetails.toString, NormalMode)
+        navigator.nextPage(SelfEmploymentSummaryPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails.toString, NormalMode)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
 
@@ -58,7 +58,7 @@ class TradeDetailsNavigatorSpec extends SpecBase {
 
       "must go from a page that doesn't exist in the edit route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
   }

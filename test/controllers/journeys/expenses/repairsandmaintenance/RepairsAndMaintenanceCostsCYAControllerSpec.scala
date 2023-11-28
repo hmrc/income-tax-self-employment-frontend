@@ -48,7 +48,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
          |""".stripMargin)
     .as[JsObject]
 
-  lazy val routeUnderTest = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, stubBusinessId).url
+  lazy val routeUnderTest = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
   lazy val getRequest     = FakeRequest(GET, routeUnderTest)
 
   "onPageLoad" should {
@@ -69,8 +69,8 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
         implicit val msg: Messages = messages(application, Language.English)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
-          RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, stubBusinessId),
-          RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, taxYear, stubBusinessId)
+          RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, businessId),
+          RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, taxYear, businessId)
         ).flatten
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }

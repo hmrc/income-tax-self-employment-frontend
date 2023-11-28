@@ -77,11 +77,11 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
       def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
         selfEmploymentService
           .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId.value, Some(accountingType))))
+          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
 
       val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value))
 
-      selfEmploymentService.getAccountingType(request.user.nino, businessId.value, request.user.mtditid) flatMap { getAccountingType =>
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap { getAccountingType =>
         (getAccountingType, getDisallowableStaffCosts) match {
           case (Right(accountingType), Some(disallowableStaffCosts)) =>
             handleForm(accountingType, disallowableStaffCosts)

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,9 +44,9 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
+      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId.value)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -54,7 +54,7 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()
@@ -64,9 +64,9 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
             for {
               updatedAnswers <- Future.fromTry {
                 val userAnswers =
-                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId)).get
+                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId.value)).get
                   else request.userAnswers
-                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId))
+                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId.value))
               }
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.Mode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
@@ -44,8 +44,8 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId.value)) match {
       case None        => formProvider(request.user.isAgent)
       case Some(value) => formProvider(request.user.isAgent).fill(value)
     }
@@ -53,7 +53,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
     Ok(view(preparedForm, taxYear, businessId, request.user.isAgent, mode))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     formProvider(request.user.isAgent)
       .bindFromRequest()
       .fold(
@@ -61,7 +61,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
         value =>
           for {
             updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId)))
+              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId.value)))
             isSuccessful <- sessionRepository.set(updatedAnswers)
           } yield {
             val redirectLocation =

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.journeys.income.HowMuchTradingAllowance.Maximum
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
@@ -48,11 +48,11 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     with I18nSupport
     with MoneyUtils {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
-      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
+      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId.value)) match {
         case None        => formProvider(userType(request.user.isAgent), tradingAllowanceString)
         case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
@@ -60,7 +60,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, tradingAllowanceString))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
@@ -73,9 +73,12 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
             for {
               updatedAnswers <- Future.fromTry {
                 val userAnswers =
-                  if (value.equals(Maximum)) request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId)).get
-                  else request.userAnswers
-                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId))
+                  if (value.equals(Maximum)) {
+                    request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId.value)).get
+                  } else {
+                    request.userAnswers
+                  }
+                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId.value))
               }
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))

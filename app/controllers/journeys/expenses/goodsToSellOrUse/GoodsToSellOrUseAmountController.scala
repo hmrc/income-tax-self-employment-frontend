@@ -21,7 +21,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
@@ -50,7 +50,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
@@ -67,7 +67,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
   }
 
   def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
@@ -85,7 +85,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
           )
     }
   }

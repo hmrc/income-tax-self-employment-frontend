@@ -22,7 +22,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.AdvertisingOrMarketing
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.AdvertisingOrMarketingPage
@@ -153,7 +153,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, advertisingOrMarketingRoute)
@@ -179,7 +179,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(cash))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
 
           val request =
             FakeRequest(POST, advertisingOrMarketingRoute)
@@ -202,7 +202,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)
@@ -232,7 +232,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)

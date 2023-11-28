@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.TravelForWorkFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
@@ -72,7 +72,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )
   }
 

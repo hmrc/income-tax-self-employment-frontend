@@ -24,7 +24,7 @@ import models.NormalMode
 import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.FinancialExpensesPage
@@ -69,7 +69,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, financialExpensesRoute)
 
@@ -97,7 +97,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, financialExpensesRoute)
 
@@ -155,7 +155,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
           val request =
             FakeRequest(POST, financialExpensesRoute)
@@ -177,7 +177,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, financialExpensesRoute)
@@ -206,7 +206,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, meq(stubbedBusinessId), any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, financialExpensesRoute)

@@ -45,9 +45,9 @@ import scala.concurrent.Future
 class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider                = new IncomeNotCountedAsTurnoverFormProvider()
-  val nonTurnoverIncomeAmountCall = NonTurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
-  val turnoverIncomeAmountCall    = TurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
-  val incomeCyaCall               = IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+  val nonTurnoverIncomeAmountCall = NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val turnoverIncomeAmountCall    = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val incomeCyaCall               = IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val onwardRouteNormalMode = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
   val onwardRouteCheckMode  = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else incomeCyaCall
@@ -74,7 +74,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -83,7 +83,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -100,7 +100,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
-              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
+              val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
@@ -108,7 +108,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -139,7 +139,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           running(application) {
             val request =
-              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -165,7 +165,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           running(application) {
             val request =
-              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, CheckMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -194,7 +194,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           running(application) {
             val request =
-              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -222,7 +222,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           running(application) {
             val request =
-              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, CheckMode).url)
+              FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, CheckMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -243,7 +243,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             running(application) {
               val request =
-                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -254,7 +254,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -270,7 +270,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             running(application) {
               val request =
-                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -281,7 +281,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

@@ -44,33 +44,33 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            NonTurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Turnover Income Amount page when answer is 'No'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            TurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
 
       "Non-Turnover Income Amount Page must go to the Turnover Income Amount page" in {
 
-        navigator.nextPage(NonTurnoverIncomeAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          TurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+        navigator.nextPage(NonTurnoverIncomeAmountPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "Turnover Income Amount Page must go to the Any Other Income page" in {
 
-        navigator.nextPage(TurnoverIncomeAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          AnyOtherIncomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+        navigator.nextPage(TurnoverIncomeAmountPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "Any Other Income Page must go to the" - {
@@ -78,26 +78,26 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            OtherIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Turnover Not Taxable page when answer is 'No' and accounting type is 'ACCRUAL'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, stubbedBusinessId, Some(true)) mustBe
-            TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(true)) mustBe
+            TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'No' and accounting type is 'CASH'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, stubbedBusinessId, Some(false)) mustBe
-            TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(false)) mustBe
+            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -105,17 +105,17 @@ class IncomeNavigatorSpec extends SpecBase {
       "Other Income Amount Page must go to the" - {
         "Turnover Not Taxable page when accounting type is 'ACCRUAL'" in {
 
-          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId, Some(true)) mustBe
-            TurnoverNotTaxableController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(true)) mustBe
+            TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when accounting type is 'CASH'" in {
 
-          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId, Some(false)) mustBe
-            TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(false)) mustBe
+            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there is no accounting type" in {
 
-          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -125,27 +125,27 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            NotTaxableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'No'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(TurnoverNotTaxablePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
 
       "Not Taxable Amount Page must go to the Trading Allowance page" in {
 
-        navigator.nextPage(NotTaxableAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          TradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+        navigator.nextPage(NotTaxableAmountPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "Trading Allowance Page must go to the" - {
@@ -153,19 +153,19 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            HowMuchTradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'DeclareExpenses'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(TradingAllowancePage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(TradingAllowancePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -176,38 +176,38 @@ class IncomeNavigatorSpec extends SpecBase {
           val userAnswers =
             UserAnswers(userAnswersId).set[HowMuchTradingAllowance](HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            TradingAllowanceAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'Maximum'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
 
       "Trading Allowance Amount Page must go to the Income CYA page" in {
 
-        navigator.nextPage(TradingAllowanceAmountPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        navigator.nextPage(TradingAllowanceAmountPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          IncomeCYAController.onPageLoad(taxYear, businessId)
       }
 
       "Income CYA page must go to the Section Completed page with Income journey" in {
 
-        navigator.nextPage(IncomeCYAPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, Income.toString, NormalMode)
+        navigator.nextPage(IncomeCYAPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe
+          SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {
 
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe JourneyRecoveryController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id"), taxYear, businessId) mustBe JourneyRecoveryController.onPageLoad()
       }
     }
 
@@ -218,19 +218,19 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            NonTurnoverIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -240,19 +240,19 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            OtherIncomeAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, stubbedBusinessId, Some(true)) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId, Some(true)) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(AnyOtherIncomePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -262,19 +262,19 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            NotTaxableAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(TurnoverNotTaxablePage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -284,19 +284,19 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            HowMuchTradingAllowanceController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "Trading Allowance page when answer is 'DeclareExpenses'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(TradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(TradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
@@ -306,27 +306,27 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            TradingAllowanceAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode)
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "Trading Allowance page when answer is 'Maximum'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
 
-          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, stubbedBusinessId) mustBe
-            IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
-          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, stubbedBusinessId) mustBe
+          navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
       }
 
       "must go from any other Income journey page to the 'Check your details' page" in {
 
-        navigator.nextPage(NonTurnoverIncomeAmountPage, CheckMode, UserAnswers("id"), taxYear, stubbedBusinessId) mustBe
-          IncomeCYAController.onPageLoad(taxYear, stubbedBusinessId)
+        navigator.nextPage(NonTurnoverIncomeAmountPage, CheckMode, UserAnswers("id"), taxYear, businessId) mustBe
+          IncomeCYAController.onPageLoad(taxYear, businessId)
       }
     }
   }
