@@ -729,6 +729,9 @@ constructionIndustryAmount.change.hidden = Change how much was spent on construc
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
 constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
 
+totalExpensesCYA.title = totalExpensesCYA
+
 ########## Expenses Tailoring CYA ##########
+
 expensesTailoringCYA.title.individual = Check your expenses
 expensesTailoringCYA.title.agent = Check your client’s expenses
