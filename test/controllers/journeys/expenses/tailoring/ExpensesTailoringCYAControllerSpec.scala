@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring
 
 import base.CYAOnPageLoadControllerSpec
-import base.SpecBase.{stubBusinessId, taxYear}
+import base.SpecBase.{businessId, taxYear}
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import org.scalatest.prop.TableFor2
@@ -35,7 +35,7 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
 
   def onPageLoadCases: TableFor2[JsObject, OnPageLoadView] = Table(
     ("userAnswersData", "expectedViews"),
-    (JsObject.empty, createExpectedView(taxYear, stubBusinessId, UserType.Individual, SummaryListCYA.summaryListOpt(Nil)))
+    (JsObject.empty, createExpectedView(taxYear, businessId, UserType.Individual, SummaryListCYA.summaryListOpt(Nil)))
   )
 
   def createExpectedView(taxYear: TaxYear, businessId: BusinessId, userType: UserType, summaryList: SummaryList): OnPageLoadView = {

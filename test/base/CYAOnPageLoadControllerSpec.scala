@@ -41,7 +41,7 @@ trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike with TableDrivenProper
         val userAnswers          = UserAnswers(userAnswersId, userAnswersData)
         val application          = buildAppFromUserAnswers(userAnswers)
         val msg: Messages        = SpecBase.messages(application, Language.English)
-        val getOnPageLoadRequest = FakeRequest(GET, onPageLoad(taxYear, stubBusinessId).url)
+        val getOnPageLoadRequest = FakeRequest(GET, onPageLoad(taxYear, businessId).url)
 
         val result = route(application, getOnPageLoadRequest).value
 

@@ -16,17 +16,19 @@
 
 package navigation
 
+import controllers.journeys.expenses.tailoring
 import controllers.journeys.expenses.tailoring.routes._
 import controllers.standard.routes._
 import models._
-import models.common.{BusinessId, TaxYear}
+import models.common.AccountingType.Accrual
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
 import pages._
 import pages.expenses.tailoring._
 import play.api.mvc.Call
-import controllers.journeys.expenses.tailoring
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
