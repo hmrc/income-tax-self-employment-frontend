@@ -71,7 +71,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesOfficeSupplies.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
@@ -93,7 +93,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesGoodsToSellOrUse.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)
 
     case RepairsAndMaintenanceAmountPage =>
       userAnswers =>
@@ -115,12 +115,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ =>
-              journeys.routes.SectionCompletedStateController.onPageLoad(
-                taxYear,
-                businessId.value,
-                ExpensesRepairsAndMaintenance.toString,
-                NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesRepairsAndMaintenance.toString, NormalMode)
 
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => _ => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
@@ -129,7 +124,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesEntertainment.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
 
     case StaffCostsAmountPage =>
       userAnswers =>
@@ -150,8 +145,7 @@ class ExpensesNavigator @Inject() () {
     case StaffCostsCYAPage =>
       _ =>
         taxYear =>
-          businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesStaffCosts.toString, NormalMode)
+          businessId => _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesStaffCosts.toString, NormalMode)
 
     case _ => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -184,11 +178,11 @@ class ExpensesNavigator @Inject() () {
                mode: Mode,
                userAnswers: UserAnswers,
                taxYear: TaxYear,
-               businessId: String,
+               businessId: BusinessId,
                accountingType: Option[AccountingType] = None): Call =
     mode match {
-      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(BusinessId(businessId))(accountingType)
-      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(BusinessId(businessId))
+      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(businessId)(accountingType)
+      case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
   /** User also for CYA pages

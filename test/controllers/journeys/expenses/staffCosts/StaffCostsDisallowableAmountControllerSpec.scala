@@ -41,7 +41,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
     "return OK and render view" in {
       forAll(userTypeGen, modeGen) { (userType, mode) =>
         val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, mode).url
         val getRequest     = FakeRequest(GET, routeUnderTest)
 
         val result = route(application, getRequest).value
@@ -51,7 +51,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
         val view         = application.injector.instanceOf[StaffCostsDisallowableAmountView]
         val msg          = messages(application, Language.English)
         val form         = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer)
-        val expectedView = view(form, mode, userType, taxYear, stubBusinessId, TextAmount(validAnswer))(getRequest, msg).toString()
+        val expectedView = view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(getRequest, msg).toString()
         contentAsString(result) mustEqual expectedView
       }
     }
@@ -61,7 +61,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
     "redirect to next when valid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, businessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, postRequest).value
@@ -74,7 +74,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
     "return bad request when invalid data is submitted" in {
       forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
         val application    = buildApp(accountingType, userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, stubBusinessId, mode).url
+        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, businessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
 
         val result = route(application, postRequest).value
@@ -84,7 +84,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
         val view = application.injector.instanceOf[StaffCostsDisallowableAmountView]
         val form = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, taxYear, stubBusinessId, TextAmount(validAnswer))(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(postRequest, messages(application, Language.English))
             .toString()
         contentAsString(result) mustEqual expectedView
       }

@@ -16,7 +16,7 @@
 
 @import controllers.actions.AuthenticatedIdentifierAction.User
 @import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
-@import models.common.{TaxYear}
+@import models.common.{BusinessId, TaxYear}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: String, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, isAgent: Boolean, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.${if (isAgent) "agent" else "individual"}"))) {
 

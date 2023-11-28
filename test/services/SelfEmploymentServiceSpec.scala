@@ -20,7 +20,7 @@ import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import connectors.SelfEmploymentConnector
-import models.common.{Mtditid, Nino}
+import models.common.{BusinessId, Mtditid, Nino}
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import org.mockito.ArgumentMatchersSugar
@@ -43,8 +43,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val service: SelfEmploymentService         = new SelfEmploymentService(mockConnector, mockSessionRepository)
 
   val nino              = Nino("nino")
-  val businessIdAccrual = "businessIdAccrual"
-  val businessIdCash    = "businessIdCash"
+  val businessIdAccrual = BusinessId("businessIdAccrual")
+  val businessIdCash    = BusinessId("businessIdCash")
 
   val maxIncomeTradingAllowance: BigDecimal = 1000
   val smallTurnover: BigDecimal             = 450.00
@@ -107,7 +107,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
         val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(stubbedBusinessId)).success.value
 
-        getIncomeTradingAllowance(stubbedBusinessId, userAnswers) mustEqual smallTurnover
+        getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
       }
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
@@ -116,8 +116,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(stubbedBusinessId)).success.value
 
-        getIncomeTradingAllowance(stubbedBusinessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
-        getIncomeTradingAllowance(stubbedBusinessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
+        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
       }
     }
   }

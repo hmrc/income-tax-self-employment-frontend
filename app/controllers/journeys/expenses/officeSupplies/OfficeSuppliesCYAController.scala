@@ -19,7 +19,7 @@ package controllers.journeys.expenses.officeSupplies
 import controllers.actions._
 import models.NormalMode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,7 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(OfficeSuppliesCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
+      .nextPage(OfficeSuppliesCYAPage, NormalMode, request.userAnswers, taxYear, BusinessId(businessId))
       .url
 
     val authUser = userType(request.user.isAgent)

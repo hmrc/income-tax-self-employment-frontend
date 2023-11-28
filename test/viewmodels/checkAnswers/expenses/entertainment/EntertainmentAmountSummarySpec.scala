@@ -44,7 +44,7 @@ class EntertainmentAmountSummarySpec extends SpecBase {
       userTypes.foreach { userType =>
         s"when user is an $userType should" - {
           "generate a summary list row" in {
-            val result = EntertainmentAmountSummary.row(userAnswers, taxYear, stubBusinessId, userType)
+            val result = EntertainmentAmountSummary.row(userAnswers, taxYear, businessId, userType)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"entertainment.title.$userType")
@@ -55,7 +55,7 @@ class EntertainmentAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for EntertainmentAmountPage should" - {
       "return None" in {
-        val result = EntertainmentAmountSummary.row(otherUserAnswers, taxYear, stubBusinessId, Individual)
+        val result = EntertainmentAmountSummary.row(otherUserAnswers, taxYear, businessId, Individual)
 
         result mustBe None
       }

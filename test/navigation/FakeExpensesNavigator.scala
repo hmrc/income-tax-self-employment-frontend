@@ -28,7 +28,7 @@ class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
                         mode: Mode,
                         userAnswers: UserAnswers,
                         taxYear: TaxYear,
-                        businessId: String,
+                        businessId: BusinessId,
                         accountingType: Option[AccountingType] = None): Call =
     desiredRoute
 

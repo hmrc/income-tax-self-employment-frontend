@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
 import play.api.i18n.Messages
@@ -46,7 +46,7 @@ object ProfessionalServiceExpensesSummary {
         key = "professionalServiceExpenses.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, BusinessId(businessId), CheckMode).url)
             .withVisuallyHiddenText(messages("professionalServiceExpenses.change.hidden"))
         )
       )

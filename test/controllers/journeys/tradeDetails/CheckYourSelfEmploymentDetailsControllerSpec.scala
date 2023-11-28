@@ -21,10 +21,11 @@ import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
+import models.common.BusinessId
 import models.domain.BusinessData
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -77,10 +78,9 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
         val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, isAgent = false)(messages(application))
 
         running(application) {
-          val businessId: String = "SJPR05893938418"
-          val nextRoute          = SelfEmploymentSummaryController.onPageLoad(taxYear).url
+          val nextRoute = SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
-          when(mockConnector.getBusiness(any, meq(businessId), any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
+          when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
@@ -100,9 +100,9 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           .build()
 
         running(application) {
-          val errorBusinessId: String = "Bad BusinessID"
+          val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
-          when(mockConnector.getBusiness(any, meq(errorBusinessId), any)(any, any)) thenReturn Future(
+          when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(
             Left(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found"))))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)

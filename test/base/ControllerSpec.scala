@@ -53,7 +53,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
                           answers: Option[UserAnswers],
                           mode: Mode = NormalMode,
                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
-                          businessId: BusinessId = BusinessId(stubbedBusinessId),
+                          businessId: BusinessId = businessId,
                           accountingType: Option[AccountingType] = None) {
 
     private val mockSessionRepository = mock[SessionRepository]

@@ -22,7 +22,7 @@ import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -74,7 +74,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
             )
         }
         .leftMap(Future.successful)

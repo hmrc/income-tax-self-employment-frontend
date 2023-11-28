@@ -35,8 +35,8 @@ class EntertainmentAmountControllerSpec
       EntertainmentAmountPage
     ) {
 
-  lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, stubBusinessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, stubBusinessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
 

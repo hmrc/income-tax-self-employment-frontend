@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import navigation.IncomeNavigator
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
@@ -44,8 +44,8 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId.value)) match {
       case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
@@ -53,7 +53,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     formProvider(userType(request.user.isAgent))
       .bindFromRequest()
       .fold(
@@ -62,9 +62,12 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
           for {
             updatedAnswers <- Future.fromTry {
               val userAnswers =
-                if (!value) request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId)).get
-                else request.userAnswers.getOrElse(UserAnswers(request.userId))
-              userAnswers.set(IncomeNotCountedAsTurnoverPage, value, Some(businessId))
+                if (!value) {
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId.value)).get
+                } else {
+                  request.userAnswers.getOrElse(UserAnswers(request.userId))
+                }
+              userAnswers.set(IncomeNotCountedAsTurnoverPage, value, Some(businessId.value))
             }
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, businessId))

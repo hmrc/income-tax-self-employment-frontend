@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.AnyOtherIncomeController
 import models.CheckMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.income.AnyOtherIncomePage
 import play.api.i18n.Messages
@@ -29,8 +29,8 @@ import viewmodels.implicits._
 
 object AnyOtherIncomeSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AnyOtherIncomePage, Some(businessId)).map { answer =>
+  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AnyOtherIncomePage, Some(businessId.value)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(

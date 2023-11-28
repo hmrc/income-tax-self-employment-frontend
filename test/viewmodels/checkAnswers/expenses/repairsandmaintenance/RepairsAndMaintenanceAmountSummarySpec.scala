@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import base.SpecBase
-import base.SpecBase.{taxYear, stubBusinessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{taxYear, businessId, stubbedBusinessId, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import models.common.BusinessId
 import models.database.UserAnswers
@@ -36,7 +36,7 @@ class RepairsAndMaintenanceAmountSummarySpec extends AnyWordSpecLike with Matche
 
   "row" should {
     "return defined rows for non empty value" in {
-      RepairsAndMaintenanceAmountSummary.row(request, taxYear, stubBusinessId) shouldBe defined
+      RepairsAndMaintenanceAmountSummary.row(request, taxYear, businessId) shouldBe defined
     }
 
     "return no rows for no data" in {

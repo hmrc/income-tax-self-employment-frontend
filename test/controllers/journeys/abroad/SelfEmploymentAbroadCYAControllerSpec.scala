@@ -19,6 +19,7 @@ package controllers.journeys.abroad
 import base.SpecBase
 import builders.UserBuilder
 import models.NormalMode
+import models.common.BusinessId
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
@@ -37,7 +38,7 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
-  private val businessID = "trade-details" + "-" + UserBuilder.aNoddyUser.nino
+  private val businessID = BusinessId("trade-details" + "-" + UserBuilder.aNoddyUser.nino)
 
   private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessID).url
 
