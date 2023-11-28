@@ -16,9 +16,13 @@
 
 package pages
 
+import models.common.PageName
+
 import scala.language.implicitConversions
 
-trait Page
+trait Page {
+  def pageName: PageName = PageName(toString())
+}
 
 object Page {
 

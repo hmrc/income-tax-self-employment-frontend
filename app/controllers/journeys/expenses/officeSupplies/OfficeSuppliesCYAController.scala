@@ -24,9 +24,9 @@ import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.officeSupplies.{OfficeSuppliesAmountSummary, OfficeSuppliesDisallowableAmountSummary}
+import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 import javax.inject.Inject
@@ -48,12 +48,11 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
 
     val authUser = userType(request.user.isAgent)
 
-    val summaryList = SummaryList(
-      rows = Seq(
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
         OfficeSuppliesAmountSummary.row(request.userAnswers, taxYear, businessId, authUser),
         OfficeSuppliesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, authUser)
-      ).flatten,
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
 
     Ok(view(authUser, summaryList, taxYear, nextRoute))

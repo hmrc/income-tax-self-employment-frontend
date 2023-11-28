@@ -135,7 +135,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId.value, ExpensesConstruction.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesConstruction.toString, NormalMode)
 
     case StaffCostsAmountPage =>
       userAnswers =>
@@ -199,8 +199,7 @@ class ExpensesNavigator @Inject() () {
       case CheckMode  => checkRouteMap(page)(userAnswers)(taxYear)(businessId)
     }
 
-  /** User also for CYA pages
-    */
+  /** User also for CYA pages */
   def nextNormalRoute(sourcePage: Page,
                       userAnswers: UserAnswers,
                       taxYear: TaxYear,

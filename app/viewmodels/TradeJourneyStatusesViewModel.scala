@@ -39,6 +39,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
+import viewmodels.journeys.SummaryListCYA
 
 case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String, statusList: SummaryList)
 
@@ -55,13 +56,12 @@ object TradeJourneyStatusesViewModel {
     implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
-    SummaryList(
-      rows = Seq(
+    SummaryListCYA.summaryList(
+      List(
         buildRow(Abroad),
         buildRow(Income, Some(Abroad)),
         buildRow(ExpensesTailoring, Some(Abroad))
-      ),
-      classes = "govuk-!-margin-bottom-7"
+      )
     )
   }
 

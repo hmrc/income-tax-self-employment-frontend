@@ -28,8 +28,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
 import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
-import controllers.journeys.routes.SectionCompletedStateController
-import controllers.journeys.expenses.construction.routes.ConstructionIndustryCYAController
+import controllers.journeys
+import controllers.journeys.expenses.construction
 
 class ConstructionIndustryCYAControllerSpec extends SpecBase {
 
@@ -57,14 +57,14 @@ class ConstructionIndustryCYAControllerSpec extends SpecBase {
 
           running(application) {
             val view    = application.injector.instanceOf[ConstructionIndustryCYAView]
-            val request = FakeRequest(GET, ConstructionIndustryCYAController.onPageLoad(taxYear, stubBusinessId).url)
+            val request = FakeRequest(GET, construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url)
 
             val expectedSummaryListRows = Seq(
-              ConstructionIndustryAmountSummary.row(userAnswers, taxYear, stubBusinessId, userType)
+              ConstructionIndustryAmountSummary.row(userAnswers, taxYear, businessId, userType)
             ).flatten
             val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
             val expectedNextRoute =
-              SectionCompletedStateController.onPageLoad(taxYear, stubbedBusinessId, ExpensesConstruction.toString, NormalMode).url
+              journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesConstruction.toString, NormalMode).url
 
             val result = route(application, request).value
 
