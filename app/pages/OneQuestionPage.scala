@@ -16,13 +16,14 @@
 
 package pages
 
+import models.common.BusinessId
 import play.api.libs.json.JsPath
 
 trait OneQuestionPage[A] extends QuestionPage[A] {
 
-  override def path(businessId: Option[String] = None): JsPath =
+  override def path(businessId: Option[BusinessId] = None): JsPath =
     businessId match {
-      case Some(id) => JsPath \ id \ toString
+      case Some(id) => JsPath \ id.value \ toString
       case None     => JsPath \ toString
     }
 

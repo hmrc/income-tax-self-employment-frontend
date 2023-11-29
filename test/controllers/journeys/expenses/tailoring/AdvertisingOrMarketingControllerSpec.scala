@@ -44,7 +44,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   lazy val advertisingOrMarketingRoute =
-    controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
@@ -81,7 +81,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -93,7 +93,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -108,12 +108,9 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(AdvertisingOrMarketing.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form.fill(AdvertisingOrMarketing.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -217,7 +214,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -247,7 +244,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

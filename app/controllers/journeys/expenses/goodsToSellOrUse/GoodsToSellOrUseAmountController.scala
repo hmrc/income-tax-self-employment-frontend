@@ -49,15 +49,16 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) map {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
-        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-          case None        => formProvider(user)
-          case Some(value) => formProvider(user).fill(value)
-        }
+        val preparedForm =
+          request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+            case None        => formProvider(user)
+            case Some(value) => formProvider(user).fill(value)
+          }
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
@@ -66,8 +67,8 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
         val user = userType(request.user.isAgent)
@@ -85,7 +86,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
                 updatedAnswers <- Future.fromTry(
                   request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+              } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
     }
   }

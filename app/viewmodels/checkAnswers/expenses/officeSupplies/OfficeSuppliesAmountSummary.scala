@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.officeSupplies
 
 import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 import models.CheckMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.Messages
@@ -30,7 +30,7 @@ import viewmodels.implicits._
 
 object OfficeSuppliesAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, authUserType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OfficeSuppliesAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(

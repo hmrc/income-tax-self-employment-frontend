@@ -35,15 +35,15 @@ object RepairsAndMaintenanceDisallowableAmountSummary {
 
   def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     request.userAnswers
-      .get(RepairsAndMaintenancePage, Some(businessId.value))
+      .get(RepairsAndMaintenancePage, Some(businessId))
       .filter(areAnyDisallowable)
       .flatMap(_ => createSummaryListRow(request.userAnswers, taxYear, businessId, request.userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     for {
-      disallowableAmount <- answers.get(RepairsAndMaintenanceDisallowableAmountPage, Some(businessId.value))
-      allowableAmount    <- answers.get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
+      disallowableAmount <- answers.get(RepairsAndMaintenanceDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", formatMoney(allowableAmount)),

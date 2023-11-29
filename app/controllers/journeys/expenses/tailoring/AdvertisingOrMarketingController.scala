@@ -48,7 +48,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AdvertisingOrMarketingPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -58,9 +58,9 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(userType(request.user.isAgent))
@@ -73,13 +73,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
                   navigator
-                    .nextPage(
-                      AdvertisingOrMarketingPage,
-                      mode,
-                      updatedAnswers,
-                      taxYear,
-                      BusinessId(businessId),
-                      Some(accountingType.equals(Accrual.entryName))))
+                    .nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName))))
             )
       }
   }

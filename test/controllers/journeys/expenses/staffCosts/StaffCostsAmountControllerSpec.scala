@@ -41,7 +41,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
   "onPageLoad" should {
     "return OK and render view" in {
       forAll(userTypeGen, modeGen, disallowableGen) { (userType, mode, disallowable) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(stubbedBusinessId)).success.value
+        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(businessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
         val form           = new StaffCostsAmountFormProvider()(userType)
         val routeUnderTest = routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, mode).url
@@ -63,7 +63,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
   "onSubmit" should {
     "redirect to next when valid data is submitted" in {
       forAll(userTypeGen, modeGen) { (userType, mode) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(stubbedBusinessId)).success.value
+        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
         val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, businessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -77,7 +77,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
 
     "return bad request when invalid data is submitted" in {
       forAll(userTypeGen, modeGen, disallowableGen) { (userType, mode, disallowable) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(stubbedBusinessId)).success.value
+        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(businessId)).success.value
         val application    = buildAppFromUserType(userType, Some(userAnswers))
         val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, businessId, mode).url
         val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))

@@ -46,7 +46,7 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -64,9 +64,9 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
             for {
               updatedAnswers <- Future.fromTry {
                 val userAnswers =
-                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId.value)).get
+                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId)).get
                   else request.userAnswers
-                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId.value))
+                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId))
               }
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))

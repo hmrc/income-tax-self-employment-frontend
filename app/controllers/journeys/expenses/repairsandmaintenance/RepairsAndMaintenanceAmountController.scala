@@ -55,7 +55,7 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
       accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
-      existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId.value))
+      existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
       form           = formProvider(userType)
       preparedForm   = existingAnswer.fold(form)(form.fill)
     } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))

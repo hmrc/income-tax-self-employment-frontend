@@ -16,7 +16,7 @@
 
 @import models.journeys.expenses.GoodsToSellOrUse
 @import controllers.journeys.expenses.tailoring.routes.GoodsToSellOrUseController
-@import models.common.{TaxYear}
+@import models.common.{BusinessId, TaxYear}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,7 +28,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: String, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("goodsToSellOrUse.title"))) {
 

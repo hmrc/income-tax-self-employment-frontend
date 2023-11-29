@@ -49,7 +49,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
     with I18nSupport
     with MoneyUtils {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       obtainAllowableAmount(businessId).map { allowableAmount =>
         val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId)) match {
@@ -60,7 +60,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
       }.merge
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       obtainAllowableAmount(businessId)
         .map { allowableAmount =>
@@ -74,14 +74,14 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+                } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
         }
         .leftMap(Future.successful)
         .merge
   }
 
-  private def obtainAllowableAmount(businessId: String)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
+  private def obtainAllowableAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
     request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
 
 }

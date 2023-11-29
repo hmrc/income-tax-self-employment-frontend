@@ -40,7 +40,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   val validAnswer: BigDecimal        = 100.00
-  val filledUserAnswers: UserAnswers = UserAnswers(userAnswersId).set(page, validAnswer, Some(stubbedBusinessId)).success.value
+  val filledUserAnswers: UserAnswers = UserAnswers(userAnswersId).set(page, validAnswer, Some(businessId)).success.value
 
   def getRequest  = FakeRequest(GET, onPageLoadRoute)
   def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))

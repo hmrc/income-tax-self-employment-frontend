@@ -43,7 +43,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
   private def createUserAnswerData(info: RepairsAndMaintenanceInfo) = Json
     .parse(s"""
          |{
-         |  "$stubbedBusinessId": ${Json.toJson(info)}
+         |  "$businessId": ${Json.toJson(info)}
          |}
          |""".stripMargin)
     .as[JsObject]

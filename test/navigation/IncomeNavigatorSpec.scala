@@ -42,14 +42,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Income Not Counted As Turnover Page must go to the" - {
         "Non-Turnover Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(businessId)).success.value
 
           navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Turnover Income Amount page when answer is 'No'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(businessId)).success.value
 
           navigator.nextPage(IncomeNotCountedAsTurnoverPage, NormalMode, userAnswers, taxYear, businessId) mustBe
             TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
@@ -76,21 +76,21 @@ class IncomeNavigatorSpec extends SpecBase {
       "Any Other Income Page must go to the" - {
         "Other Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(businessId)).success.value
 
           navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Turnover Not Taxable page when answer is 'No' and accounting type is 'ACCRUAL'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
           navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(true)) mustBe
             TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'No' and accounting type is 'CASH'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
           navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(false)) mustBe
             TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -123,14 +123,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Turnover Not Taxable Page must go to the" - {
         "Non-Turnover Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(businessId)).success.value
 
           navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'No'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(businessId)).success.value
 
           navigator.nextPage(TurnoverNotTaxablePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -151,14 +151,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Trading Allowance Page must go to the" - {
         "How Much Trading Allowance page when answer is 'UseTradingAllowance'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(businessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'DeclareExpenses'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(businessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -174,14 +174,14 @@ class IncomeNavigatorSpec extends SpecBase {
         "Trading Allowance Amount page when answer is 'LessThan'" in {
 
           val userAnswers =
-            UserAnswers(userAnswersId).set[HowMuchTradingAllowance](HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
+            UserAnswers(userAnswersId).set[HowMuchTradingAllowance](HowMuchTradingAllowancePage, LessThan, Some(businessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'Maximum'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(businessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, NormalMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -216,14 +216,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Income Not Counted As Turnover Page must go to the" - {
         "Non-Turnover Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(businessId)).success.value
 
           navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, businessId) mustBe
             NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, false, Some(businessId)).success.value
 
           navigator.nextPage(IncomeNotCountedAsTurnoverPage, CheckMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -238,14 +238,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Any Other Income Page must go to the" - {
         "Other Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(businessId)).success.value
 
           navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
           navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId, Some(true)) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -260,14 +260,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Turnover Not Taxable Page must go to the" - {
         "Non-Turnover Income Amount page when answer is 'Yes'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(businessId)).success.value
 
           navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "CYA page when answer is 'No'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, false, Some(businessId)).success.value
 
           navigator.nextPage(TurnoverNotTaxablePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -282,14 +282,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "Trading Allowance Page must go to the" - {
         "How Much Trading Allowance page when answer is 'UseTradingAllowance'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, UseTradingAllowance, Some(businessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "Trading Allowance page when answer is 'DeclareExpenses'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowancePage, DeclareExpenses, Some(businessId)).success.value
 
           navigator.nextPage(TradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -304,14 +304,14 @@ class IncomeNavigatorSpec extends SpecBase {
       "How Much Trading Allowance Page must go to the" - {
         "Trading Allowance Amount page when answer is 'LessThan'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, LessThan, Some(businessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
         }
         "Trading Allowance page when answer is 'Maximum'" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(HowMuchTradingAllowancePage, Maximum, Some(businessId)).success.value
 
           navigator.nextPage(HowMuchTradingAllowancePage, CheckMode, userAnswers, taxYear, businessId) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)

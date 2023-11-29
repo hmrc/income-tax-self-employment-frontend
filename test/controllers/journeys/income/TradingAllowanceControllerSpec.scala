@@ -94,7 +94,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(TradingAllowancePage, TradingAllowance.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(TradingAllowancePage, TradingAllowance.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -212,10 +212,10 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswer = DeclareExpenses
           val userAnswers = UserAnswers(userAnswersId)
-            .set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId))
+            .set(HowMuchTradingAllowancePage, LessThan, Some(businessId))
             .success
             .value
-            .set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId))
+            .set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId))
             .success
             .value
 
@@ -243,18 +243,18 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(stubbedBusinessId)) mustBe None
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(businessId)) mustBe None
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
         "in CheckMode" in {
 
           val userAnswer = DeclareExpenses
           val userAnswers = UserAnswers(userAnswersId)
-            .set(HowMuchTradingAllowancePage, LessThan, Some(stubbedBusinessId))
+            .set(HowMuchTradingAllowancePage, LessThan, Some(businessId))
             .success
             .value
-            .set(TradingAllowanceAmountPage, BigDecimal(400), Some(stubbedBusinessId))
+            .set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId))
             .success
             .value
 
@@ -282,8 +282,8 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(stubbedBusinessId)) mustBe None
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(businessId)) mustBe None
+            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
       }

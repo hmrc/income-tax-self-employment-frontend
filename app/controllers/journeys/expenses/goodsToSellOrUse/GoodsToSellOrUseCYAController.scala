@@ -46,7 +46,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)
 
     val summaryList = SummaryListCYA.summaryListOpt(

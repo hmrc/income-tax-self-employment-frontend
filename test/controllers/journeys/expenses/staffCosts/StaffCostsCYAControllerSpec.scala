@@ -40,9 +40,9 @@ import scala.concurrent.Future
 class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
 
   private def createUserAnswers(amount: BigDecimal, disallowableAmount: Option[BigDecimal]): UserAnswers = {
-    val answers = emptyUserAnswers.set(StaffCostsAmountPage, amount, Some(stubbedBusinessId)).success.value
+    val answers = emptyUserAnswers.set(StaffCostsAmountPage, amount, Some(businessId)).success.value
     disallowableAmount match {
-      case Some(disAmount) => answers.set(StaffCostsDisallowableAmountPage, disAmount, Some(stubbedBusinessId)).success.value
+      case Some(disAmount) => answers.set(StaffCostsDisallowableAmountPage, disAmount, Some(businessId)).success.value
       case _               => answers
     }
   }

@@ -41,50 +41,50 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
       "OfficeSuppliesPage must go to the TaxiMinicabOrRoadHaulagePage" in {
 
         navigator.nextPage(OfficeSuppliesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "TaxiMinicabOrRoadHaulagePage must go to the GoodsToSellOrUsePage" in {
 
         navigator.nextPage(TaxiMinicabOrRoadHaulagePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          GoodsToSellOrUseController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "GoodsToSellOrUsePage must go to the RepairsAndMaintenancePage" in {
 
         navigator.nextPage(GoodsToSellOrUsePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          RepairsAndMaintenanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "RepairsAndMaintenancePage must go to the WorkFromHomePage" in {
 
         navigator.nextPage(RepairsAndMaintenancePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          WorkFromHomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          WorkFromHomeController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "WorkFromHomePage must go to the WorkFromBusinessPremisesPage" in {
 
         navigator.nextPage(WorkFromHomePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          WorkFromBusinessPremisesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "WorkFromBusinessPremisesPage must go to the TravelForWorkPage" in {
 
         navigator.nextPage(WorkFromBusinessPremisesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          TravelForWorkController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "TravelForWorkPage must go to the AdvertisingOrMarketingPage" in {
 
         navigator.nextPage(TravelForWorkPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "AdvertisingOrMarketingPage must go to the" - {
         "EntertainmentCostsPage when accounting type is 'ACCRUAL'" in {
 
           navigator.nextPage(AdvertisingOrMarketingPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(true)) mustBe
-            EntertainmentCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "ProfessionalServiceExpensesPage when accounting type is 'CASH'" in {
 
@@ -108,43 +108,40 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableStaffCostsPage when 'Staff' checkbox is checked" in {
 
           val userAnswers = emptyUserAnswers
-            .set[Set[ProfessionalServiceExpenses]](
-              ProfessionalServiceExpensesPage,
-              Set(Staff): Set[ProfessionalServiceExpenses],
-              Some(stubbedBusinessId))
+            .set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(Staff): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableStaffCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableStaffCostsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableSubcontractorCostsPage when 'Construction' checkbox is checked but not 'Staff'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableSubcontractorCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableProfessionalFeesPage when 'ProfessionalFees' checkbox is checked but not 'Staff' or 'Construction'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableProfessionalFeesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -157,30 +154,30 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableSubcontractorCostsPage when 'Construction' checkbox is checked" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(Construction): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
           navigator.nextPage(DisallowableStaffCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableSubcontractorCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableProfessionalFeesPage when 'ProfessionalFees' checkbox is checked but not 'Construction'" in {
 
           val userAnswers = emptyUserAnswers
-            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+            .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
             .success
             .value
 
           navigator.nextPage(DisallowableStaffCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableProfessionalFeesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableStaffCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -194,20 +191,20 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
 
           val userAnswers =
             emptyUserAnswers
-              .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId))
+              .set(ProfessionalServiceExpensesPage, Set(ProfessionalFees): Set[ProfessionalServiceExpenses], Some(businessId))
               .success
               .value
 
           navigator.nextPage(DisallowableSubcontractorCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableProfessionalFeesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "FinancialExpensesPage when 'No profession services' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(ProfessionalServiceExpensesPage, Set(No): Set[ProfessionalServiceExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableSubcontractorCostsPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -219,40 +216,40 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
       "DisallowableProfessionalFeesPage must go to the FinancialExpensesPage" in {
 
         navigator.nextPage(DisallowableProfessionalFeesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "FinancialExpensesPage must go to the" - {
         "DisallowableInterestPage when 'Interest' checkbox is checked" in {
 
-          val userAnswers = emptyUserAnswers.set(FinancialExpensesPage, Set(Interest): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+          val userAnswers = emptyUserAnswers.set(FinancialExpensesPage, Set(Interest): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableInterestController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableInterestController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableOtherFinancialChargesPage when 'OtherFinancialCharges' checkbox is checked but not 'Interest'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked but not 'Interest' or 'OtherFinancialCharges'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -265,26 +262,26 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableOtherFinancialChargesPage when 'OtherFinancialCharges' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(OtherFinancialCharges): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked but not 'OtherFinancialCharges'" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -297,18 +294,18 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         "DisallowableIrrecoverableDebtsPage when 'IrrecoverableDebts' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(IrrecoverableDebts): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableOtherFinancialChargesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "DepreciationPage when 'NoFinancialExpenses' checkbox is checked" in {
 
           val userAnswers =
-            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(stubbedBusinessId)).success.value
+            emptyUserAnswers.set(FinancialExpensesPage, Set(NoFinancialExpenses): Set[FinancialExpenses], Some(businessId)).success.value
 
           navigator.nextPage(DisallowableOtherFinancialChargesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
-            DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+            DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -320,13 +317,13 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
       "DisallowableIrrecoverableDebtsPage must go to the DepreciationPage" in {
 
         navigator.nextPage(DisallowableIrrecoverableDebtsPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          DepreciationController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "OtherExpensesPage must go to the Expenses CYA page" ignore { // TODO unignore when CYA page is created
 
         navigator.nextPage(OtherExpensesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          OtherExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode)
+          OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "Expenses CYA page must go to the Section Completed page with Income journey" ignore { // TODO unignore when CYA page is created

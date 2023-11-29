@@ -49,15 +49,15 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
+      request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
         case None => Redirect(routes.JourneyRecoveryController.onPageLoad())
         case Some(disallowableStaffCosts) =>
-          val preparedForm = request.userAnswers.get(StaffCostsAmountPage, Some(businessId.value)) match {
+          val preparedForm = request.userAnswers.get(StaffCostsAmountPage, Some(businessId)) match {
             case None        => formProvider(request.userType)
             case Some(value) => formProvider(request.userType).fill(value)
           }
 
-          Ok(view(preparedForm, mode, request.userType, taxYear, BusinessId(businessId.value), disallowableStaffCosts))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
       }
   }
 
@@ -79,7 +79,7 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
           .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
           .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
 
-      val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value))
+      val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId))
 
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap { getAccountingType =>
         (getAccountingType, getDisallowableStaffCosts) match {

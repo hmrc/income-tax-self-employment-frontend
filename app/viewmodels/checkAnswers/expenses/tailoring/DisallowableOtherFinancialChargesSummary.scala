@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes.DisallowableOtherFinancialChargesController
 import models.CheckMode
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.tailoring.DisallowableOtherFinancialChargesPage
 import play.api.i18n.Messages
@@ -30,7 +30,7 @@ import viewmodels.implicits._
 
 object DisallowableOtherFinancialChargesSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableOtherFinancialChargesPage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(

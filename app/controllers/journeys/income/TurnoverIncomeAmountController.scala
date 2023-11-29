@@ -52,7 +52,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId.value)) match {
+          val preparedForm = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -73,7 +73,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId.value)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
             )

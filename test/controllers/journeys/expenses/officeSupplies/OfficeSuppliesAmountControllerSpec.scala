@@ -47,8 +47,8 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
   private val validAnswer  = BigDecimal(100.00)
 
   private val onwardRoute                            = Call("GET", "/foo")
-  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
@@ -92,14 +92,14 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 status(langResult) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
                   request,
                   messages(application)).toString
               }
             }
 
             "must populate the view correctly when the question has previously been answered" in {
-              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
 
               val application = buildApplication(Some(userAnswers), userScenario.authUser)
 
@@ -121,7 +121,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   userScenario.authUser,
                   accrual,
                   taxYear,
-                  stubbedBusinessId)(request, messages(application)).toString
+                  businessId)(request, messages(application)).toString
               }
             }
           }
@@ -181,7 +181,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                   status(langResult) mustEqual BAD_REQUEST
-                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
                     request,
                     messages(application)).toString
                 }

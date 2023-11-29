@@ -45,7 +45,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId.value)) match {
+    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
       case None        => formProvider(userType(request.user.isAgent))
       case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
     }
@@ -63,11 +63,11 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
             updatedAnswers <- Future.fromTry {
               val userAnswers =
                 if (!value) {
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId.value)).get
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId)).get
                 } else {
                   request.userAnswers.getOrElse(UserAnswers(request.userId))
                 }
-              userAnswers.set(IncomeNotCountedAsTurnoverPage, value, Some(businessId.value))
+              userAnswers.set(IncomeNotCountedAsTurnoverPage, value, Some(businessId))
             }
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, businessId))

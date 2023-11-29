@@ -41,7 +41,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   lazy val disallowableStaffCostsRoute =
-    controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.DisallowableStaffCostsController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new DisallowableStaffCostsFormProvider()
 
@@ -70,7 +70,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[DisallowableStaffCostsView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -82,7 +82,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(DisallowableStaffCostsPage, DisallowableStaffCosts.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
@@ -94,12 +94,9 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(DisallowableStaffCosts.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form.fill(DisallowableStaffCosts.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -169,7 +166,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -192,7 +189,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application)).toString
             }

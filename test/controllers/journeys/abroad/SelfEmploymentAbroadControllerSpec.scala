@@ -75,7 +75,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
       "must populate the view correctly for a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true, Some(businessId.value)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true, Some(businessId)).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

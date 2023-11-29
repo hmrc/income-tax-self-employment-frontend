@@ -31,7 +31,7 @@ import viewmodels.implicits._
 object NotTaxableAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotTaxableAmountPage, Some(businessId.value)).map { answer =>
+    answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"notTaxableAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),

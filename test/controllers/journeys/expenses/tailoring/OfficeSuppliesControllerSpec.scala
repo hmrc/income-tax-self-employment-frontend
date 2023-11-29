@@ -43,7 +43,7 @@ import scala.concurrent.Future
 
 class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val officeSuppliesRoute = OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new OfficeSuppliesFormProvider()
 
@@ -82,7 +82,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -94,7 +94,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(OfficeSuppliesPage, OfficeSupplies.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -118,7 +118,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType
                 )(request, messages(application, userScenario.isWelsh)).toString
 
@@ -199,7 +199,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -231,7 +231,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

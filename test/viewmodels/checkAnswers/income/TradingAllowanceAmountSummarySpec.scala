@@ -15,7 +15,7 @@
  */
 
 package viewmodels.checkAnswers.income
-import base.SpecBase.{businessId, stubbedBusinessId, taxYear}
+import base.SpecBase.{businessId, taxYear}
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -29,8 +29,8 @@ class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
   private val id       = "some_id"
   private val authUser = "individual"
 
-  private val data      = Json.obj(stubbedBusinessId -> Json.obj("tradingAllowanceAmount" -> 123.45))
-  private val otherData = Json.obj(stubbedBusinessId -> Json.obj("otherPage" -> 123.45))
+  private val data      = Json.obj(businessId.value -> Json.obj("tradingAllowanceAmount" -> 123.45))
+  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
 
   private val userAnswers      = UserAnswers(id, data)
   private val otherUserAnswers = UserAnswers(id, otherData)

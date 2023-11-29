@@ -47,7 +47,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
   val onwardRoute             = Call("GET", "/foo")
 
   val baseUserAnswers: UserAnswers =
-    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(stubbedBusinessId)).success.value
+    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId)).success.value
 
   case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
 
@@ -67,14 +67,14 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
             val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.isAgent).build()
 
             running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
               val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -86,19 +86,19 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(stubbedBusinessId)).success.value
+              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
+              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
 
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+                view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -115,7 +115,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+          val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -143,7 +143,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
         running(application) {
           val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -161,7 +161,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -170,7 +170,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -185,7 +185,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -194,7 +194,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -209,7 +209,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "-23"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "-23"))
@@ -218,7 +218,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -233,7 +233,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
             running(application) {
               val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", (goodsAmount + 0.01).toString()))
 
               val boundForm = userScenario.form.bind(Map("value" -> (goodsAmount + 0.01).toString()))
@@ -242,7 +242,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, goodsAmountString)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -260,7 +260,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
         running(application) {
           val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value

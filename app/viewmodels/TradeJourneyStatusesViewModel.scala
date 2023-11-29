@@ -41,7 +41,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.SummaryListCYA
 
-case class TradeJourneyStatusesViewModel(tradingName: String, businessId: String, statusList: SummaryList)
+case class TradeJourneyStatusesViewModel(tradingName: String, businessId: BusinessId, statusList: SummaryList)
 
 object TradeJourneyStatusesViewModel {
 
@@ -118,10 +118,10 @@ object TradeJourneyStatusesViewModel {
       case ExpensesTailoring =>
         determineUrl(
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId.value, NormalMode)
+            .onPageLoad(taxYear, businessId, NormalMode)
             .url, // TODO expenses categories page when built
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId.value, NormalMode)
+            .onPageLoad(taxYear, businessId, NormalMode)
             .url // TODO expenses CYA page when built
         )
       case ExpensesEntertainment | ExpensesConstruction | ExpensesGoodsToSellOrUse | ExpensesOfficeSupplies | ExpensesRepairsAndMaintenance |

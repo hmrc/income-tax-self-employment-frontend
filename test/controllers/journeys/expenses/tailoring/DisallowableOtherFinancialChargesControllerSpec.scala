@@ -42,7 +42,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val disallowableOtherFinancialChargesRoute = DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new DisallowableOtherFinancialChargesFormProvider()
 
@@ -71,7 +71,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
               val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -84,7 +84,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(DisallowableOtherFinancialChargesPage, DisallowableOtherFinancialCharges.values.head, Some(stubbedBusinessId))
+                .set(DisallowableOtherFinancialChargesPage, DisallowableOtherFinancialCharges.values.head, Some(businessId))
                 .success
                 .value
 
@@ -103,7 +103,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                  businessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -173,7 +173,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -196,7 +196,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

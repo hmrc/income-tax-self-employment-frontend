@@ -30,7 +30,7 @@ import viewmodels.implicits._
 object SelfEmploymentAbroadSummary {
 
   def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
-    userAnswers.get(SelfEmploymentAbroadPage, Some(businessId.value)) match {
+    userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case Some(answer) =>
         SummaryListRowViewModel(
           key = Key(content = s"selfEmploymentAbroad.title.$userType", classes = "govuk-!-width-two-thirds"),

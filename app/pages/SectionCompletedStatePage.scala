@@ -16,13 +16,17 @@
 
 package pages
 
+import models.common.BusinessId
 import models.journeys.CompletedSectionState
 import play.api.libs.json.JsPath
 
 case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {
 
-  override def path(businessId: Option[String] = None): JsPath =
-    if (businessId.isEmpty) JsPath \ toString else JsPath \ businessId.get \ toString
+  override def path(businessId: Option[BusinessId] = None): JsPath =
+    businessId match {
+      case Some(id) => JsPath \ id.value \ toString
+      case None     => JsPath \ toString
+    }
 
   override def toString: String = "sectionCompletedState"
 }

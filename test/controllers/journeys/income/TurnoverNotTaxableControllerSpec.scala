@@ -89,7 +89,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TurnoverNotTaxablePage, true, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -188,7 +188,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         "Trading Allowance page when in NormalMode" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -209,13 +209,13 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual tradingAllowanceCall.url
-            UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(businessId)) mustBe None
           }
         }
 
         "CYA page when in CheckMode and journey model is now complete" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(stubbedBusinessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
 
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -236,7 +236,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual cyaCall.url
-            UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(stubbedBusinessId)) mustBe None
+            UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(businessId)) mustBe None
           }
         }
       }

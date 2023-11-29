@@ -70,7 +70,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     for {
-      updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId.value)))
+      updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId)))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
 }
@@ -80,7 +80,7 @@ object SelfEmploymentService {
   private val maxIncomeTradingAllowance: BigDecimal = 1000
 
   def getIncomeTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): BigDecimal = {
-    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId.value)).getOrElse(maxIncomeTradingAllowance)
+    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
     if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
   }
 }

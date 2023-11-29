@@ -34,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ExpensesTailoringNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
 
     case OfficeSuppliesPage => _ => (taxYear, businessId, _) => TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -55,12 +55,12 @@ class ExpensesTailoringNavigator @Inject() () {
         (taxYear, businessId, optIsAccrual) =>
           optIsAccrual match {
             case Some(true)  => EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) => ProfessionalServiceExpensesController.onPageLoad(taxYear, BusinessId(businessId), NormalMode)
+            case Some(false) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             case _           => JourneyRecoveryController.onPageLoad()
           }
 
     case EntertainmentCostsPage =>
-      _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, BusinessId(businessId), NormalMode)
+      _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
@@ -139,21 +139,21 @@ class ExpensesTailoringNavigator @Inject() () {
     case DepreciationPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case OtherExpensesPage =>
-      _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, BusinessId(businessId))
+      _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, String, Option[Boolean]) => Call = { case _ =>
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = { case _ =>
     _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId.value, isAccrual)
+        normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId.value, isAccrual)
+        checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual)
     }
 
   /** The "normal" route is also used for CYA pages */
@@ -162,5 +162,5 @@ class ExpensesTailoringNavigator @Inject() () {
                       taxYear: TaxYear,
                       businessId: BusinessId,
                       accountingType: Option[AccountingType]): Call =
-    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId.value, accountingType.map(_ == Accrual))
+    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId, accountingType.map(_ == Accrual))
 }

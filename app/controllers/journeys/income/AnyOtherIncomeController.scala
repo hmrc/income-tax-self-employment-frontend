@@ -50,7 +50,7 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AnyOtherIncomePage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -73,11 +73,11 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
                   updatedAnswers <- Future.fromTry {
                     val userAnswers =
                       if (!value) {
-                        request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId.value)).get
+                        request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId)).get
                       } else {
                         request.userAnswers
                       }
-                    userAnswers.set(AnyOtherIncomePage, value, Some(businessId.value))
+                    userAnswers.set(AnyOtherIncomePage, value, Some(businessId))
                   }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(

@@ -32,7 +32,7 @@ import viewmodels.implicits._
 object TradingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowancePage, Some(businessId.value)).map { answer =>
+    answers.get(TradingAllowancePage, Some(businessId)).map { answer =>
       val value = Value(content = HtmlContent(HtmlFormat.escape(messages(s"tradingAllowance.$answer"))), classes = "govuk-!-width-one-third")
 
       SummaryListRowViewModel(

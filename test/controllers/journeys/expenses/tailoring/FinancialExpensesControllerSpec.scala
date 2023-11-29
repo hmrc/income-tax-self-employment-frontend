@@ -43,7 +43,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new FinancialExpensesFormProvider()
 
@@ -78,7 +78,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[FinancialExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -90,7 +90,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(FinancialExpensesPage, FinancialExpenses.values.toSet, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(FinancialExpensesPage, FinancialExpenses.values.toSet, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -111,7 +111,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userScenario.userType,
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType
                 )(request, messages(application, userScenario.isWelsh)).toString
 
@@ -190,7 +190,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -219,7 +219,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

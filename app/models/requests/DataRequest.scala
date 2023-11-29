@@ -37,7 +37,7 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
   def userType: UserType = user.userType
 
   def getValue[B: Reads](page: Gettable[B], businessId: BusinessId): Option[B] =
-    userAnswers.get(page, Some(businessId.value))
+    userAnswers.get(page, Some(businessId))
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
     getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))

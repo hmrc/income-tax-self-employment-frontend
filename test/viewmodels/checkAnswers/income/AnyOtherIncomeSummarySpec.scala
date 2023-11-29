@@ -26,7 +26,7 @@ class AnyOtherIncomeSummarySpec extends SpecBase {
 
   private val authUser = "individual"
 
-  private val data          = Json.obj(stubbedBusinessId -> Json.obj("anyOtherIncome" -> true))
+  private val data          = Json.obj(businessId.value -> Json.obj("anyOtherIncome" -> true))
   private val someOtherData = Json.obj("someOtherPage" -> true)
 
   private val userAnswers          = UserAnswers(userAnswersId, data)

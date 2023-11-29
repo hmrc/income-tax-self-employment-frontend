@@ -44,7 +44,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
@@ -54,7 +54,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()
@@ -64,7 +64,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableIrrecoverableDebtsPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableIrrecoverableDebtsPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+            } yield Redirect(navigator.nextPage(DisallowableIrrecoverableDebtsPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

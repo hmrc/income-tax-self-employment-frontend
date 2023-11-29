@@ -46,7 +46,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -61,7 +61,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
@@ -76,7 +76,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }

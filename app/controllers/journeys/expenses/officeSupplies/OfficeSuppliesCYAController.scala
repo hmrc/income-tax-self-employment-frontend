@@ -41,9 +41,9 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val nextRoute = navigator
-      .nextPage(OfficeSuppliesCYAPage, NormalMode, request.userAnswers, taxYear, BusinessId(businessId))
+      .nextPage(OfficeSuppliesCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
       .url
 
     val authUser = userType(request.user.isAgent)
