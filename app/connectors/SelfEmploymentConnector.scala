@@ -16,19 +16,30 @@
 
 package connectors
 
+import cats.data.EitherT
+import cats.implicits.catsSyntaxEitherId
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
 import connectors.httpParser.SendJourneyAnswersHttpParser.{SendJourneyAnswersHttpReads, SendJourneyAnswersResponse}
 import models.common.{BusinessId, SubmissionContext, TaxYear}
+import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse, pagerDutyError}
+import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersHttpReads, SendExpensesAnswersResponse}
+import models.common.{BusinessId, Mtditid, TaxYear}
+import models.domain.ApiResultT
+import models.errors.HttpError
+import models.journeys.Journey
+import models.journeys.expenses.ExpensesData
+import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
+  private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}$url"
 
   def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
@@ -90,6 +101,32 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     )
   }
 
-  private def buildUrl(url: String) = appConfig.selfEmploymentBEBaseUrl + url
+  type ConnectorResult[A] = Either[HttpError, A]
+  type ConnectorNoResult  = Either[HttpError, Unit]
 
+  object HttpReads extends HttpReads[ConnectorNoResult] {
+
+    override def read(method: String, url: String, response: HttpResponse): ConnectorNoResult =
+      response.status match {
+        case NO_CONTENT => ().asRight
+        case _          => pagerDutyError(response).asLeft
+      }
+
+  }
+
+  def submitAnswers[A: Writes](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, answers: A)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): ApiResultT[Unit] = {
+
+    val url = buildUrl(s"/income-tax-self-employment/${taxYear}/${businessId.value}/${journey.toString}")
+
+    val response = http.POST[A, Either[HttpError, Unit]](url, answers)(
+      wts = implicitly[Writes[A]],
+      rds = HttpReads,
+      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      ec = ec
+    )
+
+    EitherT(response)
+  }
 }

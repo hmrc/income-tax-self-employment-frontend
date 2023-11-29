@@ -23,12 +23,13 @@ import models.common.AccountingType.{Accrual, Cash}
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{
-  ExpensesEntertainment,
   ExpensesConstruction,
+  ExpensesEntertainment,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
   ExpensesRepairsAndMaintenance,
-  ExpensesStaffCosts
+  ExpensesStaffCosts,
+  ExpensesTailoring
 }
 import models.journeys.expenses.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
 import pages._
@@ -42,7 +43,13 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceDisallowableAmountPage
 }
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
-import pages.expenses.tailoring.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
+import pages.expenses.tailoring.{
+  DisallowableStaffCostsPage,
+  ExpensesTailoringCYAPage,
+  GoodsToSellOrUsePage,
+  OfficeSuppliesPage,
+  RepairsAndMaintenancePage
+}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -157,6 +164,11 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId => _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesStaffCosts.toString, NormalMode)
+
+    case ExpensesTailoringCYAPage =>
+      _ =>
+        taxYear =>
+          businessId => _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
 
     case _ => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }

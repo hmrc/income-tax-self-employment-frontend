@@ -17,17 +17,22 @@
 package controllers.journeys.expenses.tailoring
 
 import controllers.actions._
+import controllers.handleResult
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear}
+import models.database.ExpensesTailoringJourneyAnswers
+import navigation.ExpensesNavigator
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
 
 import javax.inject.Inject
-import scala.annotation.nowarn
+import scala.concurrent.ExecutionContext
 
 class ExpensesTailoringCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -35,9 +40,13 @@ class ExpensesTailoringCYAController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
-    view: ExpensesTailoringCYAView
-) extends FrontendBaseController
+    view: ExpensesTailoringCYAView,
+    service: SelfEmploymentService,
+    navigator: ExpensesNavigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
+  private implicit val logger: Logger = Logger(this.getClass)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val userType    = request.userType
@@ -54,9 +63,14 @@ class ExpensesTailoringCYAController @Inject() (
       ))
   }
 
-  @nowarn
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      ??? // TODO SASS-6339
+      val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId).url
+      val result = service
+        .submitAnswers[ExpensesTailoringJourneyAnswers](taxYear, businessId, request.mtditid, request.userAnswers)
+        .map(_ => Redirect(nextRoute))
+        .value
+
+      handleResult(result)
   }
 }
