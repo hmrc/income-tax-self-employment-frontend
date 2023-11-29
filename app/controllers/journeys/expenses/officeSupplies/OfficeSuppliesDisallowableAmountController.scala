@@ -51,8 +51,8 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      obtainAllowableAmount(BusinessId(businessId)).map { allowableAmount =>
-        val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(BusinessId(businessId))) match {
+      obtainAllowableAmount(businessId).map { allowableAmount =>
+        val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId)) match {
           case Some(existingAnswer) => formProvider(userType(request.user.isAgent), allowableAmount).fill(existingAnswer)
           case None                 => formProvider(userType(request.user.isAgent), allowableAmount)
         }
@@ -62,7 +62,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      obtainAllowableAmount(BusinessId(businessId))
+      obtainAllowableAmount(businessId)
         .map { allowableAmount =>
           formProvider(userType(request.user.isAgent), allowableAmount)
             .bindFromRequest()
@@ -72,7 +72,7 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
                   BadRequest(view(formWithErrors, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(BusinessId(businessId))))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
             )

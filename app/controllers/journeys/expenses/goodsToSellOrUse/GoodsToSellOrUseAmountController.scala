@@ -61,7 +61,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
           }
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         Ok(view(preparedForm, mode, user, taxYear, businessId, accountingType, taxiDriver))
     }
@@ -74,7 +74,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
         val user = userType(request.user.isAgent)
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
-          .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
+          .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
         val form = formProvider(user)
         form
@@ -84,7 +84,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(BusinessId(businessId))))
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(GoodsToSellOrUseAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(GoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
           )

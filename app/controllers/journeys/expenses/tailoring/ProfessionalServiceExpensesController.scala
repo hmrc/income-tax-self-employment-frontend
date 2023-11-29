@@ -73,7 +73,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(BusinessId(businessId))))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )

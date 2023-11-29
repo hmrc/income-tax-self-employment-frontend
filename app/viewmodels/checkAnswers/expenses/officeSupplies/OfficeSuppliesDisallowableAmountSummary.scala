@@ -35,14 +35,14 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(OfficeSuppliesPage, Some(BusinessId(businessId)))
+      .get(OfficeSuppliesPage, Some(businessId))
       .filter(areAnyOfficeSuppliesDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages) =
     for {
-      disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(BusinessId(businessId)))
-      allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(BusinessId(businessId)))
+      disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"officeSuppliesDisallowableAmount.title.$userType", formatMoney(allowableAmount)),

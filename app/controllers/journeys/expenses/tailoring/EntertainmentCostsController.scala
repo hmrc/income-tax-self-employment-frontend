@@ -46,7 +46,7 @@ class EntertainmentCostsController @Inject() (override val messagesApi: Messages
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(EntertainmentCostsPage, Some(BusinessId(businessId))) match {
+      val preparedForm = request.userAnswers.get(EntertainmentCostsPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -62,7 +62,7 @@ class EntertainmentCostsController @Inject() (override val messagesApi: Messages
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(EntertainmentCostsPage, value, Some(BusinessId(businessId))))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(EntertainmentCostsPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(EntertainmentCostsPage, mode, updatedAnswers, taxYear, businessId))
         )

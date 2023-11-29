@@ -46,7 +46,7 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DisallowableOtherFinancialChargesPage, Some(BusinessId(businessId))) match {
+      val preparedForm = request.userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -62,7 +62,7 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableOtherFinancialChargesPage, value, Some(BusinessId(businessId))))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableOtherFinancialChargesPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, updatedAnswers, taxYear, businessId))
         )

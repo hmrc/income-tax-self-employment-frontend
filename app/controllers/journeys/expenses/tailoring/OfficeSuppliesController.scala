@@ -52,7 +52,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(OfficeSuppliesPage, Some(BusinessId(businessId))) match {
+          val preparedForm = request.userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -74,7 +74,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesPage, value, Some(BusinessId(businessId))))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId))
             )

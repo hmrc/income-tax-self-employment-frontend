@@ -48,11 +48,11 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(BusinessId(businessId))) match {
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           val preparedForm =
-            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(BusinessId(businessId))) match {
+            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
               case None        => formProvider(userType(request.user.isAgent), goodsAmount)
               case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
             }
@@ -63,7 +63,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(BusinessId(businessId))) match {
+      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           formProvider(userType(request.user.isAgent), goodsAmount)
@@ -76,6 +76,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }
