@@ -49,11 +49,11 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
+  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash, taxiDriver = No)
+    UserScenario(isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
+    UserScenario(isAgent = true, formProvider(agent), cash, taxiDriver = No)
   )
 
   "GoodsToSellOrUseAmount Controller" - {
@@ -61,7 +61,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return OK and the correct view for a GET" in {
 
@@ -91,7 +91,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   businessId,
                   userScenario.accountingType,
                   userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -130,7 +130,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   businessId,
                   userScenario.accountingType,
                   userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -187,7 +187,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
@@ -220,7 +220,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -258,7 +258,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -296,7 +296,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -334,7 +334,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -41,14 +41,6 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     UserType.Agent
   )
 
-  val langUserTypeCases = Table(
-    ("Language", "userType"),
-    (Language.English, UserType.Individual),
-    (Language.English, UserType.Agent),
-    (Language.Welsh, UserType.Individual),
-    (Language.Welsh, UserType.Agent)
-  )
-
   val bindings: List[Binding[_]] = Nil
 
   case class TestScenario(userType: UserType,

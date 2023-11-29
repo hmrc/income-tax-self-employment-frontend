@@ -28,7 +28,6 @@ class MessagesSpec extends SpecBase {
   lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   private val defaults              = messagesApi.messages("default")
   private val english               = messagesApi.messages("en")
-  private val welsh                 = messagesApi.messages("cy")
 
   private val exclusionKeys: Set[String] = Set(
     "global.error.badRequest400.message",
@@ -45,21 +44,12 @@ class MessagesSpec extends SpecBase {
 
   private val illegalCharacters: Set[String] = Set("'", "`")
 
-  "the messages must" - {
-    "have welsh translations for all keys in the english file other than those in the exclusion list" in {
-      english.keys.foreach(key =>
-        if (!exclusionKeys.contains(key)) {
-          welsh.keys must contain(key)
-        })
-    }
+  "messages must not contain any illegal characters" in {
+    val result = english.collect {
+      case (key, value) if illegalCharacters.exists(key.contains(_)) => value
+    }.toSet
 
-    "not contain any illegal characters" in {
-      val result = english.collect {
-        case (key, value) if illegalCharacters.exists(key.contains(_)) => value
-      }.toSet
-
-      result mustBe Set()
-    }
+    result mustBe Set()
   }
 
   "there should be no duplicate messages(values) in the" - {
@@ -72,13 +62,6 @@ class MessagesSpec extends SpecBase {
     }
     "english messages file" in {
       val messages: List[(String, String)] = filterExcludedKeys(english.toList, exclusionKeys, exclusionKeySubstrings)
-
-      val result = checkMessagesAreUnique(messages, messages)
-
-      result mustBe Set()
-    }
-    "welsh messages file" in {
-      val messages: List[(String, String)] = filterExcludedKeys(welsh.toList, exclusionKeys, exclusionKeySubstrings)
 
       val result = checkMessagesAreUnique(messages, messages)
 

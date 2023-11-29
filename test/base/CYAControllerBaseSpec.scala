@@ -48,10 +48,10 @@ trait CYAControllerBaseSpec extends ControllerSpec {
 
   "loading a page" - {
     "answers for the user exist" - {
-      forAll(langUserTypeCases) { (lang, userType) =>
-        s"language is $lang and user is an $userType" - {
+      forAll(userTypeCases) { userType =>
+        s"user is an $userType" - {
           "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
-            val result: Future[Result] = route(application, getRequest).value.map(languageAwareResult(lang, _))
+            val result: Future[Result] = route(application, getRequest).value
 
             status(result) shouldBe OK
             contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)

@@ -27,7 +27,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -57,34 +56,32 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(isWelsh: Boolean, authUser: String)
+  case class UserScenario(authUser: String)
 
-  private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
+  private val userScenarios = Seq(UserScenario(authUser = individual), UserScenario(authUser = agent))
 
   private val data        = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
     userScenarios.foreach { userScenario =>
-      s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
+      s"when user is an ${userScenario.authUser}" - {
         "when loading a page" - {
           "when office supplies allowable amount has been provided in the previous question" - {
             "must return OK and the correct view" in {
               val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
 
-              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-              implicit val appMessages: Messages    = messages(application)
+              implicit val appMessages: Messages = messages(application)
 
               val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
               running(application) {
-                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-                val result     = route(application, request).value
-                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result  = route(application, request).value
 
-                status(langResult) mustEqual OK
+                status(result) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(
+                contentAsString(result) mustEqual view(
                   formProvider(userScenario.authUser, allowableAmount),
                   NormalMode,
                   taxYear,
@@ -99,18 +96,16 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
 
-              implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
               implicit val appMessages: Messages             = messages(application)
               val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
 
               running(application) {
-                val request    = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-                val result     = route(application, request).value
-                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
+                val result  = route(application, request).value
 
-                status(langResult) mustEqual OK
+                status(result) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(
+                contentAsString(result) mustEqual view(
                   formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
                   NormalMode,
                   taxYear,
@@ -161,24 +156,18 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser)).build()
 
             val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-            implicit val messagesApi: MessagesApi          = application.injector.instanceOf[MessagesApi]
             implicit val appMessages: Messages             = messages(application)
 
             running(application) {
-              val request    = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
-              val boundForm  = formProvider(userScenario.authUser, allowableAmount).bind(Map("value" -> "invalid value"))
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              val request   = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
+              val boundForm = formProvider(userScenario.authUser, allowableAmount).bind(Map("value" -> "invalid value"))
+              val result    = route(application, request).value
 
-              status(langResult) mustEqual BAD_REQUEST
+              status(result) mustEqual BAD_REQUEST
 
-              contentAsString(langResult) mustEqual view(
-                boundForm,
-                NormalMode,
-                taxYear,
-                businessId,
-                userScenario.authUser,
-                formatMoney(allowableAmount))(request, appMessages).toString
+              contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, formatMoney(allowableAmount))(
+                request,
+                appMessages).toString
             }
           }
 

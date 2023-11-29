@@ -19,7 +19,7 @@ package controllers.journeys.expenses.staffCosts
 import base.SpecBase._
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppFromUserAnswers
-import models.common.{Language, UserType, onwardRoute}
+import models.common.{UserType, onwardRoute}
 import models.database.UserAnswers
 import models.requests.DataRequest
 import org.scalatest.matchers.must.Matchers
@@ -65,7 +65,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
 
         status(result) mustBe OK
 
-        implicit val msg: Messages = messages(application, Language.English)
+        implicit val msg: Messages = messages(application)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
           StaffCostsAmountSummary.row(dataRequest, taxYear, businessId),
