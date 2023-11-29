@@ -73,7 +73,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(BusinessId(businessId))))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
           )

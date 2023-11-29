@@ -65,7 +65,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(No)    => FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(Staff) => DisallowableStaffCostsController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(Construction) =>
@@ -78,7 +78,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case DisallowableStaffCostsPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(Construction) =>
               DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(ProfessionalFees) =>
@@ -90,7 +90,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case DisallowableSubcontractorCostsPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(ProfessionalFees) =>
               DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(_) => FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -102,7 +102,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case FinancialExpensesPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+          userAnswers.get(FinancialExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(NoFinancialExpenses) => DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(Interest)            => DisallowableInterestController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(OtherFinancialCharges) =>
@@ -115,7 +115,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case DisallowableInterestPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+          userAnswers.get(FinancialExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(OtherFinancialCharges) =>
               DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(IrrecoverableDebts) =>
@@ -127,7 +127,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case DisallowableOtherFinancialChargesPage =>
       userAnswers =>
         (taxYear, businessId, _) =>
-          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+          userAnswers.get(FinancialExpensesPage, Some(BusinessId(businessId))) match {
             case Some(seq) if seq.contains(IrrecoverableDebts) =>
               DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(_) => DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
