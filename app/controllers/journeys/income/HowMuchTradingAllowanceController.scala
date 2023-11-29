@@ -52,7 +52,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     implicit request =>
       val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
       val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
-      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent), tradingAllowanceString)
         case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowanceString).fill(value)
       }
@@ -74,11 +74,11 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
               updatedAnswers <- Future.fromTry {
                 val userAnswers =
                   if (value.equals(Maximum)) {
-                    request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId.value)).get
+                    request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId)).get
                   } else {
                     request.userAnswers
                   }
-                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId.value))
+                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId))
               }
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))

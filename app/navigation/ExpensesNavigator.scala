@@ -57,7 +57,7 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             _ =>
-              userAnswers.get(OfficeSuppliesPage, Some(businessId.value)) match {
+              userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
                 case Some(OfficeSupplies.YesAllowable) =>
                   officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId.value)
                 case Some(OfficeSupplies.YesDisallowable) =>
@@ -80,7 +80,7 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             _ =>
-              userAnswers.get(GoodsToSellOrUsePage, Some(businessId.value)) match {
+              userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
                 case Some(GoodsToSellOrUse.YesAllowable) =>
                   goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value)
                 case Some(GoodsToSellOrUse.YesDisallowable) =>
@@ -102,7 +102,7 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             _ =>
-              userAnswers.get(RepairsAndMaintenancePage, Some(businessId.value)) match {
+              userAnswers.get(RepairsAndMaintenancePage, Some(businessId)) match {
                 case Some(RepairsAndMaintenance.YesAllowable) =>
                   repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
                 case Some(RepairsAndMaintenance.YesDisallowable) =>
@@ -142,7 +142,7 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             optAccountingType =>
-              userAnswers.get(DisallowableStaffCostsPage, Some(businessId.value)) match {
+              userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
                 case Some(DisallowableStaffCosts.Yes) if optAccountingType.getOrElse(Cash) == Accrual =>
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case Some(DisallowableStaffCosts.Yes | DisallowableStaffCosts.No) =>

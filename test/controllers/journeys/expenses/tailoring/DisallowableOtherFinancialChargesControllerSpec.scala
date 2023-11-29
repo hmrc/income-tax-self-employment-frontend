@@ -84,7 +84,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(DisallowableOtherFinancialChargesPage, DisallowableOtherFinancialCharges.values.head, Some(stubbedBusinessId))
+                .set(DisallowableOtherFinancialChargesPage, DisallowableOtherFinancialCharges.values.head, Some(businessId))
                 .success
                 .value
 

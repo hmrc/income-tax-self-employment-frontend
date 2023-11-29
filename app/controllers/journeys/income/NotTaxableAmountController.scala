@@ -48,7 +48,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent), tradingAllowance)
         case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowance).fill(value)
       }
@@ -65,7 +65,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId.value)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear, businessId))
         )

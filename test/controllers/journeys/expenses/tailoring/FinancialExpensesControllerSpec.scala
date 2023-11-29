@@ -90,7 +90,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(FinancialExpensesPage, FinancialExpenses.values.toSet, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(FinancialExpensesPage, FinancialExpenses.values.toSet, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
               .overrides(bind[SelfEmploymentService].toInstance(mockService))

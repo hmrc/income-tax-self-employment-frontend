@@ -93,7 +93,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.head, Some(businessId)).success.value
 
             val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]

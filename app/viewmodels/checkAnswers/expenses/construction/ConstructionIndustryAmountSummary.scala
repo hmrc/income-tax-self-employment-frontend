@@ -31,7 +31,7 @@ import viewmodels.implicits._
 object ConstructionIndustryAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConstructionIndustryAmountPage, Some(businessId.value)).map { answer =>
+    answers.get(ConstructionIndustryAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
           content = s"constructionIndustryAmount.heading.$userType",

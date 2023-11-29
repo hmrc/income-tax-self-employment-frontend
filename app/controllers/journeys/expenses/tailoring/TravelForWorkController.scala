@@ -47,12 +47,12 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TravelForWorkPage, Some(businessId)) match {
+      val preparedForm = request.userAnswers.get(TravelForWorkPage, Some(BusinessId(businessId))) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
       val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
         .contains(TaxiMinicabOrRoadHaulage.Yes)
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
   }
@@ -60,7 +60,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
   def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
+        .get(TaxiMinicabOrRoadHaulagePage, Some(BusinessId(businessId)))
         .contains(TaxiMinicabOrRoadHaulage.Yes)
 
       formProvider(userType(request.user.isAgent))
@@ -70,7 +70,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
             Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(BusinessId(businessId))))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
         )

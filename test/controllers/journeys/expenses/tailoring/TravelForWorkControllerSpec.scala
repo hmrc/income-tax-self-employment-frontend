@@ -91,7 +91,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(stubbedBusinessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
@@ -124,7 +124,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET when user is taxi driver" in {
         val taxiDriver  = true
-        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(businessId)).success.value
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         running(application) {

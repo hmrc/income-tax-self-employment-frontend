@@ -46,7 +46,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NonTurnoverIncomeAmountPage, Some(businessId.value)) match {
+      val preparedForm = request.userAnswers.get(NonTurnoverIncomeAmountPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -62,7 +62,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonTurnoverIncomeAmountPage, value, Some(businessId.value)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonTurnoverIncomeAmountPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
         )

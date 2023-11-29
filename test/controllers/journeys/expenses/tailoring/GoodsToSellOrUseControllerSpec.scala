@@ -101,7 +101,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(stubbedBusinessId)).success.value
+              UserAnswers(userAnswersId).set(GoodsToSellOrUsePage, GoodsToSellOrUse.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
@@ -139,7 +139,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET when user is taxi driver" in {
         val taxiDriver  = true
-        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(stubbedBusinessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(businessId)).success.value
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .build()

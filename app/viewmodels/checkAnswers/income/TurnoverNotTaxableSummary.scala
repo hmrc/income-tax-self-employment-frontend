@@ -30,7 +30,7 @@ import viewmodels.implicits._
 object TurnoverNotTaxableSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TurnoverNotTaxablePage, Some(businessId.value)).map { answer =>
+    answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(

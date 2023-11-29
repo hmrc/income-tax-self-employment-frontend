@@ -50,10 +50,11 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
   def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid).map {
       case Right(accountingType) =>
-        val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(businessId)) match {
-          case None        => formProvider(userType(request.user.isAgent))
-          case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
-        }
+        val preparedForm =
+          request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(BusinessId(businessId))) match {
+            case None        => formProvider(userType(request.user.isAgent))
+            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+          }
 
         Ok(view(preparedForm, mode, userType(request.user.isAgent), accountingType, taxYear, businessId))
 
@@ -72,7 +73,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(BusinessId(businessId))))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
           )

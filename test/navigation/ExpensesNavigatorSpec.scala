@@ -147,7 +147,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is StaffCostsAmountPage" - {
             "should navigate to the StaffCostsDisallowableAmountController" - {
               "when expenses are disallowable and accounting type is ACCRUAL" in {
-                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(stubbedBusinessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(businessId)).success.value
 
                 val expectedResult =
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -157,14 +157,14 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "should navigate to the StaffCostsCYAController" - {
               "when expenses are not disallowable" in {
-                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.No, Some(stubbedBusinessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.No, Some(businessId)).success.value
 
                 val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(StaffCostsAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
               }
               "when accounting type is CASH" in {
-                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(stubbedBusinessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(businessId)).success.value
 
                 val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 

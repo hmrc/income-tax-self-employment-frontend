@@ -90,7 +90,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet, Some(stubbedBusinessId))
+                .set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet, Some(businessId))
                 .success
                 .value
 

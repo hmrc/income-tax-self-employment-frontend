@@ -83,7 +83,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.values.head, Some(stubbedBusinessId))
+              .set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.values.head, Some(businessId))
               .success
               .value
 
