@@ -51,7 +51,7 @@ class ExpensesTailoringCYAController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val userType    = request.userType
-    val summaryList = SummaryListCYA.summaryListOpt(Nil) // TODO Add during Expenses tailoring CYA story
+    val summaryList = SummaryListCYA.summaryListOpt(Nil) // TODO Add in SASS-5829
 
     Ok(
       view(

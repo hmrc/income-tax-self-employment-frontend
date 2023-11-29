@@ -28,7 +28,6 @@ import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyS
 import connectors.httpParser.SendExpensesAnswersHttpParser.{SendExpensesAnswersHttpReads, SendExpensesAnswersResponse}
 import models.common.{BusinessId, Mtditid, TaxYear}
 import models.domain.ApiResultT
-import models.errors.HttpError
 import models.journeys.Journey
 import models.journeys.expenses.ExpensesData
 import play.api.libs.json.Writes
@@ -38,7 +37,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
-  private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}$url"
+  private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
+
   private def answersUrl(taxYear: TaxYear, businessId: BusinessId, journey: Journey) = buildUrl(
     s"${taxYear.value}/${businessId.value}/${journey.toString}/answers")
 

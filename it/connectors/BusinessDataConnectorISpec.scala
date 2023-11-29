@@ -39,15 +39,15 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
   ".getBusiness" should {
     val getBusiness = s"/income-tax-self-employment/individuals/business/details/${nino.value}/${businessId.value}"
 
-    behave like businessRequestReturnsOk(getBusiness, () => await(connector.getBusiness(nino.value, businessId, mtditid)))
-    behave like businessRequestReturnsError(getBusiness, () => connector.getBusiness(nino.value, businessId, mtditid))
+    behave like businessRequestReturnsOk(getBusiness, () => await(connector.getBusiness(nino.value, businessId, mtditid.value)))
+    behave like businessRequestReturnsError(getBusiness, () => connector.getBusiness(nino.value, businessId, mtditid.value))
   }
 
   ".getBusinesses" should {
     val getBusinesses = s"/income-tax-self-employment/individuals/business/details/${nino.value}/list"
 
-    behave like businessRequestReturnsOk(getBusinesses, () => await(connector.getBusinesses(nino.value, mtditid)))
-    behave like businessRequestReturnsError(getBusinesses, () => connector.getBusinesses(nino.value, mtditid))
+    behave like businessRequestReturnsOk(getBusinesses, () => await(connector.getBusinesses(nino.value, mtditid.value)))
+    behave like businessRequestReturnsError(getBusinesses, () => connector.getBusinesses(nino.value, mtditid.value))
   }
 
   ".saveJourneyState" should {
@@ -56,14 +56,14 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
     val saveJourneyState    = s"/income-tax-self-employment/completed-section/${businessId.value}/$tradeDetailsJourney/${taxYear.value}/true"
 
     behave like journeyStateRequestReturnsNoContent(() => stubPutWithoutResponseBody(saveJourneyState, NO_CONTENT))(() =>
-      await(connector.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec)))
+      await(connector.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid.value)(hc, ec)))
 
     behave like journeyStateRequestReturnsError(() =>
       stubPutWithResponseBody(
         saveJourneyState,
         BAD_REQUEST,
         Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
-        headersSentToBE))(() => connector.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid)(hc, ec))
+        headersSentToBE))(() => connector.saveJourneyState(businessId, tradeDetailsJourney, taxYear, complete = true, mtditid.value)(hc, ec))
   }
 
   ".getCompletedTradesWithStatuses" should {
@@ -72,10 +72,10 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
     behave like tradesWithStatusesRequestReturnsOk(
       getCompletedTradesWithStatuses,
-      () => await(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(hc, ec)))
+      () => await(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value)(hc, ec)))
     behave like tradesWithStatusesRequestReturnsError(
       getCompletedTradesWithStatuses,
-      () => connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid))
+      () => connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {

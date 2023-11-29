@@ -23,7 +23,7 @@ import models.errors.HttpError
 import models.journeys.Journey
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
-import play.api.libs.json.Writes
+import play.api.libs.json.{Format, Writes}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -44,4 +44,6 @@ case class SelfEmploymentServiceStub(
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
+
+  def submitAnswers[SubsetOfAnswers: Format](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
 }
