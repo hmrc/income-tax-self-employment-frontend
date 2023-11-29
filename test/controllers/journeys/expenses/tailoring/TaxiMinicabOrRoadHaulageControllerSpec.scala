@@ -44,7 +44,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val taxiMinicabOrRoadHaulageRoute = TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val taxiMinicabOrRoadHaulageRoute = TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new TaxiMinicabOrRoadHaulageFormProvider()
 
@@ -77,7 +77,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -105,12 +105,9 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(TaxiMinicabOrRoadHaulage.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form.fill(TaxiMinicabOrRoadHaulage.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(langResult) mustEqual expectedResult
@@ -179,7 +176,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -207,7 +204,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 

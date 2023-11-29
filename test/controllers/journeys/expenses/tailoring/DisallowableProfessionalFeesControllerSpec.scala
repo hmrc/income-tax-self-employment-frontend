@@ -41,7 +41,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
   def onwardRoute = Call("GET", "/foo")
 
   lazy val disallowableProfessionalFeesRoute =
-    controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new DisallowableProfessionalFeesFormProvider()
 
@@ -70,7 +70,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -101,7 +101,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                  businessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -171,7 +171,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -194,7 +194,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application)).toString
             }

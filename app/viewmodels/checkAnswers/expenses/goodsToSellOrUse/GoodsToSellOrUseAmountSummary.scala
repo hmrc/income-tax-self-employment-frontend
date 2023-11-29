@@ -30,8 +30,8 @@ import viewmodels.implicits._
 
 object GoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GoodsToSellOrUseAmountPage, Some(BusinessId(businessId))).map { answer =>
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(GoodsToSellOrUseAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
           content = s"goodsToSellOrUseAmount.title.$userType",

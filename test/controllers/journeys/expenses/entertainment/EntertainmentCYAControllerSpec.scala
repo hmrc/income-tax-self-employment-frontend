@@ -37,7 +37,7 @@ class EntertainmentCYAControllerSpec extends SpecBase {
 
   private val userAnswerData = Json.parse(s"""
        |{
-       |  "$stubbedBusinessId": {
+       |  "$businessId": {
        |    "entertainmentAmount": 1235.4
        |  }
        |}

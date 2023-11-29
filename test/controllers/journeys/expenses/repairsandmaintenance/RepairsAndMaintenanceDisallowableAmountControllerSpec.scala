@@ -34,7 +34,7 @@ import views.html.journeys.expenses.repairsandmaintenance.{RepairsAndMaintenance
 class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val invalidAnswer   = "invalid value"
   private val allowableAmount = BigDecimal(200.00)
-  private val data            = Json.obj(stubbedBusinessId -> Json.obj("repairsAndMaintenanceAmount" -> allowableAmount))
+  private val data            = Json.obj(businessId.value -> Json.obj("repairsAndMaintenanceAmount" -> allowableAmount))
   private val userAnswers     = UserAnswers(userAnswersId, data)
 
   "onPageLoad" should {

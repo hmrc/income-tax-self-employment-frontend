@@ -44,7 +44,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val workFromHomeRoute = WorkFromHomeController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new WorkFromHomeFormProvider()
 
@@ -76,7 +76,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -102,7 +102,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[WorkFromHomeView]
 
               val expectedResult =
-                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form.fill(WorkFromHome.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -177,7 +177,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult
@@ -203,7 +203,7 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(langResult) mustEqual expectedResult

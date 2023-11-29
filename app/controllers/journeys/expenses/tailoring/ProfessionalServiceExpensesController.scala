@@ -57,13 +57,13 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
 
-          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId.value, accountingType))
+          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(userType(request.user.isAgent))
@@ -73,9 +73,9 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(BusinessId(businessId))))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+                } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }

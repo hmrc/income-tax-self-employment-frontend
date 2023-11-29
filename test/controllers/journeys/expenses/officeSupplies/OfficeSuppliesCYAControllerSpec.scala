@@ -34,7 +34,7 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppl
   private val userAnswerData = Json
     .parse(s"""
          |{
-         |  "$stubbedBusinessId": {
+         |  "$businessId": {
          |    "officeSupplies": "yesAllowable",
          |    "officeSuppliesAmount": 200.00
          |  }
@@ -44,13 +44,13 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppl
 
   override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  override lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+  override lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
 
   override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)))
 
   override def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList =
     SummaryList(
-      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUserType.toString).value),
+      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUserType.toString).value),
       classes = "govuk-!-margin-bottom-7"
     )
 

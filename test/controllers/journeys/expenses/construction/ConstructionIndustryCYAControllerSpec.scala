@@ -37,7 +37,7 @@ class ConstructionIndustryCYAControllerSpec extends SpecBase {
 
   private val userAnswerData = Json.parse(s"""
        |{
-       |  "$stubbedBusinessId": {
+       |  "$businessId": {
        |    "constructionAmount": 1235.4
        |  }
        |}

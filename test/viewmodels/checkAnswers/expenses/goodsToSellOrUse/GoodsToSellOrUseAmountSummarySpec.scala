@@ -25,8 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
 
-  private val data      = Json.obj(stubbedBusinessId -> Json.obj("goodsToSellOrUseAmount" -> 2552.4))
-  private val otherData = Json.obj(stubbedBusinessId -> Json.obj("otherPage" -> 123.45))
+  private val data      = Json.obj(businessId.value -> Json.obj("goodsToSellOrUseAmount" -> 2552.4))
+  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
 
   private val userAnswers      = UserAnswers(userAnswersId, data)
   private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
@@ -43,7 +43,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
       userTypes.foreach { userType =>
         s"when user is an $userType should" - {
           "generate a summary list row" in {
-            val result = GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, userType)
+            val result = GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"goodsToSellOrUseAmount.title.$userType")
@@ -54,7 +54,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for OfficeSuppliesAmountPage should" - {
       "return None" in {
-        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, individual)
+        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, businessId, individual)
 
         result mustBe None
       }

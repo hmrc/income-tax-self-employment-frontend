@@ -16,7 +16,7 @@
 
 package models.requests
 
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.requests.TradesJourneyStatuses.JourneyStatus
 import play.api.i18n.Messages
@@ -33,7 +33,7 @@ object TradesJourneyStatuses {
   def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       if (tradeDetails.tradingName.isEmpty) "" else s"${tradeDetails.tradingName.get} - ",
-      tradeDetails.businessId,
+      BusinessId(tradeDetails.businessId),
       buildSummaryList(tradeDetails, taxYear)
     )
 
