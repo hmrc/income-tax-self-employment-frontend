@@ -16,20 +16,34 @@
 
 import cats.implicits.catsSyntaxEitherId
 import connectors.httpParser.JourneyStateParser.pagerDutyError
+import models.common.Mtditid
 import models.errors.HttpError
-import play.api.http.Status.NO_CONTENT
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import play.api.libs.json.Writes
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 package object connectors {
-  type ConnectorResult[A] = Either[HttpError, A]
   type ConnectorNoResult = Either[HttpError, Unit]
+
+  /** Helper method to add necessary headers when calling endpoints
+    */
+  def post[A: Writes](http: HttpClient, url: String, mtditid: Mtditid, body: A)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[HttpError, Unit]] =
+    http.POST[A, Either[HttpError, Unit]](url, body)(
+      wts = implicitly[Writes[A]],
+      rds = NoContentHttpReads,
+      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      ec = ec
+    )
 
   object NoContentHttpReads extends HttpReads[ConnectorNoResult] {
 
     override def read(method: String, url: String, response: HttpResponse): ConnectorNoResult =
       response.status match {
-        case NO_CONTENT => ().asRight
-        case _ => pagerDutyError(response).asLeft
+        case status if status >= 200 && status <= 299 => ().asRight
+        case _                                        => pagerDutyError(response).asLeft
       }
 
   }

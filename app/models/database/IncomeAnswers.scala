@@ -18,6 +18,7 @@ package models.database
 
 import play.api.libs.json.{Format, Json}
 
+// TODO Add more fields once implementing save and continue for Income
 final case class IncomeAnswers(tradingAllowance: String)
 
 object IncomeAnswers {

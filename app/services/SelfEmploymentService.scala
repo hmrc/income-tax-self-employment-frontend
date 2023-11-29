@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey
-import models.journeys.Journey.{ExpensesTailoring, TradeDetails}
+import models.journeys.Journey.TradeDetails
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
