@@ -60,12 +60,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  def messages(app: Application, isWelsh: Boolean = false): Messages =
-    if (isWelsh) {
-      app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
-    } else {
-      app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
-    }
+  def messages(app: Application): Messages =
+    app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
 
   /** This does not load real values from messages.en */
   def messagesStubbed: Messages = {

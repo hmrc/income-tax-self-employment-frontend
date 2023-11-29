@@ -143,7 +143,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           val expectedResult =
             view(formProvider(individual), NormalMode, userType(false), taxYear, businessId, cash, taxiDriver)(
               request,
-              messages(application, false)).toString
+              messages(application)).toString
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual expectedResult
