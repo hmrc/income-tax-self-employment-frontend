@@ -99,6 +99,7 @@ GET         /:taxYear/:businessId/income/change-trading-allowance/amount        
 POST        /:taxYear/:businessId/income/change-trading-allowance/amount                         controllers.journeys.income.TradingAllowanceAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/income/check-your-income                                       controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/income/check-your-income                                       controllers.journeys.income.IncomeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Single Amount ##########
 

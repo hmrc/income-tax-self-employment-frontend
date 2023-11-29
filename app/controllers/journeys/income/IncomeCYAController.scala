@@ -16,15 +16,19 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.routes._
+import controllers.standard.routes._
 import models.NormalMode
 import models.common.ModelUtils.userType
-import models.common.{BusinessId, TaxYear}
+import models.common._
 import models.database.UserAnswers
-import navigation._
-import pages.income.IncomeCYAPage
+import models.journeys.Journey.Income
+import models.journeys.income.IncomeJourneyAnswers
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SendJourneyAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.income._
@@ -32,21 +36,19 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
-                                     navigator: IncomeNavigator,
+                                     service: SendJourneyAnswersService,
                                      val controllerComponents: MessagesControllerComponents,
-                                     view: IncomeCYAView)
+                                     view: IncomeCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator
-      .nextPage(IncomeCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
-      .url
     val user = userType(request.user.isAgent)
 
     val summaryList = SummaryListCYA.summaryListOpt(
@@ -64,7 +66,21 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       )
     )
 
-    Ok(view(taxYear, summaryList, nextRoute, user))
+    Ok(view(taxYear, businessId, summaryList, user))
+  }
+
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val journeyAnswers = (request.userAnswers.data \ businessId.value).as[IncomeJourneyAnswers]
+      val context        = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), Income)
+
+      // Replace redirected error case with a proper implementation when the unhappy path ticket is picked up,
+      // however need to do something now
+      (for {
+        _ <- EitherT(service.sendJourneyAnswers(context, journeyAnswers))
+      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)))
+        .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
+        .merge
   }
 
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit

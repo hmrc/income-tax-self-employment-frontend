@@ -26,7 +26,7 @@ import utils.PagerDutyHelper.{getCorrelationId, pagerDutyLog}
 import scala.util.{Failure, Success, Try}
 
 trait HttpParser {
-  def parserName: String
+  val parserName: String
 
   def logMessage(response: HttpResponse): String =
     s"[$parserName][read] Received ${response.status} from $parserName. Body:${response.body} ${getCorrelationId(response)}"
