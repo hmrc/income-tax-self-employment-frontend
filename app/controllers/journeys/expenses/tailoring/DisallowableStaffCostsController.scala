@@ -44,9 +44,9 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(BusinessId(businessId))) match {
+      val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
         case None        => formProvider(userType(request.user.isAgent))
         case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
       }
@@ -54,7 +54,7 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
       Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(userType(request.user.isAgent))
         .bindFromRequest()
@@ -62,9 +62,9 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableStaffCostsPage, value, Some(BusinessId(businessId))))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableStaffCostsPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableStaffCostsPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+            } yield Redirect(navigator.nextPage(DisallowableStaffCostsPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 

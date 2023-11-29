@@ -30,7 +30,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
       "user answers for GoodsToSellOrUseAmountPage exist" - {
         "user answers for DisallowableGoodsToSellOrUseAmountPage exist" - {
           "generate a summary list row" in new Test {
-            val result = DisallowableGoodsToSellOrUseAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, userType)
+            val result = DisallowableGoodsToSellOrUseAmountSummary.row(validUserAnswers, taxYear, businessId, userType)
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"disallowableGoodsToSellOrUseAmount.title.$userType")
@@ -40,7 +40,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
 
         "user answers do not exist for DisallowableGoodsToSellOrUseAmountPage" - {
           "return None" in new Test {
-            val result = DisallowableGoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, userType)
+            val result = DisallowableGoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, businessId, userType)
 
             result mustBe None
           }
@@ -48,7 +48,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
       }
       "no user answers exist for GoodsToSellOrUseAmountPage" - {
         "return None" in new Test {
-          val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswers, taxYear, stubbedBusinessId, userType)
+          val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswers, taxYear, businessId, userType)
 
           result mustBe None
         }
@@ -56,7 +56,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     }
     "when no GoodsToSellOrUse are disallowable" - {
       "return None" in new Test {
-        val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, stubbedBusinessId, individual)
+        val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, individual)
 
         result mustBe None
       }
@@ -69,7 +69,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     protected val validData: JsObject = Json
       .parse(s"""
            |{
-           |  "$stubbedBusinessId": {
+           |  "$businessId": {
            |    "goodsToSellOrUse": "yesDisallowable",
            |    "goodsToSellOrUseAmount": 200.00,
            |    "disallowableGoodsToSellOrUseAmount": 100.00
@@ -81,7 +81,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     protected val invalidDataAllAllowable: JsObject = Json
       .parse(s"""
            |{
-           |  "$stubbedBusinessId": {
+           |  "$businessId": {
            |    "goodsToSellOrUse": "yesAllowable"
            |  }
            |}
@@ -91,7 +91,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     protected val invalidData: JsObject = Json
       .parse(s"""
            |{
-           |  "$stubbedBusinessId": {
+           |  "$businessId": {
            |    "goodsToSellOrUse": "yesDisallowable",
            |    "disallowableGoodsToSellOrUseAmount": 100.00
            |  }
@@ -102,7 +102,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     protected val otherData: JsObject = Json
       .parse(s"""
            |{
-           |  "$stubbedBusinessId": {
+           |  "$businessId": {
            |    "otherPage": "otherAnswer"
            |  }
            |}

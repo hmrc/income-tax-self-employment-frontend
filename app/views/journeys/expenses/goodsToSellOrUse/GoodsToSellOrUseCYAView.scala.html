@@ -16,7 +16,7 @@
 
 @import templates.helpers.Heading
 @import models.common._
-@import models.common.{TaxYear}
+@import models.common.{BusinessId, TaxYear}
 @import controllers.journeys.expenses.goodsToSellOrUse.routes._
 
 @this(layout: templates.Layout,
@@ -26,11 +26,11 @@
       govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: TaxYear, businessId: String, userType: String, summaryList: SummaryList)(implicit request: Request[_], messages: Messages)
+@(taxYear: TaxYear, businessId: BusinessId, userType: String, summaryList: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"goodsToSellOrUseCYA.title.$userType"))) {
 
-    @formHelper(action = GoodsToSellOrUseCYAController.onSubmit(taxYear, BusinessId(businessId))) {
+    @formHelper(action = GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId)) {
 
         @heading(
            heading = messages(s"goodsToSellOrUseCYA.title.$userType"),

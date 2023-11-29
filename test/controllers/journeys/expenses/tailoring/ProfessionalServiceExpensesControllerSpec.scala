@@ -77,7 +77,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -112,7 +112,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 NormalMode,
                 userScenario.userType,
                 taxYear,
-                stubbedBusinessId,
+                businessId,
                 userScenario.accountingType
               )(request, messages(application)).toString
 
@@ -192,7 +192,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

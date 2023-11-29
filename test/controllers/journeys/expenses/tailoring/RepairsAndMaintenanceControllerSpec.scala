@@ -45,7 +45,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val repairsAndMaintenanceRoute = RepairsAndMaintenanceController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val repairsAndMaintenanceRoute = RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new RepairsAndMaintenanceFormProvider()
 
@@ -83,7 +83,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -119,7 +119,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType
                 )(request, messages(application, userScenario.isWelsh)).toString
 
@@ -201,7 +201,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -233,7 +233,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

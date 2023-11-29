@@ -16,18 +16,18 @@
 
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
-import base.SpecBase.{taxYear, businessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{businessId, taxYear, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppWithMessages
 import models.database.UserAnswers
 import models.requests.DataRequest
+import org.scalatest.OptionValues._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import org.scalatest.OptionValues._
 
 class RepairsAndMaintenanceDisallowableAmountSummarySpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
   implicit val messages: Messages = buildAppWithMessages()
@@ -83,7 +83,7 @@ class RepairsAndMaintenanceDisallowableAmountSummarySpec extends AnyWordSpecLike
   }
 
   def createRequest(json: JsObject) = {
-    val data        = Json.obj(stubbedBusinessId -> json)
+    val data        = Json.obj(businessId.value -> json)
     val userAnswers = UserAnswers(userAnswersId, data)
     DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   }

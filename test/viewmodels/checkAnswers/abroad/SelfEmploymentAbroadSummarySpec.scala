@@ -29,7 +29,7 @@ class SelfEmploymentAbroadSummarySpec extends SpecBase {
   private val data = Json
     .parse(s"""
        |{
-       |"$stubbedBusinessId": {
+       |"$businessId": {
        |  "selfEmploymentAbroad": true
        |  }
        |}
@@ -39,7 +39,7 @@ class SelfEmploymentAbroadSummarySpec extends SpecBase {
   private val someOtherData = Json
     .parse(s"""
        |{
-       |"$stubbedBusinessId": {
+       |"$businessId": {
        |  "someOtherPage": true
        |  }
        |}

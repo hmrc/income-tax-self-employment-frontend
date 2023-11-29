@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.common.{TaxYear}
+@import models.common.{BusinessId, TaxYear}
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.goodsToSellOrUse.routes
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: String, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"goodsToSellOrUseAmount.title.$userType"))) {
 
