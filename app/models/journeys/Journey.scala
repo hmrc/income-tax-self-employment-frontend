@@ -54,6 +54,10 @@ object Journey {
     override def toString: String = "expenses-entertainment"
   }
 
+  case object ExpensesConstruction extends Journey {
+    override def toString: String = "expenses-construction"
+  }
+
   case object ExpensesStaffCosts extends Journey {
     override def toString: String = "expenses-staff-costs"
   }
@@ -74,6 +78,7 @@ object Journey {
     case JsString("expenses-categories")              => JsSuccess(ExpensesTailoring)
     case JsString("expenses-goods-to-sell-or-use")    => JsSuccess(ExpensesGoodsToSellOrUse)
     case JsString("expenses-entertainment")           => JsSuccess(ExpensesEntertainment)
+    case JsString("expenses-construction")            => JsSuccess(ExpensesConstruction)
     case JsString("expenses-office-supplies")         => JsSuccess(ExpensesOfficeSupplies)
     case JsString("expenses-repairs-and-maintenance") => JsSuccess(ExpensesRepairsAndMaintenance)
     case JsString("expenses-staff-costs")             => JsSuccess(ExpensesStaffCosts)

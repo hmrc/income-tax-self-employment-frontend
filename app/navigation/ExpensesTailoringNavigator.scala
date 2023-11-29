@@ -16,10 +16,12 @@
 
 package navigation
 
+import controllers.journeys.expenses.tailoring
 import controllers.journeys.expenses.tailoring.routes._
 import controllers.standard.routes._
 import models._
-import models.common.{BusinessId, TaxYear}
+import models.common.AccountingType.Accrual
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -136,7 +138,8 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DepreciationPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case OtherExpensesPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+    case OtherExpensesPage =>
+      _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, BusinessId(businessId))
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
@@ -153,4 +156,11 @@ class ExpensesTailoringNavigator @Inject() () {
         checkRouteMap(page)(userAnswers)(taxYear, businessId.value, isAccrual)
     }
 
+  /** The "normal" route is also used for CYA pages */
+  def nextNormalRoute(sourcePage: Page,
+                      userAnswers: UserAnswers,
+                      taxYear: TaxYear,
+                      businessId: BusinessId,
+                      accountingType: Option[AccountingType]): Call =
+    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId.value, accountingType.map(_ == Accrual))
 }
