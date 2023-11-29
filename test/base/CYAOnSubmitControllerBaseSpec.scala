@@ -25,6 +25,7 @@ import models.database.UserAnswers
 import models.journeys.Journey
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.inject.{Binding, bind}
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{POST, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
@@ -39,9 +40,11 @@ trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
   protected val journey: Journey
   protected val onSubmitRoute: String
 
-  protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitRoute)
+  private val mockService: SendJourneyAnswersService = mock[SendJourneyAnswersService]
 
-  protected val mockService: SendJourneyAnswersService
+  override val bindings: List[Binding[_]] = List(bind[SendJourneyAnswersService].toInstance(mockService))
+
+  protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitRoute)
 
   "submitting a page" - {
     "journey answers submitted successfully" - {

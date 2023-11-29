@@ -17,18 +17,15 @@
 package controllers.journeys.income
 
 import base.{CYAControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.Income
 import models.journeys.income.{IncomeJourneyAnswers, TradingAllowance}
-import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Request
-import services.SendJourneyAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.income._
 import views.html.journeys.income.IncomeCYAView
@@ -38,7 +35,7 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
   private val userAnswerData = Json
     .parse(s"""
          |{
-         |  "$stubbedBusinessId": {
+         |  "$businessId": {
          |    "incomeNotCountedAsTurnover": false,
          |    "turnoverIncomeAmount": 100.00,
          |    "anyOtherIncome": false,
@@ -48,12 +45,6 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
          |}
          |""".stripMargin)
     .as[JsObject]
-
-  override protected val mockService: SendJourneyAnswersService = mock[SendJourneyAnswersService]
-
-  // Don't need bindings for navigator in new cya controllers anymore
-  override val bindings: List[Binding[_]] =
-    List(bind[IncomeNavigator].to(new FakeIncomeNavigator(onwardRoute)), bind[SendJourneyAnswersService].toInstance(mockService))
 
   override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
   override protected val journey: Journey         = Income

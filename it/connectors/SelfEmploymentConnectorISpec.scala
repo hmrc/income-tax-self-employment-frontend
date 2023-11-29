@@ -20,8 +20,6 @@ import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.WiremockSpec
 import models.common.{Mtditid, SubmissionContext}
-import models.errors.HttpError
-import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper

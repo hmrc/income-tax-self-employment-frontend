@@ -17,30 +17,22 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.{CYAControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Request
-import services.SendJourneyAnswersService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
 
-  override protected val mockService: SendJourneyAnswersService = mock[SendJourneyAnswersService]
-
-  override val bindings: List[Binding[_]] =
-    List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)), bind[SendJourneyAnswersService].toInstance(mockService))
-
-  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId.value).url
+  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
   override protected lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
   private val userAnswerData = Json
@@ -76,7 +68,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
       application: Application): String = {
 
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
-    view(taxYear, businessId.value, scenario.userType.toString, summaryList)(request, messages).toString()
+    view(taxYear, businessId, scenario.userType.toString, summaryList)(request, messages).toString()
 
   }
 
