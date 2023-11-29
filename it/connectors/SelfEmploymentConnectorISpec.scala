@@ -19,10 +19,10 @@ package connectors
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.WiremockSpec
+import models.common.{Mtditid, SubmissionContext}
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
-import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
@@ -31,20 +31,18 @@ import play.api.libs.json.Json
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
   private val someExpensesJourney = ExpensesGoodsToSellOrUse
-  private val someExpensesData    = ExpensesData(taxYear, nino, businessId, someExpensesJourney, mtditid)
+  private val ctx                 = SubmissionContext(taxYear, nino, businessId, Mtditid(mtditid), someExpensesJourney)
 
   private val downstreamUrl =
-    s"/income-tax-self-employment/send-expenses-answers/${someExpensesData.journey.toString}" +
-      s"/${someExpensesData.taxYear.value}/${someExpensesData.businessId.value}/${someExpensesData.nino.value}"
+    s"/income-tax-self-employment/send-journey-answers/${ctx.journey.toString}" +
+      s"/${ctx.taxYear.value}/${ctx.businessId.value}/${ctx.nino.value}"
 
   private val someExpensesJourneyAnswers =
     GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
 
-  private val httpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
-
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
-  "sending expenses answers" must {
+  "sending journey answers" must {
     "return a successful result when downstream returns a success response" in {
       stubPostWithRequestBody(
         url = downstreamUrl,
@@ -54,7 +52,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
     }
     "return a failure result when downstream returns a error" in {
       stubPostWithRequestBody(
@@ -65,7 +63,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendExpensesAnswers(someExpensesData, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
     }
   }
 

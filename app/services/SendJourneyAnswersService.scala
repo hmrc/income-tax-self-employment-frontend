@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package services.journeys.expenses
+package services
 
 import connectors.SelfEmploymentConnector
+import models.common.SubmissionContext
 import models.errors.HttpError
-import models.journeys.expenses.ExpensesData
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExpensesService @Inject() (connector: SelfEmploymentConnector) {
+class SendJourneyAnswersService @Inject() (connector: SelfEmploymentConnector) {
 
-  def sendExpensesAnswers[T](data: ExpensesData, answers: T)(implicit
+  def sendJourneyAnswers[T](context: SubmissionContext, answers: T)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       writes: Writes[T]): Future[Either[HttpError, Unit]] =
-    connector.sendExpensesAnswers(data, answers)
+    connector.sendJourneyAnswers(context, answers)
 
 }

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses
+package models.common
 
-import models.common._
 import models.journeys.Journey
 
-case class ExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, journey: Journey, mtditid: String)
+case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey)

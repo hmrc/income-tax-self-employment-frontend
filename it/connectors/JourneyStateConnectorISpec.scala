@@ -98,7 +98,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())
-      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(httpError)
     }
 
 }

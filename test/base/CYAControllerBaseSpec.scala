@@ -30,14 +30,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 
 import scala.concurrent.Future
 
-abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerSpec {
+trait CYAControllerBaseSpec extends ControllerSpec {
 
   protected val onPageLoadRoute: String
   protected val userAnswers: UserAnswers
 
-  def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList
+  protected def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList
 
-  def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
+  protected def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String
@@ -46,29 +46,27 @@ abstract class CYAControllerBaseSpec(controllerName: String) extends ControllerS
 
   protected val nextRoute: String = onwardRoute.url
 
-  s"$controllerName" - {
-    "loading a page" - {
-      "answers for the user exist" - {
-        forAll(langUserTypeCases) { (lang, userType) =>
-          s"language is $lang and user is an $userType" - {
-            "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
-              val result: Future[Result] = route(application, getRequest).value.map(languageAwareResult(lang, _))
+  "loading a page" - {
+    "answers for the user exist" - {
+      forAll(langUserTypeCases) { (lang, userType) =>
+        s"language is $lang and user is an $userType" - {
+          "return a 200 OK with answered questions present as rows in view" in new TestScenario(userType, Some(userAnswers)) {
+            val result: Future[Result] = route(application, getRequest).value.map(languageAwareResult(lang, _))
 
-              status(result) shouldBe OK
-              contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) mustEqual expectedView(this, expectedSummaryList(userType), nextRoute)
           }
         }
       }
-      "no user answers exist" - {
-        forAll(userTypeCases) { userType =>
-          s"user is an $userType" - {
-            "redirect to the journey recovery controller" in new TestScenario(userType, None) {
-              val result: Future[Result] = route(application, getRequest).value
+    }
+    "no user answers exist" - {
+      forAll(userTypeCases) { userType =>
+        s"user is an $userType" - {
+          "redirect to the journey recovery controller" in new TestScenario(userType, None) {
+            val result: Future[Result] = route(application, getRequest).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
           }
         }
       }
