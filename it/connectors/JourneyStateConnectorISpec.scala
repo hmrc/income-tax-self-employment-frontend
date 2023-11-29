@@ -19,7 +19,6 @@ package connectors
 import base.IntegrationBaseSpec
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
-import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -98,7 +97,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())
-      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(httpError)
     }
 
 }

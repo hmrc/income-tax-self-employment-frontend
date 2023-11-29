@@ -16,75 +16,72 @@
 
 package controllers.journeys.income
 
-import base.SpecBase
-import controllers.journeys.income.routes.IncomeCYAController
-import models.NormalMode
+import base.{CYAControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.Journey.Income
+import models.journeys.income.{IncomeJourneyAnswers, TradingAllowance}
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.mvc.Request
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.income._
 import views.html.journeys.income.IncomeCYAView
 
-import scala.concurrent.Future
+class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[IncomeJourneyAnswers] {
 
-class IncomeCYAControllerSpec extends SpecBase {
+  private val userAnswerData = Json
+    .parse(s"""
+         |{
+         |  "$businessId": {
+         |    "incomeNotCountedAsTurnover": false,
+         |    "turnoverIncomeAmount": 100.00,
+         |    "anyOtherIncome": false,
+         |    "turnoverNotTaxable": false,
+         |    "tradingAllowance": "declareExpenses"
+         |  }
+         |}
+         |""".stripMargin)
+    .as[JsObject]
 
-  private val authUserTypes = List(individual, agent)
+  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+  override protected val journey: Journey         = Income
 
-  private val userAnswerData = Json.parse(s"""
-       |{
-       |  "incomeNotCountedAsTurnover": false,
-       |  "turnoverIncomeAmount": 1234.55,
-       |  "anyOtherIncome": false,
-       |  "turnoverNotTaxable": false,
-       |  "tradingAllowance": "declareExpenses"
-       |}
-       |""".stripMargin)
+  override protected val journeyAnswers: IncomeJourneyAnswers = IncomeJourneyAnswers(
+    incomeNotCountedAsTurnover = false,
+    nonTurnoverIncomeAmount = None,
+    turnoverIncomeAmount = 100.00,
+    anyOtherIncome = false,
+    otherIncomeAmount = None,
+    turnoverNotTaxable = Some(false),
+    notTaxableAmount = None,
+    tradingAllowance = TradingAllowance.DeclareExpenses,
+    howMuchTradingAllowance = None,
+    tradingAllowanceAmount = None
+  )
 
-  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+  override protected lazy val onPageLoadRoute: String = routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+  override protected lazy val onSubmitRoute: String   = routes.IncomeCYAController.onSubmit(taxYear, businessId).url
 
-  "IncomeCYAController" - {
-    authUserTypes.foreach { authUser =>
-      s"when handling a request from a $authUser to load a page" - {
-        "must return a 200 OK, passing in the view as the content" in {
+  override def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
+    rows = Seq(
+      IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, user.toString, businessId).value,
+      TurnoverIncomeAmountSummary.row(userAnswers, taxYear, user.toString, businessId).value,
+      AnyOtherIncomeSummary.row(userAnswers, taxYear, user.toString, businessId).value,
+      TurnoverNotTaxableSummary.row(userAnswers, taxYear, user.toString, businessId).value,
+      TradingAllowanceSummary.row(userAnswers, taxYear, user.toString, businessId).value
+    ),
+    classes = "govuk-!-margin-bottom-7"
+  )
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(authUser)).build()
-
-          implicit val appMessages: Messages = messages(application)
-
-          running(application) {
-            val view    = application.injector.instanceOf[IncomeCYAView]
-            val request = FakeRequest(GET, IncomeCYAController.onPageLoad(taxYear, businessId).url)
-
-            val expectedSummaryListRows = Seq(
-              AnyOtherIncomeSummary.row(userAnswers, taxYear, authUser, businessId),
-              IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, authUser, businessId),
-              TradingAllowanceSummary.row(userAnswers, taxYear, authUser, businessId),
-              TurnoverIncomeAmountSummary.row(userAnswers, taxYear, authUser, businessId),
-              TurnoverNotTaxableSummary.row(userAnswers, taxYear, authUser, businessId)
-            ).flatten
-
-            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
-
-            val result: Future[Result] = route(application, request).value
-
-            status(result) mustEqual OK
-
-            val expectedNextRoute =
-              controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode).url
-
-            contentAsString(result) mustEqual view(taxYear, expectedSummaryLists, expectedNextRoute, authUser)(
-              request,
-              messages(application)).toString
-          }
-        }
-      }
-    }
+  override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[IncomeCYAView]
+    view(taxYear, businessId, summaryList, scenario.userType.toString)(request, messages).toString()
   }
 
 }

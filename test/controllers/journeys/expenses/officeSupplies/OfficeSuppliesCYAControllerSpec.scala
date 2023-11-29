@@ -29,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.officeSupplies.OfficeSuppliesAmountSummary
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
-class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppliesCYAController") {
+class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec {
 
   private val userAnswerData = Json
     .parse(s"""

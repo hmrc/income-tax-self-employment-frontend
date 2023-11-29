@@ -18,8 +18,10 @@ package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import models.common.{BusinessId, Nino, TaxYear}
+import models.errors.{HttpError, HttpErrorBody}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.ws.{WSClient, WSRequest}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
@@ -34,6 +36,8 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite {
   protected val taxYear: TaxYear       = TaxYear(LocalDate.now().getYear)
 
   protected val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid))
+
+  protected val httpError: HttpError = HttpError(BAD_REQUEST, HttpErrorBody.parsingError)
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier    = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))

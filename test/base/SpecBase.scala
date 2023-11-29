@@ -16,12 +16,16 @@
 
 package base
 
+import builders.UserBuilder
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.Language._
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
+import models.errors.HttpError
+import models.errors.HttpErrorBody.SingleErrorBody
+import models.journeys.Journey
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -29,6 +33,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
+import play.api.http.Status.BAD_REQUEST
 import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n._
 import play.api.inject.bind
@@ -56,11 +61,16 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def anyTaxYear: TaxYear       = TaxYear(any)
   def anyBusinessId: BusinessId = BusinessId(any)
 
+  val submissionContext: Journey => SubmissionContext =
+    (journey: Journey) => SubmissionContext(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+
   val enLang: Lang = Lang("en-EN")
   val cyLang: Lang = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   implicit val hc: HeaderCarrier            = HeaderCarrier()
+
+  val httpError: HttpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
