@@ -18,11 +18,8 @@ package models.database
 
 import play.api.libs.json.{Format, Json}
 
-final case class ExpensesTailoringJourneyAnswers(
-    officeSupplies: String
-)
+final case class IncomeAnswers(tradingAllowance: String)
 
-object ExpensesTailoringJourneyAnswers {
-  implicit val format: Format[ExpensesTailoringJourneyAnswers] = Json.format[ExpensesTailoringJourneyAnswers]
-
+object IncomeAnswers {
+  implicit val format: Format[IncomeAnswers] = Json.format[IncomeAnswers]
 }

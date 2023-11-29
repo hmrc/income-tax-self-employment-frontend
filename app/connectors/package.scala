@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package services
-
-import connectors.SelfEmploymentConnector
-import models.common.SubmissionContext
+import cats.implicits.catsSyntaxEitherId
+import connectors.httpParser.JourneyStateParser.pagerDutyError
 import models.errors.HttpError
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.http.Status.NO_CONTENT
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+package object connectors {
+  type ConnectorResult[A] = Either[HttpError, A]
+  type ConnectorNoResult = Either[HttpError, Unit]
 
-class SendJourneyAnswersService @Inject() (connector: SelfEmploymentConnector) {
+  object NoContentHttpReads extends HttpReads[ConnectorNoResult] {
 
-  // TODO LT Use SelfEmploymentService.submitAnswers
-  def sendJourneyAnswers[T](context: SubmissionContext, answers: T)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      writes: Writes[T]): Future[Either[HttpError, Unit]] =
-    connector.sendJourneyAnswers(context, answers)
+    override def read(method: String, url: String, response: HttpResponse): ConnectorNoResult =
+      response.status match {
+        case NO_CONTENT => ().asRight
+        case _ => pagerDutyError(response).asLeft
+      }
 
+  }
 }

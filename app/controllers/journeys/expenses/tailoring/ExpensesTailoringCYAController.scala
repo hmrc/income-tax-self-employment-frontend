@@ -20,7 +20,8 @@ import controllers.actions._
 import controllers.handleResult
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear}
-import models.database.ExpensesTailoringJourneyAnswers
+import models.database.ExpensesTailoringAnswers
+import models.journeys.Journey.ExpensesTailoring
 import navigation.ExpensesNavigator
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.Logger
@@ -63,11 +64,12 @@ class ExpensesTailoringCYAController @Inject() (
       ))
   }
 
+  // TODO LT what to do with income declare expenses, should it be stored during save income story?
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId).url
       val result = service
-        .submitAnswers[ExpensesTailoringJourneyAnswers](taxYear, businessId, request.mtditid, request.userAnswers)
+        .submitAnswers[ExpensesTailoringAnswers](taxYear, businessId, request.mtditid, ExpensesTailoring, request.userAnswers)
         .map(_ => Redirect(nextRoute))
         .value
 
