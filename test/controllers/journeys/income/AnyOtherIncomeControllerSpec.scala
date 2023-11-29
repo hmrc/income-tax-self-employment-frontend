@@ -28,8 +28,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -71,15 +69,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val view = application.injector.instanceOf[AnyOtherIncomeView]
 
@@ -89,7 +84,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
                   messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -97,8 +92,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, true, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -107,14 +101,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult = view(userScenario.form.fill(true), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }
@@ -284,7 +276,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
@@ -298,14 +289,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
           "must return a Bad Request and errors when invalid data is submitted" in {
@@ -313,7 +302,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
@@ -327,14 +315,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }

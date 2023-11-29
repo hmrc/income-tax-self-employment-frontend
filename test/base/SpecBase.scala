@@ -29,11 +29,9 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -60,7 +58,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def anyBusinessId: BusinessId = BusinessId(any)
 
   val enLang: Lang = Lang("en-EN")
-  val cyLang: Lang = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   implicit val hc: HeaderCarrier            = HeaderCarrier()
@@ -114,12 +111,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
   }
-
-  def languageAwareResult(lang: Language, result: Result)(implicit messagesApi: MessagesApi): Result =
-    lang match {
-      case English => result
-      case Welsh   => result.withLang(cyLang)
-    }
 
 }
 

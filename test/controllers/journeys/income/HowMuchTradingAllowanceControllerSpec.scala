@@ -30,8 +30,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Format.GenericFormat
 import play.api.test.FakeRequest
@@ -77,15 +75,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
@@ -95,7 +90,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                   messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -109,8 +104,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               .success
               .value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -118,8 +112,6 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult = view(
                 userScenario.form.fill(HowMuchTradingAllowance.values.head),
@@ -131,7 +123,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }
@@ -281,8 +273,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -295,15 +286,13 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -311,8 +300,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -325,15 +313,13 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }

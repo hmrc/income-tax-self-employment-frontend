@@ -29,8 +29,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -64,15 +62,12 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
           "must return OK and the correct view for a GET" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, taxiMinicabOrRoadHaulageRoute)
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
@@ -82,7 +77,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
                   messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -93,14 +88,12 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               .success
               .value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, taxiMinicabOrRoadHaulageRoute)
 
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              val result = route(application, request).value
 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
@@ -113,7 +106,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
                   stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }
@@ -166,8 +159,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
         s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application          = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -183,11 +175,10 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
-              val result     = route(application, request).value
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+              val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 

@@ -29,8 +29,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.Application
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
@@ -80,19 +78,17 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             "must return OK and the correct view" in {
               val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-              val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+              val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
               running(application) {
                 when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
                 implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
                 val result                                                = route(application, request).value
-                val langResult                                            = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
-                status(langResult) mustEqual OK
+                status(result) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                contentAsString(result) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
                   request,
                   messages(application)).toString
               }
@@ -103,19 +99,17 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val application = buildApplication(Some(userAnswers), userScenario.authUser)
 
-              implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
-              val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
+              val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
               running(application) {
                 when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
-                val request    = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
-                val result     = route(application, request).value
-                val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                val request = FakeRequest(GET, officeSuppliesAmountPageLoadRoute)
+                val result  = route(application, request).value
 
-                status(langResult) mustEqual OK
+                status(result) mustEqual OK
 
-                contentAsString(langResult) mustEqual view(
+                contentAsString(result) mustEqual view(
                   userScenario.form.fill(validAnswer),
                   NormalMode,
                   userScenario.authUser,
@@ -167,8 +161,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
               "must return a Bad Request and errors when invalid data is submitted" in {
                 val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
 
-                val view: OfficeSuppliesAmountView    = application.injector.instanceOf[OfficeSuppliesAmountView]
-                implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+                val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
                 running(application) {
                   when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
@@ -177,11 +170,10 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
                   val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-                  val result     = route(application, request).value
-                  val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
+                  val result = route(application, request).value
 
-                  status(langResult) mustEqual BAD_REQUEST
-                  contentAsString(langResult) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                  status(result) mustEqual BAD_REQUEST
+                  contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
                     request,
                     messages(application)).toString
                 }

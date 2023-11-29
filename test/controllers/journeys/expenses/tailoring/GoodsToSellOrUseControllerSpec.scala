@@ -30,8 +30,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -70,7 +68,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -78,8 +75,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val request = FakeRequest(GET, goodsToSellOrUseRoute)
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
@@ -94,7 +89,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
                   taxiDriver)(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -106,7 +101,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -116,8 +110,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
               val result = route(application, request).value
-
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
               val expectedResult =
                 view(
@@ -131,7 +123,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
                 )(request, messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }
@@ -215,7 +207,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -230,15 +221,13 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
                   request,
                   messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -247,7 +236,6 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
 
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
@@ -262,15 +250,13 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
                   request,
                   messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
