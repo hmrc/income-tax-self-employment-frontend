@@ -29,7 +29,7 @@ status.notStarted = NOT STARTED
 status.cannotStartYet = CANNOT START YET
 status.checkOurRecords = CHECK OUR RECORDS
 
-journeys.selfEmployment = (BREAKING CHANGE TO TEST JENKINS NOTIFY) Self-employment
+journeys.selfEmployment = Self-employment
 journeys.self-employment-abroad = Self-employment abroad
 journeys.income = Income
 journeys.expenses-categories = Expenses categories
