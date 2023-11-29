@@ -45,11 +45,11 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DisallowableStaffCostsFormProvider()
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[DisallowableStaffCosts])
+  case class UserScenario(isAgent: Boolean, form: Form[DisallowableStaffCosts])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+    UserScenario(isAgent = false, formProvider(individual)),
+    UserScenario(isAgent = true, formProvider(agent))
   )
 
   "DisallowableStaffCosts Controller" - {
@@ -57,7 +57,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -70,9 +70,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[DisallowableStaffCostsView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -96,7 +94,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form.fill(DisallowableStaffCosts.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -149,7 +147,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()

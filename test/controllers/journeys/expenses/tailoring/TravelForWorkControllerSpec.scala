@@ -47,18 +47,18 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new TravelForWorkFormProvider()
   val taxiDriver   = false
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TravelForWork])
+  case class UserScenario(isAgent: Boolean, form: Form[TravelForWork])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+    UserScenario(isAgent = false, formProvider(individual)),
+    UserScenario(isAgent = true, formProvider(agent))
   )
 
   "TravelForWork Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
 
           "must return OK and the correct view for a GET" in {
 
@@ -76,7 +76,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -100,7 +100,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
             }
@@ -172,7 +172,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
 
           "must return a Bad Request and errors when empty data is submitted" in {
 
@@ -189,9 +189,8 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -213,9 +212,8 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

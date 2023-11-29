@@ -48,19 +48,19 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)
+    UserScenario(isAgent = false, formProvider(individual), accrual),
+    UserScenario(isAgent = true, formProvider(agent), cash)
   )
 
   def onwardRoute = Call("GET", "/foo")
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[OfficeSupplies], accountingType: String)
+  case class UserScenario(isAgent: Boolean, form: Form[OfficeSupplies], accountingType: String)
 
   "OfficeSupplies Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
@@ -79,7 +79,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -112,7 +112,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
                   taxYear,
                   businessId,
                   userScenario.accountingType
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -167,7 +167,7 @@ class OfficeSuppliesControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)

@@ -18,7 +18,6 @@ package base
 
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.Language._
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -61,14 +60,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  def messages(app: Application, lang: Language): Messages = {
-    val bool = lang match {
-      case Welsh   => true
-      case English => false
-    }
-    messages(app, bool)
-  }
-
   def messages(app: Application, isWelsh: Boolean = false): Messages =
     if (isWelsh) {
       app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
@@ -81,8 +72,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
-
-  protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
 
   protected def userType(isAgent: Boolean): String = if (isAgent) agent else individual
 

@@ -56,11 +56,11 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
+  case class UserScenario(isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
-    UserScenario(isWelsh = false, isAgent = true, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
+    UserScenario(isAgent = false, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
+    UserScenario(isAgent = true, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
   )
 
   def formTypeToString(form: Form[HowMuchTradingAllowance]): String =
@@ -70,7 +70,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK with the correct view" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
@@ -87,7 +87,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -120,7 +120,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 taxYear,
                 businessId,
                 userScenario.allowanceString
-              )(request, messages(application, userScenario.isWelsh)).toString
+              )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -268,7 +268,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
@@ -289,7 +289,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -316,7 +316,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -46,11 +46,11 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
   val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
   val cyaCall                 = IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal])
+  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formWithIndividual),
-    UserScenario(isWelsh = false, isAgent = true, formWithAgent)
+    UserScenario(isAgent = false, formWithIndividual),
+    UserScenario(isAgent = true, formWithAgent)
   )
 
   "NotTaxableAmount Controller" - {
@@ -58,7 +58,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
@@ -71,9 +71,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[NotTaxableAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -95,7 +93,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
                 request,
-                messages(application, userScenario.isWelsh)).toString
+                messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -176,7 +174,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -192,9 +190,8 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -216,9 +213,8 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -240,9 +236,8 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -264,9 +259,8 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                request,
-                messages(application, userScenario.isWelsh)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

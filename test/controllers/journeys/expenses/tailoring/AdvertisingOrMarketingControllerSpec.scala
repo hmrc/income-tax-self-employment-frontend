@@ -49,18 +49,18 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AdvertisingOrMarketingFormProvider()
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[AdvertisingOrMarketing])
+  case class UserScenario(isAgent: Boolean, form: Form[AdvertisingOrMarketing])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+    UserScenario(isAgent = false, formProvider(individual)),
+    UserScenario(isAgent = true, formProvider(agent))
   )
 
   "AdvertisingOrMarketing Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
 
           "must return OK and the correct view for a GET" in {
 
@@ -76,9 +76,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -102,7 +100,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult =
                 view(userScenario.form.fill(AdvertisingOrMarketing.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -182,7 +180,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when empty data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)

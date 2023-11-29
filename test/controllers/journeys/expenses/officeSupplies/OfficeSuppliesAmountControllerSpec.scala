@@ -51,11 +51,11 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, authUser: String, form: Form[BigDecimal])
+  case class UserScenario(authUser: String, form: Form[BigDecimal])
 
   private val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUser = individual, form = formProvider(individual)),
-    UserScenario(isWelsh = false, authUser = agent, form = formProvider(agent))
+    UserScenario(authUser = individual, form = formProvider(individual)),
+    UserScenario(authUser = agent, form = formProvider(agent))
   )
 
   private val someHttpError = HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason"))
@@ -72,7 +72,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
   "OfficeSuppliesAmountController" - {
     userScenarios.foreach { userScenario =>
-      s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
+      s"when user is an ${userScenario.authUser}" - {
         "when loading a page" - {
           "when an accounting type is returned by the service" - {
             "must return OK and the correct view" in {

@@ -45,11 +45,11 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
 
-  case class UserScenario(isWelsh: Boolean, authUserType: String)
+  case class UserScenario(authUserType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUserType = individual),
-    UserScenario(isWelsh = false, authUserType = agent)
+    UserScenario(authUserType = individual),
+    UserScenario(authUserType = agent)
   )
 
   "WorkFromBusinessPremises Controller" - {
@@ -57,7 +57,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.authUserType}" - {
 
           "must return OK and the correct view for a GET" in {
 
@@ -72,7 +72,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -100,7 +100,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val expectedResult =
                 view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.authUserType, taxYear, businessId)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -153,7 +153,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.authUserType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()

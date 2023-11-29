@@ -56,16 +56,16 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(isWelsh: Boolean, authUser: String)
+  case class UserScenario(authUser: String)
 
-  private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
+  private val userScenarios = Seq(UserScenario(authUser = individual), UserScenario(authUser = agent))
 
   private val data        = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
     userScenarios.foreach { userScenario =>
-      s"when language is ${getLanguage(userScenario.isWelsh)}, user is an ${userScenario.authUser}" - {
+      s"when user is an ${userScenario.authUser}" - {
         "when loading a page" - {
           "when office supplies allowable amount has been provided in the previous question" - {
             "must return OK and the correct view" in {
@@ -165,13 +165,9 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
               status(result) mustEqual BAD_REQUEST
 
-              contentAsString(result) mustEqual view(
-                boundForm,
-                NormalMode,
-                taxYear,
-                businessId,
-                userScenario.authUser,
-                formatMoney(allowableAmount))(request, appMessages).toString
+              contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, formatMoney(allowableAmount))(
+                request,
+                appMessages).toString
             }
           }
 
