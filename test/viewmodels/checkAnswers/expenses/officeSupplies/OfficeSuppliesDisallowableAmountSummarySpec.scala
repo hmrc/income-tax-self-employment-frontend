@@ -32,7 +32,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
         "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
           "generate a summary list row" in new Test {
             val result: Option[SummaryListRow] =
-              OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, stubbedBusinessId, authUserType)
+              OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, businessId, authUserType)
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$authUserType")
@@ -42,7 +42,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
         "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
           "return None" in new Test {
             val result: Option[SummaryListRow] =
-              OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, stubbedBusinessId, authUserType)
+              OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId, authUserType)
 
             result shouldBe None
           }
@@ -51,7 +51,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
       "no user answers exist for OfficeSuppliesAmountPage" - {
         "return None" in new Test {
           val result: Option[SummaryListRow] =
-            OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, stubbedBusinessId, authUserType)
+            OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, businessId, authUserType)
 
           result shouldBe None
         }
@@ -60,7 +60,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     "no office supplies are disallowable" - {
       "return None" in new Test {
         val result: Option[SummaryListRow] =
-          OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, stubbedBusinessId, authUserType)
+          OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, authUserType)
 
         result shouldBe None
       }
@@ -73,7 +73,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     protected val validData: JsObject = Json
       .parse(s"""
       |{
-      |  "$stubbedBusinessId": {
+      |  "$businessId": {
       |    "officeSupplies": "yesDisallowable",
       |    "officeSuppliesAmount": 200.00,
       |    "officeSuppliesDisallowableAmount": 100.00
@@ -85,7 +85,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     protected val invalidDataAllAllowable: JsObject = Json
       .parse(s"""
       |{
-      |  "$stubbedBusinessId": {
+      |  "$businessId": {
       |    "officeSupplies": "yesAllowable"
       |  }
       |}
@@ -95,7 +95,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     protected val invalidData: JsObject = Json
       .parse(s"""
       |{
-      |  "$stubbedBusinessId": {
+      |  "$businessId": {
       |    "officeSupplies": "yesDisallowable",
       |    "officeSuppliesDisallowableAmount": 100.00
       |  }
@@ -106,7 +106,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     protected val otherData: JsObject = Json
       .parse(s"""
       |{
-      |  "$stubbedBusinessId": {
+      |  "$businessId": {
       |    "otherPage": "otherAnswer"
       |  }
       |}

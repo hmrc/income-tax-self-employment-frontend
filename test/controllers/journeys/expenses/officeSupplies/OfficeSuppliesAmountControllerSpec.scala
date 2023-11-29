@@ -45,8 +45,8 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
   private val validAnswer  = BigDecimal(100.00)
 
   private val onwardRoute                            = Call("GET", "/foo")
-  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
-  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
@@ -88,7 +88,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 status(result) mustEqual OK
 
-                contentAsString(result) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                contentAsString(result) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
                   request,
                   messages(application)).toString
               }
@@ -115,7 +115,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   userScenario.authUser,
                   accrual,
                   taxYear,
-                  stubbedBusinessId)(request, messages(application)).toString
+                  businessId)(request, messages(application)).toString
               }
             }
           }
@@ -173,7 +173,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   val result = route(application, request).value
 
                   status(result) mustEqual BAD_REQUEST
-                  contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, stubbedBusinessId)(
+                  contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
                     request,
                     messages(application)).toString
                 }

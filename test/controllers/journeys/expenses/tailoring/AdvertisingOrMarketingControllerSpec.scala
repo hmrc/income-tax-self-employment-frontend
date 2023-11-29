@@ -42,7 +42,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   lazy val advertisingOrMarketingRoute =
-    controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
@@ -76,7 +76,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -100,12 +100,9 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(AdvertisingOrMarketing.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form.fill(AdvertisingOrMarketing.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -206,7 +203,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -233,7 +230,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

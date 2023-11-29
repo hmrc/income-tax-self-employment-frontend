@@ -54,12 +54,12 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)), bind[ExpensesService].toInstance(mockExpensesService))
 
-  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
 
   private val userAnswerData = Json
     .parse(s"""
        |{
-       |  "$stubbedBusinessId": {
+       |  "$businessId": {
        |    "goodsToSellOrUse": "yesDisallowable",
        |    "goodsToSellOrUseAmount": 100.00,
        |    "disallowableGoodsToSellOrUseAmount": 100.00
@@ -72,8 +72,8 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
 
   override def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
-      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, user.toString).value,
-      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, user.toString).value
+      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, user.toString).value,
+      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, user.toString).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
@@ -83,7 +83,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec("GoodsToSe
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
-    view(taxYear, stubbedBusinessId, scenario.userType.toString, summaryList).toString()
+    view(taxYear, businessId, scenario.userType.toString, summaryList).toString()
   }
 
   private val goodsToSellJourneyAnswers =

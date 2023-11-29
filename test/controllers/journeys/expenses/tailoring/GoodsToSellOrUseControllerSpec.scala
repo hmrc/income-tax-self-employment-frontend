@@ -44,7 +44,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val goodsToSellOrUseRoute = GoodsToSellOrUseController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val goodsToSellOrUseRoute = GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new GoodsToSellOrUseFormProvider()
   val taxiDriver   = false
@@ -79,14 +79,9 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
               val expectedResult =
-                view(
-                  userScenario.form,
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId,
-                  userScenario.accountingType,
-                  taxiDriver)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType, taxiDriver)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -117,7 +112,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
                   taxiDriver
                 )(request, messages(application, userScenario.isWelsh)).toString
@@ -146,7 +141,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
           val expectedResult =
-            view(formProvider(individual), NormalMode, userType(false), taxYear, stubbedBusinessId, cash, taxiDriver)(
+            view(formProvider(individual), NormalMode, userType(false), taxYear, businessId, cash, taxiDriver)(
               request,
               messages(application, false)).toString
 
@@ -222,7 +217,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType, taxiDriver)(
                   request,
                   messages(application)).toString
 
@@ -251,7 +246,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, userScenario.accountingType, taxiDriver)(
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType, taxiDriver)(
                   request,
                   messages(application)).toString
 

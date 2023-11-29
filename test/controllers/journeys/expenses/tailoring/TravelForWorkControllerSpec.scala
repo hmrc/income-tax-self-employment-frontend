@@ -42,7 +42,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   lazy val travelForWorkRoute =
-    controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    controllers.journeys.expenses.tailoring.routes.TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new TravelForWorkFormProvider()
   val taxiDriver   = false
@@ -74,7 +74,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -98,13 +98,9 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(TravelForWork.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  stubbedBusinessId,
-                  taxiDriver)(request, messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
+                  request,
+                  messages(application, userScenario.isWelsh)).toString
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
             }
@@ -126,9 +122,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           val expectedResult =
-            view(formProvider(individual), NormalMode, userType(false), taxYear, stubbedBusinessId, taxiDriver)(
-              request,
-              messages(application)).toString
+            view(formProvider(individual), NormalMode, userType(false), taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual expectedResult
@@ -195,7 +189,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 
@@ -219,7 +213,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId, taxiDriver)(
+              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
                 request,
                 messages(application, userScenario.isWelsh)).toString
 

@@ -34,7 +34,7 @@ import views.html.journeys.expenses.staffCosts._
 class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val validAnswer   = BigDecimal(200.00)
   private val invalidAnswer = "invalid value"
-  private val data          = Json.obj(stubbedBusinessId -> Json.obj("staffCostsAmount" -> validAnswer))
+  private val data          = Json.obj(businessId.value -> Json.obj("staffCostsAmount" -> validAnswer))
   private val userAnswers   = UserAnswers(userAnswersId, data)
 
   "onPageLoad" should {

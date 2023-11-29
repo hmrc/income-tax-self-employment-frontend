@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.staffCosts
 
-import base.SpecBase.{businessId, stubbedBusinessId, taxYear, userAnswersId}
+import base.SpecBase.{businessId, taxYear, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppWithMessages
 import models.database.UserAnswers
@@ -81,7 +81,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   }
 
   def createRequest(json: JsObject): DataRequest[AnyContentAsEmpty.type] = {
-    val data        = Json.obj(stubbedBusinessId -> json)
+    val data        = Json.obj(businessId.value -> json)
     val userAnswers = UserAnswers(userAnswersId, data)
     DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   }

@@ -32,16 +32,16 @@ import viewmodels.implicits._
 
 object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(GoodsToSellOrUsePage, Some(BusinessId(businessId)))
+      .get(GoodsToSellOrUsePage, Some(businessId))
       .filter(areAnyGoodsToSellOrUseDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
-  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: String, userType: String)(implicit messages: Messages) =
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages) =
     for {
-      disallowableAmount <- answers.get(DisallowableGoodsToSellOrUseAmountPage, Some(BusinessId(businessId)))
-      allowableAmount    <- answers.get(GoodsToSellOrUseAmountPage, Some(BusinessId(businessId)))
+      disallowableAmount <- answers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(GoodsToSellOrUseAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", allowableAmount),

@@ -49,10 +49,10 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
   private val onwardRoute = Call("GET", "/foo")
 
   private lazy val officeSuppliesDisallowableAmountPageLoadRoute =
-    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
 
   private lazy val officeSuppliesDisallowableAmountOnSubmitRoute =
-    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url
+    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   private val mockSessionRepository = mock[SessionRepository]
 
@@ -60,7 +60,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val userScenarios = Seq(UserScenario(isWelsh = false, authUser = individual), UserScenario(isWelsh = false, authUser = agent))
 
-  private val data        = Json.obj(stubbedBusinessId -> Json.obj("officeSuppliesAmount" -> allowableAmount))
+  private val data        = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
@@ -85,7 +85,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   formProvider(userScenario.authUser, allowableAmount),
                   NormalMode,
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.authUser,
                   formatMoney(allowableAmount))(request, appMessages).toString
               }
@@ -109,7 +109,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                   formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
                   NormalMode,
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.authUser,
                   formatMoney(allowableAmount)
                 )(request, appMessages).toString
@@ -169,7 +169,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 boundForm,
                 NormalMode,
                 taxYear,
-                stubbedBusinessId,
+                businessId,
                 userScenario.authUser,
                 formatMoney(allowableAmount))(request, appMessages).toString
             }
