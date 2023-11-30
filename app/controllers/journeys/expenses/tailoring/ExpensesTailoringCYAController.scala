@@ -22,7 +22,7 @@ import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear}
 import models.database.ExpensesTailoringAnswers
 import models.journeys.Journey.ExpensesTailoring
-import navigation.ExpensesNavigator
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,7 @@ class ExpensesTailoringCYAController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: ExpensesTailoringCYAView,
     service: SelfEmploymentService,
-    navigator: ExpensesNavigator
+    navigator: ExpensesTailoringNavigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -64,10 +64,9 @@ class ExpensesTailoringCYAController @Inject() (
       ))
   }
 
-  // TODO LT what to do with income declare expenses, should it be stored during save income story?
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId).url
+      val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId, accountingType = None).url
       val result = service
         .submitAnswers[ExpensesTailoringAnswers](taxYear, businessId, request.mtditid, ExpensesTailoring, request.userAnswers)
         .map(_ => Redirect(nextRoute))

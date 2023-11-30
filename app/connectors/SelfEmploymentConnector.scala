@@ -85,7 +85,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  // TODO Use submitAnswers
+  // TODO Use submitAnswers: SASS-6363
   def sendJourneyAnswers[T](context: SubmissionContext, answers: T)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,

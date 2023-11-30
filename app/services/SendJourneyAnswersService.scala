@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SendJourneyAnswersService @Inject() (connector: SelfEmploymentConnector) {
 
-  // TODO LT Use SelfEmploymentService.submitAnswers
+  // TODO Use SelfEmploymentService.submitAnswers SASS-6363
   def sendJourneyAnswers[T](context: SubmissionContext, answers: T)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
