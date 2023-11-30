@@ -32,8 +32,8 @@ import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
 
-  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
-  override protected lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+  override lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
+  override lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
   private val userAnswerData = Json
     .parse(s"""
@@ -47,12 +47,8 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
          |""".stripMargin)
     .as[JsObject]
 
-  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-
-  override protected val journeyAnswers: GoodsToSellOrUseJourneyAnswers =
-    GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
-
-  override protected val journey: Journey = ExpensesGoodsToSellOrUse
+  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+  override val journey: Journey         = ExpensesGoodsToSellOrUse
 
   override protected def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
