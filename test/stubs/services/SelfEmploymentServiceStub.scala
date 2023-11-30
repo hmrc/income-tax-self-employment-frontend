@@ -45,5 +45,6 @@ case class SelfEmploymentServiceStub(
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
 
-  def submitAnswers[SubsetOfAnswers: Format](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
+  def submitAnswers[SubsetOfAnswers: Format](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, userAnswers: UserAnswers)(
+      implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
 }

@@ -27,17 +27,11 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
-import play.api.libs.json.{JsObject, JsValue, Json}
-import ch.qos.logback.classic.Logger
-import ch.qos.logback.classic.spi.ILoggingEvent
-import ch.qos.logback.core.read.ListAppender
-import org.scalatest.BeforeAndAfterEach
-import org.slf4j.LoggerFactory
+import play.api.libs.json.{JsObject, Json}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
-
-import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec with BeforeAndAfterEach {
 
@@ -65,6 +59,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
         connector
           .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe ().asRight
     }
+
+    // TODO check pager duty in SASS-6363
     "return a failure result when downstream returns a error" in {
       stubPostWithRequestBody(
         url = downstreamUrl,

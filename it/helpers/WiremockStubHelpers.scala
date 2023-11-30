@@ -21,8 +21,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status.NO_CONTENT
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{JsObject, Writes}
 
 trait WiremockStubHelpers {
 
