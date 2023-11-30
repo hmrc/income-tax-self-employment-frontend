@@ -16,11 +16,8 @@
 
 package controllers.journeys.income
 
-import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.routes._
-import controllers.standard.routes._
-import models.NormalMode
+import controllers.submitJourneyAnswers
 import models.common.ModelUtils.userType
 import models.common._
 import models.database.UserAnswers
@@ -71,16 +68,11 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val journeyAnswers = (request.userAnswers.data \ businessId.value).as[IncomeJourneyAnswers]
-      val context        = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), Income)
+      val answers = (request.userAnswers.data \ businessId.value).as[IncomeJourneyAnswers]
+      val context = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), Income)
 
-      // Replace redirected error case with a proper implementation when the unhappy path ticket is picked up,
-      // however need to do something now
-      (for {
-        _ <- EitherT(service.sendJourneyAnswers(context, journeyAnswers))
-      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)))
-        .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
-        .merge
+      submitJourneyAnswers(answers, context, service)
+
   }
 
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit
