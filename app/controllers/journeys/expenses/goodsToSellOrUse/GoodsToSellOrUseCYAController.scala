@@ -18,13 +18,16 @@ package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
 import controllers.submitJourneyAnswers
+import controllers.handleResult
 import models.common.ModelUtils.userType
 import models.common._
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
+import navigation.ExpensesNavigator
+import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SendJourneyAnswersService
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
@@ -38,9 +41,10 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               service: SendJourneyAnswersService,
+                                               service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
-                                               view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
+                                               view: GoodsToSellOrUseCYAView,
+                                               navigator: ExpensesNavigator)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

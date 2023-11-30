@@ -30,6 +30,7 @@ import pages.income._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
+import controllers.journeys
 
 @Singleton
 class IncomeNavigator @Inject() () {
@@ -152,6 +153,12 @@ class IncomeNavigator @Inject() () {
             case Some(Maximum)  => IncomeCYAController.onPageLoad(taxYear, businessId)
             case _              => JourneyRecoveryController.onPageLoad()
           }
+
+    case IncomeCYAPage =>
+      _ =>
+        (taxYear, businessId, _) =>
+          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
+
 
     case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }

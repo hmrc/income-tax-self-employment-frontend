@@ -88,8 +88,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
 
     import context._
 
-    val url = buildUrl(
-      s"send-expenses-answers/${context.journey.toString}/${context.taxYear.value}/${context.businessId.value}/${context.nino.value}")
+    val url = buildUrl(s"/send-journey-answers/${journey.toString}/${taxYear.value}/${businessId.value}/${nino.value}")
 
     http.POST[T, SendJourneyAnswersResponse](url, answers)(
       wts = writes,

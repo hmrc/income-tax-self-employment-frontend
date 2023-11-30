@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.database
+package models.journeys.expenses
 
 import play.api.libs.json.{Format, Json}
 

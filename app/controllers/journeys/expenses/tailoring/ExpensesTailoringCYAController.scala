@@ -20,8 +20,8 @@ import controllers.actions._
 import controllers.handleResult
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear}
-import models.database.ExpensesTailoringAnswers
 import models.journeys.Journey.ExpensesTailoring
+import models.journeys.expenses.ExpensesTailoringAnswers
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.Logger
