@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.income.TradingAllowance
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class TradingAllowanceFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[TradingAllowance] =
+  def apply(authUserType: UserType): Form[TradingAllowance] =
     Form(
       "value" -> enumerable[TradingAllowance](s"tradingAllowance.error.required.$authUserType")
     )

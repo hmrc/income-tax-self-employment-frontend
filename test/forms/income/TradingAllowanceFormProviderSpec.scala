@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.behaviours.OptionFieldBehaviours
+import models.common.UserType
 import models.journeys.income.TradingAllowance
 import play.api.data.FormError
 
@@ -25,9 +26,9 @@ class TradingAllowanceFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new TradingAllowanceFormProvider()(userScenario.user)

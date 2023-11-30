@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance.LessThan
 import models.journeys.income.TradingAllowance
@@ -52,21 +53,21 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[TradingAllowance], accountingType: String)
+  case class UserScenario(isWelsh: Boolean, authUserType: UserType, form: Form[TradingAllowance], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash)
+    UserScenario(isWelsh = false, authUserType = UserType.Individual, formProvider(authUserType(UserType.Individual)), accrual),
+    UserScenario(isWelsh = false, authUserType = UserType.Agent, formProvider(authUserType(UserType.Agent)), cash)
   )
 
   "TradingAllowance Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.authUserType)} and has ${userScenario.accountingType} type accounting" - {
           "must return OK and the correct view" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -82,7 +83,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[TradingAllowanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -96,7 +97,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             val userAnswers =
               UserAnswers(userAnswersId).set(TradingAllowancePage, TradingAllowance.values.head, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
             implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -115,7 +116,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult = view(
                 userScenario.form.fill(TradingAllowance.values.head),
                 CheckMode,
-                userType(userScenario.isAgent),
+                authUserType(userScenario.authUserType),
                 taxYear,
                 businessId,
                 userScenario.accountingType)(request, messages(application, userScenario.isWelsh)).toString
@@ -289,11 +290,11 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.authUserType)} and has ${userScenario.accountingType} type accounting" - {
           "must return a Bad Request and errors when" - {
             "an empty form is submitted" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -314,7 +315,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
@@ -325,7 +326,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             "invalid data is submitted" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
               implicit val messagesApi = application.injector.instanceOf[MessagesApi]
@@ -346,7 +347,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
