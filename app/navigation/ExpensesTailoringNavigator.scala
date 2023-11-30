@@ -146,7 +146,7 @@ class ExpensesTailoringNavigator @Inject() () {
     case ExpensesTailoringCYAPage =>
       _ =>
         (taxYear, businessId, _) =>
-          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, BusinessId(businessId), ExpensesTailoring.toString, NormalMode)
+          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
 
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
