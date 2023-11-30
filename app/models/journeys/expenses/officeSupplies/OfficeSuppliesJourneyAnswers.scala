@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.goodsToSellOrUse
+package models.journeys.expenses.officeSupplies
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-case class GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount: BigDecimal, disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
+case class OfficeSuppliesJourneyAnswers(officeSuppliesAmount: BigDecimal, officeSuppliesDisallowableAmount: Option[BigDecimal])
 
-// Do we need reads and writes seperate?
-object GoodsToSellOrUseJourneyAnswers {
-  implicit val reads: Reads[GoodsToSellOrUseJourneyAnswers] = Json.reads[GoodsToSellOrUseJourneyAnswers]
-
-  implicit val writes: OWrites[GoodsToSellOrUseJourneyAnswers] = Json.writes[GoodsToSellOrUseJourneyAnswers]
-
-  implicit val formats: OFormat[GoodsToSellOrUseJourneyAnswers] = OFormat(reads, writes)
+object OfficeSuppliesJourneyAnswers {
+  implicit val formats: OFormat[OfficeSuppliesJourneyAnswers] = Json.format[OfficeSuppliesJourneyAnswers]
 }

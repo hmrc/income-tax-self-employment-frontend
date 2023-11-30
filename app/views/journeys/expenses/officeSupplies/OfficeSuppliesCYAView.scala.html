@@ -15,25 +15,33 @@
  *@
 
 @import templates.helpers.Heading
-@import models.common.{TaxYear}
+@import models.common._
+@import controllers.journeys.expenses.officeSupplies.routes._
 
 @this(layout: templates.Layout,
       govukButton: GovukButton,
+      formHelper: FormWithCSRF,
       heading: Heading,
       govukSummaryList: GovukSummaryList)
 
-@(authUserType: String, summaryList: SummaryList, taxYear: TaxYear, nextRoute: String)(implicit request: Request[_], messages: Messages)
+@(authUserType: String, summaryList: SummaryList, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"officeSuppliesAmountCYA.title.$authUserType"))) {
 
-     @heading(
-        heading = messages(s"officeSuppliesAmountCYA.title.$authUserType"),
-        subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
-        extraClasses = "govuk-!-margin-bottom-3"
-     )
+    @formHelper(action = OfficeSuppliesCYAController.onSubmit(taxYear, businessId)) {
 
-    @govukSummaryList(summaryList)
+         @heading(
+            heading = messages(s"officeSuppliesAmountCYA.title.$authUserType"),
+            subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
+            extraClasses = "govuk-!-margin-bottom-3"
+         )
 
-    <div class="govuk-button-group govuk-!-margin-top-9">@govukButton(ButtonViewModel(messages("site.saveAndContinue")).asLink(nextRoute))</div>
+        @govukSummaryList(summaryList)
+
+        <div class="govuk-button-group govuk-!-margin-top-9">
+            @govukButton(ButtonViewModel(messages("site.saveAndContinue")))
+        </div>
+
+    }
 
 }
