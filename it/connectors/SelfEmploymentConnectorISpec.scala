@@ -20,7 +20,7 @@ import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.{JourneyContext, SubmissionContext}
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
