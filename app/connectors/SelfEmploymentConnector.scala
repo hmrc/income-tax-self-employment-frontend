@@ -22,7 +22,7 @@ import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, Ge
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
 import connectors.httpParser.SendJourneyAnswersHttpParser.{SendJourneyAnswersHttpReads, SendJourneyAnswersResponse}
-import models.common.{BusinessId, Mtditid, SubmissionContext, TaxYear}
+import models.common.{BusinessId, JourneyContext, SubmissionContext, TaxYear}
 import models.domain.ApiResultT
 import models.journeys.Journey
 import play.api.libs.json.Writes
@@ -98,11 +98,9 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     )
   }
 
-  def submitAnswers[A: Writes](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, answers: A)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = answersUrl(taxYear, businessId, journey)
-    val response = post(http, url, mtditid, answers)
+  def submitAnswers[A: Writes](context: JourneyContext, answers: A)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
+    val url      = answersUrl(context.taxYear, context.businessId, context.journey)
+    val response = post(http, url, context.mtditid, answers)
     EitherT(response)
   }
 }

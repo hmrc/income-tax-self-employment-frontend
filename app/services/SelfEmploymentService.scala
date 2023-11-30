@@ -42,8 +42,7 @@ trait SelfEmploymentServiceBase {
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
-  def submitAnswers[SubsetOfAnswers: Format](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, userAnswers: UserAnswers)(
-      implicit hc: HeaderCarrier): ApiResultT[Unit]
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
 class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessionRepository: SessionRepository)(implicit ec: ExecutionContext)
@@ -76,10 +75,9 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
 
-  def submitAnswers[SubsetOfAnswers: Format](taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, userAnswers: UserAnswers)(
-      implicit hc: HeaderCarrier): ApiResultT[Unit] = {
-    val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ businessId.value).as[SubsetOfAnswers]
-    connector.submitAnswers(taxYear, businessId, mtditid, journey, journeyAnswers)
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
+    val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
+    connector.submitAnswers(context, journeyAnswers)
   }
 }
 

@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 package object connectors {
-  type ConnectorNoResult = Either[HttpError, Unit]
+  type NoContentResponse = Either[HttpError, Unit]
 
   /** Helper method to add necessary headers when calling endpoints
     */
@@ -38,9 +38,9 @@ package object connectors {
       ec = ec
     )
 
-  object NoContentHttpReads extends HttpReads[ConnectorNoResult] {
+  object NoContentHttpReads extends HttpReads[NoContentResponse] {
 
-    override def read(method: String, url: String, response: HttpResponse): ConnectorNoResult =
+    override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
       response.status match {
         case status if status >= 200 && status <= 299 => ().asRight
         case _                                        => pagerDutyError(response).asLeft

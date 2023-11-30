@@ -19,7 +19,7 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import controllers.handleResult
 import controllers.journeys.expenses.tailoring
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, JourneyContext, TaxYear}
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoringAnswers
 import navigation.ExpensesTailoringNavigator
@@ -68,7 +68,7 @@ class ExpensesTailoringCYAController @Inject() (
     implicit request =>
       val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId, accountingType = None).url
       val result = service
-        .submitAnswers[ExpensesTailoringAnswers](taxYear, businessId, request.mtditid, ExpensesTailoring, request.userAnswers)
+        .submitAnswers[ExpensesTailoringAnswers](JourneyContext(taxYear, businessId, request.mtditid, ExpensesTailoring), request.userAnswers)
         .map(_ => Redirect(nextRoute))
         .value
 

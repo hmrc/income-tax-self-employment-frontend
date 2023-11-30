@@ -49,9 +49,7 @@ trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
     "journey answers submitted successfully" - {
       "redirect to section completed" in new TestScenario(Individual, userAnswers.some) {
         val ctx = testScenarioContext(journey)
-        mockService
-          .submitAnswers(eqTo(ctx.taxYear), eqTo(ctx.businessId), eqTo(ctx.mtditid), eqTo(journey), eqTo(userAnswers))(*, *) returns EitherT(
-          Future.successful(().asRight))
+        mockService.submitAnswers(eqTo(ctx), eqTo(userAnswers))(*, *) returns EitherT(Future.successful(().asRight))
 
         val result: Future[Result] = route(application, postRequest).value
 
@@ -66,10 +64,7 @@ trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
     "an error occurred during answer submission" - {
       "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
         val ctx = testScenarioContext(journey)
-        mockService
-          .submitAnswers(eqTo(ctx.taxYear), eqTo(ctx.businessId), eqTo(ctx.mtditid), eqTo(journey), eqTo(userAnswers))(*, *) returns EitherT(
-          Future.successful(httpError.asLeft)
-        )
+        mockService.submitAnswers(eqTo(ctx), eqTo(userAnswers))(*, *) returns EitherT(Future.successful(httpError.asLeft))
 
         val result: Future[Result] = route(application, postRequest).value
 
