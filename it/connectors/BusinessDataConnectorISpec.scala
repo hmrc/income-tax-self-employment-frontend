@@ -26,7 +26,7 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyStatus
+import models.requests.TradesJourneyStatuses.JourneyCompletedState
 import play.api.http.Status._
 import play.api.libs.json.Json
 
@@ -166,11 +166,11 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
             "BusinessId1",
             Some("TradingName1"),
             Seq(
-              JourneyStatus(Abroad, Some(true)),
-              JourneyStatus(Income, Some(false)),
-              JourneyStatus(ExpensesTailoring, None),
-              JourneyStatus(ExpensesGoodsToSellOrUse, None),
-              JourneyStatus(NationalInsurance, None)
+              JourneyCompletedState(Abroad, Some(true)),
+              JourneyCompletedState(Income, Some(false)),
+              JourneyCompletedState(ExpensesTailoring, None),
+              JourneyCompletedState(ExpensesGoodsToSellOrUse, None),
+              JourneyCompletedState(NationalInsurance, None)
             )
           ),
           TradesJourneyStatuses("BusinessId2", None, Seq.empty)

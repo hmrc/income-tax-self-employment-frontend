@@ -39,7 +39,7 @@ object OfficeSuppliesSummary {
       )
 
       SummaryListRowViewModel(
-        key = "officeSupplies.title",
+        key = "journeys.expenses-office-supplies",
         value = value,
         actions = Seq(
           ActionItemViewModel("site.change", routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode).url)

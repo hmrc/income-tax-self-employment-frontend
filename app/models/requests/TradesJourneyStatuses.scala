@@ -17,30 +17,32 @@
 package models.requests
 
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.journeys.Journey
-import models.requests.TradesJourneyStatuses.JourneyStatus
+import models.requests.TradesJourneyStatuses.JourneyCompletedState
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import viewmodels.TradeJourneyStatusesViewModel
 import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
 
-case class TradesJourneyStatuses(businessId: String, tradingName: Option[String], journeyStatuses: Seq[JourneyStatus])
+case class TradesJourneyStatuses(businessId: String, tradingName: Option[String], journeyStatuses: Seq[JourneyCompletedState])
 
 object TradesJourneyStatuses {
 
   implicit val format: OFormat[TradesJourneyStatuses] = Json.format[TradesJourneyStatuses]
 
-  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): TradeJourneyStatusesViewModel =
+  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
+      message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       if (tradeDetails.tradingName.isEmpty) "" else s"${tradeDetails.tradingName.get} - ",
       BusinessId(tradeDetails.businessId),
-      buildSummaryList(tradeDetails, taxYear)
+      buildSummaryList(tradeDetails, taxYear, userAnswers)
     )
 
-  case class JourneyStatus(journey: Journey, completedState: Option[Boolean])
+  case class JourneyCompletedState(journey: Journey, completedState: Option[Boolean])
 
-  object JourneyStatus {
-    implicit val format: OFormat[JourneyStatus] = Json.format[JourneyStatus]
+  object JourneyCompletedState {
+    implicit val format: OFormat[JourneyCompletedState] = Json.format[JourneyCompletedState]
   }
 
 }
