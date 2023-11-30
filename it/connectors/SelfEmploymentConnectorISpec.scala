@@ -18,14 +18,9 @@ package connectors
 
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
-import helpers.WiremockSpec
-import models.common.{Mtditid, SubmissionContext}
-import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import helpers.{PagerDutyAware, WiremockSpec}
-import models.errors.HttpError
-import models.errors.HttpErrorBody.SingleErrorBody
+import models.common.SubmissionContext
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
-import models.journeys.expenses.ExpensesData
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper

@@ -17,9 +17,8 @@
 package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
-import models.common.{BusinessId, Nino, TaxYear}
-import models.errors.{HttpError, HttpErrorBody}
 import models.common.{BusinessId, Mtditid, Nino, TaxYear}
+import models.errors.{HttpError, HttpErrorBody}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec

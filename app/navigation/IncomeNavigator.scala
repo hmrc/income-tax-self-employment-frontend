@@ -155,10 +155,7 @@ class IncomeNavigator @Inject() () {
           }
 
     case IncomeCYAPage =>
-      _ =>
-        (taxYear, businessId, _) =>
-          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
-
+      _ => (taxYear, businessId, _) => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
 
     case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
