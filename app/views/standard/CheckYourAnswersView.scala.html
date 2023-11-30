@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@this(
-    layout: templates.Layout,
-    govukSummaryList: GovukSummaryList
-)
+@import models.common.{TaxYear, UserType}
+@import views.html.components.PageCYA
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+@this(pageCYA: PageCYA)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
+@(pageName: String,
+        taxYear: TaxYear,
+        userType: UserType,
+        summaryList: SummaryList,
+        onSubmitCall: Call
+)(implicit request: Request[_], messages: Messages)
 
-    <h1 class="govuk-heading-xl">@messages("checkYourAnswers.title")</h1>
 
-    @govukSummaryList(list)
-}
+@pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall)

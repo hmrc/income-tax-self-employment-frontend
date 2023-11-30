@@ -18,29 +18,27 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.AdvertisingOrMarketingPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object AdvertisingOrMarketingSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AdvertisingOrMarketingPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"advertisingOrMarketing.$answer"))
-        )
-      )
-
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers.get(AdvertisingOrMarketingPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "advertisingOrMarketing.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"advertisingOrMarketing.question.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = formatAnswer(answer.toString),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("advertisingOrMarketing.change.hidden"))

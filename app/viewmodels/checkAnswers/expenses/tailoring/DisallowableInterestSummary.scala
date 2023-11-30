@@ -18,29 +18,27 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes.DisallowableInterestController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.DisallowableInterestPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DisallowableInterestSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableInterestPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"disallowableInterest.$answer"))
-        )
-      )
-
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers.get(DisallowableInterestPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "disallowableInterest.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"disallowableInterest.title.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = formatAnswer(answer.toString),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableInterest.change.hidden"))

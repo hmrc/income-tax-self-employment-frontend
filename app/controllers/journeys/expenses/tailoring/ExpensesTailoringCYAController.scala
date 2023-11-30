@@ -23,39 +23,35 @@ import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
+import viewmodels.checkAnswers.expenses.tailoring._
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.annotation.nowarn
 
-class ExpensesTailoringCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: ExpensesTailoringCYAView
-) extends FrontendBaseController
+class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: CheckYourAnswersView)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val userType    = request.userType
-    val summaryList = SummaryListCYA.summaryListOpt(Nil) // TODO Add during Expenses tailoring CYA story
+    val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
 
     Ok(
       view(
-        ExpensesTailoringCYAPage.pageName,
+        ExpensesTailoringCYAPage.toString,
         taxYear,
-        businessId,
+        request.userType,
         summaryList,
-        userType,
-        tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
-      ))
+        tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)))
   }
 
   @nowarn
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       ??? // TODO SASS-6339
   }
