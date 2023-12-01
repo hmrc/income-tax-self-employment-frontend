@@ -50,7 +50,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe ().asRight
     }
     "return a failure result when downstream returns a error" in {
       stubPostWithRequestBody(
@@ -61,7 +61,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe httpError.asLeft
     }
   }
 

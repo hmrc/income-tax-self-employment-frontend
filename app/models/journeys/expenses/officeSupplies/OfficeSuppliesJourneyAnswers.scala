@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.goodsToSellOrUse
+package models.journeys.expenses.officeSupplies
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-case class GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount: BigDecimal, disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
+case class OfficeSuppliesJourneyAnswers(officeSuppliesAmount: BigDecimal, officeSuppliesDisallowableAmount: Option[BigDecimal])
 
-object GoodsToSellOrUseJourneyAnswers {
-  implicit val formats: OFormat[GoodsToSellOrUseJourneyAnswers] = Json.format[GoodsToSellOrUseJourneyAnswers]
+object OfficeSuppliesJourneyAnswers {
+  implicit val formats: OFormat[OfficeSuppliesJourneyAnswers] = Json.format[OfficeSuppliesJourneyAnswers]
 }
