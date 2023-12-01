@@ -46,8 +46,8 @@ package object controllers {
       logger: Logger): Future[Result] = {
 
     val result = EitherT(service.sendJourneyAnswers(context, answers))
-        .map(_ => Redirect(SectionCompletedStateController.onPageLoad(context.taxYear, context.businessId, context.journey.toString, NormalMode)))
-        .value
+      .map(_ => Redirect(SectionCompletedStateController.onPageLoad(context.taxYear, context.businessId, context.journey.toString, NormalMode)))
+      .value
 
     handleResult(result)
   }
