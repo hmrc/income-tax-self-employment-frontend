@@ -18,4 +18,13 @@ package models.common
 
 import models.journeys.Journey
 
-case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey)
+sealed trait JourneyContext {
+  val taxYear: TaxYear
+  val businessId: BusinessId
+  val mtditid: Mtditid
+  val journey: Journey
+}
+
+case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext
+
+case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext

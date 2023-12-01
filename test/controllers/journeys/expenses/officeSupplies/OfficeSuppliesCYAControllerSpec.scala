@@ -36,13 +36,13 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSu
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "officeSupplies": "yesAllowable",
-         |    "officeSuppliesAmount": $officeSuppliesAmount
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "officeSupplies": "yesAllowable",
+              |    "officeSuppliesAmount": $officeSuppliesAmount
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
   override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)

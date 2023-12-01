@@ -16,11 +16,12 @@
 
 package helpers
 
+import base.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.Writes
+import play.api.libs.json.{JsObject, Writes}
 
 trait WiremockStubHelpers {
 
@@ -109,4 +110,11 @@ trait WiremockStubHelpers {
     stubPostWithoutResponseAndRequestBody("/write/audit/merged", auditResponseCode)
   }
 
+  def stubPost(url: String, status: Int) =
+    stubPostWithRequestBody(
+      url = url,
+      requestBody = JsObject.empty,
+      expectedStatus = status,
+      requestHeaders = List(new HttpHeader("mtditid", IntegrationBaseSpec.mtditid.value))
+    )
 }

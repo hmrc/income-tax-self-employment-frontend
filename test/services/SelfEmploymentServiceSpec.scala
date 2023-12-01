@@ -19,16 +19,20 @@ package services
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
+import cats.data.EitherT
+import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, Mtditid, Nino}
+import models.common.{BusinessId, JourneyAnswersContext, Mtditid, Nino}
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
+import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
 import services.SelfEmploymentService.getIncomeTradingAllowance
@@ -119,6 +123,25 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
         getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
       }
+    }
+  }
+
+  "submitAnswers" - {
+    val userAnswerData = Json
+      .parse(s"""
+           |{
+           |  "$businessId": {
+           |  }
+           |}
+           |""".stripMargin)
+      .as[JsObject]
+    val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+    val ctx                      = JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)
+    mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[HttpError]))
+
+    "submit answers to the connector" in {
+      val result = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue
+      result shouldBe ().asRight
     }
   }
 

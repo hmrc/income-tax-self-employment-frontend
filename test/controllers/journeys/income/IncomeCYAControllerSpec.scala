@@ -34,16 +34,16 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "incomeNotCountedAsTurnover": false,
-         |    "turnoverIncomeAmount": 100.00,
-         |    "anyOtherIncome": false,
-         |    "turnoverNotTaxable": false,
-         |    "tradingAllowance": "declareExpenses"
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "incomeNotCountedAsTurnover": false,
+              |    "turnoverIncomeAmount": 100.00,
+              |    "anyOtherIncome": false,
+              |    "turnoverNotTaxable": false,
+              |    "tradingAllowance": "declareExpenses"
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
   override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
