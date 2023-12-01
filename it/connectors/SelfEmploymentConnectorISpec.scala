@@ -20,7 +20,8 @@ import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.{JourneyContext, SubmissionContext}
-import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.Journey
+import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -30,9 +31,9 @@ import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec with BeforeAndAfterEach {
 
-  private val someExpensesJourney = ExpensesGoodsToSellOrUse
-  private val ctx                 = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)
-  private val journeyCtx          = JourneyContext(taxYear, businessId, mtditid, someExpensesJourney)
+  private val someExpensesJourney          = ExpensesGoodsToSellOrUse
+  private val ctx                          = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)
+  private def journeyCtx(journey: Journey) = JourneyContext(taxYear, businessId, mtditid, journey)
 
   private val downstreamUrl =
     s"/income-tax-self-employment/send-journey-answers/${ctx.journey.toString}" +
@@ -73,13 +74,13 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   "submitAnswers" must {
     "return a successful result" in {
       stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", NO_CONTENT)
-      val result = connector.submitAnswers[JsObject](journeyCtx, JsObject.empty).value.futureValue
+      val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
       result shouldBe ().asRight
     }
 
     "notify pager duty on failure" in new PagerDutyAware {
       stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", BAD_REQUEST)
-      val result = connector.submitAnswers[JsObject](journeyCtx, JsObject.empty).value.futureValue
+      val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
       result shouldBe httpError.asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
