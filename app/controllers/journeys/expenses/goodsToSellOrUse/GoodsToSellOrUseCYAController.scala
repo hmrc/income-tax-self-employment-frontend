@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SendJourneyAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
@@ -41,7 +42,8 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                val controllerComponents: MessagesControllerComponents,
                                                view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)

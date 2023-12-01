@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SendJourneyAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.income._
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
@@ -43,7 +44,8 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: IncomeCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)

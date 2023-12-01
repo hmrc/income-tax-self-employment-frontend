@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SendJourneyAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.officeSupplies.{OfficeSuppliesAmountSummary, OfficeSuppliesDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
@@ -41,7 +42,8 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
                                              val controllerComponents: MessagesControllerComponents,
                                              view: OfficeSuppliesCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val authUser = userType(request.user.isAgent)
