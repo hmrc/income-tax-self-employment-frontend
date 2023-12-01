@@ -15,40 +15,37 @@
  */
 
 import cats.data.EitherT
-import controllers.journeys.routes._
 import models.NormalMode
-import models.common.SubmissionContext
+import models.common.{BusinessId, JourneyContext, TaxYear}
+import models.domain.ApiResultT
 import models.errors.HttpError
+import models.journeys.Journey
 import play.api.Logger
-import play.api.libs.json.Writes
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import services.SendJourneyAnswersService
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers {
-  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+  private def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+
+  private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
+    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.toString, NormalMode)
+  )
 
   def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
-    EitherT(result).leftMap { httpError =>
+    handleResultT(EitherT(result))
+
+  private def handleResultT(resultT: EitherT[Future, HttpError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
+    resultT.leftMap { httpError =>
       logger.error(s"HttpError encountered: $httpError")
       redirectJourneyRecovery()
     }.merge
 
   // Redirection to journey recovery on downstream error retrieval is a temporary action until we pick up the unhappy
   // path tickets (JIRA TBA).
-  def submitJourneyAnswers[T](answers: T, context: SubmissionContext, service: SendJourneyAnswersService)(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      writes: Writes[T],
-      logger: Logger): Future[Result] = {
-
-    val result = EitherT(service.sendJourneyAnswers(context, answers))
-      .map(_ => Redirect(SectionCompletedStateController.onPageLoad(context.taxYear, context.businessId, context.journey.toString, NormalMode)))
-      .value
-
-    handleResult(result)
+  def handleSubmitAnswersResult(ctx: JourneyContext, result: ApiResultT[_])(implicit ec: ExecutionContext, logger: Logger): Future[Result] = {
+    val resultT = result.map(_ => redirectJourneyCompletedState(ctx.taxYear, ctx.businessId, ctx.journey))
+    handleResultT(resultT)
   }
 }

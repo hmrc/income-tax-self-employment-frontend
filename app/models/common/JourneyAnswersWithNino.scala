@@ -23,8 +23,14 @@ sealed trait JourneyContext {
   val businessId: BusinessId
   val mtditid: Mtditid
   val journey: Journey
+
+  val answersUrl: String
 }
 
-case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext
+case class JourneyAnswersWithNino(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
+  val answersUrl: String = s"${taxYear.value}/${businessId.value}/${journey.toString}/${nino.value}/answers"
+}
 
-case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext
+case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
+  val answersUrl: String = s"${taxYear.value}/${businessId.value}/${journey.toString}/answers"
+}

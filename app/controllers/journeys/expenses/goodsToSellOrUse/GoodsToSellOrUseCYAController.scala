@@ -17,14 +17,14 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import controllers.submitJourneyAnswers
+import controllers.handleSubmitAnswersResult
 import models.common.ModelUtils.userType
 import models.common._
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SendJourneyAnswersService
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
@@ -38,7 +38,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               service: SendJourneyAnswersService,
+                                               service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -60,11 +60,10 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val answers = (request.userAnswers.data \ businessId.value).as[GoodsToSellOrUseJourneyAnswers]
-      val context = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesGoodsToSellOrUse)
+      val context = JourneyAnswersWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesGoodsToSellOrUse)
+      val result  = service.submitAnswers[GoodsToSellOrUseJourneyAnswers](context, request.userAnswers)
 
-      submitJourneyAnswers(answers, context, service)
-
+      handleSubmitAnswersResult(context, result)
   }
 
 }

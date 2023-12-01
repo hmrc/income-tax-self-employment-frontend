@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.submitJourneyAnswers
+import controllers.handleSubmitAnswersResult
 import models.common.ModelUtils.userType
 import models.common._
 import models.database.UserAnswers
@@ -25,7 +25,7 @@ import models.journeys.Journey.Income
 import models.journeys.income.IncomeJourneyAnswers
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SendJourneyAnswersService
+import services.SelfEmploymentService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -40,7 +40,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
-                                     service: SendJourneyAnswersService,
+                                     service: SelfEmploymentService,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: IncomeCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -70,11 +70,10 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val answers = (request.userAnswers.data \ businessId.value).as[IncomeJourneyAnswers]
-      val context = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), Income)
+      val context = JourneyAnswersContext(taxYear, businessId, Mtditid(request.user.mtditid), Income)
+      val result  = service.submitAnswers[IncomeJourneyAnswers](context, request.userAnswers)
 
-      submitJourneyAnswers(answers, context, service)
-
+      handleSubmitAnswersResult(context, result)
   }
 
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit

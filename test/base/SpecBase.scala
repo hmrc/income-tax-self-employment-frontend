@@ -58,8 +58,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def anyTaxYear: TaxYear       = TaxYear(any)
   def anyBusinessId: BusinessId = BusinessId(any)
 
-  val submissionContext: Journey => SubmissionContext =
-    (journey: Journey) => SubmissionContext(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+  val submissionContext: Journey => JourneyAnswersWithNino =
+    (journey: Journey) =>
+      JourneyAnswersWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
   val enLang: Lang = Lang("en-EN")
 
