@@ -16,7 +16,6 @@
 
 import cats.data.EitherT
 import controllers.journeys.routes._
-import controllers.standard.routes._
 import models.NormalMode
 import models.common.SubmissionContext
 import models.errors.HttpError
@@ -43,10 +42,13 @@ package object controllers {
   def submitJourneyAnswers[T](answers: T, context: SubmissionContext, service: SendJourneyAnswersService)(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
-      writes: Writes[T]): Future[Result] =
-    (for {
-      _ <- EitherT(service.sendJourneyAnswers(context, answers))
-    } yield Redirect(SectionCompletedStateController.onPageLoad(context.taxYear, context.businessId, context.journey.toString, NormalMode)))
-      .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
-      .merge
+      writes: Writes[T],
+      logger: Logger): Future[Result] = {
+
+    val result = EitherT(service.sendJourneyAnswers(context, answers))
+        .map(_ => Redirect(SectionCompletedStateController.onPageLoad(context.taxYear, context.businessId, context.journey.toString, NormalMode)))
+        .value
+
+    handleResult(result)
+  }
 }
