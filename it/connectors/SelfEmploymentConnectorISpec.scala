@@ -23,13 +23,12 @@ import models.common.{JourneyAnswersContext, SubmissionContext}
 import models.journeys.Journey
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
 import play.api.libs.json.{JsObject, Json}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
-class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec with BeforeAndAfterEach {
+class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
   private val someExpensesJourney          = ExpensesGoodsToSellOrUse
   private val ctx                          = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)

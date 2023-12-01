@@ -37,14 +37,14 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
 
   private val userAnswerData = Json
     .parse(s"""
-              |{
-              |  "$businessId": {
-              |    "goodsToSellOrUse": "yesDisallowable",
-              |    "goodsToSellOrUseAmount": 100.00,
-              |    "disallowableGoodsToSellOrUseAmount": 100.00
-              |  }
-              |}
-              |""".stripMargin)
+         |{
+         |  "$businessId": {
+         |    "goodsToSellOrUse": "yesDisallowable",
+         |    "goodsToSellOrUseAmount": 100.00,
+         |    "disallowableGoodsToSellOrUseAmount": 100.00
+         |  }
+         |}
+         |""".stripMargin)
     .as[JsObject]
 
   override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
@@ -63,9 +63,9 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
   )
 
   override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-                                                                                                 request: Request[_],
-                                                                                                 messages: Messages,
-                                                                                                 application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
 
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
     view(taxYear, businessId, scenario.userType.toString, summaryList)(request, messages).toString()

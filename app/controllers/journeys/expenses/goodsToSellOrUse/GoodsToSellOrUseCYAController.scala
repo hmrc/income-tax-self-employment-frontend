@@ -41,7 +41,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                service: SendJourneyAnswersService,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

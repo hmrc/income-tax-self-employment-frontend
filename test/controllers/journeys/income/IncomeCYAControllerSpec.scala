@@ -77,9 +77,9 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
   )
 
   override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-                                                                                                 request: Request[_],
-                                                                                                 messages: Messages,
-                                                                                                 application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[IncomeCYAView]
     view(taxYear, businessId, summaryList, scenario.userType.toString)(request, messages).toString()
   }
