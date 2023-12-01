@@ -22,6 +22,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -36,7 +37,7 @@ object ProfessionalServiceExpensesSummary {
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(
-          content = formatProfessionalServiceExpensesAnswers(answers, userType),
+          content = HtmlContent(formatProfessionalServiceExpensesAnswers(answers, userType)),
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(

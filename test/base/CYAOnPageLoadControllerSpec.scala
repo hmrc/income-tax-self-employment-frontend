@@ -24,7 +24,6 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.JsObject
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,12 +32,11 @@ trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike with TableDrivenProper
   type OnPageLoadView = (Messages, Application, Request[_]) => String
 
   def onPageLoad: (TaxYear, BusinessId) => Call
-  def onPageLoadCases: TableFor2[JsObject, OnPageLoadView]
+  def onPageLoadCases: TableFor2[UserAnswers, OnPageLoadView]
 
   "onPageLoad" should {
     "return Ok and render correct view for various data" in {
-      forAll(onPageLoadCases) { case (userAnswersData, expectedView) =>
-        val userAnswers          = UserAnswers(userAnswersId, userAnswersData)
+      forAll(onPageLoadCases) { case (userAnswers, expectedView) =>
         val application          = buildAppFromUserAnswers(userAnswers)
         val msg: Messages        = SpecBase.messages(application)
         val getOnPageLoadRequest = FakeRequest(GET, onPageLoad(taxYear, businessId).url)

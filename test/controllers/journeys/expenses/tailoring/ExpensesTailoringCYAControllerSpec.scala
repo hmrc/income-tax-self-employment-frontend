@@ -16,37 +16,45 @@
 
 package controllers.journeys.expenses.tailoring
 
-import base.CYAOnPageLoadControllerSpec
-import base.SpecBase.{businessId, taxYear}
+import base.SpecBase.{businessId, taxYear, userAnswersId}
+import base.{CYAOnPageLoadControllerSpec, SpecBase}
+import builders.ExpensesTailoringJsonBuilder
+import common.TestApp.buildAppFromUserAnswers
 import controllers.journeys.expenses.tailoring
+import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
 import org.scalatest.prop.TableFor2
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.JsObject
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
+import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
+import views.html.standard.CheckYourAnswersView
 
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
-  def onPageLoad: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
 
-  def onPageLoadCases: TableFor2[JsObject, OnPageLoadView] = Table(
-    ("userAnswersData", "expectedViews"),
-    (JsObject.empty, createExpectedView(taxYear, businessId, UserType.Individual, SummaryListCYA.summaryListOpt(Nil)))
+  val userAnswers: UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> ExpensesTailoringJsonBuilder.allNoAnswers))
+  val application: Application = buildAppFromUserAnswers(userAnswers)
+  implicit val msg: Messages   = SpecBase.messages(application)
+  val summaryList: SummaryList = buildTailoringSummaryList(userAnswers, taxYear, businessId, Individual)
+
+  def onPageLoad: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
+  def onPageLoadCases: TableFor2[UserAnswers, OnPageLoadView] = Table(
+    ("userAnswers", "expectedViews"),
+    (userAnswers, createExpectedView(taxYear, businessId, Individual, summaryList))
   )
 
   def createExpectedView(taxYear: TaxYear, businessId: BusinessId, userType: UserType, summaryList: SummaryList): OnPageLoadView = {
     (msg: Messages, application: Application, request: Request[_]) =>
-      val view = application.injector.instanceOf[ExpensesTailoringCYAView]
+      val view = application.injector.instanceOf[CheckYourAnswersView]
       view(
-        ExpensesTailoringCYAPage.pageName,
+        ExpensesTailoringCYAPage.pageName.value,
         taxYear,
-        businessId,
-        summaryList,
         userType,
+        summaryList,
         tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
       )(request, msg).toString()
   }

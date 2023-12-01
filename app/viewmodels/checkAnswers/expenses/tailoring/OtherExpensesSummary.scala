@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.tailoring
 
-import controllers.journeys.expenses.tailoring.routes.OtherExpensesController
+import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -40,7 +40,7 @@ object OtherExpensesSummary {
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", OtherExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.OtherExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("otherExpenses.change.hidden"))
         )
       )

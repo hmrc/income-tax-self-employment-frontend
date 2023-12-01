@@ -18,9 +18,9 @@ package viewmodels.checkAnswers.expenses
 
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.{FinancialExpenses, ProfessionalServiceExpenses}
 import models.journeys.expenses.FinancialExpenses.NoFinancialExpenses
 import models.journeys.expenses.ProfessionalServiceExpenses.No
+import models.journeys.expenses.{FinancialExpenses, ProfessionalServiceExpenses}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.journeys.SummaryListCYA
@@ -66,17 +66,17 @@ package object tailoring {
       case value => messages(s"expenses.$value.cya")
     }
 
-  def formatFinancialExpensesAnswers(answers: Set[FinancialExpenses], userType: UserType)(implicit messages: Messages): String =
-    if (answers.contains(NoFinancialExpenses)) {
-      messages(s"financialExpenses.noFinancialExpenses.$userType")
-    } else {
-      answers.map(a => messages(s"financialExpenses.${a.toString}.cya")).mkString("\n")
-    }
-
   def formatProfessionalServiceExpensesAnswers(answers: Set[ProfessionalServiceExpenses], userType: UserType)(implicit messages: Messages): String =
     if (answers.contains(No)) {
       messages(s"professionalServiceExpenses.no.$userType")
     } else {
-      answers.map(a => messages(s"professionalServiceExpenses.${a.toString}")).mkString("\n")
+      answers.map(a => messages(s"professionalServiceExpenses.${a.toString}")).mkString("<br>")
+    }
+
+  def formatFinancialExpensesAnswers(answers: Set[FinancialExpenses], userType: UserType)(implicit messages: Messages): String =
+    if (answers.contains(NoFinancialExpenses)) {
+      messages(s"financialExpenses.noFinancialExpenses.$userType")
+    } else {
+      answers.map(a => messages(s"financialExpenses.${a.toString}.cya")).mkString("<br>")
     }
 }

@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.tailoring
 
-import controllers.journeys.expenses.tailoring.routes.DisallowableOtherFinancialChargesController
+import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -40,7 +40,7 @@ object DisallowableOtherFinancialChargesSummary {
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableOtherFinancialCharges.change.hidden"))
         )
       )
