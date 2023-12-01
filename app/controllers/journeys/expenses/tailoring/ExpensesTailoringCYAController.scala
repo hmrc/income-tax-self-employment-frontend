@@ -17,26 +17,35 @@
 package controllers.journeys.expenses.tailoring
 
 import controllers.actions._
+import controllers.handleResult
 import controllers.journeys.expenses.tailoring
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, JourneyAnswersContext, TaxYear}
+import models.journeys.Journey.ExpensesTailoring
+import models.journeys.expenses.ExpensesTailoringAnswers
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.tailoring._
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.annotation.nowarn
+import scala.concurrent.ExecutionContext
 
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: CheckYourAnswersView)
+                                                view: CheckYourAnswersView,
+                                                service: SelfEmploymentService,
+                                                navigator: ExpensesTailoringNavigator)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private implicit val logger: Logger = Logger(this.getClass)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
@@ -50,9 +59,14 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
         tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)))
   }
 
-  @nowarn
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      ??? // TODO SASS-6339
+      val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId, accountingType = None).url
+      val result = service
+        .submitAnswers[ExpensesTailoringAnswers](JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring), request.userAnswers)
+        .map(_ => Redirect(nextRoute))
+        .value
+
+      handleResult(result)
   }
 }

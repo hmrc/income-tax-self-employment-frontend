@@ -21,25 +21,59 @@ import play.api.libs.json.Json
 object ExpensesTailoringJsonBuilder {
 
   val allNoAnswers = Json.obj(
-    "officeSupplies"                    -> "no",
-    "taxiMinicabOrRoadHaulage"          -> "no",
-    "goodsToSellOrUse"                  -> "no",
-    "repairsAndMaintenance"             -> "no",
-    "workFromHome"                      -> "no",
-    "workFromBusinessPremises"          -> "no",
-    "travelForWork"                     -> "no",
-    "advertisingOrMarketing"            -> "no",
-    "entertainmentCosts"                -> "no",
-    "professionalServiceExpenses"       -> "no",
-    "disallowableStaffCosts"            -> "no",
-    "disallowableSubcontractorCosts"    -> "no",
-    "disallowableProfessionalFees"      -> "no",
-    "financialExpenses"                 -> "no",
-    "disallowableInterest"              -> "no",
-    "disallowableOtherFinancialCharges" -> "no",
-    "disallowableIrrecoverableDebts"    -> "no",
-    "depreciation"                      -> "no",
-    "otherExpenses"                     -> "no"
+    "officeSupplies"              -> "no",
+    "taxiMinicabOrRoadHaulage"    -> "no",
+    "goodsToSellOrUse"            -> "no",
+    "repairsAndMaintenance"       -> "no",
+    "workFromHome"                -> "no",
+    "workFromBusinessPremises"    -> "no",
+    "travelForWork"               -> "no",
+    "advertisingOrMarketing"      -> "no",
+    "entertainmentCosts"          -> "no",
+    "professionalServiceExpenses" -> Set("no"),
+    "financialExpenses"           -> Set("noFinancialExpenses"),
+    "depreciation"                -> "no",
+    "otherExpenses"               -> "no"
+  )
+
+  val allYesAnswers = Json.obj(
+    "officeSupplies"                    -> "yesAllowable",
+    "taxiMinicabOrRoadHaulage"          -> "yesDisallowable",
+    "goodsToSellOrUse"                  -> "yesDisallowable",
+    "repairsAndMaintenance"             -> "yesDisallowable",
+    "workFromHome"                      -> "yes",
+    "workFromBusinessPremises"          -> "yesAllowable",
+    "travelForWork"                     -> "yesDisallowable",
+    "advertisingOrMarketing"            -> "yesDisallowable",
+    "entertainmentCosts"                -> "yes",
+    "professionalServiceExpenses"       -> Set("staff", "construction", "professionalFees"),
+    "disallowableStaffCosts"            -> "yes",
+    "disallowableSubcontractorCosts"    -> "yes",
+    "disallowableProfessionalFees"      -> "yes",
+    "financialExpenses"                 -> Set("interest", "otherFinancialCharges", "irrecoverableDebts"),
+    "disallowableInterest"              -> "yes",
+    "disallowableOtherFinancialCharges" -> "yes",
+    "disallowableIrrecoverableDebts"    -> "yes",
+    "depreciation"                      -> "yes",
+    "otherExpenses"                     -> "yesAllowable"
+  )
+
+  val mixedAnswers = Json.obj(
+    "officeSupplies"               -> "yesAllowable",
+    "taxiMinicabOrRoadHaulage"     -> "no",
+    "goodsToSellOrUse"             -> "no",
+    "repairsAndMaintenance"        -> "yesDisallowable",
+    "workFromHome"                 -> "yes",
+    "workFromBusinessPremises"     -> "yesAllowable",
+    "travelForWork"                -> "yesDisallowable",
+    "advertisingOrMarketing"       -> "no",
+    "entertainmentCosts"           -> "no",
+    "professionalServiceExpenses"  -> Set("staff", "professionalFees"),
+    "disallowableStaffCosts"       -> "yes",
+    "disallowableProfessionalFees" -> "no",
+    "financialExpenses"            -> Set("noFinancialExpenses"),
+    "depreciation"                 -> "no",
+    "otherExpenses"                -> "yesAllowable"
   )
 
 }

@@ -18,18 +18,21 @@ package connectors
 
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
-import helpers.WiremockSpec
-import models.common.{Mtditid, SubmissionContext}
-import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import helpers.{PagerDutyAware, WiremockSpec}
+import models.common.{JourneyAnswersContext, SubmissionContext}
+import models.journeys.Journey
+import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
+import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private val someExpensesJourney = ExpensesGoodsToSellOrUse
-  private val ctx                 = SubmissionContext(taxYear, nino, businessId, Mtditid(mtditid), someExpensesJourney)
+  private val someExpensesJourney          = ExpensesGoodsToSellOrUse
+  private val ctx                          = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)
+  private def journeyCtx(journey: Journey) = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
 
   private val downstreamUrl =
     s"/income-tax-self-employment/send-journey-answers/${ctx.journey.toString}" +
@@ -50,8 +53,10 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe ().asRight
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe ().asRight
     }
+
+    // TODO check pager duty in SASS-6363
     "return a failure result when downstream returns a error" in {
       stubPostWithRequestBody(
         url = downstreamUrl,
@@ -61,7 +66,22 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       await(
         connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.writes)) shouldBe httpError.asLeft
+          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe httpError.asLeft
+    }
+  }
+
+  "submitAnswers" must {
+    "return a successful result" in {
+      stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", NO_CONTENT)
+      val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
+      result shouldBe ().asRight
+    }
+
+    "notify pager duty on failure" in new PagerDutyAware {
+      stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", BAD_REQUEST)
+      val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
+      result shouldBe httpError.asLeft
+      loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
   }
 

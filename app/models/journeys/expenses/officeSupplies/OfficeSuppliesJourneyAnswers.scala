@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.common
+package models.journeys.expenses.officeSupplies
 
-import models.journeys.Journey
+import play.api.libs.json.{Json, OFormat}
 
-sealed trait JourneyContext {
-  val taxYear: TaxYear
-  val businessId: BusinessId
-  val mtditid: Mtditid
-  val journey: Journey
+case class OfficeSuppliesJourneyAnswers(officeSuppliesAmount: BigDecimal, officeSuppliesDisallowableAmount: Option[BigDecimal])
+
+object OfficeSuppliesJourneyAnswers {
+  implicit val formats: OFormat[OfficeSuppliesJourneyAnswers] = Json.format[OfficeSuppliesJourneyAnswers]
 }
-
-case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext
-
-case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext

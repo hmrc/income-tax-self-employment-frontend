@@ -20,7 +20,8 @@ import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.DisallowableOtherFinancialChargesPage
+import models.journeys.expenses.FinancialExpenses.OtherFinancialCharges
+import pages.expenses.tailoring.{DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
@@ -29,6 +30,13 @@ import viewmodels.implicits._
 object DisallowableOtherFinancialChargesSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers
+      .get(FinancialExpensesPage, Some(businessId))
+      .filter(_ == OtherFinancialCharges)
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
+
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableOtherFinancialChargesPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(

@@ -20,7 +20,8 @@ import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.DisallowableSubcontractorCostsPage
+import models.journeys.expenses.ProfessionalServiceExpenses.Construction
+import pages.expenses.tailoring.{DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
@@ -29,6 +30,13 @@ import viewmodels.implicits._
 object DisallowableSubcontractorCostsSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers
+      .get(ProfessionalServiceExpensesPage, Some(businessId))
+      .filter(_ == Construction)
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
+
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableSubcontractorCostsPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(

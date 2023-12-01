@@ -219,6 +219,7 @@ GET         /:taxYear/:businessId/expenses/change-office-supplies/disallowable-a
 POST        /:taxYear/:businessId/expenses/change-office-supplies/disallowable-amount            controllers.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/office-supplies/check                                 controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/office-supplies/check                                 controllers.journeys.expenses.officeSupplies.OfficeSuppliesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Goods to sell or use ##########
 
@@ -271,6 +272,7 @@ GET         /:taxYear/:businessId/expenses/change-staff/disallowable-amount     
 POST        /:taxYear/:businessId/expenses/change-staff/disallowable-amount                                    controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Construction Industry ##########
 
 GET         /:taxYear/:businessId/expenses/construction-industry/amount                                        controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

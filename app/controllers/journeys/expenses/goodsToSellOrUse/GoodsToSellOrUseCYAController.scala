@@ -16,11 +16,8 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.journeys.routes._
-import controllers.standard.routes._
-import models.NormalMode
+import controllers.submitJourneyAnswers
 import models.common.ModelUtils.userType
 import models.common._
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
@@ -29,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SendJourneyAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
@@ -44,7 +42,8 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                val controllerComponents: MessagesControllerComponents,
                                                view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val user = userType(request.user.isAgent)
@@ -61,16 +60,11 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val journeyAnswers = (request.userAnswers.data \ businessId.value).as[GoodsToSellOrUseJourneyAnswers]
-      val context        = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesGoodsToSellOrUse)
+      val answers = (request.userAnswers.data \ businessId.value).as[GoodsToSellOrUseJourneyAnswers]
+      val context = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesGoodsToSellOrUse)
 
-      // What we decide to do with the unhappy path of receiving a downstream http error should be implemented at a later
-      // date (awaiting a JIRA ticket), however we need to do something now.
-      (for {
-        _ <- EitherT(service.sendJourneyAnswers(context, journeyAnswers))
-      } yield Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, NormalMode)))
-        .leftMap(_ => Redirect(JourneyRecoveryController.onPageLoad()))
-        .merge
+      submitJourneyAnswers(answers, context, service)
+
   }
 
 }

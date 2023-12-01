@@ -34,6 +34,7 @@ journeys.self-employment-abroad = Self-employment abroad
 journeys.income = Income
 journeys.expenses-categories = Expenses categories
 journeys.national-insurance = National Insurance
+journeys.expenses-office-supplies = Office supplies
 
 date.day = Day
 date.month = Month
@@ -334,7 +335,6 @@ expenses.includes.construction.agent = This includes the total payments your cli
 expenses.understanding.construction = Understanding construction industry expenses
 
 ## Office supplies
-officeSupplies.title = Office supplies
 officeSupplies.l1 = phones, including mobiles
 officeSupplies.l2 = internet, email and fax running costs
 officeSupplies.l3 = postage, stationery and printing

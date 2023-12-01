@@ -29,7 +29,7 @@ import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
-import play.api.libs.json.Writes
+import play.api.libs.json.{Format, Writes}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,6 +42,7 @@ trait SelfEmploymentServiceBase {
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
 class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessionRepository: SessionRepository)(implicit ec: ExecutionContext)
@@ -53,7 +54,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
     val journeyId = journey.toString
 
     EitherT(connector.getJourneyState(tradeId, journeyId, taxYear, mtditid.value))
-      .map(JourneyStatus.fromBooleanOpt)
+      .map(JourneyStatus.tradeDetailsStatusFromCompletedState)
   }
 
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
@@ -73,6 +74,11 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
       updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId)))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
+
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
+    val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
+    connector.submitAnswers(context, journeyAnswers)
+  }
 }
 
 object SelfEmploymentService {

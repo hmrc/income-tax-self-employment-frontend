@@ -49,7 +49,8 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
     .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
     .build()
-  val selfEmploymentList = aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear)(messages(application)))
+  val selfEmploymentList =
+    aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswers))(messages(application)))
 
   when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
   when(mockService.getJourneyStatus(meq(TradeDetails), anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(JourneyStatus.Completed)

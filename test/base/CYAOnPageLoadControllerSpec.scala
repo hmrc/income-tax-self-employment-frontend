@@ -17,34 +17,59 @@
 package base
 
 import base.SpecBase._
-import common.TestApp.buildAppFromUserAnswers
-import models.common.{BusinessId, TaxYear}
+import common.TestApp.buildAppFromUserType
+import models.common.UserType.{Agent, Individual}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import org.scalatest.wordspec.AnyWordSpecLike
+import pages.Page
 import play.api.Application
 import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import views.html.standard.CheckYourAnswersView
 
-trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike with TableDrivenPropertyChecks {
-  type OnPageLoadView = (Messages, Application, Request[_]) => String
+trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike {
 
-  def onPageLoad: (TaxYear, BusinessId) => Call
-  def onPageLoadCases: TableFor2[UserAnswers, OnPageLoadView]
+  val userTypes: List[UserType] = List(Individual, Agent)
+
+  val page: Page
+  def onPageLoadCall: (TaxYear, BusinessId) => Call
+  def onSubmitCall: (TaxYear, BusinessId) => Call
+
+  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): SummaryList
+
+  val testDataCases: List[JsObject]
+
+  def userAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
+
+  def createExpectedView(userType: UserType, summaryList: SummaryList, msg: Messages, application: Application, request: Request[_]): String = {
+    val view = application.injector.instanceOf[CheckYourAnswersView]
+    view(page.pageName.value, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, msg).toString()
+  }
 
   "onPageLoad" should {
-    "return Ok and render correct view for various data" in {
-      forAll(onPageLoadCases) { case (userAnswers, expectedView) =>
-        val application          = buildAppFromUserAnswers(userAnswers)
-        val msg: Messages        = SpecBase.messages(application)
-        val getOnPageLoadRequest = FakeRequest(GET, onPageLoad(taxYear, businessId).url)
+    userTypes.foreach { userType =>
+      s"return Ok and render correct view for various data when user is an $userType" in {
+        testDataCases.foreach { data =>
+          val application   = buildAppFromUserType(userType, Some(userAnswers(data)))
+          val msg: Messages = SpecBase.messages(application)
 
-        val result = route(application, getOnPageLoadRequest).value
+          implicit val impMsg: Messages = SpecBase.messages(application)
 
-        status(result) mustBe OK
-        contentAsString(result) mustEqual expectedView(msg, application, getOnPageLoadRequest)
+          val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
+          val summaryList: SummaryList = getSummaryList(userAnswers(data), taxYear, businessId, userType)
+
+          val result = route(application, onPageLoadRequest).value
+          val expectedResult =
+            createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustEqual expectedResult
+        }
       }
     }
   }
