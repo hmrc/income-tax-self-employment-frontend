@@ -50,16 +50,17 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       for {
         status          <- service.getJourneyStatus(TradeDetails, request.nino, taxYear, request.mtditid)
         completedTrades <- getViewModelList(taxYear, status)
-        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear))
+        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, request.userAnswers))
       } yield Ok(view(taxYear, request.user, status, viewModelList))
     ).result
 
     result.merge
   }
 
-  private def getViewModelList(taxYear: TaxYear, status: JourneyStatus)(implicit request: OptionalDataRequest[AnyContent]) =
+  private def getViewModelList(taxYear: TaxYear, status: JourneyStatus)(implicit
+      request: OptionalDataRequest[AnyContent]): EitherT[Future, HttpError, _ >: Nil.type <: List[TradesJourneyStatuses]] =
     status match {
-      case Completed                    => service.getCompletedTradeDetails(request.nino, taxYear, request.mtditid)
-      case CheckOurRecords | InProgress => EitherT.rightT[Future, HttpError](Nil)
+      case Completed                                                  => service.getCompletedTradeDetails(request.nino, taxYear, request.mtditid)
+      case CheckOurRecords | InProgress | CannotStartYet | NotStarted => EitherT.rightT[Future, HttpError](Nil)
     }
 }

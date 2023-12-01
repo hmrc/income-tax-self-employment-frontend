@@ -18,7 +18,7 @@ package builders
 
 import models.journeys.Journey.{Abroad, ExpensesGoodsToSellOrUse, ExpensesTailoring, Income, NationalInsurance}
 import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyStatus
+import models.requests.TradesJourneyStatuses.JourneyCompletedState
 
 object TradesJourneyStatusesBuilder {
 
@@ -26,11 +26,11 @@ object TradesJourneyStatusesBuilder {
     "BusinessId1",
     Some("TradingName1"),
     Seq(
-      JourneyStatus(Abroad, Some(true)),
-      JourneyStatus(Income, Some(false)),
-      JourneyStatus(ExpensesTailoring, None),
-      JourneyStatus(ExpensesGoodsToSellOrUse, None),
-      JourneyStatus(NationalInsurance, None)
+      JourneyCompletedState(Abroad, Some(true)),
+      JourneyCompletedState(Income, Some(false)),
+      JourneyCompletedState(ExpensesTailoring, None),
+      JourneyCompletedState(ExpensesGoodsToSellOrUse, None),
+      JourneyCompletedState(NationalInsurance, None)
     )
   )
 

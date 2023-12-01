@@ -53,7 +53,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
     val journeyId = journey.toString
 
     EitherT(connector.getJourneyState(tradeId, journeyId, taxYear, mtditid.value))
-      .map(JourneyStatus.fromBooleanOpt)
+      .map(JourneyStatus.tradeDetailsStatusFromCompletedState)
   }
 
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
