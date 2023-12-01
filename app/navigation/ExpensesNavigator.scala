@@ -23,8 +23,8 @@ import models.common.AccountingType.{Accrual, Cash}
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.{
-  ExpensesEntertainment,
   ExpensesConstruction,
+  ExpensesEntertainment,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
   ExpensesRepairsAndMaintenance,

@@ -17,8 +17,10 @@
 package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
-import models.common.{BusinessId, Nino, TaxYear}
+import models.common.{BusinessId, Mtditid, Nino, TaxYear}
 import models.errors.{HttpError, HttpErrorBody}
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.Status.BAD_REQUEST
@@ -28,14 +30,19 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
-trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite {
+trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures {
 
   protected val businessId: BusinessId = BusinessId("someBusinessId")
   protected val nino: Nino             = Nino("someNino")
-  protected val mtditid: String        = "mtditid"
+  protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(LocalDate.now().getYear)
 
-  protected val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid))
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(
+    timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),
+    interval = Span(500, Millis)
+  )
+
+  protected val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid.value))
 
   protected val httpError: HttpError = HttpError(BAD_REQUEST, HttpErrorBody.parsingError)
 
@@ -48,4 +55,8 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite {
     ws
       .url(s"http://localhost:$port$urlandUri")
       .withFollowRedirects(false)
+}
+
+object IntegrationBaseSpec {
+  val mtditid: Mtditid = Mtditid("mtditid")
 }
