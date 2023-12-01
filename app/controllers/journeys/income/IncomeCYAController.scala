@@ -23,11 +23,9 @@ import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey.Income
 import models.journeys.income.IncomeJourneyAnswers
-import navigation.IncomeNavigator
-import pages.income.IncomeCYAPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.SendJourneyAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -42,10 +40,9 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
-                                     service: SelfEmploymentService,
+                                     service: SendJourneyAnswersService,
                                      val controllerComponents: MessagesControllerComponents,
-                                     view: IncomeCYAView,
-                                     navigator: IncomeNavigator)(implicit ec: ExecutionContext)
+                                     view: IncomeCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

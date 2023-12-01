@@ -22,7 +22,7 @@ import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, JourneyContext, Mtditid, Nino}
+import models.common.{BusinessId, JourneyAnswersContext, Mtditid, Nino}
 import models.database.UserAnswers
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
@@ -136,7 +136,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
            |""".stripMargin)
       .as[JsObject]
     val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-    val ctx                      = JourneyContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)
+    val ctx                      = JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)
     mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[HttpError]))
 
     "submit answers to the connector" in {

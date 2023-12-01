@@ -19,7 +19,7 @@ package connectors
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.{PagerDutyAware, WiremockSpec}
-import models.common.{JourneyContext, SubmissionContext}
+import models.common.{JourneyAnswersContext, SubmissionContext}
 import models.journeys.Journey
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
@@ -33,7 +33,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   private val someExpensesJourney          = ExpensesGoodsToSellOrUse
   private val ctx                          = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)
-  private def journeyCtx(journey: Journey) = JourneyContext(taxYear, businessId, mtditid, journey)
+  private def journeyCtx(journey: Journey) = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
 
   private val downstreamUrl =
     s"/income-tax-self-employment/send-journey-answers/${ctx.journey.toString}" +

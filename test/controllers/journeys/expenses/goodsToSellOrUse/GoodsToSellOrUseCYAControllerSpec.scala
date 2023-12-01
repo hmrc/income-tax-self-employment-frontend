@@ -32,23 +32,27 @@ import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
 
-  override lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
-  override lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
+  override protected lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "goodsToSellOrUse": "yesDisallowable",
-         |    "goodsToSellOrUseAmount": 100.00,
-         |    "disallowableGoodsToSellOrUseAmount": 100.00
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "goodsToSellOrUse": "yesDisallowable",
+              |    "goodsToSellOrUseAmount": 100.00,
+              |    "disallowableGoodsToSellOrUseAmount": 100.00
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-  override val journey: Journey         = ExpensesGoodsToSellOrUse
+  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+
+  override protected val journeyAnswers: GoodsToSellOrUseJourneyAnswers =
+    GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
+
+  override protected val journey: Journey = ExpensesGoodsToSellOrUse
 
   override protected def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
@@ -59,9 +63,9 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
   )
 
   override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
+                                                                                                 request: Request[_],
+                                                                                                 messages: Messages,
+                                                                                                 application: Application): String = {
 
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
     view(taxYear, businessId, scenario.userType.toString, summaryList)(request, messages).toString()

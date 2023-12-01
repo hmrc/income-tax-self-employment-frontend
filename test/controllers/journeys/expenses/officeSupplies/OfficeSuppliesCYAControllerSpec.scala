@@ -36,13 +36,13 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSu
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "officeSupplies": "yesAllowable",
-         |    "officeSuppliesAmount": $officeSuppliesAmount
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "officeSupplies": "yesAllowable",
+              |    "officeSuppliesAmount": $officeSuppliesAmount
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
   override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
@@ -60,9 +60,9 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSu
     )
 
   override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
+                                                                                                 request: Request[_],
+                                                                                                 messages: Messages,
+                                                                                                 application: Application): String = {
 
     val view = application.injector.instanceOf[OfficeSuppliesCYAView]
     view(scenario.userType.toString, summaryList, taxYear, businessId)(request, messages).toString()

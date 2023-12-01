@@ -56,8 +56,8 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
     implicit val appMessages: Messages    = messages(application)
 
-    val testScenarioContext: Journey => JourneyContext = (journey: Journey) =>
-      JourneyContext(taxYear, businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+    val testScenarioContext: Journey => SubmissionContext = (journey: Journey) =>
+      SubmissionContext(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
     mockSessionRepository.set(*) returns Future.successful(true)
 

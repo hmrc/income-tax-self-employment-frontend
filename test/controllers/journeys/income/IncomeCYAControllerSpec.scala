@@ -21,7 +21,7 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.Income
-import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.income.{IncomeJourneyAnswers, TradingAllowance}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -34,23 +34,36 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "incomeNotCountedAsTurnover": false,
-         |    "turnoverIncomeAmount": 100.00,
-         |    "anyOtherIncome": false,
-         |    "turnoverNotTaxable": false,
-         |    "tradingAllowance": "declareExpenses"
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "incomeNotCountedAsTurnover": false,
+              |    "turnoverIncomeAmount": 100.00,
+              |    "anyOtherIncome": false,
+              |    "turnoverNotTaxable": false,
+              |    "tradingAllowance": "declareExpenses"
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-  override val journey: Journey         = Income
+  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
+  override protected val journey: Journey         = Income
 
-  override lazy val onPageLoadRoute: String = routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
-  override lazy val onSubmitRoute: String   = routes.IncomeCYAController.onSubmit(taxYear, businessId).url
+  override protected val journeyAnswers: IncomeJourneyAnswers = IncomeJourneyAnswers(
+    incomeNotCountedAsTurnover = false,
+    nonTurnoverIncomeAmount = None,
+    turnoverIncomeAmount = 100.00,
+    anyOtherIncome = false,
+    otherIncomeAmount = None,
+    turnoverNotTaxable = Some(false),
+    notTaxableAmount = None,
+    tradingAllowance = TradingAllowance.DeclareExpenses,
+    howMuchTradingAllowance = None,
+    tradingAllowanceAmount = None
+  )
+
+  override protected lazy val onPageLoadRoute: String = routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+  override protected lazy val onSubmitRoute: String   = routes.IncomeCYAController.onSubmit(taxYear, businessId).url
 
   override def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
@@ -64,9 +77,9 @@ class IncomeCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitCont
   )
 
   override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
+                                                                                                 request: Request[_],
+                                                                                                 messages: Messages,
+                                                                                                 application: Application): String = {
     val view = application.injector.instanceOf[IncomeCYAView]
     view(taxYear, businessId, summaryList, scenario.userType.toString)(request, messages).toString()
   }
