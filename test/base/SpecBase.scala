@@ -94,8 +94,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   protected def isAgent(authUserType: String): Boolean = authUserType.equals(agent)
 
-  protected def authUserType(authUserType: UserType): UserType = authUserType
-
   protected def isAccrual(accountingType: String): Boolean = accountingType.equals(accrual)
 
   def applicationBuilder(userAnswers: Option[UserAnswers], userType: UserType): GuiceApplicationBuilder =

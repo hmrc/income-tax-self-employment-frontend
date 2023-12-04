@@ -56,15 +56,15 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   case class UserScenario(isWelsh: Boolean, authUserType: UserType, form: Form[TradingAllowance], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, authUserType = UserType.Individual, formProvider(authUserType(UserType.Individual)), accrual),
-    UserScenario(isWelsh = false, authUserType = UserType.Agent, formProvider(authUserType(UserType.Agent)), cash)
+    UserScenario(isWelsh = false, authUserType = UserType.Individual, formProvider(UserType.Individual), accrual),
+    UserScenario(isWelsh = false, authUserType = UserType.Agent, formProvider(UserType.Agent), cash)
   )
 
   "TradingAllowance Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.authUserType)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userScenario.authUserType} and has ${userScenario.accountingType} type accounting" - {
           "must return OK and the correct view" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType)
@@ -83,7 +83,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[TradingAllowanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application, userScenario.isWelsh)).toString
 
@@ -116,7 +116,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult = view(
                 userScenario.form.fill(TradingAllowance.values.head),
                 CheckMode,
-                authUserType(userScenario.authUserType),
+                userScenario.authUserType,
                 taxYear,
                 businessId,
                 userScenario.accountingType)(request, messages(application, userScenario.isWelsh)).toString
@@ -290,7 +290,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${authUserType(userScenario.authUserType)} and has ${userScenario.accountingType} type accounting" - {
+        s"when ${getLanguage(userScenario.isWelsh)}, ${userScenario.authUserType} and has ${userScenario.accountingType} type accounting" - {
           "must return a Bad Request and errors when" - {
             "an empty form is submitted" in {
 
@@ -315,7 +315,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
@@ -347,7 +347,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
 
                 val expectedResult =
-                  view(boundForm, NormalMode, authUserType(userScenario.authUserType), taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application, userScenario.isWelsh)).toString
 
