@@ -27,7 +27,7 @@ sealed trait JourneyContext {
   val answersUrl: String
 }
 
-case class JourneyAnswersWithNino(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
+case class JourneyContextWithNino(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
   val answersUrl: String = s"${taxYear.value}/${businessId.value}/${journey.toString}/${nino.value}/answers"
 }
 

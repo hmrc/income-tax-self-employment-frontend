@@ -19,7 +19,7 @@ package connectors
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.{PagerDutyAware, WiremockSpec}
-import models.common.{JourneyAnswersContext, JourneyAnswersWithNino}
+import models.common.{JourneyAnswersContext, JourneyContextWithNino}
 import models.journeys.Journey
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -29,7 +29,7 @@ import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private def journeyNinoCtx(journey: Journey) = JourneyAnswersWithNino(taxYear, nino, businessId, mtditid, journey)
+  private def journeyNinoCtx(journey: Journey) = JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey)
   private def journeyCtx(journey: Journey)     = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
 
   private def downstreamNinoUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/$nino/answers"
