@@ -65,7 +65,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar {
         s"when  ${userScenario.authUserType} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application                       = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
