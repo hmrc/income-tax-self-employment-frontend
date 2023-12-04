@@ -20,37 +20,34 @@ import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.ProfessionalServiceExpenses.Staff
-import pages.expenses.tailoring.{DisallowableStaffCostsPage, ProfessionalServiceExpensesPage}
+import models.journeys.expenses.ExpensesTailoring.NoExpenses
+import pages.expenses.tailoring.ExpensesTailoringPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DisallowableStaffCostsSummary {
-
+object ExpensesTailoringSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
-    answers
-      .get(ProfessionalServiceExpensesPage, Some(businessId))
-      .filter(_.contains(Staff))
-      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
-
-  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableStaffCostsPage, Some(businessId)).map { answer =>
+    answers.get(ExpensesTailoringPage, Some(businessId)).map { answer =>
+      val optUserType = if (answer == NoExpenses) s".$userType" else ""
       SummaryListRowViewModel(
         key = Key(
-          content = s"disallowableStaffCosts.subheading.$userType",
+          content = s"depreciation.subHeading.$userType",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(
-          content = formatAnswer(answer.toString),
+          content = messages(s"expenses.cyaSummary.$answer$optUserType"),
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.DisallowableStaffCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("disallowableStaffCosts.change.hidden"))
+          ActionItemViewModel(
+            "site.change",
+            routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode).url
+          ) // TODO direct to tailoring page when created
+            .withVisuallyHiddenText(messages("depreciation.change.hidden"))
         )
       )
     }
+
 }

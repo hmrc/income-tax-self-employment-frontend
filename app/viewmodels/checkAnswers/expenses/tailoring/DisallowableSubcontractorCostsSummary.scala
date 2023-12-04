@@ -32,7 +32,7 @@ object DisallowableSubcontractorCostsSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers
       .get(ProfessionalServiceExpensesPage, Some(businessId))
-      .filter(_ == Construction)
+      .filter(_.contains(Construction))
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit

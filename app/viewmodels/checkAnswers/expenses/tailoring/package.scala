@@ -36,6 +36,7 @@ package object tailoring {
 
     SummaryListCYA.summaryListOpt(
       List(
+        ExpensesTailoringSummary.row(),
         OfficeSuppliesSummary.row(),
         TaxiMinicabOrRoadHaulageSummary.row(),
         GoodsToSellOrUseSummary.row(),

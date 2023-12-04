@@ -32,7 +32,7 @@ object DisallowableIrrecoverableDebtsSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers
       .get(FinancialExpensesPage, Some(businessId))
-      .filter(_ == IrrecoverableDebts)
+      .filter(_.contains(IrrecoverableDebts))
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit

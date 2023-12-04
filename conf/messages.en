@@ -333,6 +333,12 @@ expenses.contributions.agent = their own pay, pension or National Insurance cont
 expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 expenses.includes.construction.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 expenses.understanding.construction = Understanding construction industry expenses
+expenses.cyaSummary.individual = How will you report your expenses?
+expenses.cyaSummary.agent = How will you report your client’s expenses?
+expenses.cyaSummary.totalAmount = As one total amount
+expenses.cyaSummary.individualCategories = In individual categories
+expenses.cyaSummary.noExpenses.individual = I do not have any expenses to report
+expenses.cyaSummary.noExpenses.agent = My client does not have any expenses to report
 
 ## Office supplies
 officeSupplies.l1 = phones, including mobiles
