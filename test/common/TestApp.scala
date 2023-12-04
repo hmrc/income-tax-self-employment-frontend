@@ -18,7 +18,7 @@ package common
 
 import base.SpecBase
 import base.SpecBase._
-import models.common.{AccountingType, Language, UserType, onwardRoute}
+import models.common.{AccountingType, UserType, onwardRoute}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
@@ -48,7 +48,7 @@ object TestApp {
 
   def buildAppWithMessages() = {
     implicit val application  = SpecBase.applicationBuilder(None, UserType.Individual).build()
-    val appMessages: Messages = messages(application, Language.English)
+    val appMessages: Messages = messages(application)
     appMessages
   }
 

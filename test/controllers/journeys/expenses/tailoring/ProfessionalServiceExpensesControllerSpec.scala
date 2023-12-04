@@ -48,11 +48,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, userType: String, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
+  case class UserScenario(userType: String, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, userType = individual, formProvider(individual), accrual),
-    UserScenario(isWelsh = false, userType = agent, formProvider(agent), cash)
+    UserScenario(userType = individual, formProvider(individual), accrual),
+    UserScenario(userType = agent, formProvider(agent), cash)
   )
 
   "ProfessionalServiceExpenses Controller" - {
@@ -60,7 +60,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
@@ -77,9 +77,9 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -112,7 +112,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 NormalMode,
                 userScenario.userType,
                 taxYear,
-                stubbedBusinessId,
+                businessId,
                 userScenario.accountingType
               )(request, messages(application)).toString
 
@@ -170,7 +170,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
@@ -192,7 +192,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

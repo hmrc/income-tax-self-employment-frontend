@@ -47,11 +47,11 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid).map {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).map {
       case Right(accountingType) =>
         val preparedForm =
-          request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(BusinessId(businessId))) match {
+          request.userAnswers.getOrElse(UserAnswers(request.userId)).get(OfficeSuppliesAmountPage, Some(businessId)) match {
             case None        => formProvider(userType(request.user.isAgent))
             case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
           }
@@ -62,8 +62,8 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
     }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: String, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    selfEmploymentService.getAccountingType(request.user.nino, BusinessId(businessId), request.user.mtditid).flatMap {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).flatMap {
       case Right(accountingType) =>
         formProvider(userType(request.user.isAgent))
           .bindFromRequest()
@@ -73,9 +73,9 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
             value =>
               for {
                 updatedAnswers <- Future.fromTry(
-                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(BusinessId(businessId))))
+                  request.userAnswers.getOrElse(UserAnswers(request.userId)).set(OfficeSuppliesAmountPage, value, Some(businessId)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, BusinessId(businessId)))
+              } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
           )
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
     }

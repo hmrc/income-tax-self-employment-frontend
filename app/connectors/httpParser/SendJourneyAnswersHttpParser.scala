@@ -21,14 +21,14 @@ import models.errors.HttpError
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object SendExpensesAnswersHttpParser extends HttpParser {
-  type SendExpensesAnswersResponse = Either[HttpError, Unit]
+object SendJourneyAnswersHttpParser extends HttpParser {
+  type SendJourneyAnswersResponse = Either[HttpError, Unit]
 
-  override def parserName: String = "SendExpensesAnswersHttpParser"
+  override val parserName: String = "SendJourneyAnswersHttpParser"
 
-  implicit object SendExpensesAnswersHttpReads extends HttpReads[SendExpensesAnswersResponse] {
+  implicit object SendJourneyAnswersHttpReads extends HttpReads[SendJourneyAnswersResponse] {
 
-    override def read(method: String, url: String, response: HttpResponse): SendExpensesAnswersResponse =
+    override def read(method: String, url: String, response: HttpResponse): SendJourneyAnswersResponse =
       response.status match {
         case NO_CONTENT => ().asRight
         case _          => pagerDutyError(response).asLeft

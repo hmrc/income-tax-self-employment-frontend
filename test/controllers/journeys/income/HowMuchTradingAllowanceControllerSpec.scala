@@ -30,8 +30,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.data.Form
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Format.GenericFormat
 import play.api.test.FakeRequest
@@ -58,11 +56,11 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
+  case class UserScenario(isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
-    UserScenario(isWelsh = false, isAgent = true, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
+    UserScenario(isAgent = false, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
+    UserScenario(isAgent = true, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
   )
 
   def formTypeToString(form: Form[HowMuchTradingAllowance]): String =
@@ -72,30 +70,27 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK with the correct view" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
               val expectedResult =
                 view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -109,8 +104,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               .success
               .value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -119,8 +113,6 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult = view(
                 userScenario.form.fill(HowMuchTradingAllowance.values.head),
                 CheckMode,
@@ -128,10 +120,10 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
                 taxYear,
                 businessId,
                 userScenario.allowanceString
-              )(request, messages(application, userScenario.isWelsh)).toString
+              )(request, messages(application)).toString
 
               status(result) mustEqual OK
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }
@@ -276,13 +268,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -295,15 +286,13 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
 
@@ -311,8 +300,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application          = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
-            implicit val messagesApi = application.injector.instanceOf[MessagesApi]
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
 
             running(application) {
               val request =
@@ -325,15 +313,13 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val langResult = if (userScenario.isWelsh) result.map(_.withLang(cyLang)) else result
-
               val expectedResult =
                 view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(langResult) mustEqual expectedResult
+              contentAsString(result) mustEqual expectedResult
             }
           }
         }

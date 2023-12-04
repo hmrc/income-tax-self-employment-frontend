@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.repairsandmaintenance
 
 import base.SpecBase
-import base.SpecBase.{taxYear, businessId, stubbedBusinessId, userAnswersId}
+import base.SpecBase.{businessId, taxYear, userAnswersId}
 import builders.UserBuilder.aNoddyUser
 import models.common.BusinessId
 import models.database.UserAnswers
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 
 class RepairsAndMaintenanceAmountSummarySpec extends AnyWordSpecLike with Matchers {
-  val data                        = Json.obj(stubbedBusinessId -> Json.obj("repairsAndMaintenanceAmount" -> 123.45))
+  val data                        = Json.obj(businessId.value -> Json.obj("repairsAndMaintenanceAmount" -> 123.45))
   val userAnswers                 = UserAnswers(userAnswersId, data)
   val request                     = DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   implicit val messages: Messages = SpecBase.messagesStubbed

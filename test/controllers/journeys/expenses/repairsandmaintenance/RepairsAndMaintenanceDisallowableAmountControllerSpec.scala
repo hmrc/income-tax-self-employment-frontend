@@ -20,7 +20,7 @@ import base.SpecBase._
 import common.TestApp._
 import forms.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountFormProvider, RepairsAndMaintenanceDisallowableAmountFormProvider}
 import gens._
-import models.common.{Language, TextAmount, onwardRoute}
+import models.common.{TextAmount, onwardRoute}
 import models.database.UserAnswers
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
@@ -34,7 +34,7 @@ import views.html.journeys.expenses.repairsandmaintenance.{RepairsAndMaintenance
 class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val invalidAnswer   = "invalid value"
   private val allowableAmount = BigDecimal(200.00)
-  private val data            = Json.obj(stubbedBusinessId -> Json.obj("repairsAndMaintenanceAmount" -> allowableAmount))
+  private val data            = Json.obj(businessId.value -> Json.obj("repairsAndMaintenanceAmount" -> allowableAmount))
   private val userAnswers     = UserAnswers(userAnswersId, data)
 
   "onPageLoad" should {
@@ -49,7 +49,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
         status(result) mustBe OK
 
         val view         = application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView]
-        val msg          = messages(application, Language.English)
+        val msg          = messages(application)
         val form         = new RepairsAndMaintenanceDisallowableAmountFormProvider()(userType, allowableAmount)(msg)
         val expectedView = view(form, mode, taxYear, businessId, userType, TextAmount(allowableAmount))(getRequest, msg).toString()
         contentAsString(result) mustEqual expectedView
@@ -85,7 +85,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec extends AnyWordSpec 
         val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val form = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application))
             .toString()
         contentAsString(result) mustEqual expectedView
       }

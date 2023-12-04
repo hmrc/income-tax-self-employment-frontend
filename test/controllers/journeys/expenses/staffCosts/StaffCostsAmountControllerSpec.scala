@@ -20,7 +20,7 @@ import base.SpecBase._
 import common.TestApp._
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import gens._
-import models.common.{Language, onwardRoute}
+import models.common.onwardRoute
 import models.journeys.expenses.DisallowableStaffCosts
 import models.journeys.expenses.DisallowableStaffCosts.{No, Yes}
 import org.scalacheck.Gen
@@ -53,7 +53,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
 
         val view = application.injector.instanceOf[StaffCostsAmountView]
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, disallowable)(getRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, disallowable)(getRequest, messages(application))
             .toString()
         contentAsString(result) mustEqual expectedView
       }
@@ -84,7 +84,7 @@ class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with Scal
         val view           = application.injector.instanceOf[StaffCostsAmountView]
         val form           = new StaffCostsAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, disallowable)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, disallowable)(postRequest, messages(application))
             .toString()
 
         val result = route(application, postRequest).value

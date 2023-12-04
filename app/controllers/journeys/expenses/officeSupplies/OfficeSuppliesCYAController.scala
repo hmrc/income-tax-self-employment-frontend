@@ -17,35 +17,35 @@
 package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
-import models.NormalMode
+import controllers.submitJourneyAnswers
 import models.common.ModelUtils.userType
-import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
-import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
+import models.common._
+import models.journeys.Journey.ExpensesOfficeSupplies
+import models.journeys.expenses.officeSupplies.OfficeSuppliesJourneyAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SendJourneyAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.officeSupplies.{OfficeSuppliesAmountSummary, OfficeSuppliesDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesApi,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             navigator: ExpensesNavigator,
+                                             service: SendJourneyAnswersService,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: OfficeSuppliesCYAView)
+                                             view: OfficeSuppliesCYAView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: String): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator
-      .nextPage(OfficeSuppliesCYAPage, NormalMode, request.userAnswers, taxYear, BusinessId(businessId))
-      .url
-
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val authUser = userType(request.user.isAgent)
 
     val summaryList = SummaryListCYA.summaryListOpt(
@@ -55,7 +55,16 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
       )
     )
 
-    Ok(view(authUser, summaryList, taxYear, nextRoute))
+    Ok(view(authUser, summaryList, taxYear, businessId))
+  }
+
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val answers = (request.userAnswers.data \ businessId.value).as[OfficeSuppliesJourneyAnswers]
+      val context = SubmissionContext(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesOfficeSupplies)
+
+      submitJourneyAnswers(answers, context, service)
+
   }
 
 }

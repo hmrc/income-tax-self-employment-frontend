@@ -26,30 +26,28 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepairsAndMaintenanceAmountController @Inject() (
-    override val messagesApi: MessagesApi,
-    selfEmploymentService: SelfEmploymentServiceBase,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    formProvider: RepairsAndMaintenanceAmountFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: RepairsAndMaintenanceAmountView
-)(implicit ec: ExecutionContext)
+class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                       selfEmploymentService: SelfEmploymentServiceBase,
+                                                       navigator: ExpensesNavigator,
+                                                       identify: IdentifierAction,
+                                                       getData: DataRetrievalAction,
+                                                       formProvider: RepairsAndMaintenanceAmountFormProvider,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       view: RepairsAndMaintenanceAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
-  private implicit val logger: Logger = Logger(this.getClass)
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
     val result = for {

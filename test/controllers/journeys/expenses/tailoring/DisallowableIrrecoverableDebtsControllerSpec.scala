@@ -42,15 +42,15 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val disallowableIrrecoverableDebtsRoute = DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new DisallowableIrrecoverableDebtsFormProvider()
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[DisallowableIrrecoverableDebts])
+  case class UserScenario(isAgent: Boolean, form: Form[DisallowableIrrecoverableDebts])
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual)),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent))
+    UserScenario(isAgent = false, formProvider(individual)),
+    UserScenario(isAgent = true, formProvider(agent))
   )
 
   "DisallowableIrrecoverableDebts Controller" - {
@@ -58,7 +58,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -71,9 +71,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val view = application.injector.instanceOf[DisallowableIrrecoverableDebtsView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(
-                  request,
-                  messages(application, userScenario.isWelsh)).toString
+                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -102,7 +100,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId)(request, messages(application, userScenario.isWelsh)).toString
+                  businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -155,7 +153,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
       }
 
       userScenarios.foreach { userScenario =>
-        s"when language is ${getLanguage(userScenario.isWelsh)} and user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userType(userScenario.isAgent)}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
@@ -172,7 +170,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -195,7 +193,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, stubbedBusinessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

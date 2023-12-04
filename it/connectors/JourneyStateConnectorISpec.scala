@@ -19,7 +19,6 @@ package connectors
 import base.IntegrationBaseSpec
 import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
-import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -40,14 +39,14 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       NO_CONTENT,
       Right(None),
       () => stubGetWithoutResponseBody(getJourneyStateUrl, NO_CONTENT),
-      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid.value)
     )
 
     behave like journeyStateRequestIsSuccessful(
       OK,
       Right(Some(completeState)),
       () => stubGetWithResponseBody(getJourneyStateUrl, OK, completeState.toString, headersSentToBE),
-      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid.value)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -57,7 +56,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => connector.getJourneyState(businessId, journey, taxYear, mtditid)
+      () => connector.getJourneyState(businessId, journey, taxYear, mtditid.value)
     )
   }
 
@@ -70,7 +69,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       NO_CONTENT,
       Right(None),
       () => stubPutWithoutResponseBody(saveJourneyStateUrl, NO_CONTENT),
-      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid.value)
     )
 
     behave like journeyStateRequestReturnsError(
@@ -80,7 +79,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
           BAD_REQUEST,
           Json.obj("code" -> "PARSING_ERROR", "reason" -> "Error parsing response from CONNECTOR").toString(),
           headersSentToBE),
-      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid)
+      () => connector.saveJourneyState(businessId, journey, taxYear, completeState, mtditid.value)
     )
   }
 
@@ -98,7 +97,7 @@ class JourneyStateConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())
-      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+      result mustBe Left(httpError)
     }
 
 }

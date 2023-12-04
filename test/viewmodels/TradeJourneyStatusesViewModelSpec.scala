@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import models.journeys.Journey.{Abroad, ExpensesTailoring, Income}
 import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyStatus
+import models.requests.TradesJourneyStatuses.JourneyCompletedState
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class TradeJourneyStatusesViewModelSpec extends SpecBase {
@@ -28,25 +28,28 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     ".buildSummaryList" - {
       "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" - {
         "Abroad is NotStarted, and Income and Expenses are CannotStart" in {
-          val tradesJourneyStatuses = TradesJourneyStatuses(stubbedBusinessId, Some(tradingName), Seq.empty)
-          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear)
+          val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some(tradingName), Seq.empty)
+          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
 
           result.rows.map(_.toString) mustEqual Seq(notStartedAbroadRow, cannotStartYetIncomeRow, cannotStartYetExpensesRow)
         }
         "Abroad is completed, and Income and Expenses are NotStarted" in {
-          val tradesJourneyStatuses = TradesJourneyStatuses(stubbedBusinessId, Some(tradingName), Seq(JourneyStatus(Abroad, Some(true))))
-          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear)
+          val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some(tradingName), Seq(JourneyCompletedState(Abroad, Some(true))))
+          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
 
           result.rows.map(_.toString) mustEqual Seq(completedAbroadRow, notStartedIncomeRow, notStartedExpensesRow)
         }
         "Abroad, Income and Expenses are all Completed" in {
           val tradesJourneyStatuses =
             TradesJourneyStatuses(
-              stubbedBusinessId,
+              businessId.value,
               Some(tradingName),
-              Seq(JourneyStatus(Abroad, Some(true)), JourneyStatus(Income, Some(true)), JourneyStatus(ExpensesTailoring, Some(true)))
+              Seq(
+                JourneyCompletedState(Abroad, Some(true)),
+                JourneyCompletedState(Income, Some(true)),
+                JourneyCompletedState(ExpensesTailoring, Some(true)))
             )
-          val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear)
+          val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
 
           result.rows.map(_.toString) mustEqual Seq(completedAbroadRow, completedIncomeRow, completedExpensesRow)
         }

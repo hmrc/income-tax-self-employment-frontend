@@ -19,7 +19,7 @@ package controllers.journeys.expenses.repairsandmaintenance
 import base.SpecBase._
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppFromUserAnswers
-import models.common.{Language, UserType, onwardRoute}
+import models.common.{UserType, onwardRoute}
 import models.database.UserAnswers
 import models.requests.DataRequest
 import models.test.RepairsAndMaintenanceInfo
@@ -43,7 +43,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
   private def createUserAnswerData(info: RepairsAndMaintenanceInfo) = Json
     .parse(s"""
          |{
-         |  "$stubbedBusinessId": ${Json.toJson(info)}
+         |  "$businessId": ${Json.toJson(info)}
          |}
          |""".stripMargin)
     .as[JsObject]
@@ -66,7 +66,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
 
         status(result) mustBe OK
 
-        implicit val msg: Messages = messages(application, Language.English)
+        implicit val msg: Messages = messages(application)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
         val expectedRows = List(
           RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, businessId),

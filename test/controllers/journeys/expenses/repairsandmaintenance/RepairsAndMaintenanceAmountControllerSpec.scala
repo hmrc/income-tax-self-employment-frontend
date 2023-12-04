@@ -20,7 +20,7 @@ import base.SpecBase._
 import common.TestApp._
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import gens._
-import models.common.{Language, onwardRoute}
+import models.common.onwardRoute
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -47,7 +47,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
 
         val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, accountingType)(getRequest, messages(application, Language.English)).toString()
+          view(form, mode, userType, taxYear, businessId, accountingType)(getRequest, messages(application)).toString()
         contentAsString(result) mustEqual expectedView
       }
     }
@@ -75,7 +75,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
         val view           = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
         val form           = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application))
             .toString()
 
         val result = route(application, postRequest).value

@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package services.journeys.expenses
+package models.journeys.expenses.officeSupplies
 
-import connectors.SelfEmploymentConnector
-import models.errors.HttpError
-import models.journeys.expenses.ExpensesData
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case class OfficeSuppliesJourneyAnswers(officeSuppliesAmount: BigDecimal, officeSuppliesDisallowableAmount: Option[BigDecimal])
 
-class ExpensesService @Inject() (connector: SelfEmploymentConnector) {
-
-  def sendExpensesAnswers[T](data: ExpensesData, answers: T)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      writes: Writes[T]): Future[Either[HttpError, Unit]] =
-    connector.sendExpensesAnswers(data, answers)
-
+object OfficeSuppliesJourneyAnswers {
+  implicit val formats: OFormat[OfficeSuppliesJourneyAnswers] = Json.format[OfficeSuppliesJourneyAnswers]
 }

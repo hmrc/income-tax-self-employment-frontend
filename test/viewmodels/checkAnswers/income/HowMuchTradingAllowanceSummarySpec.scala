@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import base.SpecBase.{businessId, stubbedBusinessId, taxYear}
+import base.SpecBase.{businessId, taxYear}
 import cats.data.EitherT
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
@@ -34,15 +34,15 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
   private val maxTradingAllowancePageData      = Json.obj("howMuchTradingAllowance" -> "maximum")
   private val lessThanTradingAllowancePageData = Json.obj("howMuchTradingAllowance" -> "lessThan")
 
-  private val otherData = Json.obj(stubbedBusinessId -> Json.obj("otherPage" -> 123.45))
+  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
 
   private val completeUserAnswersWithMaxTradingAllowance =
-    UserAnswers(id, Json.obj(stubbedBusinessId -> (turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)))
+    UserAnswers(id, Json.obj(businessId.value -> (turnoverIncomeAmountPageData ++ maxTradingAllowancePageData)))
 
   private val completeUserAnswersWithMinimumTradingAllowance =
-    UserAnswers(id, Json.obj(stubbedBusinessId -> (turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)))
+    UserAnswers(id, Json.obj(businessId.value -> (turnoverIncomeAmountPageData ++ lessThanTradingAllowancePageData)))
 
-  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, Json.obj(stubbedBusinessId -> maxTradingAllowancePageData))
+  private val userAnswersForTradingAllowanceOnly = UserAnswers(id, Json.obj(businessId.value -> maxTradingAllowancePageData))
 
   private val otherUserAnswers = UserAnswers(id, otherData)
 

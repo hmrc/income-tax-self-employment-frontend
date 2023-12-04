@@ -26,10 +26,18 @@ object JourneyStatus extends Enum[JourneyStatus] {
   val values = findValues
 
   case object CheckOurRecords extends JourneyStatus("checkOurRecords")
+  case object CannotStartYet  extends JourneyStatus("cannotStartYet")
+  case object NotStarted      extends JourneyStatus("notStarted")
   case object InProgress      extends JourneyStatus("inProgress")
   case object Completed       extends JourneyStatus("completed")
 
-  def fromBooleanOpt(value: Option[Boolean]): JourneyStatus =
+  def statusFromCompletedState(value: Option[Boolean]): JourneyStatus =
+    value.fold[JourneyStatus](NotStarted) {
+      case false => InProgress
+      case true  => Completed
+    }
+
+  def tradeDetailsStatusFromCompletedState(value: Option[Boolean]): JourneyStatus =
     value.fold[JourneyStatus](CheckOurRecords) {
       case false => InProgress
       case true  => Completed

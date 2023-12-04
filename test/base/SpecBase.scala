@@ -16,12 +16,15 @@
 
 package base
 
+import builders.UserBuilder
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.Language._
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
+import models.errors.HttpError
+import models.errors.HttpErrorBody.SingleErrorBody
+import models.journeys.Journey
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -29,11 +32,10 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
-import play.api.i18n.I18nSupport.ResultWithMessagesApi
+import play.api.http.Status.BAD_REQUEST
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -41,54 +43,41 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear   = TaxYear(LocalDate.now().getYear)
-  val userAnswersId      = "id"
-  val individual: String = Individual.toString
-  val agent: String      = Agent.toString
-  val accrual: String    = Accrual.entryName
-  val cash: String       = Cash.entryName
-  val stubbedBusinessId  = "SJPR05893938418"
-  val someNino: Nino     = Nino("someNino")
-  val mtditid            = "someId"
-  val businessId: BusinessId = BusinessId(
-    stubbedBusinessId
-  ) // TODO Use richer types everywhere, not primitive, and then clean up different similar names here
+  val taxYear: TaxYear       = TaxYear(LocalDate.now().getYear)
+  val userAnswersId          = "id"
+  val individual: String     = Individual.toString
+  val agent: String          = Agent.toString
+  val accrual: String        = Accrual.entryName
+  val cash: String           = Cash.entryName
+  val someNino: Nino         = Nino("someNino")
+  val mtditid                = "someId"
+  val businessId: BusinessId = BusinessId("SJPR05893938418")
 
   def anyNino: Nino             = Nino(any)
   def anyMtditid: Mtditid       = Mtditid(any)
   def anyTaxYear: TaxYear       = TaxYear(any)
   def anyBusinessId: BusinessId = BusinessId(any)
 
+  val submissionContext: Journey => SubmissionContext =
+    (journey: Journey) => SubmissionContext(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+
   val enLang: Lang = Lang("en-EN")
-  val cyLang: Lang = Lang("cy-CY")
 
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   implicit val hc: HeaderCarrier            = HeaderCarrier()
 
+  val httpError: HttpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
+
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  def messages(app: Application, lang: Language): Messages = {
-    val bool = lang match {
-      case Welsh   => true
-      case English => false
-    }
-    messages(app, bool)
-  }
-
-  def messages(app: Application, isWelsh: Boolean = false): Messages =
-    if (isWelsh) {
-      app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
-    } else {
-      app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
-    }
+  def messages(app: Application): Messages =
+    app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
 
   /** This does not load real values from messages.en */
   def messagesStubbed: Messages = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
-
-  protected def getLanguage(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
 
   protected def userType(isAgent: Boolean): String = if (isAgent) agent else individual
 
@@ -114,12 +103,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
   }
-
-  def languageAwareResult(lang: Language, result: Result)(implicit messagesApi: MessagesApi): Result =
-    lang match {
-      case English => result
-      case Welsh   => result.withLang(cyLang)
-    }
 
 }
 

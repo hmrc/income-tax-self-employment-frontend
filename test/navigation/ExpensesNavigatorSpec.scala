@@ -52,20 +52,20 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is OfficeSuppliesAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the OfficeSuppliesDisallowableAmountController" in {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("officeSupplies" -> "yesDisallowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("officeSupplies" -> "yesDisallowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, stubbedBusinessId, mode)
+                val expectedResult = OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
 
                 navigator.nextPage(OfficeSuppliesAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
             }
             "all expenses were claimed as allowable" - {
               "navigate to the OfficeSuppliesCYAController" in {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("officeSupplies" -> "yesAllowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("officeSupplies" -> "yesAllowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId)
+                val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
@@ -73,7 +73,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
           "the page is OfficeSuppliesDisallowableAmountPage" - {
             "navigate to the OfficeSuppliesCYAController" in {
-              val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId)
+              val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
@@ -91,20 +91,20 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is GoodsToSellOrUseAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the DisallowableGoodsToSellOrUseAmountController" in {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("goodsToSellOrUse" -> "yesDisallowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("goodsToSellOrUse" -> "yesDisallowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, mode)
+                val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, mode)
 
                 navigator.nextPage(GoodsToSellOrUseAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
               }
             }
             "all expenses were claimed as allowable" - {
               "navigate to the GoodsToSellOrUseCYAController" in {
-                val data        = Json.obj(stubbedBusinessId -> Json.obj("goodsToSellOrUse" -> "yesAllowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("goodsToSellOrUse" -> "yesAllowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+                val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(GoodsToSellOrUseAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
               }
@@ -112,7 +112,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
           "the page is DisallowableGoodsToSellOrUseAmountPage" - {
             "navigate to the GoodsToSellOrUseCYAController" in {
-              val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+              val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
@@ -207,14 +207,14 @@ class ExpensesNavigatorSpec extends SpecBase {
 
         "the page is OfficeSuppliesAmountPage" - {
           "navigate to the OfficeSuppliesCYAController" in {
-            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId)
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(OfficeSuppliesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
         "the page is OfficeSuppliesDisallowableAmountPage" - {
           "navigate to the OfficeSuppliesCYAController" in {
-            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId)
+            val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
@@ -222,14 +222,14 @@ class ExpensesNavigatorSpec extends SpecBase {
 
         "the page is GoodsToSellOrUseAmountPage" - {
           "navigate to the GoodsToSellOrUseCYAController" in {
-            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(GoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
         "the page is DisallowableGoodsToSellOrUseAmountPage" - {
           "navigate to the GoodsToSellOrUseCYAController" in {
-            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, stubbedBusinessId)
+            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }

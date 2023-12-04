@@ -34,7 +34,8 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
 }
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  def userType: UserType = user.userType
+  val userType: UserType = user.userType
+  val mtditid: Mtditid   = Mtditid(user.mtditid)
 
   def getValue[B: Reads](page: Gettable[B], businessId: BusinessId): Option[B] =
     userAnswers.get(page, Some(businessId))

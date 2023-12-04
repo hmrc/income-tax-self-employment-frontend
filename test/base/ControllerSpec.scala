@@ -16,11 +16,13 @@
 
 package base
 
+import builders.UserBuilder
 import models.common._
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.{Mode, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -31,20 +33,12 @@ import repositories.SessionRepository
 import java.time.LocalDate
 import scala.concurrent.Future
 
-trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks {
+trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks with ArgumentMatchersSugar {
 
   val userTypeCases = Table(
     "userType",
     UserType.Individual,
     UserType.Agent
-  )
-
-  val langUserTypeCases = Table(
-    ("Language", "userType"),
-    (Language.English, UserType.Individual),
-    (Language.English, UserType.Agent),
-    (Language.Welsh, UserType.Individual),
-    (Language.Welsh, UserType.Agent)
   )
 
   val bindings: List[Binding[_]] = Nil
@@ -62,7 +56,10 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
     implicit val appMessages: Messages    = messages(application)
 
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    val testScenarioContext: Journey => SubmissionContext = (journey: Journey) =>
+      SubmissionContext(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+
+    mockSessionRepository.set(*) returns Future.successful(true)
 
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
       val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings

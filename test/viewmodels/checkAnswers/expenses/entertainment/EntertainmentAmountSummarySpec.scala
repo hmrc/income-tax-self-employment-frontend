@@ -26,8 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class EntertainmentAmountSummarySpec extends SpecBase {
 
-  private val data      = Json.obj(stubbedBusinessId -> Json.obj("entertainmentAmount" -> 2552.4))
-  private val otherData = Json.obj(stubbedBusinessId -> Json.obj("otherPage" -> 123.45))
+  private val data      = Json.obj(businessId.value -> Json.obj("entertainmentAmount" -> 2552.4))
+  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
 
   private val userAnswers      = UserAnswers(userAnswersId, data)
   private val otherUserAnswers = UserAnswers(userAnswersId, otherData)

@@ -43,17 +43,17 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url
+  lazy val financialExpensesRoute = FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new FinancialExpensesFormProvider()
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, userType: String, form: Form[Set[FinancialExpenses]], accountingType: String)
+  case class UserScenario(userType: String, form: Form[Set[FinancialExpenses]], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, userType = individual, formProvider(individual), accrual),
-    UserScenario(isWelsh = false, userType = agent, formProvider(agent), cash)
+    UserScenario(userType = individual, formProvider(individual), accrual),
+    UserScenario(userType = agent, formProvider(agent), cash)
   )
 
   "FinancialExpenses Controller" - {
@@ -61,7 +61,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
@@ -78,9 +78,9 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[FinancialExpensesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
-                  messages(application, userScenario.isWelsh)).toString
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -111,9 +111,9 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userScenario.userType,
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -169,7 +169,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
@@ -190,7 +190,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -219,7 +219,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, stubbedBusinessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses
+package models.common
 
-import models.common._
 import models.journeys.Journey
 
-case class ExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, journey: Journey, mtditid: String)
+sealed trait JourneyContext {
+  val taxYear: TaxYear
+  val businessId: BusinessId
+  val mtditid: Mtditid
+  val journey: Journey
+}
+
+case class SubmissionContext(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext
+
+case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext

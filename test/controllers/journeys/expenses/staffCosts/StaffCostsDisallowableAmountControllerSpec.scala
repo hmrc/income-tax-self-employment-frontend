@@ -20,7 +20,7 @@ import base.SpecBase._
 import common.TestApp._
 import forms.expenses.staffCosts._
 import gens._
-import models.common.{Language, TextAmount, onwardRoute}
+import models.common.{TextAmount, onwardRoute}
 import models.database.UserAnswers
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
@@ -34,7 +34,7 @@ import views.html.journeys.expenses.staffCosts._
 class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
   private val validAnswer   = BigDecimal(200.00)
   private val invalidAnswer = "invalid value"
-  private val data          = Json.obj(stubbedBusinessId -> Json.obj("staffCostsAmount" -> validAnswer))
+  private val data          = Json.obj(businessId.value -> Json.obj("staffCostsAmount" -> validAnswer))
   private val userAnswers   = UserAnswers(userAnswersId, data)
 
   "onPageLoad" should {
@@ -49,7 +49,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
         status(result) mustBe OK
 
         val view         = application.injector.instanceOf[StaffCostsDisallowableAmountView]
-        val msg          = messages(application, Language.English)
+        val msg          = messages(application)
         val form         = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer)
         val expectedView = view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(getRequest, msg).toString()
         contentAsString(result) mustEqual expectedView
@@ -84,7 +84,7 @@ class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matche
         val view = application.injector.instanceOf[StaffCostsDisallowableAmountView]
         val form = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer).bind(Map("value" -> invalidAnswer))
         val expectedView =
-          view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(postRequest, messages(application, Language.English))
+          view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(postRequest, messages(application))
             .toString()
         contentAsString(result) mustEqual expectedView
       }

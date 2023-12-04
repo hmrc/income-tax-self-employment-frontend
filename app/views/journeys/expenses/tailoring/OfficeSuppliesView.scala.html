@@ -16,7 +16,7 @@
 
 @import controllers.journeys.expenses.tailoring.routes.OfficeSuppliesController
 @import models.journeys.expenses.OfficeSupplies
-@import models.common.{TaxYear}
+@import models.common.{BusinessId, TaxYear}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,15 +28,15 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: String, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("officeSupplies.title"))) {
+@layout(pageTitle = title(form, messages("journeys.expenses-office-supplies"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("officeSupplies.title"), None, extraClasses = "no-padding-top")
+    @heading(messages("journeys.expenses-office-supplies"), None, extraClasses = "no-padding-top")
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>

@@ -16,41 +16,46 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import base.CYAControllerBaseSpec
-import models.common.{UserType, onwardRoute}
+import base.{CYAControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.journeys.Journey
+import models.journeys.Journey.ExpensesOfficeSupplies
+import models.journeys.expenses.officeSupplies.OfficeSuppliesJourneyAnswers
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Request
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.officeSupplies.OfficeSuppliesAmountSummary
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
-class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppliesCYAController") {
+class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[OfficeSuppliesJourneyAnswers] {
+
+  private val officeSuppliesAmount = BigDecimal(200.00)
 
   private val userAnswerData = Json
     .parse(s"""
-         |{
-         |  "$stubbedBusinessId": {
-         |    "officeSupplies": "yesAllowable",
-         |    "officeSuppliesAmount": 200.00
-         |  }
-         |}
-         |""".stripMargin)
+              |{
+              |  "$businessId": {
+              |    "officeSupplies": "yesAllowable",
+              |    "officeSuppliesAmount": $officeSuppliesAmount
+              |  }
+              |}
+              |""".stripMargin)
     .as[JsObject]
 
   override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  override lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, stubbedBusinessId).url
+  override lazy val onPageLoadRoute: String = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
+  override lazy val onSubmitRoute: String   = routes.OfficeSuppliesCYAController.onSubmit(taxYear, businessId).url
 
-  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].to(new FakeExpensesNavigator(onwardRoute)))
+  override val journeyAnswers: OfficeSuppliesJourneyAnswers = OfficeSuppliesJourneyAnswers(officeSuppliesAmount, None)
+  override val journey: Journey                             = ExpensesOfficeSupplies
 
   override def expectedSummaryList(authUserType: UserType)(implicit messages: Messages): SummaryList =
     SummaryList(
-      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, stubbedBusinessId, authUserType.toString).value),
+      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUserType.toString).value),
       classes = "govuk-!-margin-bottom-7"
     )
 
@@ -60,7 +65,7 @@ class OfficeSuppliesCYAControllerSpec extends CYAControllerBaseSpec("OfficeSuppl
       application: Application): String = {
 
     val view = application.injector.instanceOf[OfficeSuppliesCYAView]
-    view(scenario.userType.toString, summaryList, taxYear, nextRoute).toString()
+    view(scenario.userType.toString, summaryList, taxYear, businessId)(request, messages).toString()
   }
 
 }

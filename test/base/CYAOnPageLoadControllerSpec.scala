@@ -16,9 +16,9 @@
 
 package base
 
-import SpecBase._
+import base.SpecBase._
 import common.TestApp.buildAppFromUserAnswers
-import models.common.{BusinessId, Language, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -40,7 +40,7 @@ trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike with TableDrivenProper
       forAll(onPageLoadCases) { case (userAnswersData, expectedView) =>
         val userAnswers          = UserAnswers(userAnswersId, userAnswersData)
         val application          = buildAppFromUserAnswers(userAnswers)
-        val msg: Messages        = SpecBase.messages(application, Language.English)
+        val msg: Messages        = SpecBase.messages(application)
         val getOnPageLoadRequest = FakeRequest(GET, onPageLoad(taxYear, businessId).url)
 
         val result = route(application, getOnPageLoadRequest).value

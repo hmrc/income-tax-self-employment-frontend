@@ -49,11 +49,11 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isWelsh: Boolean, isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
+  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
 
   val userScenarios = Seq(
-    UserScenario(isWelsh = false, isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
-    UserScenario(isWelsh = false, isAgent = true, formProvider(agent), cash, taxiDriver = No)
+    UserScenario(isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
+    UserScenario(isAgent = true, formProvider(agent), cash, taxiDriver = No)
   )
 
   "GoodsToSellOrUseAmount Controller" - {
@@ -61,7 +61,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return OK and the correct view for a GET" in {
 
@@ -76,7 +76,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -88,10 +88,10 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
                   userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -115,7 +115,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
             running(application) {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, CheckMode).url)
+              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
 
@@ -127,10 +127,10 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   CheckMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
                   userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application, userScenario.isWelsh)).toString
+                )(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -145,7 +145,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+          val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -176,7 +176,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
           when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
           val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onSubmit(taxYear, stubbedBusinessId, NormalMode).url)
+            FakeRequest(POST, GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value
@@ -187,7 +187,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${getLanguage(userScenario.isWelsh)}, ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
@@ -203,7 +203,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -218,9 +218,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -241,7 +241,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "invalid value"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
@@ -256,9 +256,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -279,7 +279,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "0"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "0"))
@@ -294,9 +294,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -317,7 +317,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "1006454566540"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "1006454566540"))
@@ -332,9 +332,9 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                   NormalMode,
                   userType(userScenario.isAgent),
                   taxYear,
-                  stubbedBusinessId,
+                  businessId,
                   userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application, userScenario.isWelsh)).toString
+                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -350,7 +350,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, stubbedBusinessId, NormalMode).url)
+            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", validAnswer.toString))
 
           val result = route(application, request).value

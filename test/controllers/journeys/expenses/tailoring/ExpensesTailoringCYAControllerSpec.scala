@@ -30,6 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
 
+// TODO Add more use cases in SASS-5829
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
   def onPageLoad: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
 
