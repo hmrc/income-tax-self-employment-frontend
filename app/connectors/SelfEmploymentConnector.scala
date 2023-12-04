@@ -21,10 +21,8 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import connectors.httpParser.SendJourneyAnswersHttpParser.{SendJourneyAnswersHttpReads, SendJourneyAnswersResponse}
-import models.common.{BusinessId, JourneyContext, SubmissionContext, TaxYear}
+import models.common.{BusinessId, JourneyContext, TaxYear}
 import models.domain.ApiResultT
-import models.journeys.Journey
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -33,9 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
-
-  private def answersUrl(taxYear: TaxYear, businessId: BusinessId, journey: Journey) = buildUrl(
-    s"${taxYear.value}/${businessId.value}/${journey.toString}/answers")
 
   def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
@@ -80,26 +75,8 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  // TODO Use submitAnswers: SASS-6363
-  def sendJourneyAnswers[T](context: SubmissionContext, answers: T)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      writes: Writes[T]): Future[SendJourneyAnswersResponse] = {
-
-    import context._
-
-    val url = buildUrl(s"send-journey-answers/${journey.toString}/${taxYear.value}/${businessId.value}/${nino.value}")
-
-    http.POST[T, SendJourneyAnswersResponse](url, answers)(
-      wts = writes,
-      rds = SendJourneyAnswersHttpReads,
-      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
-      ec = ec
-    )
-  }
-
   def submitAnswers[A: Writes](context: JourneyContext, answers: A)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = answersUrl(context.taxYear, context.businessId, context.journey)
+    val url      = buildUrl(context.answersUrl)
     val response = post(http, url, context.mtditid, answers)
     EitherT(response)
   }

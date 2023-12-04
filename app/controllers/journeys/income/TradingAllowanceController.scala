@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.journeys.income.TradingAllowance.DeclareExpenses
 import navigation.IncomeNavigator
@@ -54,11 +53,11 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId)) match {
-            case None        => formProvider(userType(request.user.isAgent))
-            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+            case None        => formProvider(request.userType)
+            case Some(value) => formProvider(request.userType).fill(value)
           }
 
-          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
       }
   }
 
@@ -67,11 +66,10 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
-          formProvider(userType(request.user.isAgent))
+          formProvider(request.userType)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry {

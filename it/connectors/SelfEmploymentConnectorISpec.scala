@@ -19,67 +19,47 @@ package connectors
 import base.IntegrationBaseSpec
 import cats.implicits.catsSyntaxEitherId
 import helpers.{PagerDutyAware, WiremockSpec}
-import models.common.{JourneyAnswersContext, SubmissionContext}
+import models.common.{JourneyAnswersContext, JourneyContextWithNino}
 import models.journeys.Journey
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
-import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private val someExpensesJourney          = ExpensesGoodsToSellOrUse
-  private val ctx                          = SubmissionContext(taxYear, nino, businessId, mtditid, someExpensesJourney)
-  private def journeyCtx(journey: Journey) = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
+  private def journeyNinoCtx(journey: Journey) = JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey)
+  private def journeyCtx(journey: Journey)     = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
 
-  private val downstreamUrl =
-    s"/income-tax-self-employment/send-journey-answers/${ctx.journey.toString}" +
-      s"/${ctx.taxYear.value}/${ctx.businessId.value}/${ctx.nino.value}"
-
-  private val someExpensesJourneyAnswers =
-    GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
+  private def downstreamNinoUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/$nino/answers"
+  private def downstreamUrl(journey: Journey)     = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
-  "sending journey answers" must {
-    "return a successful result when downstream returns a success response" in {
-      stubPostWithRequestBody(
-        url = downstreamUrl,
-        requestBody = Json.toJson(someExpensesJourneyAnswers),
-        expectedStatus = NO_CONTENT,
-        requestHeaders = headersSentToBE)
-
-      await(
-        connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe ().asRight
-    }
-
-    // TODO check pager duty in SASS-6363
-    "return a failure result when downstream returns a error" in {
-      stubPostWithRequestBody(
-        url = downstreamUrl,
-        requestBody = Json.toJson(someExpensesJourneyAnswers),
-        expectedStatus = BAD_REQUEST,
-        requestHeaders = headersSentToBE)
-
-      await(
-        connector
-          .sendJourneyAnswers(ctx, someExpensesJourneyAnswers)(hc, ec, GoodsToSellOrUseJourneyAnswers.formats)) shouldBe httpError.asLeft
-    }
-  }
-
   "submitAnswers" must {
-    "return a successful result" in {
-      stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", NO_CONTENT)
+    "return a successful result for JourneyAnswersContext" in {
+      stubPost(url = downstreamUrl(ExpensesTailoring), NO_CONTENT)
       val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
       result shouldBe ().asRight
     }
 
-    "notify pager duty on failure" in new PagerDutyAware {
-      stubPost(url = s"/income-tax-self-employment/$taxYear/$businessId/expenses-categories/answers", BAD_REQUEST)
+    "return a successful result for JourneyAnswersWithNino" in {
+      stubPost(url = downstreamNinoUrl(ExpensesGoodsToSellOrUse), NO_CONTENT)
+      val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
+      result shouldBe ().asRight
+    }
+
+    "notify pager duty on failure for JourneyAnswersContext" in new PagerDutyAware {
+      stubPost(url = downstreamUrl(ExpensesTailoring), BAD_REQUEST)
       val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
+      result shouldBe httpError.asLeft
+      loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
+    }
+
+    "notify pager duty on failure for JourneyAnswersWithNino" in new PagerDutyAware {
+      stubPost(url = downstreamNinoUrl(ExpensesGoodsToSellOrUse), BAD_REQUEST)
+      val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
       result shouldBe httpError.asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
