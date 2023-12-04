@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
@@ -25,9 +26,9 @@ class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     val fieldName      = "value"
     val turnoverAmount = 1000.00
     val minimum        = 0
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new TradingAllowanceAmountFormProvider()(userScenario.user, turnoverAmount)

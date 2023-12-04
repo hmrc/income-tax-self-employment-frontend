@@ -18,6 +18,7 @@
 @import controllers.journeys.income.routes.TradingAllowanceAmountController
 @import models.common.{BusinessId, TaxYear}
 @import views.html.templates.helpers.Heading
+@import models.common.UserType
 
 @this(
     layout: templates.Layout,
@@ -28,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, authUserType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"tradingAllowanceAmount.title.$authUserType"))) {
 
