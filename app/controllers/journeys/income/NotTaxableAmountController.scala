@@ -19,7 +19,6 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.NotTaxableAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.NotTaxableAmountPage
@@ -49,20 +48,20 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
       val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
-        case None        => formProvider(userType(request.user.isAgent), tradingAllowance)
-        case Some(value) => formProvider(userType(request.user.isAgent), tradingAllowance).fill(value)
+        case None        => formProvider(request.userType, tradingAllowance)
+        case Some(value) => formProvider(request.userType, tradingAllowance).fill(value)
       }
 
-      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      formProvider(userType(request.user.isAgent), tradingAllowance)
+      formProvider(request.userType, tradingAllowance)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId)))
