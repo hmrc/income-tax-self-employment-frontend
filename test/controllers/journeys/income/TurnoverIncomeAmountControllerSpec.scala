@@ -47,11 +47,11 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(authUserType: UserType, form: Form[BigDecimal], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[BigDecimal], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(authUserType = UserType.Individual, formProvider(UserType.Individual), accrual),
-    UserScenario(authUserType = UserType.Agent, formProvider(UserType.Agent), cash)
+    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual), accrual),
+    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), cash)
   )
 
   "TurnoverIncomeAmount Controller" - {
@@ -59,10 +59,10 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType} and has ${userScenario.accountingType} type accounting" - {
+        s"when user is an ${userScenario.userType} and has ${userScenario.accountingType} type accounting" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -76,7 +76,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[TurnoverIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -89,7 +89,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, validAnswer, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -103,7 +103,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(validAnswer), CheckMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form.fill(validAnswer), CheckMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -192,11 +192,11 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType} and has ${userScenario.accountingType} type accounting" - {
+        s"when user is an ${userScenario.userType} and has ${userScenario.accountingType} type accounting" - {
           "must return a Bad Request and errors when" - {
             "an empty form is submitted" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
 
@@ -213,7 +213,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 val result = route(application, request).value
                 val expectedResult =
-                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application)).toString
 
@@ -224,7 +224,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             "invalid data is submitted" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
 
@@ -241,7 +241,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 val result = route(application, request).value
                 val expectedResult =
-                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application)).toString
 
@@ -252,7 +252,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             "a negative number is submitted" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
 
@@ -269,7 +269,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 val result = route(application, request).value
                 val expectedResult =
-                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application)).toString
 
@@ -280,7 +280,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             "turnover income amount exceeds £100,000,000,000.00" in {
 
-              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
+              val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
                 .overrides(bind[SelfEmploymentService].toInstance(mockService))
                 .build()
 
@@ -297,7 +297,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 val result = route(application, request).value
                 val expectedResult =
-                  view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.accountingType)(
+                  view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                     request,
                     messages(application)).toString
 

@@ -28,7 +28,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
@@ -45,7 +45,7 @@
             </span>
         </summary>
         <div class="govuk-details__text">
-            @messages(s"site.canInclude.$authUserType")
+            @messages(s"site.canInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("expenses.salaries")</li>
@@ -58,10 +58,10 @@
                 <li>@messages("expenses.nationalInsuranceContributions")</li>
             </ul>
             <p>
-            @messages(s"site.cannotInclude.$authUserType")
+            @messages(s"site.cannotInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages(s"expenses.contributions.$authUserType")</li>
+                <li>@messages(s"expenses.contributions.$userType")</li>
                 <li>@messages("expenses.listItem.anyAmount")</li>
             </ul>
         </div>
@@ -75,7 +75,7 @@
         </summary>
         <div class="govuk-details__text">
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <span>@messages(s"expenses.includes.construction.$authUserType")</span>
+                <span>@messages(s"expenses.includes.construction.$userType")</span>
             </ul>
         </div>
     </details>
@@ -87,7 +87,7 @@
             </span>
         </summary>
         <div class="govuk-details__text">
-            @messages(s"site.canInclude.$authUserType")
+            @messages(s"site.canInclude.$userType")
         </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("professionalServiceExpenses.d3.l1")</li>
@@ -97,7 +97,7 @@
                 <li>@messages("professionalServiceExpenses.d3.l5")</li>
             </ul>
             <p>
-            @messages(s"site.cannotInclude.$authUserType")
+            @messages(s"site.cannotInclude.$userType")
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("expenses.legalCost.property")</li>
@@ -116,12 +116,12 @@
             CheckboxesViewModel(
                 form = form,
                 name = "value",
-                items = ProfessionalServiceExpenses.checkboxItems(authUserType),
+                items = ProfessionalServiceExpenses.checkboxItems(userType),
                 legend = LegendViewModel(HtmlContent(
                     s"""
                         <div>
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                ${messages(s"professionalServiceExpenses.subHeading.$authUserType")}
+                                ${messages(s"professionalServiceExpenses.subHeading.$userType")}
                             </legend>
                             <div class="govuk-hint">
                                 ${messages("site.selectAllThatApply")}

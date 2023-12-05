@@ -29,9 +29,9 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, taxYear: TaxYear, businessId: BusinessId, authUserType: String, formattedAllowableAmount: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, taxYear: TaxYear, businessId: BusinessId, userType: String, formattedAllowableAmount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"officeSuppliesDisallowableAmount.title.$authUserType", formattedAllowableAmount))) {
+@layout(pageTitle = title(form, messages(s"officeSuppliesDisallowableAmount.title.$userType", formattedAllowableAmount))) {
 
     @formHelper(action = OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -43,7 +43,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"officeSuppliesDisallowableAmount.title.$authUserType", formattedAllowableAmount))
+                label = LabelViewModel(messages(s"officeSuppliesDisallowableAmount.title.$userType", formattedAllowableAmount))
                           .asPageHeading(size = LabelSize.Large)
                           .withCssClass("govuk-!-margin-bottom-3")
             )

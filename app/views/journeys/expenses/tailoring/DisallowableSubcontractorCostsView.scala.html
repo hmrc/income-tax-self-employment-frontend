@@ -27,7 +27,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("disallowableSubcontractorCosts.title"))) {
 
@@ -39,7 +39,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
-        @messages(s"disallowableSubcontractorCosts.p1.$authUserType")
+        @messages(s"disallowableSubcontractorCosts.p1.$userType")
         </p>
     </div>
 
@@ -48,7 +48,7 @@
         @govukRadios(
             RadiosViewModel(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"disallowableSubcontractorCosts.subheading.$authUserType"))
+                legend = LegendViewModel(messages(s"disallowableSubcontractorCosts.subheading.$userType"))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items = DisallowableSubcontractorCosts.options
             )

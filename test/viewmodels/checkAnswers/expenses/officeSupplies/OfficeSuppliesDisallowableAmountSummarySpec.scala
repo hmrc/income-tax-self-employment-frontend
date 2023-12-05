@@ -32,17 +32,17 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
         "user answers for OfficeSuppliesDisallowableAmountPage exist" - {
           "generate a summary list row" in new Test {
             val result: Option[SummaryListRow] =
-              OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, businessId, authUserType)
+              OfficeSuppliesDisallowableAmountSummary.row(validUserAnswers, taxYear, businessId, userType)
 
             result.get shouldBe a[SummaryListRow]
-            result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$authUserType")
+            result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$userType")
             result.get.value.content shouldBe Text("£100.00")
           }
         }
         "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
           "return None" in new Test {
             val result: Option[SummaryListRow] =
-              OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId, authUserType)
+              OfficeSuppliesDisallowableAmountSummary.row(otherUserAnswers, taxYear, businessId, userType)
 
             result shouldBe None
           }
@@ -51,7 +51,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
       "no user answers exist for OfficeSuppliesAmountPage" - {
         "return None" in new Test {
           val result: Option[SummaryListRow] =
-            OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, businessId, authUserType)
+            OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswers, taxYear, businessId, userType)
 
           result shouldBe None
         }
@@ -60,7 +60,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
     "no office supplies are disallowable" - {
       "return None" in new Test {
         val result: Option[SummaryListRow] =
-          OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, authUserType)
+          OfficeSuppliesDisallowableAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, userType)
 
         result shouldBe None
       }
@@ -68,7 +68,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
   }
 
   trait Test {
-    protected val authUserType: String = individual
+    protected val userType: String = individual
 
     protected val validData: JsObject = Json
       .parse(s"""

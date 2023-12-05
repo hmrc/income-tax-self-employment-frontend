@@ -28,9 +28,9 @@
       govukButton: GovukButton,
       heading: Heading)
 
-@(form: Form[_], mode: Mode, authUserType: String, accountingType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, accountingType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$authUserType"))) {
+@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$userType"))) {
 
     @formHelper(action = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -41,7 +41,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(buildLabelContent(authUserType, accountingType)))
+                label = LabelViewModel(HtmlContent(buildLabelContent(userType, accountingType)))
             )
             .asNumeric()
             .withWidth(Fixed10)
@@ -54,14 +54,14 @@
     }
 }
 
-@buildLabelContent(authUserType: String, accountingType: String) = {
-    <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.title.$authUserType") </label>
+@buildLabelContent(userType: String, accountingType: String) = {
+    <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.title.$userType") </label>
     <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text"> @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses") </span>
         </summary>
         <div class="govuk-details__text">
-            <p>@messages(s"site.canInclude.$authUserType")</p>
+            <p>@messages(s"site.canInclude.$userType")</p>
             <ul class="govuk-body govuk-list--bullet">
                 <li>@messages("officeSupplies.l1")</li>
                 <li>@messages("officeSupplies.l2")</li>
@@ -72,7 +72,7 @@
                     <li>@messages("officeSupplies.l6")</li>
                 }
             </ul>
-            <p>@messages(s"site.cannotInclude.$authUserType")</p>
+            <p>@messages(s"site.cannotInclude.$userType")</p>
             <ul class="govuk-body govuk-list--bullet">
                 @if(accountingType == "CASH") {
                     <li>@messages("expenses.listItem.anyAmount")</li>

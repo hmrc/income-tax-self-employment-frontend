@@ -30,11 +30,11 @@ import viewmodels.implicits._
 
 object NonTurnoverIncomeAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: UserType, businessId: BusinessId)(implicit
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"nonTurnoverIncomeAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"nonTurnoverIncomeAmount.title.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

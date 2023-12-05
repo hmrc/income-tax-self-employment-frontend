@@ -28,15 +28,15 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"notTaxableAmount.title.$authUserType"))) {
+@layout(pageTitle = title(form, messages(s"notTaxableAmount.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"notTaxableAmount.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages(s"notTaxableAmount.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
 
     @formHelper(action = NotTaxableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

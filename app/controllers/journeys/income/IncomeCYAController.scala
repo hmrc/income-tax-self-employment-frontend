@@ -75,9 +75,9 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       handleSubmitAnswersResult(context, result)
   }
 
-  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: UserType, businessId: BusinessId)(implicit
+  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
-    HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId).map {
+    HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, userType, businessId).map {
       case Right(value)    => value
       case Left(exception) => throw exception
     }

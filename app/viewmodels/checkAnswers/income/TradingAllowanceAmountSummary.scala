@@ -30,11 +30,11 @@ import viewmodels.implicits._
 
 object TradingAllowanceAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: UserType, businessId: BusinessId)(implicit
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(TradingAllowanceAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"tradingAllowanceAmount.title.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"tradingAllowanceAmount.title.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

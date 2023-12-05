@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: UserType): Form[Boolean] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> boolean(s"turnoverNotTaxable.error.required.$authUserType")
+      "value" -> boolean(s"turnoverNotTaxable.error.required.$userType")
     )
 
 }

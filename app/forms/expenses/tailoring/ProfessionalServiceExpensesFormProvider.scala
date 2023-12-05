@@ -25,10 +25,10 @@ import javax.inject.Inject
 
 class ProfessionalServiceExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[Set[ProfessionalServiceExpenses]] =
+  def apply(userType: String): Form[Set[ProfessionalServiceExpenses]] =
     Form(
-      "value" -> set(enumerable[ProfessionalServiceExpenses](s"professionalServiceExpenses.error.required.$authUserType"))
-        .verifying(nonEmptySet(s"professionalServiceExpenses.error.required.$authUserType"))
+      "value" -> set(enumerable[ProfessionalServiceExpenses](s"professionalServiceExpenses.error.required.$userType"))
+        .verifying(nonEmptySet(s"professionalServiceExpenses.error.required.$userType"))
     )
 
 }

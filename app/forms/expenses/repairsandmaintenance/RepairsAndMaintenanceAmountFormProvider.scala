@@ -24,12 +24,12 @@ import play.api.data.Form
 
 class RepairsAndMaintenanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        s"repairsAndMaintenanceAmount.error.required.$authUserType",
-        s"repairsAndMaintenanceAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"repairsAndMaintenanceAmount.error.overMax.$authUserType"))
+        s"repairsAndMaintenanceAmount.error.required.$userType",
+        s"repairsAndMaintenanceAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"repairsAndMaintenanceAmount.error.overMax.$userType"))
     )
 }

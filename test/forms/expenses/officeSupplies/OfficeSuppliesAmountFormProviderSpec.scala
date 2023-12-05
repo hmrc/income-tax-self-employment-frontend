@@ -21,10 +21,10 @@ import play.api.data.FormError
 
 class OfficeSuppliesAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val authUserTypes = Seq("individual", "agent")
+  private val userTypes = Seq("individual", "agent")
 
   ".value" - {
-    authUserTypes.foreach { authUser =>
+    userTypes.foreach { authUser =>
       s"when the user is $authUser" - {
         "form provider should" - {
 

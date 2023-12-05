@@ -29,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverIncomeAmount.title"))) {
 
@@ -41,14 +41,14 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-5">
         <p>
-            @messages(s"turnoverIncomeAmount.p1.$authUserType")
+            @messages(s"turnoverIncomeAmount.p1.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("turnoverIncomeAmount.l1")</li>
             <li>@messages("turnoverIncomeAmount.l2")</li>
             <li>@messages("turnoverIncomeAmount.l3")</li>
             @if(accountingType.equals("ACCRUAL")) {
-                <li>@messages(s"turnoverIncomeAmount.l4.$authUserType")</li>
+                <li>@messages(s"turnoverIncomeAmount.l4.$userType")</li>
             }
         </ul>
     </div>
@@ -58,7 +58,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"turnoverIncomeAmount.subHeading.$authUserType"))
+                label = LabelViewModel(messages(s"turnoverIncomeAmount.subHeading.$userType"))
                             .asPageHeading(LabelSize.Medium)
             )
             .asNumeric()

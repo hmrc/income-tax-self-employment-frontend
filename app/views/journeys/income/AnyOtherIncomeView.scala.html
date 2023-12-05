@@ -27,15 +27,15 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"anyOtherIncome.title.$authUserType"))) {
+@layout(pageTitle = title(form, messages(s"anyOtherIncome.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"anyOtherIncome.title.$authUserType"), None, extraClasses = "govuk-!-margin-bottom-4")
+    @heading(messages(s"anyOtherIncome.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-4")
 
     @formHelper(action = AnyOtherIncomeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
