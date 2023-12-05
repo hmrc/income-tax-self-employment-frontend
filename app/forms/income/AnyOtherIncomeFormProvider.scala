@@ -17,13 +17,14 @@
 package forms.income
 
 import forms.mappings.Mappings
+import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class AnyOtherIncomeFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[Boolean] =
+  def apply(authUserType: UserType): Form[Boolean] =
     Form(
       "value" -> boolean(s"anyOtherIncome.error.required.$authUserType")
     )
