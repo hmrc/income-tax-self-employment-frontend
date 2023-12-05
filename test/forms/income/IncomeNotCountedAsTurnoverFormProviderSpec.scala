@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours {
@@ -25,9 +26,9 @@ class IncomeNotCountedAsTurnoverFormProviderSpec extends BooleanFieldBehaviours 
 
     val fieldName  = "value"
     val invalidKey = "error.boolean"
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new IncomeNotCountedAsTurnoverFormProvider()(userScenario.user)
