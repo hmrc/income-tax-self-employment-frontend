@@ -22,7 +22,7 @@
 @(taxYear: TaxYear,
         userType: UserType,
         summaryList: SummaryList,
-        nextRoute: String
+        nextRoute: Call
 )(implicit request: Request[_], messages: Messages)
 
 @pageCYA("repairsAndMaintenanceCostsCYA", taxYear, userType, summaryList, nextRoute)

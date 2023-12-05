@@ -41,7 +41,7 @@ class RepairsAndMaintenanceCostsCYAController @Inject() (
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator.nextNormalRoute(RepairsAndMaintenanceCostsCYAPage, request.userAnswers, taxYear, businessId).url
+    val nextRoute = navigator.nextNormalRoute(RepairsAndMaintenanceCostsCYAPage, request.userAnswers, taxYear, businessId)
     val summaryList = SummaryList(
       rows = List(
         RepairsAndMaintenanceAmountSummary.row(request, taxYear, businessId),

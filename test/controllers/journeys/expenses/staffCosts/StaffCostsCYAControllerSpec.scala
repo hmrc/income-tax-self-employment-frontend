@@ -85,8 +85,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
   def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
     val view        = application.injector.instanceOf[StaffCostsCYAView]
     val summaryList = SummaryList(expectedRows)
-    val nextRoute   = onwardRoute.url
-    view(taxYear, UserType.Individual, summaryList, nextRoute)(getRequest, msg).toString()
+    view(taxYear, UserType.Individual, summaryList, onwardRoute)(getRequest, msg).toString()
   }
 
 }

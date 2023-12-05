@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package forms.income
+package pages.expenses.tailoring
 
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import models.journeys.expenses.ExpensesTailoring
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class AnyOtherIncomeFormProvider @Inject() extends Mappings {
-
-  def apply(authUserType: UserType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"anyOtherIncome.error.required.$authUserType")
-    )
-
+case object ExpensesTailoringPage extends OneQuestionPage[ExpensesTailoring] {
+  override def toString: String = "expensesTailoring"
 }

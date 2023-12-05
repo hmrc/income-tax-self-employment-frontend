@@ -18,33 +18,28 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.ProfessionalServiceExpensesPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object ProfessionalServiceExpensesSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ProfessionalServiceExpensesPage).map { answers =>
-      val value = ValueViewModel(
-        HtmlContent(
-          answers
-            .map { answer =>
-              HtmlFormat.escape(messages(s"professionalServiceExpenses.$answer")).toString
-            }
-            .mkString(",<br>")
-        )
-      )
-
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers.get(ProfessionalServiceExpensesPage, Some(businessId)).map { answers =>
       SummaryListRowViewModel(
-        key = "professionalServiceExpenses.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"professionalServiceExpenses.subHeading.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = HtmlContent(formatProfessionalServiceExpensesAnswers(answers, userType)),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("professionalServiceExpenses.change.hidden"))

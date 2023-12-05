@@ -18,29 +18,35 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.DisallowableStaffCostsPage
+import models.journeys.expenses.ProfessionalServiceExpenses.Staff
+import pages.expenses.tailoring.{DisallowableStaffCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DisallowableStaffCostsSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableStaffCostsPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"disallowableStaffCosts.$answer"))
-        )
-      )
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers
+      .get(ProfessionalServiceExpensesPage, Some(businessId))
+      .filter(_.contains(Staff))
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    answers.get(DisallowableStaffCostsPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "disallowableStaffCosts.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"disallowableStaffCosts.subheading.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = formatAnswer(answer.toString),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", routes.DisallowableStaffCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableStaffCosts.change.hidden"))

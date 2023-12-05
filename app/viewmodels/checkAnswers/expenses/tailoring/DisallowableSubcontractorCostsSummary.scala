@@ -18,29 +18,35 @@ package viewmodels.checkAnswers.expenses.tailoring
 
 import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.DisallowableSubcontractorCostsPage
+import models.journeys.expenses.ProfessionalServiceExpenses.Construction
+import pages.expenses.tailoring.{DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DisallowableSubcontractorCostsSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableSubcontractorCostsPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"disallowableSubcontractorCosts.$answer"))
-        )
-      )
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers
+      .get(ProfessionalServiceExpensesPage, Some(businessId))
+      .filter(_.contains(Construction))
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    answers.get(DisallowableSubcontractorCostsPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "disallowableSubcontractorCosts.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"disallowableSubcontractorCosts.subheading.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = formatAnswer(answer.toString),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
           ActionItemViewModel("site.change", routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableSubcontractorCosts.change.hidden"))

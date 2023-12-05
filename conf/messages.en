@@ -298,8 +298,10 @@ totalExpensesCYA.title = totalExpensesCYA
 ## Common
 expenses.yesAllowable.individual = Yes, all of my expenses are allowable
 expenses.yesAllowable.agent = Yes, all of my client’s expenses are allowable
+expenses.yesAllowable.cya = Yes, all expenses are allowable
 expenses.yesDisallowable.individual = Yes, some of my expenses are disallowable
 expenses.yesDisallowable.agent = Yes, some of my client’s expenses are disallowable
+expenses.yesDisallowable.cya = Yes, some expenses are disallowable
 expenses.fuelCosts = fuel costs
 expenses.costOfRawMaterials = the cost of raw materials
 expenses.stockBought = stock bought for resale
@@ -331,6 +333,12 @@ expenses.contributions.agent = their own pay, pension or National Insurance cont
 expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 expenses.includes.construction.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 expenses.understanding.construction = Understanding construction industry expenses
+expenses.cyaSummary.individual = How will you report your expenses?
+expenses.cyaSummary.agent = How will you report your client’s expenses?
+expenses.cyaSummary.totalAmount = As one total amount
+expenses.cyaSummary.individualCategories = In individual categories
+expenses.cyaSummary.noExpenses.individual = I do not have any expenses to report
+expenses.cyaSummary.noExpenses.agent = My client does not have any expenses to report
 
 ## Office supplies
 officeSupplies.l1 = phones, including mobiles
@@ -360,7 +368,7 @@ goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
 goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
 goodsToSellOrUse.error.required.individual = Select if all your goods to sell or use expenses are allowable, some of them are disallowable or you do not have any goods to sell or use expenses
 goodsToSellOrUse.error.required.agent = Select if all your client’s goods to sell or use expenses are allowable, some of them are disallowable or they do not have any goods to sell or use expenses
-goodsToSellOrUse.change.hidden = GoodsToSellOrUse
+goodsToSellOrUse.change.hidden = Change if any goods to sell or use were bought?
 
 ## Repairs and maintenance
 repairsAndMaintenance.title = Repairs and maintenance
@@ -372,7 +380,9 @@ repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs 
 repairsAndMaintenance.subHeading.agent = Did your client spend anything on repairs and maintenance of property or equipment?
 repairsAndMaintenance.error.required.individual = Select if all your repairs and maintenance expenses are allowable, some of them are disallowable or you do not have any repairs and maintenance expenses
 repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
-repairsAndMaintenance.change.hidden = RepairsAndMaintenance
+repairsAndMaintenance.cyaSummary.individual = Did you spend anything on repairs and maintenance?
+repairsAndMaintenance.cyaSummary.agent = Did your client spend anything on repairs and maintenance?
+repairsAndMaintenance.change.hidden = Change whether anything was spent on repairs and maintenance of property or equipment?
 
 ## Work from home
 workFromHome.title.individual = Did you work from home?
@@ -435,7 +445,7 @@ professionalServiceExpenses.subHeading.individual = Did you pay for any of these
 professionalServiceExpenses.subHeading.agent = Did your client pay for any of these professionals or services?
 professionalServiceExpenses.staff = Staff
 professionalServiceExpenses.construction = Construction industry subcontractors
-professionalServiceExpenses.professionalFees = Professional Fees
+professionalServiceExpenses.professionalFees = Professional fees
 professionalServiceExpenses.no.individual = No, I did not pay for any of these professionals or services
 professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.error.required.individual = Select the professionals or services you paid for, or select ‘No, I did not pay for any of these professionals or services’
@@ -496,8 +506,11 @@ financialExpenses.d2.l6 = capital repayments
 financialExpenses.d3.heading = Understanding irrecoverable debts written off
 financialExpenses.d3.l1 = amounts included in turnover but unpaid and written off (due to being irrecoverable)
 financialExpenses.interest = Interest on bank and other business loans
+financialExpenses.interest.cya = Interest paid on loans
 financialExpenses.otherFinancialCharges = Bank, credit card and other financial charges
+financialExpenses.otherFinancialCharges.cya = Financial charges
 financialExpenses.irrecoverableDebts = Irrecoverable debts written off
+financialExpenses.irrecoverableDebts.cya = Writing off bad debts
 financialExpenses.noFinancialExpenses.individual = No, I did not have any financial expenses
 financialExpenses.noFinancialExpenses.agent = No, my client did not have any financial expenses
 financialExpenses.error.required.individual = Select the financial expenses you paid for, or select ‘No, I did not have any financial expenses’
@@ -554,6 +567,14 @@ otherExpenses.l5 = the cost of ordinary clothing
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
+
+########## Expenses Tailoring CYA ##########
+
+expensesTailoringCya.title.individual = Check your expenses
+expensesTailoringCya.title.agent = Check your client’s expenses
+expensesTailoringCyaCategories.title.individual = Check your expenses categories
+expensesTailoringCyaCategories.title.agent = Check your client’s expenses categories
+expensesTailoringCya.insetText = We will only save amounts.  Other information will not be saved.
 
 ########## Expenses - Office supplies ##########
 
@@ -728,8 +749,3 @@ constructionIndustryAmount.change.hidden = Change how much was spent on construc
 ## Construction Industry CYA
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
 constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
-
-########## Expenses Tailoring CYA ##########
-
-expensesTailoringCYA.title.individual = Check your expenses
-expensesTailoringCYA.title.agent = Check your client’s expenses

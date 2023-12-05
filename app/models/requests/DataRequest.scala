@@ -17,13 +17,13 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
+import controllers.standard
 import models.common.{BusinessId, Mtditid, Nino, UserType}
 import models.database.UserAnswers
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
 import queries.Gettable
-import controllers.standard
 
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
     extends WrappedRequest[A](request) {

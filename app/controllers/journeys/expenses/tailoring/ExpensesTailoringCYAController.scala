@@ -19,52 +19,58 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import controllers.handleResult
 import controllers.journeys.expenses.tailoring
-import models.common.{BusinessId, JourneyAnswersContext, TaxYear}
+import models.common._
 import models.journeys.Journey.ExpensesTailoring
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.ExpensesTailoringAnswers
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.ExpensesTailoringCYAPage
+import pages.expenses.tailoring.{ExpensesTailoringCYAPage, ExpensesTailoringPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
+import viewmodels.checkAnswers.expenses.tailoring._
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class ExpensesTailoringCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: ExpensesTailoringCYAView,
-    service: SelfEmploymentService,
-    navigator: ExpensesTailoringNavigator
-)(implicit ec: ExecutionContext)
+class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                sessionRepository: SessionRepository,
+                                                requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: CheckYourAnswersView,
+                                                service: SelfEmploymentService,
+                                                navigator: ExpensesTailoringNavigator)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val userType    = request.userType
-    val summaryList = SummaryListCYA.summaryListOpt(Nil) // TODO Add in SASS-5829
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      for {
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesTailoringPage, IndividualCategories, Some(businessId)))
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield { // TODO remove hardcoded userAnswers when tailoring page is created
+        val summaryList = buildTailoringSummaryList(updatedAnswers, taxYear, businessId, request.userType)
 
-    Ok(
-      view(
-        ExpensesTailoringCYAPage.pageName,
-        taxYear,
-        businessId,
-        summaryList,
-        userType,
-        tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
-      ))
+        Ok(
+          view(
+            s"${ExpensesTailoringCYAPage.toString}Categories", // TODO categories is only if ^answer^ is IndividualCategories
+            taxYear,
+            request.userType,
+            summaryList,
+            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
+          )
+        )
+      }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId, accountingType = None).url
       val result = service

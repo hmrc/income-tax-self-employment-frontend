@@ -14,30 +14,38 @@
  * limitations under the License.
  *@
 
+@import models.common._
 @import templates.helpers.Heading
 @import models.common.{TaxYear, UserType}
 
 @this(layout: templates.Layout,
+        formHelper: FormWithCSRF,
         govukButton: GovukButton,
         heading: Heading,
-        govukSummaryList: GovukSummaryList)
+        govukSummaryList: GovukSummaryList
+)
 
 @(pageName: String,
         taxYear: TaxYear,
         userType: UserType,
         summaryList: SummaryList,
-        nextRoute: String
+        onSubmitCall: Call
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
 
-    @heading(
-        heading = messages(s"$pageName.title.$userType"),
-        subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
-        extraClasses = "govuk-!-margin-bottom-3"
-    )
+    @formHelper(action = onSubmitCall) {
 
-    @govukSummaryList(summaryList)
+        @heading(
+            heading = messages(s"$pageName.title.$userType"),
+            subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
+            extraClasses = "govuk-!-margin-bottom-3"
+        )
 
-    <div class="govuk-button-group govuk-!-margin-top-9">@govukButton(ButtonViewModel(messages("site.saveAndContinue")).asLink(nextRoute))</div>
+        @govukSummaryList(summaryList)
+
+        <div class="govuk-button-group govuk-!-margin-top-9">
+            @govukButton(ButtonViewModel(messages("site.saveAndContinue")))
+        </div>
+    }
 }

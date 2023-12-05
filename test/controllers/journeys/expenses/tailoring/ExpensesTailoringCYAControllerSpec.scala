@@ -17,38 +17,33 @@
 package controllers.journeys.expenses.tailoring
 
 import base.CYAOnPageLoadControllerSpec
-import base.SpecBase.{businessId, taxYear}
+import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
-import org.scalatest.prop.TableFor2
+import models.database.UserAnswers
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.JsObject
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.tailoring.ExpensesTailoringCYAView
+import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
 
-// TODO Add more use cases in SASS-5829
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
-  def onPageLoad: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
 
-  def onPageLoadCases: TableFor2[JsObject, OnPageLoadView] = Table(
-    ("userAnswersData", "expectedViews"),
-    (JsObject.empty, createExpectedView(taxYear, businessId, UserType.Individual, SummaryListCYA.summaryListOpt(Nil)))
-  )
+  override val pageName: String = s"${ExpensesTailoringCYAPage.toString}Categories"
 
-  def createExpectedView(taxYear: TaxYear, businessId: BusinessId, userType: UserType, summaryList: SummaryList): OnPageLoadView = {
-    (msg: Messages, application: Application, request: Request[_]) =>
-      val view = application.injector.instanceOf[ExpensesTailoringCYAView]
-      view(
-        ExpensesTailoringCYAPage.pageName,
-        taxYear,
-        businessId,
-        summaryList,
-        userType,
-        tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
-      )(request, msg).toString()
-  }
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
+
+  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList =
+    buildTailoringSummaryList(userAnswers, taxYear, businessId, userType)
+
+  override val testDataCases: List[JsObject] =
+    List(
+      allYesAnswers,
+      allNoAnswers,
+      mixedAnswers
+    )
+
 }
