@@ -17,7 +17,12 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController, NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
+import controllers.journeys.income.routes.{
+  IncomeCYAController,
+  IncomeNotCountedAsTurnoverController,
+  NonTurnoverIncomeAmountController,
+  TurnoverIncomeAmountController
+}
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.common.UserType
 import models.database.UserAnswers
@@ -94,9 +99,8 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
               val result = route(application, request).value
 
-              val expectedResult = view(userScenario.form.fill(true), CheckMode, userScenario.authUserType, taxYear, businessId)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(userScenario.form.fill(true), CheckMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
