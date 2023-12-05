@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.{IncomeCYAController, OtherIncomeAmountController, TradingAllowanceController, TurnoverNotTaxableController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.OtherIncomeAmountFormProvider
+import models.common.UserType
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
@@ -53,11 +54,11 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute(isAccrual: Boolean): Call =
     if (isAccrual) turnoverNotTaxableCall else tradingAllowanceCall
 
-  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal])
+  case class UserScenario(authUserType: UserType, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual)),
-    UserScenario(isAgent = true, formProvider(agent))
+    UserScenario(authUserType = UserType.Individual, formProvider(UserType.Individual)),
+    UserScenario(authUserType = UserType.Agent, formProvider(UserType.Agent))
   )
 
   "OtherIncomeAmount Controller" - {
@@ -65,10 +66,10 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.authUserType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -78,7 +79,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[OtherIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -89,7 +90,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, validAnswer, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -98,7 +99,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userScenario.authUserType, taxYear, businessId)(
                 request,
                 messages(application)).toString
 
@@ -207,10 +208,10 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.authUserType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -227,7 +228,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -236,7 +237,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -253,7 +254,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -262,7 +263,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "a negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -279,7 +280,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -288,7 +289,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "turnover income amount exceeds £100,000,000,000.00" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -305,7 +306,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
