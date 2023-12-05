@@ -37,8 +37,7 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
   val pageName: String
   val testDataCases: List[JsObject]
 
-  protected val cyaInsetText: Option[String] = None
-  protected val userTypes: List[UserType]    = List(Individual, Agent)
+  protected val userTypes: List[UserType] = List(Individual, Agent)
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call
   def onSubmitCall: (TaxYear, BusinessId) => Call
@@ -46,14 +45,9 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
   def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): SummaryList
   def userAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
-  def createExpectedView(userType: UserType,
-                         summaryList: SummaryList,
-                         messages: Messages,
-                         application: Application,
-                         request: Request[_],
-                         pageInsetText: Option[String]): String = {
+  def createExpectedView(userType: UserType, summaryList: SummaryList, messages: Messages, application: Application, request: Request[_]): String = {
     val view = application.injector.instanceOf[CheckYourAnswersView]
-    view(pageName, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId), pageInsetText)(request, messages).toString()
+    view(pageName, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
   }
 
   "onPageLoad" - {
@@ -71,7 +65,7 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
 
             val result = route(application, onPageLoadRequest).value
             val expectedResult =
-              createExpectedView(userType, summaryList, msg, application, onPageLoadRequest, cyaInsetText)
+              createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
 
             status(result) mustBe OK
             contentAsString(result) mustEqual expectedResult

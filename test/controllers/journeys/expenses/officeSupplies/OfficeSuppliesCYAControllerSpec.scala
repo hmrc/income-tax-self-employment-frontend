@@ -67,8 +67,7 @@ class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with C
                                   summaryList: SummaryList,
                                   messages: Messages,
                                   application: Application,
-                                  request: Request[_],
-                                  pageInsetText: Option[String]): String = {
+                                  request: Request[_]): String = {
 
     val view = application.injector.instanceOf[OfficeSuppliesCYAView]
     view(userType.toString, summaryList, taxYear, businessId)(request, messages).toString()

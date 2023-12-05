@@ -71,8 +71,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with
                                   summaryList: SummaryList,
                                   messages: Messages,
                                   application: Application,
-                                  request: Request[_],
-                                  pageInsetText: Option[String]): String = {
+                                  request: Request[_]): String = {
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
     view(taxYear, businessId, userType.toString, summaryList)(request, messages).toString()
   }

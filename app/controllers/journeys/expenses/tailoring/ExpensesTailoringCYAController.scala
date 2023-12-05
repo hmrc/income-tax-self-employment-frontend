@@ -64,8 +64,7 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
             taxYear,
             request.userType,
             summaryList,
-            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId),
-            Some("expensesTailoringCya.insetText")
+            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
           )
         )
       }

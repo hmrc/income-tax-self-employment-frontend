@@ -30,8 +30,7 @@ import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
 
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
 
-  override val pageName: String             = s"${ExpensesTailoringCYAPage.toString}Categories"
-  override val cyaInsetText: Option[String] = Some("expensesTailoringCya.insetText")
+  override val pageName: String = s"${ExpensesTailoringCYAPage.toString}Categories"
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit

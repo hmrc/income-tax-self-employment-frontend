@@ -84,8 +84,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
                                   summaryList: SummaryList,
                                   messages: Messages,
                                   application: Application,
-                                  request: Request[_],
-                                  pageInsetText: Option[String]): String = {
+                                  request: Request[_]): String = {
     val view = application.injector.instanceOf[IncomeCYAView]
     view(taxYear, businessId, summaryList, userType.toString)(request, messages).toString()
   }

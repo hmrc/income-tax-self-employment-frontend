@@ -23,9 +23,8 @@
         taxYear: TaxYear,
         userType: UserType,
         summaryList: SummaryList,
-        onSubmitCall: Call,
-        optionalHtmlContent: Option[String] = None
+        onSubmitCall: Call
 )(implicit request: Request[_], messages: Messages)
 
 
-@pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall, optionalHtmlContent)
+@pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall)
