@@ -19,7 +19,6 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import navigation.IncomeNavigator
@@ -46,18 +45,18 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
-      case None        => formProvider(userType(request.user.isAgent))
-      case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+      case None        => formProvider(request.userType)
+      case Some(value) => formProvider(request.userType).fill(value)
     }
 
-    Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+    Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    formProvider(userType(request.user.isAgent))
+    formProvider(request.userType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry {
