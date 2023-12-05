@@ -16,33 +16,39 @@
 
 package viewmodels.checkAnswers.expenses.tailoring
 
-import controllers.journeys.expenses.tailoring.routes.DisallowableOtherFinancialChargesController
+import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.DisallowableOtherFinancialChargesPage
+import models.journeys.expenses.FinancialExpenses.OtherFinancialCharges
+import pages.expenses.tailoring.{DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DisallowableOtherFinancialChargesSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DisallowableOtherFinancialChargesPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"disallowableOtherFinancialCharges.$answer"))
-        )
-      )
+  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+    answers
+      .get(FinancialExpensesPage, Some(businessId))
+      .filter(_.contains(OtherFinancialCharges))
+      .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
+  private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    answers.get(DisallowableOtherFinancialChargesPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = "disallowableOtherFinancialCharges.checkYourAnswersLabel",
-        value = value,
+        key = Key(
+          content = s"disallowableOtherFinancialCharges.title.$userType",
+          classes = "govuk-!-width-two-thirds"
+        ),
+        value = Value(
+          content = formatAnswer(answer.toString),
+          classes = "govuk-!-width-one-third"
+        ),
         actions = Seq(
-          ActionItemViewModel("site.change", DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("disallowableOtherFinancialCharges.change.hidden"))
         )
       )

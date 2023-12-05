@@ -20,29 +20,34 @@ import controllers.journeys.expenses.tailoring.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.AdvertisingOrMarketingPage
+import models.journeys.expenses.ExpensesTailoring.NoExpenses
+import pages.expenses.tailoring.ExpensesTailoringPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AdvertisingOrMarketingSummary {
-
+object ExpensesTailoringSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
-    answers.get(AdvertisingOrMarketingPage, Some(businessId)).map { answer =>
+    answers.get(ExpensesTailoringPage, Some(businessId)).map { answer =>
+      val optUserType = if (answer == NoExpenses) s".$userType" else ""
       SummaryListRowViewModel(
         key = Key(
-          content = s"advertisingOrMarketing.question.$userType",
+          content = s"expenses.cyaSummary.$userType",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(
-          content = formatAnswer(answer.toString),
+          content = messages(s"expenses.cyaSummary.$answer$optUserType"),
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("advertisingOrMarketing.change.hidden"))
+          ActionItemViewModel(
+            "site.change",
+            routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode).url
+          ) // TODO direct to tailoring page when created
+            .withVisuallyHiddenText(messages("depreciation.change.hidden"))
         )
       )
     }
+
 }

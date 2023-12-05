@@ -19,6 +19,7 @@ package models.journeys.expenses
 import play.api.libs.json.{Format, Json}
 
 final case class ExpensesTailoringAnswers(
+    expensesTailoring: ExpensesTailoring,
     officeSupplies: OfficeSupplies,
     taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
     goodsToSellOrUse: GoodsToSellOrUse,
