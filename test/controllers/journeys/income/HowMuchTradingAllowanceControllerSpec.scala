@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
@@ -47,8 +48,8 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
   val smallTradingAllowance: BigDecimal = 260.50
   val maxTradingAllowanceString         = "1,000"
   val smallTradingAllowanceString       = "260.50"
-  val formIndividualWithMaxTA           = formProvider(individual, maxTradingAllowanceString)
-  val formAgentWithSmallTA              = formProvider(agent, smallTradingAllowanceString)
+  val formIndividualWithMaxTA           = formProvider(UserType.Individual, maxTradingAllowanceString)
+  val formAgentWithSmallTA              = formProvider(UserType.Agent, smallTradingAllowanceString)
   val tradingAllowanceAmountCall        = TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
   val incomeCyaCall                     = IncomeCYAController.onPageLoad(taxYear, businessId)
 
@@ -56,11 +57,11 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isAgent: Boolean, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
+  case class UserScenario(authUserType: UserType, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
-    UserScenario(isAgent = true, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
+    UserScenario(authUserType = UserType.Individual, formIndividualWithMaxTA, maxTradingAllowance, maxTradingAllowanceString),
+    UserScenario(authUserType = UserType.Agent, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
   )
 
   def formTypeToString(form: Form[HowMuchTradingAllowance]): String =
@@ -70,12 +71,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userScenario.authUserType} and using the ${formTypeToString(userScenario.form)}" - {
           "must return OK with the correct view" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -85,7 +86,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
+                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.allowanceString)(
                   request,
                   messages(application)).toString
 
@@ -104,7 +105,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               .success
               .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -116,7 +117,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val expectedResult = view(
                 userScenario.form.fill(HowMuchTradingAllowance.values.head),
                 CheckMode,
-                userType(userScenario.isAgent),
+                userScenario.authUserType,
                 taxYear,
                 businessId,
                 userScenario.allowanceString
@@ -268,12 +269,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)} and using the ${formTypeToString(userScenario.form)}" - {
+        s"when user is an ${userScenario.authUserType} and using the ${formTypeToString(userScenario.form)}" - {
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -287,7 +288,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.allowanceString)(
                   request,
                   messages(application)).toString
 
@@ -300,7 +301,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, userScenario.allowance, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -314,7 +315,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.allowanceString)(
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId, userScenario.allowanceString)(
                   request,
                   messages(application)).toString
 
