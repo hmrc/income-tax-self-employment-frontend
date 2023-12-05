@@ -35,9 +35,7 @@ class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings wi
         .verifying(
           greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", formatMoney(allowableAmount))))
         .verifying(
-          maximumValue(
-            allowableAmount,
-            messages(s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", formatMoney(allowableAmount))))
+          maximumValue(allowableAmount, messages(s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", formatMoney(allowableAmount))))
     )
 
 }

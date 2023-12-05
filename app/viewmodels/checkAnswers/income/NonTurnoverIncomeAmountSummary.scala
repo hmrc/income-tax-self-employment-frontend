@@ -30,8 +30,7 @@ import viewmodels.implicits._
 
 object NonTurnoverIncomeAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
-      messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NonTurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(content = s"nonTurnoverIncomeAmount.title.$userType", classes = "govuk-!-width-two-thirds"),
