@@ -16,9 +16,9 @@
 
 package base
 
+import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
-import controllers.journeys.routes._
-import controllers.standard.routes._
+import controllers.{journeys, standard}
 import models.NormalMode
 import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear}
@@ -30,7 +30,7 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{AnyContentAsEmpty, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{POST, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
-import services.SendJourneyAnswersService
+import services.SelfEmploymentService
 
 import scala.concurrent.Future
 
@@ -42,38 +42,37 @@ trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
 
   protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitCall(taxYear, businessId).url)
 
-  private val mockService: SendJourneyAnswersService = mock[SendJourneyAnswersService]
+  private val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  override val bindings: List[Binding[_]] = List(bind[SendJourneyAnswersService].toInstance(mockService))
+  override val bindings: List[Binding[_]] = List(bind[SelfEmploymentService].toInstance(mockService))
 
   protected def onSubmitCall: (TaxYear, BusinessId) => Call
 
   "submitting a page" - {
     "journey answers submitted successfully" - {
       "redirect to section completed" in new TestScenario(Individual, userAnswers.some) {
-        mockService
-          .sendJourneyAnswers(eqTo(testScenarioContext(journey)), eqTo(journeyAnswers))(*, *, *) returns Future.successful(().asRight)
-
+        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(().asRight))
         val result: Future[Result] = route(application, postRequest).value
 
         status(result) shouldBe 303
 
-        redirectLocation(result).value shouldBe SectionCompletedStateController
+        redirectLocation(result).value shouldBe journeys.routes.SectionCompletedStateController
           .onPageLoad(taxYear, businessId, journey.toString, NormalMode)
           .url
 
       }
     }
-  }
-  "an error occurred during answer submission" - {
-    "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
-      mockService
-        .sendJourneyAnswers(eqTo(testScenarioContext(journey)), eqTo(journeyAnswers))(*, *, *) returns Future.successful(httpError.asLeft)
 
-      val result: Future[Result] = route(application, postRequest).value
+    "an error occurred during answer submission" - {
+      "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
+        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(httpError.asLeft))
 
-      status(result) shouldBe 303
-      redirectLocation(result).value shouldBe JourneyRecoveryController.onPageLoad().url
+        val result: Future[Result] = route(application, postRequest).value
+
+        status(result) shouldBe 303
+        redirectLocation(result).value shouldBe standard.routes.JourneyRecoveryController.onPageLoad().url
+
+      }
     }
   }
 

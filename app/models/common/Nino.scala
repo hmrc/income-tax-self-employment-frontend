@@ -16,4 +16,6 @@
 
 package models.common
 
-final case class Nino(value: String) extends AnyVal
+final case class Nino(value: String) extends AnyVal {
+  override def toString: String = value
+}
