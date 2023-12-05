@@ -19,7 +19,7 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import controllers.handleResult
 import controllers.journeys.expenses.tailoring
-import models.common.{BusinessId, JourneyAnswersContext, TaxYear}
+import models.common._
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.ExpensesTailoringAnswers
@@ -60,11 +60,14 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
 
         Ok(
           view(
-            ExpensesTailoringCYAPage.toString,
+            s"${ExpensesTailoringCYAPage.toString}Categories", // TODO categories is only if ^answer^ is IndividualCategories
             taxYear,
             request.userType,
             summaryList,
-            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)))
+            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId),
+            Some("expensesTailoringCya.insetText")
+          )
+        )
       }
   }
 

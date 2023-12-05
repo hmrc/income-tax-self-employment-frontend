@@ -21,6 +21,8 @@ import play.api.libs.json.Json
 object ExpensesTailoringJsonBuilder {
 
   val allNoAnswers = Json.obj(
+    "expensesTailoring"           -> "individualCategories",
+    "officeSupplies"              -> "no",
     "officeSupplies"              -> "no",
     "taxiMinicabOrRoadHaulage"    -> "no",
     "goodsToSellOrUse"            -> "no",
@@ -37,6 +39,7 @@ object ExpensesTailoringJsonBuilder {
   )
 
   val allYesAnswers = Json.obj(
+    "expensesTailoring"                 -> "individualCategories",
     "officeSupplies"                    -> "yesAllowable",
     "taxiMinicabOrRoadHaulage"          -> "yesDisallowable",
     "goodsToSellOrUse"                  -> "yesDisallowable",
@@ -59,6 +62,7 @@ object ExpensesTailoringJsonBuilder {
   )
 
   val mixedAnswers = Json.obj(
+    "expensesTailoring"            -> "individualCategories",
     "officeSupplies"               -> "yesAllowable",
     "taxiMinicabOrRoadHaulage"     -> "no",
     "goodsToSellOrUse"             -> "no",

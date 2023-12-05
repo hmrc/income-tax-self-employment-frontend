@@ -33,7 +33,7 @@ object ExpensesTailoringSummary {
       val optUserType = if (answer == NoExpenses) s".$userType" else ""
       SummaryListRowViewModel(
         key = Key(
-          content = s"depreciation.subHeading.$userType",
+          content = s"expenses.cyaSummary.$userType",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(

@@ -16,24 +16,28 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import base.{CYAControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.UserType
+import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import controllers.journeys.expenses.goodsToSellOrUse
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
+import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
-class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
+class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
 
-  override protected lazy val onPageLoadRoute: String = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
-  override protected lazy val onSubmitRoute: String   = routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId).url
+  override val pageName: String = GoodsToSellOrUseCYAPage.toString
+
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onSubmit
 
   private val userAnswerData = Json
     .parse(s"""
@@ -54,22 +58,32 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAControllerBaseSpec with CYAOn
 
   override protected val journey: Journey = ExpensesGoodsToSellOrUse
 
-  override protected def expectedSummaryList(user: UserType)(implicit messages: Messages): SummaryList = SummaryList(
+  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList = SummaryList(
     rows = Seq(
-      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, user.toString).value,
-      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, user.toString).value
+      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value,
+      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
 
-  override def expectedView(scenario: TestScenario, summaryList: SummaryList, nextRoute: String)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
-
+  override def createExpectedView(userType: UserType,
+                                  summaryList: SummaryList,
+                                  messages: Messages,
+                                  application: Application,
+                                  request: Request[_],
+                                  pageInsetText: Option[String]): String = {
     val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
-    view(taxYear, businessId, scenario.userType.toString, summaryList)(request, messages).toString()
-
+    view(taxYear, businessId, userType.toString, summaryList)(request, messages).toString()
   }
+
+  override val testDataCases: List[JsObject] =
+    List(
+      Json.obj(
+        "goodsToSellOrUse"                   -> "yesDisallowable",
+        "goodsToSellOrUseAmount"             -> 100.00,
+        "disallowableGoodsToSellOrUseAmount" -> 100.00
+      )
+    )
 
 }

@@ -368,7 +368,7 @@ goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
 goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
 goodsToSellOrUse.error.required.individual = Select if all your goods to sell or use expenses are allowable, some of them are disallowable or you do not have any goods to sell or use expenses
 goodsToSellOrUse.error.required.agent = Select if all your client’s goods to sell or use expenses are allowable, some of them are disallowable or they do not have any goods to sell or use expenses
-goodsToSellOrUse.change.hidden = GoodsToSellOrUse
+goodsToSellOrUse.change.hidden = Change if any goods to sell or use were bought?
 
 ## Repairs and maintenance
 repairsAndMaintenance.title = Repairs and maintenance
@@ -380,7 +380,9 @@ repairsAndMaintenance.subHeading.individual = Did you spend anything on repairs 
 repairsAndMaintenance.subHeading.agent = Did your client spend anything on repairs and maintenance of property or equipment?
 repairsAndMaintenance.error.required.individual = Select if all your repairs and maintenance expenses are allowable, some of them are disallowable or you do not have any repairs and maintenance expenses
 repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
-repairsAndMaintenance.change.hidden = RepairsAndMaintenance
+repairsAndMaintenance.cyaSummary.individual = Did you spend anything on repairs and maintenance?
+repairsAndMaintenance.cyaSummary.agent = Did your client spend anything on repairs and maintenance?
+repairsAndMaintenance.change.hidden = Change whether anything was spent on repairs and maintenance of property or equipment?
 
 ## Work from home
 workFromHome.title.individual = Did you work from home?
@@ -566,6 +568,14 @@ otherExpenses.error.required.individual = Select if all your other expenses are 
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
 
+########## Expenses Tailoring CYA ##########
+
+expensesTailoringCya.title.individual = Check your expenses
+expensesTailoringCya.title.agent = Check your client’s expenses
+expensesTailoringCyaCategories.title.individual = Check your expenses categories
+expensesTailoringCyaCategories.title.agent = Check your client’s expenses categories
+expensesTailoringCya.insetText = We will only save amounts.  Other information will not be saved.
+
 ########## Expenses - Office supplies ##########
 
 ## Office Supplies Amount
@@ -739,8 +749,3 @@ constructionIndustryAmount.change.hidden = Change how much was spent on construc
 ## Construction Industry CYA
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
 constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
-
-########## Expenses Tailoring CYA ##########
-
-expensesTailoringCYA.title.individual = Check your expenses
-expensesTailoringCYA.title.agent = Check your client’s expenses

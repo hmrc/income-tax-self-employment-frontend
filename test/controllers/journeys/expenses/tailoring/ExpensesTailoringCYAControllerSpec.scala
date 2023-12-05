@@ -21,7 +21,6 @@ import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.Page
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.JsObject
@@ -31,7 +30,9 @@ import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
 
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
 
-  override val page: Page                           = ExpensesTailoringCYAPage
+  override val pageName: String             = s"${ExpensesTailoringCYAPage.toString}Categories"
+  override val cyaInsetText: Option[String] = Some("expensesTailoringCya.insetText")
+
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
 

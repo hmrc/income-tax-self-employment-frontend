@@ -21,12 +21,13 @@ import controllers.journeys.routes._
 import controllers.standard.routes._
 import models.NormalMode
 import models.common.UserType.Individual
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.inject.{Binding, bind}
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContentAsEmpty, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{POST, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
 import services.SendJourneyAnswersService
@@ -35,16 +36,17 @@ import scala.concurrent.Future
 
 trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
 
-  protected val userAnswers: UserAnswers
   protected val journeyAnswers: T
   protected val journey: Journey
-  protected val onSubmitRoute: String
+  protected val userAnswers: UserAnswers
+
+  protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitCall(taxYear, businessId).url)
 
   private val mockService: SendJourneyAnswersService = mock[SendJourneyAnswersService]
 
   override val bindings: List[Binding[_]] = List(bind[SendJourneyAnswersService].toInstance(mockService))
 
-  protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitRoute)
+  protected def onSubmitCall: (TaxYear, BusinessId) => Call
 
   "submitting a page" - {
     "journey answers submitted successfully" - {
@@ -62,17 +64,16 @@ trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
 
       }
     }
-    "an error occurred during answer submission" - {
-      "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
-        mockService
-          .sendJourneyAnswers(eqTo(testScenarioContext(journey)), eqTo(journeyAnswers))(*, *, *) returns Future.successful(httpError.asLeft)
+  }
+  "an error occurred during answer submission" - {
+    "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
+      mockService
+        .sendJourneyAnswers(eqTo(testScenarioContext(journey)), eqTo(journeyAnswers))(*, *, *) returns Future.successful(httpError.asLeft)
 
-        val result: Future[Result] = route(application, postRequest).value
+      val result: Future[Result] = route(application, postRequest).value
 
-        status(result) shouldBe 303
-        redirectLocation(result).value shouldBe JourneyRecoveryController.onPageLoad().url
-
-      }
+      status(result) shouldBe 303
+      redirectLocation(result).value shouldBe JourneyRecoveryController.onPageLoad().url
     }
   }
 

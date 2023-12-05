@@ -32,7 +32,7 @@ object RepairsAndMaintenanceSummary {
     answers.get(RepairsAndMaintenancePage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(
-          content = s"repairsAndMaintenance.subHeading.$userType",
+          content = s"repairsAndMaintenance.cyaSummary.$userType",
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(

@@ -16,60 +16,77 @@
 
 package base
 
-import base.SpecBase._
 import common.TestApp.buildAppFromUserType
+import controllers.standard.routes
 import models.common.UserType.{Agent, Individual}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import org.scalatest.wordspec.AnyWordSpecLike
-import pages.Page
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.html.standard.CheckYourAnswersView
 
-trait CYAOnPageLoadControllerSpec extends AnyWordSpecLike {
+import scala.concurrent.Future
 
-  val userTypes: List[UserType] = List(Individual, Agent)
+trait CYAOnPageLoadControllerSpec extends ControllerSpec {
 
-  val page: Page
+  val pageName: String
+  val testDataCases: List[JsObject]
+
+  protected val cyaInsetText: Option[String] = None
+  protected val userTypes: List[UserType]    = List(Individual, Agent)
+
   def onPageLoadCall: (TaxYear, BusinessId) => Call
   def onSubmitCall: (TaxYear, BusinessId) => Call
 
   def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): SummaryList
-
-  val testDataCases: List[JsObject]
-
   def userAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
-  def createExpectedView(userType: UserType, summaryList: SummaryList, msg: Messages, application: Application, request: Request[_]): String = {
+  def createExpectedView(userType: UserType,
+                         summaryList: SummaryList,
+                         messages: Messages,
+                         application: Application,
+                         request: Request[_],
+                         pageInsetText: Option[String]): String = {
     val view = application.injector.instanceOf[CheckYourAnswersView]
-    view(page.pageName.value, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, msg).toString()
+    view(pageName, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId), pageInsetText)(request, messages).toString()
   }
 
-  "onPageLoad" should {
-    userTypes.foreach { userType =>
-      s"return Ok and render correct view for various data when user is an $userType" in {
-        testDataCases.foreach { data =>
-          val application   = buildAppFromUserType(userType, Some(userAnswers(data)))
-          val msg: Messages = SpecBase.messages(application)
+  "onPageLoad" - {
+    "when answers for the user exist" - {
+      userTypes.foreach { userType =>
+        s"should return Ok and render correct view for various data when user is an $userType" in {
+          testDataCases.foreach { data =>
+            val application   = buildAppFromUserType(userType, Some(userAnswers(data)))
+            val msg: Messages = SpecBase.messages(application)
 
-          implicit val impMsg: Messages = SpecBase.messages(application)
+            implicit val impMsg: Messages = SpecBase.messages(application)
 
-          val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
-          val summaryList: SummaryList = getSummaryList(userAnswers(data), taxYear, businessId, userType)
+            val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
+            val summaryList: SummaryList = getSummaryList(userAnswers(data), taxYear, businessId, userType)
 
-          val result = route(application, onPageLoadRequest).value
-          val expectedResult =
-            createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
+            val result = route(application, onPageLoadRequest).value
+            val expectedResult =
+              createExpectedView(userType, summaryList, msg, application, onPageLoadRequest, cyaInsetText)
 
-          status(result) mustBe OK
-          contentAsString(result) mustEqual expectedResult
+            status(result) mustBe OK
+            contentAsString(result) mustEqual expectedResult
+          }
         }
+      }
+    }
+    "when no user answers exist" - {
+      "should redirect to the journey recovery controller" in {
+        val application            = buildAppFromUserType(Individual, None)
+        val onPageLoadRequest      = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
+        val result: Future[Result] = route(application, onPageLoadRequest).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

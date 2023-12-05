@@ -29,7 +29,8 @@
         taxYear: TaxYear,
         userType: UserType,
         summaryList: SummaryList,
-        onSubmitCall: Call
+        onSubmitCall: Call,
+        optionalInsetText: Option[String] = None
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
@@ -43,6 +44,12 @@
         )
 
         @govukSummaryList(summaryList)
+
+        @if(optionalInsetText.nonEmpty){
+            <div class='govuk-inset-text'>
+                @messages(optionalInsetText.getOrElse(""))
+            </div>
+        }
 
         <div class="govuk-button-group govuk-!-margin-top-9">
             @govukButton(ButtonViewModel(messages("site.saveAndContinue")))
