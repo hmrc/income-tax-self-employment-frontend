@@ -17,14 +17,14 @@
 package forms.income
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class NotTaxableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: String, turnoverAmount: BigDecimal): Form[BigDecimal] =
+  def apply(userType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(s"notTaxableAmount.error.required.$userType", s"notTaxableAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"notTaxableAmount.error.lessThanZero.$userType"))

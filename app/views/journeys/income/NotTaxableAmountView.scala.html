@@ -16,7 +16,7 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.income.routes.NotTaxableAmountController
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"notTaxableAmount.title.$userType"))) {
 

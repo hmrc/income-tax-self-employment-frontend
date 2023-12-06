@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
@@ -26,9 +27,9 @@ class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     val fieldName      = "value"
     val minimum        = 0
     val turnoverAmount = 1000.00
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new NotTaxableAmountFormProvider()(userScenario.user, turnoverAmount)
