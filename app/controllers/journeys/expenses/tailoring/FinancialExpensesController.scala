@@ -26,12 +26,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import models.journeys.expenses.{DisallowableInterest, DisallowableIrrecoverableDebts, DisallowableOtherFinancialCharges, FinancialExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.{
-  DisallowableInterestPage,
-  DisallowableIrrecoverableDebtsPage,
-  DisallowableOtherFinancialChargesPage,
-  FinancialExpensesPage
-}
+import pages.expenses.tailoring.{DisallowableInterestPage, DisallowableIrrecoverableDebtsPage, DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -41,7 +36,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.FinancialExpensesView
 
 import javax.inject.Inject
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -95,7 +90,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
   private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,
                                            businessId: Option[BusinessId],
                                            pageAnswers: Set[FinancialExpenses]): Try[UserAnswers] = {
-
+    @nowarn("msg=match may not be exhaustive")
     @tailrec
     def removeData(userAnswers: UserAnswers, pages: List[FinancialExpenses]): Try[UserAnswers] =
       pages match {
@@ -105,7 +100,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
           val page = head match {
             case Interest              => DisallowableInterestPage: Settable[DisallowableInterest]
             case OtherFinancialCharges => DisallowableOtherFinancialChargesPage: Settable[DisallowableOtherFinancialCharges]
-            case _                     => DisallowableIrrecoverableDebtsPage: Settable[DisallowableIrrecoverableDebts]
+            case IrrecoverableDebts    => DisallowableIrrecoverableDebtsPage: Settable[DisallowableIrrecoverableDebts]
           }
 
           userAnswers.remove(page, businessId) match {

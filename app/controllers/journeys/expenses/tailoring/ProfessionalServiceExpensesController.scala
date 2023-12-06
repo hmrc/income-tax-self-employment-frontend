@@ -26,12 +26,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.ProfessionalServiceExpenses._
 import models.journeys.expenses.{DisallowableProfessionalFees, DisallowableStaffCosts, DisallowableSubcontractorCosts, ProfessionalServiceExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.{
-  DisallowableProfessionalFeesPage,
-  DisallowableStaffCostsPage,
-  DisallowableSubcontractorCostsPage,
-  ProfessionalServiceExpensesPage
-}
+import pages.expenses.tailoring.{DisallowableProfessionalFeesPage, DisallowableStaffCostsPage, DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -41,7 +36,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.ProfessionalServiceExpensesView
 
 import javax.inject.Inject
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -95,7 +90,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
   private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,
                                            businessId: Option[BusinessId],
                                            pageAnswers: Set[ProfessionalServiceExpenses]): Try[UserAnswers] = {
-
+    @nowarn("msg=match may not be exhaustive")
     @tailrec
     def removeData(userAnswers: UserAnswers, pages: List[ProfessionalServiceExpenses]): Try[UserAnswers] =
       pages match {
@@ -103,9 +98,9 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
           Try(userAnswers)
         case head :: tail =>
           val page = head match {
-            case Staff        => DisallowableStaffCostsPage: Settable[DisallowableStaffCosts]
-            case Construction => DisallowableSubcontractorCostsPage: Settable[DisallowableSubcontractorCosts]
-            case _            => DisallowableProfessionalFeesPage: Settable[DisallowableProfessionalFees]
+            case Staff            => DisallowableStaffCostsPage: Settable[DisallowableStaffCosts]
+            case Construction     => DisallowableSubcontractorCostsPage: Settable[DisallowableSubcontractorCosts]
+            case ProfessionalFees => DisallowableProfessionalFeesPage: Settable[DisallowableProfessionalFees]
           }
 
           userAnswers.remove(page, businessId) match {
