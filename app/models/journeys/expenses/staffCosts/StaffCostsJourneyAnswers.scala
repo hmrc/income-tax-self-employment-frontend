@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package pages.expenses.staffCosts
+package models.journeys.expenses.staffCosts
 
-import pages.Page
+import play.api.libs.json.{Json, OFormat}
 
-case object StaffCostsCYAPage extends Page {
-  override def toString: String = "staffCostsCya"
+case class StaffCostsJourneyAnswers(staffCostsAmount: BigDecimal, staffCostsDisallowableAmount: Option[BigDecimal])
+
+object StaffCostsJourneyAnswers {
+  implicit val formats: OFormat[StaffCostsJourneyAnswers] = Json.format[StaffCostsJourneyAnswers]
 }

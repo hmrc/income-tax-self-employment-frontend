@@ -272,6 +272,7 @@ GET         /:taxYear/:businessId/expenses/change-staff/disallowable-amount     
 POST        /:taxYear/:businessId/expenses/change-staff/disallowable-amount                                    controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Construction Industry ##########
 
