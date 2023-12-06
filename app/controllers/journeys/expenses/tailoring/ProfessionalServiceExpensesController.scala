@@ -22,17 +22,28 @@ import forms.expenses.tailoring.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.ProfessionalServiceExpenses._
+import models.journeys.expenses.{DisallowableProfessionalFees, DisallowableStaffCosts, DisallowableSubcontractorCosts, ProfessionalServiceExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.ProfessionalServiceExpensesPage
+import pages.expenses.tailoring.{
+  DisallowableProfessionalFeesPage,
+  DisallowableStaffCostsPage,
+  DisallowableSubcontractorCostsPage,
+  ProfessionalServiceExpensesPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.Settable
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.ProfessionalServiceExpensesView
 
 import javax.inject.Inject
+import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class ProfessionalServiceExpensesController @Inject() (override val messagesApi: MessagesApi,
                                                        sessionRepository: SessionRepository,
@@ -73,11 +84,41 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                 Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
+                  clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(request.userAnswers, Some(businessId), value))
+                  updatedAnswers <- Future.fromTry(clearedAnswers.set(ProfessionalServiceExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
+  }
+
+  private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,
+                                           businessId: Option[BusinessId],
+                                           pageAnswers: Set[ProfessionalServiceExpenses]): Try[UserAnswers] = {
+    @nowarn("msg=match may not be exhaustive")
+    @tailrec
+    def removeData(userAnswers: UserAnswers, pages: List[ProfessionalServiceExpenses]): Try[UserAnswers] =
+      pages match {
+        case Nil =>
+          Try(userAnswers)
+        case head :: tail =>
+          val page = head match {
+            case Staff            => DisallowableStaffCostsPage: Settable[DisallowableStaffCosts]
+            case Construction     => DisallowableSubcontractorCostsPage: Settable[DisallowableSubcontractorCosts]
+            case ProfessionalFees => DisallowableProfessionalFeesPage: Settable[DisallowableProfessionalFees]
+          }
+
+          userAnswers.remove(page, businessId) match {
+            case Success(updatedUserAnswers) =>
+              removeData(updatedUserAnswers, tail)
+            case Failure(exception) =>
+              Failure(exception)
+          }
+      }
+
+    val toBeRemoved = List(Staff, Construction, ProfessionalFees).filterNot(pageAnswers.contains(_))
+
+    removeData(userAnswers, toBeRemoved)
   }
 
 }
