@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesOfficeSupplies
-import models.journeys.expenses.officeSupplies.OfficeSuppliesJourneyAnswers
 import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
 import play.api.Application
 import play.api.i18n.Messages
@@ -32,9 +31,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.officeSupplies.OfficeSuppliesAmountSummary
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
-class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec[OfficeSuppliesJourneyAnswers] {
+class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageName: String    = OfficeSuppliesCYAPage.toString
+  override val pageName: String = OfficeSuppliesCYAPage.toString
+
   private val officeSuppliesAmount = BigDecimal(200.00)
 
   private val userAnswerData = Json
@@ -50,13 +50,12 @@ class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with C
 
   override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
+  override val journey: Journey = ExpensesOfficeSupplies
+
   def onPageLoadCall: (TaxYear, BusinessId) => Call = officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = officeSupplies.routes.OfficeSuppliesCYAController.onSubmit
 
-  override val journeyAnswers: OfficeSuppliesJourneyAnswers = OfficeSuppliesJourneyAnswers(officeSuppliesAmount, None)
-  override val journey: Journey                             = ExpensesOfficeSupplies
-
-  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value),

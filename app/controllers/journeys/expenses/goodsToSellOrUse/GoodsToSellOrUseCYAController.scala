@@ -55,6 +55,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
       )
     )
 
+    // TODO Use common view `CheckYourAnswersView`.
     Ok(view(taxYear, businessId, user, summaryList))
   }
 
