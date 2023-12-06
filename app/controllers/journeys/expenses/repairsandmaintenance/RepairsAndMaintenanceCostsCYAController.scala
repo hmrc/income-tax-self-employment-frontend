@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -40,7 +40,7 @@ class RepairsAndMaintenanceCostsCYAController @Inject() (override val messagesAp
                                                          requireData: DataRequiredAction,
                                                          service: SelfEmploymentService,
                                                          val controllerComponents: MessagesControllerComponents,
-                                                         view: RepairsAndMaintenanceCostsCYAView)(implicit ec: ExecutionContext)
+                                                         view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -55,10 +55,10 @@ class RepairsAndMaintenanceCostsCYAController @Inject() (override val messagesAp
 
     Ok(
       view(
-        RepairsAndMaintenanceCostsCYAPage.pageName,
+        RepairsAndMaintenanceCostsCYAPage.pageName.toString,
         taxYear,
-        summaryList,
         request.userType,
+        summaryList,
         routes.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear, businessId)
       ))
   }

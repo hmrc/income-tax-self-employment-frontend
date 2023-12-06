@@ -35,7 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
+import views.html.standard.CheckYourAnswersView
 
 import scala.concurrent.Future
 
@@ -70,10 +70,12 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
 
         implicit val msg: Messages = messages(application)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
+
         val expectedRows = List(
           RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, businessId),
           RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, taxYear, businessId)
         ).flatten
+
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }
     }
@@ -88,11 +90,11 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
   }
 
   def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
-    val view: RepairsAndMaintenanceCostsCYAView = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
-    val summaryList                             = SummaryList(rows = expectedRows, classes = "govuk-!-margin-bottom-7")
-    val onSubmitCall                            = routes.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear, businessId)
+    val view         = application.injector.instanceOf[CheckYourAnswersView]
+    val summaryList  = SummaryList(rows = expectedRows, classes = "govuk-!-margin-bottom-7")
+    val onSubmitCall = routes.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear, businessId)
 
-    view(RepairsAndMaintenanceCostsCYAPage.pageName, taxYear, summaryList, UserType.Individual, onSubmitCall)(getRequest, msg).toString()
+    view(RepairsAndMaintenanceCostsCYAPage.pageName.toString, taxYear, UserType.Individual, summaryList, onSubmitCall)(getRequest, msg).toString()
   }
 
 }

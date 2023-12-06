@@ -24,13 +24,11 @@ import models.journeys.Journey
 import models.journeys.Journey.ExpensesRepairsAndMaintenance
 import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
 
 class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
@@ -73,15 +71,6 @@ class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControl
       ),
       classes = "govuk-!-margin-bottom-7"
     )
-
-  override def createExpectedView(userType: UserType,
-                                  summaryList: SummaryList,
-                                  messages: Messages,
-                                  application: Application,
-                                  request: Request[_]): String = {
-    val view = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
-    view(RepairsAndMaintenanceCostsCYAPage.pageName, taxYear, summaryList, userType, onSubmitCall(taxYear, businessId))(request, messages).toString()
-  }
 
   private def dataRequestForUser(userType: UserType) =
     userType match {
