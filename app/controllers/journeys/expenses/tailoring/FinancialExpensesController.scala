@@ -26,7 +26,12 @@ import models.database.UserAnswers
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import models.journeys.expenses.{DisallowableInterest, DisallowableIrrecoverableDebts, DisallowableOtherFinancialCharges, FinancialExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.{DisallowableInterestPage, DisallowableIrrecoverableDebtsPage, DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
+import pages.expenses.tailoring.{
+  DisallowableInterestPage,
+  DisallowableIrrecoverableDebtsPage,
+  DisallowableOtherFinancialChargesPage,
+  FinancialExpensesPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable

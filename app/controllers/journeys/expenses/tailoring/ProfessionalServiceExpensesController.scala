@@ -26,7 +26,12 @@ import models.database.UserAnswers
 import models.journeys.expenses.ProfessionalServiceExpenses._
 import models.journeys.expenses.{DisallowableProfessionalFees, DisallowableStaffCosts, DisallowableSubcontractorCosts, ProfessionalServiceExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.{DisallowableProfessionalFeesPage, DisallowableStaffCostsPage, DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
+import pages.expenses.tailoring.{
+  DisallowableProfessionalFeesPage,
+  DisallowableStaffCostsPage,
+  DisallowableSubcontractorCostsPage,
+  ProfessionalServiceExpensesPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
