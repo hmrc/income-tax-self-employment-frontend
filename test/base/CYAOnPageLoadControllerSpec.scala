@@ -37,12 +37,14 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
   val pageName: String
   val testDataCases: List[JsObject]
 
-  protected val userTypes: List[UserType] = List(Individual, Agent)
-
   def onPageLoadCall: (TaxYear, BusinessId) => Call
   def onSubmitCall: (TaxYear, BusinessId) => Call
 
-  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): SummaryList
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList
+
+  val userTypes: List[UserType] = List(Individual, Agent)
+
   def userAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
   def createExpectedView(userType: UserType, summaryList: SummaryList, messages: Messages, application: Application, request: Request[_]): String = {
@@ -61,7 +63,7 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
             implicit val impMsg: Messages = SpecBase.messages(application)
 
             val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
-            val summaryList: SummaryList = getSummaryList(userAnswers(data), taxYear, businessId, userType)
+            val summaryList: SummaryList = expectedSummaryList(userAnswers(data), taxYear, businessId, userType)
 
             val result = route(application, onPageLoadRequest).value
             val expectedResult =

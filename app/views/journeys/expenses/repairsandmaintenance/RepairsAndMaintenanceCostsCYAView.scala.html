@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import models.common.{TaxYear, UserType}
-@import views.html.components.PageCYA
+@import models.common._
+@import views.html.components.PageCYASubmit
 
-@this(pageCYA: PageCYA)
+@this(pageCYA: PageCYASubmit)
 
-@(taxYear: TaxYear,
-        userType: UserType,
-        summaryList: SummaryList,
-        nextRoute: Call
-)(implicit request: Request[_], messages: Messages)
+@(pageName: PageName,
+  taxYear: TaxYear,
+  summaryList: SummaryList,
+  userType: UserType,
+  onSubmitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@pageCYA("repairsAndMaintenanceCostsCYA", taxYear, userType, summaryList, nextRoute)
+@pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall)

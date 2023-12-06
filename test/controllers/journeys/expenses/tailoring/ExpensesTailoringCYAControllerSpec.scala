@@ -35,7 +35,7 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
 
-  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     buildTailoringSummaryList(userAnswers, taxYear, businessId, userType)
 

@@ -21,7 +21,7 @@ import models.common.PageName
 import scala.language.implicitConversions
 
 trait Page {
-  def pageName: PageName = PageName(toString())
+  def pageName: PageName = PageName(toString)
 }
 
 object Page {
