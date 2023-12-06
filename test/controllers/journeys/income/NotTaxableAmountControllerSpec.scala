@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.{IncomeCYAController, NotTaxableAmountController, TurnoverIncomeAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.NotTaxableAmountFormProvider
+import models.common.UserType
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
@@ -41,16 +42,16 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
   val formProvider            = new NotTaxableAmountFormProvider()
   val turnoverAmount          = 1000.00
   val validAnswer: BigDecimal = 100
-  val formWithIndividual      = formProvider(individual, turnoverAmount)
-  val formWithAgent           = formProvider(agent, turnoverAmount)
+  val formWithIndividual      = formProvider(UserType.Individual, turnoverAmount)
+  val formWithAgent           = formProvider(UserType.Agent, turnoverAmount)
   val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
   val cyaCall                 = IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal])
+  case class UserScenario(authUserType: UserType, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formWithIndividual),
-    UserScenario(isAgent = true, formWithAgent)
+    UserScenario(authUserType = UserType.Individual, formWithIndividual),
+    UserScenario(authUserType = UserType.Agent, formWithAgent)
   )
 
   "NotTaxableAmount Controller" - {
@@ -58,10 +59,10 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.authUserType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -71,7 +72,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[NotTaxableAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -82,7 +83,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, validAnswer, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
 
             running(application) {
               val request = FakeRequest(GET, NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -91,7 +92,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, businessId)(
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userScenario.authUserType, taxYear, businessId)(
                 request,
                 messages(application)).toString
 
@@ -174,10 +175,10 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.authUserType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -191,7 +192,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -200,7 +201,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -214,7 +215,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -223,7 +224,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "a negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -237,7 +238,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -246,7 +247,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "turnover income amount exceeds £100,000,000,000.00" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
 
             running(application) {
               val request =
@@ -260,7 +261,7 @@ class NotTaxableAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -17,16 +17,15 @@
 package navigation
 
 import controllers.journeys
-import controllers.journeys.expenses.tailoring
 import controllers.journeys.expenses.tailoring.routes._
 import controllers.standard.routes._
-import models._
 import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
+import models.{NormalMode, _}
 import pages._
 import pages.expenses.tailoring._
 import play.api.mvc.Call
@@ -61,8 +60,7 @@ class ExpensesTailoringNavigator @Inject() () {
             case _           => JourneyRecoveryController.onPageLoad()
           }
 
-    case EntertainmentCostsPage =>
-      _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+    case EntertainmentCostsPage => _ => (taxYear, businessId, _) => ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
@@ -140,8 +138,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DepreciationPage => _ => (taxYear, businessId, _) => OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case OtherExpensesPage =>
-      _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+    case OtherExpensesPage => _ => (taxYear, businessId, _) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case ExpensesTailoringCYAPage =>
       _ =>
@@ -151,8 +148,105 @@ class ExpensesTailoringNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = { case _ =>
-    _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
+
+    case ProfessionalServiceExpensesPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(Staff) &&
+                  userAnswers.get(DisallowableStaffCostsPage, Some(businessId)).isEmpty =>
+              DisallowableStaffCostsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(Construction) &&
+                  userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)).isEmpty =>
+              DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(ProfessionalFees) &&
+                  userAnswers.get(DisallowableProfessionalFeesPage, Some(businessId)).isEmpty =>
+              DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case DisallowableStaffCostsPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(Construction) &&
+                  userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)).isEmpty =>
+              DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(ProfessionalFees) &&
+                  userAnswers.get(DisallowableProfessionalFeesPage, Some(businessId)).isEmpty =>
+              DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case DisallowableSubcontractorCostsPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(ProfessionalFees) &&
+                  userAnswers.get(DisallowableProfessionalFeesPage, Some(businessId)).isEmpty =>
+              DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case FinancialExpensesPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(Interest) &&
+                  userAnswers.get(DisallowableInterestPage, Some(businessId)).isEmpty =>
+              DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(OtherFinancialCharges) &&
+                  userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)).isEmpty =>
+              DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(IrrecoverableDebts) &&
+                  userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)).isEmpty =>
+              DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case DisallowableInterestPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(OtherFinancialCharges) &&
+                  userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)).isEmpty =>
+              DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(seq)
+                if seq.contains(IrrecoverableDebts) &&
+                  userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)).isEmpty =>
+              DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case DisallowableOtherFinancialChargesPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+            case Some(seq)
+                if seq.contains(IrrecoverableDebts) &&
+                  userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)).isEmpty =>
+              DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(_) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _       => JourneyRecoveryController.onPageLoad()
+          }
+
+    case _ => _ => (taxYear, businessId, _) => ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, isAccrual: Option[Boolean] = None): Call =
