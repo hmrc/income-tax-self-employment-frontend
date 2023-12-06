@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("otherExpenses.title"))) {
 
@@ -40,14 +40,14 @@
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
-            @messages(s"site.canInclude.$authUserType")
+            @messages(s"site.canInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("otherExpenses.l1")</li>
             <li>@messages("otherExpenses.l2")</li>
         </ul>
         <p>
-            @messages(s"site.cannotInclude.$authUserType")
+            @messages(s"site.cannotInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("otherExpenses.l3")</li>
@@ -61,9 +61,9 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"otherExpenses.subHeading.$authUserType"))
+                legend = LegendViewModel(messages(s"otherExpenses.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items  = OtherExpenses.options(authUserType)
+                items  = OtherExpenses.options(userType)
             )
         )
 

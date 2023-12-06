@@ -82,7 +82,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   protected def userType(isAgent: Boolean): String = if (isAgent) agent else individual
 
-  protected def isAgent(authUserType: String): Boolean = authUserType.equals(agent)
+  protected def isAgent(userType: String): Boolean = userType.equals(agent)
 
   protected def isAccrual(accountingType: String): Boolean = accountingType.equals(accrual)
 

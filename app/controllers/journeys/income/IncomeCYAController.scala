@@ -18,7 +18,6 @@ package controllers.journeys.income
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.handleSubmitAnswersResult
-import models.common.ModelUtils.userType
 import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey.Income
@@ -48,7 +47,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val user = userType(request.user.isAgent)
+    val user = request.userType
 
     val summaryList = SummaryListCYA.summaryListOpt(
       List(
@@ -76,9 +75,9 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       handleSubmitAnswersResult(context, result)
   }
 
-  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit
+  private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
-    HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, authUserType, businessId).map {
+    HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, userType, businessId).map {
       case Right(value)    => value
       case Left(exception) => throw exception
     }

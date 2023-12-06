@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.income
 
 import base.SpecBase.{businessId, taxYear}
 import cats.data.EitherT
+import models.common.UserType
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
   private val id       = "some_id"
-  private val authUser = "individual"
+  private val authUser = UserType.Individual
 
   private val turnoverIncomeAmountPageData     = Json.obj("turnoverIncomeAmount" -> 456.00)
   private val maxTradingAllowancePageData      = Json.obj("howMuchTradingAllowance" -> "maximum")

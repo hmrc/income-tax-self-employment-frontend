@@ -17,6 +17,7 @@
 package forms.income
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
@@ -24,9 +25,9 @@ class TurnoverNotTaxableFormProviderSpec extends BooleanFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new TurnoverNotTaxableFormProvider()(userScenario.user)

@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("repairsAndMaintenance.title"))) {
 
@@ -40,7 +40,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
-            @messages(s"site.canInclude.$authUserType")
+            @messages(s"site.canInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("repairsAndMaintenance.l1")</li>
@@ -49,7 +49,7 @@
             }
         </ul>
         <p>
-            @messages(s"site.cannotInclude.$authUserType")
+            @messages(s"site.cannotInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("repairsAndMaintenance.l3")</li>
@@ -65,9 +65,9 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"repairsAndMaintenance.subHeading.$authUserType"))
+                legend = LegendViewModel(messages(s"repairsAndMaintenance.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items  = RepairsAndMaintenance.options(authUserType)
+                items  = RepairsAndMaintenance.options(userType)
             )
         )
 

@@ -27,7 +27,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("disallowableStaffCosts.title"))) {
 
@@ -42,10 +42,10 @@
         @messages(s"site.theseInclude")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-            @if(authUserType.equals("individual")) {
-                <li>@messages(s"expenses.contributions.$authUserType")</li>
+            @if(userType.equals("individual")) {
+                <li>@messages(s"expenses.contributions.$userType")</li>
             } else {
-                <li>@messages(s"disallowableStaffCosts.l1.$authUserType")</li>
+                <li>@messages(s"disallowableStaffCosts.l1.$userType")</li>
             }
             <li>@messages("expenses.listItem.anyAmount")</li>
         </ul>
@@ -57,7 +57,7 @@
             RadiosViewModel(
                 field = form("value"),
                 legend = LegendViewModel(messages(
-                    s"disallowableStaffCosts.subheading.$authUserType"))
+                    s"disallowableStaffCosts.subheading.$userType"))
                                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items = DisallowableStaffCosts.options
             )

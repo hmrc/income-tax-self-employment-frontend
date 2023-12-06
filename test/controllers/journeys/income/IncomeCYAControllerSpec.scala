@@ -71,11 +71,11 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
   def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList = SummaryList(
     rows = Seq(
-      IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TurnoverIncomeAmountSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      AnyOtherIncomeSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TurnoverNotTaxableSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TradingAllowanceSummary.row(userAnswers, taxYear, userType.toString, businessId).value
+      IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TurnoverIncomeAmountSummary.row(userAnswers, taxYear, userType, businessId).value,
+      AnyOtherIncomeSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TurnoverNotTaxableSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TradingAllowanceSummary.row(userAnswers, taxYear, userType, businessId).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
@@ -86,7 +86,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
                                   application: Application,
                                   request: Request[_]): String = {
     val view = application.injector.instanceOf[IncomeCYAView]
-    view(taxYear, businessId, summaryList, userType.toString)(request, messages).toString()
+    view(taxYear, businessId, summaryList, userType)(request, messages).toString()
   }
 
   override val testDataCases: List[JsObject] =
