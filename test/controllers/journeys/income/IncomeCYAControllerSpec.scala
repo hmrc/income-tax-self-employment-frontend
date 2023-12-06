@@ -56,7 +56,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
   def onSubmitCall: (TaxYear, BusinessId) => Call   = income.routes.IncomeCYAController.onSubmit
 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                                  messages: Messages): SummaryList = SummaryList(
+      messages: Messages): SummaryList = SummaryList(
     rows = Seq(
       IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
       TurnoverIncomeAmountSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
