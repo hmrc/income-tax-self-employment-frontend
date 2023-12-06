@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.Income
-import models.journeys.income.{IncomeJourneyAnswers, TradingAllowance}
 import pages.income.IncomeCYAPage
 import play.api.Application
 import play.api.i18n.Messages
@@ -32,10 +31,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.income._
 import views.html.journeys.income.IncomeCYAView
 
-class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec[IncomeJourneyAnswers] {
+class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageName: String = IncomeCYAPage.toString
   override val journey: Journey = Income
+
   private val userAnswerData = Json
     .parse(s"""
               |{
@@ -52,30 +52,17 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
 
   override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  override protected val journeyAnswers: IncomeJourneyAnswers = IncomeJourneyAnswers(
-    incomeNotCountedAsTurnover = false,
-    nonTurnoverIncomeAmount = None,
-    turnoverIncomeAmount = 100.00,
-    anyOtherIncome = false,
-    otherIncomeAmount = None,
-    turnoverNotTaxable = Some(false),
-    notTaxableAmount = None,
-    tradingAllowance = TradingAllowance.DeclareExpenses,
-    howMuchTradingAllowance = None,
-    tradingAllowanceAmount = None
-  )
-
   def onPageLoadCall: (TaxYear, BusinessId) => Call = income.routes.IncomeCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = income.routes.IncomeCYAController.onSubmit
 
-  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList = SummaryList(
     rows = Seq(
-      IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TurnoverIncomeAmountSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      AnyOtherIncomeSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TurnoverNotTaxableSummary.row(userAnswers, taxYear, userType.toString, businessId).value,
-      TradingAllowanceSummary.row(userAnswers, taxYear, userType.toString, businessId).value
+      IncomeNotCountedAsTurnoverSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TurnoverIncomeAmountSummary.row(userAnswers, taxYear, userType, businessId).value,
+      AnyOtherIncomeSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TurnoverNotTaxableSummary.row(userAnswers, taxYear, userType, businessId).value,
+      TradingAllowanceSummary.row(userAnswers, taxYear, userType, businessId).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
@@ -86,7 +73,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
                                   application: Application,
                                   request: Request[_]): String = {
     val view = application.injector.instanceOf[IncomeCYAView]
-    view(taxYear, businessId, summaryList, userType.toString)(request, messages).toString()
+    view(taxYear, businessId, summaryList, userType)(request, messages).toString()
   }
 
   override val testDataCases: List[JsObject] =

@@ -24,11 +24,11 @@ import javax.inject.Inject
 
 class NotTaxableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
+  def apply(userType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"notTaxableAmount.error.required.$authUserType", s"notTaxableAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"notTaxableAmount.error.lessThanZero.$authUserType"))
-        .verifying(maximumValue(turnoverAmount, s"notTaxableAmount.error.overTurnover.$authUserType"))
+      "value" -> bigDecimal(s"notTaxableAmount.error.required.$userType", s"notTaxableAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"notTaxableAmount.error.lessThanZero.$userType"))
+        .verifying(maximumValue(turnoverAmount, s"notTaxableAmount.error.overTurnover.$userType"))
     )
 
 }

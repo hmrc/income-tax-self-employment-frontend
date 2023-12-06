@@ -24,10 +24,10 @@ import javax.inject.Inject
 
 class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: String): Form[BigDecimal] =
+  def apply(userType: String): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$authUserType", s"officeSuppliesAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$authUserType"))
+      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$userType", s"officeSuppliesAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$userType"))
     )
 }

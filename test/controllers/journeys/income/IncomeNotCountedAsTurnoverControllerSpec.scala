@@ -53,11 +53,11 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
   val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(authUserType: UserType, form: Form[Boolean])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(authUserType = UserType.Individual, formProvider(UserType.Individual)),
-    UserScenario(authUserType = UserType.Agent, formProvider(UserType.Agent))
+    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
+    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
 
   "IncomeNotCountedAsTurnover Controller" - {
@@ -65,11 +65,11 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -79,7 +79,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -90,7 +90,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             val userAnswers = UserAnswers(userAnswersId).set(IncomeNotCountedAsTurnoverPage, true, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -100,7 +100,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(true), CheckMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form.fill(true), CheckMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -225,10 +225,10 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -242,7 +242,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -251,7 +251,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -265,7 +265,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

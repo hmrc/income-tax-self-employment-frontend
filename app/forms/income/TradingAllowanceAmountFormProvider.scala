@@ -24,11 +24,11 @@ import javax.inject.Inject
 
 class TradingAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
+  def apply(userType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"tradingAllowanceAmount.error.required.$authUserType", s"tradingAllowanceAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"tradingAllowanceAmount.error.lessThanZero.$authUserType"))
-        .verifying(maximumValue(turnoverAmount, s"tradingAllowanceAmount.error.overTurnover.$authUserType"))
+      "value" -> bigDecimal(s"tradingAllowanceAmount.error.required.$userType", s"tradingAllowanceAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"tradingAllowanceAmount.error.lessThanZero.$userType"))
+        .verifying(maximumValue(turnoverAmount, s"tradingAllowanceAmount.error.overTurnover.$userType"))
     )
 
 }

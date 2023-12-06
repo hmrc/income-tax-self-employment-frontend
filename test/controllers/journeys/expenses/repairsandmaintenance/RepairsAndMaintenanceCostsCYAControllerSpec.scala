@@ -19,13 +19,14 @@ package controllers.journeys.expenses.repairsandmaintenance
 import base.SpecBase._
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppFromUserAnswers
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import models.requests.DataRequest
 import models.test.RepairsAndMaintenanceInfo
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
+import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -34,12 +35,13 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
+import views.html.standard.CheckYourAnswersView
 
 import scala.concurrent.Future
 
 class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with TableDrivenPropertyChecks {
 
+  // Kept these UTs as may want to use this approach of Table-based testing for different answers.
   private def createUserAnswerData(info: RepairsAndMaintenanceInfo) = Json
     .parse(s"""
          |{
@@ -68,10 +70,12 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
 
         implicit val msg: Messages = messages(application)
         val dataRequest            = DataRequest(getRequest, userAnswersId, aNoddyUser, userAnswers)
+
         val expectedRows = List(
           RepairsAndMaintenanceAmountSummary.row(dataRequest, taxYear, businessId),
           RepairsAndMaintenanceDisallowableAmountSummary.row(dataRequest, taxYear, businessId)
         ).flatten
+
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
       }
     }
@@ -86,9 +90,11 @@ class RepairsAndMaintenanceCostsCYAControllerSpec extends AnyWordSpecLike with M
   }
 
   def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
-    val view: RepairsAndMaintenanceCostsCYAView = application.injector.instanceOf[RepairsAndMaintenanceCostsCYAView]
-    val summaryList                             = SummaryList(expectedRows)
-    view(taxYear, UserType.Individual, summaryList, onwardRoute)(getRequest, msg).toString()
+    val view         = application.injector.instanceOf[CheckYourAnswersView]
+    val summaryList  = SummaryList(rows = expectedRows, classes = "govuk-!-margin-bottom-7")
+    val onSubmitCall = routes.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear, businessId)
+
+    view(RepairsAndMaintenanceCostsCYAPage.pageName.toString, taxYear, UserType.Individual, summaryList, onSubmitCall)(getRequest, msg).toString()
   }
 
 }

@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.income
 import base.SpecBase
+import models.common.UserType
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
@@ -24,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class AnyOtherIncomeSummarySpec extends SpecBase {
 
-  private val authUser = "individual"
+  private val authUser = UserType.Individual
 
   private val data          = Json.obj(businessId.value -> Json.obj("anyOtherIncome" -> true))
   private val someOtherData = Json.obj("someOtherPage" -> true)

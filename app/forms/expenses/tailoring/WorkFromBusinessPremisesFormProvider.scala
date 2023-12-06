@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class WorkFromBusinessPremisesFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[WorkFromBusinessPremises] =
+  def apply(userType: String): Form[WorkFromBusinessPremises] =
     Form(
-      "value" -> enumerable[WorkFromBusinessPremises](s"workFromBusinessPremises.error.required.$authUserType")
+      "value" -> enumerable[WorkFromBusinessPremises](s"workFromBusinessPremises.error.required.$userType")
     )
 
 }

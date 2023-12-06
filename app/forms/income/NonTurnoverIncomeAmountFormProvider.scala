@@ -24,11 +24,11 @@ import javax.inject.Inject
 
 class NonTurnoverIncomeAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"nonTurnoverIncomeAmount.error.required.$authUserType", s"nonTurnoverIncomeAmount.error.nonNumeric.$authUserType")
-        .verifying(greaterThan(minimumValue, s"nonTurnoverIncomeAmount.error.lessThanZero.$authUserType"))
-        .verifying(lessThan(maximumValue, s"nonTurnoverIncomeAmount.error.overMax.$authUserType"))
+      "value" -> bigDecimal(s"nonTurnoverIncomeAmount.error.required.$userType", s"nonTurnoverIncomeAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"nonTurnoverIncomeAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"nonTurnoverIncomeAmount.error.overMax.$userType"))
     )
 
 }

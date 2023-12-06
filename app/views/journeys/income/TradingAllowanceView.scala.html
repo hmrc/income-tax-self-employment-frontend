@@ -29,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("tradingAllowance.title"))) {
 
@@ -41,14 +41,14 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"tradingAllowance.p1.$authUserType")
+            @messages(s"tradingAllowance.p1.$userType")
         </p>
         <p>
-            @messages(s"tradingAllowance.p2.$authUserType")
+            @messages(s"tradingAllowance.p2.$userType")
         </p>
         @if(accountingType.equals("ACCRUAL")){
             <p>
-                @messages(s"tradingAllowance.p3.$authUserType")
+                @messages(s"tradingAllowance.p3.$userType")
             </p>
         }
     </div>
@@ -63,10 +63,10 @@
             </summary>
             <div class="govuk-details__text">
                 <p>
-                    @messages(s"capitalAllowances.p1.$authUserType")
+                    @messages(s"capitalAllowances.p1.$userType")
                 </p>
                 <p>
-                    @messages(s"capitalAllowances.p2.$authUserType")
+                    @messages(s"capitalAllowances.p2.$userType")
                 </p>
                 <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
                     <li>@messages("capitalAllowances.l1")</li>
@@ -85,7 +85,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"tradingAllowance.subHeading.$authUserType"))
+                legend = LegendViewModel(messages(s"tradingAllowance.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items = TradingAllowance.options
             )

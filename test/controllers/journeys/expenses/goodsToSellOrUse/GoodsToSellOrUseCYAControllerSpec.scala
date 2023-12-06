@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
-import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.Application
 import play.api.i18n.Messages
@@ -32,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
-class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec[GoodsToSellOrUseJourneyAnswers] {
+class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageName: String = GoodsToSellOrUseCYAPage.toString
 
@@ -53,12 +52,9 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with
 
   override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  override protected val journeyAnswers: GoodsToSellOrUseJourneyAnswers =
-    GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount = 100.00, disallowableGoodsToSellOrUseAmount = Some(100.00))
-
   override protected val journey: Journey = ExpensesGoodsToSellOrUse
 
-  def getSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList = SummaryList(
     rows = Seq(
       GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value,

@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("depreciation.title"))) {
 
@@ -41,7 +41,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
-            @messages(s"depreciation.p1.$authUserType")
+            @messages(s"depreciation.p1.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("depreciation.l1")</li>
@@ -54,7 +54,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"depreciation.subHeading.$authUserType"))
+                legend = LegendViewModel(messages(s"depreciation.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items  = Depreciation.options
             )

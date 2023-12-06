@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class DisallowableProfessionalFeesFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[DisallowableProfessionalFees] =
+  def apply(userType: String): Form[DisallowableProfessionalFees] =
     Form(
-      "value" -> enumerable[DisallowableProfessionalFees](s"disallowableProfessionalFees.error.required.$authUserType")
+      "value" -> enumerable[DisallowableProfessionalFees](s"disallowableProfessionalFees.error.required.$userType")
     )
 
 }

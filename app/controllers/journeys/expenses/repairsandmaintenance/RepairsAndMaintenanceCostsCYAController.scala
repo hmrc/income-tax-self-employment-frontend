@@ -17,39 +17,58 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import controllers.actions._
-import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
+import controllers.handleSubmitAnswersResult
+import models.common._
+import models.journeys.Journey.ExpensesRepairsAndMaintenance
+import models.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsJourneyAnswers
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
-import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAView
+import viewmodels.journeys.SummaryListCYA
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-class RepairsAndMaintenanceCostsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    navigator: ExpensesNavigator,
-    val controllerComponents: MessagesControllerComponents,
-    view: RepairsAndMaintenanceCostsCYAView
-) extends FrontendBaseController
-    with I18nSupport {
+class RepairsAndMaintenanceCostsCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                         identify: IdentifierAction,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction,
+                                                         service: SelfEmploymentService,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         view: CheckYourAnswersView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator.nextNormalRoute(RepairsAndMaintenanceCostsCYAPage, request.userAnswers, taxYear, businessId)
-    val summaryList = SummaryList(
+    val summaryList = SummaryListCYA.summaryListOpt(
       rows = List(
         RepairsAndMaintenanceAmountSummary.row(request, taxYear, businessId),
         RepairsAndMaintenanceDisallowableAmountSummary.row(request, taxYear, businessId)
-      ).flatten
+      )
     )
 
-    Ok(view(taxYear, request.userType, summaryList, nextRoute))
+    Ok(
+      view(
+        RepairsAndMaintenanceCostsCYAPage.pageName.toString,
+        taxYear,
+        request.userType,
+        summaryList,
+        routes.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear, businessId)
+      ))
+  }
+
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesRepairsAndMaintenance)
+      val result  = service.submitAnswers[RepairsAndMaintenanceCostsJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }

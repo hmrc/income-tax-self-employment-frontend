@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.Messages
@@ -29,12 +29,12 @@ import viewmodels.implicits._
 
 object IncomeNotCountedAsTurnoverSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
-        key = Key(content = s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)

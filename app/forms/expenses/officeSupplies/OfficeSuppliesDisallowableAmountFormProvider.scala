@@ -26,18 +26,16 @@ import javax.inject.Inject
 
 class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds with MoneyUtils {
 
-  def apply(authUserType: String, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
+  def apply(userType: String, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
-        requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$authUserType", allowableAmount),
-        nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUserType", allowableAmount)
+        requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$userType", allowableAmount),
+        nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$userType", allowableAmount)
       )
         .verifying(
-          greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUserType", formatMoney(allowableAmount))))
+          greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", formatMoney(allowableAmount))))
         .verifying(
-          maximumValue(
-            allowableAmount,
-            messages(s"officeSuppliesDisallowableAmount.error.overAllowableMax.$authUserType", formatMoney(allowableAmount))))
+          maximumValue(allowableAmount, messages(s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", formatMoney(allowableAmount))))
     )
 
 }
