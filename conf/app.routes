@@ -250,6 +250,7 @@ POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowab
 
 GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Entertainment ##########
 
 GET         /:taxYear/:businessId/expenses/entertainment/disallowable-amount                                   controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -258,6 +259,7 @@ GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amo
 POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount                            controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/entertainment/check                                                 controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/entertainment/check                                                 controllers.journeys.expenses.entertainment.EntertainmentCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Staff Costs ##########
 

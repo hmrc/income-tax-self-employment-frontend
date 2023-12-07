@@ -16,66 +16,52 @@
 
 package controllers.journeys.expenses.entertainment
 
-import base.SpecBase
-import controllers.journeys.expenses.entertainment.routes.EntertainmentCYAController
-import controllers.journeys.routes.SectionCompletedStateController
-import models.NormalMode
-import models.common.UserType.{Agent, Individual}
+import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.Journey.ExpensesEntertainment
+import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.entertainment.EntertainmentAmountSummary
-import views.html.journeys.expenses.entertainment.EntertainmentCYAView
 
-class EntertainmentCYAControllerSpec extends SpecBase {
+class EntertainmentCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  private val userTypes = List(Individual, Agent)
+  override val pageName: String = EntertainmentCYAPage.toString
 
-  private val userAnswerData = Json.parse(s"""
-       |{
-       |  "$businessId": {
-       |    "entertainmentAmount": 1235.4
-       |  }
-       |}
-       |""".stripMargin)
+  private val userAnswerData = Json
+    .parse(s"""
+              |{
+              |  "$businessId": {
+              |    "entertainmentCosts": "yes",
+              |    "entertainmentAmount": 200.00
+              |  }
+              |}
+              |""".stripMargin)
+    .as[JsObject]
 
-  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
-  "EntertainmentCYAController Controller" - {
+  override val journey: Journey = ExpensesEntertainment
 
-    userTypes.foreach { userType =>
-      s".onPageLoad when user is an $userType should" - {
-        "must return OK and the correct view for a GET" in {
+  override val testDataCases: List[JsObject] =
+    List(
+      Json.obj(
+        "entertainmentCosts"  -> "yes",
+        "entertainmentAmount" -> 200.00
+      )
+    )
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.EntertainmentCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.EntertainmentCYAController.onSubmit
 
-          implicit val appMessages: Messages = messages(application)
-
-          running(application) {
-            val view    = application.injector.instanceOf[EntertainmentCYAView]
-            val request = FakeRequest(GET, EntertainmentCYAController.onPageLoad(taxYear, businessId).url)
-
-            val expectedSummaryListRows = Seq(
-              EntertainmentAmountSummary.row(userAnswers, taxYear, businessId, userType)
-            ).flatten
-            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
-            val expectedNextRoute =
-              SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode).url
-
-            val result = route(application, request).value
-
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
-              request,
-              messages(application)).toString
-          }
-        }
-      }
-    }
-  }
-
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList =
+    SummaryList(
+      rows = List(EntertainmentAmountSummary.row(userAnswers, taxYear, businessId, userType).value),
+      classes = "govuk-!-margin-bottom-7"
+    )
 }
