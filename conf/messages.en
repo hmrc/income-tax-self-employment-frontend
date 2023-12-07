@@ -35,6 +35,7 @@ journeys.income = Income
 journeys.expenses-categories = Expenses categories
 journeys.national-insurance = National Insurance
 journeys.expenses-office-supplies = Office supplies
+journeys.expenses-goods-to-sell-or-use = Goods to sell or use
 
 date.day = Day
 date.month = Month
@@ -362,7 +363,6 @@ taxiMinicabOrRoadHaulage.error.required.agent = Select yes if your client was a 
 taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
 
 ## Goods to sell or use
-goodsToSellOrUse.title = Goods to sell or use
 goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
 goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
 goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
