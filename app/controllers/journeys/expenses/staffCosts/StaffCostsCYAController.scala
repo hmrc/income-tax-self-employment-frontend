@@ -17,38 +17,51 @@
 package controllers.journeys.expenses.staffCosts
 
 import controllers.actions._
-import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
+import controllers.handleSubmitAnswersResult
+import models.common._
+import models.journeys.Journey.ExpensesStaffCosts
+import models.journeys.expenses.staffCosts.StaffCostsJourneyAnswers
 import pages.expenses.staffCosts.StaffCostsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.staffCosts._
-import views.html.journeys.expenses.staffCosts.StaffCostsCYAView
+import viewmodels.journeys.SummaryListCYA
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class StaffCostsCYAController @Inject() (override val messagesApi: MessagesApi,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         navigator: ExpensesNavigator,
+                                         service: SelfEmploymentService,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: StaffCostsCYAView)
+                                         view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator.nextNormalRoute(StaffCostsCYAPage, request.userAnswers, taxYear, businessId)
-    val summaryList = SummaryList(
+    val summaryList = SummaryListCYA.summaryListOpt(
       rows = List(
         StaffCostsAmountSummary.row(request, taxYear, businessId),
         StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
-      ).flatten
+      )
     )
 
-    Ok(view(taxYear, request.userType, summaryList, nextRoute))
+    Ok(view(StaffCostsCYAPage.toString, taxYear, request.userType, summaryList, routes.StaffCostsCYAController.onSubmit(taxYear, businessId)))
+  }
+
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesStaffCosts)
+      val result  = service.submitAnswers[StaffCostsJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }

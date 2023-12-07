@@ -19,6 +19,10 @@ package models.common
 sealed trait UserType
 
 object UserType {
-  case object Individual extends WithName("individual") with UserType
-  case object Agent      extends WithName("agent") with UserType
+  case object Individual extends UserType {
+    override def toString = "individual"
+  }
+  case object Agent extends UserType {
+    override def toString = "agent"
+  }
 }
