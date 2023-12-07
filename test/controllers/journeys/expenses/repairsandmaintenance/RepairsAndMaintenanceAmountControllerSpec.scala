@@ -79,7 +79,7 @@ class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matcher
           val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
           val view           = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
           val form           = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
-          val expectedView   =
+          val expectedView =
             view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application))
               .toString()
 
