@@ -84,7 +84,7 @@ object TradeJourneyStatusesViewModel {
       None
     }
 
-  def getJourneyStatus(journey: Journey, conditionalCompletedJourney: Option[Journey])(implicit
+  private def getJourneyStatus(journey: Journey, conditionalCompletedJourney: Option[Journey])(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
     statusFromCompletedState(getCompletedState(journeyStatuses, journey)) match {
       case NotStarted            => conditionalJourneyIsPassed(conditionalCompletedJourney)
@@ -135,12 +135,8 @@ object TradeJourneyStatusesViewModel {
         )
       case ExpensesGoodsToSellOrUse =>
         determineUrl(
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url,
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
-            .onPageLoad(taxYear, businessId)
-            .url
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesEntertainment | ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails |
           ExpensesStaffCosts =>

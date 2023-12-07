@@ -28,19 +28,17 @@ import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPag
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.tailoring._
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
-                                                sessionRepository: SessionRepository,
                                                 requireData: DataRequiredAction,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: CheckYourAnswersView,
@@ -50,24 +48,22 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(businessId)))
-        _              <- sessionRepository.set(updatedAnswers)
-      } yield { // TODO remove hardcoded userAnswers when tailoring page is created
-        val summaryList = buildTailoringSummaryList(updatedAnswers, taxYear, businessId, request.userType)
-
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
+    request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) match {
+      case Left(redirect) => redirect
+      case Right(answer) =>
+        val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"
         Ok(
           view(
-            s"${ExpensesTailoringCYAPage.toString}Categories", // TODO categories is only if ^answer^ is IndividualCategories
+            title,
             taxYear,
             request.userType,
             summaryList,
             tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
           )
         )
-      }
+    }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
