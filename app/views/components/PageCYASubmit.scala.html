@@ -40,7 +40,7 @@
 
     @govukSummaryList(summaryList)
 
-    @formHelper(submitCall) {
+    @formHelper(action = submitCall) {
         @govukButton(
             ButtonViewModel(messages("site.saveAndContinue"))
         )

@@ -45,11 +45,11 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
 
-  case class UserScenario(authUserType: String)
+  case class UserScenario(userType: String)
 
   val userScenarios = Seq(
-    UserScenario(authUserType = individual),
-    UserScenario(authUserType = agent)
+    UserScenario(userType = individual),
+    UserScenario(userType = agent)
   )
 
   "WorkFromBusinessPremises Controller" - {
@@ -57,12 +57,12 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
-            val form        = formProvider(userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val form        = formProvider(userScenario.userType)
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -72,7 +72,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -87,8 +87,8 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
                 .success
                 .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUserType)).build()
-            val form        = formProvider(userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType)).build()
+            val form        = formProvider(userScenario.userType)
 
             running(application) {
               val request = FakeRequest(GET, workFromBusinessPremisesRoute)
@@ -98,7 +98,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
               val expectedResult =
-                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.authUserType, taxYear, businessId)(
+                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
                   request,
                   messages(application)).toString
 
@@ -153,11 +153,11 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
-            val form        = formProvider(userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val form        = formProvider(userScenario.userType)
 
             running(application) {
               val request =
@@ -171,7 +171,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -180,8 +180,8 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUserType)).build()
-            val form        = formProvider(userScenario.authUserType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val form        = formProvider(userScenario.userType)
 
             running(application) {
               val request =
@@ -195,7 +195,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -22,7 +22,7 @@ import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val authUserTypes = Seq("individual", "agent")
+  private val userTypes = Seq("individual", "agent")
 
   private val fieldName = "value"
 
@@ -37,7 +37,7 @@ class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBe
   }
 
   ".value" - {
-    authUserTypes.foreach { authUser =>
+    userTypes.foreach { authUser =>
       s"when the user is $authUser" - {
         "form provider should" - {
           val form = new OfficeSuppliesDisallowableAmountFormProvider()(authUser, allowableAmount)

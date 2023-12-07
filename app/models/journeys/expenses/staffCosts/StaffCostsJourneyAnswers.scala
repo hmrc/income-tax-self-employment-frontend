@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring
+package models.journeys.expenses.staffCosts
 
-import forms.mappings.Mappings
-import models.journeys.expenses.DisallowableProfessionalFees
-import play.api.data.Form
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
+case class StaffCostsJourneyAnswers(staffCostsAmount: BigDecimal, staffCostsDisallowableAmount: Option[BigDecimal])
 
-class DisallowableProfessionalFeesFormProvider @Inject() extends Mappings {
-
-  def apply(userType: String): Form[DisallowableProfessionalFees] =
-    Form(
-      "value" -> enumerable[DisallowableProfessionalFees](s"disallowableProfessionalFees.error.required.$userType")
-    )
-
+object StaffCostsJourneyAnswers {
+  implicit val formats: OFormat[StaffCostsJourneyAnswers] = Json.format[StaffCostsJourneyAnswers]
 }

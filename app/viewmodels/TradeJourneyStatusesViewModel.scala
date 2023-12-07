@@ -23,10 +23,10 @@ import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.expenses.OfficeSupplies
+import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
-import pages.expenses.tailoring.OfficeSuppliesPage
+import pages.expenses.tailoring.{GoodsToSellOrUsePage, OfficeSuppliesPage}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -51,7 +51,8 @@ object TradeJourneyStatusesViewModel {
         buildRow(Abroad),
         buildRow(Income, Some(Abroad)),
         buildRow(ExpensesTailoring, Some(Abroad)),
-        buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No)))
+        buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))),
+        buildRow(ExpensesGoodsToSellOrUse, None, pageMeetsCriteria(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No)))
       ).flatten
     )
   }
@@ -132,8 +133,17 @@ object TradeJourneyStatusesViewModel {
           expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesEntertainment | ExpensesConstruction | ExpensesGoodsToSellOrUse | ExpensesRepairsAndMaintenance | ExpensesTotal |
-          NationalInsurance | TradeDetails | ExpensesStaffCosts =>
+      case ExpensesGoodsToSellOrUse =>
+        determineUrl(
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
+            .onPageLoad(taxYear, businessId)
+            .url
+        )
+      case ExpensesEntertainment | ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails |
+          ExpensesStaffCosts =>
         ??? // TODO Other Journeys not yet implemented
 
     }

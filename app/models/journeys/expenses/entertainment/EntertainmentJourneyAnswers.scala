@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.common.{TaxYear, UserType}
-@import views.html.components.PageCYA
+package models.journeys.expenses.entertainment
 
-@this(pageCYA: PageCYA)
+import play.api.libs.json.{Json, OFormat}
 
-@(taxYear: TaxYear,
-        userType: UserType,
-        summaryList: SummaryList,
-        nextRoute: Call
-)(implicit request: Request[_], messages: Messages)
+case class EntertainmentJourneyAnswers(entertainmentAmount: BigDecimal)
 
-@pageCYA("repairsAndMaintenanceCostsCYA", taxYear, userType, summaryList, nextRoute)
+object EntertainmentJourneyAnswers {
+  implicit val formats: OFormat[EntertainmentJourneyAnswers] = Json.format[EntertainmentJourneyAnswers]
+}

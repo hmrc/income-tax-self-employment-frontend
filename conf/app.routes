@@ -256,6 +256,7 @@ GET         /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowab
 POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowable-amount                      controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Entertainment ##########
 
@@ -265,6 +266,7 @@ GET         /:taxYear/:businessId/expenses/change-entertainment/disallowable-amo
 POST        /:taxYear/:businessId/expenses/change-entertainment/disallowable-amount                            controllers.journeys.expenses.entertainment.EntertainmentAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/entertainment/check                                                 controllers.journeys.expenses.entertainment.EntertainmentCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/entertainment/check                                                 controllers.journeys.expenses.entertainment.EntertainmentCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Staff Costs ##########
 
@@ -279,6 +281,7 @@ GET         /:taxYear/:businessId/expenses/change-staff/disallowable-amount     
 POST        /:taxYear/:businessId/expenses/change-staff/disallowable-amount                                    controllers.journeys.expenses.staffCosts.StaffCostsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/staff/check                                                         controllers.journeys.expenses.staffCosts.StaffCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Construction Industry ##########
 

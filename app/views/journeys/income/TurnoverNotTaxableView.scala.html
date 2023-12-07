@@ -15,7 +15,7 @@
  *@
 
 @import controllers.journeys.income.routes.TurnoverNotTaxableController
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -27,7 +27,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("turnoverNotTaxable.title"))) {
 
@@ -39,7 +39,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"turnoverNotTaxable.p1.$authUserType")
+            @messages(s"turnoverNotTaxable.p1.$userType")
         </p>
         <p>
             @messages("site.thisIncludes")
@@ -50,7 +50,7 @@
             <li>@messages("turnoverNotTaxable.l3")</li>
         </ul>
         <p>
-            @messages(s"turnoverNotTaxable.p3.$authUserType")
+            @messages(s"turnoverNotTaxable.p3.$userType")
         </p>
     </div>
 
@@ -59,7 +59,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"income.turnoverExemptFromTax.$authUserType"))
+                legend = LegendViewModel(messages(s"income.turnoverExemptFromTax.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )

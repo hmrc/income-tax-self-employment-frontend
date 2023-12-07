@@ -19,5 +19,5 @@ package pages.expenses.staffCosts
 import pages.Page
 
 case object StaffCostsCYAPage extends Page {
-  override def toString: String = "staffCostsCYA"
+  override def toString: String = "staffCostsCya"
 }

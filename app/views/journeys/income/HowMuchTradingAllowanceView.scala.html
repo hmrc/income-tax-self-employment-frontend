@@ -29,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, authUserType: UserType, taxYear: TaxYear, businessId: BusinessId, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("howMuchTradingAllowance.title"))) {
 
@@ -41,7 +41,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"howMuchTradingAllowance.p1.$authUserType")
+            @messages(s"howMuchTradingAllowance.p1.$userType")
         </p>
         <p>
             @messages("howMuchTradingAllowance.p2")
@@ -53,7 +53,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"howMuchTradingAllowance.subHeading.$authUserType"))
+                legend = LegendViewModel(messages(s"howMuchTradingAllowance.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items  = HowMuchTradingAllowance.options(tradingAllowance)
             )

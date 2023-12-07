@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.TurnoverNotTaxableController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.Messages
@@ -29,12 +29,12 @@ import viewmodels.implicits._
 
 object TurnoverNotTaxableSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
-        key = Key(content = s"income.turnoverExemptFromTax.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"income.turnoverExemptFromTax.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)

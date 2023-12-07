@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesAmountSummarySpec extends SpecBase {
 
-  private val authUserType = individual
+  private val userType = individual
 
   private val data      = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> 123.45))
   private val otherData = Json.obj("otherPage" -> 123.45)
@@ -39,16 +39,16 @@ class OfficeSuppliesAmountSummarySpec extends SpecBase {
   "OfficeSuppliesAmountSummary" - {
     "user answers for OfficeSuppliesAmountPage exist" - {
       "generate a summary list row" in {
-        val result = OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, authUserType)
+        val result = OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, userType)
 
         result.get shouldBe a[SummaryListRow]
-        result.get.key.content shouldBe Text(s"officeSuppliesAmount.title.$authUserType")
+        result.get.key.content shouldBe Text(s"officeSuppliesAmount.title.$userType")
         result.get.value.content shouldBe Text("£123.45")
       }
     }
     "user answers do not exist for OfficeSuppliesAmountPage" - {
       "return None" in {
-        val result = OfficeSuppliesAmountSummary.row(otherUserAnswers, taxYear, businessId, authUserType)
+        val result = OfficeSuppliesAmountSummary.row(otherUserAnswers, taxYear, businessId, userType)
 
         result shouldBe None
       }

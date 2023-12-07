@@ -17,15 +17,16 @@
 package forms.income
 
 import forms.mappings.Mappings
+import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class TurnoverNotTaxableFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[Boolean] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> boolean(s"turnoverNotTaxable.error.required.$authUserType")
+      "value" -> boolean(s"turnoverNotTaxable.error.required.$userType")
     )
 
 }

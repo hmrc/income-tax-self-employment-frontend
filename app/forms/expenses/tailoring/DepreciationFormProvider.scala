@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class DepreciationFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[Depreciation] =
+  def apply(userType: String): Form[Depreciation] =
     Form(
-      "value" -> enumerable[Depreciation](s"depreciation.error.required.$authUserType")
+      "value" -> enumerable[Depreciation](s"depreciation.error.required.$userType")
     )
 
 }

@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.HowMuchTradingAllowanceController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
@@ -31,7 +31,7 @@ import viewmodels.implicits._
 
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[Either[Exception, SummaryListRow]] =
     userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val rowValueOrError = answer match {
@@ -46,7 +46,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
       for {
         rowValue <- rowValueOrError
       } yield SummaryListRowViewModel(
-        key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = rowValue, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)

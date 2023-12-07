@@ -34,9 +34,8 @@ import services.SelfEmploymentService
 
 import scala.concurrent.Future
 
-trait CYAOnSubmitControllerBaseSpec[T] extends ControllerSpec {
+trait CYAOnSubmitControllerBaseSpec extends ControllerSpec {
 
-  protected val journeyAnswers: T
   protected val journey: Journey
   protected val userAnswers: UserAnswers
 

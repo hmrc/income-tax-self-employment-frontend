@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.TurnoverIncomeAmountController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.Messages
@@ -30,10 +30,10 @@ import viewmodels.implicits._
 
 object TurnoverIncomeAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
-        key = Key(content = s"turnoverIncomeAmount.subHeading.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"turnoverIncomeAmount.subHeading.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)

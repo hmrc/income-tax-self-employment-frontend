@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class WorkFromHomeFormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[WorkFromHome] =
+  def apply(userType: String): Form[WorkFromHome] =
     Form(
-      "value" -> enumerable[WorkFromHome](s"workFromHome.error.required.$authUserType")
+      "value" -> enumerable[WorkFromHome](s"workFromHome.error.required.$userType")
     )
 
 }

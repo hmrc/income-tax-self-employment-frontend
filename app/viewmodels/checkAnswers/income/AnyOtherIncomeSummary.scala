@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.income
 
 import controllers.journeys.income.routes.AnyOtherIncomeController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.AnyOtherIncomePage
 import play.api.i18n.Messages
@@ -29,12 +29,12 @@ import viewmodels.implicits._
 
 object AnyOtherIncomeSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, authUserType: String, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AnyOtherIncomePage, Some(businessId)).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
-        key = Key(content = s"anyOtherIncome.title.$authUserType", classes = "govuk-!-width-two-thirds"),
+        key = Key(content = s"anyOtherIncome.title.$userType", classes = "govuk-!-width-two-thirds"),
         value = Value(content = value, classes = "govuk-!-width-one-third"),
         actions = Seq(
           ActionItemViewModel("site.change", AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)

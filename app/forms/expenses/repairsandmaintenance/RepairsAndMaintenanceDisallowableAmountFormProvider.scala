@@ -26,16 +26,16 @@ import javax.inject.Inject
 
 class RepairsAndMaintenanceDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(authUserType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] = {
+  def apply(userType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] = {
     val formattedMoney = formatMoney(allowableAmount)
 
     Form(
       "value" -> bigDecimal(
-        messages(s"repairsAndMaintenanceDisallowableAmount.error.required.$authUserType", formattedMoney),
-        messages(s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$authUserType", formattedMoney)
+        messages(s"repairsAndMaintenanceDisallowableAmount.error.required.$userType", formattedMoney),
+        messages(s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$userType", formattedMoney)
       )
-        .verifying(greaterThan(minimumValue, messages(s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$authUserType", formattedMoney)))
-        .verifying(maximumValue(allowableAmount, messages(s"repairsAndMaintenanceDisallowableAmount.error.overAmount.$authUserType", formattedMoney)))
+        .verifying(greaterThan(minimumValue, messages(s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$userType", formattedMoney)))
+        .verifying(maximumValue(allowableAmount, messages(s"repairsAndMaintenanceDisallowableAmount.error.overAmount.$userType", formattedMoney)))
     )
   }
 
