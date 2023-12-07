@@ -223,8 +223,6 @@ notTaxableAmount.error.lessThanZero.individual = The amount of your turnover exe
 notTaxableAmount.error.lessThanZero.agent = The amount of your client’s turnover exempt from being taxed as profit must be more than £0
 notTaxableAmount.error.overMax.individual = The amount of your turnover exempt from being taxed as profit must be less than £100,000,000,000
 notTaxableAmount.error.overMax.agent = The amount of your client’s turnover exempt from being taxed as profit must be less than £100,000,000,000
-notTaxableAmount.error.overTurnover.individual = The amount of your turnover exempt from being taxed as profit must be less than £{0}
-notTaxableAmount.error.overTurnover.agent = The amount of your client’s turnover exempt from being taxed as profit must be less than £{0}
 notTaxableAmount.change.hidden = Change turnover exempt from being taxed as profit
 
 ## Trading allowance
