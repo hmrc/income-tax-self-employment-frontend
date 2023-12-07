@@ -25,7 +25,6 @@ import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SelfEmploymentService.getIncomeTradingAllowance
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NotTaxableAmountView
 
@@ -46,10 +45,9 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
       val preparedForm = request.userAnswers.get(NotTaxableAmountPage, Some(businessId)) match {
-        case None        => formProvider(request.userType, tradingAllowance)
-        case Some(value) => formProvider(request.userType, tradingAllowance).fill(value)
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
@@ -57,8 +55,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      formProvider(request.userType, tradingAllowance)
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
