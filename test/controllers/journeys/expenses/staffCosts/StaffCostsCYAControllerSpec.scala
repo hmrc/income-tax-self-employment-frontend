@@ -19,13 +19,13 @@ package controllers.journeys.expenses.staffCosts
 import base.SpecBase._
 import builders.UserBuilder.aNoddyUser
 import common.TestApp.buildAppFromUserAnswers
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import models.requests.DataRequest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
-import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Result}
@@ -33,7 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.checkAnswers.expenses.staffCosts._
-import views.html.journeys.expenses.staffCosts.StaffCostsCYAView
+import views.html.standard.CheckYourAnswersView
 
 import scala.concurrent.Future
 
@@ -83,9 +83,10 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
   }
 
   def createExpectedView(application: Application, expectedRows: List[SummaryListRow])(implicit msg: Messages): String = {
-    val view        = application.injector.instanceOf[StaffCostsCYAView]
-    val summaryList = SummaryList(expectedRows)
-    view(taxYear, UserType.Individual, summaryList, onwardRoute)(getRequest, msg).toString()
-  }
+    val view         = application.injector.instanceOf[CheckYourAnswersView]
+    val summaryList  = SummaryList(rows = expectedRows, classes = "govuk-!-margin-bottom-7")
+    val onSubmitCall = routes.StaffCostsCYAController.onSubmit(taxYear, businessId)
 
+    view(StaffCostsCYAPage.toString, taxYear, UserType.Individual, summaryList, onSubmitCall)(getRequest, msg).toString()
+  }
 }
