@@ -19,8 +19,10 @@ package controllers.journeys.income
 import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, JourneyAnswersContext, TaxYear}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.income.IncomeJourneyAnswers
 import navigation.IncomeNavigator
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,13 +39,15 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
                                                       navigator: IncomeNavigator,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
+                                                      getSubmittedData: SubmittedDataRetrievalActionProvider,
                                                       formProvider: IncomeNotCountedAsTurnoverFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       view: IncomeNotCountedAsTurnoverView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen
+    getSubmittedData[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income))) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
       case None        => formProvider(request.userType)
       case Some(value) => formProvider(request.userType).fill(value)

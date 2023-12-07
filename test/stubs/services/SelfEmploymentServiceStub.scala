@@ -46,4 +46,6 @@ case class SelfEmploymentServiceStub(
     Future.successful(saveAnswerResult)
 
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
+
+  def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] = ???
 }
