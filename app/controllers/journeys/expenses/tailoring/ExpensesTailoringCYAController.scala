@@ -24,7 +24,7 @@ import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.ExpensesTailoringAnswers
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.{ExpensesTailoringCYAPage, ExpensesTailoringPage}
+import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,7 +53,7 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesTailoringPage, IndividualCategories, Some(businessId)))
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(businessId)))
         _              <- sessionRepository.set(updatedAnswers)
       } yield { // TODO remove hardcoded userAnswers when tailoring page is created
         val summaryList = buildTailoringSummaryList(updatedAnswers, taxYear, businessId, request.userType)

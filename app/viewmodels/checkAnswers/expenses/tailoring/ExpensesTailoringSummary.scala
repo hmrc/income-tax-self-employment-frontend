@@ -21,7 +21,7 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
-import pages.expenses.tailoring.ExpensesTailoringPage
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object ExpensesTailoringSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
-    answers.get(ExpensesTailoringPage, Some(businessId)).map { answer =>
+    answers.get(ExpensesCategoriesPage, Some(businessId)).map { answer =>
       val optUserType = if (answer == NoExpenses) s".$userType" else ""
       SummaryListRowViewModel(
         key = Key(
@@ -37,7 +37,7 @@ object ExpensesTailoringSummary {
           classes = "govuk-!-width-two-thirds"
         ),
         value = Value(
-          content = messages(s"expenses.cyaSummary.$answer$optUserType"),
+          content = messages(s"expenses.$answer$optUserType"),
           classes = "govuk-!-width-one-third"
         ),
         actions = Seq(

@@ -16,13 +16,15 @@
 
 package navigation
 
-import controllers.journeys
+import controllers.journeys.expenses.{simplifiedExpenses, tailoring}
 import controllers.journeys.expenses.tailoring.routes._
+import controllers.{journeys, standard}
 import controllers.standard.routes._
 import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.ExpensesTailoring
+import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
 import models.{NormalMode, _}
@@ -36,6 +38,16 @@ import javax.inject.{Inject, Singleton}
 class ExpensesTailoringNavigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
+
+    case ExpensesCategoriesPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(ExpensesCategoriesPage, Some(businessId)) match {
+            case Some(TotalAmount)          => simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(IndividualCategories) => tailoring.routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(NoExpenses)           => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _                          => standard.routes.JourneyRecoveryController.onPageLoad()
+          }
 
     case OfficeSuppliesPage => _ => (taxYear, businessId, _) => TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -149,6 +161,16 @@ class ExpensesTailoringNavigator @Inject() () {
   }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
+
+    case ExpensesCategoriesPage =>
+      userAnswers =>
+        (taxYear, businessId, _) =>
+          userAnswers.get(ExpensesCategoriesPage, Some(businessId)) match {
+            case Some(TotalAmount)          => simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(IndividualCategories) => tailoring.routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(NoExpenses)           => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            case _                          => standard.routes.JourneyRecoveryController.onPageLoad()
+          }
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>

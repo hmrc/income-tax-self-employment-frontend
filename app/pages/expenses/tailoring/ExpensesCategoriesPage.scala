@@ -19,6 +19,6 @@ package pages.expenses.tailoring
 import models.journeys.expenses.ExpensesTailoring
 import pages.OneQuestionPage
 
-case object ExpensesTailoringPage extends OneQuestionPage[ExpensesTailoring] {
-  override def toString: String = "expensesTailoring"
+case object ExpensesCategoriesPage extends OneQuestionPage[ExpensesTailoring] {
+  override def toString: String = "expensesCategories"
 }

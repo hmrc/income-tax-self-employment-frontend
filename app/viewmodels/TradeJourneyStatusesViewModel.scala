@@ -83,7 +83,7 @@ object TradeJourneyStatusesViewModel {
       None
     }
 
-  private def getJourneyStatus(journey: Journey, conditionalCompletedJourney: Option[Journey])(implicit
+  def getJourneyStatus(journey: Journey, conditionalCompletedJourney: Option[Journey])(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
     statusFromCompletedState(getCompletedState(journeyStatuses, journey)) match {
       case NotStarted            => conditionalJourneyIsPassed(conditionalCompletedJourney)
@@ -124,21 +124,13 @@ object TradeJourneyStatusesViewModel {
         )
       case ExpensesTailoring =>
         determineUrl(
-          expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url, // TODO expenses categories page when built
-          expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url // TODO expenses CYA page when built
+          expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesOfficeSupplies =>
         determineUrl(
-          expenses.officeSupplies.routes.OfficeSuppliesAmountController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url,
-          expenses.officeSupplies.routes.OfficeSuppliesCYAController
-            .onPageLoad(taxYear, businessId)
-            .url
+          expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesEntertainment | ExpensesConstruction | ExpensesGoodsToSellOrUse | ExpensesRepairsAndMaintenance | ExpensesTotal |
           NationalInsurance | TradeDetails | ExpensesStaffCosts =>

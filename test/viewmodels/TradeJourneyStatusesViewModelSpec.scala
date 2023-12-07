@@ -17,41 +17,37 @@
 package viewmodels
 
 import base.SpecBase
-import models.journeys.Journey.{Abroad, ExpensesTailoring, Income}
+import controllers.journeys
+import models.NormalMode
+import models.common.JourneyStatus
+import models.common.JourneyStatus._
+import models.journeys.Journey
+import models.journeys.Journey.{Abroad, ExpensesOfficeSupplies, ExpensesTailoring, Income}
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyCompletedState
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
+import scala.annotation.nowarn
+
 class TradeJourneyStatusesViewModelSpec extends SpecBase {
+
+  case class TestScenario(journeyCompletedStates: List[JourneyCompletedState])
+
+  private val testScenarios = Seq(
+    TestScenario(List.empty),
+    TestScenario(List(JourneyCompletedState(Abroad, Some(false))))
+  )// First 3 should always appear, others should be conditional
 
   "TradeJourneyStatusesViewModel" - {
     ".buildSummaryList" - {
-      "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" - {
-        "Abroad is NotStarted, and Income and Expenses are CannotStart" in {
-          val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some(tradingName), Seq.empty)
-          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
+      testScenarios.foreach { testScenario =>
+        "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" - {
+          s"statuses are: ${testScenario.journeyCompletedStates}" in {
+            val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some("tradingName"), testScenario.journeyCompletedStates)
+            val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
 
-          result.rows.map(_.toString) mustEqual Seq(notStartedAbroadRow, cannotStartYetIncomeRow, cannotStartYetExpensesRow)
-        }
-        "Abroad is completed, and Income and Expenses are NotStarted" in {
-          val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some(tradingName), Seq(JourneyCompletedState(Abroad, Some(true))))
-          val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
-
-          result.rows.map(_.toString) mustEqual Seq(completedAbroadRow, notStartedIncomeRow, notStartedExpensesRow)
-        }
-        "Abroad, Income and Expenses are all Completed" in {
-          val tradesJourneyStatuses =
-            TradesJourneyStatuses(
-              businessId.value,
-              Some(tradingName),
-              Seq(
-                JourneyCompletedState(Abroad, Some(true)),
-                JourneyCompletedState(Income, Some(true)),
-                JourneyCompletedState(ExpensesTailoring, Some(true)))
-            )
-          val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(emptyUserAnswers))
-
-          result.rows.map(_.toString) mustEqual Seq(completedAbroadRow, completedIncomeRow, completedExpensesRow)
+            result.rows.map(_.toString) mustEqual buildExpectedResult(testScenario.journeyCompletedStates)
+          }
         }
       }
     }
@@ -62,30 +58,42 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  private val tradingName = "tradingName"
+  private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState]): Seq[String] = {
+    if (journeyCompletedStates.isEmpty) {
+      Seq(buildRow(Abroad, statusFromCompletedState(None)))
+    } else {
+      journeyCompletedStates.map(jcs => buildRow(jcs.journey, statusFromCompletedState(jcs.completedState)))
+    }
+  }
 
-  private val notStartedAbroadRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/details/self-employment-abroad> journeys.self-employment-abroad </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/details/self-employment-abroad,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--notStarted'> status.notStarted </strong>),None, tag-float,Map())))))"
+  // noinspection ScalaStyle
+  @nowarn("msg=match may not be exhaustive")
+  private def buildRow(journey: Journey, status: JourneyStatus): String = {
+    val href = status match {
+      case CannotStartYet         => "#"
+      case NotStarted             => chooseFirstUrl(journey)
+      case InProgress | Completed => chooseCyaUrl(journey)
+    }
 
-  private val completedAbroadRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/self-employment/details/check> journeys.self-employment-abroad </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/self-employment/details/check,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--completed'> status.completed </strong>),None, tag-float,Map())))))"
+    val optDeadlink = if (status == CannotStartYet) " class='govuk-deadlink'" else ""
+    s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlink> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))"
+  }
 
-  private val cannotStartYetIncomeRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=# class='govuk-deadlink'> journeys.income </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(#,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--cannotStartYet'> status.cannotStartYet </strong>),None, tag-float,Map())))))"
-
-  private val notStartedIncomeRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/income/not-counted-turnover> journeys.income </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/income/not-counted-turnover,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--notStarted'> status.notStarted </strong>),None, tag-float,Map())))))"
-
-  private val completedIncomeRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/income/check-your-income> journeys.income </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/income/check-your-income,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--completed'> status.completed </strong>),None, tag-float,Map())))))"
-
-  private val cannotStartYetExpensesRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=# class='govuk-deadlink'> journeys.expenses-categories </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(#,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--cannotStartYet'> status.cannotStartYet </strong>),None, tag-float,Map())))))"
-
-  private val notStartedExpensesRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/expenses/office-supplies> journeys.expenses-categories </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/expenses/office-supplies,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--notStarted'> status.notStarted </strong>),None, tag-float,Map())))))"
-
-  private val completedExpensesRow =
-    "SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/expenses/office-supplies> journeys.expenses-categories </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem(/update-and-submit-income-tax-return/self-employment/2023/SJPR05893938418/expenses/office-supplies,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--completed'> status.completed </strong>),None, tag-float,Map())))))"
-
+  private def chooseFirstUrl(journey: Journey): String =
+    journey match {
+      case Abroad            => journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+      case Income            => journeys.income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesTailoring => journeys.expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesOfficeSupplies =>
+        journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case _ => "not implemented or error"
+    }
+  private def chooseCyaUrl(journey: Journey): String =
+    journey match {
+      case Abroad                 => journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+      case Income                 => journeys.income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesTailoring      => journeys.expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesOfficeSupplies => journeys.expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
+      case _                      => "not implemented or error"
+    }
 }

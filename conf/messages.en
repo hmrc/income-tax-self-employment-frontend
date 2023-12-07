@@ -277,23 +277,7 @@ tradingAllowanceAmount.change.hidden = Change trading allowance amount
 checkYourIncome.title.individual = Check your income
 checkYourIncome.title.agent = Check your client’s income
 
-########## Expenses - Simple Journey ##########
-
-totalExpenses.title.individual = How much were your total expenses?
-totalExpenses.title.agent = How much were your client’s total expenses?
-totalExpenses.error.required.individual = Enter your total expenses
-totalExpenses.error.required.agent = Enter your client’s total expenses
-totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
-totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
-totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
-totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
-totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
-totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
-totalExpenses.change.hidden = Change how much the total expenses were
-
-totalExpensesCYA.title = totalExpensesCYA
-
-###### Expenses - Tailoring ######
+########## Expenses - Tailoring ##########
 
 ## Common
 expenses.yesAllowable.individual = Yes, all of my expenses are allowable
@@ -335,10 +319,59 @@ expenses.includes.construction.agent = This includes the total payments your cli
 expenses.understanding.construction = Understanding construction industry expenses
 expenses.cyaSummary.individual = How will you report your expenses?
 expenses.cyaSummary.agent = How will you report your client’s expenses?
-expenses.cyaSummary.totalAmount = As one total amount
-expenses.cyaSummary.individualCategories = In individual categories
-expenses.cyaSummary.noExpenses.individual = I do not have any expenses to report
-expenses.cyaSummary.noExpenses.agent = My client does not have any expenses to report
+expenses.totalAmount = As one total amount
+expenses.individualCategories = In individual categories
+expenses.noExpenses.individual = I do not have any expenses to report
+expenses.noExpenses.agent = My client does not have any expenses to report
+expenses.officeSupplies = office supplies
+expenses.goodsToSellOrUse = goods to sell or use (stock or raw materials)
+expenses.repairsAndMaintenance = repairs and maintenance
+expenses.runningPremises = running premises, including working from home
+expenses.travel = travel
+expenses.advertisingOrMarketing = advertising or marketing
+expenses.staffContractorsAndServices = staff, contractors and services
+expenses.financialExpenses = financial expenses
+expenses.trainingCourses = training courses related to your work
+expenses.workClothing = work clothing
+
+## Expenses Categories
+expensesCategories.subheading = Allowable and disallowable expenses
+expensesCategories.p1.individual = If you already know about the allowable expenses you can claim, you may prefer to report your expenses as one total amount.
+expensesCategories.p1.agent = If you already know about the allowable expenses your client can claim, you may prefer to report their expenses as one total amount.
+expensesCategories.p2.individual = If you would like to know more about what you can claim in expenses, you may want to report them in individual categories. Selecting this option will help you add only the categories you need to tell us about. You can add amounts later.
+expensesCategories.p2.agent = If you would like to know more about what your client can claim in expenses, you may want to report them in individual categories. Selecting this option will help you add only the categories you need to tell us about. You can add amounts later.
+expensesCategories.p3 = Not all expenses are ‘allowable’. If you include anything that counts as ‘disallowable’, you’ll need to tell us about the disallowable amounts separately.
+expensesCategories.p4.individual = As your total income was over £85,000, you must report your expenses in individual categories.
+expensesCategories.p4.agent = As your client’s total income was over £85,000, you must report their expenses in individual categories.
+expensesCategories.details.heading = Understanding allowable expenses
+expensesCategories.details.p1 = Allowable expenses include the costs of:
+expensesCategories.details.link = Find out more about allowable expenses (opens in a new tab)
+expensesCategories.details.href = https://www.gov.uk/government/publications/how-to-calculate-your-taxable-profits-hs222-self-assessment-helpsheet/hs222-how-to-calculate-your-taxable-profits-2023#allowable-business-expenses-cash-basis-and-traditional-accounting
+expensesCategories.error.required.individual = Select if you’re reporting your expenses as one total amount, in individual categories or you do not have any expenses to report
+expensesCategories.error.required.agent = Select if your client is reporting their expenses as one total amount, in individual categories or they do not have any expenses to report
+
+## Tailoring CYA
+expensesTailoringCya.title.individual = Check your expenses
+expensesTailoringCya.title.agent = Check your client’s expenses
+expensesTailoringCyaCategories.title.individual = Check your expenses categories
+expensesTailoringCyaCategories.title.agent = Check your client’s expenses categories
+expensesTailoringCya.insetText = We will only save amounts.  Other information will not be saved.
+
+###### Expenses - Simple Journey ######
+
+totalExpenses.title.individual = How much were your total expenses?
+totalExpenses.title.agent = How much were your client’s total expenses?
+totalExpenses.error.required.individual = Enter your total expenses
+totalExpenses.error.required.agent = Enter your client’s total expenses
+totalExpenses.error.nonNumeric.individual = Your total expenses must be a number
+totalExpenses.error.nonNumeric.agent = Your client’s total expenses must be a number
+totalExpenses.error.lessThanZero.individual = Your total expenses must be more than £0
+totalExpenses.error.lessThanZero.agent = Your client’s total expenses must be more than £0
+totalExpenses.error.overMax.individual = Your total expenses must be less than £100,000,000,000
+totalExpenses.error.overMax.agent = Your client’s total expenses must be less than £100,000,000,000
+totalExpenses.change.hidden = Change how much the total expenses were
+
+###### Expenses - Individual Categories ######
 
 ## Office supplies
 officeSupplies.l1 = phones, including mobiles
@@ -567,14 +600,6 @@ otherExpenses.l5 = the cost of ordinary clothing
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
 otherExpenses.change.hidden = OtherExpenses
-
-########## Expenses Tailoring CYA ##########
-
-expensesTailoringCya.title.individual = Check your expenses
-expensesTailoringCya.title.agent = Check your client’s expenses
-expensesTailoringCyaCategories.title.individual = Check your expenses categories
-expensesTailoringCyaCategories.title.agent = Check your client’s expenses categories
-expensesTailoringCya.insetText = We will only save amounts.  Other information will not be saved.
 
 ########## Expenses - Office supplies ##########
 
