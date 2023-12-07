@@ -16,9 +16,14 @@
 
 package models.journeys
 
+import models.common.PageName
+import pages.Page
+import pages.income._
 import play.api.libs.json._
 
-sealed trait Journey
+sealed trait Journey {
+  val pageKeys: List[PageName] = Nil
+}
 
 object Journey {
 
@@ -32,6 +37,19 @@ object Journey {
 
   case object Income extends Journey {
     override def toString: String = "income"
+
+    override val pageKeys: List[PageName] = List(
+      AnyOtherIncomePage.pageName,
+      HowMuchTradingAllowancePage.pageName,
+      IncomeCYAPage.pageName,
+      IncomeNotCountedAsTurnoverPage.pageName,
+      NonTurnoverIncomeAmountPage.pageName,
+      OtherIncomeAmountPage.pageName,
+      TradingAllowanceAmountPage.pageName,
+      TradingAllowancePage.pageName,
+      TurnoverIncomeAmountPage.pageName,
+      TurnoverNotTaxablePage.pageName
+    )
   }
 
   case object ExpensesTotal extends Journey {

@@ -23,7 +23,7 @@ import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
 import models.common.{BusinessId, JourneyContext, TaxYear}
 import models.domain.ApiResultT
-import play.api.libs.json.Writes
+import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -73,6 +73,12 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
 
     val url = buildUrl(s"individuals/business/journey-states/$nino/${taxYear.value}")
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  }
+
+  def getSubmittedAnswers[A: Reads](context: JourneyContext)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Option[A]] = {
+    val url      = buildUrl(context.answersUrl)
+    val response = get(http, url, context.mtditid)
+    EitherT(response)
   }
 
   def submitAnswers[A: Writes](context: JourneyContext, answers: A)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {

@@ -29,7 +29,7 @@ import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
-import play.api.libs.json.{Format, Writes}
+import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,6 +42,7 @@ trait SelfEmploymentServiceBase {
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+  def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
@@ -68,6 +69,9 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
       case Left(error)                                                       => Left(error)
       case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
     }
+
+  def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]] =
+    connector.getSubmittedAnswers[SubsetOfAnswers](context)
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     for {

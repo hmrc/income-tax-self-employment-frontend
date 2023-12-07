@@ -8,12 +8,13 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "7.9.0-play-28",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.13.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootstrapVersion,
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
-    "org.typelevel"     %% "cats-core"                     % "2.9.0",
-    "com.beachape"      %% "enumeratum"                    % enumeratumVersion
+    "uk.gov.hmrc"        %% "play-frontend-hmrc"            % "7.9.0-play-28",
+    "uk.gov.hmrc"        %% "play-conditional-form-mapping" % "1.13.0-play-28",
+    "uk.gov.hmrc"        %% "bootstrap-frontend-play-28"    % bootstrapVersion,
+    "uk.gov.hmrc.mongo"  %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
+    "org.typelevel"      %% "cats-core"                     % "2.9.0",
+    "com.beachape"       %% "enumeratum"                    % enumeratumVersion,
+    "org.codehaus.janino" % "janino"                        % "3.1.11" // it's required by logback for conditional logging
   )
 
   val test: Seq[ModuleID] = Seq(

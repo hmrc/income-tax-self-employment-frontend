@@ -4,6 +4,8 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "income-tax-self-employment-frontend"
 
+val additionalScalacOptions = if (sys.props.getOrElse("PLAY_ENV", "") == "Dev") Seq() else Seq("-Xfatal-warnings")
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -34,7 +36,6 @@ lazy val root = (project in file("."))
     ),
     PlayKeys.playDefaultPort := 10901,
     scalacOptions ++= Seq(
-      "-Xfatal-warnings",
       "-feature",
       "-unchecked",
       "-Ywarn-unused:implicits",
@@ -47,7 +48,7 @@ lazy val root = (project in file("."))
       "-rootdir",
       baseDirectory.value.getCanonicalPath,
       "-Wconf:src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
-    ),
+    ) ++ additionalScalacOptions,
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     resolvers ++= Seq(Resolver.jcenterRepo),

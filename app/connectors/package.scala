@@ -15,16 +15,20 @@
  */
 
 import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.JourneyStateParser.pagerDutyError
+import connectors.httpParser.JourneyStateParser.{nonModelValidatingJsonFromAPI, pagerDutyError}
 import models.common.Mtditid
 import models.errors.HttpError
-import play.api.libs.json.Writes
+import play.api.http.MediaRange.parse
+import play.api.http.Status.OK
+import play.api.libs.json.{Reads, Writes}
+import play.libs.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object connectors {
-  type NoContentResponse = Either[HttpError, Unit]
+  type ContentResponse[A] = Either[HttpError, A]
+  type NoContentResponse  = ContentResponse[Unit]
 
   /** Helper method to add necessary headers when calling endpoints
     */
@@ -38,6 +42,15 @@ package object connectors {
       ec = ec
     )
 
+  def get[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[HttpError, Option[A]]] =
+    http.GET[Either[HttpError, Option[A]]](url)(
+      rds = new ContentHttpReads[A],
+      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      ec = ec
+    )
+
   object NoContentHttpReads extends HttpReads[NoContentResponse] {
 
     override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
@@ -45,6 +58,15 @@ package object connectors {
         case status if status >= 200 && status <= 299 => ().asRight
         case _                                        => pagerDutyError(response).asLeft
       }
-
   }
+
+  class ContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
+
+    override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
+      response.status match {
+        case status if status >= 200 && status <= 299 => response.json.validate[A].asOpt.asRight
+        case _                                        => Left(pagerDutyError(response))
+      }
+  }
+
 }
