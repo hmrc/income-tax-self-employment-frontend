@@ -17,41 +17,53 @@
 package controllers.journeys.expenses.entertainment
 
 import controllers.actions._
-import models.NormalMode
-import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
+import controllers.handleSubmitAnswersResult
+import models.common._
+import models.journeys.Journey.ExpensesEntertainment
+import models.journeys.expenses.entertainment.EntertainmentJourneyAnswers
 import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.entertainment.EntertainmentAmountSummary
 import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.entertainment.EntertainmentCYAView
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class EntertainmentCYAController @Inject() (override val messagesApi: MessagesApi,
-                                            navigator: ExpensesNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            service: SelfEmploymentService,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: EntertainmentCYAView)
+                                            view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator
-      .nextPage(EntertainmentCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
-      .url
+    val summaryList =
+      SummaryListCYA.summaryListOpt(List(EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)))
 
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)
-      )
-    )
+    Ok(
+      view(
+        EntertainmentCYAPage.toString,
+        taxYear,
+        request.user.userType,
+        summaryList,
+        routes.EntertainmentCYAController.onSubmit(taxYear, businessId)))
+  }
 
-    Ok(view(taxYear, request.user.userType, summaryList, nextRoute))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesEntertainment)
+      val result  = service.submitAnswers[EntertainmentJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }
