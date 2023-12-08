@@ -33,7 +33,7 @@ import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageName: String = OfficeSuppliesCYAPage.toString
+  override val pageHeading: String = OfficeSuppliesCYAPage.toString
 
   private val officeSuppliesAmount = BigDecimal(200.00)
 

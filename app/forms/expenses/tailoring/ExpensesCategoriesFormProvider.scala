@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton
-)
+package forms.expenses.tailoring
 
-@()(implicit request: Request[_], messages: Messages)
+import forms.mappings.Mappings
+import models.common.UserType
+import models.journeys.expenses.ExpensesTailoring
+import play.api.data.Form
 
-@layout(pageTitle = titleNoForm(messages("totalExpensesCYA.title"))) {
+import javax.inject.Inject
 
-    <h1 class="govuk-heading-xl">@messages("totalExpensesCYA.heading")</h1>
+class ExpensesCategoriesFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[ExpensesTailoring] =
+    Form(
+      "value" -> enumerable[ExpensesTailoring](s"expensesCategories.error.required.$userType")
+    )
+
 }

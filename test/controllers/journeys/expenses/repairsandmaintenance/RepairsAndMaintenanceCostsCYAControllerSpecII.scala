@@ -53,7 +53,7 @@ class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControl
 
   override val journey: Journey = ExpensesRepairsAndMaintenance
 
-  override val pageName: String = RepairsAndMaintenanceCostsCYAPage.toString
+  override val pageHeading: String = RepairsAndMaintenanceCostsCYAPage.toString
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(

@@ -99,6 +99,16 @@ POST        /:taxYear/:businessId/income/change-trading-allowance/amount        
 GET         /:taxYear/:businessId/income/check-your-income                                       controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/income/check-your-income                                       controllers.journeys.income.IncomeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
+########## Expenses Tailoring ##########
+
+GET         /:taxYear/:businessId/self-employment/expenses                                                            controllers.journeys.expenses.tailoring.ExpensesCategoriesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/self-employment/expenses                                                            controllers.journeys.expenses.tailoring.ExpensesCategoriesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/self-employment/change-expenses                                                     controllers.journeys.expenses.tailoring.ExpensesCategoriesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/self-employment/change-expenses                                                     controllers.journeys.expenses.tailoring.ExpensesCategoriesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/check                                                                      controllers.journeys.expenses.tailoring.ExpensesTailoringCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/check                                                                      controllers.journeys.expenses.tailoring.ExpensesTailoringCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Single Amount ##########
 
 GET         /:taxYear/:businessId/expenses/total-expenses                                                             controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -106,7 +116,7 @@ POST        /:taxYear/:businessId/expenses/total-expenses                       
 GET         /:taxYear/:businessId/expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-total-expenses                                                      controllers.journeys.expenses.simplifiedExpenses.TotalExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-########## Expenses - Tailoring ##########
+########## Expenses - Individual Categories ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies                                                            controllers.journeys.expenses.tailoring.OfficeSuppliesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/office-supplies                                                            controllers.journeys.expenses.tailoring.OfficeSuppliesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -202,9 +212,6 @@ GET         /:taxYear/:businessId/expenses/other-expenses                       
 POST        /:taxYear/:businessId/expenses/other-expenses                                                             controllers.journeys.expenses.tailoring.OtherExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/change-other-expenses                                                      controllers.journeys.expenses.tailoring.OtherExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-other-expenses                                                      controllers.journeys.expenses.tailoring.OtherExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-
-GET        /:taxYear/:businessId/expenses/check                                                                       controllers.journeys.expenses.tailoring.ExpensesTailoringCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
-POST       /:taxYear/:businessId/expenses/check                                                                       controllers.journeys.expenses.tailoring.ExpensesTailoringCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Office Supplies ##########
 
