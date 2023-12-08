@@ -63,12 +63,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)
-      } yield {
-        println("-------- " + incomeAmount)
-        println("-------- " + incomeThreshold)
-        println("-------- " + incomeIsOverThreshold)
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))
-      }).merge
+      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {

@@ -57,7 +57,7 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
 
   override val testDataCases: List[JsObject] =
     List(
-//      allYesAnswers,
+      allYesAnswers,
       allNoAnswers,
       mixedAnswers
     )
