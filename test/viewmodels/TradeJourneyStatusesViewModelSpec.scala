@@ -62,7 +62,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       ),
       officeSuppliesAndGTSOUYes
     )
-  )
+  ) // TODO find a better solution for generating combinations of different journey states and user answers
 
   "TradeJourneyStatusesViewModel" - {
     ".buildSummaryList" - {

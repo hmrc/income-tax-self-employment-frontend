@@ -38,7 +38,7 @@ object ExpensesTailoring extends Enumerable.Implicits {
   def options(userType: UserType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     val optUserType = if (value == NoExpenses) s".$userType" else ""
     RadioItem(
-      content = Text(messages(s"expenses.cyaSummary.$value$optUserType")),
+      content = Text(messages(s"expenses.$value$optUserType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )

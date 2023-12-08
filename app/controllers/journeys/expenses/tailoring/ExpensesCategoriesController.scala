@@ -63,7 +63,12 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))).merge
+      } yield {
+        println("-------- " + incomeAmount)
+        println("-------- " + incomeThreshold)
+        println("-------- " + incomeIsOverThreshold)
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))
+      }).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -73,23 +78,26 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
           BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, incomeIsOverThreshold))
         )
 
-      def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring, incomeIsOverThreshold: Boolean): Future[Result] = {
-        val answer = if (incomeIsOverThreshold) IndividualCategories else value
+      def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring, incomeIsOverThreshold: Boolean): Future[Result] =
         for {
-          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), answer))
+          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), value))
           result <- selfEmploymentService
-            .saveAnswer(businessId, editedUserAnswers, answer, ExpensesCategoriesPage)
-            .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, mode, updated, taxYear, businessId)))
+            .saveAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
+            .map(updated =>
+              Redirect(navigator.nextPage(ExpensesCategoriesPage, mode, updated, taxYear, businessId, isOverThreshold = incomeIsOverThreshold)))
         } yield result
-      }
 
       def handleForm(form: Form[ExpensesTailoring], userType: UserType, userAnswers: UserAnswers, incomeIsOverThreshold: Boolean): Future[Result] =
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold),
-            value => handleSuccess(userAnswers, value, incomeIsOverThreshold)
-          )
+        if (incomeIsOverThreshold) {
+          handleSuccess(userAnswers, IndividualCategories, incomeIsOverThreshold)
+        } else {
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold),
+              value => handleSuccess(userAnswers, value, incomeIsOverThreshold)
+            )
+        }
 
       val result = for {
         incomeAmount <- EitherT.fromEither[Future](request.valueOrRedirectDefault(TurnoverIncomeAmountPage, businessId))

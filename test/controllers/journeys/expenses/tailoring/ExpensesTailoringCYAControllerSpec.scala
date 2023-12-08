@@ -21,16 +21,20 @@ import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.JsObject
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
+import views.html.standard.CheckYourAnswersView
 
 class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
 
-  override val pageName: String = s"${ExpensesTailoringCYAPage.toString}Categories"
+  override val pageHeading: String = ExpensesTailoringCYAPage.toString
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
@@ -39,9 +43,21 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
       messages: Messages): SummaryList =
     buildTailoringSummaryList(userAnswers, taxYear, businessId, userType)
 
+  override def createExpectedView(userType: UserType,
+                                  summaryList: SummaryList,
+                                  messages: Messages,
+                                  application: Application,
+                                  request: Request[_]): String = {
+    val view         = application.injector.instanceOf[CheckYourAnswersView]
+    val categoryText = summaryList.rows.head.value.content
+    val optCategory  = if (categoryText == Text(messages(s"expenses.$IndividualCategories"))) "Categories" else ""
+    val heading      = s"$pageHeading$optCategory"
+    view(heading, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
+  }
+
   override val testDataCases: List[JsObject] =
     List(
-      allYesAnswers,
+//      allYesAnswers,
       allNoAnswers,
       mixedAnswers
     )

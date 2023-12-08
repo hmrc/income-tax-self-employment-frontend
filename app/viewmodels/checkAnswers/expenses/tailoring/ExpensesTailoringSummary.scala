@@ -43,9 +43,9 @@ object ExpensesTailoringSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode).url
-          ) // TODO direct to tailoring page when created
-            .withVisuallyHiddenText(messages("depreciation.change.hidden"))
+            routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, CheckMode).url
+          )
+            .withVisuallyHiddenText(messages("expensesCategories.change.hidden"))
         )
       )
     }
