@@ -24,7 +24,7 @@ import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.ExpensesTailoring
-import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
+import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
 import models.{NormalMode, _}
