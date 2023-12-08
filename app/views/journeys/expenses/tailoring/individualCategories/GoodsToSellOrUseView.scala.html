@@ -1,0 +1,92 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+@import controllers.journeys.expenses.tailoring.individualCategories.routes.GoodsToSellOrUseController
+@import models.common.{BusinessId, TaxYear}
+@import views.html.templates.helpers.Heading
+
+@this(
+    layout: templates.Layout,
+    heading: Heading,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("journeys.expenses-goods-to-sell-or-use"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    @heading(messages("journeys.expenses-goods-to-sell-or-use"), None, extraClasses = "no-padding-top")
+
+    @if(taxiDriver) {
+        <div class="govuk-inset-text">
+            <p>@messages("goodsToSellOrUse.insetText")</p>
+        </div>
+    }
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages(s"site.canInclude.$userType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            @if(taxiDriver) {
+                <li>@messages("expenses.fuelCosts")</li>
+            }
+            <li>@messages("expenses.costOfRawMaterials")</li>
+            <li>@messages("expenses.stockBought")</li>
+            <li>@messages("expenses.directCostsOfProducing")</li>
+            @if(accountingType.equals("ACCRUAL")) {
+                <li>@messages("expenses.adjustments")</li>
+            }
+            <li>@messages("expenses.commissions")</li>
+            <li>@messages("expenses.discounts")</li>
+
+        </ul>
+        <p>
+        @messages(s"site.cannotInclude.$userType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        @if(accountingType.equals("CASH")) {
+            <li>@messages("expenses.costsForPrivateUse")</li>
+
+        }
+            <li>@messages("expenses.depreciationOfEquipment")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = GoodsToSellOrUseController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"goodsToSellOrUse.question.$userType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = GoodsToSellOrUse.options(userType)
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

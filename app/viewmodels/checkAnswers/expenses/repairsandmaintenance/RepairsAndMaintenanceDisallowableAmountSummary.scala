@@ -20,11 +20,11 @@ import controllers.journeys.expenses.repairsandmaintenance.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.RepairsAndMaintenance
-import models.journeys.expenses.RepairsAndMaintenance._
+import models.journeys.expenses.individualCategories.RepairsAndMaintenance
+import models.journeys.expenses.individualCategories.RepairsAndMaintenance._
 import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
-import pages.expenses.tailoring.RepairsAndMaintenancePage
+import pages.expenses.tailoring.individualCategories.RepairsAndMaintenancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import utils.MoneyUtils.formatMoney

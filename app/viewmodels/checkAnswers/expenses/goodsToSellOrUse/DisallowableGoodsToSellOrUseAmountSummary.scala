@@ -20,10 +20,10 @@ import controllers.journeys.expenses
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.GoodsToSellOrUse
-import models.journeys.expenses.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
-import pages.expenses.tailoring.GoodsToSellOrUsePage
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import utils.MoneyUtils

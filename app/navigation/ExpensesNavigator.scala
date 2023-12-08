@@ -30,7 +30,7 @@ import models.journeys.Journey.{
   ExpensesRepairsAndMaintenance,
   ExpensesStaffCosts
 }
-import models.journeys.expenses.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
+import models.journeys.expenses.individualCategories.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
 import pages._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage}
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
@@ -42,7 +42,7 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceDisallowableAmountPage
 }
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
-import pages.expenses.tailoring.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
+import pages.expenses.tailoring.individualCategories.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}

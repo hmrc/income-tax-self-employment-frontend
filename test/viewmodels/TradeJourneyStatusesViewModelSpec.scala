@@ -24,10 +24,10 @@ import models.common.JourneyStatus._
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.{Abroad, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesTailoring, Income}
-import models.journeys.expenses.{GoodsToSellOrUse, OfficeSupplies}
+import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, OfficeSupplies}
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyCompletedState
-import pages.expenses.tailoring.{GoodsToSellOrUsePage, OfficeSuppliesPage}
+import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, OfficeSuppliesPage}
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class TradeJourneyStatusesViewModelSpec extends SpecBase {
