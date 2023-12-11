@@ -36,6 +36,7 @@ journeys.expenses-categories = Expenses categories
 journeys.national-insurance = National Insurance
 journeys.expenses-office-supplies = Office supplies
 journeys.expenses-goods-to-sell-or-use = Goods to sell or use
+journeys.expenses-entertainment = Entertainment Costs
 
 date.day = Day
 date.month = Month
@@ -429,7 +430,6 @@ advertisingOrMarketing.error.required.agent = Select if all your client’s adve
 advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
 
 ## Entertainment costs
-entertainmentCosts.title = Entertainment costs
 entertainmentCosts.para = These are disallowable expenses, but you still need to tell us about them.
 entertainmentCosts.l1 = entertaining clients, suppliers and customers
 entertainmentCosts.l2 = hospitality at events
