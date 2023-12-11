@@ -30,7 +30,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.TradeJourneyStatusesViewModel
 import views.html.journeys.TaskListView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +50,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       for {
         status          <- service.getJourneyStatus(TradeDetails, request.nino, taxYear, request.mtditid)
         completedTrades <- getViewModelList(taxYear, status)
-        viewModelList: Seq[TradeJourneyStatusesViewModel] = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, request.userAnswers))
+        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, request.userAnswers))
       } yield Ok(view(taxYear, request.user, status, viewModelList))
     ).result
 

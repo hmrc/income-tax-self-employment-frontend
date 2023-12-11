@@ -22,7 +22,7 @@ import repositories.SessionRepositoryBase
 import scala.collection.mutable
 import scala.concurrent.Future
 
-case class StubSessionRepository(val state: mutable.Map[String, UserAnswers] = mutable.Map()) extends SessionRepositoryBase {
+case class StubSessionRepository(state: mutable.Map[String, UserAnswers] = mutable.Map()) extends SessionRepositoryBase {
   def keepAlive(id: String): Future[Boolean] = Future.successful(true)
 
   def get(id: String): Future[Option[UserAnswers]] = Future.successful(state.get(id))

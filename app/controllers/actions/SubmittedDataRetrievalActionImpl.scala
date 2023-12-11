@@ -22,7 +22,7 @@ import controllers.handleApiResult
 import models.common.{BusinessId, JourneyContext, Mtditid, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.HttpError
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
@@ -35,10 +35,12 @@ import utils.Logging
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
+trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
+
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext,
                                                                 selfEmploymentService: SelfEmploymentServiceBase,
                                                                 sessionRepository: SessionRepositoryBase)(implicit ec: ExecutionContext)
-    extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
+    extends SubmittedDataRetrievalAction
     with FrontendHeaderCarrierProvider
     with Logging {
 

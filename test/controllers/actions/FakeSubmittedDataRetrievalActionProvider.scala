@@ -18,14 +18,16 @@ package controllers.actions
 
 import models.common.{JourneyContext, Mtditid}
 import play.api.libs.json.Format
-import repositories.SessionRepositoryBase
-import services.SelfEmploymentServiceBase
+import stubs.controllers.actions.StubSubmittedDataRetrievalAction
+import stubs.repositories.StubSessionRepository
+import stubs.services.SelfEmploymentServiceStub
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-@Singleton
-class SubmittedDataRetrievalActionProvider @Inject() (selfEmploymentService: SelfEmploymentServiceBase, sessionRepository: SessionRepositoryBase) {
-  def apply[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext)(implicit ec: ExecutionContext): SubmittedDataRetrievalAction =
-    new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](journeyContext, selfEmploymentService, sessionRepository)
+case class FakeSubmittedDataRetrievalActionProvider()
+    extends SubmittedDataRetrievalActionProvider(SelfEmploymentServiceStub(), StubSessionRepository()) {
+
+  override def apply[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext)(implicit
+      ec: ExecutionContext): SubmittedDataRetrievalAction =
+    StubSubmittedDataRetrievalAction()
 }
