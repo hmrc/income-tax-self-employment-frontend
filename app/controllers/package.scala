@@ -36,6 +36,12 @@ package object controllers {
   def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     handleResultT(EitherT(result))
 
+  def handleApiResult[A](result: ApiResultT[A])(implicit ec: ExecutionContext): Future[A] =
+    result.value.flatMap {
+      case Left(httpError) => Future.failed(httpError.reason.getOrElse(new RuntimeException(httpError.toString)))
+      case Right(v)        => Future.successful(v)
+    }
+
   private def handleResultT(resultT: EitherT[Future, HttpError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     resultT.leftMap { httpError =>
       logger.error(s"HttpError encountered: $httpError")

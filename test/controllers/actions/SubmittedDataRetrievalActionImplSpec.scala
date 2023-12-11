@@ -61,7 +61,6 @@ class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers
       )
     }
 
-    // TODO Maybe I need to move getSubmitted before get Data then I have load dat for free
     "persist journey answers as user answers if user answers exist but without the specific journey" in new SubmittedTestData {
       def userAnswers         = createUserAnswers(Json.obj("anyOtherExpenses" -> "bar")).some
       def submittedUerAnswers = Json.obj("anyOtherIncome" -> "foo")

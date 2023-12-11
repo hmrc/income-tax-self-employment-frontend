@@ -17,7 +17,7 @@
 package models.database
 
 import models.RichJsObject
-import models.common.BusinessId
+import models.common.{BusinessId, UserId}
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -26,6 +26,7 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdated: Instant = Instant.now) {
+  val isEmpty: Boolean = data.fields.isEmpty
 
   def get[A](page: Gettable[A], businessId: Option[BusinessId] = None)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path(businessId))).reads(data).getOrElse(None)
@@ -42,6 +43,26 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
     updatedData.flatMap { d =>
       val updatedAnswers = copy(data = d)
       page.cleanup(updatedAnswers)
+    }
+  }
+
+  def upsertFragment(businessId: BusinessId, dataFragment: JsObject): Try[UserAnswers] = {
+    val path = __ \ businessId.value
+    val upsertFragment: Reads[JsObject] = data
+      .validate((__ \ businessId.value).json.pick[JsObject])
+      .fold(
+        _ => path.json.put(dataFragment),
+        _ => path.json.update(__.read[JsObject].map(_ ++ dataFragment))
+      )
+
+    val updatedAnswers =
+      data.transform(upsertFragment) match {
+        case JsSuccess(jsValue, _) => Success(jsValue)
+        case JsError(errors)       => Failure(JsResultException(errors))
+      }
+
+    updatedAnswers.map { updatedData =>
+      copy(data = updatedData, lastUpdated = Instant.now)
     }
   }
 
@@ -63,6 +84,8 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 }
 
 object UserAnswers {
+
+  def empty(userId: UserId): UserAnswers = UserAnswers(userId.value)
 
   val reads: Reads[UserAnswers] = {
 
