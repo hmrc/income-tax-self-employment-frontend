@@ -22,7 +22,8 @@ sealed trait HttpErrorBody
 
 object HttpErrorBody {
 
-  val parsingError: HttpErrorBody = SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")
+  val parsingError: HttpErrorBody                   = SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")
+  def internalError(message: String): HttpErrorBody = SingleErrorBody("INTERNAL_ERROR", message)
 
   /** Single Error * */
   case class SingleErrorBody(code: String, reason: String) extends HttpErrorBody

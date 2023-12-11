@@ -18,19 +18,22 @@ package controllers.actions
 
 import cats.data.EitherT
 import cats.implicits._
-import models.common.{BusinessId, JourneyContext, Mtditid}
+import controllers.handleApiResult
+import models.common.{BusinessId, JourneyContext, Mtditid, UserId}
 import models.database.UserAnswers
-import models.errors.HttpError
+import models.domain.ApiResultT
+import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
-import play.api.mvc.ActionTransformer
+import play.api.mvc.{ActionTransformer, Request}
 import repositories.SessionRepositoryBase
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext,
                                                                 selfEmploymentService: SelfEmploymentServiceBase,
@@ -42,46 +45,44 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
   protected def executionContext: ExecutionContext = ec
 
   protected[actions] def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
-    val ctx                      = journeyContext(request.mtditid)
-    val containsShortTermAnswers = containsAtLeastOneJourneyShortTermAnswer(ctx.businessId, ctx.journey, request.userAnswers)
+    val ctx: JourneyContext     = journeyContext(request.mtditid)
+    val hasAtLeastOneUserAnswer = hasAtLeastOneUserAnswerForJourney(ctx.businessId, ctx.journey, request.userAnswers)
 
-    if (containsShortTermAnswers) {
+    if (hasAtLeastOneUserAnswer) {
       Future.successful(request)
     } else {
-      val result: EitherT[Future, HttpError, OptionalDataRequest[A]] = for {
-        submittedAnswers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request.request))
-        maybeRequestWithAnswers <- EitherT.right(submittedAnswers.traverse { answers =>
-          insertSubmittedAnswersToSession(request, ctx.businessId, answers)
-        })
-      } yield maybeRequestWithAnswers.getOrElse(request)
-
-      result.fold(
-        err => {
-          logger.error(s"Error while getting submitted data: ${err.body.toString}, status=${err.status}")
-          request
-        },
-        x => x)
+      val existingUserAnswers = request.userAnswers.getOrElse(UserAnswers.empty(UserId(request.userId)))
+      upsertJourneyAnswers(ctx, request.request, existingUserAnswers).map { updated =>
+        request.copy(userAnswers = if (updated.isEmpty) None else Some(updated))
+      }
     }
   }
 
-  private def insertSubmittedAnswersToSession[A](request: OptionalDataRequest[A],
-                                                 businessId: BusinessId,
-                                                 answers: SubsetOfAnswers): Future[OptionalDataRequest[A]] = {
-    val data                 = Json.toJson(answers).as[JsObject]
-    val userShortTermAnswers = UserAnswers(request.userId, Json.obj(businessId.value -> data))
+  private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
+    val result: ApiResultT[UserAnswers] = for {
+      maybeJourneyAnswers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
+      updatedAnswers <- maybeJourneyAnswers.fold {
+        EitherT.pure[Future, HttpError](existingAnswers)
+      } { answers =>
+        val jsonAnswers = Json.toJson(answers).as[JsObject]
+        val updatedAnswers = existingAnswers.upsertFragment(ctx.businessId, jsonAnswers) match {
+          case Success(updated) => updated.asRight
+          case Failure(err)     => HttpError.internalError(err).asLeft
+        }
+        updateSessionRepository(updatedAnswers)
+      }
+    } yield updatedAnswers
 
-    sessionRepository
-      .set(userShortTermAnswers)
-      .map(_ =>
-        OptionalDataRequest(
-          request.request,
-          request.userId,
-          request.user,
-          Some(userShortTermAnswers)
-        ))
+    handleApiResult(result)
   }
 
-  private def containsAtLeastOneJourneyShortTermAnswer(businessId: BusinessId, journey: Journey, maybeUserAnswers: Option[UserAnswers]) =
+  private def updateSessionRepository(maybeUpdatedAnswers: Either[HttpError, UserAnswers]) =
+    for {
+      updated <- EitherT.fromEither[Future](maybeUpdatedAnswers)
+      _       <- EitherT.right[HttpError](sessionRepository.set(updated))
+    } yield updated
+
+  private def hasAtLeastOneUserAnswerForJourney(businessId: BusinessId, journey: Journey, maybeUserAnswers: Option[UserAnswers]): Boolean =
     maybeUserAnswers.exists { userAnswers =>
       val journeyAnswers = (userAnswers.data \ businessId.value).asOpt[JsObject].getOrElse(Json.obj())
       journey.pageKeys.exists(page => journeyAnswers.keys.contains(page.value))
