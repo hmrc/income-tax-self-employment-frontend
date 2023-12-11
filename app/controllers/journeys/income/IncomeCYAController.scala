@@ -38,8 +38,8 @@ import scala.concurrent.ExecutionContext
 
 class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     getSubmittedData: SubmittedDataRetrievalActionProvider,
+                                     getUserAnswers: DataRetrievalAction,
+                                     getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                      requireData: DataRequiredAction,
                                      service: SelfEmploymentService,
                                      val controllerComponents: MessagesControllerComponents,
@@ -49,8 +49,8 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getData andThen
-      getSubmittedData[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income)) andThen
+    (identify andThen getUserAnswers andThen
+      getJourneyAnswersIfAny[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income)) andThen
       requireData) { implicit request =>
       val user = request.userType
 
@@ -72,7 +72,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       Ok(view(taxYear, businessId, summaryList, user))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), Income)
       val result  = service.submitAnswers[IncomeJourneyAnswers](context, request.userAnswers)
