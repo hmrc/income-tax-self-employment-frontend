@@ -16,6 +16,7 @@
 
 package stubs.services
 
+import cats.data.EitherT
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
@@ -23,15 +24,16 @@ import models.errors.HttpError
 import models.journeys.Journey
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
-import play.api.libs.json.{Format, Writes}
+import play.api.libs.json.{Format, JsObject, Writes}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
-    accountingType: Either[HttpError, AccountingType],
-    saveAnswerResult: UserAnswers
+    accountingType: Either[HttpError, AccountingType] = Right(AccountingType.Cash),
+    saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
+    submittedAnswers: Either[HttpError, Option[JsObject]] = Right(Some(JsObject.empty))
 ) extends SelfEmploymentServiceBase {
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
@@ -47,5 +49,6 @@ case class SelfEmploymentServiceStub(
 
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
 
-  def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] = ???
+  def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] =
+    EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[HttpError, Option[A]]]))
 }

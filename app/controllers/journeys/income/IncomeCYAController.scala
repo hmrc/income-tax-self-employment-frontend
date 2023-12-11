@@ -49,8 +49,9 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    // getSubmittedData[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income))
-    (identify andThen getData andThen requireData) { implicit request =>
+    (identify andThen getData andThen
+      getSubmittedData[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income)) andThen
+      requireData) { implicit request =>
       val user = request.userType
 
       val summaryList = SummaryListCYA.summaryListOpt(

@@ -17,7 +17,6 @@
 package models.journeys
 
 import models.common.PageName
-import pages.Page
 import pages.income._
 import play.api.libs.json._
 
