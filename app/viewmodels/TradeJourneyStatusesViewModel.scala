@@ -52,8 +52,14 @@ object TradeJourneyStatusesViewModel {
         buildRow(Income, Some(Abroad)),
         buildRow(ExpensesTailoring, Some(Abroad)),
         buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))),
-        buildRow(ExpensesGoodsToSellOrUse, None, pageMeetsCriteria(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))),
-        buildRow(ExpensesEntertainment, None, pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No)))
+        buildRow(
+          ExpensesGoodsToSellOrUse,
+          None,
+          pageMeetsCriteria(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))),
+        buildRow(
+          ExpensesEntertainment,
+          None,
+          pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No)))
       ).flatten
     )
   }
@@ -127,33 +133,40 @@ object TradeJourneyStatusesViewModel {
       case ExpensesTailoring =>
         determineUrl(
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode).url, // TODO expenses categories page when built
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url, // TODO expenses categories page when built
           expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode).url // TODO expenses CYA page when built
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url // TODO expenses CYA page when built
         )
       case ExpensesOfficeSupplies =>
         determineUrl(
           expenses.officeSupplies.routes.OfficeSuppliesAmountController
-            .onPageLoad(taxYear, businessId, NormalMode).url,
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
           expenses.officeSupplies.routes.OfficeSuppliesCYAController
-            .onPageLoad(taxYear, businessId).url
+            .onPageLoad(taxYear, businessId)
+            .url
         )
       case ExpensesGoodsToSellOrUse =>
         determineUrl(
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
-            .onPageLoad(taxYear, businessId, NormalMode).url,
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
-            .onPageLoad(taxYear, businessId).url
+            .onPageLoad(taxYear, businessId)
+            .url
         )
       case ExpensesEntertainment =>
         determineUrl(
           expenses.entertainment.routes.EntertainmentAmountController
-            .onPageLoad(taxYear, businessId, NormalMode).url,
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
           expenses.entertainment.routes.EntertainmentCYAController
-            .onPageLoad(taxYear, businessId).url
+            .onPageLoad(taxYear, businessId)
+            .url
         )
-      case  ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails |
-          ExpensesStaffCosts =>
+      case ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesStaffCosts =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
