@@ -16,6 +16,7 @@
 
 package models.journeys.expenses
 
+import models.journeys.expenses.individualCategories._
 import play.api.libs.json.{Format, Json}
 
 final case class ExpensesTailoringAnswers(

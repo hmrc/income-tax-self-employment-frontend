@@ -18,11 +18,32 @@ package viewmodels.checkAnswers.expenses
 
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.FinancialExpenses.NoFinancialExpenses
-import models.journeys.expenses.ProfessionalServiceExpenses.No
-import models.journeys.expenses.{FinancialExpenses, ProfessionalServiceExpenses}
+import models.journeys.expenses.individualCategories.FinancialExpenses.NoFinancialExpenses
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.No
+import models.journeys.expenses.individualCategories.{FinancialExpenses, ProfessionalServiceExpenses}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.expenses.tailoring.individualCategories.{
+  AdvertisingOrMarketingSummary,
+  DepreciationSummary,
+  DisallowableInterestSummary,
+  DisallowableIrrecoverableDebtsSummary,
+  DisallowableOtherFinancialChargesSummary,
+  DisallowableProfessionalFeesSummary,
+  DisallowableStaffCostsSummary,
+  DisallowableSubcontractorCostsSummary,
+  EntertainmentCostsSummary,
+  FinancialExpensesSummary,
+  GoodsToSellOrUseSummary,
+  OfficeSuppliesSummary,
+  OtherExpensesSummary,
+  ProfessionalServiceExpensesSummary,
+  RepairsAndMaintenanceSummary,
+  TaxiMinicabOrRoadHaulageSummary,
+  TravelForWorkSummary,
+  WorkFromBusinessPremisesSummary,
+  WorkFromHomeSummary
+}
 import viewmodels.journeys.SummaryListCYA
 
 package object tailoring {

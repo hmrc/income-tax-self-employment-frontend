@@ -25,8 +25,9 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.tailoring._
+import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.simplifiedExpenses._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

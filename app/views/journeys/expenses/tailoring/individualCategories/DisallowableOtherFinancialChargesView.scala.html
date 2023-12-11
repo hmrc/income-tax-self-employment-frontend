@@ -1,0 +1,62 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
+@import controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableOtherFinancialChargesController
+@import models.common.{BusinessId, TaxYear}
+@import views.html.templates.helpers.Heading
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    heading: Heading
+)
+
+@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"disallowableOtherFinancialCharges.title.$userType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    @heading(messages("disallowableOtherFinancialCharges.heading"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+            @messages("disallowableOtherFinancialCharges.p1")
+        </p>
+    </div>
+
+    @formHelper(action = DisallowableOtherFinancialChargesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"disallowableOtherFinancialCharges.title.$userType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = DisallowableOtherFinancialCharges.options
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

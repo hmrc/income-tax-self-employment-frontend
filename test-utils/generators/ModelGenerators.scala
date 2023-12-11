@@ -17,7 +17,27 @@
 package generators
 
 import models.journeys._
-import models.journeys.expenses._
+import models.journeys.expenses.individualCategories.{
+  AdvertisingOrMarketing,
+  Depreciation,
+  DisallowableInterest,
+  DisallowableIrrecoverableDebts,
+  DisallowableOtherFinancialCharges,
+  DisallowableProfessionalFees,
+  DisallowableStaffCosts,
+  DisallowableSubcontractorCosts,
+  EntertainmentCosts,
+  FinancialExpenses,
+  GoodsToSellOrUse,
+  OfficeSupplies,
+  OtherExpenses,
+  ProfessionalServiceExpenses,
+  RepairsAndMaintenance,
+  TaxiMinicabOrRoadHaulage,
+  TravelForWork,
+  WorkFromBusinessPremises,
+  WorkFromHome
+}
 import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
 
