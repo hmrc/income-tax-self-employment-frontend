@@ -693,8 +693,8 @@ entertainment.error.overMax.agent = The amount your client spent on entertainmen
 entertainment.change.hidden = Change how much was spent on entertainment
 
 ## Entertainment CYA
-entertainmentCya.title.individual = Check your entertainment expenses
-entertainmentCya.title.agent = Check your client’s entertainment expenses
+entertainmentCYA.title.individual = Check your entertainment expenses
+entertainmentCYA.title.agent = Check your client’s entertainment expenses
 
 ########## Expenses - Staff Costs ##########
 
