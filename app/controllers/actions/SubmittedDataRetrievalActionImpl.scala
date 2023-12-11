@@ -17,40 +17,33 @@
 package controllers.actions
 
 import cats.data.EitherT
+import cats.implicits._
 import models.common.{BusinessId, JourneyContext, Mtditid}
 import models.database.UserAnswers
+import models.errors.HttpError
+import models.journeys.Journey
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
 import play.api.mvc.ActionTransformer
-import services.SelfEmploymentService
+import repositories.SessionRepositoryBase
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.Logging
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import cats.implicits._
-import models.errors.HttpError
-import repositories.SessionRepository
-
-@Singleton
-class SubmittedDataRetrievalActionProvider @Inject() (selfEmploymentService: SelfEmploymentService, sessionRepository: SessionRepository) {
-  def apply[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext)(implicit
-      ec: ExecutionContext): ActionTransformer[OptionalDataRequest, OptionalDataRequest] =
-    new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](journeyContext, selfEmploymentService, sessionRepository)
-}
 
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext,
-                                                                selfEmploymentService: SelfEmploymentService,
-                                                                sessionRepository: SessionRepository)(implicit ec: ExecutionContext)
+                                                                selfEmploymentService: SelfEmploymentServiceBase,
+                                                                sessionRepository: SessionRepositoryBase)(implicit ec: ExecutionContext)
     extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
     with FrontendHeaderCarrierProvider
     with Logging {
 
   protected def executionContext: ExecutionContext = ec
 
-  protected def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
+  protected[actions] def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
     val ctx                      = journeyContext(request.mtditid)
-    val containsShortTermAnswers = containsAtLeastOneJourneyShortTermAnswer(ctx, request.userAnswers)
+    val containsShortTermAnswers = containsAtLeastOneJourneyShortTermAnswer(ctx.businessId, ctx.journey, request.userAnswers)
 
     if (containsShortTermAnswers) {
       Future.successful(request)
@@ -71,9 +64,9 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
     }
   }
 
-  private def insertSubmittedAnswersToSession[A, SubsetOfAnswers: Format](request: OptionalDataRequest[A],
-                                                                          businessId: BusinessId,
-                                                                          answers: SubsetOfAnswers): Future[OptionalDataRequest[A]] = {
+  private def insertSubmittedAnswersToSession[A](request: OptionalDataRequest[A],
+                                                 businessId: BusinessId,
+                                                 answers: SubsetOfAnswers): Future[OptionalDataRequest[A]] = {
     val data                 = Json.toJson(answers).as[JsObject]
     val userShortTermAnswers = UserAnswers(request.userId, Json.obj(businessId.value -> data))
 
@@ -88,10 +81,10 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
         ))
   }
 
-  private def containsAtLeastOneJourneyShortTermAnswer(ctx: JourneyContext, maybeUserAnswers: Option[UserAnswers]) =
+  private def containsAtLeastOneJourneyShortTermAnswer(businessId: BusinessId, journey: Journey, maybeUserAnswers: Option[UserAnswers]) =
     maybeUserAnswers.exists { userAnswers =>
-      val journeyAnswers = (userAnswers.data \ ctx.businessId.value).asOpt[JsObject].getOrElse(Json.obj())
-      ctx.journey.pageKeys.exists(page => journeyAnswers.keys.contains(page.value))
+      val journeyAnswers = (userAnswers.data \ businessId.value).asOpt[JsObject].getOrElse(Json.obj())
+      journey.pageKeys.exists(page => journeyAnswers.keys.contains(page.value))
     }
 
 }

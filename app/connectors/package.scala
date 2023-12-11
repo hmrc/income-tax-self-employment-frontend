@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.JourneyStateParser.{nonModelValidatingJsonFromAPI, pagerDutyError}
 import models.common.Mtditid
 import models.errors.HttpError
-import play.api.http.MediaRange.parse
-import play.api.http.Status.OK
 import play.api.libs.json.{Reads, Writes}
-import play.libs.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,8 +25,6 @@ package object connectors {
   type ContentResponse[A] = Either[HttpError, A]
   type NoContentResponse  = ContentResponse[Unit]
 
-  /** Helper method to add necessary headers when calling endpoints
-    */
   def post[A: Writes](http: HttpClient, url: String, mtditid: Mtditid, body: A)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[Either[HttpError, Unit]] =
@@ -51,22 +44,6 @@ package object connectors {
       ec = ec
     )
 
-  object NoContentHttpReads extends HttpReads[NoContentResponse] {
-
-    override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-      response.status match {
-        case status if status >= 200 && status <= 299 => ().asRight
-        case _                                        => pagerDutyError(response).asLeft
-      }
-  }
-
-  class ContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
-
-    override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
-      response.status match {
-        case status if status >= 200 && status <= 299 => response.json.validate[A].asOpt.asRight
-        case _                                        => Left(pagerDutyError(response))
-      }
-  }
+  def isSuccess(status: Int): Boolean = status >= 200 && status <= 299
 
 }
