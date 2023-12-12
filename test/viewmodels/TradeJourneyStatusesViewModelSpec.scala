@@ -91,7 +91,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     val abroadStatus               = findJourneyStatus(journeyCompletedStates, Abroad)
     val officeSuppliesIsYes        = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
     val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
-    val expensesIsYes              = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
+    val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
     val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
     Seq(
       buildRow(Abroad, abroadStatus),
@@ -99,7 +99,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       buildRow(ExpensesTailoring, findJourneyStatus(journeyCompletedStates, ExpensesTailoring, abroadStatus != Completed)),
       buildOptionalRow(ExpensesOfficeSupplies, findJourneyStatus(journeyCompletedStates, ExpensesOfficeSupplies), officeSuppliesIsYes),
       buildOptionalRow(ExpensesGoodsToSellOrUse, findJourneyStatus(journeyCompletedStates, ExpensesGoodsToSellOrUse), goodsToSellOrUseIsYes),
-      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), expensesIsYes),
+      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
       buildOptionalRow(
         ExpensesRepairsAndMaintenance,
         findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
