@@ -29,7 +29,8 @@ class FakeExpensesTailoringNavigator(desiredRoute: Call) extends ExpensesTailori
                         userAnswers: UserAnswers,
                         taxYear: TaxYear,
                         businessId: BusinessId,
-                        isAccrual: Option[Boolean]): Call =
+                        isAccrual: Option[Boolean],
+                        isOverThreshold: Boolean = false): Call =
     desiredRoute
 
 }

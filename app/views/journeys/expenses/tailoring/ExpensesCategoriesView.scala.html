@@ -1,0 +1,100 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.journeys.expenses.ExpensesTailoring
+@import controllers.journeys.expenses.tailoring.routes.ExpensesCategoriesController
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.templates.helpers.Heading
+@import views.html.components.FoldableDetails
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    heading: Heading,
+    foldableDetails: FoldableDetails
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeIsOverThreshold: Boolean)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    @heading(messages("journeys.expenses-categories"), None, extraClasses = "no-padding-top")
+
+    @if(incomeIsOverThreshold){
+
+        <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType")</p>
+
+
+        @formHelper(action = ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+            @govukButton(ButtonViewModel(messages("site.continue")))
+        }
+
+    } else {
+
+        <div class="govuk-body govuk-!-margin-top-6">
+            <p>
+                @messages(s"expensesCategories.p1.$userType")
+            </p>
+            <p>
+                @messages(s"expensesCategories.p2.$userType")
+            </p>
+            @heading(messages("expensesCategories.subheading"), None, size = "m")
+            <p>
+                @messages("expensesCategories.p3")
+            </p>
+
+            @foldableDetails(messages("expensesCategories.details.heading")) {
+                <p>@messages("expensesCategories.details.p1")</p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                    <li>@messages("expenses.officeSupplies")</li>
+                    <li>@messages("expenses.goodsToSellOrUse")</li>
+                    <li>@messages("expenses.repairsAndMaintenance")</li>
+                    <li>@messages("expenses.runningPremises")</li>
+                    <li>@messages("expenses.travel")</li>
+                    <li>@messages("expenses.advertisingOrMarketing")</li>
+                    <li>@messages("expenses.staffContractorsAndServices")</li>
+                    <li>@messages("expenses.financialExpenses")</li>
+                    <li>@messages("expenses.trainingCourses")</li>
+                    <li>@messages("expenses.workClothing")</li>
+                </ul>
+                <p>
+                    <a class="govuk-link" href=@messages("expensesCategories.details.href")>@messages("expensesCategories.details.link")</a>
+                </p>
+            }
+        </div>
+
+        @formHelper(action = ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+            @govukRadios(
+                RadiosViewModel(
+                    field  = form("value"),
+                    legend = LegendViewModel(messages(s"expenses.cyaSummary.$userType"))
+                                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                    items  = ExpensesTailoring.options(userType)
+                )
+            )
+
+            @govukButton(ButtonViewModel(messages("site.continue")))
+        }
+    }
+}

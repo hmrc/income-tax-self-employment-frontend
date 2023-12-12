@@ -17,6 +17,7 @@
 package models.journeys.expenses
 
 import generators.ModelGenerators
+import models.journeys.expenses.individualCategories.FinancialExpenses
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec

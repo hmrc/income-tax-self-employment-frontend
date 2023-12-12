@@ -16,7 +16,7 @@
 
 package models.journeys.expenses
 
-import models.journeys.expenses.DisallowableOtherFinancialCharges
+import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues

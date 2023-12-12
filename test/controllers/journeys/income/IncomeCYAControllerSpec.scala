@@ -33,8 +33,8 @@ import views.html.journeys.income.IncomeCYAView
 
 class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageName: String = IncomeCYAPage.toString
-  override val journey: Journey = Income
+  override val pageHeading: String = IncomeCYAPage.toString
+  override val journey: Journey    = Income
 
   private val userAnswerData = Json
     .parse(s"""

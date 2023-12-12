@@ -23,10 +23,10 @@ import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.expenses.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
+import models.journeys.expenses.individualCategories.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
-import pages.expenses.tailoring.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
+import pages.expenses.tailoring.individualCategories.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -132,30 +132,18 @@ object TradeJourneyStatusesViewModel {
         )
       case ExpensesTailoring =>
         determineUrl(
-          expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url, // TODO expenses categories page when built
-          expenses.tailoring.routes.OfficeSuppliesController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url // TODO expenses CYA page when built
+          expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesOfficeSupplies =>
         determineUrl(
-          expenses.officeSupplies.routes.OfficeSuppliesAmountController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url,
-          expenses.officeSupplies.routes.OfficeSuppliesCYAController
-            .onPageLoad(taxYear, businessId)
-            .url
+          expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesGoodsToSellOrUse =>
         determineUrl(
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url,
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController
-            .onPageLoad(taxYear, businessId)
-            .url
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesEntertainment =>
         determineUrl(

@@ -19,5 +19,5 @@ package pages.expenses.entertainment
 import pages.Page
 
 object EntertainmentCYAPage extends Page {
-  override def toString: String = "entertainmentCYA"
+  override def toString: String = "entertainmentCya"
 }
