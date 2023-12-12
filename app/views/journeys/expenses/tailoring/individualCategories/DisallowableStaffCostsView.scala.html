@@ -29,13 +29,13 @@
 
 @(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("disallowableStaffCosts.title"))) {
+@layout(pageTitle = title(form, messages("journeys.expenses-staff-costs"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("disallowableStaffCosts.title"), None, extraClasses = "no-padding-top")
+    @heading(messages("journeys.expenses-staff-costs"), None, extraClasses = "no-padding-top")
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>

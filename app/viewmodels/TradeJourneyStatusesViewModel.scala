@@ -23,10 +23,10 @@ import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.expenses.individualCategories.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
+import models.journeys.expenses.individualCategories.{DisallowableStaffCosts, EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
-import pages.expenses.tailoring.individualCategories.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
+import pages.expenses.tailoring.individualCategories.{DisallowableStaffCostsPage, EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -59,7 +59,11 @@ object TradeJourneyStatusesViewModel {
         buildRow(
           ExpensesEntertainment,
           None,
-          pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No)))
+          pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))),
+        buildRow(
+          ExpensesStaffCosts,
+          None,
+          pageMeetsCriteria(DisallowableStaffCostsPage, DisallowableStaffCosts.values.filterNot(_ == DisallowableStaffCosts.No)))
       ).flatten
     )
   }
@@ -154,7 +158,16 @@ object TradeJourneyStatusesViewModel {
             .onPageLoad(taxYear, businessId)
             .url
         )
-      case ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesStaffCosts =>
+      case ExpensesStaffCosts =>
+        determineUrl(
+          expenses.staffCosts.routes.StaffCostsAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.staffCosts.routes.StaffCostsCYAController
+            .onPageLoad(taxYear, businessId)
+            .url
+        )
+      case ExpensesConstruction | ExpensesRepairsAndMaintenance | ExpensesTotal | NationalInsurance | TradeDetails =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
