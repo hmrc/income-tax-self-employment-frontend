@@ -28,14 +28,27 @@ import models.journeys.Journey.{
   ExpensesEntertainment,
   ExpensesGoodsToSellOrUse,
   ExpensesOfficeSupplies,
+  ExpensesRepairsAndMaintenance,
   ExpensesStaffCosts,
   ExpensesTailoring,
   Income
 }
-import models.journeys.expenses.individualCategories.{DisallowableStaffCosts, EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
+import models.journeys.expenses.individualCategories.{
+  DisallowableStaffCosts,
+  EntertainmentCosts,
+  GoodsToSellOrUse,
+  OfficeSupplies,
+  RepairsAndMaintenance
+}
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyCompletedState
-import pages.expenses.tailoring.individualCategories.{DisallowableStaffCostsPage, EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
+import pages.expenses.tailoring.individualCategories.{
+  DisallowableStaffCostsPage,
+  EntertainmentCostsPage,
+  GoodsToSellOrUsePage,
+  OfficeSuppliesPage,
+  RepairsAndMaintenancePage
+}
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class TradeJourneyStatusesViewModelSpec extends SpecBase {
@@ -88,18 +101,23 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   }
 
   private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers): Seq[String] = {
-    val abroadStatus          = findJourneyStatus(journeyCompletedStates, Abroad)
-    val officeSuppliesIsYes   = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
-    val goodsToSellOrUseIsYes = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
-    val expensesIsYes         = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
-    val staffCostsIsYes       = userAnswers.get(DisallowableStaffCostsPage, Some(businessId)).exists(_ != DisallowableStaffCosts.No)
+    val abroadStatus               = findJourneyStatus(journeyCompletedStates, Abroad)
+    val officeSuppliesIsYes        = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
+    val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
+    val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
+    val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
+    val staffCostsIsYes            = userAnswers.get(DisallowableStaffCostsPage, Some(businessId)).exists(_ != DisallowableStaffCosts.No)
     Seq(
       buildRow(Abroad, abroadStatus),
       buildRow(Income, findJourneyStatus(journeyCompletedStates, Income, abroadStatus != Completed)),
       buildRow(ExpensesTailoring, findJourneyStatus(journeyCompletedStates, ExpensesTailoring, abroadStatus != Completed)),
       buildOptionalRow(ExpensesOfficeSupplies, findJourneyStatus(journeyCompletedStates, ExpensesOfficeSupplies), officeSuppliesIsYes),
       buildOptionalRow(ExpensesGoodsToSellOrUse, findJourneyStatus(journeyCompletedStates, ExpensesGoodsToSellOrUse), goodsToSellOrUseIsYes),
-      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), expensesIsYes),
+      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
+      buildOptionalRow(
+        ExpensesRepairsAndMaintenance,
+        findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
+        repairsAndMaintenanceIsYes),
       buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes)
     ).filterNot(_ == "")
   }
@@ -139,6 +157,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesEntertainment =>
         journeys.expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesRepairsAndMaintenance =>
+        journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesStaffCosts =>
         journeys.expenses.staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case _ => "not implemented or error"
@@ -151,8 +171,10 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       case ExpensesOfficeSupplies   => journeys.expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesGoodsToSellOrUse => journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesEntertainment    => journeys.expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
-      case ExpensesStaffCosts       => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
-      case _                        => "not implemented or error"
+      case ExpensesRepairsAndMaintenance =>
+        journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesStaffCosts => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
+      case _                  => "not implemented or error"
     }
 
   private def findJourneyStatus(journeyCompletedStates: List[JourneyCompletedState],
