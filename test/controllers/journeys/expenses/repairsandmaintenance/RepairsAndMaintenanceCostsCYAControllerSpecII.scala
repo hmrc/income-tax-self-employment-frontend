@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.UserBuilder.{aNoddyAgentUser, aNoddyUser}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -30,37 +30,21 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountSummary, RepairsAndMaintenanceDisallowableAmountSummary}
 
-class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.RepairsAndMaintenanceCostsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.RepairsAndMaintenanceCostsCYAController.onSubmit
-
-  // TODO Align the base traits better. CYAOnPageLoadControllerSpec & CYAOnSubmitControllerBaseSpec generate user
-  //  answers differently - leads to duplication.
-  private val data = Json
-    .parse(s"""
-              |{
-              |  "$businessId": {
-              |    "repairsAndMaintenance": "yesDisallowable",
-              |    "repairsAndMaintenanceAmount": 200.00,
-              |    "repairsAndMaintenanceDisallowableAmount": 200.00
-              |  }
-              |}
-              |""".stripMargin)
-    .as[JsObject]
-
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, data)
 
   override val journey: Journey = ExpensesRepairsAndMaintenance
 
   override val pageHeading: String = RepairsAndMaintenanceCostsCYAPage.toString
 
-  override val testDataCases: List[JsObject] = List(
-    Json.obj(
-      "repairsAndMaintenance"                   -> "yesDisallowable",
-      "repairsAndMaintenanceAmount"             -> 200.00,
-      "repairsAndMaintenanceDisallowableAmount" -> 200.00
-    ))
+  override val submissionData = Json.obj(
+    "repairsAndMaintenance"                   -> "yesDisallowable",
+    "repairsAndMaintenanceAmount"             -> 200.00,
+    "repairsAndMaintenanceDisallowableAmount" -> 200.00
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
@@ -71,6 +55,8 @@ class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControl
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  private val userAnswers: UserAnswers = buildUserAnswers(testDataCases.head)
 
   private def dataRequestForUser(userType: UserType) =
     userType match {

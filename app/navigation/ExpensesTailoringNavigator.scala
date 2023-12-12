@@ -38,11 +38,11 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ExpensesTailoringNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean], Boolean) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
 
     case ExpensesCategoriesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ExpensesCategoriesPage, Some(businessId)) match {
             case Some(TotalAmount)          => simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(IndividualCategories) => individualCategories.routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -51,29 +51,29 @@ class ExpensesTailoringNavigator @Inject() () {
           }
 
     case OfficeSuppliesPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
 
     case TaxiMinicabOrRoadHaulagePage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
 
     case GoodsToSellOrUsePage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
 
     case RepairsAndMaintenancePage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.WorkFromHomeController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.WorkFromHomeController.onPageLoad(taxYear, businessId, NormalMode)
 
     case WorkFromHomePage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case WorkFromBusinessPremisesPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode)
 
     case TravelForWorkPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingPage =>
       _ =>
-        (taxYear, businessId, optIsAccrual, _) =>
+        (taxYear, businessId, optIsAccrual) =>
           optIsAccrual match {
             case Some(true)  => individualCategories.routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) => individualCategories.routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -81,12 +81,11 @@ class ExpensesTailoringNavigator @Inject() () {
           }
 
     case EntertainmentCostsPage =>
-      _ =>
-        (taxYear, businessId, _, _) => individualCategories.routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(No) => individualCategories.routes.FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(seq) if seq.contains(Staff) =>
@@ -100,7 +99,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableStaffCostsPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(Construction) =>
               individualCategories.routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, NormalMode)
@@ -112,7 +111,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableSubcontractorCostsPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(ProfessionalFees) =>
               individualCategories.routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -121,11 +120,11 @@ class ExpensesTailoringNavigator @Inject() () {
           }
 
     case DisallowableProfessionalFeesPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.FinancialExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case FinancialExpensesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(NoFinancialExpenses) =>
               individualCategories.routes.DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
@@ -140,7 +139,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableInterestPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(OtherFinancialCharges) =>
               individualCategories.routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -152,7 +151,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableOtherFinancialChargesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq) if seq.contains(IrrecoverableDebts) =>
               individualCategories.routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode)
@@ -161,37 +160,26 @@ class ExpensesTailoringNavigator @Inject() () {
           }
 
     case DisallowableIrrecoverableDebtsPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
 
     case DepreciationPage =>
-      _ => (taxYear, businessId, _, _) => individualCategories.routes.OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => (taxYear, businessId, _) => individualCategories.routes.OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case OtherExpensesPage => _ => (taxYear, businessId, _, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+    case OtherExpensesPage => _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case ExpensesTailoringCYAPage =>
       _ =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
 
-    case _ => _ => (_, _, _, _) => JourneyRecoveryController.onPageLoad()
+    case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean], Boolean) => Call = {
-
-    case ExpensesCategoriesPage =>
-      userAnswers =>
-        (taxYear, businessId, _, isOverThreshold) =>
-          userAnswers.get(ExpensesCategoriesPage, Some(businessId)) match {
-            case _ if isOverThreshold       => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
-            case Some(TotalAmount)          => simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode)
-            case Some(IndividualCategories) => individualCategories.routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode)
-            case Some(NoExpenses)           => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
-            case _                          => standard.routes.JourneyRecoveryController.onPageLoad()
-          }
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
 
     case ProfessionalServiceExpensesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(Staff) &&
@@ -211,7 +199,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableStaffCostsPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(Construction) &&
@@ -227,7 +215,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableSubcontractorCostsPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(ProfessionalFees) &&
@@ -239,7 +227,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case FinancialExpensesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(Interest) &&
@@ -259,7 +247,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableInterestPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(OtherFinancialCharges) &&
@@ -275,7 +263,7 @@ class ExpensesTailoringNavigator @Inject() () {
 
     case DisallowableOtherFinancialChargesPage =>
       userAnswers =>
-        (taxYear, businessId, _, _) =>
+        (taxYear, businessId, _) =>
           userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
             case Some(seq)
                 if seq.contains(IrrecoverableDebts) &&
@@ -285,21 +273,15 @@ class ExpensesTailoringNavigator @Inject() () {
             case _       => JourneyRecoveryController.onPageLoad()
           }
 
-    case _ => _ => (taxYear, businessId, _, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+    case _ => _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
   }
 
-  def nextPage(page: Page,
-               mode: Mode,
-               userAnswers: UserAnswers,
-               taxYear: TaxYear,
-               businessId: BusinessId,
-               isAccrual: Option[Boolean] = None,
-               isOverThreshold: Boolean = false): Call =
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, isAccrual: Option[Boolean] = None): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual, isOverThreshold)
+        normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual, isOverThreshold)
+        checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual)
     }
 
   /** The "normal" route is also used for CYA pages */
@@ -307,7 +289,6 @@ class ExpensesTailoringNavigator @Inject() () {
                       userAnswers: UserAnswers,
                       taxYear: TaxYear,
                       businessId: BusinessId,
-                      accountingType: Option[AccountingType],
-                      isOverThreshold: Boolean = false): Call =
-    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId, accountingType.map(_ == Accrual), isOverThreshold)
+                      accountingType: Option[AccountingType]): Call =
+    normalRoutes(sourcePage)(userAnswers)(taxYear, businessId, accountingType.map(_ == Accrual))
 }

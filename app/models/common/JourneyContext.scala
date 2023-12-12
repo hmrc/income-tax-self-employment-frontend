@@ -27,10 +27,23 @@ sealed trait JourneyContext {
   val answersUrl: String
 }
 
-case class JourneyContextWithNino(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
-  val answersUrl: String = s"${taxYear.value}/${businessId.value}/${journey.toString}/${nino.value}/answers"
+case class JourneyContextWithNino(taxYear: TaxYear,
+                                  nino: Nino,
+                                  businessId: BusinessId,
+                                  mtditid: Mtditid,
+                                  journey: Journey,
+                                  extraContext: Option[String] = None)
+    extends JourneyContext {
+  val answersUrl: String = {
+    val optExtraContext: String = if (extraContext.isEmpty) "" else s"/${extraContext.getOrElse("")}"
+    s"${taxYear.value}/${businessId.value}/${journey.toString}$optExtraContext/${nino.value}/answers"
+  }
 }
 
-case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey) extends JourneyContext {
-  val answersUrl: String = s"${taxYear.value}/${businessId.value}/${journey.toString}/answers"
+case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, extraContext: Option[String] = None)
+    extends JourneyContext {
+  val answersUrl: String = {
+    val optExtraContext: String = if (extraContext.isEmpty) "" else s"/${extraContext.getOrElse("")}"
+    s"${taxYear.value}/${businessId.value}/${journey.toString}$optExtraContext/answers"
+  }
 }

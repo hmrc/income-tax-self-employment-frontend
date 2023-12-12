@@ -17,13 +17,12 @@
 package controllers.journeys.expenses.tailoring
 
 import controllers.actions._
-import controllers.handleResult
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.tailoring
 import models.common._
 import models.journeys.Journey.ExpensesTailoring
-import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import models.journeys.expenses.ExpensesTailoringAnswers
-import navigation.ExpensesTailoringNavigator
+import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
+import models.journeys.expenses.{ExpensesTailoringIndividualCategoriesAnswers, ExpensesTailoringNoExpensesAnswers}
 import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +33,7 @@ import viewmodels.checkAnswers.expenses.tailoring._
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
@@ -42,8 +41,7 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
                                                 requireData: DataRequiredAction,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: CheckYourAnswersView,
-                                                service: SelfEmploymentService,
-                                                navigator: ExpensesTailoringNavigator)(implicit ec: ExecutionContext)
+                                                service: SelfEmploymentService)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
@@ -68,12 +66,22 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val nextRoute = navigator.nextNormalRoute(ExpensesTailoringCYAPage, request.userAnswers, taxYear, businessId, accountingType = None).url
-      val result = service
-        .submitAnswers[ExpensesTailoringAnswers](JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring), request.userAnswers)
-        .map(_ => Redirect(nextRoute))
-        .value
+      request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) match {
+        case Left(redirect) => Future(redirect)
+        case Right(answer) =>
+          val (journeyContext, result) = answer match {
+            case TotalAmount =>
+              val journeyContext = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("total"))
+              (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
+            case IndividualCategories =>
+              val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("categories"))
+              (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
+            case NoExpenses =>
+              val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("none"))
+              (journeyContext, service.submitAnswers[ExpensesTailoringNoExpensesAnswers](journeyContext, request.userAnswers))
+          }
 
-      handleResult(result)
+          handleSubmitAnswersResult(journeyContext, result)
+      }
   }
 }

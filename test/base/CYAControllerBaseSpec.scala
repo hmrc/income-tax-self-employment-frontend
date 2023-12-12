@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package navigation
+package base
 
-import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.UserType.{Agent, Individual}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages._
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 
-class FakeExpensesTailoringNavigator(desiredRoute: Call) extends ExpensesTailoringNavigator {
+trait CYAControllerBaseSpec extends ControllerSpec {
 
-  override def nextPage(page: Page,
-                        mode: Mode,
-                        userAnswers: UserAnswers,
-                        taxYear: TaxYear,
-                        businessId: BusinessId,
-                        isAccrual: Option[Boolean]): Call = desiredRoute
+  protected val userTypes: List[UserType] = List(Individual, Agent)
+
+  protected def onSubmitCall: (TaxYear, BusinessId) => Call
+  protected def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
 }

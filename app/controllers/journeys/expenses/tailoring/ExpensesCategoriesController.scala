@@ -19,11 +19,11 @@ package controllers.journeys.expenses.tailoring
 import cats.data.EitherT
 import controllers.actions._
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
+import models.{CheckMode, Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
 import pages.expenses.tailoring.individualCategories._
@@ -74,24 +74,26 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
           BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, incomeIsOverThreshold))
         )
 
-      def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring, incomeIsOverThreshold: Boolean): Future[Result] =
+      def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring): Future[Result] = {
+        val previousAnswer = request.getValue(ExpensesCategoriesPage, businessId)
+        val redirectMode   = if (mode == CheckMode && previousAnswer.exists(_ != value)) NormalMode else mode
         for {
           editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), value))
           result <- selfEmploymentService
             .saveAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
-            .map(updated =>
-              Redirect(navigator.nextPage(ExpensesCategoriesPage, mode, updated, taxYear, businessId, isOverThreshold = incomeIsOverThreshold)))
+            .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, redirectMode, updated, taxYear, businessId)))
         } yield result
+      }
 
       def handleForm(form: Form[ExpensesTailoring], userType: UserType, userAnswers: UserAnswers, incomeIsOverThreshold: Boolean): Future[Result] =
         if (incomeIsOverThreshold) {
-          handleSuccess(userAnswers, IndividualCategories, incomeIsOverThreshold)
+          handleSuccess(userAnswers, IndividualCategories)
         } else {
           form
             .bindFromRequest()
             .fold(
               formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold),
-              value => handleSuccess(userAnswers, value, incomeIsOverThreshold)
+              value => handleSuccess(userAnswers, value)
             )
         }
 
