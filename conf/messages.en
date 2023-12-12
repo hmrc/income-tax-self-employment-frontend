@@ -37,6 +37,7 @@ journeys.national-insurance = National Insurance
 journeys.expenses-office-supplies = Office supplies
 journeys.expenses-goods-to-sell-or-use = Goods to sell or use
 journeys.expenses-entertainment = Entertainment Costs
+journeys.expenses-repairs-and-maintenance = Repairs and Maintenance
 
 date.day = Day
 date.month = Month
@@ -404,7 +405,6 @@ goodsToSellOrUse.error.required.agent = Select if all your client’s goods to s
 goodsToSellOrUse.change.hidden = Change if any goods to sell or use were bought?
 
 ## Repairs and maintenance
-repairsAndMaintenance.title = Repairs and maintenance
 repairsAndMaintenance.l1 = repairs and maintenance of work premises and equipment
 repairsAndMaintenance.l2 = cost of equipment and tools
 repairsAndMaintenance.l3 = repairs of non-work premises or equipment
