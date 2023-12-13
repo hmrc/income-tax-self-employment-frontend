@@ -16,7 +16,7 @@
 
 package models.journeys.expenses
 
-import models.journeys.expenses.DisallowableIrrecoverableDebts
+import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues

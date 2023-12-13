@@ -16,11 +16,13 @@
 
 package builders
 
-import models.journeys.expenses._
+import models.journeys.expenses
+import models.journeys.expenses.{ExpensesTailoring, ExpensesTailoringAnswers}
+import models.journeys.expenses.individualCategories._
 
 object ExpensesTailoringAnswersBuilder {
 
-  val expensesTailoringAnswers: ExpensesTailoringAnswers = ExpensesTailoringAnswers(
+  val expensesTailoringAnswers: ExpensesTailoringAnswers = expenses.ExpensesTailoringAnswers(
     ExpensesTailoring.IndividualCategories,
     OfficeSupplies.YesDisallowable,
     TaxiMinicabOrRoadHaulage.No,

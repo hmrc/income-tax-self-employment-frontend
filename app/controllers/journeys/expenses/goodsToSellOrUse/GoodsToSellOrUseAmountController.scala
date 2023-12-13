@@ -23,10 +23,10 @@ import models.Mode
 import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -17,17 +17,20 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.routes._
+import controllers.journeys.expenses.tailoring
+import controllers.journeys.expenses.tailoring.individualCategories.routes._
+import controllers.journeys.expenses.tailoring.simplifiedExpenses
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
 import models.journeys.Journey.ExpensesTailoring
-import models.journeys.expenses.FinancialExpenses._
-import models.journeys.expenses.ProfessionalServiceExpenses._
-import models.journeys.expenses.{FinancialExpenses, ProfessionalServiceExpenses}
+import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
+import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
+import models.journeys.expenses.individualCategories.{FinancialExpenses, ProfessionalServiceExpenses}
 import pages._
-import pages.expenses.tailoring
 import pages.expenses.tailoring._
+import pages.expenses.tailoring.individualCategories._
 
 class ExpensesTailoringNavigatorSpec extends SpecBase {
 
@@ -38,6 +41,38 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
   "ExpensesTailoringNavigator" - {
 
     "in Normal mode" - {
+
+      "ExpensesCategoriesPage must go to the" - {
+        "TotalExpensesPage when 'TotalAmount' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, TotalAmount, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+        }
+        "OfficeSuppliesPage when 'IndividualCategories' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
+        }
+        "ExpensesTailoringCYAPage when 'NoExpenses' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, NoExpenses, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, NormalMode, userAnswers, taxYear, businessId) mustBe
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(ExpensesCategoriesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
 
       "OfficeSuppliesPage must go to the TaxiMinicabOrRoadHaulagePage" in {
 
@@ -390,6 +425,43 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
+      "ExpensesCategoriesPage must go to the" - {
+        "ExpensesTailoringCYAPage when total income amount is equal or over the threshold" in {
+
+          navigator.nextPage(ExpensesCategoriesPage, CheckMode, emptyUserAnswers, taxYear, businessId, isOverThreshold = true) mustBe
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+        }
+        "TotalExpensesPage when 'TotalAmount' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, TotalAmount, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode)
+        }
+        "OfficeSuppliesPage when 'IndividualCategories' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode)
+        }
+        "ExpensesTailoringCYAPage when 'NoExpenses' is selected" in {
+
+          val userAnswers =
+            emptyUserAnswers.set(ExpensesCategoriesPage, NoExpenses, Some(businessId)).success.value
+
+          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+        }
+        "Journey Recovery page when there are no UserAnswers for this page" in {
+
+          navigator.nextPage(ExpensesCategoriesPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
+            JourneyRecoveryController.onPageLoad()
+        }
+      }
+
       "ProfessionalServiceExpensesPage must go to the" - {
         "DisallowableStaffCostsPage when 'Staff' is checked and that page's data is empty" in {
 
@@ -423,7 +495,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(No), Some(businessId)).success.value
 
           navigator.nextPage(ProfessionalServiceExpensesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -457,7 +529,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(No), Some(businessId)).success.value
 
           navigator.nextPage(DisallowableStaffCostsPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -483,7 +555,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(No), Some(businessId)).success.value
 
           navigator.nextPage(DisallowableSubcontractorCostsPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -523,7 +595,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[FinancialExpenses]](FinancialExpensesPage, Set(NoFinancialExpenses), Some(businessId)).success.value
 
           navigator.nextPage(FinancialExpensesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -555,7 +627,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[FinancialExpenses]](FinancialExpensesPage, Set(NoFinancialExpenses), Some(businessId)).success.value
 
           navigator.nextPage(DisallowableInterestPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -579,7 +651,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
             emptyUserAnswers.set[Set[FinancialExpenses]](FinancialExpensesPage, Set(NoFinancialExpenses), Some(businessId)).success.value
 
           navigator.nextPage(DisallowableOtherFinancialChargesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
 
@@ -590,8 +662,8 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
 
       "must go from any other Expenses Tailoring page to the 'Check your details' page" in {
 
-        navigator.nextPage(tailoring.OtherExpensesPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
-          ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+        navigator.nextPage(OtherExpensesPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
+          tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
       }
     }
   }

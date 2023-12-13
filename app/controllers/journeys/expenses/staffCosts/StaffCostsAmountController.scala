@@ -21,10 +21,10 @@ import controllers.standard.routes
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
-import models.journeys.expenses.DisallowableStaffCosts
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
-import pages.expenses.tailoring.DisallowableStaffCostsPage
+import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

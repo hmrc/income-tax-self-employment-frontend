@@ -21,15 +21,15 @@ import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmo
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.database.UserAnswers
-import models.journeys.expenses.TaxiMinicabOrRoadHaulage
-import models.journeys.expenses.TaxiMinicabOrRoadHaulage.{No, Yes}
+import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
+import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.{No, Yes}
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call

@@ -16,27 +16,25 @@
 
 package forms.income
 
+import base.SpecBase
 import forms.behaviours.BigDecimalFieldBehaviours
-import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
-class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase {
 
   ".value" - {
 
-    val fieldName      = "value"
-    val minimum        = 0
-    val turnoverAmount = 1000.00
-    case class UserScenario(user: UserType)
+    val fieldName = "value"
 
-    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
+    val userTypes = Seq(Individual, Agent)
 
-    userScenarios.foreach { userScenario =>
-      val form = new NotTaxableAmountFormProvider()(userScenario.user, turnoverAmount)
+    userTypes.foreach { user =>
+      val form = new NotTaxableAmountFormProvider()(user)
 
-      s"when user is an ${userScenario.user}, form should " - {
+      s"when user is an $user, form should " - {
 
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, turnoverAmount)
+        val validDataGenerator = bigDecimalsInRangeWithCommas(zeroValue, maxAmountValue)
 
         behave like fieldThatBindsValidData(
           form,
@@ -47,27 +45,27 @@ class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
         behave like bigDecimalField(
           form,
           fieldName,
-          nonNumericError = FormError(fieldName, s"notTaxableAmount.error.nonNumeric.${userScenario.user}")
+          nonNumericError = FormError(fieldName, s"notTaxableAmount.error.nonNumeric.$user")
         )
 
         behave like bigDecimalFieldWithMinimum(
           form,
           fieldName,
-          minimum,
-          expectedError = FormError(fieldName, s"notTaxableAmount.error.lessThanZero.${userScenario.user}", Seq(minimum))
+          zeroValue,
+          expectedError = FormError(fieldName, s"notTaxableAmount.error.lessThanZero.$user", Seq(zeroValue))
         )
 
         behave like bigDecimalFieldWithMaximum(
           form,
           fieldName,
-          turnoverAmount,
-          expectedError = FormError(fieldName, s"notTaxableAmount.error.overTurnover.${userScenario.user}", Seq(turnoverAmount))
+          maxAmountValue,
+          expectedError = FormError(fieldName, s"notTaxableAmount.error.overMax.$user", Seq(maxAmountValue))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"notTaxableAmount.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"notTaxableAmount.error.required.$user")
         )
       }
     }

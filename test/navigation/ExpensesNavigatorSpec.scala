@@ -27,14 +27,14 @@ import models._
 import models.common.AccountingType.{Accrual, Cash}
 import models.database.UserAnswers
 import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesStaffCosts}
-import models.journeys.expenses.DisallowableStaffCosts
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
-import pages.expenses.tailoring.DisallowableStaffCostsPage
+import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.libs.json.Json
 
 class ExpensesNavigatorSpec extends SpecBase {

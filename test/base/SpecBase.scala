@@ -43,15 +43,17 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear       = TaxYear(LocalDate.now().getYear)
-  val userAnswersId          = "id"
-  val individual: String     = Individual.toString
-  val agent: String          = Agent.toString
-  val accrual: String        = Accrual.entryName
-  val cash: String           = Cash.entryName
-  val someNino: Nino         = Nino("someNino")
-  val mtditid                = "someId"
-  val businessId: BusinessId = BusinessId("SJPR05893938418")
+  val taxYear: TaxYear           = TaxYear(LocalDate.now().getYear)
+  val userAnswersId              = "id"
+  val individual: String         = Individual.toString
+  val agent: String              = Agent.toString
+  val accrual: String            = Accrual.entryName
+  val cash: String               = Cash.entryName
+  val someNino: Nino             = Nino("someNino")
+  val mtditid                    = "someId"
+  val businessId: BusinessId     = BusinessId("SJPR05893938418")
+  val zeroValue: BigDecimal      = 0
+  val maxAmountValue: BigDecimal = 100000000000.00
 
   def anyNino: Nino             = Nino(any)
   def anyMtditid: Mtditid       = Mtditid(any)

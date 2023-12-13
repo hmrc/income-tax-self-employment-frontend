@@ -20,10 +20,10 @@ import controllers.journeys.expenses.staffCosts.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.DisallowableStaffCosts
-import models.journeys.expenses.DisallowableStaffCosts._
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts.{No, Yes}
 import pages.expenses.staffCosts._
-import pages.expenses.tailoring.DisallowableStaffCostsPage
+import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import utils.MoneyUtils.formatMoney

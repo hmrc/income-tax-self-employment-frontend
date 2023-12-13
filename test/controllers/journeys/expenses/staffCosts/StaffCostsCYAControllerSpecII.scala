@@ -34,7 +34,7 @@ class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerSpec with CYA
 
   override val journey: Journey = ExpensesStaffCosts
 
-  override val pageName: String = StaffCostsCYAPage.toString
+  override val pageHeading: String = StaffCostsCYAPage.toString
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(

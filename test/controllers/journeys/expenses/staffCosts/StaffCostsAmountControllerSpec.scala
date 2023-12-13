@@ -21,14 +21,14 @@ import common.TestApp._
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import gens._
 import models.common.onwardRoute
-import models.journeys.expenses.DisallowableStaffCosts
-import models.journeys.expenses.DisallowableStaffCosts.{No, Yes}
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts.{No, Yes}
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.expenses.tailoring.DisallowableStaffCostsPage
+import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView

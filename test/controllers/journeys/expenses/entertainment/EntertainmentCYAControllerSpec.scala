@@ -30,7 +30,7 @@ import viewmodels.checkAnswers.expenses.entertainment.EntertainmentAmountSummary
 
 class EntertainmentCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageName: String = EntertainmentCYAPage.toString
+  override val pageHeading: String = EntertainmentCYAPage.toString
 
   private val userAnswerData = Json
     .parse(s"""

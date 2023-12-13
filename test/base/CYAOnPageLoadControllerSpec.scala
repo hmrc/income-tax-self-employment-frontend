@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 trait CYAOnPageLoadControllerSpec extends ControllerSpec {
 
-  val pageName: String
+  val pageHeading: String
   val testDataCases: List[JsObject]
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call
@@ -49,7 +49,7 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
 
   def createExpectedView(userType: UserType, summaryList: SummaryList, messages: Messages, application: Application, request: Request[_]): String = {
     val view = application.injector.instanceOf[CheckYourAnswersView]
-    view(pageName, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
+    view(pageHeading, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
   }
 
   "onPageLoad" - {

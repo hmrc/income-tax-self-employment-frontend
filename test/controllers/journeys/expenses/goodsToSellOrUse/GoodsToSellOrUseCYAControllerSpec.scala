@@ -33,7 +33,7 @@ import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageName: String = GoodsToSellOrUseCYAPage.toString
+  override val pageHeading: String = GoodsToSellOrUseCYAPage.toString
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onSubmit

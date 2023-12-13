@@ -20,10 +20,10 @@ import controllers.journeys.expenses
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.OfficeSupplies
-import models.journeys.expenses.OfficeSupplies.YesDisallowable
+import models.journeys.expenses.individualCategories.OfficeSupplies
+import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowable
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
-import pages.expenses.tailoring.OfficeSuppliesPage
+import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
