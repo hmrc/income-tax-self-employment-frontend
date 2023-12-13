@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.tailoring
 
-import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
@@ -39,7 +39,8 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec
   override val journey: Journey    = Journey.ExpensesTailoring
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
-  def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
+
+  def onSubmitCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onSubmit
 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =

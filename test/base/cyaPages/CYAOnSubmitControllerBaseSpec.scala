@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package base
+package base.cyaPages
 
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}

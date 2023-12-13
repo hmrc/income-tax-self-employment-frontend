@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package base
+package base.cyaPages
 
+import base.ControllerSpec
 import models.common.UserType.{Agent, Individual}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers

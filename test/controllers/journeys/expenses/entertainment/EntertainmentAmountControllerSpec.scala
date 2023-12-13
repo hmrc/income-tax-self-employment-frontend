@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.entertainment
 
-import base.BigDecimalGetAndPostQuestionBaseSpec
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
 import models.common.UserType

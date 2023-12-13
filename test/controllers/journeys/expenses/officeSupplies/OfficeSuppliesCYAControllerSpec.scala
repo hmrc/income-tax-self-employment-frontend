@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.officeSupplies
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
