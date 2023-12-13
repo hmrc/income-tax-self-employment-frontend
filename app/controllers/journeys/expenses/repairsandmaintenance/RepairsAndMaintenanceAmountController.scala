@@ -23,7 +23,7 @@ import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvi
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.errors.HttpError
+import models.errors.ServiceError
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.data.Form
@@ -92,7 +92,7 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
       userType       = request.userType
       userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
       form           = formProvider(userType)
-      finalResult <- EitherT.right[HttpError](handleForm(form, userType, accountingType, userAnswers).merge)
+      finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
     } yield finalResult
 
     handleResult(result.value)

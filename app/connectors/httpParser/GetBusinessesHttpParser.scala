@@ -17,12 +17,12 @@
 package connectors.httpParser
 
 import models.domain.BusinessData
-import models.errors.HttpError
+import models.errors.ServiceError
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetBusinessesHttpParser extends HttpParser {
-  type GetBusinessesResponse = Either[HttpError, Seq[BusinessData]]
+  type GetBusinessesResponse = Either[ServiceError, Seq[BusinessData]]
 
   override val parserName: String = "GetBusinessHttpParser"
 

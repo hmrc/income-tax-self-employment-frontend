@@ -21,6 +21,7 @@ import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountC
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.database.UserAnswers
+import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
@@ -58,7 +59,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
     UserScenario(authUser = agent, form = formProvider(agent))
   )
 
-  private val someHttpError = HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason"))
+  private val someHttpError = ConnectorResponseError(HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason")))
 
   private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
     val isAgent = authUser match {

@@ -103,7 +103,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         fakeIdentifierAction,
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[SubmittedDataRetrievalActionProvider].toInstance(FakeSubmittedDataRetrievalActionProvider())
       )
   }
 

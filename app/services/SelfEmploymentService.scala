@@ -21,14 +21,14 @@ import connectors.SelfEmploymentConnector
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.ServiceError
+import models.errors.ServiceError.NotFoundError
 import models.journeys.Journey
 import models.journeys.Journey.TradeDetails
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
-import play.api.http.Status.NOT_FOUND
 import play.api.libs.json.{Format, Writes}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,8 +40,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait SelfEmploymentServiceBase {
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]]
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]]
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+  def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
@@ -62,16 +63,22 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
 
   // TODO return AccountingType
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
     connector.getBusiness(nino, businessId, mtditid).map {
       case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)
       case Left(error)                                                       => Left(error)
-      case _ => Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
+      case _                                                                 => Left(NotFoundError("Business not found"))
     }
 
-  def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
+  def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]] =
+    connector.getSubmittedAnswers[SubsetOfAnswers](context)
+
+  def saveAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
+                                          userAnswers: UserAnswers,
+                                          value: SubsetOfAnswers,
+                                          page: QuestionPage[SubsetOfAnswers]): Future[UserAnswers] =
     for {
-      updatedAnswers <- Future.fromTry(userAnswers.set[A](page, value, Some(businessId)))
+      updatedAnswers <- Future.fromTry(userAnswers.set[SubsetOfAnswers](page, value, Some(businessId)))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
 
