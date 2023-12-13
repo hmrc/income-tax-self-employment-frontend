@@ -21,7 +21,7 @@ import connectors.ContentHttpReads._
 import connectors.httpParser.JourneyStateParser.pagerDutyError
 import models.errors.ServiceError
 import models.errors.ServiceError.{CannotParseJsonError, CannotReadJsonError}
-import play.api.libs.json.{JsObject, JsValue, Json, Reads, Writes}
+import play.api.libs.json.{JsObject, Json, Reads, Writes}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 import scala.util.{Failure, Success, Try}
