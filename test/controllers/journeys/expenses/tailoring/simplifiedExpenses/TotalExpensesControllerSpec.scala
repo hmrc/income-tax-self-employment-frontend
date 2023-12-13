@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.tailoring.simplifiedExpenses
 
-import base.BigDecimalGetAndPostQuestionBaseSpec
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.tailoring.simplifiedExpenses.routes
 import forms.expenses.tailoring.simplifiedExpenses.TotalExpensesFormProvider
 import models.NormalMode

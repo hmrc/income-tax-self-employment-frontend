@@ -14,40 +14,46 @@
  * limitations under the License.
  */
 
-package base
+package base.questionPages
 
+import base.ControllerSpec
 import controllers.standard.{routes => genRoutes}
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Request
+import play.api.libs.json.Writes
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-// TODO: It would be nice to have a common suite of tests for all all Question Controllers. This is just a starting point.
-abstract case class BigDecimalGetAndPostQuestionBaseSpec(
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](
     controllerName: String,
-    page: QuestionPage[BigDecimal]
+    page: QuestionPage[A]
 ) extends ControllerSpec {
-  val onPageLoadRoute: String
-  val onSubmitRoute: String
 
-  def createForm(userType: UserType): Form[BigDecimal]
+  val onPageLoadCall: Call
+  val onSubmitCall: Call
+  val onwardRoute: Call
+  val validAnswer: A
+  implicit val writes: Writes[A]
+
+  def createForm(userType: UserType): Form[A]
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  val validAnswer: BigDecimal        = 100.00
-  val filledUserAnswers: UserAnswers = UserAnswers(userAnswersId).set(page, validAnswer, Some(businessId)).success.value
+  val blankUserAnswers: UserAnswers = emptyUserAnswers
+  val filledUserAnswers: UserAnswers
 
-  def getRequest  = FakeRequest(GET, onPageLoadRoute)
-  def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadCall.url)
+  def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))
 
-  forAll(userTypeCases) { case userType =>
+  forAll(userTypeCases) { userType =>
     s"$controllerName for $userType" - {
-      val form: Form[BigDecimal] = createForm(userType)
+      val form: Form[A] = createForm(userType)
 
       "Loading page" - {
         "Redirect to Journey Recover for a GET if prerequisite data is not found" in new TestScenario(userType, None) {
@@ -58,7 +64,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           }
         }
 
-        "Return OK for a GET if an empty page" in new TestScenario(userType, Some(emptyUserAnswers)) {
+        "Return OK for a GET if an empty page" in new TestScenario(userType, Some(blankUserAnswers)) {
           running(application) {
             val result = route(application, getRequest).value
             status(result) mustEqual OK
@@ -87,7 +93,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
           }
         }
 
-        "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(emptyUserAnswers)) {
+        "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
             val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val result    = route(application, request).value

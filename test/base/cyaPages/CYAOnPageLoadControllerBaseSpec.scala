@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package base
+package base.cyaPages
 
+import base.SpecBase
 import common.TestApp.buildAppFromUserType
 import controllers.standard.routes
 import models.common.UserType.Individual

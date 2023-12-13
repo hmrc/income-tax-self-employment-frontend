@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.UserBuilder.{aNoddyAgentUser, aNoddyUser}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
