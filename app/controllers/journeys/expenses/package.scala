@@ -22,18 +22,18 @@ import models.journeys.expenses.ExpensesJourneyAnswers
 import play.api.libs.json.{JsObject, Reads}
 
 package object expenses {
-  private[expenses] def eliminateInvalidState[A <: ExpensesJourneyAnswers: Reads](userAnswers: UserAnswers, ctx: JourneyContext): UserAnswers = {
-    val answersData    = (userAnswers.data \ ctx.businessId.value).as[JsObject]
+  private[expenses] def eliminateInvalidAnswersState[A <: ExpensesJourneyAnswers: Reads](answers: UserAnswers, ctx: JourneyContext): UserAnswers = {
+    val answersData    = (answers.data \ ctx.businessId.value).as[JsObject]
     val journeyAnswers = answersData.as[A]
 
-    journeyAnswers.disallowableAmount.fold(userAnswers) { _ =>
+    journeyAnswers.disallowableAmount.fold(answers) { _ =>
       (answersData \ journeyAnswers.correspondingTailoringPageName.value).as[String] match {
         case "yesAllowable" =>
-          val newAnswers = answersData - journeyAnswers.disallowablePageName.value
-          val newData    = userAnswers.data + (ctx.businessId.value -> newAnswers)
-          userAnswers.copy(data = newData)
+          val validAnswers = answersData - journeyAnswers.disallowablePageName.value
+          val validData    = answers.data + (ctx.businessId.value -> validAnswers)
+          answers.copy(data = validData)
 
-        case _ => userAnswers
+        case _ => answers
       }
     }
   }

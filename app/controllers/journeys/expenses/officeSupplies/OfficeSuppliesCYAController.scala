@@ -19,7 +19,7 @@ package controllers.journeys.expenses.officeSupplies
 import cats.data.EitherT
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import controllers.journeys.expenses.eliminateInvalidState
+import controllers.journeys.expenses.eliminateInvalidAnswersState
 import models.common.ModelUtils.userType
 import models.common._
 import models.errors.ServiceError
@@ -65,7 +65,7 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx          = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesOfficeSupplies)
-      val validAnswers = eliminateInvalidState[OfficeSuppliesJourneyAnswers](request.userAnswers, ctx)
+      val validAnswers = eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](request.userAnswers, ctx)
 
       val result = for {
         _ <- EitherT.right[ServiceError](service.updateAnswers(validAnswers))

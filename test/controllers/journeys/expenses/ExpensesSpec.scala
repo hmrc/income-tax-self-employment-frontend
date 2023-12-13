@@ -70,12 +70,12 @@ class ExpensesSpec extends SpecBase {
                     |""".stripMargin)
           .as[JsObject]
 
-        eliminateInvalidState[OfficeSuppliesJourneyAnswers](invalidUserAnswers, ctx).data shouldBe expectedResult
+        eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](invalidUserAnswers, ctx).data shouldBe expectedResult
       }
     }
     "state is valid" - {
       "leave user answer data unchanged" in {
-        eliminateInvalidState[OfficeSuppliesJourneyAnswers](validUserAnswers, ctx).data shouldBe validData
+        eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](validUserAnswers, ctx).data shouldBe validData
       }
     }
   }
