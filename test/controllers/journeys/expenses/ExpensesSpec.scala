@@ -56,11 +56,10 @@ class ExpensesSpec extends SpecBase {
 
   private val invalidUserAnswers = UserAnswers("id", invalidData)
 
-  "eliminating valid state" - {
-    "invalid state exists" - {
-      "remove it from the user answer data" in {
-        val expectedResult = Json
-          .parse(s"""
+  "invalid state exists" - {
+    "remove it from the user answer data" in {
+      val expectedResult = Json
+        .parse(s"""
                     |{
                     |  "$businessId": {
                     |    "officeSupplies": "yesAllowable",
@@ -68,15 +67,14 @@ class ExpensesSpec extends SpecBase {
                     |  }
                     |}
                     |""".stripMargin)
-          .as[JsObject]
+        .as[JsObject]
 
-        eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](invalidUserAnswers, ctx).data shouldBe expectedResult
-      }
+      eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](invalidUserAnswers, ctx).data shouldBe expectedResult
     }
-    "state is valid" - {
-      "leave user answer data unchanged" in {
-        eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](validUserAnswers, ctx).data shouldBe validData
-      }
+  }
+  "state is valid" - {
+    "leave user answer data unchanged" in {
+      eliminateInvalidAnswersState[OfficeSuppliesJourneyAnswers](validUserAnswers, ctx).data shouldBe validData
     }
   }
 }
