@@ -24,6 +24,7 @@ import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.common.{JourneyStatus, Mtditid, Nino, TaxYear}
+import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
 import models.requests.TradesJourneyStatuses
@@ -103,7 +104,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   "must redirect to Journey Recovery when an error response is returned" should {
     "from the service" in {
       when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn
-        leftApiResultT(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error")))
+        leftApiResultT(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn apiResultT(
         JourneyStatus.Completed)
 
@@ -116,7 +117,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "from the connector" in {
       when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn
-        leftApiResultT(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error")))
+        leftApiResultT(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value

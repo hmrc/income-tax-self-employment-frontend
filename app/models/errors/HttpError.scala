@@ -20,7 +20,12 @@ import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
 import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status
 
-case class HttpError(status: Int, body: HttpErrorBody, reason: Option[Throwable] = None) {
+case class HttpError(
+    status: Int,
+    body: HttpErrorBody,
+    internalReason: Option[Throwable] = None,
+    internalReasonMessage: Option[String] = None
+) {
 
   def toJson: JsValue = body match {
     case error: SingleErrorBody  => Json.toJson(error)
@@ -31,4 +36,8 @@ case class HttpError(status: Int, body: HttpErrorBody, reason: Option[Throwable]
 object HttpError {
   def internalError(reason: Throwable): HttpError =
     HttpError(Status.INTERNAL_SERVER_ERROR, HttpErrorBody.internalError(reason.getMessage), Some(reason))
+
+  def internalError(reason: String): HttpError =
+    HttpError(Status.INTERNAL_SERVER_ERROR, HttpErrorBody.internalError(reason), None)
+
 }

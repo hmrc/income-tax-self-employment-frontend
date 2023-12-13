@@ -16,11 +16,11 @@
 
 import cats.data.EitherT
 import models.domain.ApiResultT
-import models.errors.HttpError
+import models.errors.ServiceError
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object common {
-  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]               = EitherT.rightT[Future, HttpError](a)
-  def leftApiResultT[A](err: HttpError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
+  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]                  = EitherT.rightT[Future, ServiceError](a)
+  def leftApiResultT[A](err: ServiceError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
 }

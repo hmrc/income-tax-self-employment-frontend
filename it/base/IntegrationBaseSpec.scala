@@ -18,7 +18,8 @@ package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import models.common.{BusinessId, Mtditid, Nino, TaxYear}
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.ServiceError.ConnectorResponseError
+import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
@@ -44,7 +45,7 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
 
   protected val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid.value))
 
-  protected val httpError: HttpError = HttpError(BAD_REQUEST, HttpErrorBody.parsingError)
+  protected val parsingError: ServiceError = ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier    = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))

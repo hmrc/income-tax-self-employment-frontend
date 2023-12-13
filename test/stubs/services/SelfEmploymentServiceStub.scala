@@ -20,7 +20,7 @@ import cats.data.EitherT
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
-import models.errors.HttpError
+import models.errors.ServiceError
 import models.journeys.Journey
 import models.requests.TradesJourneyStatuses
 import pages.QuestionPage
@@ -31,9 +31,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
-    accountingType: Either[HttpError, AccountingType] = Right(AccountingType.Cash),
+    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Cash),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
-    submittedAnswers: Either[HttpError, Option[JsObject]] = Right(Some(JsObject.empty))
+    submittedAnswers: Either[ServiceError, Option[JsObject]] = Right(Some(JsObject.empty))
 ) extends SelfEmploymentServiceBase {
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
@@ -41,7 +41,7 @@ case class SelfEmploymentServiceStub(
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
     ???
 
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[HttpError, String]] =
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
     Future.successful(accountingType.map(_.entryName))
 
   def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
@@ -50,5 +50,5 @@ case class SelfEmploymentServiceStub(
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
 
   def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] =
-    EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[HttpError, Option[A]]]))
+    EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[ServiceError, Option[A]]]))
 }

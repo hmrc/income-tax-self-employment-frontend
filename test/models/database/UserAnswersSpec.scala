@@ -17,7 +17,6 @@
 package models.database
 
 import models.common.BusinessId
-import org.scalatest.TryValues._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsObject, Json}
@@ -28,7 +27,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
   "upsertFragment" should {
     "set a new value" in {
       val userAnswers = UserAnswers("userId")
-      val result      = userAnswers.upsertFragment(businessId, Json.obj("key" -> "value")).success.value
+      val result      = userAnswers.upsertFragment(businessId, Json.obj("key" -> "value"))
       result.data shouldBe Json.obj(
         businessId.value -> Json.obj("key" -> "value")
       )
@@ -44,7 +43,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
 
       val userAnswers = UserAnswers("userId", existingData)
 
-      val result = userAnswers.upsertFragment(businessId, Json.obj("key3" -> "value3")).success.value
+      val result = userAnswers.upsertFragment(businessId, Json.obj("key3" -> "value3"))
 
       result.data shouldBe Json.obj(
         businessId.value -> Json.obj(
@@ -65,7 +64,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
 
       val userAnswers = UserAnswers("userId", existingData)
 
-      val result = userAnswers.upsertFragment(businessId, Json.obj("key2" -> "valueUpdated")).success.value
+      val result = userAnswers.upsertFragment(businessId, Json.obj("key2" -> "valueUpdated"))
 
       result.data shouldBe Json.obj(
         businessId.value -> Json.obj(
@@ -75,7 +74,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
       )
     }
 
-    "merge two jsons if they have more than one business ids" in {
+    "merge two jsons with the businessId if many businessIds present" in {
       val existingData: JsObject = Json.obj(
         "businessId_A" -> Json.obj(
           "key1" -> "value1",
@@ -89,7 +88,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
 
       val userAnswers = UserAnswers("userId", existingData)
 
-      val result = userAnswers.upsertFragment(BusinessId("businessId_A"), Json.obj("key2" -> "valueUpdated")).success.value
+      val result = userAnswers.upsertFragment(BusinessId("businessId_A"), Json.obj("key2" -> "valueUpdated"))
 
       result.data shouldBe Json.obj(
         "businessId_A" -> Json.obj(

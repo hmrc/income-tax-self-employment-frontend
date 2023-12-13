@@ -46,24 +46,10 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
     }
   }
 
-  def upsertFragment(businessId: BusinessId, dataFragment: JsObject): Try[UserAnswers] = {
-    val path = __ \ businessId.value
-    val upsertFragment: Reads[JsObject] = data
-      .validate((__ \ businessId.value).json.pick[JsObject])
-      .fold(
-        _ => path.json.put(dataFragment),
-        _ => path.json.update(__.read[JsObject].map(_ ++ dataFragment))
-      )
-
-    val updatedAnswers =
-      data.transform(upsertFragment) match {
-        case JsSuccess(jsValue, _) => Success(jsValue)
-        case JsError(errors)       => Failure(JsResultException(errors))
-      }
-
-    updatedAnswers.map { updatedData =>
-      copy(data = updatedData, lastUpdated = Instant.now)
-    }
+  def upsertFragment(businessId: BusinessId, dataFragment: JsObject): UserAnswers = {
+    val existingAnswerData = (data \ businessId.value).asOpt[JsObject].getOrElse(JsObject.empty)
+    val updatedData        = data + (businessId.value -> (existingAnswerData ++ dataFragment))
+    copy(data = updatedData, lastUpdated = Instant.now)
   }
 
   def remove[A](page: Settable[A], businessId: Option[BusinessId] = None): Try[UserAnswers] = {

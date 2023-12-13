@@ -23,6 +23,7 @@ import models.NormalMode
 import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.errors.ServiceError.ConnectorResponseError
 import models.journeys.Journey
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -64,7 +65,7 @@ trait CYAOnSubmitControllerBaseSpec extends ControllerSpec {
 
     "an error occurred during answer submission" - {
       "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
-        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(httpError.asLeft))
+        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(ConnectorResponseError(httpError).asLeft))
 
         val result: Future[Result] = route(application, postRequest).value
 

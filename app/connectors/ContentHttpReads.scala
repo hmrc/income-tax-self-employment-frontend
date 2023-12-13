@@ -17,11 +17,39 @@
 package connectors
 
 import cats.implicits._
+import connectors.ContentHttpReads._
 import connectors.httpParser.JourneyStateParser.pagerDutyError
-import play.api.libs.json.Reads
+import models.errors.ServiceError
+import models.errors.ServiceError.{CannotParseJsonError, CannotReadJsonError}
+import play.api.libs.json.{JsObject, JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
+import scala.util.{Failure, Success, Try}
+
 class ContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
+
   override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
-    if (isSuccess(response.status)) response.json.validate[A].asOpt.asRight else Left(pagerDutyError(response))
+    if (isSuccess(response.status)) {
+      readOpt[A](response)
+    } else {
+      Left(pagerDutyError(response))
+    }
+}
+
+object ContentHttpReads {
+  def readOpt[A: Reads](response: HttpResponse): Either[ServiceError, Option[A]] = {
+    val validated = Try(response.json.validate[A].asEither)
+
+    validated match {
+      case Success(validatedRes) =>
+        validatedRes.fold(
+          err => CannotReadJsonError(err.toList).asLeft,
+          a => a.some.asRight
+        )
+
+      case Failure(err) => CannotParseJsonError(err).asLeft
+    }
+  }
+
+  def asJsonUnsafe[A: Writes](a: A): JsObject = Json.toJson(a).as[JsObject]
 }

@@ -33,11 +33,6 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
   val mtditid: Mtditid     = Mtditid(user.mtditid)
 }
 
-object OptionalDataRequest {
-  def empty(request: IdentifierRequest[_], user: User): OptionalDataRequest[_] =
-    OptionalDataRequest(request, request.userId, user, None)
-}
-
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
   val userType: UserType = user.userType
   val mtditid: Mtditid   = Mtditid(user.mtditid)

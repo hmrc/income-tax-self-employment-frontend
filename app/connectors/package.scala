@@ -15,20 +15,20 @@
  */
 
 import models.common.Mtditid
-import models.errors.HttpError
+import models.errors.ServiceError
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object connectors {
-  type ContentResponse[A] = Either[HttpError, A]
+  type ContentResponse[A] = Either[ServiceError, A]
   type NoContentResponse  = ContentResponse[Unit]
 
   def post[A: Writes](http: HttpClient, url: String, mtditid: Mtditid, body: A)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Either[HttpError, Unit]] =
-    http.POST[A, Either[HttpError, Unit]](url, body)(
+      ec: ExecutionContext): Future[Either[ServiceError, Unit]] =
+    http.POST[A, Either[ServiceError, Unit]](url, body)(
       wts = implicitly[Writes[A]],
       rds = NoContentHttpReads,
       hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
@@ -37,8 +37,8 @@ package object connectors {
 
   def get[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Either[HttpError, Option[A]]] =
-    http.GET[Either[HttpError, Option[A]]](url)(
+      ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
+    http.GET[Either[ServiceError, Option[A]]](url)(
       rds = new ContentHttpReads[A],
       hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
       ec = ec

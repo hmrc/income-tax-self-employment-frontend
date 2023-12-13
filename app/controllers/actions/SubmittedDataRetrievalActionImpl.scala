@@ -18,11 +18,12 @@ package controllers.actions
 
 import cats.data.EitherT
 import cats.implicits._
+import connectors.ContentHttpReads
 import controllers.handleApiResult
 import models.common.{BusinessId, JourneyContext, Mtditid, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
-import models.errors.HttpError
+import models.errors.ServiceError
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
@@ -33,7 +34,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
 
@@ -63,26 +63,15 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
       maybeJourneyAnswers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
-      updatedAnswers <- maybeJourneyAnswers.fold {
-        EitherT.pure[Future, HttpError](existingAnswers)
-      } { answers =>
-        val jsonAnswers = Json.toJson(answers).as[JsObject]
-        val updatedAnswers = existingAnswers.upsertFragment(ctx.businessId, jsonAnswers) match {
-          case Success(updated) => updated.asRight
-          case Failure(err)     => HttpError.internalError(err).asLeft
-        }
-        updateSessionRepository(updatedAnswers)
+      updatedAnswers = maybeJourneyAnswers.fold(existingAnswers) { answers =>
+        val jsonAnswers = ContentHttpReads.asJsonUnsafe(answers)
+        existingAnswers.upsertFragment(ctx.businessId, jsonAnswers)
       }
+      _ <- EitherT.right[ServiceError](sessionRepository.set(updatedAnswers))
     } yield updatedAnswers
 
     handleApiResult(result)
   }
-
-  private def updateSessionRepository(maybeUpdatedAnswers: Either[HttpError, UserAnswers]) =
-    for {
-      updated <- EitherT.fromEither[Future](maybeUpdatedAnswers)
-      _       <- EitherT.right[HttpError](sessionRepository.set(updated))
-    } yield updated
 
   private def hasAtLeastOneUserAnswerForJourney(businessId: BusinessId, journey: Journey, maybeUserAnswers: Option[UserAnswers]): Boolean =
     maybeUserAnswers.exists { userAnswers =>
