@@ -22,7 +22,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.common.JourneyStatus._
 import models.common.{JourneyStatus, TaxYear}
 import models.domain._
-import models.errors.HttpError
+import models.errors.ServiceError
 import models.journeys.Journey.TradeDetails
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.Logger
@@ -58,9 +58,9 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
   }
 
   private def getViewModelList(taxYear: TaxYear, status: JourneyStatus)(implicit
-      request: OptionalDataRequest[AnyContent]): EitherT[Future, HttpError, _ >: Nil.type <: List[TradesJourneyStatuses]] =
+      request: OptionalDataRequest[AnyContent]): EitherT[Future, ServiceError, _ >: Nil.type <: List[TradesJourneyStatuses]] =
     status match {
       case Completed                                                  => service.getCompletedTradeDetails(request.nino, taxYear, request.mtditid)
-      case CheckOurRecords | InProgress | CannotStartYet | NotStarted => EitherT.rightT[Future, HttpError](Nil)
+      case CheckOurRecords | InProgress | CannotStartYet | NotStarted => EitherT.rightT[Future, ServiceError](Nil)
     }
 }

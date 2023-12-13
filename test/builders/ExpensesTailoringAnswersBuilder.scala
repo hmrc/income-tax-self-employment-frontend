@@ -17,12 +17,12 @@
 package builders
 
 import models.journeys.expenses
-import models.journeys.expenses.{ExpensesTailoring, ExpensesTailoringAnswers}
+import models.journeys.expenses.{ExpensesTailoring, ExpensesTailoringIndividualCategoriesAnswers}
 import models.journeys.expenses.individualCategories._
 
 object ExpensesTailoringAnswersBuilder {
 
-  val expensesTailoringAnswers: ExpensesTailoringAnswers = expenses.ExpensesTailoringAnswers(
+  val expensesTailoringAnswers: ExpensesTailoringIndividualCategoriesAnswers = expenses.ExpensesTailoringIndividualCategoriesAnswers(
     ExpensesTailoring.IndividualCategories,
     OfficeSupplies.YesDisallowable,
     TaxiMinicabOrRoadHaulage.No,

@@ -18,12 +18,12 @@ package base
 
 import common.TestApp.buildAppFromUserType
 import controllers.standard.routes
-import models.common.UserType.{Agent, Individual}
+import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,20 +32,15 @@ import views.html.standard.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-trait CYAOnPageLoadControllerSpec extends ControllerSpec {
+trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
 
-  val pageHeading: String
+  protected val pageHeading: String
   val testDataCases: List[JsObject]
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call
-  def onSubmitCall: (TaxYear, BusinessId) => Call
 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList
-
-  val userTypes: List[UserType] = List(Individual, Agent)
-
-  def userAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
   def createExpectedView(userType: UserType, summaryList: SummaryList, messages: Messages, application: Application, request: Request[_]): String = {
     val view = application.injector.instanceOf[CheckYourAnswersView]
@@ -57,13 +52,13 @@ trait CYAOnPageLoadControllerSpec extends ControllerSpec {
       userTypes.foreach { userType =>
         s"should return Ok and render correct view for various data when user is an $userType" in {
           testDataCases.foreach { data =>
-            val application   = buildAppFromUserType(userType, Some(userAnswers(data)))
+            val application   = buildAppFromUserType(userType, Some(buildUserAnswers(data)))
             val msg: Messages = SpecBase.messages(application)
 
             implicit val impMsg: Messages = SpecBase.messages(application)
 
             val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
-            val summaryList: SummaryList = expectedSummaryList(userAnswers(data), taxYear, businessId, userType)
+            val summaryList: SummaryList = expectedSummaryList(buildUserAnswers(data), taxYear, businessId, userType)
 
             val result = route(application, onPageLoadRequest).value
             val expectedResult =

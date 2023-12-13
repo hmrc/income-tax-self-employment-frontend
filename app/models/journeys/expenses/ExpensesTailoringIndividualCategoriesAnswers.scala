@@ -19,8 +19,8 @@ package models.journeys.expenses
 import models.journeys.expenses.individualCategories._
 import play.api.libs.json.{Format, Json}
 
-final case class ExpensesTailoringAnswers(
-    expensesTailoring: ExpensesTailoring,
+case class ExpensesTailoringIndividualCategoriesAnswers(
+    expensesCategories: ExpensesTailoring,
     officeSupplies: OfficeSupplies,
     taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
     goodsToSellOrUse: GoodsToSellOrUse,
@@ -42,6 +42,6 @@ final case class ExpensesTailoringAnswers(
     disallowableProfessionalFees: Option[DisallowableProfessionalFees]
 )
 
-object ExpensesTailoringAnswers {
-  implicit val format: Format[ExpensesTailoringAnswers] = Json.format[ExpensesTailoringAnswers]
+object ExpensesTailoringIndividualCategoriesAnswers {
+  implicit val format: Format[ExpensesTailoringIndividualCategoriesAnswers] = Json.format[ExpensesTailoringIndividualCategoriesAnswers]
 }

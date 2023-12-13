@@ -23,6 +23,7 @@ import connectors.httpParser.JourneyStateParser.JourneyStateResponse
 import helpers.WiremockSpec
 import models.domain.BusinessData
 import models.errors.HttpErrorBody.SingleErrorBody
+import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
@@ -90,7 +91,7 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+      result mustBe Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
     }
   }
 
@@ -104,7 +105,7 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       s"return a $errorStatus error when the connector returns an error" in {
         stubGetWithResponseBody(getUrl, errorStatus, Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
         val result = await(block())
-        result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
+        result mustBe Left(ConnectorResponseError(HttpError(errorStatus, SingleErrorBody(code, reason))))
       }
 
   def saveJourneyStateRequestReturnsNoContent(getUrl: String, block: () => JourneyStateResponse): Unit =
@@ -125,8 +126,9 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
     "return an error when the connector returns an error" in {
       stubs()
       val result = await(block())
-      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
-      result mustBe Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR")))
+      result mustBe Left(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.parsingError)))
+      result mustBe Left(
+        ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))))
     }
 
   def tradesWithStatusesRequestReturnsOk(getUrl: String, block: () => GetTradesStatusResponse): Unit = {
@@ -141,7 +143,7 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       val expectedResponseBody = Json.obj("nonValidatingJson" -> "").toString()
       stubGetWithResponseBody(getUrl, OK, expectedResponseBody, headersSentToBE)
       val result = block()
-      result mustBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+      result mustBe Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
     }
   }
 
@@ -155,7 +157,7 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       s"return a $errorStatus error when the connector returns an error" in {
         stubGetWithResponseBody(getUrl, errorStatus, Json.obj("code" -> code, "reason" -> reason).toString(), headersSentToBE)
         val result = await(block())
-        result mustBe Left(HttpError(errorStatus, SingleErrorBody(code, reason)))
+        result mustBe Left(ConnectorResponseError(HttpError(errorStatus, SingleErrorBody(code, reason))))
       }
 
   lazy val aSequenceTadesJourneyStatusesRequestString =

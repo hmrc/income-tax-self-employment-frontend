@@ -16,13 +16,13 @@
 
 package connectors.httpParser
 
-import models.errors.HttpError
+import models.errors.ServiceError
 import play.api.http.Status.{CREATED, NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object JourneyStateParser extends HttpParser {
-  type JourneyStateResponse = Either[HttpError, Option[Boolean]]
+  type JourneyStateResponse = Either[ServiceError, Option[Boolean]]
 
   val parserName: String = "JourneyStateParser"
   val service: String    = "income-tax-self-employment"

@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.entertainment
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
@@ -28,32 +28,17 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.entertainment.EntertainmentAmountSummary
 
-class EntertainmentCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class EntertainmentCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = EntertainmentCYAPage.toString
 
-  private val userAnswerData = Json
-    .parse(s"""
-              |{
-              |  "$businessId": {
-              |    "entertainmentCosts": "yes",
-              |    "entertainmentAmount": 200.00
-              |  }
-              |}
-              |""".stripMargin)
-    .as[JsObject]
-
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-
   override val journey: Journey = ExpensesEntertainment
 
-  override val testDataCases: List[JsObject] =
-    List(
-      Json.obj(
-        "entertainmentCosts"  -> "yes",
-        "entertainmentAmount" -> 200.00
-      )
-    )
+  override val submissionData = Json.obj(
+    "entertainmentCosts"  -> "yes",
+    "entertainmentAmount" -> 200.00
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.EntertainmentCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.EntertainmentCYAController.onSubmit

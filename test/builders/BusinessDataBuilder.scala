@@ -18,7 +18,7 @@ package builders
 
 import models.domain.BusinessData
 import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
-import models.errors.HttpError
+import models.errors.ServiceError
 
 object BusinessDataBuilder {
 
@@ -145,8 +145,8 @@ object BusinessDataBuilder {
     )
   )
 
-  val aBusinessDataResponse: Either[HttpError, Seq[BusinessData]]     = Right(aBusinessData)
-  val aBusinessDataNoneResponse: Either[HttpError, Seq[BusinessData]] = Right(aBusinessDataNoneTradeNames)
+  val aBusinessDataResponse: Either[ServiceError, Seq[BusinessData]]     = Right(aBusinessData)
+  val aBusinessDataNoneResponse: Either[ServiceError, Seq[BusinessData]] = Right(aBusinessDataNoneTradeNames)
 
   lazy val aBusinessDataDataRequestStr: String =
     """

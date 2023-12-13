@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.officeSupplies
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -31,24 +31,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.officeSupplies.OfficeSuppliesAmountSummary
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
-class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = OfficeSuppliesCYAPage.toString
 
   private val officeSuppliesAmount = BigDecimal(200.00)
-
-  private val userAnswerData = Json
-    .parse(s"""
-              |{
-              |  "$businessId": {
-              |    "officeSupplies": "yesAllowable",
-              |    "officeSuppliesAmount": $officeSuppliesAmount
-              |  }
-              |}
-              |""".stripMargin)
-    .as[JsObject]
-
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
   override val journey: Journey = ExpensesOfficeSupplies
 
@@ -72,11 +59,9 @@ class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerSpec with C
     view(userType.toString, summaryList, taxYear, businessId)(request, messages).toString()
   }
 
-  override val testDataCases: List[JsObject] =
-    List(
-      Json.obj(
-        "officeSupplies"       -> "yesAllowable",
-        "officeSuppliesAmount" -> officeSuppliesAmount
-      )
-    )
+  override val submissionData = Json.obj(
+    "officeSupplies"       -> "yesAllowable",
+    "officeSuppliesAmount" -> officeSuppliesAmount
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 }

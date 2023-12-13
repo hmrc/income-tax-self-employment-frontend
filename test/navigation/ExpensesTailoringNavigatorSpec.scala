@@ -405,15 +405,15 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
           DepreciationController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
-      "OtherExpensesPage must go to the Expenses CYA page" ignore { // TODO unignore when CYA page is created
+      "OtherExpensesPage must go to the Expenses CYA page" in {
 
         navigator.nextPage(OtherExpensesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
       }
 
-      "Expenses CYA page must go to the Section Completed page with Income journey" ignore { // TODO unignore when CYA page is created
+      "Expenses CYA page must go to the Section Completed page with Income journey" in {
 
-        navigator.nextPage(OtherExpensesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
+        navigator.nextPage(ExpensesTailoringCYAPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
           SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
       }
 
@@ -425,41 +425,10 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
-      "ExpensesCategoriesPage must go to the" - {
-        "ExpensesTailoringCYAPage when total income amount is equal or over the threshold" in {
+      "ExpensesCategoriesPage must go to the ExpensesTailoringCYAPage" in {
 
-          navigator.nextPage(ExpensesCategoriesPage, CheckMode, emptyUserAnswers, taxYear, businessId, isOverThreshold = true) mustBe
-            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
-        }
-        "TotalExpensesPage when 'TotalAmount' is selected" in {
-
-          val userAnswers =
-            emptyUserAnswers.set(ExpensesCategoriesPage, TotalAmount, Some(businessId)).success.value
-
-          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            simplifiedExpenses.routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode)
-        }
-        "OfficeSuppliesPage when 'IndividualCategories' is selected" in {
-
-          val userAnswers =
-            emptyUserAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(businessId)).success.value
-
-          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            OfficeSuppliesController.onPageLoad(taxYear, businessId, CheckMode)
-        }
-        "ExpensesTailoringCYAPage when 'NoExpenses' is selected" in {
-
-          val userAnswers =
-            emptyUserAnswers.set(ExpensesCategoriesPage, NoExpenses, Some(businessId)).success.value
-
-          navigator.nextPage(ExpensesCategoriesPage, CheckMode, userAnswers, taxYear, businessId) mustBe
-            tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
-        }
-        "Journey Recovery page when there are no UserAnswers for this page" in {
-
-          navigator.nextPage(ExpensesCategoriesPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
-            JourneyRecoveryController.onPageLoad()
-        }
+        navigator.nextPage(ExpensesCategoriesPage, CheckMode, emptyUserAnswers, taxYear, businessId) mustBe
+          tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
       }
 
       "ProfessionalServiceExpensesPage must go to the" - {

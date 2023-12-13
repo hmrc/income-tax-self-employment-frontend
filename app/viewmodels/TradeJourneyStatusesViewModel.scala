@@ -23,22 +23,12 @@ import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.expenses.individualCategories.{
-  DisallowableStaffCosts,
-  EntertainmentCosts,
-  GoodsToSellOrUse,
-  OfficeSupplies,
-  RepairsAndMaintenance
-}
+import models.journeys.expenses.individualCategories._
+import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
-import pages.expenses.tailoring.individualCategories.{
-  DisallowableStaffCostsPage,
-  EntertainmentCostsPage,
-  GoodsToSellOrUsePage,
-  OfficeSuppliesPage,
-  RepairsAndMaintenancePage
-}
+import pages.expenses.tailoring.individualCategories._
+import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -62,12 +52,16 @@ object TradeJourneyStatusesViewModel {
       List(
         buildRow(Abroad),
         buildRow(Income, Some(Abroad)),
-        buildRow(ExpensesTailoring, Some(Abroad)),
+        buildRow(ExpensesTailoring, Some(Income), pageMeetsCriteria(TradingAllowancePage, Seq(TradingAllowance.DeclareExpenses))),
         buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))),
         buildRow(
           ExpensesGoodsToSellOrUse,
           None,
           pageMeetsCriteria(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))),
+        buildRow(
+          ExpensesRepairsAndMaintenance,
+          None,
+          pageMeetsCriteria(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))),
         buildRow(
           ExpensesEntertainment,
           None,
@@ -75,11 +69,7 @@ object TradeJourneyStatusesViewModel {
         buildRow(
           ExpensesStaffCosts,
           None,
-          pageMeetsCriteria(DisallowableStaffCostsPage, DisallowableStaffCosts.values.filterNot(_ == DisallowableStaffCosts.No))),
-        buildRow(
-          ExpensesRepairsAndMaintenance,
-          None,
-          pageMeetsCriteria(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No)))
+          pageMeetsCriteria(DisallowableStaffCostsPage, DisallowableStaffCosts.values.filterNot(_ == DisallowableStaffCosts.No)))
       ).flatten
     )
   }
@@ -165,6 +155,11 @@ object TradeJourneyStatusesViewModel {
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
+      case ExpensesRepairsAndMaintenance =>
+        determineUrl(
+          expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
+        )
       case ExpensesEntertainment =>
         determineUrl(
           expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
@@ -176,11 +171,6 @@ object TradeJourneyStatusesViewModel {
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
-        )
-      case ExpensesRepairsAndMaintenance =>
-        determineUrl(
-          expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
-          expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesConstruction | ExpensesTotal | NationalInsurance | TradeDetails =>
         ??? // TODO Other Journeys not yet implemented

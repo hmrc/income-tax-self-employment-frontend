@@ -16,7 +16,7 @@
 
 package controllers.journeys.income
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.income
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -31,26 +31,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.income._
 import views.html.journeys.income.IncomeCYAView
 
-class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class IncomeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = IncomeCYAPage.toString
   override val journey: Journey    = Income
-
-  private val userAnswerData = Json
-    .parse(s"""
-              |{
-              |  "$businessId": {
-              |    "incomeNotCountedAsTurnover": false,
-              |    "turnoverIncomeAmount": 100.00,
-              |    "anyOtherIncome": false,
-              |    "turnoverNotTaxable": false,
-              |    "tradingAllowance": "declareExpenses"
-              |  }
-              |}
-              |""".stripMargin)
-    .as[JsObject]
-
-  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = income.routes.IncomeCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = income.routes.IncomeCYAController.onSubmit
@@ -76,15 +60,14 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubm
     view(taxYear, businessId, summaryList, userType)(request, messages).toString()
   }
 
-  override val testDataCases: List[JsObject] =
-    List(
-      Json.obj(
-        "incomeNotCountedAsTurnover" -> false,
-        "turnoverIncomeAmount"       -> 100.00,
-        "anyOtherIncome"             -> false,
-        "turnoverNotTaxable"         -> false,
-        "tradingAllowance"           -> "declareExpenses"
-      )
-    )
+  override val submissionData: JsObject = Json.obj(
+    "incomeNotCountedAsTurnover" -> false,
+    "turnoverIncomeAmount"       -> 100.00,
+    "anyOtherIncome"             -> false,
+    "turnoverNotTaxable"         -> false,
+    "tradingAllowance"           -> "declareExpenses"
+  )
+
+  override val testDataCases: List[JsObject] = List(submissionData)
 
 }

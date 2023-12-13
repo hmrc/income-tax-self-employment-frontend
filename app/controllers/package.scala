@@ -18,7 +18,7 @@ import cats.data.EitherT
 import models.NormalMode
 import models.common.{BusinessId, JourneyContext, TaxYear}
 import models.domain.ApiResultT
-import models.errors.HttpError
+import models.errors.ServiceError
 import models.journeys.Journey
 import play.api.Logger
 import play.api.mvc.Result
@@ -33,10 +33,16 @@ package object controllers {
     journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.toString, NormalMode)
   )
 
-  def handleResult(result: Future[Either[HttpError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
+  def handleResult(result: Future[Either[ServiceError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     handleResultT(EitherT(result))
 
-  private def handleResultT(resultT: EitherT[Future, HttpError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
+  def handleApiResult[A](result: ApiResultT[A])(implicit ec: ExecutionContext): Future[A] =
+    result.value.flatMap {
+      case Left(error) => Future.failed(error.httpError.internalReason.getOrElse(new RuntimeException(error.httpError.toString)))
+      case Right(v)    => Future.successful(v)
+    }
+
+  private def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     resultT.leftMap { httpError =>
       logger.error(s"HttpError encountered: $httpError")
       redirectJourneyRecovery()
