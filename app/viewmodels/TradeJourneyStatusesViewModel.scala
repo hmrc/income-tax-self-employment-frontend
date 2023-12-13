@@ -24,9 +24,11 @@ import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
 import models.journeys.expenses.individualCategories.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
+import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
 import pages.expenses.tailoring.individualCategories.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
+import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -50,7 +52,7 @@ object TradeJourneyStatusesViewModel {
       List(
         buildRow(Abroad),
         buildRow(Income, Some(Abroad)),
-        buildRow(ExpensesTailoring, Some(Abroad)),
+        buildRow(ExpensesTailoring, Some(Income), pageMeetsCriteria(TradingAllowancePage, Seq(TradingAllowance.DeclareExpenses))),
         buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))),
         buildRow(
           ExpensesGoodsToSellOrUse,
