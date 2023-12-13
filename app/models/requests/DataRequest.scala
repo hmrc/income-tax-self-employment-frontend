@@ -37,6 +37,7 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
   val userType: UserType = user.userType
   val nino: Nino         = Nino(user.nino)
   val mtditid: Mtditid   = Mtditid(user.mtditid)
+  val nino: Nino         = Nino(user.nino)
 
   def getValue[B: Reads](page: Gettable[B], businessId: BusinessId): Option[B] =
     userAnswers.get(page, Some(businessId))

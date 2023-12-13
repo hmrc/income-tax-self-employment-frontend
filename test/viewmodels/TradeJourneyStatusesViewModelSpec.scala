@@ -23,11 +23,21 @@ import models.common.JourneyStatus
 import models.common.JourneyStatus._
 import models.database.UserAnswers
 import models.journeys.Journey
-import models.journeys.Journey.{Abroad, ExpensesEntertainment, ExpensesGoodsToSellOrUse, ExpensesOfficeSupplies, ExpensesTailoring, Income}
-import models.journeys.expenses.individualCategories.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies}
+import models.journeys.Journey.{
+  Abroad,
+  ExpensesEntertainment,
+  ExpensesGoodsToSellOrUse,
+  ExpensesOfficeSupplies,
+  ExpensesRepairsAndMaintenance,
+  ExpensesTailoring,
+  Income
+}
+import models.journeys.expenses.individualCategories.{EntertainmentCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
+import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
 import models.requests.TradesJourneyStatuses.JourneyCompletedState
-import pages.expenses.tailoring.individualCategories.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage}
+import pages.expenses.tailoring.individualCategories.{EntertainmentCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
+import pages.income.TradingAllowancePage
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class TradeJourneyStatusesViewModelSpec extends SpecBase {
@@ -80,22 +90,29 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   }
 
   private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers): Seq[String] = {
-    val abroadStatus          = findJourneyStatus(journeyCompletedStates, Abroad)
-    val officeSuppliesIsYes   = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
-    val goodsToSellOrUseIsYes = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
-    val expensesIsYes         = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
+    val abroadStatus               = findJourneyStatus(journeyCompletedStates, Abroad)
+    val incomeStatus               = findJourneyStatus(journeyCompletedStates, Income)
+    val declareExpenses            = userAnswers.get(TradingAllowancePage, Some(businessId)).exists(_ == TradingAllowance.DeclareExpenses)
+    val officeSuppliesIsYes        = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
+    val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
+    val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
+    val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
     Seq(
       buildRow(Abroad, abroadStatus),
       buildRow(Income, findJourneyStatus(journeyCompletedStates, Income, abroadStatus != Completed)),
-      buildRow(ExpensesTailoring, findJourneyStatus(journeyCompletedStates, ExpensesTailoring, abroadStatus != Completed)),
+      buildOptionalRow(ExpensesTailoring, findJourneyStatus(journeyCompletedStates, ExpensesTailoring, incomeStatus != Completed), declareExpenses),
       buildOptionalRow(ExpensesOfficeSupplies, findJourneyStatus(journeyCompletedStates, ExpensesOfficeSupplies), officeSuppliesIsYes),
       buildOptionalRow(ExpensesGoodsToSellOrUse, findJourneyStatus(journeyCompletedStates, ExpensesGoodsToSellOrUse), goodsToSellOrUseIsYes),
-      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), expensesIsYes)
-    ).filterNot(_ == "")
+      buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
+      buildOptionalRow(
+        ExpensesRepairsAndMaintenance,
+        findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
+        repairsAndMaintenanceIsYes)
+    ).flatten
   }
 
   // noinspection ScalaStyle
-  private def buildRow(journey: Journey, status: JourneyStatus): String = {
+  private def buildRow(journey: Journey, status: JourneyStatus): Option[String] = {
     val href = status match {
       case CannotStartYet               => "#"
       case NotStarted | CheckOurRecords => chooseFirstUrl(journey)
@@ -103,19 +120,21 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     }
 
     val optDeadlink = if (status == CannotStartYet) " class='govuk-deadlink'" else ""
-    s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlink> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))"
+    Some(
+      s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlink> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))")
   }
 
   // noinspection ScalaStyle
-  private def buildOptionalRow(journey: Journey, status: JourneyStatus, conditionPassed: Boolean): String =
+  private def buildOptionalRow(journey: Journey, status: JourneyStatus, conditionPassed: Boolean): Option[String] =
     if (conditionPassed) {
       val href = status match {
         case NotStarted => chooseFirstUrl(journey)
         case _          => chooseCyaUrl(journey)
       }
-      s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))"
+      Some(
+        s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))")
     } else {
-      ""
+      None
     }
 
   private def chooseFirstUrl(journey: Journey): String =
@@ -129,6 +148,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesEntertainment =>
         journeys.expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesRepairsAndMaintenance =>
+        journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case _ => "not implemented or error"
     }
   private def chooseCyaUrl(journey: Journey): String =
@@ -139,7 +160,9 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       case ExpensesOfficeSupplies   => journeys.expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesGoodsToSellOrUse => journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesEntertainment    => journeys.expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
-      case _                        => "not implemented or error"
+      case ExpensesRepairsAndMaintenance =>
+        journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
+      case _ => "not implemented or error"
     }
 
   private def findJourneyStatus(journeyCompletedStates: List[JourneyCompletedState],

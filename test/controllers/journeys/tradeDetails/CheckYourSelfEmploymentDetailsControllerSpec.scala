@@ -25,6 +25,7 @@ import models.common.BusinessId
 import models.domain.BusinessData
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
+import models.errors.ServiceError.ConnectorResponseError
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -103,7 +104,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
           when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(
-            Left(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found"))))
+            Left(ConnectorResponseError(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found")))))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 

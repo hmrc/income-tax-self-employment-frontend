@@ -30,6 +30,17 @@ import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+trait SessionRepositoryBase {
+
+  def keepAlive(id: String): Future[Boolean]
+
+  def get(id: String): Future[Option[UserAnswers]]
+
+  def set(answers: UserAnswers): Future[Boolean]
+
+  def clear(id: String): Future[Boolean]
+}
+
 @Singleton
 class SessionRepository @Inject() (
     mongoComponent: MongoComponent,
@@ -48,7 +59,8 @@ class SessionRepository @Inject() (
             .expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
         )
       )
-    ) {
+    )
+    with SessionRepositoryBase {
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 

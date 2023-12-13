@@ -22,6 +22,7 @@ import controllers.journeys.routes
 import forms.SectionCompletedStateFormProvider
 import models.NormalMode
 import models.common.BusinessId
+import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.CompletedSectionState
 import navigation._
@@ -149,7 +150,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with MockitoSugar wit
       "must redirect to Journey Recovery when an error response is returned from the service" in {
 
         mockConnector.saveJourneyState(*[BusinessId], "invalidJourneyId", taxYear, complete = true, *[String])(*, *) returns Future.successful(
-          Left(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error"))))
+          Left(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("400", "Error")))))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))

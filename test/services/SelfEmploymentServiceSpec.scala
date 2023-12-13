@@ -24,14 +24,15 @@ import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import models.common.{BusinessId, JourneyAnswersContext, Mtditid, Nino}
 import models.database.UserAnswers
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
+import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.TurnoverIncomeAmountPage
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
@@ -63,13 +64,13 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
       result shouldBe Right(aSequenceTadesJourneyStatusesModel)
     }
-    "should return a Left(HttpError) when a this is returned from the backend" in {
+    "should return an error if connector fails" in {
       mockConnector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
-        Left(HttpError(404, HttpErrorBody.parsingError)))
+        Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError))))
 
       val result = await(service.getCompletedTradeDetails(nino, taxYear, Mtditid(mtditid)).value)
 
-      result shouldBe Left(HttpError(404, HttpErrorBody.parsingError))
+      result shouldBe Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
     }
   }
 
@@ -85,23 +86,23 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       resultCash shouldBe Right(cash)
     }
 
-    "should return a Left(HttpError) when" - {
+    "should return an error when" - {
 
       "an empty sequence is returned from the backend" in {
         mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(Right(Seq.empty))
 
         val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))
 
-        result shouldBe Left(HttpError(NOT_FOUND, HttpErrorBody.SingleErrorBody("404", "Business not found")))
+        result shouldBe Left(NotFoundError("Business not found"))
       }
 
-      "a Left(HttpError) is returned from the backend" in {
+      "an error is returned from the backend" in {
         mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(
-          Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
+          Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
 
         val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))(10.seconds)
 
-        result shouldBe Left(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+        result shouldBe Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
       }
     }
   }
@@ -137,7 +138,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       .as[JsObject]
     val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
     val ctx                      = JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)
-    mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[HttpError]))
+    mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))
 
     "submit answers to the connector" in {
       val result = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue

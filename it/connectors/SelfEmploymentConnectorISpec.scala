@@ -17,13 +17,13 @@
 package connectors
 
 import base.IntegrationBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.implicits._
 import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.{JourneyAnswersContext, JourneyContextWithNino}
 import models.journeys.Journey
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
+import play.api.http.Status._
 import play.api.libs.json.JsObject
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
@@ -53,14 +53,29 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     "notify pager duty on failure for JourneyAnswersContext" in new PagerDutyAware {
       stubPost(url = downstreamUrl(ExpensesTailoring), BAD_REQUEST)
       val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
-      result shouldBe httpError.asLeft
+      result shouldBe parsingError.asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
 
     "notify pager duty on failure for JourneyAnswersWithNino" in new PagerDutyAware {
       stubPost(url = downstreamNinoUrl(ExpensesGoodsToSellOrUse), BAD_REQUEST)
       val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
-      result shouldBe httpError.asLeft
+      result shouldBe parsingError.asLeft
+      loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
+    }
+  }
+
+  "getSubmittedAnswers" must {
+    "return answers" in {
+      stubGetWithResponseBody(downstreamUrl(ExpensesTailoring), OK, "{}", headersSentToBE)
+      val result = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
+      result shouldBe JsObject.empty.some.asRight
+    }
+
+    "fail when the downstream service returns an error" in new PagerDutyAware {
+      stubGetWithResponseBody(downstreamUrl(ExpensesTailoring), BAD_REQUEST, "{}", headersSentToBE)
+      val result = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
+      result shouldBe parsingError.asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
   }

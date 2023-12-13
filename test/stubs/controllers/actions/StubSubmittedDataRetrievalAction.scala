@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-import cats.data.EitherT
-import models.domain.ApiResultT
-import models.errors.ServiceError
+package stubs.controllers.actions
+
+import controllers.actions.SubmittedDataRetrievalAction
+import models.requests.OptionalDataRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-package object common {
-  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]                  = EitherT.rightT[Future, ServiceError](a)
-  def leftApiResultT[A](err: ServiceError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
+case class StubSubmittedDataRetrievalAction() extends SubmittedDataRetrievalAction {
+
+  protected def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = Future.successful(request)
+
+  protected def executionContext: ExecutionContext = ExecutionContext.global
 }

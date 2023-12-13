@@ -18,7 +18,7 @@ package models
 
 import cats.data.EitherT
 import controllers.standard
-import models.errors.HttpError
+import models.errors.ServiceError
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -26,7 +26,7 @@ import play.api.mvc.Results.Redirect
 import scala.concurrent.{ExecutionContext, Future}
 
 package object domain {
-  type ApiResultT[A] = EitherT[Future, HttpError, A]
+  type ApiResultT[A] = EitherT[Future, ServiceError, A]
 
   implicit class ApiResultOps[A](underlying: ApiResultT[A]) {
 

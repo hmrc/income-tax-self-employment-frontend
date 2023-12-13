@@ -17,7 +17,7 @@
 package models.database
 
 import models.RichJsObject
-import models.common.BusinessId
+import models.common.{BusinessId, UserId}
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -26,6 +26,7 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdated: Instant = Instant.now) {
+  val isEmpty: Boolean = data.fields.isEmpty
 
   def get[A](page: Gettable[A], businessId: Option[BusinessId] = None)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path(businessId))).reads(data).getOrElse(None)
@@ -43,6 +44,12 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
       val updatedAnswers = copy(data = d)
       page.cleanup(updatedAnswers)
     }
+  }
+
+  def upsertFragment(businessId: BusinessId, dataFragment: JsObject): UserAnswers = {
+    val existingAnswerData = (data \ businessId.value).asOpt[JsObject].getOrElse(JsObject.empty)
+    val updatedData        = data + (businessId.value -> (existingAnswerData ++ dataFragment))
+    copy(data = updatedData, lastUpdated = Instant.now)
   }
 
   def remove[A](page: Settable[A], businessId: Option[BusinessId] = None): Try[UserAnswers] = {
@@ -63,6 +70,8 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 }
 
 object UserAnswers {
+
+  def empty(userId: UserId): UserAnswers = UserAnswers(userId.value)
 
   val reads: Reads[UserAnswers] = {
 
