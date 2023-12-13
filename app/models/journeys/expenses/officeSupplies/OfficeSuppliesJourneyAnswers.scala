@@ -16,9 +16,18 @@
 
 package models.journeys.expenses.officeSupplies
 
+import models.common.PageName
+import models.journeys.expenses.ExpensesJourneyAnswers
+import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.libs.json.{Json, OFormat}
 
 case class OfficeSuppliesJourneyAnswers(officeSuppliesAmount: BigDecimal, officeSuppliesDisallowableAmount: Option[BigDecimal])
+    extends ExpensesJourneyAnswers {
+  override val disallowableAmount: Option[BigDecimal]   = officeSuppliesDisallowableAmount
+  override val disallowablePageName: PageName           = OfficeSuppliesDisallowableAmountPage.pageName
+  override val correspondingTailoringPageName: PageName = OfficeSuppliesPage.pageName
+}
 
 object OfficeSuppliesJourneyAnswers {
   implicit val formats: OFormat[OfficeSuppliesJourneyAnswers] = Json.format[OfficeSuppliesJourneyAnswers]

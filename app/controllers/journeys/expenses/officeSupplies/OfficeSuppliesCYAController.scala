@@ -16,10 +16,13 @@
 
 package controllers.journeys.expenses.officeSupplies
 
+import cats.data.EitherT
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
+import controllers.journeys.expenses.eliminateInvalidState
 import models.common.ModelUtils.userType
 import models.common._
+import models.errors.ServiceError
 import models.journeys.Journey.ExpensesOfficeSupplies
 import models.journeys.expenses.officeSupplies.OfficeSuppliesJourneyAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,10 +64,15 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesOfficeSupplies)
-      val result  = service.submitAnswers[OfficeSuppliesJourneyAnswers](context, request.userAnswers)
+      val ctx          = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesOfficeSupplies)
+      val validAnswers = eliminateInvalidState[OfficeSuppliesJourneyAnswers](request.userAnswers, ctx)
 
-      handleSubmitAnswersResult(context, result)
+      val result = for {
+        _ <- EitherT.right[ServiceError](service.updateAnswers(validAnswers))
+        _ <- service.submitAnswers[OfficeSuppliesJourneyAnswers](ctx, validAnswers)
+      } yield ()
+
+      handleSubmitAnswersResult(ctx, result)
   }
 
 }
