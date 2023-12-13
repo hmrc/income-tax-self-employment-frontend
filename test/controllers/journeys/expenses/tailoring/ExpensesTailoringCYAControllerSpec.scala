@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.tailoring
 
-import base.{CYAControllerBaseSpec, CYAOnPageLoadControllerBaseSpec}
+import base.cyaPages.{CYAControllerBaseSpec, CYAOnPageLoadControllerBaseSpec}
 import builders.ExpensesTailoringJsonBuilder._
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}

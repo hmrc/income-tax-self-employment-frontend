@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.entertainment
 
-import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey

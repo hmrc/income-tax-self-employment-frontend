@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.construction
 
-import base.BigDecimalGetAndPostQuestionBaseSpec
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
