@@ -50,7 +50,9 @@ trait CYAOnSubmitControllerBaseSpec extends ControllerSpec {
   "submitting a page" - {
     "journey answers submitted successfully" - {
       "redirect to section completed" in new TestScenario(Individual, userAnswers.some) {
+        mockService.updateAnswers(*) returns Future.unit
         mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(().asRight))
+
         val result: Future[Result] = route(application, postRequest).value
 
         status(result) shouldBe 303
@@ -64,6 +66,7 @@ trait CYAOnSubmitControllerBaseSpec extends ControllerSpec {
 
     "an error occurred during answer submission" - {
       "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
+        mockService.updateAnswers(*) returns Future.unit
         mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(httpError.asLeft))
 
         val result: Future[Result] = route(application, postRequest).value
