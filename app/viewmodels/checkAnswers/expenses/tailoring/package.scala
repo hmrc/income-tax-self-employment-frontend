@@ -23,27 +23,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories.{FinancialExpenses, ProfessionalServiceExpenses}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.expenses.tailoring.individualCategories.{
-  AdvertisingOrMarketingSummary,
-  DepreciationSummary,
-  DisallowableInterestSummary,
-  DisallowableIrrecoverableDebtsSummary,
-  DisallowableOtherFinancialChargesSummary,
-  DisallowableProfessionalFeesSummary,
-  DisallowableStaffCostsSummary,
-  DisallowableSubcontractorCostsSummary,
-  EntertainmentCostsSummary,
-  FinancialExpensesSummary,
-  GoodsToSellOrUseSummary,
-  OfficeSuppliesSummary,
-  OtherExpensesSummary,
-  ProfessionalServiceExpensesSummary,
-  RepairsAndMaintenanceSummary,
-  TaxiMinicabOrRoadHaulageSummary,
-  TravelForWorkSummary,
-  WorkFromBusinessPremisesSummary,
-  WorkFromHomeSummary
-}
+import viewmodels.checkAnswers.expenses.tailoring.individualCategories._
 import viewmodels.journeys.SummaryListCYA
 
 package object tailoring {

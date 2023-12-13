@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package models.journeys.expenses
 
-import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+import play.api.libs.json.{Format, Json}
 
-class FakeExpensesTailoringNavigator(desiredRoute: Call) extends ExpensesTailoringNavigator {
+case class ExpensesTailoringNoExpensesAnswers(
+    expensesCategories: ExpensesTailoring
+)
 
-  override def nextPage(page: Page,
-                        mode: Mode,
-                        userAnswers: UserAnswers,
-                        taxYear: TaxYear,
-                        businessId: BusinessId,
-                        isAccrual: Option[Boolean]): Call = desiredRoute
-
+object ExpensesTailoringNoExpensesAnswers {
+  implicit val format: Format[ExpensesTailoringNoExpensesAnswers] = Json.format[ExpensesTailoringNoExpensesAnswers]
 }

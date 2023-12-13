@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.staffCosts
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.UserBuilder.{aNoddyAgentUser, aNoddyUser}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -30,34 +30,18 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.staffCosts.{StaffCostsAmountSummary, StaffCostsDisallowableAmountSummary}
 
-class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val journey: Journey = ExpensesStaffCosts
 
   override val pageHeading: String = StaffCostsCYAPage.toString
 
-  override val testDataCases: List[JsObject] = List(
-    Json.obj(
-      "disallowableStaffCosts"       -> "yes",
-      "staffCostsAmount"             -> 200.00,
-      "staffCostsDisallowableAmount" -> 200.00
-    ))
-
-  // TODO Align the base traits better. CYAOnPageLoadControllerSpec & CYAOnSubmitControllerBaseSpec generate user
-  //  answers differently - leads to duplication.
-  private val data = Json
-    .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "disallowableStaffCosts": "yes",
-         |    "staffCostsAmount": 200.00,
-         |    "staffCostsDisallowableAmount": 200.00
-         |  }
-         |}
-         |""".stripMargin)
-    .as[JsObject]
-
-  override val userAnswers: UserAnswers = UserAnswers(userAnswersId, data)
+  override val submissionData = Json.obj(
+    "disallowableStaffCosts"       -> "yes",
+    "staffCostsAmount"             -> 200.00,
+    "staffCostsDisallowableAmount" -> 200.00
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StaffCostsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.StaffCostsCYAController.onSubmit
@@ -70,6 +54,8 @@ class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerSpec with CYA
     ),
     classes = "govuk-!-margin-bottom-7"
   )
+
+  private val userAnswers: UserAnswers = buildUserAnswers(testDataCases.head)
 
   private def dataRequestForUser(userType: UserType) =
     userType match {

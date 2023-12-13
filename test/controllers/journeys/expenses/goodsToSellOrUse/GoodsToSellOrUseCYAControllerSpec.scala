@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import base.{CYAOnPageLoadControllerSpec, CYAOnSubmitControllerBaseSpec}
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.goodsToSellOrUse
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -31,26 +31,12 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
-class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with CYAOnSubmitControllerBaseSpec {
+class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = GoodsToSellOrUseCYAPage.toString
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onSubmit
-
-  private val userAnswerData = Json
-    .parse(s"""
-         |{
-         |  "$businessId": {
-         |    "goodsToSellOrUse": "yesDisallowable",
-         |    "goodsToSellOrUseAmount": 100.00,
-         |    "disallowableGoodsToSellOrUseAmount": 100.00
-         |  }
-         |}
-         |""".stripMargin)
-    .as[JsObject]
-
-  override protected val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
 
   override protected val journey: Journey = ExpensesGoodsToSellOrUse
 
@@ -72,13 +58,11 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerSpec with
     view(taxYear, businessId, userType.toString, summaryList)(request, messages).toString()
   }
 
-  override val testDataCases: List[JsObject] =
-    List(
-      Json.obj(
-        "goodsToSellOrUse"                   -> "yesDisallowable",
-        "goodsToSellOrUseAmount"             -> 100.00,
-        "disallowableGoodsToSellOrUseAmount" -> 100.00
-      )
-    )
+  override val submissionData = Json.obj(
+    "goodsToSellOrUse"                   -> "yesDisallowable",
+    "goodsToSellOrUseAmount"             -> 100.00,
+    "disallowableGoodsToSellOrUseAmount" -> 100.00
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 
 }

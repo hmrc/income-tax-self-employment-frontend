@@ -16,11 +16,12 @@
 
 package controllers.journeys.expenses.tailoring
 
-import base.CYAOnPageLoadControllerSpec
+import base.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.expenses.tailoring.ExpensesTailoringCYAPage
 import play.api.Application
@@ -32,9 +33,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
 import views.html.standard.CheckYourAnswersView
 
-class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
+class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = ExpensesTailoringCYAPage.toString
+  override val journey: Journey    = Journey.ExpensesTailoring
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = tailoring.routes.ExpensesTailoringCYAController.onSubmit
@@ -55,11 +57,14 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerSpec {
     view(heading, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
   }
 
-  override val testDataCases: List[JsObject] =
+  override lazy val submissionData: JsObject = allYesIndividualCategoriesAnswers
+
+  override lazy val testDataCases: List[JsObject] =
     List(
-      allYesAnswers,
-      allNoAnswers,
-      mixedAnswers
+      allYesIndividualCategoriesAnswers,
+      allNoIndividualCategoriesAnswers,
+      mixedIndividualCategoriesAnswers,
+      noExpensesAnswers
     )
 
 }
