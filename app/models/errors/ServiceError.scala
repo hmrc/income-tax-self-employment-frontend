@@ -46,7 +46,7 @@ object ServiceError {
       extends ServiceError(Status.INTERNAL_SERVER_ERROR, s"Cannot read JSON: ${details.toString}".asRight)
 
   final case class CannotParseJsonError(details: Throwable)
-      extends ServiceError(Status.INTERNAL_SERVER_ERROR, s"Cannot prase JSON: ${details.toString}".asRight)
+      extends ServiceError(Status.INTERNAL_SERVER_ERROR, s"Cannot parse JSON: ${details.getMessage}".asRight)
 
   final case class CannotUpsertToMongoError(reason: Throwable)
       extends ServiceError(Status.INTERNAL_SERVER_ERROR, s"Cannot upsert to mongo: ${reason.getMessage}".asRight)
