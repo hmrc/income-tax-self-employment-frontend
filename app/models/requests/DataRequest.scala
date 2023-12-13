@@ -35,7 +35,6 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
   val userType: UserType = user.userType
-  val nino: Nino         = Nino(user.nino)
   val mtditid: Mtditid   = Mtditid(user.mtditid)
   val nino: Nino         = Nino(user.nino)
 
