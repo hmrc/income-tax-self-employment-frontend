@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
 
 @this(
@@ -26,7 +26,7 @@
 )
 
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"totalExpenses.title.$userType"))) {
 

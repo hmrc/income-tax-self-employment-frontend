@@ -16,31 +16,56 @@
 
 package base.forms
 
-import forms.behaviours.OptionFieldBehaviours
+import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import play.api.data.{Form, FormError}
 
-abstract case class RadioButtonFormProviderBaseSpec[T](formProviderName: String) extends OptionFieldBehaviours {
+abstract case class BigDecimalFormProviderBaseSpec(formProviderName: String) extends BigDecimalFieldBehaviours {
 
   private val fieldName = "value"
 
+  protected val minimum: BigDecimal = 0
+  protected val maximum: BigDecimal = 100000000000.00
+
   private val userTypes: List[UserType] = List(Individual, Agent)
+  private val validDataGenerator        = bigDecimalsInRangeWithCommas(minimum, maximum)
 
-  val validValues: Seq[T]
   val requiredError: String
+  val nonNumericError: String
+  val lessThanZeroError: String
+  val overMaxError: String
 
-  def getFormProvider(userType: UserType): Form[T]
+  def getFormProvider(userType: UserType): Form[BigDecimal]
 
   userTypes.foreach { userType =>
     s"$formProviderName for $userType, form should" - {
-      val form: Form[T] = getFormProvider(userType)
+      val form: Form[BigDecimal] = getFormProvider(userType)
 
-      behave like optionsField(
+      behave like fieldThatBindsValidData(
         form,
         fieldName,
-        validValues,
-        invalidError = FormError(fieldName, "error.invalid")
+        validDataGenerator
+      )
+
+      behave like bigDecimalField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, s"$nonNumericError.$userType")
+      )
+
+      behave like bigDecimalFieldWithMinimum(
+        form,
+        fieldName,
+        minimum,
+        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", Seq(minimum))
+      )
+
+      behave like bigDecimalFieldWithMaximum(
+        form,
+        fieldName,
+        maximum,
+        expectedError = FormError(fieldName, s"$overMaxError.$userType", Seq(maximum))
       )
 
       behave like mandatoryField(

@@ -31,6 +31,7 @@ import models.journeys.expenses.individualCategories.{FinancialExpenses, Profess
 import pages._
 import pages.expenses.tailoring._
 import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 
 class ExpensesTailoringNavigatorSpec extends SpecBase {
 
@@ -72,6 +73,12 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
           navigator.nextPage(ExpensesCategoriesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
             JourneyRecoveryController.onPageLoad()
         }
+      }
+
+      "TotalExpensesPage must go to the TaxiMinicabOrRoadHaulagePage" in {
+
+        navigator.nextPage(TotalExpensesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
+          tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
       }
 
       "OfficeSuppliesPage must go to the TaxiMinicabOrRoadHaulagePage" in {

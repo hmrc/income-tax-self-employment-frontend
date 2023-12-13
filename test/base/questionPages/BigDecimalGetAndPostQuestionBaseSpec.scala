@@ -18,21 +18,21 @@ package base.questionPages
 
 import base.ControllerSpec
 import controllers.standard.{routes => genRoutes}
-import models.common.{UserType, onwardRoute}
+import models.common.UserType
 import models.database.UserAnswers
 import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-// TODO: It would be nice to have a common suite of tests for all all Question Controllers. This is just a starting point.
 abstract case class BigDecimalGetAndPostQuestionBaseSpec(
     controllerName: String,
     page: QuestionPage[BigDecimal]
 ) extends ControllerSpec {
+
   val onPageLoadRoute: String
   val onSubmitRoute: String
 
@@ -45,6 +45,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
 
   def getRequest  = FakeRequest(GET, onPageLoadRoute)
   def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
+
+  val onwardRoute: Call
 
   forAll(userTypeCases) { case userType =>
     s"$controllerName for $userType" - {

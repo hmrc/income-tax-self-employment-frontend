@@ -17,14 +17,14 @@
 package forms.expenses.tailoring.simplifiedExpenses
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class TotalExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: String): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(s"totalExpenses.error.required.$userType", s"totalExpenses.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"totalExpenses.error.lessThanZero.$userType"))
