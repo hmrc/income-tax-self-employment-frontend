@@ -25,8 +25,8 @@ abstract case class BigDecimalFormProviderBaseSpec(formProviderName: String) ext
 
   private val fieldName = "value"
 
-  protected val minimum: BigDecimal = 0
-  protected val maximum: BigDecimal = 100000000000.00
+  protected val minimum: BigDecimal = zeroValue
+  protected val maximum: BigDecimal = maxAmountValue
 
   private val userTypes: List[UserType] = List(Individual, Agent)
   private val validDataGenerator        = bigDecimalsInRangeWithCommas(minimum, maximum)
