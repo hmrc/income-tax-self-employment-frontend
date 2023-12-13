@@ -493,6 +493,7 @@ professionalServiceExpenses.d3.l4 = architects
 professionalServiceExpenses.d3.l5 = indemnity insurance premiums
 
 ## Disallowable staff costs
+disallowableStaffCosts.title = Disallowable staff costs
 disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
 disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
