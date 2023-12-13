@@ -23,7 +23,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
-import models.{CheckMode, Mode, NormalMode}
+import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
 import pages.expenses.tailoring.individualCategories._
@@ -75,8 +75,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         )
 
       def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring): Future[Result] = {
-        val previousAnswer = request.getValue(ExpensesCategoriesPage, businessId)
-        val redirectMode   = if (mode == CheckMode && previousAnswer.exists(_ != value)) NormalMode else mode
+        val redirectMode = continueAsNormalModeIfPrevAnswerChanged(value)
         for {
           editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), value))
           result <- selfEmploymentService
@@ -96,6 +95,11 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
               value => handleSuccess(userAnswers, value)
             )
         }
+
+      def continueAsNormalModeIfPrevAnswerChanged(value: ExpensesTailoring): Mode = {
+        val previousAnswer = request.getValue(ExpensesCategoriesPage, businessId)
+        if (previousAnswer.exists(_ != value)) NormalMode else mode
+      }
 
       val result = for {
         incomeAmount <- EitherT.fromEither[Future](request.valueOrRedirectDefault(TurnoverIncomeAmountPage, businessId))

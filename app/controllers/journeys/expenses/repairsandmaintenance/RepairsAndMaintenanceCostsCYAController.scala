@@ -65,7 +65,7 @@ class RepairsAndMaintenanceCostsCYAController @Inject() (override val messagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesRepairsAndMaintenance)
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, Mtditid(request.user.mtditid), ExpensesRepairsAndMaintenance)
       val result  = service.submitAnswers[RepairsAndMaintenanceCostsJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)

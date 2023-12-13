@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import cats.data.EitherT
-import models.domain.ApiResultT
-import models.errors.ServiceError
+package connectors
 
-import scala.concurrent.{ExecutionContext, Future}
+import cats.implicits.catsSyntaxEitherId
+import connectors.httpParser.JourneyStateParser.pagerDutyError
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-package object common {
-  def apiResultT[A](a: A)(implicit ec: ExecutionContext): ApiResultT[A]                  = EitherT.rightT[Future, ServiceError](a)
-  def leftApiResultT[A](err: ServiceError)(implicit ec: ExecutionContext): ApiResultT[A] = EitherT.leftT[Future, A](err)
+object NoContentHttpReads extends HttpReads[NoContentResponse] {
+  override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
+    if (isSuccess(response.status)) ().asRight else pagerDutyError(response).asLeft
 }

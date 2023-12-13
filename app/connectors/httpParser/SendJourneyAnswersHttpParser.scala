@@ -17,12 +17,12 @@
 package connectors.httpParser
 
 import cats.implicits.catsSyntaxEitherId
-import models.errors.HttpError
+import models.errors.ServiceError
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SendJourneyAnswersHttpParser extends HttpParser {
-  type SendJourneyAnswersResponse = Either[HttpError, Unit]
+  type SendJourneyAnswersResponse = Either[ServiceError, Unit]
 
   override val parserName: String = "SendJourneyAnswersHttpParser"
 

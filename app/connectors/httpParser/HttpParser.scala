@@ -17,7 +17,8 @@
 package connectors.httpParser
 
 import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
-import models.errors.{HttpError, HttpErrorBody}
+import models.errors.ServiceError.ConnectorResponseError
+import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpResponse
 import utils.PagerDutyHelper.PagerDutyKeys._
@@ -31,9 +32,9 @@ trait HttpParser {
   def logMessage(response: HttpResponse): String =
     s"[$parserName][read] Received ${response.status} from $parserName. Body:${response.body} ${getCorrelationId(response)}"
 
-  def nonModelValidatingJsonFromAPI: HttpError = {
+  def nonModelValidatingJsonFromAPI: ConnectorResponseError = {
     pagerDutyLog(BAD_SUCCESS_JSON_FROM_CONNECTOR, s"[$parserName][read] Invalid Json from $parserName")
-    HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)
+    ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
   }
 
   def handleHttpError(response: HttpResponse, statusOverride: Option[Int] = None): HttpError = {
@@ -52,8 +53,8 @@ trait HttpParser {
 
   }
 
-  def pagerDutyError(response: HttpResponse): HttpError =
-    response.status match {
+  def pagerDutyError(response: HttpResponse): ServiceError = {
+    val httpError = response.status match {
       case BAD_REQUEST =>
         pagerDutyLog(FOURXX_RESPONSE_FROM_CONNECTOR, logMessage(response))
         handleHttpError(response)
@@ -70,4 +71,7 @@ trait HttpParser {
         pagerDutyLog(UNEXPECTED_RESPONSE_FROM_CONNECTOR, logMessage(response))
         handleHttpError(response, Some(INTERNAL_SERVER_ERROR))
     }
+
+    ConnectorResponseError(httpError)
+  }
 }

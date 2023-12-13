@@ -14,37 +14,36 @@
  * limitations under the License.
  */
 
-import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.JourneyStateParser.pagerDutyError
 import models.common.Mtditid
-import models.errors.HttpError
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import models.errors.ServiceError
+import play.api.libs.json.{Reads, Writes}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object connectors {
-  type NoContentResponse = Either[HttpError, Unit]
+  type ContentResponse[A] = Either[ServiceError, A]
+  type NoContentResponse  = ContentResponse[Unit]
 
-  /** Helper method to add necessary headers when calling endpoints
-    */
   def post[A: Writes](http: HttpClient, url: String, mtditid: Mtditid, body: A)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Either[HttpError, Unit]] =
-    http.POST[A, Either[HttpError, Unit]](url, body)(
+      ec: ExecutionContext): Future[Either[ServiceError, Unit]] =
+    http.POST[A, Either[ServiceError, Unit]](url, body)(
       wts = implicitly[Writes[A]],
       rds = NoContentHttpReads,
       hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
       ec = ec
     )
 
-  object NoContentHttpReads extends HttpReads[NoContentResponse] {
+  def get[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
+    http.GET[Either[ServiceError, Option[A]]](url)(
+      rds = new ContentHttpReads[A],
+      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      ec = ec
+    )
 
-    override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-      response.status match {
-        case status if status >= 200 && status <= 299 => ().asRight
-        case _                                        => pagerDutyError(response).asLeft
-      }
+  def isSuccess(status: Int): Boolean = status >= 200 && status <= 299
 
-  }
 }

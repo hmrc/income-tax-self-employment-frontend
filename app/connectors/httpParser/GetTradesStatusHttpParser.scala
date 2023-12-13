@@ -16,13 +16,13 @@
 
 package connectors.httpParser
 
-import models.errors.HttpError
+import models.errors.ServiceError
 import models.requests.TradesJourneyStatuses
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetTradesStatusHttpParser extends HttpParser {
-  type GetTradesStatusResponse = Either[HttpError, List[TradesJourneyStatuses]]
+  type GetTradesStatusResponse = Either[ServiceError, List[TradesJourneyStatuses]]
 
   override val parserName: String = "GetTradesStatusHttpParser"
 
