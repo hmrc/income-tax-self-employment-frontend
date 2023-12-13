@@ -20,7 +20,7 @@ import base.SpecBase.{businessId, convertScalaFuture, taxYear}
 import cats.implicits._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.actions.SubmittedDataRetrievalActionImplSpec._
-import models.common.JourneyAnswersContext
+import models.common.{JourneyAnswersContext, Mtditid}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
@@ -101,7 +101,7 @@ object SubmittedDataRetrievalActionImplSpec {
       submittedAnswers = submittedUerAnswers.some.asRight
     )
     val repo = StubSessionRepository()
-    val ctx  = JourneyAnswersContext(taxYear, businessId, _, journey)
+    val ctx  = JourneyAnswersContext(taxYear, businessId, _: Mtditid, journey)
     val user = User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
 
     val request = OptionalDataRequest[AnyContentAsEmpty.type](FakeRequest(), "userId", user, userAnswers)
