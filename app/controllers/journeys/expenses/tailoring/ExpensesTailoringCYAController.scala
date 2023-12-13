@@ -48,20 +48,18 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
-    request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) match {
-      case Left(redirect) => redirect
-      case Right(answer) =>
-        val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"
-        Ok(
-          view(
-            title,
-            taxYear,
-            request.userType,
-            summaryList,
-            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
-          )
+    (request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) map { answer =>
+      val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"
+      Ok(
+        view(
+          title,
+          taxYear,
+          request.userType,
+          summaryList,
+          tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
         )
-    }
+      )
+    }).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
