@@ -22,7 +22,11 @@ import controllers.journeys.expenses.tailoring
 import models.common._
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
-import models.journeys.expenses.{ExpensesTailoringIndividualCategoriesAnswers, ExpensesTailoringNoExpensesAnswers}
+import models.journeys.expenses.{
+  ExpensesTailoringIndividualCategoriesAnswers,
+  ExpensesTailoringNoExpensesAnswers,
+  ExpensesTailoringTotalAmountAnswers
+}
 import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,7 +74,7 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
           val (journeyContext, result) = answer match {
             case TotalAmount =>
               val journeyContext = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("total"))
-              (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
+              (journeyContext, service.submitAnswers[ExpensesTailoringTotalAmountAnswers](journeyContext, request.userAnswers))
             case IndividualCategories =>
               val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("categories"))
               (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
