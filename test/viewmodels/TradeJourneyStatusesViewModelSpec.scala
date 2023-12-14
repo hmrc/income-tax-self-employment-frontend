@@ -89,8 +89,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
     val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
     val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
-    val staffCostsIsYes            = userAnswers.get(DisallowableStaffCostsPage, Some(businessId)).exists(_ != DisallowableStaffCosts.No)
-    val constructionIsYes = userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)).exists(_ != DisallowableSubcontractorCosts.No)
+    val staffCostsIsYes            = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Staff)
+    val constructionIsYes = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Construction)
     Seq(
       buildRow(Abroad, abroadStatus),
       buildRow(Income, findJourneyStatus(journeyCompletedStates, Income, abroadStatus != Completed)),

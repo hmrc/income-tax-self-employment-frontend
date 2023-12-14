@@ -66,15 +66,12 @@ object TradeJourneyStatusesViewModel {
           ExpensesEntertainment,
           None,
           pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))),
-        buildRow(
-          ExpensesStaffCosts,
-          None,
-          pageMeetsCriteria(DisallowableStaffCostsPage, DisallowableStaffCosts.values.filterNot(_ == DisallowableStaffCosts.No))),
+        buildRow(ExpensesStaffCosts, None, pageMeetsCriteria(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)),
         buildRow(
           ExpensesConstruction,
           None,
           pageMeetsCriteria(
-            ProfessionalServiceExpensesPage: OneQuestionPage[Set[ProfessionalServiceExpenses]],
+            ProfessionalServiceExpensesPage,
             ProfessionalServiceExpenses.Construction
           )
         )
