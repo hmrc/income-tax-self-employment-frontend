@@ -24,6 +24,7 @@ import models.journeys.expenses.individualCategories.{FinancialExpenses, Profess
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.tailoring.individualCategories._
+import viewmodels.checkAnswers.expenses.tailoring.simplifiedExpenses.TotalExpensesSummary
 import viewmodels.journeys.SummaryListCYA
 
 package object tailoring {
@@ -38,6 +39,7 @@ package object tailoring {
     SummaryListCYA.summaryListOpt(
       List(
         ExpensesTailoringSummary.row(),
+        TotalExpensesSummary.row(),
         OfficeSuppliesSummary.row(),
         TaxiMinicabOrRoadHaulageSummary.row(),
         GoodsToSellOrUseSummary.row(),
