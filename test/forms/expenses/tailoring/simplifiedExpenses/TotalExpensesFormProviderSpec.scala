@@ -16,62 +16,17 @@
 
 package forms.expenses.tailoring.simplifiedExpenses
 
-import forms.behaviours.BigDecimalFieldBehaviours
-import forms.expenses.tailoring.simplifiedExpenses.TotalExpensesFormProvider
-import play.api.data.FormError
+import base.forms.BigDecimalFormProviderBaseSpec
+import models.common.UserType
+import play.api.data.Form
 
-class TotalExpensesFormProviderSpec extends BigDecimalFieldBehaviours {
+class TotalExpensesFormProviderSpec extends BigDecimalFormProviderBaseSpec("TotalExpensesFormProvider") {
 
-  private val userTypes = Seq(individual, agent)
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new TotalExpensesFormProvider()(userType)
 
-  ".value" - {
-    userTypes.foreach { authUser =>
-      s"when the user is $authUser" - {
-        "form provider should" - {
-
-          val form = new TotalExpensesFormProvider()(authUser)
-
-          val fieldName = "value"
-
-          val minimum: BigDecimal = 0
-          val maximum: BigDecimal = 100000000000.00
-
-          val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-          behave like fieldThatBindsValidData(
-            form,
-            fieldName,
-            validDataGenerator
-          )
-
-          behave like bigDecimalField(
-            form,
-            fieldName,
-            nonNumericError = FormError(fieldName, s"totalExpenses.error.nonNumeric.$authUser")
-          )
-
-          behave like bigDecimalFieldWithMinimum(
-            form,
-            fieldName,
-            minimum,
-            expectedError = FormError(fieldName, s"totalExpenses.error.lessThanZero.$authUser", Seq(minimum))
-          )
-
-          behave like bigDecimalFieldWithMaximum(
-            form,
-            fieldName,
-            maximum,
-            expectedError = FormError(fieldName, s"totalExpenses.error.overMax.$authUser", Seq(maximum))
-          )
-
-          behave like mandatoryField(
-            form,
-            fieldName,
-            requiredError = FormError(fieldName, s"totalExpenses.error.required.$authUser")
-          )
-        }
-      }
-    }
-  }
+  override lazy val requiredError: String     = "totalExpenses.error.required"
+  override lazy val nonNumericError: String   = "totalExpenses.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "totalExpenses.error.lessThanZero"
+  override lazy val overMaxError: String      = "totalExpenses.error.overMax"
 
 }
