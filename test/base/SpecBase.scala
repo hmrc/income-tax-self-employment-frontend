@@ -36,6 +36,7 @@ import play.api.http.Status.BAD_REQUEST
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -72,6 +73,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val httpError: HttpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+
+  def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
   def messages(app: Application): Messages =
     app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())

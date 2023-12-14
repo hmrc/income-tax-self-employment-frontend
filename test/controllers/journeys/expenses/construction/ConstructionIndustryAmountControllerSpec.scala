@@ -23,7 +23,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import models.common.UserType
@@ -34,6 +34,8 @@ class ConstructionIndustryAmountControllerSpec
       "ConstructionIndustryAmountController",
       ConstructionIndustryAmountPage
     ) {
+
+  override val onwardRoute: Call = models.common.onwardRoute
 
   lazy val onPageLoadRoute = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url

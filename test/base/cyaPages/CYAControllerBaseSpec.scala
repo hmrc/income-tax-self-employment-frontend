@@ -19,8 +19,6 @@ package base.cyaPages
 import base.ControllerSpec
 import models.common.UserType.{Agent, Individual}
 import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 
 trait CYAControllerBaseSpec extends ControllerSpec {
@@ -28,6 +26,5 @@ trait CYAControllerBaseSpec extends ControllerSpec {
   protected val userTypes: List[UserType] = List(Individual, Agent)
 
   protected def onSubmitCall: (TaxYear, BusinessId) => Call
-  protected def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 
 }

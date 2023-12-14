@@ -30,6 +30,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.{NormalMode, _}
 import pages._
 import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.mvc.Call
 
@@ -49,6 +50,8 @@ class ExpensesTailoringNavigator @Inject() () {
             case Some(NoExpenses)           => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
             case _                          => standard.routes.JourneyRecoveryController.onPageLoad()
           }
+
+    case TotalExpensesPage => _ => (taxYear, businessId, _) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case OfficeSuppliesPage =>
       _ => (taxYear, businessId, _) => individualCategories.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)

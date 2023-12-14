@@ -29,6 +29,6 @@ class ExpensesCategoriesFormProviderSpec
   override def getFormProvider(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 
   override lazy val validValues: Seq[ExpensesTailoring] = ExpensesTailoring.values
-  override lazy val requiredError: String               = "expensesCategories"
+  override lazy val requiredError: String               = "expensesCategories.error.required"
 
 }

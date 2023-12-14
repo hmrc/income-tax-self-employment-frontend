@@ -46,7 +46,7 @@ abstract case class RadioButtonFormProviderBaseSpec[T](formProviderName: String)
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, s"$requiredError.error.required.$userType")
+        requiredError = FormError(fieldName, s"$requiredError.$userType")
       )
     }
   }

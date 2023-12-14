@@ -16,50 +16,22 @@
 
 package viewmodels.checkAnswers.expenses.tailoring.simplifiedExpenses
 
-import base.SpecBase
+import base.summaries.TailoringSummaryBaseSpec
+import models.common.UserType
 import models.database.UserAnswers
-import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
-import play.api.libs.json.Json
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.expenses.tailoring.simplifiedExpenses.TotalExpensesSummary
 
-class TotalExpensesSummarySpec extends SpecBase {
+class TotalExpensesSummarySpec extends TailoringSummaryBaseSpec("TotalExpensesSummary") {
 
-  private val data      = Json.obj(businessId.value -> Json.obj("totalExpenses" -> 2552.4))
-  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
+  override lazy val validData: JsObject   = Json.obj("totalExpenses" -> 2552.4)
+  override lazy val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
 
-  private val userAnswers      = UserAnswers(userAnswersId, data)
-  private val otherUserAnswers = UserAnswers(userAnswersId, otherData)
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"totalExpenses.title.$userType")
+  override val testValue: Text           = Text("£2,552.40")
 
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
-
-  private val userTypes = List(individual, agent)
-
-  "TotalExpensesSummarySpec" - {
-    "when user answers for TotalExpensesPage exist" - {
-      userTypes.foreach { userType =>
-        s"when user is an $userType should" - {
-          "generate a summary list row" in {
-            val result = TotalExpensesSummary.row(userAnswers, taxYear, businessId, userType)
-
-            result.get mustBe a[SummaryListRow]
-            result.get.key.content mustBe Text(s"totalExpenses.title.$userType")
-            result.get.value.content mustBe Text("£2,552.40")
-          }
-        }
-      }
-    }
-    "when user answers do not exist for TotalExpensesPage should" - {
-      "return None" in {
-        val result = TotalExpensesSummary.row(otherUserAnswers, taxYear, businessId, individual)
-
-        result mustBe None
-      }
-    }
-  }
+  override val buildSummaryListRow: (UserAnswers, UserType) => Option[SummaryListRow] = (userAnswers: UserAnswers, userType: UserType) =>
+    TotalExpensesSummary.row()(messages, userAnswers, taxYear, businessId, userType)
 
 }
