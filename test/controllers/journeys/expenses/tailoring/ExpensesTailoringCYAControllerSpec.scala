@@ -65,7 +65,8 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec
       allYesIndividualCategoriesAnswers,
       allNoIndividualCategoriesAnswers,
       mixedIndividualCategoriesAnswers,
-      noExpensesAnswers
+      noExpensesAnswers,
+      totalAmountAnswers
     )
 
 }

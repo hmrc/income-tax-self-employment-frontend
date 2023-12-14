@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package pages.expenses.tailoring.simplifiedExpenses
+package models.journeys.expenses
 
-import pages.OneQuestionPage
+import play.api.libs.json.{Format, Json}
 
-case object TotalExpensesPage extends OneQuestionPage[BigDecimal] {
-  override def toString: String = "totalAmount"
+case class ExpensesTailoringTotalAmountAnswers(
+    expensesCategories: ExpensesTailoring,
+    totalAmount: BigDecimal
+)
+
+object ExpensesTailoringTotalAmountAnswers {
+  implicit val format: Format[ExpensesTailoringTotalAmountAnswers] = Json.format[ExpensesTailoringTotalAmountAnswers]
 }

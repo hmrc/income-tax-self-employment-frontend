@@ -84,4 +84,9 @@ object ExpensesTailoringJsonBuilder {
     "expensesCategories" -> "noExpenses"
   )
 
+  val totalAmountAnswers = Json.obj(
+    "expensesCategories" -> "noExpenses",
+    "totalAmount"        -> "50000"
+  )
+
 }
