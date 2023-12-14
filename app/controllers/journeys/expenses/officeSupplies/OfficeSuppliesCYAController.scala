@@ -18,10 +18,10 @@ package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import models.common.ModelUtils.userType
 import models.common._
 import models.journeys.Journey.ExpensesOfficeSupplies
 import models.journeys.expenses.officeSupplies.OfficeSuppliesJourneyAnswers
+import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.officeSupplies.{OfficeSuppliesAmountSummary, OfficeSuppliesDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -40,23 +40,28 @@ class OfficeSuppliesCYAController @Inject() (override val messagesApi: MessagesA
                                              requireData: DataRequiredAction,
                                              service: SelfEmploymentService,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: OfficeSuppliesCYAView)(implicit ec: ExecutionContext)
+                                             view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val authUser = userType(request.user.isAgent)
+    val user = request.userType
 
     val summaryList = SummaryListCYA.summaryListOpt(
       List(
-        OfficeSuppliesAmountSummary.row(request.userAnswers, taxYear, businessId, authUser),
-        OfficeSuppliesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, authUser)
+        OfficeSuppliesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+        OfficeSuppliesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user)
       )
     )
 
-    // TODO Use common view `CheckYourAnswersView`.
-    Ok(view(authUser, summaryList, taxYear, businessId))
+    Ok(
+      view(
+        OfficeSuppliesCYAPage.toString,
+        taxYear,
+        request.user.userType,
+        summaryList,
+        routes.OfficeSuppliesCYAController.onSubmit(taxYear, businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {

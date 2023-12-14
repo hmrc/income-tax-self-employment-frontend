@@ -19,5 +19,5 @@ package pages.expenses.construction
 import pages.Page
 
 object ConstructionIndustryCYAPage extends Page {
-  override def toString: String = "constructionIndustryCYA"
+  override def toString: String = "constructionIndustryCya"
 }

@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
 import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
 import play.api.i18n.Messages
@@ -30,7 +30,7 @@ import viewmodels.implicits._
 
 object GoodsToSellOrUseAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(GoodsToSellOrUseAmountPage, Some(businessId)).map { answer =>
       SummaryListRowViewModel(
         key = Key(

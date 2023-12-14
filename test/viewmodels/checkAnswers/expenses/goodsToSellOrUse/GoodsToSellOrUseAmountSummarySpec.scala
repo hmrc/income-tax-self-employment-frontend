@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
 import base.SpecBase
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
@@ -36,7 +37,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  private val userTypes = List(individual, agent)
+  private val userTypes = List(Individual, Agent)
 
   "GoodsToSellOrUseAmountSummary" - {
     "when user answers for GoodsToSellOrUseAmountPage exist" - {
@@ -54,7 +55,7 @@ class GoodsToSellOrUseAmountSummarySpec extends SpecBase {
     }
     "when user answers do not exist for OfficeSuppliesAmountPage should" - {
       "return None" in {
-        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, businessId, individual)
+        val result = GoodsToSellOrUseAmountSummary.row(otherUserAnswers, taxYear, businessId, Individual)
 
         result mustBe None
       }

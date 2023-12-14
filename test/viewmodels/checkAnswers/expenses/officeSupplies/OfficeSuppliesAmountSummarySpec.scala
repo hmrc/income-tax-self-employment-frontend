@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.expenses.officeSupplies
 
 import base.SpecBase
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.Messages
@@ -26,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesAmountSummarySpec extends SpecBase {
 
-  private val userType = individual
+  private val userType = Individual
 
   private val data      = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> 123.45))
   private val otherData = Json.obj("otherPage" -> 123.45)

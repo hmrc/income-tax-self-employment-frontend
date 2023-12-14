@@ -633,8 +633,8 @@ officeSuppliesDisallowableAmount.error.overAllowableMax.individual = The disallo
 officeSuppliesDisallowableAmount.error.overAllowableMax.agent = The disallowable amount your client spent on office supplies must be the same as or less than £{0}
 
 ## Office Supplies CYA
-officeSuppliesAmountCYA.title.individual = Check your office supplies expenses
-officeSuppliesAmountCYA.title.agent = Check your client’s office supplies expenses
+officeSuppliesCYA.title.individual = Check your office supplies expenses
+officeSuppliesCYA.title.agent = Check your client’s office supplies expenses
 
 ########## Expenses - Goods to sell or use ##########
 
@@ -718,8 +718,8 @@ entertainment.error.overMax.agent = The amount your client spent on entertainmen
 entertainment.change.hidden = Change how much was spent on entertainment
 
 ## Entertainment CYA
-entertainmentCYA.title.individual = Check your entertainment expenses
-entertainmentCYA.title.agent = Check your client’s entertainment expenses
+entertainmentCya.title.individual = Check your entertainment expenses
+entertainmentCya.title.agent = Check your client’s entertainment expenses
 
 ########## Expenses - Staff Costs ##########
 

@@ -18,10 +18,10 @@ package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import models.common.ModelUtils.userType
 import models.common._
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
+import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
 import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -40,13 +40,13 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
                                                requireData: DataRequiredAction,
                                                service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
-                                               view: GoodsToSellOrUseCYAView)(implicit ec: ExecutionContext)
+                                               view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val user = userType(request.user.isAgent)
+    val user = request.userType
 
     val summaryList = SummaryListCYA.summaryListOpt(
       List(
@@ -55,8 +55,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
       )
     )
 
-    // TODO Use common view `CheckYourAnswersView`.
-    Ok(view(taxYear, businessId, user, summaryList))
+    Ok(view(GoodsToSellOrUseCYAPage.toString, taxYear, user, summaryList, routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {

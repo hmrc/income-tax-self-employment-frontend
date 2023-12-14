@@ -23,13 +23,11 @@ import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
-import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAView
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
@@ -43,20 +41,11 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList = SummaryList(
     rows = Seq(
-      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value,
-      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value
+      GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
+      DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
-
-  override def createExpectedView(userType: UserType,
-                                  summaryList: SummaryList,
-                                  messages: Messages,
-                                  application: Application,
-                                  request: Request[_]): String = {
-    val view = application.injector.instanceOf[GoodsToSellOrUseCYAView]
-    view(taxYear, businessId, userType.toString, summaryList)(request, messages).toString()
-  }
 
   override val submissionData = Json.obj(
     "goodsToSellOrUse"                   -> "yesDisallowable",
