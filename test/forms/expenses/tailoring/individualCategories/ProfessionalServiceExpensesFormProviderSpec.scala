@@ -23,7 +23,7 @@ import play.api.data.FormError
 class ProfessionalServiceExpensesFormProviderSpec extends CheckboxFieldBehaviours {
 
   ".value" - {
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 

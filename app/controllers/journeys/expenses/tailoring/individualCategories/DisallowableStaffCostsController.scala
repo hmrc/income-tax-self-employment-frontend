@@ -19,7 +19,6 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import forms.expenses.tailoring.individualCategories.DisallowableStaffCostsFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -47,19 +46,19 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
-        case None        => formProvider(userType(request.user.isAgent))
-        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
       }
 
-      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(userType(request.user.isAgent))
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableStaffCostsPage, value, Some(businessId)))

@@ -26,7 +26,7 @@ class FinancialExpensesFormProviderSpec extends CheckboxFieldBehaviours {
 
     val fieldName = "value"
 
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 

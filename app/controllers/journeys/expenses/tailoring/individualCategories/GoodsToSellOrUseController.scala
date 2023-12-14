@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
@@ -54,13 +53,13 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
-            case None        => formProvider(userType(request.user.isAgent))
-            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+            case None        => formProvider(request.userType)
+            case Some(value) => formProvider(request.userType).fill(value)
           }
           val taxiDriver = request.userAnswers
             .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
             .contains(TaxiMinicabOrRoadHaulage.Yes)
-          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))
       }
   }
 
@@ -72,13 +71,13 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
           val taxiDriver = request.userAnswers
             .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
             .contains(TaxiMinicabOrRoadHaulage.Yes)
-          val form = formProvider(userType(request.user.isAgent))
+          val form = formProvider(request.userType)
           form
             .bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(
-                  BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType, taxiDriver))),
+                  BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsToSellOrUsePage, value, Some(businessId)))

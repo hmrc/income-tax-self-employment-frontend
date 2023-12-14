@@ -25,7 +25,7 @@ class DisallowableProfessionalFeesFormProviderSpec extends OptionFieldBehaviours
   ".value" - {
 
     val fieldName = "value"
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
     val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
 

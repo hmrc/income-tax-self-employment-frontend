@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class GoodsToSellOrUseFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[GoodsToSellOrUse] =
+  def apply(userType: UserType): Form[GoodsToSellOrUse] =
     Form(
       "value" -> enumerable[GoodsToSellOrUse](s"goodsToSellOrUse.error.required.$userType")
     )
