@@ -17,6 +17,8 @@
 package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
 import base.SpecBase
+import models.common.UserType
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
@@ -56,7 +58,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
     }
     "when no GoodsToSellOrUse are disallowable" - {
       "return None" in new Test {
-        val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, individual)
+        val result = DisallowableGoodsToSellOrUseAmountSummary.row(invalidUserAnswersAllAllowable, taxYear, businessId, userType)
 
         result mustBe None
       }
@@ -64,7 +66,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
   }
 
   trait Test {
-    protected val userType: String = individual
+    protected val userType: UserType = Individual
 
     protected val validData: JsObject = Json
       .parse(s"""

@@ -51,6 +51,7 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
       )
     )
 
+    // TODO Use common view `CheckYourAnswersView` when onSubmit method implemented
     Ok(view(taxYear, request.userType, summaryList, nextRoute))
   }
 

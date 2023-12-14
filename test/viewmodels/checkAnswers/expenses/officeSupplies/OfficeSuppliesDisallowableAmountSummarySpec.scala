@@ -17,6 +17,8 @@
 package viewmodels.checkAnswers.expenses.officeSupplies
 
 import base.SpecBase
+import models.common.UserType
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
@@ -68,7 +70,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
   }
 
   trait Test {
-    protected val userType: String = individual
+    protected val userType: UserType = Individual
 
     protected val validData: JsObject = Json
       .parse(s"""

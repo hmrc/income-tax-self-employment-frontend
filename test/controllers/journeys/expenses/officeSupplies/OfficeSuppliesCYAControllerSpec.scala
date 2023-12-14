@@ -23,13 +23,11 @@ import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesOfficeSupplies
 import pages.expenses.officeSupplies.OfficeSuppliesCYAPage
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.officeSupplies.OfficeSuppliesAmountSummary
-import views.html.journeys.expenses.officeSupplies.OfficeSuppliesCYAView
 
 class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
@@ -45,19 +43,9 @@ class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec wi
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, userType.toString).value),
+      rows = List(OfficeSuppliesAmountSummary.row(userAnswers, taxYear, businessId, userType).value),
       classes = "govuk-!-margin-bottom-7"
     )
-
-  override def createExpectedView(userType: UserType,
-                                  summaryList: SummaryList,
-                                  messages: Messages,
-                                  application: Application,
-                                  request: Request[_]): String = {
-
-    val view = application.injector.instanceOf[OfficeSuppliesCYAView]
-    view(userType.toString, summaryList, taxYear, businessId)(request, messages).toString()
-  }
 
   override val submissionData = Json.obj(
     "officeSupplies"       -> "yesAllowable",
