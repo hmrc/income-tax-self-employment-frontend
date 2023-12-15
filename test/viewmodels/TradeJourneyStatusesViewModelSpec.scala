@@ -84,12 +84,13 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers): Seq[String] = {
     val abroadStatus               = findJourneyStatus(journeyCompletedStates, Abroad)
     val incomeStatus               = findJourneyStatus(journeyCompletedStates, Income)
-    val declareExpenses            = userAnswers.get(TradingAllowancePage, Some(businessId)).exists(_ == TradingAllowance.DeclareExpenses)
+    val declareExpenses            = userAnswers.get(TradingAllowancePage, Some(businessId)).contains(TradingAllowance.DeclareExpenses)
     val officeSuppliesIsYes        = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
     val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
     val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
     val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
-    val staffCostsIsYes            = userAnswers.get(DisallowableStaffCostsPage, Some(businessId)).exists(_ != DisallowableStaffCosts.No)
+    val staffCostsIsYes            = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Staff)
+    val constructionIsYes = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Construction)
     Seq(
       buildRow(Abroad, abroadStatus),
       buildRow(Income, findJourneyStatus(journeyCompletedStates, Income, abroadStatus != Completed)),
@@ -101,7 +102,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
         repairsAndMaintenanceIsYes),
       buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
-      buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes)
+      buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes),
+      buildOptionalRow(ExpensesConstruction, findJourneyStatus(journeyCompletedStates, ExpensesConstruction), constructionIsYes)
     ).flatten
   }
 
@@ -131,6 +133,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       None
     }
 
+  // noinspection ScalaStyle
   private def chooseFirstUrl(journey: Journey): String =
     journey match {
       case Abroad            => journeys.abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -146,8 +149,11 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesStaffCosts =>
         journeys.expenses.staffCosts.routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesConstruction =>
+        journeys.expenses.construction.routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case _ => "not implemented or error"
     }
+  // noinspection ScalaStyle
   private def chooseCyaUrl(journey: Journey): String =
     journey match {
       case Abroad                   => journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
@@ -159,6 +165,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesEntertainment => journeys.expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesStaffCosts    => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesConstruction  => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
       case _                     => "not implemented or error"
     }
 
