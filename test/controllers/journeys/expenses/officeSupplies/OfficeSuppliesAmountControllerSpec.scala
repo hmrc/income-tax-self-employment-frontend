@@ -20,6 +20,8 @@ import base.SpecBase
 import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
@@ -52,32 +54,27 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(authUser: String, form: Form[BigDecimal])
+  case class UserScenario(userType: UserType, form: Form[BigDecimal])
 
   private val userScenarios = Seq(
-    UserScenario(authUser = individual, form = formProvider(individual)),
-    UserScenario(authUser = agent, form = formProvider(agent))
+    UserScenario(userType = Individual, form = formProvider(Individual)),
+    UserScenario(userType = Agent, form = formProvider(Agent))
   )
 
   private val someHttpError = ConnectorResponseError(HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason")))
 
-  private def buildApplication(userAnswers: Option[UserAnswers], authUser: String): Application = {
-    val isAgent = authUser match {
-      case "individual" => false
-      case "agent"      => true
-    }
-    applicationBuilder(userAnswers, isAgent)
+  private def buildApplication(userAnswers: Option[UserAnswers], userType: UserType): Application =
+    applicationBuilder(userAnswers, userType)
       .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
       .build()
-  }
 
   "OfficeSuppliesAmountController" - {
     userScenarios.foreach { userScenario =>
-      s"when user is an ${userScenario.authUser}" - {
+      s"when user is an ${userScenario.userType}" - {
         "when loading a page" - {
           "when an accounting type is returned by the service" - {
             "must return OK and the correct view" in {
-              val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+              val application = buildApplication(Some(emptyUserAnswers), userScenario.userType)
 
               val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
@@ -89,7 +86,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
 
                 status(result) mustEqual OK
 
-                contentAsString(result) mustEqual view(userScenario.form, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                contentAsString(result) mustEqual view(userScenario.form, NormalMode, userScenario.userType, accrual, taxYear, businessId)(
                   request,
                   messages(application)).toString
               }
@@ -98,7 +95,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             "must populate the view correctly when the question has previously been answered" in {
               val userAnswers = UserAnswers(userAnswersId).set(OfficeSuppliesAmountPage, validAnswer, Some(businessId)).success.value
 
-              val application = buildApplication(Some(userAnswers), userScenario.authUser)
+              val application = buildApplication(Some(userAnswers), userScenario.userType)
 
               val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
@@ -113,7 +110,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                 contentAsString(result) mustEqual view(
                   userScenario.form.fill(validAnswer),
                   NormalMode,
-                  userScenario.authUser,
+                  userScenario.userType,
                   accrual,
                   taxYear,
                   businessId)(request, messages(application)).toString
@@ -122,7 +119,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
           }
           "when no accounting type is returned by the service" - {
             "must redirect to the journey recovery controller" in {
-              val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+              val application = buildApplication(Some(emptyUserAnswers), userScenario.userType)
 
               running(application) {
                 when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Left(someHttpError))
@@ -142,7 +139,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                 when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
                 val application =
-                  applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.authUser))
+                  applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
                     .overrides(
                       bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                       bind[SessionRepository].toInstance(mockSessionRepository),
@@ -160,7 +157,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
               }
 
               "must return a Bad Request and errors when invalid data is submitted" in {
-                val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+                val application = buildApplication(Some(emptyUserAnswers), userScenario.userType)
 
                 val view: OfficeSuppliesAmountView = application.injector.instanceOf[OfficeSuppliesAmountView]
 
@@ -174,7 +171,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
                   val result = route(application, request).value
 
                   status(result) mustEqual BAD_REQUEST
-                  contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.authUser, accrual, taxYear, businessId)(
+                  contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, accrual, taxYear, businessId)(
                     request,
                     messages(application)).toString
                 }
@@ -182,7 +179,7 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
             }
             "when no accounting type is returned by the service" - {
               "must redirect to the journey recovery controller" in {
-                val application = buildApplication(Some(emptyUserAnswers), userScenario.authUser)
+                val application = buildApplication(Some(emptyUserAnswers), userScenario.userType)
 
                 running(application) {
                   when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Left(someHttpError))

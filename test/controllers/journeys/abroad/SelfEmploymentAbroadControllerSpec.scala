@@ -19,6 +19,7 @@ package controllers.journeys.abroad
 import base.SpecBase
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.NormalMode
+import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
 import navigation.{AbroadNavigator, FakeAbroadNavigator}
@@ -38,9 +39,9 @@ import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
-  val isAgent             = false
+  val user                = Individual
   val formProvider        = new SelfEmploymentAbroadFormProvider()
-  val form: Form[Boolean] = formProvider(isAgent)
+  val form: Form[Boolean] = formProvider(user)
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
@@ -69,7 +70,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[SelfEmploymentAbroadView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, taxYear, businessId, user, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -87,7 +88,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(true), taxYear, businessId, user, NormalMode)(request, messages(application)).toString
         }
       }
 
@@ -137,7 +138,7 @@ class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, businessId, isAgent, NormalMode)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, taxYear, businessId, user, NormalMode)(request, messages(application)).toString
         }
       }
 

@@ -76,8 +76,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(
-                  BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
+                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsToSellOrUsePage, value, Some(businessId)))

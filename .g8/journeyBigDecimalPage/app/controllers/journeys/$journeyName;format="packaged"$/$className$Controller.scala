@@ -3,7 +3,6 @@ package controllers.journeys.$journeyName$
 import controllers.actions._
 import forms.$journeyName$.$className$FormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.TaxYear
 import models.requests.DataRequest
 import navigation.$journeyName;format="cap"$Navigator
@@ -29,7 +28,7 @@ class $className$Controller @Inject()(
                                         view: $className$View
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(implicit request: DataRequest[AnyContent]) = formProvider(userType(request.user.isAgent))
+  private def form(implicit request: DataRequest[AnyContent]) = formProvider(request.userType)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -68,8 +68,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
           formProvider(request.userType)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenancePage, value, Some(businessId)))

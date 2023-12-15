@@ -22,6 +22,7 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
 import models.common.BusinessId
+import models.common.UserType.Individual
 import models.domain.BusinessData
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
@@ -76,7 +77,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
           .build()
 
-        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, isAgent = false)(messages(application))
+        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual)(messages(application))
 
         running(application) {
           val nextRoute = SelfEmploymentSummaryController.onPageLoad(taxYear).url
@@ -90,7 +91,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val view = application.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, individual, nextRoute)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(selfEmploymentDetails, taxYear, Individual, nextRoute)(request, messages(application)).toString
         }
       }
 

@@ -65,8 +65,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, taxiDriver))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, taxiDriver))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))

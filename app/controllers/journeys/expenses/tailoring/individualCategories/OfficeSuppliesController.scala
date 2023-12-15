@@ -69,8 +69,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesPage, value, Some(businessId)))

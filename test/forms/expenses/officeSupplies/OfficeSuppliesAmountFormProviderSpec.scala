@@ -17,18 +17,19 @@
 package forms.expenses.officeSupplies
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class OfficeSuppliesAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val userTypes = Seq("individual", "agent")
+  private val userTypes = Seq(Individual, Agent)
 
   ".value" - {
-    userTypes.foreach { authUser =>
-      s"when the user is $authUser" - {
+    userTypes.foreach { userType =>
+      s"when the user is $userType" - {
         "form provider should" - {
 
-          val form = new OfficeSuppliesAmountFormProvider()(authUser)
+          val form = new OfficeSuppliesAmountFormProvider()(userType)
 
           val fieldName = "value"
 
@@ -46,27 +47,27 @@ class OfficeSuppliesAmountFormProviderSpec extends BigDecimalFieldBehaviours {
           behave like bigDecimalField(
             form,
             fieldName,
-            nonNumericError = FormError(fieldName, s"officeSuppliesAmount.error.nonNumeric.$authUser")
+            nonNumericError = FormError(fieldName, s"officeSuppliesAmount.error.nonNumeric.$userType")
           )
 
           behave like bigDecimalFieldWithMinimum(
             form,
             fieldName,
             minimum,
-            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.lessThanZero.$authUser", Seq(minimum))
+            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.lessThanZero.$userType", Seq(minimum))
           )
 
           behave like bigDecimalFieldWithMaximum(
             form,
             fieldName,
             maximum,
-            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.overMax.$authUser", Seq(maximum))
+            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.overMax.$userType", Seq(maximum))
           )
 
           behave like mandatoryField(
             form,
             fieldName,
-            requiredError = FormError(fieldName, s"officeSuppliesAmount.error.required.$authUser")
+            requiredError = FormError(fieldName, s"officeSuppliesAmount.error.required.$userType")
           )
         }
       }

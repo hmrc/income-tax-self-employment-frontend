@@ -17,7 +17,7 @@
 package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 import play.api.i18n.Messages
 import utils.MoneyUtils
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds with MoneyUtils {
 
-  def apply(userType: String, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
+  def apply(userType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
         requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$userType", allowableAmount),

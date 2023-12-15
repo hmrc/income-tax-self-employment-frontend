@@ -19,6 +19,8 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.TravelForWorkFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.Yes
 import models.journeys.expenses.individualCategories.TravelForWork
@@ -47,22 +49,22 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new TravelForWorkFormProvider()
   val taxiDriver   = false
 
-  case class UserScenario(isAgent: Boolean, form: Form[TravelForWork])
+  case class UserScenario(userType: UserType, form: Form[TravelForWork])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual)),
-    UserScenario(isAgent = true, formProvider(agent))
+    UserScenario(userType = Individual, formProvider(Individual)),
+    UserScenario(userType = Agent, formProvider(Agent))
   )
 
   "TravelForWork Controller" - {
 
     "onPageLoad" - {
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .build()
 
             running(application) {
@@ -74,9 +76,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -87,7 +87,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(TravelForWorkPage, TravelForWork.values.head, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
 
@@ -98,7 +98,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(
+                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(
                   request,
                   messages(application)).toString
               status(result) mustEqual OK
@@ -122,7 +122,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           val expectedResult =
-            view(formProvider(individual), NormalMode, userType(false), taxYear, businessId, taxiDriver)(request, messages(application)).toString
+            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual expectedResult
@@ -172,11 +172,11 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
 
           "must return a Bad Request and errors when empty data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -190,7 +190,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -199,7 +199,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -213,7 +213,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, taxiDriver)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

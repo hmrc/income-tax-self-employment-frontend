@@ -84,8 +84,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
           formProvider(request.userType)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 for {
                   clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(request.userAnswers, Some(businessId), value))

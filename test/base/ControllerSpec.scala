@@ -64,7 +64,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
       val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings
 
-      applicationBuilder(answers, isAgent(userType.toString))
+      applicationBuilder(answers, userType)
         .overrides(overrideBindings)
         .build()
     }

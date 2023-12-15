@@ -19,6 +19,8 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.DisallowableProfessionalFeesFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -47,11 +49,11 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
   val formProvider = new DisallowableProfessionalFeesFormProvider()
 
-  case class UserScenario(isAgent: Boolean, form: Form[DisallowableProfessionalFees])
+  case class UserScenario(userType: UserType, form: Form[DisallowableProfessionalFees])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual)),
-    UserScenario(isAgent = true, formProvider(agent))
+    UserScenario(userType = Individual, formProvider(Individual)),
+    UserScenario(userType = Agent, formProvider(Agent))
   )
 
   "DisallowableProfessionalFees Controller" - {
@@ -59,10 +61,10 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
@@ -72,7 +74,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -86,7 +88,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               .success
               .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
@@ -96,12 +98,9 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               val expectedResult =
-                view(
-                  userScenario.form.fill(DisallowableProfessionalFees.values.head),
-                  NormalMode,
-                  userType(userScenario.isAgent),
-                  taxYear,
-                  businessId)(request, messages(application)).toString
+                view(userScenario.form.fill(DisallowableProfessionalFees.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
+                  request,
+                  messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -154,10 +153,10 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -171,7 +170,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -180,7 +179,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -194,7 +193,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+              contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(
                 request,
                 messages(application)).toString
             }
