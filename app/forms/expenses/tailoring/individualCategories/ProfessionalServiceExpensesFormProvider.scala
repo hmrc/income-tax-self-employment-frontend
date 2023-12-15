@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import play.api.data.Form
 import play.api.data.Forms.set
@@ -25,7 +26,7 @@ import javax.inject.Inject
 
 class ProfessionalServiceExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[Set[ProfessionalServiceExpenses]] =
+  def apply(userType: UserType): Form[Set[ProfessionalServiceExpenses]] =
     Form(
       "value" -> set(enumerable[ProfessionalServiceExpenses](s"professionalServiceExpenses.error.required.$userType"))
         .verifying(nonEmptySet(s"professionalServiceExpenses.error.required.$userType"))

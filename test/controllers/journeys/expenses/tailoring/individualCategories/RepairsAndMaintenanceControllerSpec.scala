@@ -17,10 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.individualCategories.routes
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.RepairsAndMaintenanceFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.RepairsAndMaintenance
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -49,11 +50,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isAgent: Boolean, form: Form[RepairsAndMaintenance], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual), accrual),
-    UserScenario(isAgent = true, formProvider(agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), accrual),
+    UserScenario(userType = Agent, formProvider(Agent), cash)
   )
 
   "RepairsAndMaintenance Controller" - {
@@ -61,10 +62,10 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -78,7 +79,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -92,7 +93,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             val userAnswers =
               UserAnswers(userAnswersId).set(RepairsAndMaintenancePage, RepairsAndMaintenance.values.head, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -109,7 +110,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   userScenario.form.fill(RepairsAndMaintenance.values.head),
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType
@@ -169,10 +170,10 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)} and using ${userScenario.accountingType} accounting type" - {
+        s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -190,7 +191,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 
@@ -201,7 +202,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -219,7 +220,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, userScenario.accountingType)(
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
                   request,
                   messages(application)).toString
 

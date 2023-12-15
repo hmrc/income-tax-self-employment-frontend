@@ -21,6 +21,8 @@ import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallo
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
@@ -56,20 +58,20 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
   private val mockSessionRepository = mock[SessionRepository]
 
-  case class UserScenario(authUser: String)
+  case class UserScenario(userType: UserType)
 
-  private val userScenarios = Seq(UserScenario(authUser = individual), UserScenario(authUser = agent))
+  private val userScenarios = Seq(UserScenario(userType = Individual), UserScenario(userType = Agent))
 
   private val data        = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> allowableAmount))
   private val userAnswers = UserAnswers(userAnswersId, data)
 
   "OfficeSuppliesDisallowableAmountController" - {
     userScenarios.foreach { userScenario =>
-      s"when user is an ${userScenario.authUser}" - {
+      s"when user is an ${userScenario.userType}" - {
         "when loading a page" - {
           "when office supplies allowable amount has been provided in the previous question" - {
             "must return OK and the correct view" in {
-              val application = applicationBuilder(Some(userAnswers), isAgent(userScenario.authUser)).build()
+              val application = applicationBuilder(Some(userAnswers), userScenario.userType).build()
 
               implicit val appMessages: Messages = messages(application)
 
@@ -82,11 +84,11 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 status(result) mustEqual OK
 
                 contentAsString(result) mustEqual view(
-                  formProvider(userScenario.authUser, allowableAmount),
+                  formProvider(userScenario.userType, allowableAmount),
                   NormalMode,
                   taxYear,
                   businessId,
-                  userScenario.authUser,
+                  userScenario.userType,
                   formatMoney(allowableAmount))(request, appMessages).toString
               }
             }
@@ -94,7 +96,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             "must populate the view correctly when the question has already been answered" in {
               val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
 
-              val application = applicationBuilder(Some(existingUserAnswers), isAgent(userScenario.authUser)).build()
+              val application = applicationBuilder(Some(existingUserAnswers), userScenario.userType).build()
 
               implicit val appMessages: Messages             = messages(application)
               val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
@@ -106,11 +108,11 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
                 status(result) mustEqual OK
 
                 contentAsString(result) mustEqual view(
-                  formProvider(userScenario.authUser, allowableAmount).fill(validAnswer),
+                  formProvider(userScenario.userType, allowableAmount).fill(validAnswer),
                   NormalMode,
                   taxYear,
                   businessId,
-                  userScenario.authUser,
+                  userScenario.userType,
                   formatMoney(allowableAmount)
                 )(request, appMessages).toString
               }
@@ -118,7 +120,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
           "when the allowable amount of office supplies has not been provided" - {
             "must redirect to Journey Recovery if no existing data is found" in {
-              val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
+              val application = applicationBuilder(userAnswers = None, userScenario.userType).build()
 
               running(application) {
                 val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
@@ -136,7 +138,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
             val application =
-              applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser))
+              applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
                 .overrides(
                   bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
@@ -153,26 +155,26 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.authUser)).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
             implicit val appMessages: Messages             = messages(application)
 
             running(application) {
               val request   = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
-              val boundForm = formProvider(userScenario.authUser, allowableAmount).bind(Map("value" -> "invalid value"))
+              val boundForm = formProvider(userScenario.userType, allowableAmount).bind(Map("value" -> "invalid value"))
               val result    = route(application, request).value
 
               status(result) mustEqual BAD_REQUEST
 
-              contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.authUser, formatMoney(allowableAmount))(
+              contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.userType, formatMoney(allowableAmount))(
                 request,
                 appMessages).toString
             }
           }
 
           "must redirect to Journey Recovery if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, isAgent(userScenario.authUser)).build()
+            val application = applicationBuilder(userAnswers = None, userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))

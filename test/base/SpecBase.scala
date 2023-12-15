@@ -19,7 +19,7 @@ package base
 import builders.UserBuilder
 import controllers.actions._
 import models.common.AccountingType.{Accrual, Cash}
-import models.common.UserType.{Agent, Individual}
+import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
 import models.errors.HttpError
@@ -46,8 +46,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val taxYear: TaxYear           = TaxYear(LocalDate.now().getYear)
   val userAnswersId              = "id"
-  val individual: String         = Individual.toString
-  val agent: String              = Agent.toString
   val accrual: String            = Accrual.entryName
   val cash: String               = Cash.entryName
   val someNino: Nino             = Nino("someNino")
@@ -85,21 +83,14 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  protected def userType(isAgent: Boolean): String = if (isAgent) agent else individual
-
-  protected def isAgent(userType: String): Boolean = userType.equals(agent)
-
   protected def isAccrual(accountingType: String): Boolean = accountingType.equals(accrual)
 
-  def applicationBuilder(userAnswers: Option[UserAnswers], userType: UserType): GuiceApplicationBuilder =
-    applicationBuilder(userAnswers, isAgent(userType.toString))
-
-  def applicationBuilder(userAnswers: Option[UserAnswers] = None, isAgent: Boolean = false): GuiceApplicationBuilder = {
+  def applicationBuilder(userAnswers: Option[UserAnswers] = None, userType: UserType = Individual): GuiceApplicationBuilder = {
     val fakeIdentifierAction =
-      if (isAgent) {
-        bind[IdentifierAction].to[FakeAgentIdentifierAction]
-      } else {
+      if (userType == Individual) {
         bind[IdentifierAction].to[FakeIndividualIdentifierAction]
+      } else {
+        bind[IdentifierAction].to[FakeAgentIdentifierAction]
       }
 
     new GuiceApplicationBuilder()

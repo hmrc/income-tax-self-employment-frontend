@@ -21,7 +21,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import navigation.ExpensesNavigator
@@ -53,10 +52,10 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
     implicit request =>
       obtainAllowableAmount(businessId).map { allowableAmount =>
         val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId)) match {
-          case Some(existingAnswer) => formProvider(userType(request.user.isAgent), allowableAmount).fill(existingAnswer)
-          case None                 => formProvider(userType(request.user.isAgent), allowableAmount)
+          case Some(existingAnswer) => formProvider(request.userType, allowableAmount).fill(existingAnswer)
+          case None                 => formProvider(request.userType, allowableAmount)
         }
-        Ok(view(preparedForm, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))
+        Ok(view(preparedForm, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
       }.merge
   }
 
@@ -64,12 +63,11 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
     implicit request =>
       obtainAllowableAmount(businessId)
         .map { allowableAmount =>
-          formProvider(userType(request.user.isAgent), allowableAmount)
+          formProvider(request.userType, allowableAmount)
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(
-                  BadRequest(view(formWithErrors, mode, taxYear, businessId, userType(request.user.isAgent), formatMoney(allowableAmount)))),
+                Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))

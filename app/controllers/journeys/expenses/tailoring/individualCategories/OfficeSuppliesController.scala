@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
@@ -53,11 +52,11 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
         case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
-            case None        => formProvider(userType(request.user.isAgent))
-            case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+            case None        => formProvider(request.userType)
+            case Some(value) => formProvider(request.userType).fill(value)
           }
 
-          Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
       }
   }
 
@@ -66,12 +65,11 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
-          val form = formProvider(userType(request.user.isAgent))
+          val form = formProvider(request.userType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, accountingType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesPage, value, Some(businessId)))

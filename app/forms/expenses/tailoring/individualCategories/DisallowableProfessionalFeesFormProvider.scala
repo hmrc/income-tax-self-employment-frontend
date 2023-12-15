@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class DisallowableProfessionalFeesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[DisallowableProfessionalFees] =
+  def apply(userType: UserType): Form[DisallowableProfessionalFees] =
     Form(
       "value" -> enumerable[DisallowableProfessionalFees](s"disallowableProfessionalFees.error.required.$userType")
     )

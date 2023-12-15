@@ -15,7 +15,7 @@
  *@
 
 @import templates.helpers.Heading
-@import models.common.{TaxYear}
+@import models.common.{TaxYear, UserType}
 @import models._
 
 @this(layout: templates.Layout,
@@ -24,12 +24,12 @@
         heading: Heading
 )
 
-@(list: SummaryList, taxYear: TaxYear, agentOrIndividual: String, nextRoute: String)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, taxYear: TaxYear, userType: UserType, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"))) {
+@layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$userType"))) {
 
     @heading(
-        messages(s"checkYourSelfEmploymentDetails.title.$agentOrIndividual"),
+        messages(s"checkYourSelfEmploymentDetails.title.$userType"),
         Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
         extraClasses = "govuk-!-margin-bottom-3"
     )

@@ -20,6 +20,8 @@ import base.SpecBase
 import controllers.journeys.expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -49,11 +51,11 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
   val baseUserAnswers: UserAnswers =
     emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId)).success.value
 
-  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal])
+  case class UserScenario(userType: UserType, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual, goodsAmount)),
-    UserScenario(isAgent = true, formProvider(agent, goodsAmount))
+    UserScenario(Individual, formProvider(Individual, goodsAmount)),
+    UserScenario(Agent, formProvider(Agent, goodsAmount))
   )
 
   "DisallowableGoodsToSellOrUseAmount Controller" - {
@@ -61,10 +63,10 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -74,7 +76,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
               val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(
                   request,
                   messages(application)).toString
 
@@ -88,7 +90,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
             val userAnswers =
               baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -98,7 +100,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(validAnswer), CheckMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
+                view(userScenario.form.fill(validAnswer), CheckMode, userScenario.userType, taxYear, businessId, goodsAmountString)(
                   request,
                   messages(application)).toString
 
@@ -154,10 +156,10 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -170,9 +172,8 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -181,7 +182,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -194,9 +195,8 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -205,7 +205,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when a negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -218,9 +218,8 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -229,7 +228,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
           "must return a Bad Request and errors when disallowable amount exceeds goods amount" in {
 
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -242,9 +241,8 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with Moc
 
               val result = route(application, request).value
 
-              val expectedResult = view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId, goodsAmountString)(
-                request,
-                messages(application)).toString
+              val expectedResult =
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

@@ -17,12 +17,13 @@
 package forms.expenses.officeSupplies
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val userTypes = Seq("individual", "agent")
+  private val userTypes = Seq(Individual, Agent)
 
   private val fieldName = "value"
 

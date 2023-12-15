@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
@@ -53,11 +52,11 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
         case Some(goodsAmount) =>
           val preparedForm =
             request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
-              case None        => formProvider(userType(request.user.isAgent), goodsAmount)
-              case Some(value) => formProvider(userType(request.user.isAgent), goodsAmount).fill(value)
+              case None        => formProvider(request.userType, goodsAmount)
+              case Some(value) => formProvider(request.userType, goodsAmount).fill(value)
             }
 
-          Future.successful(Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount))))
+          Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount))))
       }
   }
 
@@ -66,12 +65,11 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
-          formProvider(userType(request.user.isAgent), goodsAmount)
+          formProvider(request.userType, goodsAmount)
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(
-                  BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, formatMoney(goodsAmount)))),
+                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))

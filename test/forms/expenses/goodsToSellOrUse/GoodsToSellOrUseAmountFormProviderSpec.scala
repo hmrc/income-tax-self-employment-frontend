@@ -17,6 +17,8 @@
 package forms.expenses.goodsToSellOrUse
 
 import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class GoodsToSellOrUseAmountFormProviderSpec extends BigDecimalFieldBehaviours {
@@ -28,14 +30,14 @@ class GoodsToSellOrUseAmountFormProviderSpec extends BigDecimalFieldBehaviours {
     val minimum = 0
     val maximum = 100000000000.00
 
-    case class UserScenario(user: String)
+    case class UserScenario(userType: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new GoodsToSellOrUseAmountFormProvider()(userScenario.user)
+      val form = new GoodsToSellOrUseAmountFormProvider()(userScenario.userType)
 
-      s"when user is an ${userScenario.user}, form should " - {
+      s"when user is an ${userScenario.userType}, form should " - {
 
         val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
 
@@ -48,27 +50,27 @@ class GoodsToSellOrUseAmountFormProviderSpec extends BigDecimalFieldBehaviours {
         behave like bigDecimalField(
           form,
           fieldName,
-          nonNumericError = FormError(fieldName, s"goodsToSellOrUseAmount.error.nonNumeric.${userScenario.user}")
+          nonNumericError = FormError(fieldName, s"goodsToSellOrUseAmount.error.nonNumeric.${userScenario.userType}")
         )
 
         behave like bigDecimalFieldWithMinimum(
           form,
           fieldName,
           minimum,
-          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.lessThanZero.${userScenario.user}", Seq(minimum))
+          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.lessThanZero.${userScenario.userType}", Seq(minimum))
         )
 
         behave like bigDecimalFieldWithMaximum(
           form,
           fieldName,
           maximum,
-          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.overMax.${userScenario.user}", Seq(maximum))
+          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.overMax.${userScenario.userType}", Seq(maximum))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"goodsToSellOrUseAmount.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"goodsToSellOrUseAmount.error.required.${userScenario.userType}")
         )
       }
     }

@@ -15,7 +15,7 @@
  *@
 
 @import models.journeys.expenses.individualCategories.TravelForWork
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -27,7 +27,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("travelForWork.title"))) {
 
