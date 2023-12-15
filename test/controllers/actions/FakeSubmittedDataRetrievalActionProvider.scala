@@ -29,6 +29,6 @@ case class FakeSubmittedDataRetrievalActionProvider()
     extends SubmittedDataRetrievalActionProvider(SelfEmploymentServiceStub(), StubSessionRepository()) {
 
   override def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
-                                                                                                          ec: ExecutionContext): SubmittedDataRetrievalAction =
+      ec: ExecutionContext): SubmittedDataRetrievalAction =
     StubSubmittedDataRetrievalAction()
 }
