@@ -143,10 +143,7 @@ class AuthenticatedIdentifierAction @Inject() (
 object AuthenticatedIdentifierAction {
 
   case class User(mtditid: String, arn: Option[String], nino: String, affinityGroup: String) {
-    val userType: UserType = if (isAgent) UserType.Agent else UserType.Individual
-
-    def isAgent: Boolean = arn.nonEmpty
-
+    val userType: UserType = if (arn.nonEmpty) UserType.Agent else UserType.Individual
   }
 
   object EnrolmentKeys {

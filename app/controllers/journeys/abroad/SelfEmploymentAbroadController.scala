@@ -46,18 +46,18 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
-      case None        => formProvider(request.user.isAgent)
-      case Some(value) => formProvider(request.user.isAgent).fill(value)
+      case None        => formProvider(request.userType)
+      case Some(value) => formProvider(request.userType).fill(value)
     }
 
-    Ok(view(preparedForm, taxYear, businessId, request.user.isAgent, mode))
+    Ok(view(preparedForm, taxYear, businessId, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    formProvider(request.user.isAgent)
+    formProvider(request.userType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.user.isAgent, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(

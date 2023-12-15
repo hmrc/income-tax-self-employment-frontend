@@ -18,6 +18,8 @@ package forms
 
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import forms.behaviours.BooleanFieldBehaviours
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
@@ -26,14 +28,14 @@ class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
 
     val fieldName  = "value"
     val invalidKey = "error.boolean"
-    case class UserScenario(user: String)
+    case class UserScenario(userType: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new SelfEmploymentAbroadFormProvider()(userScenario.user.equals(agent))
+      val form = new SelfEmploymentAbroadFormProvider()(userScenario.userType)
 
-      s"when user is an ${userScenario.user}, form should " - {
+      s"when user is an ${userScenario.userType}, form should " - {
 
         behave like booleanField(
           form,
@@ -44,7 +46,7 @@ class SelfEmploymentAbroadFormProviderSpec extends BooleanFieldBehaviours {
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"selfEmploymentAbroad.error.required.${userScenario.user}")
+          requiredError = FormError(fieldName, s"selfEmploymentAbroad.error.required.${userScenario.userType}")
         )
       }
     }

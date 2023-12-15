@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
@@ -53,7 +52,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
       case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
       case Right(accountingType) =>
-        val user = userType(request.user.isAgent)
+        val user = request.userType
         val preparedForm =
           request.userAnswers.getOrElse(UserAnswers(request.userId)).get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
             case None        => formProvider(user)
@@ -71,7 +70,7 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
     selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
       case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
       case Right(accountingType) =>
-        val user = userType(request.user.isAgent)
+        val user = request.userType
         val taxiDriver = request.userAnswers
           .getOrElse(UserAnswers(request.userId))
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))

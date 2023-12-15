@@ -15,7 +15,7 @@
  *@
 
 @import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.tailoring.individualCategories.routes.TaxiMinicabOrRoadHaulageController
 
 @this(
@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: String, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"taxiMinicabOrRoadHaulage.title.$userType"))) {
 

@@ -20,6 +20,8 @@ import base.SpecBase
 import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.{No, Yes}
@@ -49,11 +51,11 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(isAgent: Boolean, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
+  case class UserScenario(userType: UserType, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual), accrual, taxiDriver = Yes),
-    UserScenario(isAgent = true, formProvider(agent), cash, taxiDriver = No)
+    UserScenario(userType = Individual, formProvider(Individual), accrual, taxiDriver = Yes),
+    UserScenario(userType = Agent, formProvider(Agent), cash, taxiDriver = No)
   )
 
   "GoodsToSellOrUseAmount Controller" - {
@@ -61,7 +63,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userScenario.userType}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return OK and the correct view for a GET" in {
 
@@ -69,7 +71,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -86,7 +88,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   userScenario.form,
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,
@@ -108,7 +110,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .success
               .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -125,7 +127,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   userScenario.form.fill(validAnswer),
                   CheckMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,
@@ -187,7 +189,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when ${userType(userScenario.isAgent)}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
+        s"when ${userScenario.userType}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
           else ""}a taxi driver" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
@@ -195,7 +197,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -216,7 +218,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   boundForm,
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,
@@ -233,7 +235,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -254,7 +256,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   boundForm,
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,
@@ -271,7 +273,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -292,7 +294,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   boundForm,
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,
@@ -309,7 +311,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
               .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
               .success
               .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent)
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -330,7 +332,7 @@ class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
                 view(
                   boundForm,
                   NormalMode,
-                  userType(userScenario.isAgent),
+                  userScenario.userType,
                   taxYear,
                   businessId,
                   userScenario.accountingType,

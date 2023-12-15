@@ -18,8 +18,9 @@ package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.standard
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.{BusinessId, JourneyAnswersContext, JourneyContextWithNino, Mtditid, Nino, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
@@ -31,6 +32,12 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
   val nino: Nino           = Nino(user.nino)
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
   val mtditid: Mtditid     = Mtditid(user.mtditid)
+
+  def mkJourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, journey: Journey, extraContext: Option[String] = None) =
+    JourneyAnswersContext(taxYear, businessId, mtditid, journey, extraContext)
+
+  def mkJourneyNinoContext(taxYear: TaxYear, businessId: BusinessId, journey: Journey, extraContext: Option[String] = None) =
+    JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey, extraContext)
 }
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {

@@ -16,7 +16,7 @@
 
 package models.journeys.expenses.individualCategories
 
-import models.common.{Enumerable, WithName}
+import models.common.{Enumerable, UserType, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -40,7 +40,7 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
     No
   )
 
-  def checkboxItems(userType: String)(implicit messages: Messages): Seq[CheckboxItem] =
+  def checkboxItems(userType: UserType)(implicit messages: Messages): Seq[CheckboxItem] =
     values.zipWithIndex.map {
 
       case (value, _) if value.equals(CheckboxDivider) => CheckboxItem(divider = Some(CheckboxDivider.toString))

@@ -19,6 +19,8 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -50,11 +52,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: String, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(userType = individual, formProvider(individual), accrual),
-    UserScenario(userType = agent, formProvider(agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), accrual),
+    UserScenario(userType = Agent, formProvider(Agent), cash)
   )
 
   "ProfessionalServiceExpenses Controller" - {
@@ -65,7 +67,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -96,7 +98,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                 .success
                 .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -176,7 +178,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 

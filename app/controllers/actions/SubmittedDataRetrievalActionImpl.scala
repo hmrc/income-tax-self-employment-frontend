@@ -20,7 +20,7 @@ import cats.data.EitherT
 import cats.implicits._
 import connectors.ContentHttpReads
 import controllers.handleApiResult
-import models.common.{BusinessId, JourneyContext, Mtditid, UserId}
+import models.common.{BusinessId, JourneyContext, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
 
-class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext,
+class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: OptionalDataRequest[_] => JourneyContext,
                                                                 selfEmploymentService: SelfEmploymentServiceBase,
                                                                 sessionRepository: SessionRepositoryBase)(implicit ec: ExecutionContext)
     extends SubmittedDataRetrievalAction
@@ -47,7 +47,7 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
   protected def executionContext: ExecutionContext = ec
 
   protected[actions] def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
-    val ctx: JourneyContext     = journeyContext(request.mtditid)
+    val ctx: JourneyContext     = journeyContext(request)
     val hasAtLeastOneUserAnswer = hasAtLeastOneUserAnswerForJourney(ctx.businessId, ctx.journey, request.userAnswers)
 
     if (hasAtLeastOneUserAnswer) {

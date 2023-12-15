@@ -44,11 +44,11 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
   val onwardRoute             = TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
   val cyaCall                 = IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  case class UserScenario(authUserType: UserType, form: Form[BigDecimal])
+  case class UserScenario(userType: UserType, form: Form[BigDecimal])
 
   val userScenarios = Seq(
-    UserScenario(authUserType = UserType.Individual, formProvider(UserType.Individual)),
-    UserScenario(authUserType = UserType.Agent, formProvider(UserType.Agent))
+    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
+    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
 
   "NonTurnoverIncomeAmount Controller" - {
@@ -56,10 +56,10 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -69,7 +69,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[NonTurnoverIncomeAmountView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -80,7 +80,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, validAnswer, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -89,7 +89,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
               val result = route(application, request).value
 
-              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userScenario.authUserType, taxYear, businessId)(
+              val expectedResult = view(userScenario.form.fill(validAnswer), CheckMode, userScenario.userType, taxYear, businessId)(
                 request,
                 messages(application)).toString
 
@@ -172,10 +172,10 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.authUserType}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -189,7 +189,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -198,7 +198,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -212,7 +212,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -221,7 +221,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "a negative number is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -235,7 +235,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -244,7 +244,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
           "turnover income amount exceeds £100,000,000,000.00" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.authUserType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType).build()
 
             running(application) {
               val request =
@@ -258,7 +258,7 @@ class NonTurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.authUserType, taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

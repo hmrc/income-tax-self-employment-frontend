@@ -16,7 +16,7 @@
 
 package models.journeys.expenses.individualCategories
 
-import models.common.{Enumerable, WithName}
+import models.common.{Enumerable, UserType, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -35,7 +35,7 @@ object WorkFromBusinessPremises extends Enumerable.Implicits {
     No
   )
 
-  def options(userType: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+  def options(userType: UserType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     val optUserType = if (value.equals(No)) "" else s".$userType"
     RadioItem(
       content = Text(messages(if (value == No) "site.no" else s"expenses.${value.toString}$optUserType")),
