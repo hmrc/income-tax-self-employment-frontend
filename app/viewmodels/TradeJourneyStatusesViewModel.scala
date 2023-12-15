@@ -66,10 +66,15 @@ object TradeJourneyStatusesViewModel {
           ExpensesEntertainment,
           None,
           pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))),
+        buildRow(ExpensesStaffCosts, None, pageMeetsCriteria(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)),
         buildRow(
-          ExpensesStaffCosts,
+          ExpensesConstruction,
           None,
-          pageMeetsCriteria(DisallowableStaffCostsPage, DisallowableStaffCosts.values.filterNot(_ == DisallowableStaffCosts.No)))
+          pageMeetsCriteria(
+            ProfessionalServiceExpensesPage,
+            ProfessionalServiceExpenses.Construction
+          )
+        )
       ).flatten
     )
   }
@@ -124,9 +129,16 @@ object TradeJourneyStatusesViewModel {
       readsA: Reads[A]): Boolean =
     getAnswer(page).fold(false)(criteria.contains(_))
 
+  private def pageMeetsCriteria[A](page: OneQuestionPage[Set[A]], criteria: A)(implicit
+      businessId: BusinessId,
+      userAnswers: Option[UserAnswers],
+      readsA: Reads[A]): Boolean =
+    getAnswer(page).fold(false)(_.contains(criteria))
+
   private def getAnswer[A](page: OneQuestionPage[A])(implicit businessId: BusinessId, userAnswers: Option[UserAnswers], reads: Reads[A]): Option[A] =
     userAnswers.flatMap(_.get(page, Some(businessId)))
 
+  // noinspection ScalaStyle
   private def getUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String = {
     implicit val status: JourneyStatus = journeyStatus
     journey match {
@@ -172,7 +184,14 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesConstruction | ExpensesTotal | NationalInsurance | TradeDetails =>
+      case ExpensesConstruction =>
+        determineUrl(
+          expenses.construction.routes.ConstructionIndustryAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesTotal | NationalInsurance | TradeDetails =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
