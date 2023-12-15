@@ -16,7 +16,8 @@
 
 package controllers.actions
 
-import models.common.{JourneyContext, Mtditid}
+import models.common.JourneyContext
+import models.requests.OptionalDataRequest
 import play.api.libs.json.Format
 import repositories.SessionRepositoryBase
 import services.SelfEmploymentServiceBase
@@ -26,6 +27,8 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class SubmittedDataRetrievalActionProvider @Inject() (selfEmploymentService: SelfEmploymentServiceBase, sessionRepository: SessionRepositoryBase) {
-  def apply[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext)(implicit ec: ExecutionContext): SubmittedDataRetrievalAction =
-    new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](journeyContext, selfEmploymentService, sessionRepository)
+  def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
+      ec: ExecutionContext): SubmittedDataRetrievalAction =
+    new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](mkJourneyContext, selfEmploymentService, sessionRepository)
+
 }

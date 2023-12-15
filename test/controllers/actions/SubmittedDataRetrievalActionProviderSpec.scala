@@ -19,6 +19,7 @@ package controllers.actions
 import base.SpecBase.{businessId, taxYear}
 import models.common.JourneyAnswersContext
 import models.journeys.Journey
+import models.requests.OptionalDataRequest
 import org.mockito.MockitoSugar
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -35,8 +36,9 @@ class SubmittedDataRetrievalActionProviderSpec extends AnyWordSpecLike with Mock
       val service = mock[SelfEmploymentService]
       val repo    = mock[SessionRepository]
 
-      val underTest = new SubmittedDataRetrievalActionProvider(service, repo)
-      val result    = underTest[JsObject](JourneyAnswersContext(taxYear, businessId, _, Journey.TradeDetails))
+      val underTest                                            = new SubmittedDataRetrievalActionProvider(service, repo)
+      val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, businessId, req.mtditid, Journey.TradeDetails)
+      val result                                               = underTest[JsObject](ctx)
       result shouldBe a[SubmittedDataRetrievalActionImpl[_]]
     }
   }

@@ -50,7 +50,7 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen
-      getJourneyAnswersIfAny[IncomeJourneyAnswers](JourneyAnswersContext(taxYear, businessId, _, Journey.Income)) andThen
+      getJourneyAnswersIfAny[IncomeJourneyAnswers](request => request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)) andThen
       requireData) { implicit request =>
       val user = request.userType
 
