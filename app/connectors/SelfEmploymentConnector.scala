@@ -33,7 +33,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
 
   def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
     val url = buildUrl(s"individuals/business/details/$nino/list")
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
@@ -41,7 +40,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def getBusiness(nino: String, businessId: BusinessId, mtditid: String)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
     val url = buildUrl(s"individuals/business/details/$nino/${businessId.value}")
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
@@ -49,7 +47,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def getJourneyState(businessId: BusinessId, journey: String, taxYear: TaxYear, mtditid: String)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
-
     val url = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}")
     http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
@@ -57,7 +54,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def saveJourneyState(businessId: BusinessId, journey: String, taxYear: TaxYear, complete: Boolean, mtditid: String)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[JourneyStateResponse] = {
-
     val url = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}/$complete")
 
     http.PUT[String, JourneyStateResponse](url, "")(
@@ -70,7 +66,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def getCompletedTradesWithStatuses(nino: String, taxYear: TaxYear, mtditid: String)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetTradesStatusResponse] = {
-
     val url = buildUrl(s"individuals/business/journey-states/$nino/${taxYear.value}")
     http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
