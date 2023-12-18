@@ -16,59 +16,17 @@
 
 package forms.income
 
-import base.SpecBase
-import forms.behaviours.BigDecimalFieldBehaviours
-import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
+import base.forms.CurrencyFormProviderBaseSpec
+import models.common.UserType
+import play.api.data.Form
 
-class NotTaxableAmountFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase {
+class NotTaxableAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("NotTaxableAmountFormProvider") {
 
-  ".value" - {
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new NotTaxableAmountFormProvider()(userType)
 
-    val fieldName = "value"
-
-    val userTypes = Seq(Individual, Agent)
-
-    userTypes.foreach { user =>
-      val form = new NotTaxableAmountFormProvider()(user)
-
-      s"when user is an $user, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(zeroValue, maxAmountValue)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"notTaxableAmount.error.nonNumeric.$user")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          zeroValue,
-          expectedError = FormError(fieldName, s"notTaxableAmount.error.lessThanZero.$user", Seq(zeroValue))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          maxAmountValue,
-          expectedError = FormError(fieldName, s"notTaxableAmount.error.overMax.$user", Seq(maxAmountValue))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"notTaxableAmount.error.required.$user")
-        )
-      }
-    }
-  }
+  override lazy val requiredError: String     = "notTaxableAmount.error.required"
+  override lazy val nonNumericError: String   = "notTaxableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "notTaxableAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "notTaxableAmount.error.overMax"
 
 }

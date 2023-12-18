@@ -16,61 +16,17 @@
 
 package forms.expenses.repairsandmaintenance
 
-import forms.behaviours.BigDecimalFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.FormError
+import play.api.data.Form
 
-class RepairsAndMaintenanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class RepairsAndMaintenanceAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("RepairsAndMaintenanceAmountFormProvider") {
 
-  val formProvider = new RepairsAndMaintenanceAmountFormProvider()
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
-  ".value" - {
+  override lazy val requiredError: String     = "repairsAndMaintenanceAmount.error.required"
+  override lazy val nonNumericError: String   = "repairsAndMaintenanceAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "repairsAndMaintenanceAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "repairsAndMaintenanceAmount.error.overMax"
 
-    val fieldName = "value"
-    val minimum   = BigDecimal("0")
-    val maximum   = BigDecimal("100000000000.00")
-
-    val users = List(UserType.Individual, UserType.Agent)
-
-    users.foreach { user =>
-      val form = formProvider(user)
-
-      s"when user is an $user, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"repairsAndMaintenanceAmount.error.nonNumeric.$user")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum = minimum,
-          expectedError = FormError(fieldName, s"repairsAndMaintenanceAmount.error.lessThanZero.$user", Seq(minimum))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          maximum,
-          expectedError = FormError(fieldName, s"repairsAndMaintenanceAmount.error.overMax.$user", Seq(maximum))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"repairsAndMaintenanceAmount.error.required.$user")
-        )
-      }
-    }
-  }
 }

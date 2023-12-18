@@ -26,7 +26,7 @@ class EntertainmentAmountFormProvider @Inject() () extends Mappings with MoneyBo
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"entertainment.error.required.$userType", s"entertainment.error.nonNumeric.$userType")
+      "value" -> currency(s"entertainment.error.required.$userType", s"entertainment.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"entertainment.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"entertainment.error.overMax.$userType"))
     )

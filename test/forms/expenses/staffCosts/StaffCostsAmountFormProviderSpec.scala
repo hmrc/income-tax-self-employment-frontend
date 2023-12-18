@@ -16,61 +16,17 @@
 
 package forms.expenses.staffCosts
 
-import forms.behaviours.BigDecimalFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.FormError
+import play.api.data.Form
 
-class StaffCostsAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class StaffCostsAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("StaffCostsAmountFormProvider") {
 
-  val formProvider = new StaffCostsAmountFormProvider()
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 
-  ".value" - {
+  override lazy val requiredError: String     = "staffCostsAmount.error.required"
+  override lazy val nonNumericError: String   = "staffCostsAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "staffCostsAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "staffCostsAmount.error.overMax"
 
-    val fieldName = "value"
-    val minimum   = BigDecimal("0")
-    val maximum   = BigDecimal("100000000000.00")
-
-    val users = List(UserType.Individual, UserType.Agent)
-
-    users.foreach { user =>
-      val form = formProvider(user)
-
-      s"when user is an $user, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"staffCostsAmount.error.nonNumeric.$user")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum = minimum,
-          expectedError = FormError(fieldName, s"staffCostsAmount.error.lessThanZero.$user", Seq(minimum))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          maximum,
-          expectedError = FormError(fieldName, s"staffCostsAmount.error.overMax.$user", Seq(maximum))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"staffCostsAmount.error.required.$user")
-        )
-      }
-    }
-  }
 }

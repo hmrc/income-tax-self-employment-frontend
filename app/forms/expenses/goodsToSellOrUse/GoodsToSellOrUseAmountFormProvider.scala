@@ -26,7 +26,7 @@ class GoodsToSellOrUseAmountFormProvider @Inject() () extends Mappings with Mone
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"goodsToSellOrUseAmount.error.required.$userType", s"goodsToSellOrUseAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"goodsToSellOrUseAmount.error.required.$userType", s"goodsToSellOrUseAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"goodsToSellOrUseAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"goodsToSellOrUseAmount.error.overMax.$userType"))
     )
