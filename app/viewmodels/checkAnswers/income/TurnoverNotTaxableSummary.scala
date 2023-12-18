@@ -22,24 +22,18 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRow
 
 object TurnoverNotTaxableSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = Key(content = s"income.turnoverExemptFromTax.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = value, classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("turnoverNotTaxable.change.hidden"))
-        )
+      buildRow(
+        answer,
+        TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode),
+        s"income.turnoverExemptFromTax.$userType",
+        "turnoverNotTaxable.change.hidden"
       )
     }
 

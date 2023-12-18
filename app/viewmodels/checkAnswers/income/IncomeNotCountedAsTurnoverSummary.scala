@@ -22,24 +22,18 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRow
 
 object IncomeNotCountedAsTurnoverSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)).map { answer =>
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = Key(content = s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = value, classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("incomeNotCountedAsTurnover.change.hidden"))
-        )
+      buildRow(
+        answer,
+        IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode),
+        s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType",
+        "incomeNotCountedAsTurnover.change.hidden"
       )
     }
 

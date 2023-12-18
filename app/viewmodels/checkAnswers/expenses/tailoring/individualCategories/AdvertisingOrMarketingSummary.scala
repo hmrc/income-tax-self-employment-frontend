@@ -22,28 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRow
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object AdvertisingOrMarketingSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(AdvertisingOrMarketingPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"advertisingOrMarketing.question.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = formatAnswer(answer.toString),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("advertisingOrMarketing.change.hidden"))
-        )
+      buildRow(
+        formatAnswer(answer.toString),
+        routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode),
+        s"advertisingOrMarketing.question.$userType",
+        "advertisingOrMarketing.change.hidden"
       )
     }
 }

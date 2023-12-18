@@ -22,23 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRow
 
 object OtherIncomeAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherIncomeAmountPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(content = s"otherIncomeAmount.title.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("otherIncomeAmount.change.hidden"))
-        )
+      buildRow(
+        answer,
+        OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        s"otherIncomeAmount.title.$userType",
+        "otherIncomeAmount.change.hidden"
       )
     }
 

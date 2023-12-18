@@ -23,30 +23,18 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRow
 
 object ExpensesTailoringSummary {
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(ExpensesCategoriesPage, Some(businessId)).map { answer =>
       val optUserType = if (answer == NoExpenses) s".$userType" else ""
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"expenses.cyaSummary.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = messages(s"expenses.$answer$optUserType"),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel(
-            "site.change",
-            routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, CheckMode).url
-          )
-            .withVisuallyHiddenText(messages("expensesCategories.change.hidden"))
-        )
+      buildRow(
+        messages(s"expenses.$answer$optUserType"),
+        routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, CheckMode),
+        s"expenses.cyaSummary.$userType",
+        "expensesCategories.change.hidden"
       )
     }
 

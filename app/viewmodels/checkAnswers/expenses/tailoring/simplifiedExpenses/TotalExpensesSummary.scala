@@ -22,29 +22,18 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
-import utils.MoneyUtils.formatMoney
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRow
 
 object TotalExpensesSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(TotalExpensesPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"totalExpenses.title.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = s"£${formatMoney(answer)}",
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("totalExpenses.change.hidden"))
-        )
-      )
+      buildRow(
+        answer,
+        routes.TotalExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+        s"totalExpenses.title.$userType",
+        "totalExpenses.change.hidden")
     }
 
 }

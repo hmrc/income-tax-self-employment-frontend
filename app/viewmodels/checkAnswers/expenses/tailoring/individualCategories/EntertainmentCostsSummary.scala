@@ -22,28 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.EntertainmentCostsPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRow
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object EntertainmentCostsSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(EntertainmentCostsPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"entertainmentCosts.question.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = formatAnswer(answer.toString),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("entertainmentCosts.change.hidden"))
-        )
+      buildRow(
+        formatAnswer(answer.toString),
+        routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, CheckMode),
+        s"entertainmentCosts.question.$userType",
+        "entertainmentCosts.change.hidden"
       )
     }
 }
