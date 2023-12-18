@@ -49,7 +49,6 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[GoodsToSellOrUseJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesGoodsToSellOrUse)) andThen requireData) { implicit request =>
-      println("got here")
       val user = request.userType
 
       val summaryList = SummaryListCYA.summaryListOpt(
