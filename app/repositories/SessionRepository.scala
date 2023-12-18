@@ -69,7 +69,7 @@ class SessionRepository @Inject() (
   private def byId(id: String): Bson = Filters.equal("_id", id)
 
   /** Used only for the UI tests
-   */
+    */
   def testOnlyClearAllData(): Future[Unit] =
     collection
       .deleteMany(new Document())
