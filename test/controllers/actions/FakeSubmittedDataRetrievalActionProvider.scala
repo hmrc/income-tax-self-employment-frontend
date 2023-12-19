@@ -16,7 +16,8 @@
 
 package controllers.actions
 
-import models.common.{JourneyContext, Mtditid}
+import models.common.JourneyContext
+import models.requests.OptionalDataRequest
 import play.api.libs.json.Format
 import stubs.controllers.actions.StubSubmittedDataRetrievalAction
 import stubs.repositories.StubSessionRepository
@@ -27,7 +28,7 @@ import scala.concurrent.ExecutionContext
 case class FakeSubmittedDataRetrievalActionProvider()
     extends SubmittedDataRetrievalActionProvider(SelfEmploymentServiceStub(), StubSessionRepository()) {
 
-  override def apply[SubsetOfAnswers: Format](journeyContext: Mtditid => JourneyContext)(implicit
+  override def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
       ec: ExecutionContext): SubmittedDataRetrievalAction =
     StubSubmittedDataRetrievalAction()
 }

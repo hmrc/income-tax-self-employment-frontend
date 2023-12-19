@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.Depreciation
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class DepreciationFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[Depreciation] =
+  def apply(userType: UserType): Form[Depreciation] =
     Form(
       "value" -> enumerable[Depreciation](s"depreciation.error.required.$userType")
     )

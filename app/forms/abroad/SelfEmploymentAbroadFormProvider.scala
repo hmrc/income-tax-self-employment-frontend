@@ -17,14 +17,15 @@
 package forms.abroad
 
 import forms.mappings.Mappings
+import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class SelfEmploymentAbroadFormProvider @Inject() extends Mappings {
 
-  def apply(isAgent: Boolean): Form[Boolean] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> boolean(s"selfEmploymentAbroad.error.required.${if (isAgent) "agent" else "individual"}")
+      "value" -> boolean(s"selfEmploymentAbroad.error.required.$userType")
     )
 }

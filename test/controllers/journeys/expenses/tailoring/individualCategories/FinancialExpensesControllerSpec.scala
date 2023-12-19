@@ -17,10 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.individualCategories.routes
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -49,11 +50,11 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: String, form: Form[Set[FinancialExpenses]], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[Set[FinancialExpenses]], accountingType: String)
 
   val userScenarios = Seq(
-    UserScenario(userType = individual, formProvider(individual), accrual),
-    UserScenario(userType = agent, formProvider(agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), accrual),
+    UserScenario(userType = Agent, formProvider(Agent), cash)
   )
 
   "FinancialExpenses Controller" - {
@@ -64,7 +65,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -92,7 +93,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
             val userAnswers =
               UserAnswers(userAnswersId).set(FinancialExpensesPage, FinancialExpenses.values.toSet, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -172,7 +173,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
@@ -201,7 +202,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 

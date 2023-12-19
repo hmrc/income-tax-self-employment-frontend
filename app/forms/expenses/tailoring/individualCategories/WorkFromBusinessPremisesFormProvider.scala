@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class WorkFromBusinessPremisesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[WorkFromBusinessPremises] =
+  def apply(userType: UserType): Form[WorkFromBusinessPremises] =
     Form(
       "value" -> enumerable[WorkFromBusinessPremises](s"workFromBusinessPremises.error.required.$userType")
     )

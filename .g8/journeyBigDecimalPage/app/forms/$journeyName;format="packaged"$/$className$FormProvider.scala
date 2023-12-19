@@ -6,11 +6,11 @@ import play.api.data.Form
 
 class $className$FormProvider @Inject() extends Mappings {
 
-  def apply(authUserType: String): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"$className;format="decap"$.error.required.\$authUserType", s"$className;format="decap"$.error.nonNumeric.\$authUserType")
-          .verifying(isBigDecimalGreaterThanZero(s"$className;format="decap"$.error.lessThanZero.\$authUserType"))
-          .verifying(isBigDecimalLessThanMax(BigDecimal("$maximum$"), s"$className;format="decap"$.error.overMax.\$authUserType"))
+      "value" -> currency(s"$className;format="decap"$.error.required.\$userType", s"$className;format="decap"$.error.nonNumeric.\$userType")
+          .verifying(isBigDecimalGreaterThanZero(s"$className;format="decap"$.error.lessThanZero.\$userType"))
+          .verifying(isBigDecimalLessThanMax(BigDecimal("$maximum$"), s"$className;format="decap"$.error.overMax.\$userType"))
 
 
   )

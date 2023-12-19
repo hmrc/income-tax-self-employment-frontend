@@ -17,16 +17,16 @@
 package forms.expenses.officeSupplies
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: String): Form[BigDecimal] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$userType", s"officeSuppliesAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"officeSuppliesAmount.error.required.$userType", s"officeSuppliesAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$userType"))
     )

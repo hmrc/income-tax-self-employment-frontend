@@ -26,7 +26,7 @@ class StaffCostsAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"staffCostsAmount.error.required.$userType", s"staffCostsAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"staffCostsAmount.error.required.$userType", s"staffCostsAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"staffCostsAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"staffCostsAmount.error.overMax.$userType"))
     )

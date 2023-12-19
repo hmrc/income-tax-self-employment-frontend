@@ -16,62 +16,17 @@
 
 package forms.expenses.officeSupplies
 
-import forms.behaviours.BigDecimalFieldBehaviours
-import play.api.data.FormError
+import base.forms.CurrencyFormProviderBaseSpec
+import models.common.UserType
+import play.api.data.Form
 
-class OfficeSuppliesAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class OfficeSuppliesAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("OfficeSuppliesAmountFormProvider") {
 
-  private val userTypes = Seq("individual", "agent")
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 
-  ".value" - {
-    userTypes.foreach { authUser =>
-      s"when the user is $authUser" - {
-        "form provider should" - {
-
-          val form = new OfficeSuppliesAmountFormProvider()(authUser)
-
-          val fieldName = "value"
-
-          val minimum: BigDecimal = 0
-          val maximum: BigDecimal = 100000000000.00
-
-          val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-          behave like fieldThatBindsValidData(
-            form,
-            fieldName,
-            validDataGenerator
-          )
-
-          behave like bigDecimalField(
-            form,
-            fieldName,
-            nonNumericError = FormError(fieldName, s"officeSuppliesAmount.error.nonNumeric.$authUser")
-          )
-
-          behave like bigDecimalFieldWithMinimum(
-            form,
-            fieldName,
-            minimum,
-            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.lessThanZero.$authUser", Seq(minimum))
-          )
-
-          behave like bigDecimalFieldWithMaximum(
-            form,
-            fieldName,
-            maximum,
-            expectedError = FormError(fieldName, s"officeSuppliesAmount.error.overMax.$authUser", Seq(maximum))
-          )
-
-          behave like mandatoryField(
-            form,
-            fieldName,
-            requiredError = FormError(fieldName, s"officeSuppliesAmount.error.required.$authUser")
-          )
-        }
-      }
-    }
-
-  }
+  override lazy val requiredError: String     = "officeSuppliesAmount.error.required"
+  override lazy val nonNumericError: String   = "officeSuppliesAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "officeSuppliesAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "officeSuppliesAmount.error.overMax"
 
 }

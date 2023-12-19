@@ -17,7 +17,7 @@
 package forms.expenses.goodsToSellOrUse
 
 import forms.mappings.Mappings
-import models.common.MoneyBounds
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 import utils.MoneyUtils.formatMoney
 
@@ -25,10 +25,10 @@ import javax.inject.Inject
 
 class DisallowableGoodsToSellOrUseAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: String, goodsAmount: BigDecimal): Form[BigDecimal] = {
+  def apply(userType: UserType, goodsAmount: BigDecimal): Form[BigDecimal] = {
     val goodsAmountString = formatMoney(goodsAmount)
     Form(
-      "value" -> bigDecimal(
+      "value" -> currency(
         s"disallowableGoodsToSellOrUseAmount.error.required.$userType",
         s"disallowableGoodsToSellOrUseAmount.error.nonNumeric.$userType",
         Seq(goodsAmountString)

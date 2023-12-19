@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.tradeDetails
 
+import models.common.UserType
 import models.domain.BusinessData
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
@@ -28,24 +29,24 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 
 object SelfEmploymentDetailsViewModel {
 
-  def buildSummaryList(business: BusinessData, isAgent: Boolean)(implicit messages: Messages): SummaryList =
+  def buildSummaryList(business: BusinessData, userType: UserType)(implicit messages: Messages): SummaryList =
     SummaryListCYA.summaryList(
       List(
-        row("tradingName", business.tradingName.getOrElse(""), Some(isAgent)),
-        row("typeOfBusiness", business.typeOfBusiness, Some(isAgent)),
+        row("tradingName", business.tradingName.getOrElse(""), Some(userType)),
+        row("typeOfBusiness", business.typeOfBusiness, Some(userType)),
         row("accountingType", business.accountingType.getOrElse("")),
-        row("startDate", handleDateString(business.commencementDate), Some(isAgent)),
+        row("startDate", handleDateString(business.commencementDate), Some(userType)),
         row("linkedToConstructionIndustryScheme", "No"),
-        row("fosterCare", "No", Some(isAgent)),
-        row("farmerOrMarketGardener", "No", Some(isAgent)),
-        row("profitFromLiteraryOrCreativeWorks", "No", Some(isAgent))
+        row("fosterCare", "No", Some(userType)),
+        row("farmerOrMarketGardener", "No", Some(userType)),
+        row("profitFromLiteraryOrCreativeWorks", "No", Some(userType))
       )
     )
 
-  private def row(rowKey: String, rowContent: String, userIsAgent: Option[Boolean] = None)(implicit messages: Messages): SummaryListRow = {
-    val agentIndividual = userIsAgent match {
-      case None          => ""
-      case Some(isAgent) => if (isAgent) ".agent" else ".individual"
+  private def row(rowKey: String, rowContent: String, userType: Option[UserType] = None)(implicit messages: Messages): SummaryListRow = {
+    val agentIndividual = userType match {
+      case None           => ""
+      case Some(userType) => s".$userType"
     }
     SummaryListRowViewModel(
       key = Key(

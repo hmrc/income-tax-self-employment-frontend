@@ -17,6 +17,8 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.behaviours.CheckboxFieldBehaviours
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import play.api.data.FormError
 
@@ -26,9 +28,9 @@ class FinancialExpensesFormProviderSpec extends CheckboxFieldBehaviours {
 
     val fieldName = "value"
 
-    case class UserScenario(user: String)
+    case class UserScenario(user: UserType)
 
-    val userScenarios = Seq(UserScenario(individual), UserScenario(agent))
+    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
 
     userScenarios.foreach { userScenario =>
       val form = new FinancialExpensesFormProvider()(userScenario.user)

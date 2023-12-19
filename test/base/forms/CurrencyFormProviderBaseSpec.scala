@@ -19,17 +19,19 @@ package base.forms
 import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
-abstract case class BigDecimalFormProviderBaseSpec(formProviderName: String) extends BigDecimalFieldBehaviours {
+abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) extends BigDecimalFieldBehaviours {
 
   private val fieldName = "value"
 
-  protected val minimum: BigDecimal = zeroValue
-  protected val maximum: BigDecimal = maxAmountValue
+  protected lazy val minimum: BigDecimal                    = zeroValue
+  protected lazy val maximum: BigDecimal                    = maxAmountValue
+  protected lazy val validDataGenerator: Gen[String]        = currencyInRangeWithCommas(minimum, maximum)
+  protected lazy val optionalArguments: Option[Seq[String]] = None
 
   private val userTypes: List[UserType] = List(Individual, Agent)
-  private val validDataGenerator        = bigDecimalsInRangeWithCommas(minimum, maximum)
 
   val requiredError: String
   val nonNumericError: String
@@ -51,27 +53,33 @@ abstract case class BigDecimalFormProviderBaseSpec(formProviderName: String) ext
       behave like bigDecimalField(
         form,
         fieldName,
-        nonNumericError = FormError(fieldName, s"$nonNumericError.$userType")
+        nonNumericError = optionalArguments match {
+          case Some(args) => FormError(fieldName, s"$nonNumericError.$userType", args)
+          case _          => FormError(fieldName, s"$nonNumericError.$userType")
+        }
       )
 
       behave like bigDecimalFieldWithMinimum(
         form,
         fieldName,
         minimum,
-        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", Seq(minimum))
+        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", optionalArguments.getOrElse(Seq(minimum)))
       )
 
       behave like bigDecimalFieldWithMaximum(
         form,
         fieldName,
         maximum,
-        expectedError = FormError(fieldName, s"$overMaxError.$userType", Seq(maximum))
+        expectedError = FormError(fieldName, s"$overMaxError.$userType", optionalArguments.getOrElse(Seq(maximum)))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, s"$requiredError.$userType")
+        requiredError = optionalArguments match {
+          case Some(args) => FormError(fieldName, s"$requiredError.$userType", args)
+          case _          => FormError(fieldName, s"$requiredError.$userType")
+        }
       )
     }
   }

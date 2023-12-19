@@ -17,10 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.individualCategories.routes
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.WorkFromBusinessPremisesFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -45,11 +46,11 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new WorkFromBusinessPremisesFormProvider()
 
-  case class UserScenario(userType: String)
+  case class UserScenario(userType: UserType)
 
   val userScenarios = Seq(
-    UserScenario(userType = individual),
-    UserScenario(userType = agent)
+    UserScenario(Individual),
+    UserScenario(Agent)
   )
 
   "WorkFromBusinessPremises Controller" - {
@@ -61,7 +62,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
             val form        = formProvider(userScenario.userType)
 
             running(application) {
@@ -87,7 +88,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
                 .success
                 .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent(userScenario.userType)).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
             val form        = formProvider(userScenario.userType)
 
             running(application) {
@@ -156,7 +157,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
         s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
             val form        = formProvider(userScenario.userType)
 
             running(application) {
@@ -180,7 +181,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent(userScenario.userType)).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
             val form        = formProvider(userScenario.userType)
 
             running(application) {

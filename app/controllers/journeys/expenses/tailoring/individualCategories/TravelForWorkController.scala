@@ -19,7 +19,6 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import forms.expenses.tailoring.individualCategories.TravelForWorkFormProvider
 import models.Mode
-import models.common.ModelUtils.userType
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
@@ -48,13 +47,13 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TravelForWorkPage, Some(businessId)) match {
-        case None        => formProvider(userType(request.user.isAgent))
-        case Some(value) => formProvider(userType(request.user.isAgent)).fill(value)
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
       }
       val taxiDriver = request.userAnswers
         .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
         .contains(TaxiMinicabOrRoadHaulage.Yes)
-      Ok(view(preparedForm, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, taxiDriver))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -63,11 +62,10 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
         .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
         .contains(TaxiMinicabOrRoadHaulage.Yes)
 
-      formProvider(userType(request.user.isAgent))
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, userType(request.user.isAgent), taxYear, businessId, taxiDriver))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, taxiDriver))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))

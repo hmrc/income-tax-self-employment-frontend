@@ -17,6 +17,7 @@
 package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
+import models.common.UserType
 import models.journeys.expenses.individualCategories.DisallowableInterest
 import play.api.data.Form
 
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class DisallowableInterestFormProvider @Inject() extends Mappings {
 
-  def apply(userType: String): Form[DisallowableInterest] =
+  def apply(userType: UserType): Form[DisallowableInterest] =
     Form(
       "value" -> enumerable[DisallowableInterest](s"disallowableInterest.error.required.$userType")
     )

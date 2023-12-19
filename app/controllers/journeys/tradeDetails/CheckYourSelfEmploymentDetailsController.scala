@@ -45,12 +45,11 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val isAgent = request.user.isAgent
     selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
       case Right(business: Seq[BusinessData]) =>
-        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, isAgent)
+        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, request.userType)
         val nextRoute             = navigate(taxYear, businessId, navigator)
-        Ok(view(selfEmploymentDetails, taxYear, if (isAgent) "agent" else "individual", nextRoute))
+        Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
       // TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
       case _ =>
         Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)

@@ -30,7 +30,7 @@ class RepairsAndMaintenanceDisallowableAmountFormProvider @Inject() extends Mapp
     val formattedMoney = formatMoney(allowableAmount)
 
     Form(
-      "value" -> bigDecimal(
+      "value" -> currency(
         messages(s"repairsAndMaintenanceDisallowableAmount.error.required.$userType", formattedMoney),
         messages(s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$userType", formattedMoney)
       )

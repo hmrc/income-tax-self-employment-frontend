@@ -16,11 +16,11 @@
 
 package forms.expenses.tailoring.simplifiedExpenses
 
-import base.forms.BigDecimalFormProviderBaseSpec
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
 import play.api.data.Form
 
-class TotalExpensesFormProviderSpec extends BigDecimalFormProviderBaseSpec("TotalExpensesFormProvider") {
+class TotalExpensesFormProviderSpec extends CurrencyFormProviderBaseSpec("TotalExpensesFormProvider") {
 
   override def getFormProvider(userType: UserType): Form[BigDecimal] = new TotalExpensesFormProvider()(userType)
 

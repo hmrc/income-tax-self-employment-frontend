@@ -29,7 +29,7 @@ class StaffCostsDisallowableAmountFormProvider @Inject() extends Mappings with M
 
     val staffCostsString = formatMoney(staffCosts)
     Form(
-      "value" -> bigDecimal(
+      "value" -> currency(
         s"staffCostsDisallowableAmount.error.required.$userType",
         s"staffCostsDisallowableAmount.error.nonNumeric.$userType",
         Seq(staffCostsString))

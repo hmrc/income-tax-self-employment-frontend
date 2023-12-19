@@ -16,60 +16,21 @@
 
 package forms.income
 
-import forms.behaviours.BigDecimalFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.FormError
+import play.api.data.Form
 
-class TradingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class TradingAllowanceAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("TradingAllowanceAmountFormProvider") {
 
-  ".value" - {
-    val fieldName      = "value"
-    val turnoverAmount = 1000.00
-    val minimum        = 0
-    case class UserScenario(user: UserType)
+  private lazy val turnoverAmount = 1000.00
 
-    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new TradingAllowanceAmountFormProvider()(userType, turnoverAmount)
 
-    userScenarios.foreach { userScenario =>
-      val form = new TradingAllowanceAmountFormProvider()(userScenario.user, turnoverAmount)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, turnoverAmount)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"tradingAllowanceAmount.error.nonNumeric.${userScenario.user}")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum,
-          expectedError = FormError(fieldName, s"tradingAllowanceAmount.error.lessThanZero.${userScenario.user}", Seq(minimum))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          turnoverAmount,
-          expectedError = FormError(fieldName, s"tradingAllowanceAmount.error.overTurnover.${userScenario.user}", Seq(turnoverAmount))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"tradingAllowanceAmount.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override lazy val requiredError: String     = "tradingAllowanceAmount.error.required"
+  override lazy val nonNumericError: String   = "tradingAllowanceAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "tradingAllowanceAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "tradingAllowanceAmount.error.overTurnover"
+  override lazy val maximum: BigDecimal       = turnoverAmount
+  override lazy val validDataGenerator        = currencyInRangeWithCommas(minimum, turnoverAmount)
 
 }

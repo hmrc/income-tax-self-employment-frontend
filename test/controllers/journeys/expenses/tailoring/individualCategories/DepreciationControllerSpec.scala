@@ -21,6 +21,8 @@ import controllers.journeys.expenses.tailoring.individualCategories.routes.Depre
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.DepreciationFormProvider
 import models.NormalMode
+import models.common.UserType
+import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.Depreciation
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -46,11 +48,11 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DepreciationFormProvider()
 
-  case class UserScenario(isAgent: Boolean, form: Form[Depreciation])
+  case class UserScenario(userType: UserType, form: Form[Depreciation])
 
   val userScenarios = Seq(
-    UserScenario(isAgent = false, formProvider(individual)),
-    UserScenario(isAgent = true, formProvider(agent))
+    UserScenario(userType = Individual, formProvider(Individual)),
+    UserScenario(userType = Agent, formProvider(Agent))
   )
 
   "Depreciation Controller" - {
@@ -58,10 +60,10 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
     "onPageLoad" - {
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, depreciationRoute)
@@ -71,7 +73,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
               val view = application.injector.instanceOf[DepreciationView]
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -82,7 +84,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
             val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head, Some(businessId)).success.value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, depreciationRoute)
@@ -92,7 +94,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(Depreciation.values.head), NormalMode, userType(userScenario.isAgent), taxYear, businessId)(
+                view(userScenario.form.fill(Depreciation.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
                   request,
                   messages(application)).toString
 
@@ -147,10 +149,10 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
       }
 
       userScenarios.foreach { userScenario =>
-        s"when user is an ${userType(userScenario.isAgent)}" - {
+        s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -164,7 +166,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -173,7 +175,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), isAgent = userScenario.isAgent).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -187,7 +189,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userType(userScenario.isAgent), taxYear, businessId)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

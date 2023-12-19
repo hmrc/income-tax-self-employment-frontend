@@ -36,7 +36,8 @@ import scala.concurrent.ExecutionContext
 
 class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: MessagesApi,
                                                identify: IdentifierAction,
-                                               getData: DataRetrievalAction,
+                                               getUserAnswers: DataRetrievalAction,
+                                               getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireData: DataRequiredAction,
                                                service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
@@ -45,20 +46,22 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val user = request.userType
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[GoodsToSellOrUseJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesGoodsToSellOrUse)) andThen requireData) { implicit request =>
+      val user = request.userType
 
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        GoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-        DisallowableGoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          GoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          DisallowableGoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+        )
       )
-    )
 
-    Ok(view(GoodsToSellOrUseCYAPage.toString, taxYear, user, summaryList, routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId)))
-  }
+      Ok(view(GoodsToSellOrUseCYAPage.toString, taxYear, user, summaryList, routes.GoodsToSellOrUseCYAController.onSubmit(taxYear, businessId)))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesGoodsToSellOrUse)
       val result  = service.submitAnswers[GoodsToSellOrUseJourneyAnswers](context, request.userAnswers)
