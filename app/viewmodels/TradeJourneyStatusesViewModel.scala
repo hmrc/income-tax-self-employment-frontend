@@ -40,6 +40,7 @@ case class TradeJourneyStatusesViewModel(tradingName: String, businessId: Busine
 
 object TradeJourneyStatusesViewModel {
 
+  // noinspection ScalaStyle
   def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
       messages: Messages): SummaryList = {
 
@@ -48,29 +49,48 @@ object TradeJourneyStatusesViewModel {
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
     implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 
+    val expensesTailoringIsAnswered: Boolean = dependentJourneyIsInProgressOrCompleted(ExpensesTailoring)
+
     SummaryListCYA.summaryList(
       List(
         buildRow(Abroad),
-        buildRow(Income, Some(Abroad)),
-        buildRow(ExpensesTailoring, Some(Income), pageMeetsCriteria(TradingAllowancePage, Seq(TradingAllowance.DeclareExpenses))),
-        buildRow(ExpensesOfficeSupplies, None, pageMeetsCriteria(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))),
+        buildRow(
+          Income,
+          dependentJourneyIsFinishedForClickableLink = dependentJourneyIsInProgressOrCompleted(Abroad, checkOnlyCompleted = true)
+        ),
+        buildRow(
+          ExpensesTailoring,
+          conditionPassedForViewableLink(TradingAllowancePage, Seq(TradingAllowance.DeclareExpenses)),
+          dependentJourneyIsInProgressOrCompleted(Income, checkOnlyCompleted = true)
+        ),
+        buildRow(
+          ExpensesOfficeSupplies,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))
+        ),
         buildRow(
           ExpensesGoodsToSellOrUse,
-          None,
-          pageMeetsCriteria(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))),
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            GoodsToSellOrUsePage,
+            GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))
+        ),
         buildRow(
           ExpensesRepairsAndMaintenance,
-          None,
-          pageMeetsCriteria(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))),
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            RepairsAndMaintenancePage,
+            RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
+        ),
         buildRow(
           ExpensesEntertainment,
-          None,
-          pageMeetsCriteria(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))),
-        buildRow(ExpensesStaffCosts, None, pageMeetsCriteria(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)),
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            EntertainmentCostsPage,
+            EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))
+        ),
+        buildRow(
+          ExpensesStaffCosts,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)),
         buildRow(
           ExpensesConstruction,
-          None,
-          pageMeetsCriteria(
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
             ProfessionalServiceExpensesPage,
             ProfessionalServiceExpenses.Construction
           )
@@ -79,16 +99,17 @@ object TradeJourneyStatusesViewModel {
     )
   }
 
-  private def buildRow(journey: Journey, conditionalCompletedJourney: Option[Journey] = None, conditionPassed: Boolean = true)(implicit
+  private def buildRow(journey: Journey, conditionPassedForViewableLink: Boolean = true, dependentJourneyIsFinishedForClickableLink: Boolean = true)(
+      implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] =
-    if (conditionPassed) {
-      val status: JourneyStatus = getJourneyStatus(journey, conditionalCompletedJourney)
+    if (conditionPassedForViewableLink) {
+      val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
       val keyString             = messages(s"journeys.$journey")
       val statusString          = messages(s"status.${status.entryName}")
-      val optDeadlinkStyle      = if (status.equals(CannotStartYet)) s" class='govuk-deadlink'" else ""
+      val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
       val href                  = getUrl(journey, status, businessId, taxYear)
 
       Some(
@@ -106,34 +127,33 @@ object TradeJourneyStatusesViewModel {
       None
     }
 
-  private def getJourneyStatus(journey: Journey, conditionalCompletedJourney: Option[Journey])(implicit
-      journeyStatuses: TradesJourneyStatuses): JourneyStatus =
-    statusFromCompletedState(getCompletedState(journeyStatuses, journey)) match {
-      case NotStarted            => conditionalJourneyIsPassed(conditionalCompletedJourney)
-      case status: JourneyStatus => status
+  private def dependentJourneyIsInProgressOrCompleted(dependentJourney: Journey, checkOnlyCompleted: Boolean = false)(implicit
+      journeyStatuses: TradesJourneyStatuses): Boolean =
+    getJourneyStatus(dependentJourney) match {
+      case Completed | InProgress if !checkOnlyCompleted => true
+      case Completed                                     => true
+      case _                                             => false
     }
 
-  private def getCompletedState(journeyStatuses: TradesJourneyStatuses, journey: Journey): Option[Boolean] =
-    journeyStatuses.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
-
-  private def conditionalJourneyIsPassed(conditionalCompletedJourney: Option[Journey])(implicit
+  private def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
-    conditionalCompletedJourney match {
-      case Some(journey) if !getCompletedState(journeyStatuses, journey).contains(true) => CannotStartYet
-      case _                                                                            => NotStarted
+    JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
+      case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
+      case NotStarted                                                => NotStarted
+      case status: JourneyStatus                                     => status
     }
 
-  private def pageMeetsCriteria[A](page: OneQuestionPage[A], criteria: Seq[A])(implicit
+  private def conditionPassedForViewableLink[A](page: OneQuestionPage[A], acceptableAnswers: Seq[A])(implicit
       businessId: BusinessId,
       userAnswers: Option[UserAnswers],
       readsA: Reads[A]): Boolean =
-    getAnswer(page).fold(false)(criteria.contains(_))
+    getAnswer(page).fold(false)(acceptableAnswers.contains(_))
 
-  private def pageMeetsCriteria[A](page: OneQuestionPage[Set[A]], criteria: A)(implicit
+  private def conditionPassedForViewableLink[A](page: OneQuestionPage[Set[A]], requiredAnswer: A)(implicit
       businessId: BusinessId,
       userAnswers: Option[UserAnswers],
       readsA: Reads[A]): Boolean =
-    getAnswer(page).fold(false)(_.contains(criteria))
+    getAnswer(page).fold(false)(_.contains(requiredAnswer))
 
   private def getAnswer[A](page: OneQuestionPage[A])(implicit businessId: BusinessId, userAnswers: Option[UserAnswers], reads: Reads[A]): Option[A] =
     userAnswers.flatMap(_.get(page, Some(businessId)))
@@ -198,9 +218,9 @@ object TradeJourneyStatusesViewModel {
 
   private def determineUrl(startUrl: String, cyaUrl: String)(implicit status: JourneyStatus): String =
     status match {
-      case CannotStartYet         => "#"
-      case Completed | InProgress => cyaUrl
-      case _                      => startUrl
+      case CannotStartYet               => "#"
+      case Completed | InProgress       => cyaUrl
+      case NotStarted | CheckOurRecords => startUrl
     }
 
 }
