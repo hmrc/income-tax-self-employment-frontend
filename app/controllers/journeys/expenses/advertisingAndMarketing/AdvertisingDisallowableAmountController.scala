@@ -18,63 +18,62 @@ package controllers.journeys.expenses.advertisingAndMarketing
 
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
+import forms.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.advertisingAndMarketing.{AdvertisingAndMarketingAmountPage, AdvertisingAndMarketingDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
-import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
+import views.html.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdvertisingDisallowableAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                        sessionRepository: SessionRepository,
-                                                        navigator: ExpensesNavigator,
-                                                        identify: IdentifierAction,
-                                                        getData: DataRetrievalAction,
-                                                        requireData: DataRequiredAction,
-                                                        formProvider: DisallowableGoodsToSellOrUseAmountFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: DisallowableGoodsToSellOrUseAmountView)(implicit ec: ExecutionContext)
+class AdvertisingDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                         sessionRepository: SessionRepository,
+                                                         navigator: ExpensesNavigator,
+                                                         identify: IdentifierAction,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction,
+                                                         formProvider: AdvertisingDisallowableAmountFormProvider,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         view: AdvertisingDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+      request.userAnswers.get(AdvertisingAndMarketingAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Some(goodsAmount) =>
+        case Some(amount) =>
           val preparedForm =
-            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
-              case None        => formProvider(request.userType, goodsAmount)
-              case Some(value) => formProvider(request.userType, goodsAmount).fill(value)
+            request.userAnswers.get(AdvertisingAndMarketingDisallowableAmountPage, Some(businessId)) match {
+              case None        => formProvider(request.userType, amount)
+              case Some(value) => formProvider(request.userType, amount).fill(value)
             }
 
-          Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount))))
+          Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(amount))))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
+      request.userAnswers.get(AdvertisingAndMarketingAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Some(goodsAmount) =>
-          formProvider(request.userType, goodsAmount)
+        case Some(amount) =>
+          formProvider(request.userType, amount)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(amount)))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingAndMarketingDisallowableAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(AdvertisingAndMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }

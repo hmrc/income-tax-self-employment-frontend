@@ -18,7 +18,7 @@ package controllers.journeys.expenses.advertisingAndMarketing
 
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
+import forms.expenses.advertisingAndMarketing.AdvertisingAmountFormProvider
 import models.Mode
 import models.common.AccountingType.getAccountTypeFromString
 import models.common.{BusinessId, TaxYear}
@@ -41,7 +41,7 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
                                              navigator: ExpensesNavigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
-                                             formProvider: GoodsToSellOrUseAmountFormProvider,
+                                             formProvider: AdvertisingAmountFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: AdvertisingAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
