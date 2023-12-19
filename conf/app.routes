@@ -258,6 +258,21 @@ POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowab
 GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/repairs-maintenance/check                                           controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
+########## Expenses - Advertising and Marketing ##########
+
+GET         /:taxYear/:businessId/expenses/advertising-marketing/amount                                        controllers.journeys.expenses.advertisingAndMarketing.AdvertisingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/advertising-marketing/amount                                        controllers.journeys.expenses.advertisingAndMarketing.AdvertisingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-advertising-marketing/amount                                 controllers.journeys.expenses.advertisingAndMarketing.AdvertisingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-advertising-marketing/amount                                 controllers.journeys.expenses.advertisingAndMarketing.AdvertisingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/advertising-marketing/disallowable-amount                           controllers.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/advertising-marketing/disallowable-amount                           controllers.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-advertising-marketing/disallowable-amount                    controllers.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-advertising-marketing/disallowable-amount                    controllers.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/advertising-marketing/check                                         controllers.journeys.expenses.advertisingAndMarketing.AdvertisingCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/advertising-marketing/check                                         controllers.journeys.expenses.advertisingAndMarketing.AdvertisingCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Entertainment ##########
 
 GET         /:taxYear/:businessId/expenses/entertainment/disallowable-amount                                   controllers.journeys.expenses.entertainment.EntertainmentAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

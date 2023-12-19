@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package models.common
+package pages.expenses.advertisingAndMarketing
 
-import enumeratum._
+import pages.Page
 
-sealed trait AccountingType extends EnumEntry {
-  override def entryName: String = toString.toUpperCase
-}
-
-object AccountingType extends Enum[AccountingType] {
-  val values = findValues
-
-  case object Accrual extends AccountingType
-  case object Cash    extends AccountingType
-
-  def getAccountTypeFromString(accountingType: String): Option[AccountingType] =
-    accountingType match {
-      case "ACCRUAL" => Some(Accrual)
-      case "CASH"    => Some(Cash)
-      case _         => None
-    }
+case object AdvertisingAndMarketingCYAPage extends Page {
+  override def toString: String = "advertisingAndMarketingCya"
 }

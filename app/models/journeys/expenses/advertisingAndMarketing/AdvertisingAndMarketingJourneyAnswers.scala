@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package models.common
+package models.journeys.expenses.advertisingAndMarketing
 
-import enumeratum._
+import play.api.libs.json._
 
-sealed trait AccountingType extends EnumEntry {
-  override def entryName: String = toString.toUpperCase
-}
+case class AdvertisingAndMarketingJourneyAnswers(advertisingAndMarketingAmount: BigDecimal,
+                                                 advertisingAndMarketingDisallowableAmount: Option[BigDecimal])
 
-object AccountingType extends Enum[AccountingType] {
-  val values = findValues
-
-  case object Accrual extends AccountingType
-  case object Cash    extends AccountingType
-
-  def getAccountTypeFromString(accountingType: String): Option[AccountingType] =
-    accountingType match {
-      case "ACCRUAL" => Some(Accrual)
-      case "CASH"    => Some(Cash)
-      case _         => None
-    }
+object AdvertisingAndMarketingJourneyAnswers {
+  implicit val formats: OFormat[AdvertisingAndMarketingJourneyAnswers] = Json.format[AdvertisingAndMarketingJourneyAnswers]
 }

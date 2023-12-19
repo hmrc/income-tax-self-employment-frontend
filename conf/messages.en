@@ -703,6 +703,35 @@ repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDis
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
 repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
+########## Expenses - Advertising and Marketing ##########
+
+## Advertising amount
+advertisingAmount.title.individual = How much did you spend on advertising and marketing?
+advertisingAmount.title.agent = How much did your client spend on advertising and marketing?
+advertisingAmount.d1.heading = Understanding advertising or marketing expenses
+advertisingAmount.error.required.individual = Enter the amount you spent on advertising and marketing
+advertisingAmount.error.required.agent = Enter the amount your client spent on advertising and marketing
+advertisingAmount.error.nonNumeric.individual = The amount you spent on advertising and marketing must be a number
+advertisingAmount.error.nonNumeric.agent = The amount your client spent on advertising and marketing must be a number
+advertisingAmount.error.lessThanZero.individual = The amount you spent on advertising and marketing must be more than £0
+advertisingAmount.error.lessThanZero.agent = The amount your client spent on advertising and marketing must be more than £0
+advertisingAmount.error.overMax.individual = The amount you spent on advertising and marketing must be less than £100,000,000,000
+advertisingAmount.error.overMax.agent = The amount your client spent on advertising and marketing must be less than £100,000,000,000
+advertisingAmount.change.hidden = Change how much was spent on advertising and marketing
+
+## Advertising disallowable amount
+advertisingDisallowableAmount.title.individual = How much of the £{0} you spent on advertising and marketing is disallowable?
+advertisingDisallowableAmount.title.agent = How much of the £{0} your client spent on advertising and marketing is disallowable?
+advertisingDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on advertising and marketing that is disallowable
+advertisingDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on advertising and marketing that is disallowable
+advertisingDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on advertising and marketing must be a number
+advertisingDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on advertising and marketing must be a number
+advertisingDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on advertising and marketing must be more than £0
+advertisingDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on advertising and marketing must be more than £0
+advertisingDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on advertising and marketing must be the same as or less than £{0}
+advertisingDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on advertising and marketing must be the same as or less than £{0}
+advertisingDisallowableAmount.change.hidden = Change how much was spent on advertising and marketing is disallowable
+
 ########## Expenses - Entertainment ##########
 
 ## Entertainment amount
