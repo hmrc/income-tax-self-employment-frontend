@@ -36,7 +36,8 @@ import scala.concurrent.ExecutionContext
 
 class EntertainmentCYAController @Inject() (override val messagesApi: MessagesApi,
                                             identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
+                                            getUserAnswers: DataRetrievalAction,
+                                            getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                             requireData: DataRequiredAction,
                                             service: SelfEmploymentService,
                                             val controllerComponents: MessagesControllerComponents,
@@ -45,20 +46,22 @@ class EntertainmentCYAController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList =
-      SummaryListCYA.summaryListOpt(List(EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[EntertainmentJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesEntertainment)) andThen requireData) { implicit request =>
+      val summaryList =
+        SummaryListCYA.summaryListOpt(List(EntertainmentAmountSummary.row(request.userAnswers, taxYear, businessId, request.user.userType)))
 
-    Ok(
-      view(
-        EntertainmentCYAPage.toString,
-        taxYear,
-        request.user.userType,
-        summaryList,
-        routes.EntertainmentCYAController.onSubmit(taxYear, businessId)))
-  }
+      Ok(
+        view(
+          EntertainmentCYAPage.toString,
+          taxYear,
+          request.user.userType,
+          summaryList,
+          routes.EntertainmentCYAController.onSubmit(taxYear, businessId)))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesEntertainment)
       val result  = service.submitAnswers[EntertainmentJourneyAnswers](context, request.userAnswers)
