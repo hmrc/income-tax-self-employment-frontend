@@ -16,61 +16,23 @@
 
 package forms.expenses.staffCosts
 
-import forms.behaviours.BigDecimalFieldBehaviours
-import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
+import base.forms.CurrencyFormProviderBaseSpec
+import models.common.UserType
+import org.scalacheck.Gen
+import play.api.data.Form
 import utils.MoneyUtils.formatMoney
 
-class StaffCostsDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class StaffCostsDisallowableAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("StaffCostsDisallowableAmountFormProvider") {
 
-  ".value" - {
+  private lazy val staffCosts       = 5623.50
+  private lazy val staffCostsString = formatMoney(staffCosts)
 
-    val fieldName        = "value"
-    val minimum          = 0
-    val staffCosts       = 5623.50
-    val staffCostsString = formatMoney(staffCosts)
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new StaffCostsDisallowableAmountFormProvider()(userType, staffCosts)
 
-    val users = List(Individual, Agent)
-
-    users.foreach { user =>
-      val form = new StaffCostsDisallowableAmountFormProvider()(user, staffCosts)
-
-      s"when user is an $user, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, staffCosts)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"staffCostsDisallowableAmount.error.nonNumeric.$user", Seq(staffCostsString))
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum,
-          expectedError = FormError(fieldName, s"staffCostsDisallowableAmount.error.lessThanZero.$user", Seq(staffCostsString))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          staffCosts,
-          expectedError = FormError(fieldName, s"staffCostsDisallowableAmount.error.overMax.$user", Seq(staffCostsString))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"staffCostsDisallowableAmount.error.required.$user", Seq(staffCostsString))
-        )
-      }
-    }
-  }
+  override lazy val requiredError: String                  = "staffCostsDisallowableAmount.error.required"
+  override lazy val nonNumericError: String                = "staffCostsDisallowableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String              = "staffCostsDisallowableAmount.error.lessThanZero"
+  override lazy val overMaxError: String                   = "staffCostsDisallowableAmount.error.overMax"
+  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(staffCostsString))
+  override lazy val validDataGenerator: Gen[String]        = currencyInRangeWithCommas(minimum, staffCosts)
 }

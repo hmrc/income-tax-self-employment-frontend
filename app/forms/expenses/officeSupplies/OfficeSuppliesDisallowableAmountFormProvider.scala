@@ -28,7 +28,7 @@ class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings wi
 
   def apply(userType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(
+      "value" -> currency(
         requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$userType", allowableAmount),
         nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$userType", allowableAmount)
       )

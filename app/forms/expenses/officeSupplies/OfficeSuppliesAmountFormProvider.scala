@@ -26,7 +26,7 @@ class OfficeSuppliesAmountFormProvider @Inject() extends Mappings with MoneyBoun
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"officeSuppliesAmount.error.required.$userType", s"officeSuppliesAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"officeSuppliesAmount.error.required.$userType", s"officeSuppliesAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"officeSuppliesAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"officeSuppliesAmount.error.overMax.$userType"))
     )

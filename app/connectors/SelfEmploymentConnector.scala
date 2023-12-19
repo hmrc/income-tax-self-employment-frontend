@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
 import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import models.common.{BusinessId, JourneyContext, TaxYear}
+import models.common.{BusinessId, JourneyContext, Mtditid, TaxYear}
 import models.domain.ApiResultT
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -31,6 +31,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
+
+  /** Used only for the UI tests
+    */
+  def clearDatabase()(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
+    val url      = buildUrl("test-clear-all-data")
+    val response = post(http, url, Mtditid("mtditid-test-only"), "")
+    EitherT(response)
+  }
 
   def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 

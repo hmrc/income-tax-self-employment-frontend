@@ -40,7 +40,7 @@ class DisallowableGoodsToSellOrUseAmountFormProviderSpec extends BigDecimalField
 
       s"when user is an ${userScenario.userType}, form should " - {
 
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, goodsAmount)
+        val validDataGenerator = currencyInRangeWithCommas(minimum, goodsAmount)
 
         behave like fieldThatBindsValidData(
           form,

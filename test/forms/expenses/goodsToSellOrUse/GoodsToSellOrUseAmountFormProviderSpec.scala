@@ -16,64 +16,17 @@
 
 package forms.expenses.goodsToSellOrUse
 
-import forms.behaviours.BigDecimalFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
+import play.api.data.Form
 
-class GoodsToSellOrUseAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class GoodsToSellOrUseAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("GoodsToSellOrUseAmountFormProvider") {
 
-  ".value" - {
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
 
-    val fieldName = "value"
-
-    val minimum = 0
-    val maximum = 100000000000.00
-
-    case class UserScenario(userType: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new GoodsToSellOrUseAmountFormProvider()(userScenario.userType)
-
-      s"when user is an ${userScenario.userType}, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"goodsToSellOrUseAmount.error.nonNumeric.${userScenario.userType}")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum,
-          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.lessThanZero.${userScenario.userType}", Seq(minimum))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          maximum,
-          expectedError = FormError(fieldName, s"goodsToSellOrUseAmount.error.overMax.${userScenario.userType}", Seq(maximum))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"goodsToSellOrUseAmount.error.required.${userScenario.userType}")
-        )
-      }
-    }
-  }
+  override lazy val requiredError: String     = "goodsToSellOrUseAmount.error.required"
+  override lazy val nonNumericError: String   = "goodsToSellOrUseAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "goodsToSellOrUseAmount.error.lessThanZero"
+  override lazy val overMaxError: String      = "goodsToSellOrUseAmount.error.overMax"
 
 }

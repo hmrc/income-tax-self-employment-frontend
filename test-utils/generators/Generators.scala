@@ -22,6 +22,7 @@ import org.scalacheck.{Gen, Shrink}
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 import scala.collection.immutable.TreeMap
+import scala.math.BigDecimal.RoundingMode
 
 trait Generators extends ModelGenerators {
 
@@ -72,6 +73,25 @@ trait Generators extends ModelGenerators {
       choose(BigDecimal(1.00), total).flatMap(r => tree.rangeFrom(r).head._2)
     }
   }
+
+  private def arbitraryBigDecimalWithMax2DecimalPlaces: Gen[BigDecimal] =
+    Gen
+      .chooseNum(Double.MinValue, Double.MaxValue)
+      .map(d => BigDecimal(d).setScale(2, RoundingMode.HALF_UP))
+
+  def currencyInRangeWithCommas(min: BigDecimal, max: BigDecimal): Gen[String] = {
+    val numberGen = choose[BigDecimal](min, max).map(_.setScale(2, RoundingMode.HALF_UP).toString)
+    genBDIntersperseString(numberGen, ",")
+  }
+
+  def currencyBelowValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitraryBigDecimalWithMax2DecimalPlaces suchThat (x => x < value)
+
+  def currencyAboveValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitraryBigDecimalWithMax2DecimalPlaces suchThat (x => x > value)
+
+  def currencyOutsideRange(min: BigDecimal, max: BigDecimal): Gen[BigDecimal] =
+    arbitraryBigDecimalWithMax2DecimalPlaces suchThat (x => x < min || x > max)
 
   def bigDecimalsInRangeWithCommas(min: BigDecimal, max: BigDecimal): Gen[String] = {
     val numberGen = choose[BigDecimal](min, max).map(_.toString)

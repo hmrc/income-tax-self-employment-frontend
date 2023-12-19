@@ -16,64 +16,17 @@
 
 package forms.expenses.entertainment
 
-import forms.behaviours.BigDecimalFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
+import play.api.data.Form
 
-class EntertainmentAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class EntertainmentAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("EntertainmentAmountFormProvider") {
 
-  ".value" - {
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType)
 
-    val fieldName = "value"
-
-    val minimum = 0
-    val maximum = 100000000000.00
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new EntertainmentAmountFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        val validDataGenerator = bigDecimalsInRangeWithCommas(minimum, maximum)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like bigDecimalField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, s"entertainment.error.nonNumeric.${userScenario.user}")
-        )
-
-        behave like bigDecimalFieldWithMinimum(
-          form,
-          fieldName,
-          minimum,
-          expectedError = FormError(fieldName, s"entertainment.error.lessThanZero.${userScenario.user}", Seq(minimum))
-        )
-
-        behave like bigDecimalFieldWithMaximum(
-          form,
-          fieldName,
-          maximum,
-          expectedError = FormError(fieldName, s"entertainment.error.overMax.${userScenario.user}", Seq(maximum))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"entertainment.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override lazy val requiredError: String     = "entertainment.error.required"
+  override lazy val nonNumericError: String   = "entertainment.error.nonNumeric"
+  override lazy val lessThanZeroError: String = "entertainment.error.lessThanZero"
+  override lazy val overMaxError: String      = "entertainment.error.overMax"
 
 }

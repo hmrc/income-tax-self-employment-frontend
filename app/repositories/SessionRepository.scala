@@ -29,6 +29,8 @@ import java.time.{Clock, Instant}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import org.bson.Document
+import cats.implicits._
 
 trait SessionRepositoryBase {
 
@@ -65,6 +67,14 @@ class SessionRepository @Inject() (
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
   private def byId(id: String): Bson = Filters.equal("_id", id)
+
+  /** Used only for the UI tests
+    */
+  def testOnlyClearAllData(): Future[Unit] =
+    collection
+      .deleteMany(new Document())
+      .toFuture()
+      .void
 
   def keepAlive(id: String): Future[Boolean] =
     collection

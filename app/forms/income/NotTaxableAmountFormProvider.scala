@@ -26,7 +26,7 @@ class NotTaxableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"notTaxableAmount.error.required.$userType", s"notTaxableAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"notTaxableAmount.error.required.$userType", s"notTaxableAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"notTaxableAmount.error.lessThanZero.$userType"))
         .verifying(maximumValue(maximumValue, s"notTaxableAmount.error.overMax.$userType"))
     )

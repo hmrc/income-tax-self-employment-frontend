@@ -26,8 +26,9 @@ class TurnoverIncomeAmountFormProvider @Inject() extends Mappings with MoneyBoun
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"turnoverIncomeAmount.error.required.$userType", s"turnoverIncomeAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"turnoverIncomeAmount.error.required.$userType", s"turnoverIncomeAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"turnoverIncomeAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"turnoverIncomeAmount.error.overMax.$userType"))
         .verifying(lessThan(maximumValue, s"turnoverIncomeAmount.error.overMax.$userType"))
     )
 
