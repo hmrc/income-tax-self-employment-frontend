@@ -17,6 +17,7 @@
 package models.journeys
 
 import models.common.PageName
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.income._
 import play.api.libs.json._
 
@@ -61,6 +62,8 @@ object Journey {
 
   case object ExpensesGoodsToSellOrUse extends Journey {
     override def toString: String = "expenses-goods-to-sell-or-use"
+
+    override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
 
   case object ExpensesAdvertisingAndMarketing extends Journey {

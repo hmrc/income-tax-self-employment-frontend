@@ -22,23 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object NotTaxableAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(content = s"notTaxableAmount.title.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("notTaxableAmount.change.hidden"))
-        )
+      buildRowBigDecimal(
+        answer,
+        NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        s"notTaxableAmount.title.$userType",
+        "notTaxableAmount.change.hidden"
       )
     }
 

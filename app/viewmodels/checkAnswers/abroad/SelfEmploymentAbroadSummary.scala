@@ -22,23 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBoolean
 
 object SelfEmploymentAbroadSummary {
 
   def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case Some(answer) =>
-        SummaryListRowViewModel(
-          key = Key(content = s"selfEmploymentAbroad.title.$userType", classes = "govuk-!-width-two-thirds"),
-          value = Value(content = if (answer) "site.yes" else "site.no", classes = "govuk-!-width-one-third"),
-          actions = Seq(
-            ActionItemViewModel("site.change", SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode).url)
-              .withVisuallyHiddenText(messages("selfEmploymentAbroad.change.hidden"))
-          )
+        buildRowBoolean(
+          answer,
+          SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),
+          s"selfEmploymentAbroad.title.$userType",
+          "selfEmploymentAbroad.change.hidden"
         )
 
       case None => throw new RuntimeException("No UserAnswers retrieved for SelfEmploymentAbroadPage")
