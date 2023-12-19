@@ -23,13 +23,13 @@ import models.database.UserAnswers
 import pages.income.TurnoverNotTaxablePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBoolean
 
 object TurnoverNotTaxableSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBoolean(
         answer,
         TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode),
         s"income.turnoverExemptFromTax.$userType",

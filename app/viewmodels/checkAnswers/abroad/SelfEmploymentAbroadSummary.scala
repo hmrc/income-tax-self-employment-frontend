@@ -23,14 +23,14 @@ import models.database.UserAnswers
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBoolean
 
 object SelfEmploymentAbroadSummary {
 
   def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
     userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
       case Some(answer) =>
-        buildRow(
+        buildRowBoolean(
           answer,
           SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),
           s"selfEmploymentAbroad.title.$userType",

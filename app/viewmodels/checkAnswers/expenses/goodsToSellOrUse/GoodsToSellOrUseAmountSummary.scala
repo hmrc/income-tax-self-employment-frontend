@@ -24,13 +24,13 @@ import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object GoodsToSellOrUseAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(GoodsToSellOrUseAmountPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBigDecimal(
         answer,
         GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"goodsToSellOrUseAmount.title.$userType",

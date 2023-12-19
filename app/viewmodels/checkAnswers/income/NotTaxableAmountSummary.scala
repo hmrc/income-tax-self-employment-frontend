@@ -24,13 +24,13 @@ import pages.income.NotTaxableAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object NotTaxableAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBigDecimal(
         answer,
         NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"notTaxableAmount.title.$userType",

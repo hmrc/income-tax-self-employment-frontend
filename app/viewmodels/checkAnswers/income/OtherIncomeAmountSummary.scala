@@ -24,13 +24,13 @@ import pages.income.OtherIncomeAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object OtherIncomeAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherIncomeAmountPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBigDecimal(
         answer,
         OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"otherIncomeAmount.title.$userType",

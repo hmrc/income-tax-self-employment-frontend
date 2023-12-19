@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.FinancialExpenses.Irrecover
 import pages.expenses.tailoring.individualCategories.{DisallowableIrrecoverableDebtsPage, FinancialExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object DisallowableIrrecoverableDebtsSummary {
@@ -38,7 +38,7 @@ object DisallowableIrrecoverableDebtsSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, CheckMode),
         s"disallowableIrrecoverableDebts.title.$userType",

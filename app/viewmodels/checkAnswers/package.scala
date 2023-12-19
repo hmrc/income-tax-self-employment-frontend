@@ -26,7 +26,7 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRow(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow = {
+  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow = {
     val value = if (answer) "site.yes" else "site.no"
     SummaryListRowViewModel(
       key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
@@ -38,7 +38,7 @@ package object checkAnswers {
     )
   }
 
-  def buildRow(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
+  def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
       value = Value(content = s"£${formatMoney(answer)}", classes = "govuk-!-width-one-third"),
@@ -48,7 +48,7 @@ package object checkAnswers {
       )
     )
 
-  def buildRow(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
+  def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
       value = Value(content = answer, classes = "govuk-!-width-one-third"),

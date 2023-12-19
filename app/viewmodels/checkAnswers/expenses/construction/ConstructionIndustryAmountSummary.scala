@@ -23,13 +23,13 @@ import models.database.UserAnswers
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object ConstructionIndustryAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ConstructionIndustryAmountPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBigDecimal(
         answer,
         routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"constructionIndustryAmount.heading.$userType",

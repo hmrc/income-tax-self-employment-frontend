@@ -25,7 +25,7 @@ import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
@@ -43,7 +43,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
       for {
         rowValue <- rowValueOrError
-      } yield buildRow(
+      } yield buildRowString(
         rowValue,
         HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
         s"howMuchTradingAllowance.checkYourAnswersLabel.$userType",

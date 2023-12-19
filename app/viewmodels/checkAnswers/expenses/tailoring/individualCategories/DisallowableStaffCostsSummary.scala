@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import pages.expenses.tailoring.individualCategories.{DisallowableStaffCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object DisallowableStaffCostsSummary {
@@ -38,7 +38,7 @@ object DisallowableStaffCostsSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableStaffCostsPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableStaffCostsController.onPageLoad(taxYear, businessId, CheckMode),
         s"disallowableStaffCosts.subheading.$userType",

@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.FinancialExpenses.Interest
 import pages.expenses.tailoring.individualCategories.{DisallowableInterestPage, FinancialExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object DisallowableInterestSummary {
@@ -38,7 +38,7 @@ object DisallowableInterestSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableInterestPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode),
         s"disallowableInterest.title.$userType",

@@ -23,14 +23,14 @@ import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object OtherExpensesSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(OtherExpensesPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.OtherExpensesController.onPageLoad(taxYear, businessId, CheckMode),
         s"otherExpenses.subHeading.$userType",

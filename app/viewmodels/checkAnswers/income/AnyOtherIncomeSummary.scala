@@ -23,13 +23,13 @@ import models.database.UserAnswers
 import pages.income.AnyOtherIncomePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBoolean
 
 object AnyOtherIncomeSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AnyOtherIncomePage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBoolean(
         answer,
         AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode),
         s"anyOtherIncome.title.$userType",

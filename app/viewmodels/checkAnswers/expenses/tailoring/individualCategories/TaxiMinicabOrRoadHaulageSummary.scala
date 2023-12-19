@@ -23,14 +23,14 @@ import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object TaxiMinicabOrRoadHaulageSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, CheckMode),
         s"taxiMinicabOrRoadHaulage.title.$userType",

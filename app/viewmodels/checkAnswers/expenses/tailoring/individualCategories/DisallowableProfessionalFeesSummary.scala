@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import pages.expenses.tailoring.individualCategories.{DisallowableProfessionalFeesPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object DisallowableProfessionalFeesSummary {
@@ -38,7 +38,7 @@ object DisallowableProfessionalFeesSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableProfessionalFeesPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode),
         s"disallowableProfessionalFees.subheading.$userType",

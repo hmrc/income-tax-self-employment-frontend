@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.FinancialExpenses.OtherFina
 import pages.expenses.tailoring.individualCategories.{DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object DisallowableOtherFinancialChargesSummary {
@@ -38,7 +38,7 @@ object DisallowableOtherFinancialChargesSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableOtherFinancialChargesPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, CheckMode),
         s"disallowableOtherFinancialCharges.title.$userType",

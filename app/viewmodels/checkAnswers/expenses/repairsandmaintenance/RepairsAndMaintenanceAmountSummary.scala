@@ -23,13 +23,13 @@ import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object RepairsAndMaintenanceAmountSummary {
 
   def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     request.getValue(RepairsAndMaintenanceAmountPage, businessId).map { answer =>
-      buildRow(
+      buildRowBigDecimal(
         answer,
         routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"repairsAndMaintenanceAmount.title.${request.userType}",

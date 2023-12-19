@@ -23,13 +23,13 @@ import models.database.UserAnswers
 import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRow
+import viewmodels.checkAnswers.buildRowBoolean
 
 object IncomeNotCountedAsTurnoverSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)).map { answer =>
-      buildRow(
+      buildRowBoolean(
         answer,
         IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode),
         s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType",
