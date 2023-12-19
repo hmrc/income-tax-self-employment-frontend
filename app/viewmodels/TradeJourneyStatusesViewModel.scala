@@ -218,9 +218,9 @@ object TradeJourneyStatusesViewModel {
 
   private def determineUrl(startUrl: String, cyaUrl: String)(implicit status: JourneyStatus): String =
     status match {
-      case CannotStartYet         => "#"
-      case Completed | InProgress => cyaUrl
-      case _                      => startUrl
+      case CannotStartYet               => "#"
+      case Completed | InProgress       => cyaUrl
+      case NotStarted | CheckOurRecords => startUrl
     }
 
 }
