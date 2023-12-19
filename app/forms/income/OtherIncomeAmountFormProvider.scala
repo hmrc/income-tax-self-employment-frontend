@@ -26,7 +26,7 @@ class OtherIncomeAmountFormProvider @Inject() extends Mappings with MoneyBounds 
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"otherIncomeAmount.error.required.$userType", s"otherIncomeAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"otherIncomeAmount.error.required.$userType", s"otherIncomeAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"otherIncomeAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"otherIncomeAmount.error.overMax.$userType"))
     )

@@ -26,7 +26,7 @@ class RepairsAndMaintenanceAmountFormProvider @Inject() extends Mappings with Mo
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"repairsAndMaintenanceAmount.error.required.$userType", s"repairsAndMaintenanceAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"repairsAndMaintenanceAmount.error.required.$userType", s"repairsAndMaintenanceAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceAmount.error.lessThanZero.$userType"))
         .verifying(lessThan(maximumValue, s"repairsAndMaintenanceAmount.error.overMax.$userType"))
     )

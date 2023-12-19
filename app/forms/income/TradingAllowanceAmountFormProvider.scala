@@ -26,7 +26,7 @@ class TradingAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBo
 
   def apply(userType: UserType, turnoverAmount: BigDecimal): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal(s"tradingAllowanceAmount.error.required.$userType", s"tradingAllowanceAmount.error.nonNumeric.$userType")
+      "value" -> currency(s"tradingAllowanceAmount.error.required.$userType", s"tradingAllowanceAmount.error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, s"tradingAllowanceAmount.error.lessThanZero.$userType"))
         .verifying(maximumValue(turnoverAmount, s"tradingAllowanceAmount.error.overTurnover.$userType"))
     )

@@ -30,7 +30,7 @@ class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBe
   private val allowableAmount: BigDecimal = BigDecimal.decimal(1000.00)
   private val minimumAmount: BigDecimal   = 0
 
-  private val validDataGenerator = bigDecimalsInRangeWithCommas(minimumAmount, allowableAmount)
+  private val validDataGenerator = currencyInRangeWithCommas(minimumAmount, allowableAmount)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()

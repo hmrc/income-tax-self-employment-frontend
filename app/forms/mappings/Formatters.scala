@@ -20,6 +20,7 @@ import models.common.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import scala.math.BigDecimal.RoundingMode
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
@@ -99,6 +100,33 @@ trait Formatters {
           }
 
       override def unbind(key: String, value: BigDecimal) =
+        baseFormatter.unbind(key, value.toString)
+    }
+
+  private[mappings] def currencyFormatter(requiredKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+
+      val max2DP = """-?\d+|-?\d*\.\d{1,2}"""
+
+      private val baseFormatter = stringFormatter(requiredKey, args)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
+        baseFormatter
+          .bind(key, data)
+          .map(_.replace(",", ""))
+          .map(_.replace("£", ""))
+          .map(_.replaceAll("""\s""", ""))
+          .flatMap {
+            case s if s.isEmpty          => Left(Seq(FormError(key, requiredKey, args)))
+            case s if !s.matches(max2DP) => Left(Seq(FormError(key, nonNumericKey, args)))
+            case s =>
+              nonFatalCatch
+                .either(BigDecimal(s).setScale(2, RoundingMode.HALF_UP))
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
 
