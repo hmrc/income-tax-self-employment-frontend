@@ -28,7 +28,7 @@ abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) exten
 
   protected lazy val minimum: BigDecimal                    = zeroValue
   protected lazy val maximum: BigDecimal                    = maxAmountValue
-  protected lazy val validDataGenerator: Gen[String] = currencyInRangeWithCommas(minimum, maximum)
+  protected lazy val validDataGenerator: Gen[String]        = currencyInRangeWithCommas(minimum, maximum)
   protected lazy val optionalArguments: Option[Seq[String]] = None
 
   private val userTypes: List[UserType] = List(Individual, Agent)
