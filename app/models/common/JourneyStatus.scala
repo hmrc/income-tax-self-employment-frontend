@@ -17,6 +17,8 @@
 package models.common
 
 import enumeratum._
+import models.journeys.Journey
+import models.requests.TradesJourneyStatuses
 
 sealed abstract class JourneyStatus(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
@@ -31,11 +33,17 @@ object JourneyStatus extends Enum[JourneyStatus] {
   case object InProgress      extends JourneyStatus("inProgress")
   case object Completed       extends JourneyStatus("completed")
 
+  def getJourneyStatus(journey: Journey, journeyStatuses: TradesJourneyStatuses): JourneyStatus =
+    statusFromCompletedState(getCompletedState(journey, journeyStatuses))
+
   def statusFromCompletedState(value: Option[Boolean]): JourneyStatus =
     value.fold[JourneyStatus](NotStarted) {
       case false => InProgress
       case true  => Completed
     }
+
+  private def getCompletedState(journey: Journey, journeyStatuses: TradesJourneyStatuses): Option[Boolean] =
+    journeyStatuses.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
 
   def tradeDetailsStatusFromCompletedState(value: Option[Boolean]): JourneyStatus =
     value.fold[JourneyStatus](CheckOurRecords) {

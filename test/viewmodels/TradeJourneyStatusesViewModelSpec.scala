@@ -82,15 +82,23 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   }
 
   private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers): Seq[String] = {
-    val abroadStatus               = findJourneyStatus(journeyCompletedStates, Abroad)
-    val incomeStatus               = findJourneyStatus(journeyCompletedStates, Income)
-    val declareExpenses            = userAnswers.get(TradingAllowancePage, Some(businessId)).contains(TradingAllowance.DeclareExpenses)
-    val officeSuppliesIsYes        = userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
-    val goodsToSellOrUseIsYes      = userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
-    val repairsAndMaintenanceIsYes = userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
-    val entertainmentsIsYes        = userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
-    val staffCostsIsYes            = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Staff)
-    val constructionIsYes = userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Construction)
+    val tailoringCyaIsAnswered = findJourneyStatus(journeyCompletedStates, ExpensesTailoring) match {
+      case InProgress | Completed => true
+      case _                      => false
+    }
+    val abroadStatus          = findJourneyStatus(journeyCompletedStates, Abroad)
+    val incomeStatus          = findJourneyStatus(journeyCompletedStates, Income)
+    val declareExpenses       = userAnswers.get(TradingAllowancePage, Some(businessId)).contains(TradingAllowance.DeclareExpenses)
+    val officeSuppliesIsYes   = tailoringCyaIsAnswered && userAnswers.get(OfficeSuppliesPage, Some(businessId)).exists(_ != OfficeSupplies.No)
+    val goodsToSellOrUseIsYes = tailoringCyaIsAnswered && userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
+    val repairsAndMaintenanceIsYes =
+      tailoringCyaIsAnswered && userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
+    val entertainmentsIsYes = tailoringCyaIsAnswered && userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
+    val staffCostsIsYes =
+      tailoringCyaIsAnswered && userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Staff)
+    val constructionIsYes =
+      tailoringCyaIsAnswered && userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Construction)
+
     Seq(
       buildRow(Abroad, abroadStatus),
       buildRow(Income, findJourneyStatus(journeyCompletedStates, Income, abroadStatus != Completed)),
@@ -121,8 +129,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   }
 
   // noinspection ScalaStyle
-  private def buildOptionalRow(journey: Journey, status: JourneyStatus, conditionPassed: Boolean): Option[String] =
-    if (conditionPassed) {
+  private def buildOptionalRow(journey: Journey, status: JourneyStatus, conditionPassedToShowOnTaskList: Boolean): Option[String] =
+    if (conditionPassedToShowOnTaskList) {
       val href = status match {
         case NotStarted => chooseFirstUrl(journey)
         case _          => chooseCyaUrl(journey)
