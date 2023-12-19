@@ -22,25 +22,18 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.AnyOtherIncomePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBoolean
 
 object AnyOtherIncomeSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AnyOtherIncomePage, Some(businessId)).map { answer =>
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = Key(content = s"anyOtherIncome.title.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = value, classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("anyOtherIncome.change.hidden"))
-        )
-      )
+      buildRowBoolean(
+        answer,
+        AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode),
+        s"anyOtherIncome.title.$userType",
+        "anyOtherIncome.change.hidden")
     }
 
 }

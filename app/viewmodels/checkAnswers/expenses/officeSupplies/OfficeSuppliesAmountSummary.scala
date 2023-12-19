@@ -22,29 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object OfficeSuppliesAmountSummary extends MoneyUtils {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OfficeSuppliesAmountPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"officeSuppliesAmount.title.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = s"£${formatMoney(answer)}",
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("officeSuppliesAmount.change.hidden"))
-        )
+      buildRowBigDecimal(
+        answer,
+        OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        s"officeSuppliesAmount.title.$userType",
+        "officeSuppliesAmount.change.hidden"
       )
     }
 

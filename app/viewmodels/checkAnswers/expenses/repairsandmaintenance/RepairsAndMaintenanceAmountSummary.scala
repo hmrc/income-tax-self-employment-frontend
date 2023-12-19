@@ -22,29 +22,18 @@ import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object RepairsAndMaintenanceAmountSummary {
 
   def row(request: DataRequest[_], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     request.getValue(RepairsAndMaintenanceAmountPage, businessId).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"repairsAndMaintenanceAmount.title.${request.userType}",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = s"£${formatMoney(answer)}",
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = List(
-          ActionItemViewModel("site.change", routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("repairsAndMaintenanceAmount.change.hidden"))
-        )
+      buildRowBigDecimal(
+        answer,
+        routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        s"repairsAndMaintenanceAmount.title.${request.userType}",
+        "repairsAndMaintenanceAmount.change.hidden"
       )
     }
 

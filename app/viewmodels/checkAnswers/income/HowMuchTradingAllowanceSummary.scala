@@ -23,11 +23,9 @@ import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowString
 
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
@@ -45,12 +43,11 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
       for {
         rowValue <- rowValueOrError
-      } yield SummaryListRowViewModel(
-        key = Key(content = s"howMuchTradingAllowance.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
-        value = Value(content = rowValue, classes = "govuk-!-width-one-third"),
-        actions = Seq(
-          ActionItemViewModel("site.change", HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("howMuchTradingAllowance.change.hidden")))
+      } yield buildRowString(
+        rowValue,
+        HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
+        s"howMuchTradingAllowance.checkYourAnswersLabel.$userType",
+        "howMuchTradingAllowance.change.hidden"
       )
     }
 
