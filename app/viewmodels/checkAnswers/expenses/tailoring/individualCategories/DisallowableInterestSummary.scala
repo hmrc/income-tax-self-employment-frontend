@@ -23,10 +23,9 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses.Interest
 import pages.expenses.tailoring.individualCategories.{DisallowableInterestPage, FinancialExpensesPage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object DisallowableInterestSummary {
 
@@ -39,19 +38,11 @@ object DisallowableInterestSummary {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     answers.get(DisallowableInterestPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"disallowableInterest.title.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = formatAnswer(answer.toString),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("disallowableInterest.change.hidden"))
-        )
+      buildRowString(
+        formatAnswer(answer.toString),
+        routes.DisallowableInterestController.onPageLoad(taxYear, businessId, CheckMode),
+        s"disallowableInterest.title.$userType",
+        "disallowableInterest.change.hidden"
       )
     }
 

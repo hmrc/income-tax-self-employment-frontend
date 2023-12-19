@@ -22,28 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object WorkFromBusinessPremisesSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(WorkFromBusinessPremisesPage, Some(businessId)).map { answer =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"workFromBusinessPremises.title.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = formatAnswer(answer.toString),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("workFromBusinessPremises.change.hidden"))
-        )
+      buildRowString(
+        formatAnswer(answer.toString),
+        routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode),
+        s"workFromBusinessPremises.title.$userType",
+        "workFromBusinessPremises.change.hidden"
       )
     }
 
