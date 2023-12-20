@@ -80,6 +80,12 @@ object TradeJourneyStatusesViewModel {
             RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
         ),
         buildRow(
+          ExpensesAdvertisingOrMarketing,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            AdvertisingOrMarketingPage,
+            AdvertisingOrMarketing.values.filterNot(_ == AdvertisingOrMarketing.No))
+        ),
+        buildRow(
           ExpensesEntertainment,
           expensesTailoringIsAnswered && conditionPassedForViewableLink(
             EntertainmentCostsPage,
@@ -191,6 +197,11 @@ object TradeJourneyStatusesViewModel {
         determineUrl(
           expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesAdvertisingOrMarketing =>
+        determineUrl(
+          expenses.advertisingOrMarketing.routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesEntertainment =>
         determineUrl(

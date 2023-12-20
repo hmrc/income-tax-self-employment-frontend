@@ -110,6 +110,7 @@ object Journey {
     case JsString("expenses-total")                   => JsSuccess(ExpensesTotal)
     case JsString("expenses-categories")              => JsSuccess(ExpensesTailoring)
     case JsString("expenses-goods-to-sell-or-use")    => JsSuccess(ExpensesGoodsToSellOrUse)
+    case JsString("expenses-advertising-marketing")   => JsSuccess(ExpensesAdvertisingOrMarketing)
     case JsString("expenses-entertainment")           => JsSuccess(ExpensesEntertainment)
     case JsString("expenses-construction")            => JsSuccess(ExpensesConstruction)
     case JsString("expenses-office-supplies")         => JsSuccess(ExpensesOfficeSupplies)
