@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses.advertisingAndMarketing
+package forms.expenses.advertisingOrMarketing
 
 import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType

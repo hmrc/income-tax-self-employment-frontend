@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pages.expenses.advertisingAndMarketing
+package pages.expenses.advertisingOrMarketing
 
 import pages.OneQuestionPage
 
-case object AdvertisingAndMarketingDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
-  override def toString: String = "advertisingAndMarketingDisallowableAmount"
+case object AdvertisingOrMarketingDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "advertisingOrMarketingDisallowableAmount"
 }

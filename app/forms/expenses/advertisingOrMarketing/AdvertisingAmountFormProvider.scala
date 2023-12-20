@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses.advertisingAndMarketing
+package forms.expenses.advertisingOrMarketing
 
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
