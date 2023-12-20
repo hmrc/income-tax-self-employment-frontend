@@ -16,66 +16,41 @@
 
 package controllers.journeys.expenses.construction
 
-import base.SpecBase
-import models.NormalMode
-import models.common.UserType.{Agent, Individual}
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import controllers.journeys.expenses.construction
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.Journey.ExpensesConstruction
+import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
-import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
-import controllers.journeys
-import controllers.journeys.expenses.construction
 
-class ConstructionIndustryCYAControllerSpec extends SpecBase {
+class ConstructionIndustryCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
-  private val userTypes = List(Individual, Agent)
+  override val pageHeading: String = ConstructionIndustryCYAPage.toString
 
-  private val userAnswerData = Json.parse(s"""
-       |{
-       |  "$businessId": {
-       |    "constructionAmount": 1235.4
-       |  }
-       |}
-       |""".stripMargin)
+  private val disallowableAmount = BigDecimal(1235)
 
-  private val userAnswers = UserAnswers(userAnswersId, userAnswerData.as[JsObject])
+  override val journey: Journey = ExpensesConstruction
 
-  "ConstructionIndustryCYA Controller" - {
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = construction.routes.ConstructionIndustryCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = construction.routes.ConstructionIndustryCYAController.onSubmit
 
-    userTypes.foreach { userType =>
-      s".onPageLoad when user is an $userType should" - {
-        "must return OK and the correct view for a GET" in {
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList =
+    SummaryList(
+      rows = List(ConstructionIndustryAmountSummary.row(userAnswers, taxYear, businessId, userType).value),
+      classes = "govuk-!-margin-bottom-7"
+    )
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
-
-          implicit val appMessages: Messages = messages(application)
-
-          running(application) {
-            val view    = application.injector.instanceOf[ConstructionIndustryCYAView]
-            val request = FakeRequest(GET, construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url)
-
-            val expectedSummaryListRows = Seq(
-              ConstructionIndustryAmountSummary.row(userAnswers, taxYear, businessId, userType)
-            ).flatten
-            val expectedSummaryLists = SummaryList(rows = expectedSummaryListRows, classes = "govuk-!-margin-bottom-7")
-            val expectedNextRoute =
-              journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesConstruction.toString, NormalMode).url
-
-            val result = route(application, request).value
-
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(taxYear, userType, expectedSummaryLists, expectedNextRoute)(
-              request,
-              messages(application)).toString
-          }
-        }
-      }
-    }
-  }
+  override val submissionData: JsObject = Json.obj(
+    "disallowableSubcontractorCosts" -> "yes",
+    "constructionIndustryAmount"     -> disallowableAmount
+  )
+  override val testDataCases: List[JsObject] = List(submissionData)
 
 }

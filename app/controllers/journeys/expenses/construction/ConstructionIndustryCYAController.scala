@@ -17,42 +17,54 @@
 package controllers.journeys.expenses.construction
 
 import controllers.actions._
-import models.NormalMode
-import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
+import controllers.handleSubmitAnswersResult
+import models.common._
+import models.journeys.Journey.ExpensesConstruction
+import models.journeys.expenses.construction.ConstructionJourneyAnswers
 import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
 import viewmodels.journeys.SummaryListCYA
-import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ConstructionIndustryCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                   navigator: ExpensesNavigator,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
+                                                   service: SelfEmploymentService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: ConstructionIndustryCYAView)
+                                                   view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val nextRoute = navigator
-      .nextPage(ConstructionIndustryCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
-      .url
+    val summaryList =
+      SummaryListCYA.summaryListOpt(List(ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)))
 
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
-      )
-    )
+    Ok(
+      view(
+        ConstructionIndustryCYAPage.toString,
+        taxYear,
+        request.userType,
+        summaryList,
+        routes.ConstructionIndustryCYAController.onSubmit(taxYear, businessId)))
+  }
 
-    // TODO Use common view `CheckYourAnswersView` when onSubmit method implemented
-    Ok(view(taxYear, request.userType, summaryList, nextRoute))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      val context =
+        JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesConstruction)
+      val result = service.submitAnswers[ConstructionJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }
