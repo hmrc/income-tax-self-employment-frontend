@@ -16,7 +16,7 @@
 
 package base.questionPages
 
-import base.ControllerSpec
+import base.{ControllerSpec, SpecBase}
 import controllers.standard.{routes => genRoutes}
 import models.common.UserType
 import models.database.UserAnswers
@@ -40,15 +40,17 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  val validAnswer: BigDecimal        = 100.00
-  val filledUserAnswers: UserAnswers = UserAnswers(userAnswersId).set(page, validAnswer, Some(businessId)).success.value
+  override lazy val emptyUserAnswers: UserAnswers = SpecBase.emptyUserAnswers
+
+  lazy val validAnswer: BigDecimal        = 100.00
+  lazy val filledUserAnswers: UserAnswers = emptyUserAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   def getRequest  = FakeRequest(GET, onPageLoadRoute)
   def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
 
   val onwardRoute: Call
 
-  forAll(userTypeCases) { case userType =>
+  forAll(userTypeCases) { userType =>
     s"$controllerName for $userType" - {
       val form: Form[BigDecimal] = createForm(userType)
 

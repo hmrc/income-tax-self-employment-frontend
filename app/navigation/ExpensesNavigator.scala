@@ -22,16 +22,10 @@ import models._
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.{
-  ExpensesConstruction,
-  ExpensesEntertainment,
-  ExpensesGoodsToSellOrUse,
-  ExpensesOfficeSupplies,
-  ExpensesRepairsAndMaintenance,
-  ExpensesStaffCosts
-}
-import models.journeys.expenses.individualCategories.{DisallowableStaffCosts, GoodsToSellOrUse, OfficeSupplies, RepairsAndMaintenance}
+import models.journeys.Journey._
+import models.journeys.expenses.individualCategories._
 import pages._
+import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage}
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
@@ -42,7 +36,7 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceDisallowableAmountPage
 }
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
-import pages.expenses.tailoring.individualCategories.{DisallowableStaffCostsPage, GoodsToSellOrUsePage, OfficeSuppliesPage, RepairsAndMaintenancePage}
+import pages.expenses.tailoring.individualCategories._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -119,6 +113,21 @@ class ExpensesNavigator @Inject() () {
           businessId =>
             _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesRepairsAndMaintenance.toString, NormalMode)
 
+    case AdvertisingOrMarketingAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            accountingType =>
+              userAnswers.get(AdvertisingOrMarketingPage, Some(businessId)) match {
+                case Some(AdvertisingOrMarketing.YesDisallowable) if accountingType.contains(Accrual) =>
+                  advertisingOrMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case Some(_) => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+                case None    => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
+
+    case AdvertisingOrMarketingDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => _ => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
@@ -168,6 +177,12 @@ class ExpensesNavigator @Inject() () {
 
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
+    case AdvertisingOrMarketingAmountPage =>
+      _ => taxYear => businessId => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+    case AdvertisingOrMarketingDisallowableAmountPage =>
+      _ => taxYear => businessId => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)

@@ -69,6 +69,10 @@ object Journey {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
 
+  case object ExpensesAdvertisingOrMarketing extends Journey {
+    override def toString: String = "expenses-advertising-marketing"
+  }
+
   case object ExpensesOfficeSupplies extends Journey {
     override def toString: String = "expenses-office-supplies"
 
