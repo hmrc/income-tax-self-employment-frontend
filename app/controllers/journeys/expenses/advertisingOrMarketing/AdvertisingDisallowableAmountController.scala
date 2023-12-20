@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.advertisingAndMarketing
+package controllers.journeys.expenses.advertisingOrMarketing
 
 import controllers.actions._
 import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountFormProvider
+import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
-import pages.expenses.advertisingAndMarketing.{AdvertisingAndMarketingAmountPage, AdvertisingAndMarketingDisallowableAmountPage}
+import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
-import views.html.journeys.expenses.advertisingAndMarketing.AdvertisingDisallowableAmountView
+import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,11 +47,11 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(AdvertisingAndMarketingAmountPage, Some(businessId)) match {
+      request.userAnswers.get(AdvertisingOrMarketingAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Some(amount) =>
           val preparedForm =
-            request.userAnswers.get(AdvertisingAndMarketingDisallowableAmountPage, Some(businessId)) match {
+            request.userAnswers.get(AdvertisingOrMarketingDisallowableAmountPage, Some(businessId)) match {
               case None        => formProvider(request.userType, amount)
               case Some(value) => formProvider(request.userType, amount).fill(value)
             }
@@ -62,7 +62,7 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(AdvertisingAndMarketingAmountPage, Some(businessId)) match {
+      request.userAnswers.get(AdvertisingOrMarketingAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
         case Some(amount) =>
           formProvider(request.userType, amount)
@@ -71,9 +71,9 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(amount)))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingAndMarketingDisallowableAmountPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingOrMarketingDisallowableAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(AdvertisingAndMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
             )
       }
   }

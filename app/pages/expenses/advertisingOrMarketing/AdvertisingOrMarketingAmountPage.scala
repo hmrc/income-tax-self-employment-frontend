@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.advertisingAndMarketing
+package pages.expenses.advertisingOrMarketing
 
-import play.api.libs.json._
+import pages.OneQuestionPage
 
-case class AdvertisingAndMarketingJourneyAnswers(advertisingAndMarketingAmount: BigDecimal,
-                                                 advertisingAndMarketingDisallowableAmount: Option[BigDecimal])
-
-object AdvertisingAndMarketingJourneyAnswers {
-  implicit val formats: OFormat[AdvertisingAndMarketingJourneyAnswers] = Json.format[AdvertisingAndMarketingJourneyAnswers]
+case object AdvertisingOrMarketingAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "advertisingOrMarketingAmount"
 }

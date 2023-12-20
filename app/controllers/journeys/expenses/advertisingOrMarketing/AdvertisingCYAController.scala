@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.advertisingAndMarketing
+package controllers.journeys.expenses.advertisingOrMarketing
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesAdvertisingAndMarketing
-import models.journeys.expenses.advertisingAndMarketing.AdvertisingAndMarketingJourneyAnswers
-import pages.expenses.advertisingAndMarketing.AdvertisingAndMarketingCYAPage
+import models.journeys.Journey.ExpensesAdvertisingOrMarketing
+import models.journeys.expenses.advertisingOrMarketing.AdvertisingOrMarketingJourneyAnswers
+import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.advertisingAndMarketing.{AdvertisingAmountSummary, AdvertisingDisallowableAmountSummary}
+import viewmodels.checkAnswers.expenses.advertisingOrMarketing.{AdvertisingAmountSummary, AdvertisingDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -55,14 +55,14 @@ class AdvertisingCYAController @Inject() (override val messagesApi: MessagesApi,
       )
     )
 
-    Ok(view(AdvertisingAndMarketingCYAPage.toString, taxYear, user, summaryList, routes.AdvertisingCYAController.onSubmit(taxYear, businessId)))
+    Ok(view(AdvertisingOrMarketingCYAPage.toString, taxYear, user, summaryList, routes.AdvertisingCYAController.onSubmit(taxYear, businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val context =
-        JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesAdvertisingAndMarketing)
-      val result = service.submitAnswers[AdvertisingAndMarketingJourneyAnswers](context, request.userAnswers)
+        JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesAdvertisingOrMarketing)
+      val result = service.submitAnswers[AdvertisingOrMarketingJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)
   }

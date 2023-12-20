@@ -111,7 +111,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         ExpensesRepairsAndMaintenance,
         findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
         repairsAndMaintenanceIsYes),
-      buildOptionalRow(ExpensesAdvertisingAndMarketing, findJourneyStatus(journeyCompletedStates, ExpensesAdvertisingAndMarketing), advertisingIsYes),
+      buildOptionalRow(ExpensesAdvertisingOrMarketing, findJourneyStatus(journeyCompletedStates, ExpensesAdvertisingOrMarketing), advertisingIsYes),
       buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
       buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes),
       buildOptionalRow(ExpensesConstruction, findJourneyStatus(journeyCompletedStates, ExpensesConstruction), constructionIsYes)
@@ -156,8 +156,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesRepairsAndMaintenance =>
         journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-      case ExpensesAdvertisingAndMarketing =>
-        journeys.expenses.advertisingAndMarketing.routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesAdvertisingOrMarketing =>
+        journeys.expenses.advertisingOrMarketing.routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesEntertainment =>
         journeys.expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesStaffCosts =>
@@ -176,8 +176,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       case ExpensesGoodsToSellOrUse => journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesRepairsAndMaintenance =>
         journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
-      case ExpensesAdvertisingAndMarketing =>
-        journeys.expenses.advertisingAndMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesAdvertisingOrMarketing =>
+        journeys.expenses.advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesEntertainment => journeys.expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesStaffCosts    => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesConstruction  => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url

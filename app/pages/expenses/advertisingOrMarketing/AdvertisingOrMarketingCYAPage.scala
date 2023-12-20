@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pages.expenses.advertisingAndMarketing
+package pages.expenses.advertisingOrMarketing
 
 import pages.Page
 
-case object AdvertisingAndMarketingCYAPage extends Page {
-  override def toString: String = "advertisingAndMarketingCya"
+case object AdvertisingOrMarketingCYAPage extends Page {
+  override def toString: String = "advertisingOrMarketingCya"
 }

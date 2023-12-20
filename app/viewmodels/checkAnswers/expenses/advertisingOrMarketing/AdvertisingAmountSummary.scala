@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.advertisingAndMarketing
+package viewmodels.checkAnswers.expenses.advertisingOrMarketing
 
-import controllers.journeys.expenses.advertisingAndMarketing.routes
+import controllers.journeys.expenses.advertisingOrMarketing.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.advertisingAndMarketing.AdvertisingAndMarketingAmountPage
+import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.buildRowBigDecimal
 object AdvertisingAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AdvertisingAndMarketingAmountPage, Some(businessId)).map { answer =>
+    answers.get(AdvertisingOrMarketingAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
         routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, CheckMode),

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.advertisingAndMarketing
+package viewmodels.checkAnswers.expenses.advertisingOrMarketing
 
 import controllers.journeys.expenses
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
-import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.YesDisallowable
-import pages.expenses.advertisingAndMarketing.{AdvertisingAndMarketingAmountPage, AdvertisingAndMarketingDisallowableAmountPage}
+import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.{No, YesAllowable, YesDisallowable}
+import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
@@ -41,8 +41,8 @@ object AdvertisingDisallowableAmountSummary extends MoneyUtils {
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     for {
-      disallowableAmount <- answers.get(AdvertisingAndMarketingDisallowableAmountPage, Some(businessId))
-      allowableAmount    <- answers.get(AdvertisingAndMarketingAmountPage, Some(businessId))
+      disallowableAmount <- answers.get(AdvertisingOrMarketingDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- answers.get(AdvertisingOrMarketingAmountPage, Some(businessId))
     } yield SummaryListRowViewModel(
       key = Key(
         content = messages(s"advertisingDisallowableAmount.title.$userType", allowableAmount),
@@ -55,15 +55,15 @@ object AdvertisingDisallowableAmountSummary extends MoneyUtils {
       actions = Seq(
         ActionItemViewModel(
           "site.change",
-          expenses.advertisingAndMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
+          expenses.advertisingOrMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
           .withVisuallyHiddenText(messages("advertisingDisallowableAmount.change.hidden"))
       )
     )
 
   private def areAnyAdvertisingDisallowable(advertisingAnswer: AdvertisingOrMarketing): Boolean =
     advertisingAnswer match {
-      case YesDisallowable => true
-      case _               => false
+      case YesDisallowable   => true
+      case YesAllowable | No => false
     }
 
 }

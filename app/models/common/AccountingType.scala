@@ -27,11 +27,4 @@ object AccountingType extends Enum[AccountingType] {
 
   case object Accrual extends AccountingType
   case object Cash    extends AccountingType
-
-  def getAccountTypeFromString(accountingType: String): Option[AccountingType] =
-    accountingType match {
-      case "ACCRUAL" => Some(Accrual)
-      case "CASH"    => Some(Cash)
-      case _         => None
-    }
 }
