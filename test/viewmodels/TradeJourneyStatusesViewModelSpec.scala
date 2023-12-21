@@ -93,6 +93,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     val goodsToSellOrUseIsYes = tailoringCyaIsAnswered && userAnswers.get(GoodsToSellOrUsePage, Some(businessId)).exists(_ != GoodsToSellOrUse.No)
     val repairsAndMaintenanceIsYes =
       tailoringCyaIsAnswered && userAnswers.get(RepairsAndMaintenancePage, Some(businessId)).exists(_ != RepairsAndMaintenance.No)
+    val advertisingIsYes =
+      tailoringCyaIsAnswered && userAnswers.get(AdvertisingOrMarketingPage, Some(businessId)).exists(_ != AdvertisingOrMarketing.No)
     val entertainmentsIsYes = tailoringCyaIsAnswered && userAnswers.get(EntertainmentCostsPage, Some(businessId)).exists(_ != EntertainmentCosts.No)
     val staffCostsIsYes =
       tailoringCyaIsAnswered && userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)).contains(ProfessionalServiceExpenses.Staff)
@@ -109,6 +111,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         ExpensesRepairsAndMaintenance,
         findJourneyStatus(journeyCompletedStates, ExpensesRepairsAndMaintenance),
         repairsAndMaintenanceIsYes),
+      buildOptionalRow(ExpensesAdvertisingOrMarketing, findJourneyStatus(journeyCompletedStates, ExpensesAdvertisingOrMarketing), advertisingIsYes),
       buildOptionalRow(ExpensesEntertainment, findJourneyStatus(journeyCompletedStates, ExpensesEntertainment), entertainmentsIsYes),
       buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes),
       buildOptionalRow(ExpensesConstruction, findJourneyStatus(journeyCompletedStates, ExpensesConstruction), constructionIsYes)
@@ -153,6 +156,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
         journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesRepairsAndMaintenance =>
         journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesAdvertisingOrMarketing =>
+        journeys.expenses.advertisingOrMarketing.routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesEntertainment =>
         journeys.expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesStaffCosts =>
@@ -171,6 +176,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       case ExpensesGoodsToSellOrUse => journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesRepairsAndMaintenance =>
         journeys.expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesAdvertisingOrMarketing =>
+        journeys.expenses.advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesEntertainment => journeys.expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesStaffCosts    => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesConstruction  => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url

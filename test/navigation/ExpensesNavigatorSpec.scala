@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
-import controllers.journeys.expenses.staffCosts
+import controllers.journeys.expenses.{advertisingOrMarketing, staffCosts}
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
@@ -30,6 +30,7 @@ import models.journeys.Journey.{ExpensesEntertainment, ExpensesGoodsToSellOrUse,
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
+import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
@@ -122,6 +123,46 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesGoodsToSellOrUse.toString, mode)
 
               navigator.nextPage(GoodsToSellOrUseCYAPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+
+        "AdvertisingOrMarketing journey" - {
+          "the page is AdvertisingOrMarketingAmountPage" - {
+            "some expenses were claimed to be disallowable and accounting type is Accrual" - {
+              "navigate to the AdvertisingOrMarketingDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("advertisingOrMarketing" -> "yesDisallowable"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = advertisingOrMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
+              }
+            }
+            "navigate to the AdvertisingCyaPage" - {
+              "if all expenses were claimed as allowable" in {
+                val data        = Json.obj(businessId.value -> Json.obj("advertisingOrMarketing" -> "yesAllowable"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
+              }
+              "if accounting type is not Accrual" in {
+                val data        = Json.obj(businessId.value -> Json.obj("advertisingOrMarketing" -> "yesDisallowable"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+          }
+          "the page is AdvertisingOrMarketingDisallowableAmountPage" - {
+            "navigate to the AdvertisingCyaPage" in {
+              val expectedResult = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
@@ -232,6 +273,21 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is AdvertisingOrMarketingAmountPage" - {
+          "navigate to the AdvertisingCyaPage" in {
+            val expectedResult = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is AdvertisingOrMarketingDisallowableAmountPage" - {
+          "navigate to the AdvertisingCyaPage" in {
+            val expectedResult = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

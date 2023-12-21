@@ -25,7 +25,7 @@ import play.api.libs.json.JsObject
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-abstract case class TailoringSummaryBaseSpec(summaryName: String) extends SpecBase {
+abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
 
   private val userTypes: List[UserType] = List(Individual, Agent)
 
@@ -43,7 +43,7 @@ abstract case class TailoringSummaryBaseSpec(summaryName: String) extends SpecBa
   private val validAnswers: UserAnswers   = buildUserAnswers(validData)
   private val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
 
-  protected val buildSummaryListRow: (UserAnswers, UserType) => Option[SummaryListRow]
+  protected def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]
 
   s"$summaryName should" - {
     userTypes.foreach { userType =>

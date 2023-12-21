@@ -54,10 +54,11 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val zeroValue: BigDecimal      = 0
   val maxAmountValue: BigDecimal = 100000000000.00
 
-  def anyNino: Nino             = Nino(any)
-  def anyMtditid: Mtditid       = Mtditid(any)
-  def anyTaxYear: TaxYear       = TaxYear(any)
-  def anyBusinessId: BusinessId = BusinessId(any)
+  def anyNino: Nino               = Nino(any)
+  def anyMtditid: Mtditid         = Mtditid(any)
+  def anyTaxYear: TaxYear         = TaxYear(any)
+  def anyBusinessId: BusinessId   = BusinessId(any)
+  def anyUserAnswers: UserAnswers = UserAnswers(any)
 
   val submissionContext: Journey => JourneyContextWithNino =
     (journey: Journey) =>
