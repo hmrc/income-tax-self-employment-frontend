@@ -17,10 +17,11 @@
 package models.journeys
 
 import models.common.PageName
+import pages.expenses.construction.ConstructionIndustryAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
-import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.income._
 import play.api.libs.json._
 
@@ -91,6 +92,8 @@ object Journey {
 
   case object ExpensesConstruction extends Journey {
     override def toString: String = "expenses-construction"
+
+    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName)
   }
 
   case object NationalInsurance extends Journey {
