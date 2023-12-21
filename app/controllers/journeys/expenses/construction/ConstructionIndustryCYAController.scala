@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
+import viewmodels.checkAnswers.expenses.construction.{ConstructionIndustryAmountSummary, ConstructionIndustryDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -46,8 +46,11 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList =
-      SummaryListCYA.summaryListOpt(List(ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)))
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
+        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+        ConstructionIndustryDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+      ))
 
     Ok(
       view(

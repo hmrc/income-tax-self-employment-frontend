@@ -794,6 +794,7 @@ staffCostsCya.title.agent = Check your client’s staff costs
 
 ########## Expenses - Construction Industry ##########
 
+## Construction Industry amount
 constructionIndustryAmount.heading.individual = How much did you spend on construction industry expenses?
 constructionIndustryAmount.heading.agent = How much did your client spend on construction industry expenses?
 constructionIndustryAmount.error.required.individual = Enter the amount you spent on construction industry expenses
@@ -805,6 +806,20 @@ constructionIndustryAmount.error.lessThanZero.agent = The amount your client spe
 constructionIndustryAmount.error.overMax.individual = The amount you spent on construction industry expenses must be less than £100,000,000,000
 constructionIndustryAmount.error.overMax.agent = The amount your client spent on construction industry expenses must be less than £100,000,000,000
 constructionIndustryAmount.change.hidden = Change how much was spent on construction industry
+
+## Construction Industry disallowable amount
+constructionIndustryDisallowableAmount.title.individual = How much of the £{0} you spent on construction industry expenses is disallowable?
+constructionIndustryDisallowableAmount.title.agent = How much of the £{0} your client spent on construction industry expenses is disallowable?
+constructionIndustryDisallowableAmount.d1.heading = Understanding disallowable construction industry expenses
+constructionIndustryDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on construction industry expenses that is disallowable
+constructionIndustryDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on construction industry expenses that is disallowable
+constructionIndustryDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on construction industry expenses must be a number
+constructionIndustryDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on construction industry expenses must be a number
+constructionIndustryDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on construction industry expenses must be more than £0
+constructionIndustryDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on construction industry expenses must be more than £0
+constructionIndustryDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on construction industry expenses must be the same as or less than £{0}
+constructionIndustryDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on construction industry expenses must be the same as or less than £{0}
+constructionIndustryDisallowableAmount.change.hidden = Change how much spent on construction industry expenses is disallowable
 
 ## Construction Industry CYA
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses

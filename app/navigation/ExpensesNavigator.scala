@@ -26,7 +26,7 @@ import models.journeys.Journey._
 import models.journeys.expenses.individualCategories._
 import pages._
 import pages.expenses.advertisingOrMarketing._
-import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage}
+import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
@@ -138,7 +138,20 @@ class ExpensesNavigator @Inject() () {
             _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesEntertainment.toString, NormalMode)
 
     case ConstructionIndustryAmountPage =>
-      _ => taxYear => businessId => _ => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            accountingType =>
+              userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)) match {
+                case Some(DisallowableSubcontractorCosts.Yes) if accountingType.contains(Accrual) =>
+                  construction.routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case Some(_) =>
+                  construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+                case None => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
+
+    case ConstructionIndustryDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
     case ConstructionIndustryCYAPage =>
       _ =>
@@ -188,6 +201,9 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
     case ConstructionIndustryAmountPage =>
+      _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+
+    case ConstructionIndustryDisallowableAmountPage =>
       _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>

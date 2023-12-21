@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.construction
+package pages.expenses.construction
 
-import play.api.libs.json.{Json, OFormat}
+import pages.OneQuestionPage
 
-case class ConstructionJourneyAnswers(constructionIndustryAmount: BigDecimal, constructionIndustryDisallowableAmount: Option[BigDecimal])
+case object ConstructionIndustryDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
 
-object ConstructionJourneyAnswers {
-  implicit val formats: OFormat[ConstructionJourneyAnswers] = Json.format[ConstructionJourneyAnswers]
+  override def toString: String = "constructionIndustryDisallowableAmount"
 }
