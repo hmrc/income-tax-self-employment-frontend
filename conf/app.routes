@@ -305,5 +305,10 @@ POST        /:taxYear/:businessId/expenses/construction-industry/amount         
 GET         /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-construction-industry/amount                                 controllers.journeys.expenses.construction.ConstructionIndustryAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/construction-industry/disallowable-amount                           controllers.journeys.expenses.construction.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/construction-industry/disallowable-amount                           controllers.journeys.expenses.construction.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-construction-industry/disallowable-amount                    controllers.journeys.expenses.construction.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-construction-industry/disallowable-amount                    controllers.journeys.expenses.construction.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 GET         /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
