@@ -36,7 +36,8 @@ import scala.concurrent.ExecutionContext
 
 class ConstructionIndustryCYAController @Inject() (override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
+                                                   getUserAnswers: DataRetrievalAction,
+                                                   getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                    requireData: DataRequiredAction,
                                                    service: SelfEmploymentService,
                                                    val controllerComponents: MessagesControllerComponents,
@@ -45,24 +46,26 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-        ConstructionIndustryDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[ConstructionJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesConstruction)) andThen requireData) { implicit request =>
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          ConstructionIndustryDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+        )
       )
-    )
 
-    Ok(
-      view(
-        ConstructionIndustryCYAPage.toString,
-        taxYear,
-        request.userType,
-        summaryList,
-        routes.ConstructionIndustryCYAController.onSubmit(taxYear, businessId)))
-  }
+      Ok(
+        view(
+          ConstructionIndustryCYAPage.toString,
+          taxYear,
+          request.userType,
+          summaryList,
+          routes.ConstructionIndustryCYAController.onSubmit(taxYear, businessId)))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
       val context =
         JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesConstruction)
