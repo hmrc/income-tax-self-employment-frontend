@@ -17,31 +17,30 @@
 package controllers.journeys.expenses.construction
 
 import controllers.actions._
+import controllers.standard
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConstructionIndustryAmountController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: ExpensesNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    formProvider: ConstructionIndustryAmountFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: ConstructionIndustryAmountView
-)(implicit ec: ExecutionContext)
+class ConstructionIndustryAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                      selfEmploymentService: SelfEmploymentService,
+                                                      navigator: ExpensesNavigator,
+                                                      identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      formProvider: ConstructionIndustryAmountFormProvider,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      view: ConstructionIndustryAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,15 +56,22 @@ class ConstructionIndustryAmountController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConstructionIndustryAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      def handleForm(accountingType: String): Future[Result] =
+        formProvider(request.userType)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+            value => handleSuccess(value, AccountingType.withName(accountingType))
+          )
+
+      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+        selfEmploymentService
+          .saveAnswer(businessId, request.userAnswers, value, ConstructionIndustryAmountPage)
+          .map(updated => Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
+
+      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+        case Left(_)               => Future.successful(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
+        case Right(accountingType) => handleForm(accountingType)
+      }
   }
 }

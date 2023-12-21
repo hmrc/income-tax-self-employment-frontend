@@ -27,13 +27,14 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
+import viewmodels.checkAnswers.expenses.construction.{ConstructionIndustryAmountSummary, ConstructionIndustryDisallowableAmountSummary}
 
 class ConstructionIndustryCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = ConstructionIndustryCYAPage.toString
 
-  private val disallowableAmount = BigDecimal(1235)
+  private val allowableAmount    = BigDecimal(200.00)
+  private val disallowableAmount = BigDecimal(100.00)
 
   override val journey: Journey = ExpensesConstruction
 
@@ -43,13 +44,17 @@ class ConstructionIndustryCYAControllerSpec extends CYAOnPageLoadControllerBaseS
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(ConstructionIndustryAmountSummary.row(userAnswers, taxYear, businessId, userType).value),
+      rows = List(
+        ConstructionIndustryAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
+        ConstructionIndustryDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType).value
+      ),
       classes = "govuk-!-margin-bottom-7"
     )
 
   override val submissionData: JsObject = Json.obj(
-    "disallowableSubcontractorCosts" -> "yes",
-    "constructionIndustryAmount"     -> disallowableAmount
+    "disallowableSubcontractorCosts"         -> "yes",
+    "constructionIndustryAmount"             -> allowableAmount,
+    "constructionIndustryDisallowableAmount" -> disallowableAmount
   )
   override val testDataCases: List[JsObject] = List(submissionData)
 
