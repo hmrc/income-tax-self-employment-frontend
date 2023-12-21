@@ -24,7 +24,7 @@ import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.construction.ConstructionIndustryAmountSummary
+import viewmodels.checkAnswers.expenses.construction.{ConstructionIndustryAmountSummary, ConstructionIndustryDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.expenses.construction.ConstructionIndustryCYAView
 
@@ -47,7 +47,8 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
 
     val summaryList = SummaryListCYA.summaryListOpt(
       List(
-        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+        ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+        ConstructionIndustryDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
       )
     )
 

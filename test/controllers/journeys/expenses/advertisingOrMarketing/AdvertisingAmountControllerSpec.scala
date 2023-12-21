@@ -18,7 +18,6 @@ package controllers.journeys.expenses.advertisingOrMarketing
 
 import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import controllers.journeys.expenses.tailoring
 import forms.expenses.advertisingOrMarketing.AdvertisingAmountFormProvider
 import models.NormalMode
 import models.common.UserType
@@ -47,7 +46,7 @@ class AdvertisingAmountControllerSpec
   lazy val onPageLoadRoute: String = routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.AdvertisingAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+  override val onwardRoute: Call = routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(AdvertisingOrMarketingPage, YesAllowable, Some(businessId)).success.value
