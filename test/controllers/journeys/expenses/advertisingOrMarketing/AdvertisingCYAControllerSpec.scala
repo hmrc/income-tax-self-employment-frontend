@@ -36,22 +36,21 @@ class AdvertisingCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with 
   private val allowableAmount    = BigDecimal(200.00)
   private val disallowableAmount = BigDecimal(100.00)
 
-  override val journey: Journey = ExpensesAdvertisingOrMarketing
-
   def onPageLoadCall: (TaxYear, BusinessId) => Call = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = advertisingOrMarketing.routes.AdvertisingCYAController.onSubmit
 
-  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-      messages: Messages): SummaryList =
-    SummaryList(
-      rows = List(
-        AdvertisingAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
-        AdvertisingDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType).value
-      ),
-      classes = "govuk-!-margin-bottom-7"
-    )
+  override protected val journey: Journey = ExpensesAdvertisingOrMarketing
 
-  override val submissionData: JsObject = Json.obj(
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList = SummaryList(
+    rows = Seq(
+      AdvertisingAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
+      AdvertisingDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType).value
+    ),
+    classes = "govuk-!-margin-bottom-7"
+  )
+
+  override val submissionData = Json.obj(
     "advertisingOrMarketing"                   -> "yesDisallowable",
     "advertisingOrMarketingAmount"             -> allowableAmount,
     "advertisingOrMarketingDisallowableAmount" -> disallowableAmount

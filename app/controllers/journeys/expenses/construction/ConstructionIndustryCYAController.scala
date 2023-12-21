@@ -50,7 +50,8 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
       List(
         ConstructionIndustryAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
         ConstructionIndustryDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
-      ))
+      )
+    )
 
     Ok(
       view(
