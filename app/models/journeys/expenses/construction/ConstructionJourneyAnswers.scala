@@ -18,7 +18,7 @@ package models.journeys.expenses.construction
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ConstructionJourneyAnswers(staffCostsAmount: BigDecimal)
+case class ConstructionJourneyAnswers(constructionIndustryAmount: BigDecimal)
 
 object ConstructionJourneyAnswers {
   implicit val formats: OFormat[ConstructionJourneyAnswers] = Json.format[ConstructionJourneyAnswers]
