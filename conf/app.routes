@@ -311,4 +311,4 @@ GET         /:taxYear/:businessId/expenses/change-construction-industry/disallow
 POST        /:taxYear/:businessId/expenses/change-construction-industry/disallowable-amount                    controllers.journeys.expenses.construction.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
-
+POST        /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
