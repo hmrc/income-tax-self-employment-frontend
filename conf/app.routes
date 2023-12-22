@@ -312,3 +312,13 @@ POST        /:taxYear/:businessId/expenses/change-construction-industry/disallow
 
 GET         /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/construction-industry/check                                         controllers.journeys.expenses.construction.ConstructionIndustryCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Expenses - Depreciation ##########
+
+GET         /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-depreciation/disallowable-amount                             controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-depreciation/disallowable-amount                             controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/depreciation/check                                                  controllers.journeys.expenses.depreciation.DepreciationCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/depreciation/check                                                  controllers.journeys.expenses.depreciation.DepreciationCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)

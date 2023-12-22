@@ -41,6 +41,7 @@ journeys.expenses-repairs-and-maintenance = Repairs and Maintenance
 journeys.expenses-advertising-marketing = Advertising or marketing
 journeys.expenses-staff-costs = Staff Costs
 journeys.expenses-construction = Construction industry subcontractors
+journeys.expenses-depreciation = Depreciation
 
 date.day = Day
 date.month = Month
@@ -337,6 +338,7 @@ expenses.staffContractorsAndServices = staff, contractors and services
 expenses.financialExpenses = financial expenses
 expenses.trainingCourses = training courses related to your work
 expenses.workClothing = work clothing
+expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -588,7 +590,7 @@ depreciation.l1 = depreciation of equipment, cars and so on
 depreciation.l2 = losses (minus any profits) on sales of assets
 depreciation.error.required.individual = Select yes if you need to report and depreciation costs
 depreciation.error.required.agent = Select yes if your client needs to report and depreciation costs
-depreciation.change.hidden = Depreciation
+depreciation.change.hidden = Change if any depreciation costs need to be reported
 
 ## Other expenses
 otherExpenses.title = Other expenses
@@ -824,3 +826,23 @@ constructionIndustryDisallowableAmount.change.hidden = Change how much spent on 
 ## Construction Industry CYA
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
 constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
+
+########## Expenses - Depreciation ##########
+
+## Depreciation disallowable amount
+depreciationDisallowableAmount.title.individual = How much are you claiming in depreciation costs?
+depreciationDisallowableAmount.title.agent = How much is your client claiming in depreciation costs?
+depreciationDisallowableAmount.d1.heading = Understanding depreciation costs
+depreciationDisallowableAmount.error.required.individual = Enter the amount you’re claiming in depreciation costs
+depreciationDisallowableAmount.error.required.agent = Enter the amount your client is claiming in depreciation costs
+depreciationDisallowableAmount.error.nonNumeric.individual = The amount you’re claiming in depreciation costs must be a number
+depreciationDisallowableAmount.error.nonNumeric.agent = The amount your client is claiming in depreciation costs must be a number
+depreciationDisallowableAmount.error.lessThanZero.individual = The amount you’re claiming in depreciation costs must be more than £0
+depreciationDisallowableAmount.error.lessThanZero.agent = The amount your client is claiming in depreciation costs must be more than £0
+depreciationDisallowableAmount.error.overMax.individual = The amount you’re claiming in depreciation costs must be less than £100,000,000,000
+depreciationDisallowableAmount.error.overMax.agent = The amount your client is claiming in depreciation costs must be less than £100,000,000,000
+depreciationDisallowableAmount.change.hidden = Change how much was spent on construction industry
+
+## Depreciation CYA
+depreciationCya.title.individual = Check your construction industry subcontractors expenses
+depreciationCya.title.agent = Check your client’s construction industry subcontractors expenses

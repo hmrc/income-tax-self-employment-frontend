@@ -17,7 +17,7 @@
 package models.journeys
 
 import models.common.PageName
-import pages.expenses.construction.ConstructionIndustryAmountPage
+import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -96,17 +96,23 @@ object Journey {
   case object ExpensesConstruction extends Journey {
     override def toString: String = "expenses-construction"
 
-    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName)
-  }
-
-  case object NationalInsurance extends Journey {
-    override def toString: String = "national-insurance"
+    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName, ConstructionIndustryDisallowableAmountPage.pageName)
   }
 
   case object ExpensesRepairsAndMaintenance extends Journey {
     override def toString: String = "expenses-repairs-and-maintenance"
 
     override val pageKeys: List[PageName] = List(RepairsAndMaintenanceAmountPage.pageName, RepairsAndMaintenanceDisallowableAmountPage.pageName)
+  }
+
+  case object ExpensesDepreciation extends Journey {
+    override def toString: String = "expenses-depreciation"
+
+    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName)
+  }
+
+  case object NationalInsurance extends Journey {
+    override def toString: String = "national-insurance"
   }
 
   val journeyReads: Reads[Journey] = Reads[Journey] {
