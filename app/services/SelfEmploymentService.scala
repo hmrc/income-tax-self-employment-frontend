@@ -16,16 +16,13 @@
 
 package services
 
-import cats.data.EitherT
 import connectors.SelfEmploymentConnector
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.errors.ServiceError.NotFoundError
-import models.journeys.{Journey, TaskList}
-import models.journeys.Journey.TradeDetails
-import models.requests.TradesJourneyStatuses
+import models.journeys.TaskList
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
@@ -38,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 // TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentServiceBase {
-  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
@@ -50,11 +48,11 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
     extends SelfEmploymentServiceBase
     with Logging {
 
-  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = {
-    val tradeId = BusinessId(s"${TradeDetails.toString}")
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
+    connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)
 
-    connector.getJourneyState(tradeId, journey, taxYear, mtditid.value).map(_.journeyStatus)
-  }
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.saveJourneyState(ctx, status)
 
   def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList] =
     connector.getTaskList(nino.value, taxYear, mtditid)

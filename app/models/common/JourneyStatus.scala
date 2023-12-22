@@ -34,20 +34,5 @@ object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[Journey
   case object Completed       extends JourneyStatus("completed")
 
   def getJourneyStatus(journey: Journey, journeyStatuses: TradesJourneyStatuses): JourneyStatus =
-    statusFromCompletedState(getCompletedState(journey, journeyStatuses))
-
-  def statusFromCompletedState(value: Option[Boolean]): JourneyStatus =
-    value.fold[JourneyStatus](NotStarted) {
-      case false => InProgress
-      case true  => Completed
-    }
-
-  private def getCompletedState(journey: Journey, journeyStatuses: TradesJourneyStatuses): Option[Boolean] =
-    journeyStatuses.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
-
-  def tradeDetailsStatusFromCompletedState(value: Option[Boolean]): JourneyStatus =
-    value.fold[JourneyStatus](CheckOurRecords) {
-      case false => InProgress
-      case true  => Completed
-    }
+    journeyStatuses.journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
 }

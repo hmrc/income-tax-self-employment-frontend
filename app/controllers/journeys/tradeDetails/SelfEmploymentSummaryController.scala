@@ -23,7 +23,6 @@ import handlers.ErrorHandler
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.TradeDetails
 import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage

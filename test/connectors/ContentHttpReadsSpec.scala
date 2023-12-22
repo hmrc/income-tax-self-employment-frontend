@@ -35,11 +35,11 @@ class ContentHttpReadsSpec extends AnyWordSpecLike with Matchers {
       Map.empty
     )
 
-    "parse optional json" in {
+    "parse json" in {
       val json   = """{"foo": "bar"}"""
       val result = httpReads.read("GET", "url", okResponse(json))
 
-      result shouldBe Right(Some(Json.parse(json)))
+      result shouldBe Right(Json.parse(json))
     }
 
     "return an error if invalid json" in {

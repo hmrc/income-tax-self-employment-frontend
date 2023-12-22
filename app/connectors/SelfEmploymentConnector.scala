@@ -19,7 +19,7 @@ package connectors
 import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
-import connectors.httpParser.JourneyStateParser.JourneyStateHttpWrites
+import connectors.httpParser.HttpParser.StringWrites
 import models.common._
 import models.domain.ApiResultT
 import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
@@ -54,11 +54,11 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: String)(implicit
+  def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[JourneyNameAndStatus] = {
     val url      = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}")
-    val response = get[JourneyNameAndStatus](http, url, Mtditid(mtditid))
+    val response = get[JourneyNameAndStatus](http, url, mtditid)
     EitherT(response)
   }
 

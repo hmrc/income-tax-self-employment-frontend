@@ -28,6 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class SubmittedDataRetrievalActionProvider @Inject() (selfEmploymentService: SelfEmploymentServiceBase, sessionRepository: SessionRepositoryBase) {
   def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
-      ec: ExecutionContext): SubmittedDataRetrievalActionImpl[SubsetOfAnswers] =
+      ec: ExecutionContext): SubmittedDataRetrievalAction =
     new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](mkJourneyContext, selfEmploymentService, sessionRepository)
+
 }

@@ -18,7 +18,7 @@ package connectors
 
 import cats.implicits._
 import connectors.ContentHttpReads._
-import connectors.httpParser.JourneyStateParser.pagerDutyError
+import connectors.httpParser.HttpParser.unsafePagerDutyError
 import models.errors.ServiceError
 import models.errors.ServiceError.{CannotParseJsonError, CannotReadJsonError}
 import play.api.libs.json.{JsObject, Json, Reads, Writes}
@@ -32,7 +32,7 @@ class ContentHttpReads[A: Reads] extends HttpReads[ContentResponse[A]] {
     if (isSuccess(response.status)) {
       readOne[A](response)
     } else {
-      Left(pagerDutyError(response))
+      Left(unsafePagerDutyError(response))
     }
 }
 

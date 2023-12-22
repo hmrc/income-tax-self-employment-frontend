@@ -35,7 +35,9 @@ import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
+trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest] {
+  def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+}
 
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: OptionalDataRequest[_] => JourneyContext,
                                                                 selfEmploymentService: SelfEmploymentServiceBase,
@@ -45,9 +47,6 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
     with Logging {
 
   protected def executionContext: ExecutionContext = ec
-
-  def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] =
-    transform(request)
 
   protected[actions] def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
     val ctx: JourneyContext     = journeyContext(request)

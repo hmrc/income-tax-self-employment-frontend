@@ -21,25 +21,24 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.Journey
-import models.requests.TradesJourneyStatuses
+import models.journeys.{Journey, TaskList}
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsObject, Writes}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 case class SelfEmploymentServiceStub(
     accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Cash),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
-    submittedAnswers: Either[ServiceError, Option[JsObject]] = Right(Some(JsObject.empty))
+    submittedAnswers: Either[ServiceError, Option[JsObject]] = Right(Some(JsObject.empty)),
+    getTaskList: Either[ServiceError, TaskList] = Right(TaskList.empty),
+    getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
+    setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
 ) extends SelfEmploymentServiceBase {
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
-
-  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
-    ???
 
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
     Future.successful(accountingType.map(_.entryName))
@@ -51,4 +50,14 @@ case class SelfEmploymentServiceStub(
 
   def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] =
     EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[ServiceError, Option[A]]]))
+
+  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList] =
+    EitherT.fromEither[Future](getTaskList)
+
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
+    EitherT.fromEither[Future](getJourneyStatusResult)
+
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](setJourneyStatusResult)
+
 }

@@ -38,6 +38,7 @@ import viewmodels.journeys.SummaryListCYA
 
 case class TradeJourneyStatusesViewModel(tradingName: String, businessId: BusinessId, statusList: SummaryList)
 
+// TODO This is over complex class and needs to be simplified
 object TradeJourneyStatusesViewModel {
 
   // noinspection ScalaStyle

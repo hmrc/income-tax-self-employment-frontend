@@ -26,4 +26,5 @@ case class StubSubmittedDataRetrievalAction() extends SubmittedDataRetrievalActi
   protected def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = Future.successful(request)
 
   protected def executionContext: ExecutionContext = ExecutionContext.global
+
 }

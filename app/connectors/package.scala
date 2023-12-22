@@ -58,12 +58,14 @@ package object connectors {
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
     http.GET(url)(
-      rds = new ContentHttpReadsOpt[A],
+      rds = new OptionalContentHttpReads[A],
       hc = addExtraHeaders(hc, mtditid),
       ec = ec
     )
 
   def isSuccess(status: Int): Boolean = status >= 200 && status <= 299
+
+  def isNoContent(status: Int): Boolean = status == 204
 
   private def addExtraHeaders(hc: HeaderCarrier, mtditid: Mtditid) =
     hc.withExtraHeaders(headers = "mtditid" -> mtditid.value)

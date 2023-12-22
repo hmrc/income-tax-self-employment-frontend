@@ -20,6 +20,7 @@ import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import play.api.http.Status._
+import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.HttpResponse
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.{getCorrelationId, pagerDutyLog}
@@ -53,7 +54,9 @@ trait HttpParser {
 
   }
 
-  def pagerDutyError(response: HttpResponse): ServiceError = {
+  /** Unsafe because it has a side effect: logs the error message which then is parsed by Pager Duty for alerts
+    */
+  def unsafePagerDutyError(response: HttpResponse): ServiceError = {
     val httpError = response.status match {
       case BAD_REQUEST =>
         pagerDutyLog(FOURXX_RESPONSE_FROM_CONNECTOR, logMessage(response))
@@ -73,5 +76,13 @@ trait HttpParser {
     }
 
     ConnectorResponseError(httpError)
+  }
+}
+
+object HttpParser extends HttpParser {
+  val parserName: String = "httpParser"
+
+  implicit object StringWrites extends OWrites[String] {
+    override def writes(o: String): JsObject = Json.obj()
   }
 }

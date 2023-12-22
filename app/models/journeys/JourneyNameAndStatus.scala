@@ -19,8 +19,7 @@ package models.journeys
 import models.common.JourneyStatus
 import play.api.libs.json.{Json, OFormat}
 
-// TODO Introduce JourneyName, use/refactor Journey class
-final case class JourneyNameAndStatus(name: String, journeyStatus: JourneyStatus)
+final case class JourneyNameAndStatus(name: Journey, journeyStatus: JourneyStatus)
 
 object JourneyNameAndStatus {
   implicit val format: OFormat[JourneyNameAndStatus] = Json.format[JourneyNameAndStatus]

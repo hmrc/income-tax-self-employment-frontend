@@ -18,15 +18,16 @@ package services
 
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
-import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
+import builders.TradesJourneyStatusesBuilder.aTaskList
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, JourneyAnswersContext, Mtditid, Nino}
+import models.common.{BusinessId, JourneyAnswersContext, JourneyStatus, Mtditid, Nino, TaxYear}
 import models.database.UserAnswers
 import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -55,18 +56,40 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val smallTurnover: BigDecimal             = 450.00
   val largeTurnover: BigDecimal             = 45000.00
 
-  "getCompletedTradeDetails" - {
+  "getJourneyStatus" - {
+    "should return status" in {
+      val status = JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.Completed)
+      mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](status)
+
+      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)).value.futureValue
+
+      result shouldBe status.journeyStatus.asRight
+    }
+  }
+
+  "setJourneyStatus" - {
+    "should save status" in {
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+      val result = service
+        .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
+        .value
+        .futureValue
+      result shouldBe ().asRight
+    }
+  }
+
+  "getTaskList" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
-      mockConnector.getTaskList(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
-        Right(aSequenceTadesJourneyStatusesModel))
+      mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
 
       val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
 
-      result shouldBe Right(aSequenceTadesJourneyStatusesModel)
+      result shouldBe Right(aTaskList)
     }
     "should return an error if connector fails" in {
-      mockConnector.getTaskList(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
-        Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError))))
+      mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.leftT[Future, TaskList](
+        ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
 
       val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
 

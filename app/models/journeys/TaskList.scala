@@ -23,4 +23,6 @@ final case class TaskList(tradeDetails: Option[JourneyNameAndStatus], businesses
 
 object TaskList {
   implicit val format: OFormat[TaskList] = Json.format[TaskList]
+
+  val empty: TaskList = TaskList(None, Nil)
 }
