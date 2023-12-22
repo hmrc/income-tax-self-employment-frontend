@@ -28,13 +28,11 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class BigDecimalGetAndPostQuestionBaseSpec(
-    controllerName: String,
-    page: QuestionPage[BigDecimal]
-) extends ControllerSpec {
+abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String, page: QuestionPage[BigDecimal]) extends ControllerSpec {
 
   val onPageLoadRoute: String
   val onSubmitRoute: String
+  val onwardRoute: Call
 
   def createForm(userType: UserType): Form[BigDecimal]
 
@@ -47,8 +45,6 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(
 
   def getRequest  = FakeRequest(GET, onPageLoadRoute)
   def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
-
-  val onwardRoute: Call
 
   forAll(userTypeCases) { userType =>
     s"$controllerName for $userType" - {

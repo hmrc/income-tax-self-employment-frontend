@@ -41,7 +41,7 @@ trait SelfEmploymentServiceBase {
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]]
-  def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+  def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -61,7 +61,7 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
   def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
     EitherT(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
 
-  // TODO return AccountingType
+  // TODO return AccountingType not String
   // TODO HttpErrors in business layer may not be the best idea
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
     connector.getBusiness(nino, businessId, mtditid).map {
@@ -73,10 +73,10 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
   def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]] =
     connector.getSubmittedAnswers[SubsetOfAnswers](context)
 
-  def saveAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
-                                          userAnswers: UserAnswers,
-                                          value: SubsetOfAnswers,
-                                          page: QuestionPage[SubsetOfAnswers]): Future[UserAnswers] =
+  def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
+                                             userAnswers: UserAnswers,
+                                             value: SubsetOfAnswers,
+                                             page: QuestionPage[SubsetOfAnswers]): Future[UserAnswers] =
     for {
       updatedAnswers <- Future.fromTry(userAnswers.set[SubsetOfAnswers](page, value, Some(businessId)))
       _              <- sessionRepository.set(updatedAnswers)
