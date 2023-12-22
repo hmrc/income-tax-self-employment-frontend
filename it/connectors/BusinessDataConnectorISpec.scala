@@ -73,10 +73,10 @@ class BusinessDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
     behave like tradesWithStatusesRequestReturnsOk(
       getCompletedTradesWithStatuses,
-      () => await(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value)(hc, ec)))
+      () => await(connector.getTaskList(nino.value, taxYear, mtditid.value)(hc, ec)))
     behave like tradesWithStatusesRequestReturnsError(
       getCompletedTradesWithStatuses,
-      () => connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
+      () => connector.getTaskList(nino.value, taxYear, mtditid.value))
   }
 
   def businessRequestReturnsOk(getUrl: String, block: () => GetBusinessesResponse): Unit = {

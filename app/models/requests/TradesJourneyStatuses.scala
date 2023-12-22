@@ -18,14 +18,14 @@ package models.requests
 
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.TradesJourneyStatuses.JourneyCompletedState
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import viewmodels.TradeJourneyStatusesViewModel
 import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
 
-case class TradesJourneyStatuses(businessId: String, tradingName: Option[String], journeyStatuses: Seq[JourneyCompletedState])
+case class TradesJourneyStatuses(businessId: BusinessId, tradingName: Option[String], journeyStatuses: List[JourneyNameAndStatus])
 
 object TradesJourneyStatuses {
 
@@ -35,7 +35,7 @@ object TradesJourneyStatuses {
       message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       if (tradeDetails.tradingName.isEmpty) "" else s"${tradeDetails.tradingName.get} - ",
-      BusinessId(tradeDetails.businessId),
+      BusinessId(tradeDetails.businessId.value),
       buildSummaryList(tradeDetails, taxYear, userAnswers)
     )
 

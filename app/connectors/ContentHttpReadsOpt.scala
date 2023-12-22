@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package connectors.httpParser
+package connectors
 
-import models.errors.ServiceError
-import models.journeys.TaskList
-import models.requests.TradesJourneyStatuses
-import play.api.http.Status._
+import cats.implicits._
+import connectors.ContentHttpReads._
+import connectors.httpParser.JourneyStateParser.pagerDutyError
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object GetTradesStatusHttpParser {
-  type GetTradesStatusResponse = Either[ServiceError, TaskList]
+class ContentHttpReadsOpt[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
+
+  override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
+    if (response.status == 204) {
+      None.asRight
+    } else if (isSuccess(response.status)) {
+      readOne[A](response).map(Some(_))
+    } else {
+      Left(pagerDutyError(response))
+    }
 }

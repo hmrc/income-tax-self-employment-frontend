@@ -17,18 +17,20 @@
 package connectors.httpParser
 
 import models.errors.ServiceError
+import models.journeys.JourneyNameAndStatus
 import play.api.http.Status.{CREATED, NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object JourneyStateParser extends HttpParser {
-  type JourneyStateResponse = Either[ServiceError, Option[Boolean]]
+  type JourneyStateResponse = Either[ServiceError, JourneyNameAndStatus]
+  type JourneyStateResponse2 = Either[ServiceError, Option[Boolean]]
 
   val parserName: String = "JourneyStateParser"
   val service: String    = "income-tax-self-employment"
 
-  implicit object JourneyStateHttpReads extends HttpReads[JourneyStateResponse] {
-    override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse =
+  implicit object JourneyStateHttpReads extends HttpReads[JourneyStateResponse2] {
+    override def read(method: String, url: String, response: HttpResponse): JourneyStateResponse2 =
       response.status match {
         case OK         => Right(Some(response.body.toBoolean))
         case CREATED    => Right(None)

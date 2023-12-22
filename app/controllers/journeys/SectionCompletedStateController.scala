@@ -17,19 +17,22 @@
 package controllers.journeys
 
 import connectors.SelfEmploymentConnector
+import controllers._
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
 import forms.SectionCompletedStateFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.journeys.CompletedSectionState
+import models.common.JourneyStatus._
+import models.common.{BusinessId, JourneyAnswersContext, JourneyStatus, TaxYear}
 import models.journeys.CompletedSectionState.{No, Yes}
+import models.journeys.{CompletedSectionState, Journey}
 import navigation.GeneralNavigator
 import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.SectionCompletedStateView
 
 import javax.inject.Inject
@@ -45,36 +48,50 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   val form: Form[CompletedSectionState] = formProvider()
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
-      val preparedForm = selfEmploymentConnector.getJourneyState(businessId, journey, taxYear, request.user.mtditid) map {
-        case Right(Some(true))  => form.fill(Yes)
-        case Right(Some(false)) => form.fill(No)
-        case Right(None)        => form
-        case Left(_)            => form
-      }
+      val preparedForm = selfEmploymentConnector
+        .getJourneyState(businessId, Journey.withName(journey), taxYear, request.user.mtditid)
+        .value
+        .map(
+          _.fold(
+            _ => form,
+            s => fill(form, s.journeyStatus)
+          ))
 
       preparedForm map { form =>
-        Ok(view(form, taxYear, businessId, journey, mode))
+        Ok(view(form, taxYear, businessId, Journey.withName(journey), mode))
       }
   }
+
+  private def fill(form: Form[CompletedSectionState], status: JourneyStatus) =
+    status match {
+      case Completed                        => form.fill(Yes)
+      case NotStarted | InProgress          => form.fill(No)
+      case CheckOurRecords | CannotStartYet => form
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
-          value =>
-            selfEmploymentConnector.saveJourneyState(businessId, journey, taxYear, complete = value.equals(Yes), request.user.mtditid) map {
-              case Right(_) => Redirect(navigator.nextPage(SectionCompletedStatePage, taxYear))
-              case _        => Redirect(JourneyRecoveryController.onPageLoad())
-            }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, Journey.withName(journey), mode))),
+          state =>
+            handleResultT(
+              saveAndRedirect(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)), state)
+            )
         )
   }
+
+  private def saveAndRedirect(ctx: JourneyAnswersContext, state: CompletedSectionState)(implicit hc: HeaderCarrier) =
+    selfEmploymentConnector.saveJourneyState(ctx, state.toStatus).map { _ =>
+      Redirect(navigator.nextPage(SectionCompletedStatePage, ctx.taxYear))
+    }
 
 }

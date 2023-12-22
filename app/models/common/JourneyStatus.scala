@@ -24,7 +24,7 @@ sealed abstract class JourneyStatus(override val entryName: String) extends Enum
   override def toString: String = entryName
 }
 
-object JourneyStatus extends Enum[JourneyStatus] {
+object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[JourneyStatus] {
   val values = findValues
 
   case object CheckOurRecords extends JourneyStatus("checkOurRecords")

@@ -59,10 +59,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
   }
 
   private def navigate(taxYear: TaxYear, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
-    val businessId =
-      BusinessId(
-        TradeDetails.toString + "-" + request.user.nino
-      ) // TODO Replace with correct one - we will get it from backend / get business endpoint
+    val businessId = BusinessId.tradeDetailsId
     navigator
       .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
       .url

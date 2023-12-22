@@ -6,6 +6,14 @@ object AppDependencies {
   private val hmrcMongoVersion  = "1.2.0"
   private val enumeratumVersion = "1.7.3"
 
+  val jacksonAndPlayExclusions = Seq(
+    ExclusionRule(organization = "com.fasterxml.jackson.core"),
+    ExclusionRule(organization = "com.fasterxml.jackson.datatype"),
+    ExclusionRule(organization = "com.fasterxml.jackson.module"),
+    ExclusionRule(organization = "com.fasterxml.jackson.core:jackson-annotations"),
+    ExclusionRule(organization = "com.typesafe.play")
+  )
+
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"        %% "play-frontend-hmrc"            % "7.9.0-play-28",
@@ -14,6 +22,7 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"  %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
     "org.typelevel"      %% "cats-core"                     % "2.9.0",
     "com.beachape"       %% "enumeratum"                    % enumeratumVersion,
+    "com.beachape"       %% "enumeratum-play-json"          % enumeratumVersion excludeAll (jacksonAndPlayExclusions *),
     "org.codehaus.janino" % "janino"                        % "3.1.11" // it's required by logback for conditional logging
   )
 

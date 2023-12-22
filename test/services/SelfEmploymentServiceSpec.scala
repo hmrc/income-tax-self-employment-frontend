@@ -57,18 +57,18 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
   "getCompletedTradeDetails" - {
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
-      mockConnector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
+      mockConnector.getTaskList(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
         Right(aSequenceTadesJourneyStatusesModel))
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, Mtditid(mtditid)).value)
+      val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
 
       result shouldBe Right(aSequenceTadesJourneyStatusesModel)
     }
     "should return an error if connector fails" in {
-      mockConnector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
+      mockConnector.getTaskList(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
         Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError))))
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, Mtditid(mtditid)).value)
+      val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
 
       result shouldBe Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
     }

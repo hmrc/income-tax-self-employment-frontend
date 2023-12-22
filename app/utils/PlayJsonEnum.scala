@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package connectors.httpParser
+package utils
 
-import models.errors.ServiceError
-import models.journeys.TaskList
-import models.requests.TradesJourneyStatuses
-import play.api.http.Status._
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import enumeratum._
+import play.api.libs.json._
 
-object GetTradesStatusHttpParser {
-  type GetTradesStatusResponse = Either[ServiceError, TaskList]
+trait PlayJsonEnum[A <: EnumEntry] { self: Enum[A] =>
+  implicit val keyWrites: KeyWrites[A] = EnumFormats.keyWrites(this)
+
+  implicit def contraKeyWrites[K <: A]: KeyWrites[K] = {
+    val w = this.keyWrites
+
+    new KeyWrites[K] {
+      def writeKey(k: K) = w.writeKey(k)
+    }
+  }
+
+  implicit val jsonFormat: Format[A]               = EnumFormats.formats(this)
+  implicit def contraJsonWrites[B <: A]: Writes[B] = jsonFormat.contramap[B](b => b: A)
 }

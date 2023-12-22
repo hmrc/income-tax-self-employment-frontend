@@ -53,7 +53,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   val selfEmploymentList =
     aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswers))(messages(application)))
 
-  when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
+  when(mockService.getTaskList(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
   when(mockService.getJourneyStatus(meq(TradeDetails), anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(JourneyStatus.Completed)
 
   "onPageLoad" should {
@@ -69,7 +69,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     }
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
-      when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(Nil)
+      when(mockService.getTaskList(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(Nil)
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -103,7 +103,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
   "must redirect to Journey Recovery when an error response is returned" should {
     "from the service" in {
-      when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn
+      when(mockService.getTaskList(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn
         leftApiResultT(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn apiResultT(
         JourneyStatus.Completed)
@@ -115,7 +115,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
     }
     "from the connector" in {
-      when(mockService.getCompletedTradeDetails(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
+      when(mockService.getTaskList(anyNino, anyTaxYear, anyMtditid)(any)) thenReturn apiResultT(aSequenceTadesJourneyStatusesModel)
       when(mockService.getJourneyStatus(meq(TradeDetails), Nino(any()), TaxYear(any()), Mtditid(any()))(any)) thenReturn
         leftApiResultT(ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))))
 

@@ -46,6 +46,9 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
 
   protected def executionContext: ExecutionContext = ec
 
+  def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] =
+    transform(request)
+
   protected[actions] def transform[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = {
     val ctx: JourneyContext     = journeyContext(request)
     val hasAtLeastOneUserAnswer = hasAtLeastOneUserAnswerForJourney(ctx.businessId, ctx.journey, request.userAnswers)
@@ -62,13 +65,10 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
-      maybeJourneyAnswers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
-      updatedAnswers = maybeJourneyAnswers.fold(existingAnswers) { answers =>
-        val jsonAnswers = ContentHttpReads.asJsonUnsafe(answers)
-        existingAnswers.upsertFragment(ctx.businessId, jsonAnswers)
-      }
-      _ <- EitherT.right[ServiceError](sessionRepository.set(updatedAnswers))
-    } yield updatedAnswers
+      answers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
+      updatedAnswers = answers.map(a => existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a)))
+      _ <- EitherT.right[ServiceError](updatedAnswers.fold(Future.successful(()))(sessionRepository.set(_).void))
+    } yield updatedAnswers.getOrElse(existingAnswers)
 
     handleApiResult(result)
   }

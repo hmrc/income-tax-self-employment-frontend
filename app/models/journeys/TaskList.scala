@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package connectors.httpParser
+package models.journeys
 
-import models.errors.ServiceError
-import models.journeys.TaskList
 import models.requests.TradesJourneyStatuses
-import play.api.http.Status._
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import play.api.libs.json.{Json, OFormat}
 
-object GetTradesStatusHttpParser {
-  type GetTradesStatusResponse = Either[ServiceError, TaskList]
+final case class TaskList(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses])
+
+object TaskList {
+  implicit val format: OFormat[TaskList] = Json.format[TaskList]
 }
