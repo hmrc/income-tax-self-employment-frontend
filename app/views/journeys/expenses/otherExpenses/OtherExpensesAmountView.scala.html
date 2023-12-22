@@ -62,28 +62,28 @@
 }
 
 @buildLabelContent(user: UserType, tailoringAnswer: OtherExpenses) = {
-<label class="govuk-label govuk-label--l"> @messages(s"otherExpensesAmount.title.$user") </label>
-<details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
-    </summary>
-    <div class="govuk-details__text">
-        <p>@messages(s"site.canInclude.$user")</p>
-        <ul class="govuk-body govuk-list--bullet">
-            <li>@messages("otherExpenses.l1")</li>
-            <li>@messages("otherExpenses.l2")</li>
-        </ul>
-        @tailoringAnswer match {
-            case YesAllowable => {
-                <p>@messages(s"site.cannotInclude.$user")</p>
-                <ul class="govuk-body govuk-list--bullet">
-                    <li>@messages("otherExpenses.l3")</li>
-                    <li>@messages("otherExpenses.l4")</li>
-                    <li>@messages("otherExpenses.l5")</li>
-                </ul>
+    <label class="govuk-label govuk-label--l"> @messages(s"otherExpensesAmount.title.$user") </label>
+    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>@messages(s"site.canInclude.$user")</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>@messages("otherExpenses.l1")</li>
+                <li>@messages("otherExpenses.l2")</li>
+            </ul>
+            @tailoringAnswer match {
+                case YesAllowable => {
+                    <p>@messages(s"site.cannotInclude.$user")</p>
+                    <ul class="govuk-body govuk-list--bullet">
+                        <li>@messages("otherExpenses.l3")</li>
+                        <li>@messages("otherExpenses.l4")</li>
+                        <li>@messages("otherExpenses.l5")</li>
+                    </ul>
+                }
+                case _ => {}
             }
-            case _ => {}
-        }
-    </div>
-</details>
+        </div>
+    </details>
 }

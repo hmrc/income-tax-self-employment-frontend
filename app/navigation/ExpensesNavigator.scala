@@ -68,8 +68,10 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
+            _ =>
+              journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
+          // TODO: Add CYA
     case OtherExpensesAmountPage =>
       userAnswers =>
         taxYear =>
@@ -84,6 +86,7 @@ class ExpensesNavigator @Inject() () {
                   standard.routes.JourneyRecoveryController.onPageLoad()
               }
 
+          // TODO: Add CYA
     case OtherExpensesDisallowableAmountPage => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
     case GoodsToSellOrUseAmountPage =>
