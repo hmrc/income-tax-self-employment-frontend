@@ -467,7 +467,6 @@ advertisingOrMarketing.error.required.agent = Select if all your client’s adve
 advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
 
 ## Entertainment costs
-entertainmentCosts.para = These are disallowable expenses, but you still need to tell us about them.
 entertainmentCosts.l1 = entertaining clients, suppliers and customers
 entertainmentCosts.l2 = hospitality at events
 entertainmentCosts.question.individual = Did you spend anything on entertainment costs?
@@ -841,8 +840,8 @@ depreciationDisallowableAmount.error.lessThanZero.individual = The amount you’
 depreciationDisallowableAmount.error.lessThanZero.agent = The amount your client is claiming in depreciation costs must be more than £0
 depreciationDisallowableAmount.error.overMax.individual = The amount you’re claiming in depreciation costs must be less than £100,000,000,000
 depreciationDisallowableAmount.error.overMax.agent = The amount your client is claiming in depreciation costs must be less than £100,000,000,000
-depreciationDisallowableAmount.change.hidden = Change how much was spent on construction industry
+depreciationDisallowableAmount.change.hidden = Change how much was claiming in depreciation costs
 
 ## Depreciation CYA
-depreciationCya.title.individual = Check your construction industry subcontractors expenses
-depreciationCya.title.agent = Check your client’s construction industry subcontractors expenses
+depreciationCya.title.individual = Check your depreciation costs
+depreciationCya.title.agent = Check your client’s depreciation costs

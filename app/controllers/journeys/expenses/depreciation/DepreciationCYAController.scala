@@ -50,16 +50,9 @@ class DepreciationCYAController @Inject() (override val messagesApi: MessagesApi
     (identify andThen getUserAnswers andThen getJourneyAnswers[DepreciationJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesDepreciation)) andThen requireData) { implicit request =>
       val summaryList =
-        SummaryListCYA.summaryListOpt(
-          List(DepreciationDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)))
+        SummaryListCYA.summaryListOpt(List(DepreciationDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)))
 
-      Ok(
-        view(
-          DepreciationCYAPage.toString,
-          taxYear,
-          request.userType,
-          summaryList,
-          routes.DepreciationCYAController.onSubmit(taxYear, businessId)))
+      Ok(view(DepreciationCYAPage.toString, taxYear, request.userType, summaryList, routes.DepreciationCYAController.onSubmit(taxYear, businessId)))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {

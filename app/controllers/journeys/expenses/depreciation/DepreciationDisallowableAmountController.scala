@@ -26,10 +26,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 class DepreciationDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                           selfEmploymentService: SelfEmploymentService,
