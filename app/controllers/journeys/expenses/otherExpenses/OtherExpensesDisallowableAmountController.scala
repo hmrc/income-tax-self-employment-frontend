@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.MoneyUtils
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
 
 import javax.inject.Inject
@@ -43,8 +43,7 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
                                                            val controllerComponents: MessagesControllerComponents,
                                                            view: OtherExpensesDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with MoneyUtils {
+    with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
     implicit request =>
@@ -53,7 +52,7 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
         form = request.userAnswers
           .get(OtherExpensesDisallowableAmountPage, businessId.some)
           .fold(formProvider(request.userType, amount))(formProvider(request.userType, amount).fill)
-      } yield Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(amount)))).merge // Check if we need format money here
+      } yield Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(amount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
