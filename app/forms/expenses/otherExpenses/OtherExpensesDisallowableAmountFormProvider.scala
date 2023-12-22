@@ -32,7 +32,7 @@ class OtherExpensesDisallowableAmountFormProvider @Inject() extends Mappings wit
         s"otherExpensesDisallowableAmount.error.nonNumeric.$user",
         Seq(formatMoney(totalAmount)))
         .verifying(greaterThan(minimumValue, s"otherExpensesDisallowableAmount.error.lessThanZero.$user", Some(formatMoney(totalAmount))))
-        .verifying(lessThanOrEqualTo(totalAmount, s"otherExpensesDisallowableAmount.error.overAllowableMax.$user", Some(formatMoney(totalAmount))))
+        .verifying(lessThanOrEqualTo(totalAmount, s"otherExpensesDisallowableAmount.error.overAmount.$user", Some(formatMoney(totalAmount))))
     )
 
 }

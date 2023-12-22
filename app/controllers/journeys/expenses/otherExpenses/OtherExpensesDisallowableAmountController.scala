@@ -22,7 +22,6 @@ import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
-import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -52,7 +51,7 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
       (for {
         amount <- request.valueOrRedirectDefault(OtherExpensesAmountPage, businessId)
         form = request.userAnswers
-          .get(OfficeSuppliesDisallowableAmountPage, businessId.some)
+          .get(OtherExpensesDisallowableAmountPage, businessId.some)
           .fold(formProvider(request.userType, amount))(formProvider(request.userType, amount).fill)
       } yield Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(amount)))).merge // Check if we need format money here
   }
@@ -73,7 +72,7 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
           .map(answer => Redirect(navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, answer, taxYear, businessId)))
 
       request
-        .valueOrRedirectDefault(OtherExpensesDisallowableAmountPage, businessId)
+        .valueOrRedirectDefault(OtherExpensesAmountPage, businessId)
         .traverse(handleForm)
         .map(_.merge)
     }

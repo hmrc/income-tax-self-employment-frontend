@@ -70,16 +70,16 @@
     <div class="govuk-details__text">
         <p>@messages(s"site.canInclude.$user")</p>
         <ul class="govuk-body govuk-list--bullet">
-            <li>@messages("otherExpensesAmount.l1")</li>
-            <li>@messages("otherExpensesAmount.l2")</li>
+            <li>@messages("otherExpenses.l1")</li>
+            <li>@messages("otherExpenses.l2")</li>
         </ul>
         @tailoringAnswer match {
             case YesAllowable => {
                 <p>@messages(s"site.cannotInclude.$user")</p>
                 <ul class="govuk-body govuk-list--bullet">
-                    <li>@messages("otherExpensesAmount.l3")</li>
-                    <li>@messages("otherExpensesAmount.l4")</li>
-                    <li>@messages("otherExpensesAmount.l5")</li>
+                    <li>@messages("otherExpenses.l3")</li>
+                    <li>@messages("otherExpenses.l4")</li>
+                    <li>@messages("otherExpenses.l5")</li>
                 </ul>
             }
             case _ => {}

@@ -30,6 +30,8 @@ import play.api.test.Helpers._
 
 abstract case class BigDecimalGetAndPostQuestionBaseSpec(controllerName: String, page: QuestionPage[BigDecimal]) extends ControllerSpec {
 
+  // TODO: Clean this base class up.
+
   val onPageLoadRoute: String
   val onSubmitRoute: String
   val onwardRoute: Call
