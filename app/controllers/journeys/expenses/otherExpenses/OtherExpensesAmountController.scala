@@ -53,12 +53,12 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
       val resultT = for {
-        otherExpense   <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
+        accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
         form = request.userAnswers
           .get(OtherExpensesAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, AccountingType.withName(accountingType), otherExpense, taxYear, businessId))
+      } yield Ok(view(form, mode, request.userType, AccountingType.withName(accountingType), tailoringAnswer, taxYear, businessId))
 
       resultT.merge
     }
