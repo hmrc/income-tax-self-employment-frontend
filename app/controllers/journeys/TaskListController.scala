@@ -17,16 +17,19 @@
 package controllers.journeys
 
 import cats.data.EitherT
+import cats.implicits._
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import models.common.JourneyStatus._
-import models.common.{JourneyStatus, TaxYear}
+import models.common.TaxYear
 import models.domain._
 import models.errors.ServiceError
-import models.journeys.Journey.TradeDetails
+import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.{Journey, TaskList}
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Format
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
+                                    getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                     service: SelfEmploymentServiceBase,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
@@ -44,23 +48,35 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
 
-  // TODO can we do one call to backend? Probably yes. Get List of completed
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  private def loadSubmittedAnswers[A: Format](taxYear: TaxYear, taskList: TaskList, request: OptionalDataRequest[AnyContent], journey: Journey) =
+    taskList.businesses.foldLeft(Future.successful(request)) { (futureRequest, business) =>
+      futureRequest.flatMap { updatedRequest =>
+        getJourneyAnswersIfAny[A](req => req.mkJourneyNinoContext(taxYear, business.businessId, journey))
+          .execute(updatedRequest)
+      }
+    }
+
+  // TODO can we do one call to backend? Probably yes. Get List of statuses and list of answers needed for taskList. We may need a case class for TaskList model
+  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { originalRequest =>
     val result = (
       for {
-        status          <- service.getJourneyStatus(TradeDetails, request.nino, taxYear, request.mtditid)
-        completedTrades <- getViewModelList(taxYear, status)
-        viewModelList = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, request.userAnswers))
-      } yield Ok(view(taxYear, request.user, status, viewModelList))
+        taskList       <- service.getTaskList(originalRequest.nino, taxYear, originalRequest.mtditid)(hc(originalRequest))
+        updatedRequest <- EitherT.right[ServiceError](loadSubmittedAnswers[IncomeJourneyAnswers](taxYear, taskList, originalRequest, Journey.Income))
+        completedTrades = getViewModelList(taskList)
+        message         = messagesApi.preferred(updatedRequest)
+        viewModelList   = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedRequest.userAnswers)(message))
+      } yield Ok(
+        view(taxYear, updatedRequest.user, taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords), viewModelList)(
+          updatedRequest,
+          message))
     ).result
 
     result.merge
   }
 
-  private def getViewModelList(taxYear: TaxYear, status: JourneyStatus)(implicit
-      request: OptionalDataRequest[AnyContent]): EitherT[Future, ServiceError, _ >: Nil.type <: List[TradesJourneyStatuses]] =
-    status match {
-      case Completed                                                  => service.getCompletedTradeDetails(request.nino, taxYear, request.mtditid)
-      case CheckOurRecords | InProgress | CannotStartYet | NotStarted => EitherT.rightT[Future, ServiceError](Nil)
+  private def getViewModelList(taskList: TaskList): List[TradesJourneyStatuses] =
+    taskList.tradeDetails.map(_.journeyStatus).fold[List[TradesJourneyStatuses]](Nil) {
+      case Completed                                                  => taskList.businesses
+      case CheckOurRecords | InProgress | CannotStartYet | NotStarted => Nil
     }
 }

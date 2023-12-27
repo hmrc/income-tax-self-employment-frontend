@@ -16,16 +16,13 @@
 
 package services
 
-import cats.data.EitherT
 import connectors.SelfEmploymentConnector
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.errors.ServiceError.NotFoundError
-import models.journeys.Journey
-import models.journeys.Journey.TradeDetails
-import models.requests.TradesJourneyStatuses
+import models.journeys.TaskList
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
@@ -38,8 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 // TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentServiceBase {
-  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
-  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]]
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
+  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def getSubmittedAnswers[SubsetOfAnswers: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]]
@@ -50,16 +48,14 @@ class SelfEmploymentService @Inject() (connector: SelfEmploymentConnector, sessi
     extends SelfEmploymentServiceBase
     with Logging {
 
-  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = {
-    val tradeId   = BusinessId(s"${TradeDetails.toString}-${nino.value}")
-    val journeyId = journey.toString
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
+    connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)
 
-    EitherT(connector.getJourneyState(tradeId, journeyId, taxYear, mtditid.value))
-      .map(JourneyStatus.tradeDetailsStatusFromCompletedState)
-  }
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.saveJourneyState(ctx, status)
 
-  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
-    EitherT(connector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid.value))
+  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList] =
+    connector.getTaskList(nino.value, taxYear, mtditid)
 
   // TODO return AccountingType not String
   // TODO HttpErrors in business layer may not be the best idea

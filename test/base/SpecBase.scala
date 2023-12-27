@@ -38,6 +38,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
+import services.SelfEmploymentServiceBase
+import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -102,6 +104,11 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
         bind[SubmittedDataRetrievalActionProvider].toInstance(FakeSubmittedDataRetrievalActionProvider())
       )
   }
+
+  def createApp(stub: SelfEmploymentServiceStub) =
+    applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[SelfEmploymentServiceBase].toInstance(stub))
+      .build()
 
 }
 

@@ -16,11 +16,20 @@
 
 package connectors
 
-import cats.implicits.catsSyntaxEitherId
+import cats.implicits._
+import connectors.ContentHttpReads._
 import connectors.httpParser.HttpParser.unsafePagerDutyError
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object NoContentHttpReads extends HttpReads[NoContentResponse] {
-  override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-    if (isSuccess(response.status)) ().asRight else unsafePagerDutyError(response).asLeft
+class OptionalContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
+
+  override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
+    if (isNoContent(response.status)) {
+      None.asRight
+    } else if (isSuccess(response.status)) {
+      readOne[A](response).map(Some(_))
+    } else {
+      Left(unsafePagerDutyError(response))
+    }
 }

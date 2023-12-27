@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package connectors
+package utils
 
-import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.HttpParser.unsafePagerDutyError
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import enumeratum._
+import play.api.libs.json._
 
-object NoContentHttpReads extends HttpReads[NoContentResponse] {
-  override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-    if (isSuccess(response.status)) ().asRight else unsafePagerDutyError(response).asLeft
+trait PlayJsonEnum[A <: EnumEntry] { self: Enum[A] =>
+  implicit val keyWrites: KeyWrites[A] = EnumFormats.keyWrites(this)
+
+  implicit def contraKeyWrites[K <: A]: KeyWrites[K] = {
+    val w = this.keyWrites
+
+    new KeyWrites[K] {
+      def writeKey(k: K) = w.writeKey(k)
+    }
+  }
+
+  implicit val jsonFormat: Format[A]               = EnumFormats.formats(this)
+  implicit def contraJsonWrites[B <: A]: Writes[B] = jsonFormat.contramap[B](b => b: A)
 }

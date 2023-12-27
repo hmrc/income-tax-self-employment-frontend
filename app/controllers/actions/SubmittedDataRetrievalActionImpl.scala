@@ -35,7 +35,9 @@ import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest]
+trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest] {
+  def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+}
 
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: OptionalDataRequest[_] => JourneyContext,
                                                                 selfEmploymentService: SelfEmploymentServiceBase,
@@ -62,13 +64,10 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
-      maybeJourneyAnswers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
-      updatedAnswers = maybeJourneyAnswers.fold(existingAnswers) { answers =>
-        val jsonAnswers = ContentHttpReads.asJsonUnsafe(answers)
-        existingAnswers.upsertFragment(ctx.businessId, jsonAnswers)
-      }
-      _ <- EitherT.right[ServiceError](sessionRepository.set(updatedAnswers))
-    } yield updatedAnswers
+      answers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
+      updatedAnswers = answers.map(a => existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a)))
+      _ <- EitherT.right[ServiceError](updatedAnswers.fold(Future.successful(()))(sessionRepository.set(_).void))
+    } yield updatedAnswers.getOrElse(existingAnswers)
 
     handleApiResult(result)
   }

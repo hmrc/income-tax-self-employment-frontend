@@ -38,6 +38,7 @@ import viewmodels.journeys.SummaryListCYA
 
 case class TradeJourneyStatusesViewModel(tradingName: String, businessId: BusinessId, statusList: SummaryList)
 
+// TODO This is over complex class and needs to be simplified
 object TradeJourneyStatusesViewModel {
 
   // noinspection ScalaStyle
@@ -45,7 +46,7 @@ object TradeJourneyStatusesViewModel {
       messages: Messages): SummaryList = {
 
     implicit val impTaxYear: TaxYear                       = taxYear
-    implicit val businessId: BusinessId                    = BusinessId(tradesJourneyStatuses.businessId)
+    implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
     implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 

@@ -31,7 +31,7 @@ package object controllers {
   def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
-    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.toString, NormalMode)
+    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode)
   )
 
   def handleResult(result: Future[Either[ServiceError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =

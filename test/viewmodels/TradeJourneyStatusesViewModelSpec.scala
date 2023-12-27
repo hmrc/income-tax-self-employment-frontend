@@ -22,24 +22,25 @@ import models.NormalMode
 import models.common.JourneyStatus
 import models.common.JourneyStatus._
 import models.database.UserAnswers
-import models.journeys.Journey
 import models.journeys.Journey._
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
+import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyCompletedState
+import org.scalatest.prop.TableDrivenPropertyChecks
 import pages.expenses.tailoring.individualCategories._
 import pages.income.TradingAllowancePage
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
-class TradeJourneyStatusesViewModelSpec extends SpecBase {
+// TODO This test is really hard to debug. It has too much logic, so cannot be trusted fully
+// Refactor to be Table(actual, expected)
+class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropertyChecks {
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  case class TestScenario(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers)
   private val officeSuppliesAndGTSOUYes = emptyUserAnswers
     .set(OfficeSuppliesPage, OfficeSupplies.YesAllowable, Some(businessId))
     .success
@@ -47,41 +48,44 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
     .set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, Some(businessId))
     .success
     .value
-  private val testScenarios = Seq(
-    TestScenario(List.empty, emptyUserAnswers),
-    TestScenario(List(JourneyCompletedState(Abroad, Some(false))), emptyUserAnswers),
-    TestScenario(
-      List(JourneyCompletedState(Abroad, Some(true)), JourneyCompletedState(Income, None), JourneyCompletedState(ExpensesTailoring, Some(true))),
+
+  private val testScenarios = Table(
+    ("JourneyNameAndStatus", "userAnswers"),
+    (Nil, emptyUserAnswers),
+    (List(JourneyNameAndStatus(Abroad, JourneyStatus.InProgress)), emptyUserAnswers),
+    (
+      List(
+        JourneyNameAndStatus(Abroad, JourneyStatus.Completed),
+        JourneyNameAndStatus(Income, JourneyStatus.CheckOurRecords),
+        JourneyNameAndStatus(ExpensesTailoring, JourneyStatus.Completed)
+      ),
       emptyUserAnswers
     ),
-    TestScenario(
+    (
       List(
-        JourneyCompletedState(Abroad, Some(true)),
-        JourneyCompletedState(Income, Some(true)),
-        JourneyCompletedState(ExpensesTailoring, Some(true)),
-        JourneyCompletedState(ExpensesOfficeSupplies, None),
-        JourneyCompletedState(ExpensesGoodsToSellOrUse, Some(false))
+        JourneyNameAndStatus(Abroad, JourneyStatus.Completed),
+        JourneyNameAndStatus(Income, JourneyStatus.Completed),
+        JourneyNameAndStatus(ExpensesTailoring, JourneyStatus.Completed),
+        JourneyNameAndStatus(ExpensesOfficeSupplies, JourneyStatus.CheckOurRecords),
+        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.InProgress)
       ),
       officeSuppliesAndGTSOUYes
     )
   ) // TODO find a better solution for generating combinations of different journey states and user answers
 
-  "TradeJourneyStatusesViewModel" - {
-    ".buildSummaryList" - {
-      "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" - {
-        testScenarios.foreach { testScenario =>
-          s"statuses are: ${testScenario.journeyCompletedStates} and userAnswers are: ${testScenario.userAnswers}" in {
-            val tradesJourneyStatuses = TradesJourneyStatuses(businessId.value, Some("tradingName"), testScenario.journeyCompletedStates)
-            val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(testScenario.userAnswers))
+  "buildSummaryList" - {
+    "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
+      forAll(testScenarios) { case (journeyCompletedStates, userAnswers) =>
+        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some("tradingName"), journeyCompletedStates)
+        val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
 
-            result.rows.map(_.toString) mustEqual buildExpectedResult(testScenario.journeyCompletedStates, testScenario.userAnswers)
-          }
-        }
+        val expected = buildExpectedResult(journeyCompletedStates, userAnswers)
+        result.rows.map(_.toString) mustEqual expected
       }
     }
   }
 
-  private def buildExpectedResult(journeyCompletedStates: List[JourneyCompletedState], userAnswers: UserAnswers): Seq[String] = {
+  private def buildExpectedResult(journeyCompletedStates: List[JourneyNameAndStatus], userAnswers: UserAnswers): Seq[String] = {
     val tailoringCyaIsAnswered = findJourneyStatus(journeyCompletedStates, ExpensesTailoring) match {
       case InProgress | Completed => true
       case _                      => false
@@ -135,8 +139,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
   private def buildOptionalRow(journey: Journey, status: JourneyStatus, conditionPassedToShowOnTaskList: Boolean): Option[String] =
     if (conditionPassedToShowOnTaskList) {
       val href = status match {
-        case NotStarted => chooseFirstUrl(journey)
-        case _          => chooseCyaUrl(journey)
+        case NotStarted | CheckOurRecords => chooseFirstUrl(journey)
+        case _                            => chooseCyaUrl(journey)
       }
       Some(
         s"SummaryListRow(Key(HtmlContent(<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href> journeys.$journey </a> </span>),),Value(Empty,), app-task-list__item no-wrap no-after-content,Some(Actions(,List(ActionItem($href,HtmlContent(<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> status.$status </strong>),None, tag-float,Map())))))")
@@ -184,11 +188,14 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase {
       case _                     => "not implemented or error"
     }
 
-  private def findJourneyStatus(journeyCompletedStates: List[JourneyCompletedState],
+  private def findJourneyStatus(journeyCompletedStates: List[JourneyNameAndStatus],
                                 journey: Journey,
                                 cannotStartYet: Boolean = false): JourneyStatus = {
-    val jcs = journeyCompletedStates.find(_.journey == journey).getOrElse(JourneyCompletedState(journey, None))
-    statusFromCompletedState(jcs.completedState) match {
+    val jcs = journeyCompletedStates
+      .find(_.name == journey)
+      .getOrElse(JourneyNameAndStatus(journey, JourneyStatus.NotStarted))
+
+    jcs.journeyStatus match {
       case NotStarted => if (cannotStartYet) CannotStartYet else NotStarted
       case state      => state
     }

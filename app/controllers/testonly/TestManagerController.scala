@@ -32,7 +32,8 @@ class TestManagerController @Inject() (
     sessionRepository: SessionRepository,
     selfEmploymentConnector: SelfEmploymentConnector,
     val controllerComponents: MessagesControllerComponents
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with Logging {
 
   def isTestEnabled: Action[AnyContent] = Action {
@@ -40,8 +41,6 @@ class TestManagerController @Inject() (
   }
 
   def clearAllData(): Action[AnyContent] = Action.async {
-    implicit val ec = ExecutionContext.global
-
     (for {
       _ <- EitherT.right[ServiceError](sessionRepository.testOnlyClearAllData())
       _ <- selfEmploymentConnector.clearDatabase()(HeaderCarrier(), ec)

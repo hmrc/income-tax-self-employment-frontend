@@ -19,10 +19,10 @@ package connectors
 import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
-import connectors.httpParser.GetTradesStatusHttpParser.{GetTradesStatusHttpReads, GetTradesStatusResponse}
-import connectors.httpParser.JourneyStateParser.{JourneyStateHttpReads, JourneyStateHttpWrites, JourneyStateResponse}
-import models.common.{BusinessId, JourneyContext, Mtditid, TaxYear}
+import connectors.httpParser.HttpParser.StringWrites
+import models.common._
 import models.domain.ApiResultT
+import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -54,38 +54,29 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
   }
 
-  def getJourneyState(businessId: BusinessId, journey: String, taxYear: TaxYear, mtditid: String)(implicit
+  def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[JourneyStateResponse] = {
-
-    val url = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}")
-    http.GET[JourneyStateResponse](url)(JourneyStateHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+      ec: ExecutionContext): ApiResultT[JourneyNameAndStatus] = {
+    val url      = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}")
+    val response = get[JourneyNameAndStatus](http, url, mtditid)
+    EitherT(response)
   }
 
-  def saveJourneyState(businessId: BusinessId, journey: String, taxYear: TaxYear, complete: Boolean, mtditid: String)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): Future[JourneyStateResponse] = {
-
-    val url = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}/$complete")
-
-    http.PUT[String, JourneyStateResponse](url, "")(
-      JourneyStateHttpWrites,
-      JourneyStateHttpReads,
-      hc.withExtraHeaders(headers = "mtditid" -> mtditid),
-      ec)
+  def saveJourneyState(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
+    val url      = buildUrl(s"completed-section/${ctx.businessId.value}/${ctx.journey}/${ctx.taxYear.value}")
+    val response = put(http, url, ctx.mtditid, JourneyStatusData(status))
+    EitherT(response)
   }
 
-  def getCompletedTradesWithStatuses(nino: String, taxYear: TaxYear, mtditid: String)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): Future[GetTradesStatusResponse] = {
-
-    val url = buildUrl(s"individuals/business/journey-states/$nino/${taxYear.value}")
-    http.GET[GetTradesStatusResponse](url)(GetTradesStatusHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+  def getTaskList(nino: String, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[TaskList] = {
+    val url      = buildUrl(s"${taxYear.value}/$nino/task-list")
+    val response = get[TaskList](http, url, mtditid)
+    EitherT(response)
   }
 
   def getSubmittedAnswers[A: Reads](context: JourneyContext)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Option[A]] = {
     val url      = buildUrl(context.answersUrl)
-    val response = get(http, url, context.mtditid)
+    val response = getOpt[A](http, url, context.mtditid)
     EitherT(response)
   }
 

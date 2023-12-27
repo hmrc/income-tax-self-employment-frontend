@@ -16,12 +16,20 @@
 
 package models.journeys
 
-import models.common.{Enumerable, WithName}
+import models.common.JourneyStatus._
+import models.common.{Enumerable, JourneyStatus, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import models.journeys.CompletedSectionState.{Yes, No}
 
-sealed trait CompletedSectionState
+sealed trait CompletedSectionState {
+
+  def toStatus: JourneyStatus = this match {
+    case Yes => Completed
+    case No  => InProgress
+  }
+}
 
 object CompletedSectionState extends Enumerable.Implicits {
 

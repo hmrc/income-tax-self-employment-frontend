@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package connectors
+package models.journeys
 
-import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.HttpParser.unsafePagerDutyError
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import models.requests.TradesJourneyStatuses
+import play.api.libs.json.{Json, OFormat}
 
-object NoContentHttpReads extends HttpReads[NoContentResponse] {
-  override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-    if (isSuccess(response.status)) ().asRight else unsafePagerDutyError(response).asLeft
+final case class TaskList(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses])
+
+object TaskList {
+  implicit val format: OFormat[TaskList] = Json.format[TaskList]
+
+  val empty: TaskList = TaskList(None, Nil)
 }
