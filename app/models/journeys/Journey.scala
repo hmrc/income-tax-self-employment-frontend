@@ -75,12 +75,11 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(DepreciationDisallowableAmountPage.pageName)
   }
 
-  case object NationalInsurance extends Journey("national-insurance")
-
-  case object NationalInsurance extends Journey("national-insurance")
   case object ExpensesRepairsAndMaintenance extends Journey("expenses-repairs-and-maintenance") {
     override val pageKeys: List[PageName] = List(RepairsAndMaintenanceAmountPage.pageName, RepairsAndMaintenanceDisallowableAmountPage.pageName)
   }
+
+  case object NationalInsurance extends Journey("national-insurance")
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
 
@@ -94,5 +93,5 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
     override def unbind(key: String, journeyName: Journey): String =
       strBinder.unbind(key, journeyName.entryName)
-
   }
+}
