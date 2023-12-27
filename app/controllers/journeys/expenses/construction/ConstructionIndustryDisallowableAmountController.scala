@@ -66,7 +66,7 @@ class ConstructionIndustryDisallowableAmountController @Inject() (override val m
 
       def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, userAnswers, value, ConstructionIndustryDisallowableAmountPage)
+          .persistAnswer(businessId, userAnswers, value, ConstructionIndustryDisallowableAmountPage)
           .map(updated => Redirect(navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, updated, taxYear, businessId)))
 
       def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =
