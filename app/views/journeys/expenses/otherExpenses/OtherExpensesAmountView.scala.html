@@ -1,0 +1,89 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.common._
+@import viewmodels.InputWidth._
+@import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesAmountController
+@import views.html.templates.helpers.Heading
+@import viewmodels.LabelSize
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import models.common.AccountingType
+@import models.journeys.expenses.individualCategories.OtherExpenses
+@import models.journeys.expenses.individualCategories.OtherExpenses.YesAllowable
+
+@this(layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    heading: Heading)
+
+@(form: Form[_],
+  mode: Mode,
+  userType: UserType,
+  accountingType: AccountingType,
+  tailoringAnswer: OtherExpenses,
+  taxYear: TaxYear,
+  businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"otherExpensesAmount.title.$userType"))) {
+
+    @formHelper(action = OtherExpensesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(HtmlContent(buildLabelContent(userType, tailoringAnswer)))
+            )
+            .asNumeric()
+            .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+        )
+
+        @govukButton(ButtonViewModel(messages("site.continue")))
+    }
+}
+
+@buildLabelContent(user: UserType, tailoringAnswer: OtherExpenses) = {
+    <label class="govuk-label govuk-label--l"> @messages(s"otherExpensesAmount.title.$user") </label>
+    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>@messages(s"site.canInclude.$user")</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>@messages("otherExpenses.l1")</li>
+                <li>@messages("otherExpenses.l2")</li>
+            </ul>
+            @tailoringAnswer match {
+                case YesAllowable => {
+                    <p>@messages(s"site.cannotInclude.$user")</p>
+                    <ul class="govuk-body govuk-list--bullet">
+                        <li>@messages("otherExpenses.l3")</li>
+                        <li>@messages("otherExpenses.l4")</li>
+                        <li>@messages("otherExpenses.l5")</li>
+                    </ul>
+                }
+                case _ => {}
+            }
+        </div>
+    </details>
+}

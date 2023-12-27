@@ -30,6 +30,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceAmountPage,
   RepairsAndMaintenanceCostsCYAPage,
@@ -67,7 +68,26 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
+            _ =>
+              journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
+
+          // TODO: Add CYA
+    case OtherExpensesAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            _ =>
+              userAnswers.get(OtherExpensesPage, Some(businessId)) match {
+                case Some(OtherExpenses.YesAllowable) =>
+                  standard.routes.JourneyRecoveryController.onPageLoad()
+                case Some(OtherExpenses.YesDisallowable) =>
+                  journeys.expenses.otherExpenses.routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case _ =>
+                  standard.routes.JourneyRecoveryController.onPageLoad()
+              }
+
+          // TODO: Add CYA
+    case OtherExpensesDisallowableAmountPage => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>

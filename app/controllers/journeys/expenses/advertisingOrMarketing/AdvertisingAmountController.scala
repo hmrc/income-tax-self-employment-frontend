@@ -66,7 +66,7 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
           )
       def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingAmountPage)
+          .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingAmountPage)
           .map(updated => Redirect(navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
 
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {

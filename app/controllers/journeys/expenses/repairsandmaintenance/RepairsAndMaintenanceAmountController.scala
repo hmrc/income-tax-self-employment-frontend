@@ -72,7 +72,7 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
 
     def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
       selfEmploymentService
-        .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
+        .persistAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
         .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId)))
 
     def handleForm(form: Form[BigDecimal],
