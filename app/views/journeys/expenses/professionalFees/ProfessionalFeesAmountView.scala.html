@@ -45,28 +45,28 @@
                 <label class="govuk-label govuk-label--l"> ${messages(s"professionalFeesAmount.title.$userType")} </label>
                    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                ${messages("professionalServiceExpenses.d3.heading")} </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <p>${messages(s"site.canIncludeFees.$userType")}</p>
-                        </div>
-                       <ul class="govuk-body govuk-list--bullet">
-                           <li>${messages("professionalServiceExpenses.d3.l1")}</li>
-                           <li>${messages("professionalServiceExpenses.d3.l2")}</li>
-                           <li>${messages("professionalServiceExpenses.d3.l3")}</li>
-                           <li>${messages("professionalServiceExpenses.d3.l4")}</li>
-                           <li>${messages("professionalServiceExpenses.d3.l5")}</li>
-                       </ul>
-                       <p>${messages(s"site.cannotInclude.$userType")}</p>
-                       <ul class="govuk-body govuk-list--bullet">
-                           <li>${messages("expenses.legalCost.property")}</li>
-                           if(accountingType == Accrual) {
-                            <li>${messages("expenses.legalCost.equipment")}</li>
-                           }
-                           <li>${messages("expenses.taxDisputes")}</li>
-                           <li>${messages("expenses.fines")}</li>
-                       </ul>
+                           <span class="govuk-details__summary-text">
+                               ${messages("professionalServiceExpenses.d3.heading")} </span>
+                       </summary>
+                       <div class="govuk-details__text">
+                           <p>${messages(s"site.canIncludeFees.$userType")}</p>
+                           <ul class="govuk-body govuk-list--bullet">
+                               <li>${messages("professionalServiceExpenses.d3.l1")}</li>
+                               <li>${messages("professionalServiceExpenses.d3.l2")}</li>
+                               <li>${messages("professionalServiceExpenses.d3.l3")}</li>
+                               <li>${messages("professionalServiceExpenses.d3.l4")}</li>
+                               <li>${messages("professionalServiceExpenses.d3.l5")}</li>
+                           </ul>
+                           <p>${messages(s"site.cannotInclude.$userType")}</p>
+                           <ul class="govuk-body govuk-list--bullet">
+                               <li>${messages("expenses.legalCost.property")}</li>
+                               ${if(accountingType == Accrual) {
+                                  <li>{messages("expenses.legalCost.equipment")}</li>
+                               } else { "" } }
+                               <li>${messages("expenses.taxDisputes")}</li>
+                               <li>${messages("expenses.fines")}</li>
+                           </ul>
+                       </div>
                     </details>
                 """
                     ))
