@@ -27,6 +27,7 @@ import models.journeys.expenses.individualCategories._
 import pages._
 import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage, ConstructionIndustryDisallowableAmountPage}
+import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
@@ -200,6 +201,9 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId => _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesStaffCosts.toString, NormalMode)
 
+    case DepreciationDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
+
     case _ => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
@@ -234,6 +238,9 @@ class ExpensesNavigator @Inject() () {
 
     case StaffCostsDisallowableAmountPage =>
       _ => taxYear => businessId => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case DepreciationDisallowableAmountPage =>
+      _ => taxYear => businessId => depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 

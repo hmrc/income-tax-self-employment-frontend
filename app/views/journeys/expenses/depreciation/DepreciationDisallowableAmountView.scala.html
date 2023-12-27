@@ -15,7 +15,7 @@
  *@
 
 @import viewmodels.InputWidth._
-@import controllers.journeys.expenses.entertainment.routes
+@import controllers.journeys.expenses.depreciation.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
@@ -29,13 +29,13 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"entertainment.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"depreciationDisallowableAmount.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @formHelper(action = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DepreciationDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
@@ -44,8 +44,22 @@
                         s"""
                         <div>
                             <label class="govuk-label govuk-label--l">
-                                ${messages(s"entertainment.title.$userType")}
+                                ${messages(s"depreciationDisallowableAmount.title.$userType")}
                             </label>
+                            <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                    <span class="govuk-details__summary-text">
+                                        ${messages("depreciationDisallowableAmount.d1.heading")}
+                                    </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                    <p>${messages(s"site.canInclude.$userType")}</p>
+                                    <ul class="govuk-body govuk-list--bullet">
+                                        <li>${messages("depreciation.l1")}</li>
+                                        <li>${messages("depreciation.l2")}</li>
+                                    </ul>
+                                </div>
+                            </details>
                             <div class="govuk-hint">
                                 ${messages("expenses.hint.disallowableExpenses")}
                             </div>
