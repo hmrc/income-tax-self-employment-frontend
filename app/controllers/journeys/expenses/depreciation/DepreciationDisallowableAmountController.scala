@@ -56,7 +56,7 @@ class DepreciationDisallowableAmountController @Inject() (override val messagesA
     implicit request =>
       def handleSuccess(value: BigDecimal): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, DepreciationDisallowableAmountPage)
+          .persistAnswer(businessId, request.userAnswers, value, DepreciationDisallowableAmountPage)
           .map(updated => Redirect(navigator.nextPage(DepreciationDisallowableAmountPage, mode, updated, taxYear, businessId)))
 
       formProvider(request.userType)
