@@ -35,7 +35,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
-import pages.expenses.professionalFees.ProfessionalFeesAmountPage
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.libs.json.Json
@@ -289,22 +289,29 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "navigate to the ProfessionalFeesCYAPage" - {
-              "if all expenses were claimed as allowable" ignore {
+              "if all expenses were claimed as allowable" in {
                 val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "no"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+                val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(ProfessionalFeesAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
               }
-              "if accounting type is not Accrual" ignore {
+              "if accounting type is not Accrual" in {
                 val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "yes"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+                val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(ProfessionalFeesAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
               }
+            }
+          }
+          "the page is ProfessionalFeesDisallowableAmountController" - {
+            "navigate to the ProfessionalFeesCYAController" in {
+              val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
@@ -401,6 +408,21 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is ProfessionalFeesAmountPage" - {
+          "navigate to the ProfessionalFeesCYAController" in {
+            val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(ProfessionalFeesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is ProfessionalFeesDisallowableAmountPage" - {
+          "navigate to the ProfessionalFeesCYAController" in {
+            val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

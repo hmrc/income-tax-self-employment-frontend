@@ -325,6 +325,9 @@ POST        /:taxYear/:businessId/expenses/professional-fees/disallowable-amount
 GET         /:taxYear/:businessId/expenses/change-professional-fees/disallowable-amount                        controllers.journeys.expenses.professionalFees.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-professional-fees/disallowable-amount                        controllers.journeys.expenses.professionalFees.ProfessionalFeesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/professional-fees/check                                             controllers.journeys.expenses.professionalFees.ProfessionalFeesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/professional-fees/check                                             controllers.journeys.expenses.professionalFees.ProfessionalFeesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Depreciation ##########
 
 GET         /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
