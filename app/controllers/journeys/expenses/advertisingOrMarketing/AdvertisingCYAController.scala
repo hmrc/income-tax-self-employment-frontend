@@ -36,7 +36,8 @@ import scala.concurrent.ExecutionContext
 
 class AdvertisingCYAController @Inject() (override val messagesApi: MessagesApi,
                                           identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
+                                          getUserAnswers: DataRetrievalAction,
+                                          getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                           requireData: DataRequiredAction,
                                           service: SelfEmploymentService,
                                           val controllerComponents: MessagesControllerComponents,
@@ -45,7 +46,9 @@ class AdvertisingCYAController @Inject() (override val messagesApi: MessagesApi,
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[AdvertisingOrMarketingJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesAdvertisingOrMarketing)) andThen requireData) { implicit request =>
     val user = request.userType
 
     val summaryList = SummaryListCYA.summaryListOpt(
@@ -58,7 +61,7 @@ class AdvertisingCYAController @Inject() (override val messagesApi: MessagesApi,
     Ok(view(AdvertisingOrMarketingCYAPage.toString, taxYear, user, summaryList, routes.AdvertisingCYAController.onSubmit(taxYear, businessId)))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
       val context =
         JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesAdvertisingOrMarketing)
