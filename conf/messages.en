@@ -16,6 +16,8 @@ site.taxYearCaption = 6 April {0} to 5 April {1}
 site.hint.amount = For example, £193.54
 site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
+site.canIncludeFees.individual = You can include fees for:
+site.canIncludeFees.agent = Your client can include fees for:
 site.cannotInclude.individual = You cannot include:
 site.cannotInclude.agent = Your client cannot include:
 site.theseInclude = These include:
@@ -825,6 +827,35 @@ constructionIndustryDisallowableAmount.change.hidden = Change how much spent on 
 ## Construction Industry CYA
 constructionIndustryCya.title.individual = Check your construction industry subcontractors expenses
 constructionIndustryCya.title.agent = Check your client’s construction industry subcontractors expenses
+
+########## Expenses - Professional Fees ##########
+
+professionalFeesAmount.title.individual = How much did you spend on professional fees?
+professionalFeesAmount.title.agent = How much did your client spend on professional fees?
+professionalFeesAmount.error.required.individual = Enter the amount you spent on professional fees
+professionalFeesAmount.error.required.agent = Enter the amount your client spent on professional fees
+professionalFeesAmount.error.nonNumeric.individual = The amount you spent on professional fees must be a number
+professionalFeesAmount.error.nonNumeric.agent = The amount your client spent on professional fees must be a number
+professionalFeesAmount.error.lessThanZero.individual = The amount you spent on professional fees must be more than £0
+professionalFeesAmount.error.lessThanZero.agent = The amount your client spent on professional fees must be more than £0
+professionalFeesAmount.error.overMax.individual = The amount you spent on professional fees must be less than £100,000,000,000
+professionalFeesAmount.error.overMax.agent = The amount your client spent on professional fees must be less than £100,000,000,000
+professionalFeesAmount.change.hidden = Change how much was spent on professional fees
+
+professionalFeesDisallowableAmount.title.individual = How much of the £{0} you spent on professional fees is disallowable?
+professionalFeesDisallowableAmount.title.agent = How much of the £{0} your client spent on professional fees is disallowable?
+professionalFeesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on professional fees that is disallowable
+professionalFeesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on professional fees that is disallowable
+professionalFeesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on professional fees must be a number
+professionalFeesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on professional fees must be a number
+professionalFeesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on professional fees must be more than £0
+professionalFeesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on professional fees must be more than £0
+professionalFeesDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on professional fees must be the same as or less than £{0}
+professionalFeesDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on professional fees must be the same as or less than £{0}
+professionalFeesDisallowableAmount.change.hidden = Change how much spent on professional fees is disallowable
+
+professionalFeesCya.title.individual = Check your professional fees
+professionalFeesCya.title.agent = Check your client’s professional fees
 
 ########## Expenses - Depreciation ##########
 
