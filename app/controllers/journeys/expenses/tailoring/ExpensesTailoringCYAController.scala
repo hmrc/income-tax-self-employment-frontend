@@ -27,7 +27,6 @@ import models.journeys.expenses.{
   ExpensesTailoringNoExpensesAnswers,
   ExpensesTailoringTotalAmountAnswers
 }
-import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,10 +37,15 @@ import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import models.journeys.expenses.ExpensesTailoringAnswers
+import models.journeys.Journey
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.ExpensesTailoringCYAPage
 
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
+                                                getUserAnswers: DataRetrievalAction,
+                                                getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                                 requireData: DataRequiredAction,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: CheckYourAnswersView,
@@ -50,23 +54,27 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
-    (request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) map { answer =>
-      val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"
-      Ok(
-        view(
-          title,
-          taxYear,
-          request.userType,
-          summaryList,
-          tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen
+      getJourneyAnswersIfAny[ExpensesTailoringAnswers](request =>
+        request.mkJourneyNinoContext(taxYear, businessId, Journey.ExpensesTailoring)) andThen
+      requireData) { implicit request =>
+      val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
+      (request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) map { answer =>
+        val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"
+        Ok(
+          view(
+            title,
+            taxYear,
+            request.userType,
+            summaryList,
+            tailoring.routes.ExpensesTailoringCYAController.onSubmit(taxYear, businessId)
+          )
         )
-      )
-    }).merge
-  }
+      }).merge
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
       request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) match {
         case Left(redirect) => Future(redirect)

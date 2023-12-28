@@ -23,10 +23,13 @@ import cats.implicits._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.common.JourneyStatus
+import models.errors.HttpError
+import models.errors.HttpErrorBody
 import models.errors.ServiceError.ConnectorResponseError
-import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
-import models.journeys.{JourneyNameAndStatus, TaskList}
+import models.journeys.JourneyNameAndStatus
+import models.journeys.TaskList
+import models.journeys.TaskListWithRequest
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,6 +38,8 @@ import play.api.test.Helpers._
 import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import views.html.journeys.TaskListView
+
+import TaskListControllerSpec._
 
 class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   val nino       = "AA370343B"
@@ -47,7 +52,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "must return OK and display Self-employments when review of trade details has been completed" in {
       val application = createApp(
         stubService.copy(
-          getTaskList = TaskList(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, aSequenceTadesJourneyStatusesModel).asRight
+          getTaskList = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, aSequenceTadesJourneyStatusesModel).asRight
         ))
 
       val selfEmploymentList =
@@ -66,7 +71,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
       val application = createApp(
         stubService.copy(
-          getTaskList = TaskList(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, Nil).asRight
+          getTaskList = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, Nil).asRight
         ))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
@@ -79,7 +84,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "must return OK and display no Self-employments when the review of trade details has not been completed" in {
       val application = createApp(
         stubService.copy(
-          getTaskList = TaskList(JourneyNameAndStatus(TradeDetails, JourneyStatus.InProgress).some, Nil).asRight
+          getTaskList = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.InProgress).some, Nil).asRight
         ))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
@@ -92,7 +97,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
       val application = createApp(
         stubService.copy(
-          getTaskList = TaskList(JourneyNameAndStatus(TradeDetails, JourneyStatus.CheckOurRecords).some, Nil).asRight
+          getTaskList = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.CheckOurRecords).some, Nil).asRight
         ))
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -117,4 +122,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
     }
   }
+}
+
+object TaskListControllerSpec {
+  def taskListRequest(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses]): TaskListWithRequest =
+    TaskListWithRequest(TaskList(tradeDetails, businesses), fakeOptionalRequest)
 }

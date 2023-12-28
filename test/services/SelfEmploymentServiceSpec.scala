@@ -41,12 +41,16 @@ import services.SelfEmploymentService.getIncomeTradingAllowance
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
+import controllers.actions.SubmittedDataRetrievalActionProvider
+import SpecBase._
 
 class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
-  val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
-  val mockSessionRepository                  = mock[SessionRepository]
-  val service: SelfEmploymentService         = new SelfEmploymentService(mockConnector, mockSessionRepository)
+  val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
+  val mockSessionRepository                    = mock[SessionRepository]
+  val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
+
+  val service: SelfEmploymentService = new SelfEmploymentService(mockConnector, mockSessionRepository, mockSubmittedDataRetrievalActionProvider)
 
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
@@ -83,7 +87,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
     "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
       mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
 
-      val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
+      val result = await(service.getTaskList(taxYear, fakeOptionalRequest).value)
 
       result shouldBe Right(aTaskList)
     }
@@ -91,7 +95,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.leftT[Future, TaskList](
         ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
 
-      val result = await(service.getTaskList(nino, taxYear, Mtditid(mtditid)).value)
+      val result = await(service.getTaskList(taxYear, fakeOptionalRequest).value)
 
       result shouldBe Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
     }

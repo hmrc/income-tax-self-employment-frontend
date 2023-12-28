@@ -43,6 +43,10 @@ import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+import models.requests.OptionalDataRequest
+import play.api.mvc.AnyContentAsEmpty
+import uk.gov.hmrc.auth.core.AffinityGroup
+import play.api.mvc.AnyContent
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
@@ -55,6 +59,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val businessId: BusinessId     = BusinessId("SJPR05893938418")
   val zeroValue: BigDecimal      = 0
   val maxAmountValue: BigDecimal = 100000000000.00
+
+  val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
+  val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)
 
   def anyNino: Nino               = Nino(any)
   def anyMtditid: Mtditid         = Mtditid(any)

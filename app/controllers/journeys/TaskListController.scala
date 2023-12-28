@@ -16,59 +16,48 @@
 
 package controllers.journeys
 
-import cats.data.EitherT
 import cats.implicits._
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SubmittedDataRetrievalActionProviderBase
 import models.common.JourneyStatus._
 import models.common.TaxYear
 import models.domain._
-import models.errors.ServiceError
-import models.journeys.income.IncomeJourneyAnswers
-import models.journeys.{Journey, TaskList}
-import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
+import models.journeys.TaskList
+import models.requests.TradesJourneyStatuses
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Format
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentServiceBase
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
-                                    getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
-                                    service: SelfEmploymentServiceBase,
+                                    answerLoader: SubmittedDataRetrievalActionProviderBase,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
 
-  private def loadSubmittedAnswers[A: Format](taxYear: TaxYear, taskList: TaskList, request: OptionalDataRequest[AnyContent], journey: Journey) =
-    taskList.businesses.foldLeft(Future.successful(request)) { (futureRequest, business) =>
-      futureRequest.flatMap { updatedRequest =>
-        getJourneyAnswersIfAny[A](req => req.mkJourneyNinoContext(taxYear, business.businessId, journey))
-          .execute(updatedRequest)
-      }
-    }
-
-  // TODO can we do one call to backend? Probably yes. Get List of statuses and list of answers needed for taskList. We may need a case class for TaskList model
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { originalRequest =>
+  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit originalRequest =>
     val result = (
       for {
-        taskList       <- service.getTaskList(originalRequest.nino, taxYear, originalRequest.mtditid)(hc(originalRequest))
-        updatedRequest <- EitherT.right[ServiceError](loadSubmittedAnswers[IncomeJourneyAnswers](taxYear, taskList, originalRequest, Journey.Income))
-        completedTrades = getViewModelList(taskList)
-        message         = messagesApi.preferred(updatedRequest)
-        viewModelList   = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedRequest.userAnswers)(message))
-      } yield Ok(
-        view(taxYear, updatedRequest.user, taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords), viewModelList)(
-          updatedRequest,
-          message))
+        taskListWithRequest <- answerLoader.loadTaskList(taxYear, originalRequest)
+        taskList           = taskListWithRequest.taskList
+        updatedRequest     = taskListWithRequest.request
+        completedTrades    = getViewModelList(taskList)
+        message            = messagesApi.preferred(updatedRequest)
+        viewModelList      = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedRequest.userAnswers)(message))
+        tradeDetailsStatus = taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
+      } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList)(updatedRequest, message))
     ).result
 
     result.merge

@@ -27,16 +27,22 @@ import play.api.libs.json.{Format, JsObject, Writes}
 import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import models.journeys.TaskListWithRequest
+import models.requests.OptionalDataRequest
+import play.api.mvc.AnyContent
+import base.SpecBase._
 
 case class SelfEmploymentServiceStub(
     accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Cash),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
     submittedAnswers: Either[ServiceError, Option[JsObject]] = Right(Some(JsObject.empty)),
-    getTaskList: Either[ServiceError, TaskList] = Right(TaskList.empty),
+    getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
     getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
 ) extends SelfEmploymentServiceBase {
+
+  def getTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit hc: HeaderCarrier): ApiResultT[TaskListWithRequest] =
+    EitherT.fromEither[Future](getTaskList)
 
   def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
 
@@ -50,9 +56,6 @@ case class SelfEmploymentServiceStub(
 
   def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] =
     EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[ServiceError, Option[A]]]))
-
-  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[TaskList] =
-    EitherT.fromEither[Future](getTaskList)
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     EitherT.fromEither[Future](getJourneyStatusResult)
