@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses
+package utils
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
-case class ExpensesTailoringTotalAmountAnswers(
-    expensesCategories: ExpensesTailoring,
-    totalAmount: BigDecimal
-)
+object JsonOps {
 
-object ExpensesTailoringTotalAmountAnswers {
-  implicit val format: Format[ExpensesTailoringTotalAmountAnswers] = Json.format[ExpensesTailoringTotalAmountAnswers]
+  implicit class JsonExtensionOps[A](val underlying: JsObject) {
+    def withType[V: Writes](typeKey: String, typeValue: V): JsObject =
+      Json.obj(
+        typeKey -> Json.toJson(typeValue)
+      ) ++ underlying
+  }
 }

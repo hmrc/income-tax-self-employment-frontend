@@ -26,6 +26,7 @@ import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, 
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income._
 import play.api.mvc.PathBindable
 
@@ -54,8 +55,12 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       TurnoverNotTaxablePage.pageName
     )
   }
-  case object ExpensesTotal     extends Journey("expenses-total")
-  case object ExpensesTailoring extends Journey("expenses-categories")
+  case object ExpensesTotal extends Journey("expenses-total")
+  case object ExpensesTailoring extends Journey("expenses-categories") {
+    override val pageKeys: List[PageName] = List(
+      ExpensesCategoriesPage.pageName
+    )
+  }
   case object ExpensesGoodsToSellOrUse extends Journey("expenses-goods-to-sell-or-use") {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
