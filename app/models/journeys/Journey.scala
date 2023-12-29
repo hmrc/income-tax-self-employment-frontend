@@ -18,6 +18,7 @@ package models.journeys
 
 import enumeratum._
 import models.common.PageName
+import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
@@ -58,7 +59,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object ExpensesGoodsToSellOrUse extends Journey("expenses-goods-to-sell-or-use") {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
-  case object ExpensesAdvertisingOrMarketing extends Journey("expenses-advertising-marketing")
+  case object ExpensesAdvertisingOrMarketing extends Journey("expenses-advertising-marketing") {
+    override val pageKeys: List[PageName] = List(AdvertisingOrMarketingAmountPage.pageName)
+  }
   case object ExpensesOfficeSupplies extends Journey("expenses-office-supplies") {
     override val pageKeys: List[PageName] = List(OfficeSuppliesAmountPage.pageName, OfficeSuppliesDisallowableAmountPage.pageName)
   }
