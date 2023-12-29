@@ -49,17 +49,17 @@ class AdvertisingCYAController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[AdvertisingOrMarketingJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesAdvertisingOrMarketing)) andThen requireData) { implicit request =>
-    val user = request.userType
+      val user = request.userType
 
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        AdvertisingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-        AdvertisingDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          AdvertisingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          AdvertisingDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+        )
       )
-    )
 
-    Ok(view(AdvertisingOrMarketingCYAPage.toString, taxYear, user, summaryList, routes.AdvertisingCYAController.onSubmit(taxYear, businessId)))
-  }
+      Ok(view(AdvertisingOrMarketingCYAPage.toString, taxYear, user, summaryList, routes.AdvertisingCYAController.onSubmit(taxYear, businessId)))
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
