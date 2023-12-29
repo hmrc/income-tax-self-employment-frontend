@@ -18,16 +18,16 @@ package services
 
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
-import builders.TradesJourneyStatusesBuilder.aTaskList
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, JourneyAnswersContext, JourneyStatus, Mtditid, Nino, TaxYear}
+import controllers.actions.SubmittedDataRetrievalActionProvider
+import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
-import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
+import models.journeys.{Journey, JourneyNameAndStatus}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -41,8 +41,6 @@ import services.SelfEmploymentService.getIncomeTradingAllowance
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import controllers.actions.SubmittedDataRetrievalActionProvider
-import SpecBase._
 
 class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
@@ -50,7 +48,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val mockSessionRepository                    = mock[SessionRepository]
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
 
-  val service: SelfEmploymentService = new SelfEmploymentService(mockConnector, mockSessionRepository, mockSubmittedDataRetrievalActionProvider)
+  val service: SelfEmploymentService = new SelfEmploymentService(mockConnector, mockSessionRepository)
 
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
@@ -80,24 +78,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         .value
         .futureValue
       result shouldBe ().asRight
-    }
-  }
-
-  "getTaskList" - {
-    "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
-      mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
-
-      val result = await(service.getTaskList(taxYear, fakeOptionalRequest).value)
-
-      result shouldBe Right(aTaskList)
-    }
-    "should return an error if connector fails" in {
-      mockConnector.getTaskList(nino.value, taxYear, Mtditid(mtditid))(*, *) returns EitherT.leftT[Future, TaskList](
-        ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
-
-      val result = await(service.getTaskList(taxYear, fakeOptionalRequest).value)
-
-      result shouldBe Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
     }
   }
 

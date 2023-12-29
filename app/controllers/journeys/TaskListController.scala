@@ -18,20 +18,15 @@ package controllers.journeys
 
 import cats.implicits._
 import com.google.inject.Inject
-import controllers.actions.DataRetrievalAction
-import controllers.actions.IdentifierAction
-import controllers.actions.SubmittedDataRetrievalActionProviderBase
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import models.common.JourneyStatus._
 import models.common.TaxYear
 import models.domain._
 import models.journeys.TaskList
 import models.requests.TradesJourneyStatuses
 import play.api.Logger
-import play.api.i18n.I18nSupport
-import play.api.i18n.MessagesApi
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.TaskListView
 
@@ -40,7 +35,7 @@ import scala.concurrent.ExecutionContext
 class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
-                                    answerLoader: SubmittedDataRetrievalActionProviderBase,
+                                    answerLoader: SubmittedDataRetrievalActionProvider,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController

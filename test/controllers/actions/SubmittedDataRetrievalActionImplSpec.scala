@@ -17,26 +17,31 @@
 package controllers.actions
 
 import base.SpecBase.{businessId, convertScalaFuture, taxYear}
+import cats.data.EitherT
 import cats.implicits._
+import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
-import controllers.actions.SubmittedDataRetrievalActionImplSpec._
 import models.common.JourneyAnswersContext
 import models.database.UserAnswers
+import models.domain.ApiResultT
+import models.errors.ServiceError
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
+import org.mockito.MockitoSugar
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import stubs.repositories.StubSessionRepository
-import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core._
-
+import org.mockito.ArgumentMatchersSugar._
+import org.mockito.IdiomaticMockito.StubbingOps
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers {
+class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
 
   "transform" should {
     "return the original request if it already contains answers for the journey" in new SubmittedTestData {
@@ -89,24 +94,24 @@ class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers
     actual.user shouldBe expected.user
     actual.userAnswers.map(_.copy(lastUpdated = now)) shouldBe expected.userAnswers.map(_.copy(lastUpdated = now))
   }
-}
 
-object SubmittedDataRetrievalActionImplSpec {
   trait SubmittedTestData {
     def userAnswers: Option[UserAnswers]
     def submittedUerAnswers: JsObject
     def journey: Journey
 
-    lazy val service = SelfEmploymentServiceStub(
-      submittedAnswers = submittedUerAnswers.some.asRight
-    )
+    val connector                                            = mock[SelfEmploymentConnector]
+    val submittedAnswersResult: ApiResultT[Option[JsObject]] = EitherT.pure[Future, ServiceError](submittedUerAnswers.some)
+
+    connector.getSubmittedAnswers[JsObject](*)(*, *, *) returns submittedAnswersResult
+
     val repo                                                 = StubSessionRepository()
     val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, businessId, req.mtditid, journey)
     val user = User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
 
     val request = OptionalDataRequest[AnyContentAsEmpty.type](FakeRequest(), "userId", user, userAnswers)
 
-    val underTest = new SubmittedDataRetrievalActionImpl[JsObject](ctx, service, repo)
+    val underTest = new SubmittedDataRetrievalActionImpl[JsObject](ctx, connector, repo)
   }
 
   private def createUserAnswers(jsonObject: JsObject) = UserAnswers("userId", Json.obj(businessId.value -> jsonObject))

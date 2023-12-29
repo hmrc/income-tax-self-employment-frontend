@@ -20,13 +20,12 @@ import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.tailoring
 import models.common._
+import models.journeys.Journey
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
-import models.journeys.expenses.{
-  ExpensesTailoringIndividualCategoriesAnswers,
-  ExpensesTailoringNoExpensesAnswers,
-  ExpensesTailoringTotalAmountAnswers
-}
+import models.journeys.expenses.ExpensesTailoringAnswers
+import models.journeys.expenses.ExpensesTailoringAnswers._
+import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,10 +36,6 @@ import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import models.journeys.expenses.ExpensesTailoringAnswers
-import models.journeys.Journey
-import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.expenses.tailoring.ExpensesTailoringCYAPage
 
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
@@ -82,13 +77,13 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
           val (journeyContext, result) = answer match {
             case TotalAmount =>
               val journeyContext = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("total"))
-              (journeyContext, service.submitAnswers[ExpensesTailoringTotalAmountAnswers](journeyContext, request.userAnswers))
+              (journeyContext, service.submitAnswers[AsOneTotalAnswers](journeyContext, request.userAnswers))
             case IndividualCategories =>
               val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("categories"))
               (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
             case NoExpenses =>
               val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("none"))
-              (journeyContext, service.submitAnswers[ExpensesTailoringNoExpensesAnswers](journeyContext, request.userAnswers))
+              (journeyContext, service.submitAnswers[NoExpensesAnswers.type](journeyContext, request.userAnswers))
           }
 
           handleSubmitAnswersResult(journeyContext, result)

@@ -25,6 +25,7 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey
+import models.requests.OptionalDataRequest
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -37,16 +38,15 @@ import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import services.SelfEmploymentServiceBase
+import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetrievalAction, StubSubmittedDataRetrievalActionProvider}
 import stubs.services.SelfEmploymentServiceStub
+import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
-import models.requests.OptionalDataRequest
-import play.api.mvc.AnyContentAsEmpty
-import uk.gov.hmrc.auth.core.AffinityGroup
-import play.api.mvc.AnyContent
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
@@ -107,14 +107,19 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         fakeIdentifierAction,
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-        bind[SubmittedDataRetrievalActionProvider].toInstance(FakeSubmittedDataRetrievalActionProvider())
+        bind[DataRetrievalAction].toInstance(StubDataRetrievalAction(userAnswers)),
+        bind[SubmittedDataRetrievalAction].toInstance(StubSubmittedDataRetrievalAction())
       )
   }
 
   def createApp(stub: SelfEmploymentServiceStub) =
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(bind[SelfEmploymentServiceBase].toInstance(stub))
+      .build()
+
+  def createApp(stub: StubSubmittedDataRetrievalActionProvider) =
+    applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stub))
       .build()
 
 }

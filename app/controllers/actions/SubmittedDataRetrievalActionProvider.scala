@@ -38,15 +38,18 @@ import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-trait SubmittedDataRetrievalActionProviderBase {
+trait SubmittedDataRetrievalActionProvider {
+  def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
+      ec: ExecutionContext): SubmittedDataRetrievalAction
+
   def loadTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[TaskListWithRequest]
 }
 
 @Singleton
-class SubmittedDataRetrievalActionProvider @Inject() (connector: SelfEmploymentConnector, sessionRepository: SessionRepositoryBase)
-    extends SubmittedDataRetrievalActionProviderBase {
+class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploymentConnector, sessionRepository: SessionRepositoryBase)
+    extends SubmittedDataRetrievalActionProvider {
 
   def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
       ec: ExecutionContext): SubmittedDataRetrievalAction =
@@ -55,7 +58,7 @@ class SubmittedDataRetrievalActionProvider @Inject() (connector: SelfEmploymentC
   def loadTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[TaskListWithRequest] = {
-    val nino = request.nino
+    val nino    = request.nino
     val mtditid = request.mtditid
 
     for {

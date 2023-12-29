@@ -17,23 +17,16 @@
 package services
 
 import connectors.SelfEmploymentConnector
-import controllers.actions.SubmittedDataRetrievalActionProvider
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.errors.ServiceError.NotFoundError
-import models.journeys.Journey
-import models.journeys.TaskListWithRequest
-import models.journeys.expenses.ExpensesTailoringAnswers
-import models.journeys.income.IncomeJourneyAnswers
-import models.requests.OptionalDataRequest
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.libs.json.Format
 import play.api.libs.json.Writes
-import play.api.mvc.AnyContent
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 

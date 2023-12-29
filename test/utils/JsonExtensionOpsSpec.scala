@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses
+package utils
 
-import play.api.libs.json.{Format, Json}
+import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.libs.json.Json
+import utils.JsonOps._
 
-case class ExpensesTailoringNoExpensesAnswers(
-    expensesCategories: ExpensesTailoring
-)
+class JsonExtensionOpsSpec extends AnyWordSpecLike {
 
-object ExpensesTailoringNoExpensesAnswers {
-  implicit val format: Format[ExpensesTailoringNoExpensesAnswers] = Json.format[ExpensesTailoringNoExpensesAnswers]
+  "withType" should {
+    "add type key" in {
+      val json   = Json.obj("foo" -> "bar")
+      val result = json.withType("type", "baz")
+      assert(result === Json.obj("foo" -> "bar", "type" -> "baz"))
+    }
+  }
 }

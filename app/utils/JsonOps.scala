@@ -19,12 +19,11 @@ package utils
 import play.api.libs.json._
 
 object JsonOps {
-  implicit class JsonExtensionOps[A](val underlying: JsObject) {
 
+  implicit class JsonExtensionOps[A](val underlying: JsObject) {
     def withType[V: Writes](typeKey: String, typeValue: V): JsObject =
       Json.obj(
         typeKey -> Json.toJson(typeValue)
       ) ++ underlying
-
   }
 }

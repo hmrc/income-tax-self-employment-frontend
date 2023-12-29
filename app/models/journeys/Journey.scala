@@ -25,10 +25,9 @@ import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, 
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income._
 import play.api.mvc.PathBindable
-import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
-import pages.expenses.tailoring.ExpensesCategoriesPage
 
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
