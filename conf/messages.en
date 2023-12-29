@@ -324,6 +324,7 @@ expenses.contributions.agent = their own pay, pension or National Insurance cont
 expenses.includes.construction.individual = This includes the total payments you made to subcontractors or any person or company for any type of construction work.
 expenses.includes.construction.agent = This includes the total payments your client made to subcontractors or any person or company for any type of construction work.
 expenses.understanding.construction = Understanding construction industry expenses
+expenses.understanding.interest = Understanding interest on bank and other business loans
 expenses.cyaSummary.individual = How will you report your expenses?
 expenses.cyaSummary.agent = How will you report your client’s expenses?
 expenses.totalAmount = As one total amount
@@ -340,6 +341,11 @@ expenses.staffContractorsAndServices = staff, contractors and services
 expenses.financialExpenses = financial expenses
 expenses.trainingCourses = training courses related to your work
 expenses.workClothing = work clothing
+expenses.interest.accrual = interest on bank and other business loans
+expenses.interest.cash = interest on bank and other business loans up to £500
+expenses.feesForBuyingGoods = fees for buying goods
+expenses.hirePurchase = hire purchase (do not include any repayments made against the borrowed amount)
+expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
 
 ## Expenses Categories
@@ -528,12 +534,6 @@ disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
 financialExpenses.title = Financial expenses
 financialExpenses.subHeading.individual = Did you have any financial expenses?
 financialExpenses.subHeading.agent = Did your client have any financial expenses?
-financialExpenses.d1.heading = Understanding interest on bank and other business loans
-financialExpenses.d1.l1.accrual = interest on bank and other business loans
-financialExpenses.d1.l1.cash = interest on bank and other business loans up to £500
-financialExpenses.d1.l2 = fees for buying goods
-financialExpenses.d1.l3 = hire purchase (do not include any repayments made against the borrowed amount)
-financialExpenses.d1.l5 = overdraft or finance arrangements.
 financialExpenses.d2.heading = Understanding bank, credit card and other financial charges
 financialExpenses.d2.l1 = bank charges
 financialExpenses.d2.l2 = overdraft charges
@@ -856,6 +856,32 @@ professionalFeesDisallowableAmount.change.hidden = Change how much spent on prof
 
 professionalFeesCya.title.individual = Check your professional fees
 professionalFeesCya.title.agent = Check your client’s professional fees
+
+########## Expenses - Interest ##########
+
+interestAmount.title.individual = How much did you spend on interest on bank and other business loans?
+interestAmount.title.agent = How much did your client spend on interest on bank and other business loans?
+interestAmount.error.required.individual = Enter the amount you spent on interest on bank and other business loans
+interestAmount.error.required.agent = Enter the amount your client spent on interest on bank and other business loans
+interestAmount.error.nonNumeric.individual = The amount you spent on interest on bank and other business loans must be a number
+interestAmount.error.nonNumeric.agent = The amount your client spent on interest on bank and other business loans must be a number
+interestAmount.error.lessThanZero.individual = The amount you spent on interest on bank and other business loans must be more than £0
+interestAmount.error.lessThanZero.agent = The amount your client spent on interest on bank and other business loans must be more than £0
+interestAmount.error.overMax.individual = The amount you spent on interest on bank and other business loans must be less than £100,000,000,000
+interestAmount.error.overMax.agent = The amount your client spent on interest on bank and other business loans must be less than £100,000,000,000
+interestAmount.change.hidden = Change how much was spent on interest on bank and other business loans
+
+interestDisallowableAmount.title.individual = How much of the £{0} you spent on interest on bank and other business loans is disallowable?
+interestDisallowableAmount.title.agent = How much of the £{0} your client spent on interest on bank and other business loans is disallowable?
+interestDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on interest on bank and other business loans that is disallowable
+interestDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on interest on bank and other business loans that is disallowable
+interestDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on interest on bank and other business loans must be a number
+interestDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on interest on bank and other business loans must be a number
+interestDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on interest on bank and other business loans must be more than £0
+interestDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on interest on bank and other business loans must be more than £0
+interestDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on interest on bank and other business loans must be the same as or less than £{0}
+interestDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on interest on bank and other business loans must be the same as or less than £{0}
+interestDisallowableAmount.change.hidden = Change how much spent on interest on bank and other business loans is disallowable
 
 ########## Expenses - Depreciation ##########
 
