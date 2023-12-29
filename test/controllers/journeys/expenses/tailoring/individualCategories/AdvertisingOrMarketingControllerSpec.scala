@@ -33,7 +33,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.AdvertisingOrMarketingView
 
@@ -48,8 +47,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
       .onPageLoad(taxYear, businessId, NormalMode)
       .url
 
-  val mockSessionRepository: SessionRepository = mock[SessionRepository]
-  val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   val formProvider = new AdvertisingOrMarketingFormProvider()
 
@@ -132,19 +130,17 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the EntertainmentCostsPage when valid data is submitted and accounting type is 'ACCRUAL'" in {
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
 
         running(application) {
           when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
             FakeRequest(POST, advertisingOrMarketingRoute)
@@ -158,19 +154,17 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
       }
       "must redirect to the ProfessionalServiceExpensesPage when valid data is submitted and accounting type is 'CASH'" in {
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
 
         running(application) {
           when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
             FakeRequest(POST, advertisingOrMarketingRoute)
