@@ -32,7 +32,7 @@ import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPa
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
-import pages.expenses.professionalFees.ProfessionalFeesAmountPage
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceAmountPage,
   RepairsAndMaintenanceCostsCYAPage,
@@ -211,9 +211,12 @@ class ExpensesNavigator @Inject() () {
                 case Some(DisallowableProfessionalFees.Yes) if accountingType.contains(Accrual) =>
                   professionalFees.routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case Some(_) =>
-                  professionalFees.routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                  professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
                 case None => standard.routes.JourneyRecoveryController.onPageLoad()
               }
+
+    case ProfessionalFeesDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
     case DepreciationDisallowableAmountPage =>
       _ => taxYear => businessId => _ => depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
@@ -243,6 +246,12 @@ class ExpensesNavigator @Inject() () {
 
     case ConstructionIndustryDisallowableAmountPage =>
       _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+
+    case ProfessionalFeesAmountPage =>
+      _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+    case ProfessionalFeesDisallowableAmountPage =>
+      _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
