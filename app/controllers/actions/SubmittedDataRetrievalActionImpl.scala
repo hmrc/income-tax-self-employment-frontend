@@ -19,28 +19,35 @@ package controllers.actions
 import cats.data.EitherT
 import cats.implicits._
 import connectors.ContentHttpReads
+import connectors.SelfEmploymentConnector
 import controllers.handleApiResult
-import models.common.{BusinessId, JourneyContext, UserId}
+import models.common.BusinessId
+import models.common.JourneyContext
+import models.common.UserId
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
-import play.api.libs.json.{Format, JsObject, Json}
-import play.api.mvc.{ActionTransformer, Request}
+import play.api.libs.json.Format
+import play.api.libs.json.JsObject
+import play.api.libs.json.Json
+import play.api.mvc.ActionTransformer
+import play.api.mvc.Request
 import repositories.SessionRepositoryBase
-import services.SelfEmploymentServiceBase
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.Logging
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest] {
   def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
 }
 
 class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: OptionalDataRequest[_] => JourneyContext,
-                                                                selfEmploymentService: SelfEmploymentServiceBase,
+                                                                connector: SelfEmploymentConnector,
                                                                 sessionRepository: SessionRepositoryBase)(implicit ec: ExecutionContext)
     extends SubmittedDataRetrievalAction
     with FrontendHeaderCarrierProvider
@@ -64,13 +71,16 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
-      answers <- selfEmploymentService.getSubmittedAnswers[SubsetOfAnswers](ctx)(implicitly[Format[SubsetOfAnswers]], hc(request))
+      answers <- getSubmittedAnswers(ctx)(hc(request))
       updatedAnswers = answers.map(a => existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a)))
       _ <- EitherT.right[ServiceError](updatedAnswers.fold(Future.successful(()))(sessionRepository.set(_).void))
     } yield updatedAnswers.getOrElse(existingAnswers)
 
     handleApiResult(result)
   }
+
+  private def getSubmittedAnswers(context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[SubsetOfAnswers]] =
+    connector.getSubmittedAnswers[SubsetOfAnswers](context)
 
   private def hasAtLeastOneUserAnswerForJourney(businessId: BusinessId, journey: Journey, maybeUserAnswers: Option[UserAnswers]): Boolean =
     maybeUserAnswers.exists { userAnswers =>

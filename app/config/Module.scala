@@ -38,5 +38,7 @@ class Module extends AbstractModule {
     bind(classOf[SelfEmploymentServiceBase]).to(classOf[SelfEmploymentService]).asEagerSingleton()
 
     bind(classOf[SessionRepositoryBase]).to(classOf[SessionRepository]).asEagerSingleton()
+
+    bind(classOf[SubmittedDataRetrievalActionProvider]).to(classOf[SubmittedDataRetrievalActionProviderImpl]).asEagerSingleton()
   }
 }
