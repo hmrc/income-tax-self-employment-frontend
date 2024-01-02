@@ -24,7 +24,7 @@ import navigation.IncomeNavigator
 import pages.income.NotTaxableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NotTaxableAmountView
 
@@ -32,7 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotTaxableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
+                                            selfEmploymentService: SelfEmploymentService,
                                             navigator: IncomeNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
@@ -60,10 +60,9 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotTaxableAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, NotTaxableAmountPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(NotTaxableAmountPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 
