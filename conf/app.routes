@@ -328,6 +328,18 @@ POST        /:taxYear/:businessId/expenses/change-professional-fees/disallowable
 GET         /:taxYear/:businessId/expenses/professional-fees/check                                             controllers.journeys.expenses.professionalFees.ProfessionalFeesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/professional-fees/check                                             controllers.journeys.expenses.professionalFees.ProfessionalFeesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
+########## Expenses - Interest ##########
+
+GET         /:taxYear/:businessId/expenses/interest-bank-business-loans/amount                                 controllers.journeys.expenses.interest.InterestAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/amount                                 controllers.journeys.expenses.interest.InterestAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-interest-bank-business-loans/amount                          controllers.journeys.expenses.interest.InterestAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-interest-bank-business-loans/amount                          controllers.journeys.expenses.interest.InterestAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/interest-bank-business-loans/disallowable-amount                    controllers.journeys.expenses.interest.InterestDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/disallowable-amount                    controllers.journeys.expenses.interest.InterestDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 ########## Expenses - Depreciation ##########
 
 GET         /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
