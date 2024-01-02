@@ -16,33 +16,33 @@
 
 package models.journeys
 
+import enumeratum._
 import models.common.PageName
-import pages.expenses.construction.ConstructionIndustryAmountPage
+import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
+import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
+import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income._
-import play.api.libs.json._
+import play.api.mvc.PathBindable
 
-sealed trait Journey {
+sealed abstract class Journey(override val entryName: String) extends EnumEntry {
+  override def toString: String = entryName
+
   val pageKeys: List[PageName] = Nil
 }
 
-object Journey {
+object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
+  val values: IndexedSeq[Journey] = findValues
 
-  case object TradeDetails extends Journey {
-    override def toString: String = "trade-details"
-  }
-
-  case object Abroad extends Journey {
-    override def toString: String = "self-employment-abroad"
-  }
-
-  case object Income extends Journey {
-    override def toString: String = "income"
-
+  case object TradeDetails extends Journey("trade-details")
+  case object Abroad       extends Journey("self-employment-abroad")
+  case object Income extends Journey("income") {
     override val pageKeys: List[PageName] = List(
       AnyOtherIncomePage.pageName,
       HowMuchTradingAllowancePage.pageName,
@@ -56,79 +56,54 @@ object Journey {
       TurnoverNotTaxablePage.pageName
     )
   }
-
-  case object ExpensesTotal extends Journey {
-    override def toString: String = "expenses-total"
+  case object ExpensesTotal extends Journey("expenses-total")
+  case object ExpensesTailoring extends Journey("expenses-categories") {
+    override val pageKeys: List[PageName] = List(
+      ExpensesCategoriesPage.pageName
+    )
   }
-
-  case object ExpensesTailoring extends Journey {
-    override def toString: String = "expenses-categories"
-  }
-
-  case object ExpensesGoodsToSellOrUse extends Journey {
-    override def toString: String = "expenses-goods-to-sell-or-use"
-
+  case object ExpensesGoodsToSellOrUse extends Journey("expenses-goods-to-sell-or-use") {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
-
-  case object ExpensesAdvertisingOrMarketing extends Journey {
-    override def toString: String = "expenses-advertising-marketing"
+  case object ExpensesAdvertisingOrMarketing extends Journey("expenses-advertising-marketing") {
+    override val pageKeys: List[PageName] = List(AdvertisingOrMarketingAmountPage.pageName)
   }
-
-  case object ExpensesOfficeSupplies extends Journey {
-    override def toString: String = "expenses-office-supplies"
-
+  case object ExpensesOfficeSupplies extends Journey("expenses-office-supplies") {
     override val pageKeys: List[PageName] = List(OfficeSuppliesAmountPage.pageName, OfficeSuppliesDisallowableAmountPage.pageName)
   }
-
-  case object ExpensesEntertainment extends Journey {
-    override def toString: String = "expenses-entertainment"
-
+  case object ExpensesEntertainment extends Journey("expenses-entertainment") {
     override val pageKeys: List[PageName] = List(EntertainmentAmountPage.pageName)
   }
-
-  case object ExpensesStaffCosts extends Journey {
-    override def toString: String = "expenses-staff-costs"
-
+  case object ExpensesStaffCosts extends Journey("expenses-staff-costs") {
     override val pageKeys: List[PageName] = List(StaffCostsAmountPage.pageName, StaffCostsDisallowableAmountPage.pageName)
   }
-
-  case object ExpensesConstruction extends Journey {
-    override def toString: String = "expenses-construction"
-
-    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName)
+  case object ExpensesConstruction extends Journey("expenses-construction") {
+    override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName, ConstructionIndustryDisallowableAmountPage.pageName)
+  }
+  case object ExpensesProfessionalFees extends Journey("expenses-professional-fees") {
+    override val pageKeys: List[PageName] = List(ProfessionalFeesAmountPage.pageName, ProfessionalFeesDisallowableAmountPage.pageName)
+  }
+  case object ExpensesDepreciation extends Journey("expenses-depreciation") {
+    override val pageKeys: List[PageName] = List(DepreciationDisallowableAmountPage.pageName)
   }
 
-  case object NationalInsurance extends Journey {
-    override def toString: String = "national-insurance"
-  }
-
-  case object ExpensesRepairsAndMaintenance extends Journey {
-    override def toString: String = "expenses-repairs-and-maintenance"
-
+  case object ExpensesRepairsAndMaintenance extends Journey("expenses-repairs-and-maintenance") {
     override val pageKeys: List[PageName] = List(RepairsAndMaintenanceAmountPage.pageName, RepairsAndMaintenanceDisallowableAmountPage.pageName)
   }
 
-  val journeyReads: Reads[Journey] = Reads[Journey] {
-    case JsString("trade-details")                    => JsSuccess(TradeDetails)
-    case JsString("self-employment-abroad")           => JsSuccess(Abroad)
-    case JsString("income")                           => JsSuccess(Income)
-    case JsString("expenses-total")                   => JsSuccess(ExpensesTotal)
-    case JsString("expenses-categories")              => JsSuccess(ExpensesTailoring)
-    case JsString("expenses-goods-to-sell-or-use")    => JsSuccess(ExpensesGoodsToSellOrUse)
-    case JsString("expenses-advertising-marketing")   => JsSuccess(ExpensesAdvertisingOrMarketing)
-    case JsString("expenses-entertainment")           => JsSuccess(ExpensesEntertainment)
-    case JsString("expenses-construction")            => JsSuccess(ExpensesConstruction)
-    case JsString("expenses-office-supplies")         => JsSuccess(ExpensesOfficeSupplies)
-    case JsString("expenses-repairs-and-maintenance") => JsSuccess(ExpensesRepairsAndMaintenance)
-    case JsString("expenses-staff-costs")             => JsSuccess(ExpensesStaffCosts)
-    case JsString("national-insurance")               => JsSuccess(NationalInsurance)
-    case _                                            => JsError("Parsing error")
-  }
+  case object NationalInsurance extends Journey("national-insurance")
 
-  val journeyWrites: Writes[Journey] = Writes[Journey] { case journey @ _ =>
-    JsString(journey.toString)
-  }
+  implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
 
-  implicit val journeyFormat: Format[Journey] = Format(journeyReads, journeyWrites)
+    override def bind(key: String, value: String): Either[String, Journey] =
+      strBinder.bind(key, value).flatMap { stringValue =>
+        Journey.withNameOption(stringValue) match {
+          case Some(journeyName) => Right(journeyName)
+          case None              => Left(s"$stringValue Invalid journey name")
+        }
+      }
+
+    override def unbind(key: String, journeyName: Journey): String =
+      strBinder.unbind(key, journeyName.entryName)
+  }
 }

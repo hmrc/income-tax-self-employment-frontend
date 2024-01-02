@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
-import controllers.journeys.expenses.{advertisingOrMarketing, construction, staffCosts}
+import controllers.journeys.expenses.{advertisingOrMarketing, construction, professionalFees, staffCosts}
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
@@ -35,6 +35,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.libs.json.Json
@@ -275,6 +276,46 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
+        "DisallowableProfessionalFees journey" - {
+          "the page is ProfessionalFeesAmountPage" - {
+            "some expenses were claimed to be disallowable and accounting type is Accrual" - {
+              "navigate to the ProfessionalFeesDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "yes"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = professionalFees.routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(ProfessionalFeesAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
+              }
+            }
+            "navigate to the ProfessionalFeesCYAPage" - {
+              "if all expenses were claimed as allowable" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "no"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(ProfessionalFeesAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
+              }
+              "if accounting type is not Accrual" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "yes"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(ProfessionalFeesAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+          }
+          "the page is ProfessionalFeesDisallowableAmountController" - {
+            "navigate to the ProfessionalFeesCYAController" in {
+              val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
             val expectedResult = JourneyRecoveryController.onPageLoad()
@@ -367,6 +408,21 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is ProfessionalFeesAmountPage" - {
+          "navigate to the ProfessionalFeesCYAController" in {
+            val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(ProfessionalFeesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is ProfessionalFeesDisallowableAmountPage" - {
+          "navigate to the ProfessionalFeesCYAController" in {
+            val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

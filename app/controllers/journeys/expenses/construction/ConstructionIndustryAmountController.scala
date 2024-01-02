@@ -66,7 +66,7 @@ class ConstructionIndustryAmountController @Inject() (override val messagesApi: 
 
       def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, ConstructionIndustryAmountPage)
+          .persistAnswer(businessId, request.userAnswers, value, ConstructionIndustryAmountPage)
           .map(updated => Redirect(navigator.nextPage(ConstructionIndustryAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
 
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {

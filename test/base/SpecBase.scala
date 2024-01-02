@@ -25,6 +25,7 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey
+import models.requests.OptionalDataRequest
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -37,7 +38,12 @@ import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import services.SelfEmploymentServiceBase
+import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetrievalAction, StubSubmittedDataRetrievalActionProvider}
+import stubs.services.SelfEmploymentServiceStub
+import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -53,6 +59,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val businessId: BusinessId     = BusinessId("SJPR05893938418")
   val zeroValue: BigDecimal      = 0
   val maxAmountValue: BigDecimal = 100000000000.00
+
+  val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
+  val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)
 
   def anyNino: Nino               = Nino(any)
   def anyMtditid: Mtditid         = Mtditid(any)
@@ -98,10 +107,20 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         fakeIdentifierAction,
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-        bind[SubmittedDataRetrievalActionProvider].toInstance(FakeSubmittedDataRetrievalActionProvider())
+        bind[DataRetrievalAction].toInstance(StubDataRetrievalAction(userAnswers)),
+        bind[SubmittedDataRetrievalAction].toInstance(StubSubmittedDataRetrievalAction())
       )
   }
+
+  def createApp(stub: SelfEmploymentServiceStub) =
+    applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[SelfEmploymentServiceBase].toInstance(stub))
+      .build()
+
+  def createApp(stub: StubSubmittedDataRetrievalActionProvider) =
+    applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stub))
+      .build()
 
 }
 

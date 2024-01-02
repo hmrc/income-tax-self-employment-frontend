@@ -17,10 +17,10 @@
 package connectors
 
 import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.JourneyStateParser.pagerDutyError
+import connectors.httpParser.HttpParser.unsafePagerDutyError
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object NoContentHttpReads extends HttpReads[NoContentResponse] {
   override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-    if (isSuccess(response.status)) ().asRight else pagerDutyError(response).asLeft
+    if (isSuccess(response.status)) ().asRight else unsafePagerDutyError(response).asLeft
 }

@@ -19,12 +19,12 @@ package connectors
 import base.IntegrationBaseSpec
 import cats.implicits._
 import helpers.{PagerDutyAware, WiremockSpec}
-import models.common.{JourneyAnswersContext, JourneyContextWithNino}
-import models.journeys.Journey
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring}
+import models.common.{JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
+import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
+import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
@@ -34,6 +34,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   private def downstreamNinoUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/$nino/answers"
   private def downstreamUrl(journey: Journey)     = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"
+  private def statusUrl(journey: Journey)         = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
+  private val taskListUrl                         = s"/income-tax-self-employment/$taxYear/$nino/task-list"
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
@@ -62,6 +64,38 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
       result shouldBe parsingError.asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
+    }
+  }
+
+  "getJourneyState" must {
+    "return state" in {
+      val incomeWithStatus = JourneyNameAndStatus(Income, JourneyStatus.CheckOurRecords)
+      val body             = Json.stringify(Json.toJson(incomeWithStatus))
+      stubGetWithResponseBody(statusUrl(Income), OK, body, headersSentToBE)
+
+      val result = connector.getJourneyState(businessId, Income, taxYear, mtditid).value.futureValue
+
+      result shouldBe incomeWithStatus.asRight
+    }
+  }
+
+  "getTaskList" must {
+    "return a task list" in {
+      val taskList = TaskList.empty
+      val body     = Json.stringify(Json.toJson(taskList))
+      stubGetWithResponseBody(taskListUrl, OK, body, headersSentToBE)
+
+      val result = connector.getTaskList(nino.value, taxYear, mtditid).value.futureValue
+
+      result shouldBe taskList.asRight
+    }
+  }
+
+  "saveJourneyState" must {
+    "save the new status" in {
+      stubPutWithResponseBody(statusUrl(ExpensesTailoring), NO_CONTENT, "{}", headersSentToBE)
+      val result = connector.saveJourneyState(journeyCtx(ExpensesTailoring), JourneyStatus.Completed).value.futureValue
+      result shouldBe ().asRight
     }
   }
 

@@ -76,7 +76,7 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
         )
       def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
+          .persistAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
           .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
 
       val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId))

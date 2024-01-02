@@ -36,3 +36,6 @@ bin
 .metals
 .vscode
 .bsp
+.bloop/
+metals.sbt
+.jvmopts

@@ -31,19 +31,43 @@ package object connectors {
     http.POST[A, Either[ServiceError, Unit]](url, body)(
       wts = implicitly[Writes[A]],
       rds = NoContentHttpReads,
-      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      hc = addExtraHeaders(hc, mtditid),
+      ec = ec
+    )
+
+  def put[A: Writes](http: HttpClient, url: String, mtditid: Mtditid, body: A)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[ServiceError, Unit]] =
+    http.PUT[A, Either[ServiceError, Unit]](url, body)(
+      wts = implicitly[Writes[A]],
+      rds = NoContentHttpReads,
+      hc = addExtraHeaders(hc, mtditid),
       ec = ec
     )
 
   def get[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
-    http.GET[Either[ServiceError, Option[A]]](url)(
+      ec: ExecutionContext): Future[Either[ServiceError, A]] =
+    http.GET(url)(
       rds = new ContentHttpReads[A],
-      hc = hc.withExtraHeaders(headers = "mtditid" -> mtditid.value),
+      hc = addExtraHeaders(hc, mtditid),
+      ec = ec
+    )
+
+  def getOpt[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
+    http.GET(url)(
+      rds = new OptionalContentHttpReads[A],
+      hc = addExtraHeaders(hc, mtditid),
       ec = ec
     )
 
   def isSuccess(status: Int): Boolean = status >= 200 && status <= 299
+
+  def isNoContent(status: Int): Boolean = status == 204
+
+  private def addExtraHeaders(hc: HeaderCarrier, mtditid: Mtditid) =
+    hc.withExtraHeaders(headers = "mtditid" -> mtditid.value)
 
 }

@@ -15,6 +15,7 @@
  */
 
 import cats.data.EitherT
+import cats.implicits.catsStdInstancesForFuture
 import models.NormalMode
 import models.common.{BusinessId, JourneyContext, TaxYear}
 import models.domain.ApiResultT
@@ -27,10 +28,10 @@ import play.api.mvc.Results.Redirect
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers {
-  private def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
-    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.toString, NormalMode)
+    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode)
   )
 
   def handleResult(result: Future[Either[ServiceError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
@@ -42,7 +43,13 @@ package object controllers {
       case Right(v)    => Future.successful(v)
     }
 
-  private def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
+  def handleServiceCall[A](result: Future[Either[ServiceError, A]])(implicit ec: ExecutionContext, logger: Logger): EitherT[Future, Result, A] =
+    EitherT(result).leftMap { error =>
+      logger.error(s"ServiceError encountered: $error")
+      redirectJourneyRecovery()
+    }
+
+  def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     resultT.leftMap { httpError =>
       logger.error(s"HttpError encountered: $httpError")
       redirectJourneyRecovery()

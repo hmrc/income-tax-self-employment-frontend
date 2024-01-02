@@ -79,7 +79,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         for {
           editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), value))
           result <- selfEmploymentService
-            .saveAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
+            .persistAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
             .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, redirectMode, updated, taxYear, businessId)))
         } yield result
       }
