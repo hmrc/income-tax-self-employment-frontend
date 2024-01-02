@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.tailoring.simplifiedExpenses
+package viewmodels.checkAnswers.expenses.otherExpenses
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
@@ -22,16 +22,22 @@ import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 
-class TotalExpensesSummarySpec extends SummaryBaseSpec("TotalExpensesSummary") {
+class OtherExpensesAmountSummarySpec extends SummaryBaseSpec("OtherExpensesAmountSummary") {
 
-  override val validData: JsObject   = Json.obj("totalAmount" -> 2552.4)
-  override val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
+  private val amount = BigDecimal(500.00)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"totalExpenses.title.$userType")
-  override val testValue: Text           = Text("£2,552.40")
+  override val validData: JsObject =
+    Json.obj("otherExpenses" -> "yesAllowable", "otherExpensesAmount" -> amount)
+
+  override val invalidData: JsObject =
+    Json.obj("otherPage" -> amount)
+
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"otherExpensesAmount.title.$userType")
+  override val testValue: Text           = Text(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    TotalExpensesSummary.row()(messages, userAnswers, taxYear, businessId, userType)
+    OtherExpensesAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }
