@@ -16,10 +16,12 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.otherExpenses.routes._
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.ExpensesOtherExpenses
 import pages.expenses.otherExpenses.OtherExpensesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -27,16 +29,22 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.otherExpenses.OtherExpensesAmountSummary
 
-class OtherExpensesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class OtherExpensesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String =
     OtherExpensesCYAPage.pageName.value
 
+  override val submissionData: JsObject =
+    Json.obj("otherExpenses" -> "yesAllowable", "otherExpensesAmount" -> 200.00)
+
   override val testDataCases: List[JsObject] =
-    List(Json.obj("otherExpenses" -> "yesAllowable", "otherExpensesAmount" -> 200.00))
+    List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call =
     OtherExpensesCYAController.onPageLoad
+
+  override def onSubmitCall: (TaxYear, BusinessId) => Call =
+    OtherExpensesCYAController.onSubmit
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
@@ -45,6 +53,5 @@ class OtherExpensesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
       classes = "govuk-!-margin-bottom-7"
     )
 
-  override def onSubmitCall: (TaxYear, BusinessId) => Call =
-    OtherExpensesCYAController.onPageLoad
+  override val journey: Journey = ExpensesOtherExpenses
 }
