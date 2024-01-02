@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.common.{TaxYear, UserType}
-@import views.html.components.PageCYA
+package pages.expenses.otherExpenses
 
-@this(pageCYA: PageCYA)
+import pages.Page
 
-@(pageName: String,
-  taxYear: TaxYear,
-  userType: UserType,
-  summaryList: SummaryList,
-  onSubmitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall)
+object OtherExpensesCYAPage extends Page {
+  override def toString: String = "otherExpensesCYA"
+}

@@ -890,6 +890,7 @@ otherExpensesAmount.error.overMax.agent = The amount your client spent on other 
 otherExpensesAmount.understandingOtherExpenses = Understanding other expenses
 otherExpensesAmount.title.individual = How much did you spend on other expenses?
 otherExpensesAmount.title.agent = How much did your client spend on other expenses?
+otherExpensesAmount.change.hidden = Change how much was spent on other expenses
 
 otherExpensesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on other expenses that is disallowable
 otherExpensesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on other expenses that is disallowable
@@ -901,4 +902,5 @@ otherExpensesDisallowableAmount.error.overAmount.individual = The disallowable a
 otherExpensesDisallowableAmount.error.overAmount.agent = The disallowable amount of the £{0} your client spent on other expenses must be less than £100,000,000,000
 otherExpensesDisallowableAmount.title.individual = How much of the £{0} you spent on other expenses is disallowable?
 otherExpensesDisallowableAmount.title.agent = How much of the £{0} your client spent on other expenses is disallowable?
+otherExpensesDisallowableAmount.change.hidden = Change how much spent on other expenses is disallowable
 

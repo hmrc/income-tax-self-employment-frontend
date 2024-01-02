@@ -40,8 +40,8 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
   protected val testKey: UserType => Text
   protected val testValue: Text
 
-  private val validAnswers: UserAnswers   = buildUserAnswers(validData)
-  private val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
+  private lazy val validAnswers: UserAnswers   = buildUserAnswers(validData)
+  private lazy val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
 
   protected def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]
 
