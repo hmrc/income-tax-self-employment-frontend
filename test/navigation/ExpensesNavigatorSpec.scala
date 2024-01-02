@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
+import controllers.journeys.expenses.otherExpenses.routes._
 import controllers.journeys.expenses.{advertisingOrMarketing, construction, professionalFees, staffCosts}
 import controllers.journeys.routes._
 import controllers.standard.routes._
@@ -35,6 +36,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -88,6 +90,45 @@ class ExpensesNavigatorSpec extends SpecBase {
               navigator.nextPage(OfficeSuppliesCYAPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
+        }
+        "OtherExpenses journey" - {
+          "the page is OtherExpensesAmountPage" - {
+            "some expenses were claimed to be disallowable" - {
+              "navigate to the OtherExpensesDisallowableAmountController" in {
+                val data = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesDisallowable"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(OtherExpensesAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+            "all expenses were claimed as allowable" - {
+              "navigate to the OtherExpensesCYAController" in {
+                val data = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesAllowable"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+          }
+          "the page is OtherExpensesDisallowableAmountPage" - {
+            "navigate to the OtherExpensesCYAController" in {
+              val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          // TODO Implement below in SASS-6216
+//          "the page is OtherExpensesCYAPage" - {
+//            "navigate to the SectionCompletedStateController" in {
+//              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, mode)
+//
+//              navigator.nextPage(OfficeSuppliesCYAPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+//            }
+//          }
         }
 
         "GoodsToSellOrUse journey" - {

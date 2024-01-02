@@ -23,6 +23,7 @@ import models.common.AccountingType.{Accrual, Cash}
 import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey._
+import models.journeys.expenses.individualCategories.OtherExpenses.{YesAllowable, YesDisallowable}
 import models.journeys.expenses.individualCategories._
 import pages._
 import pages.expenses.advertisingOrMarketing._
@@ -33,11 +34,7 @@ import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, 
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
-import pages.expenses.repairsandmaintenance.{
-  RepairsAndMaintenanceAmountPage,
-  RepairsAndMaintenanceCostsCYAPage,
-  RepairsAndMaintenanceDisallowableAmountPage
-}
+import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceCostsCYAPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import play.api.mvc.Call
@@ -73,23 +70,22 @@ class ExpensesNavigator @Inject() () {
             _ =>
               journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
-          // TODO: Add CYA
     case OtherExpensesAmountPage =>
       userAnswers =>
         taxYear =>
           businessId =>
             _ =>
               userAnswers.get(OtherExpensesPage, Some(businessId)) match {
-                case Some(OtherExpenses.YesAllowable) =>
-                  standard.routes.JourneyRecoveryController.onPageLoad()
-                case Some(OtherExpenses.YesDisallowable) =>
+                case Some(YesAllowable) =>
+                  otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+                case Some(YesDisallowable) =>
                   journeys.expenses.otherExpenses.routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case _ =>
                   standard.routes.JourneyRecoveryController.onPageLoad()
               }
 
-          // TODO: Add CYA
-    case OtherExpensesDisallowableAmountPage => _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
+    case OtherExpensesDisallowableAmountPage =>
+      _ => taxYear => businessId => _ => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
