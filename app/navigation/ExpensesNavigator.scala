@@ -34,7 +34,11 @@ import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, 
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
-import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceCostsCYAPage, RepairsAndMaintenanceDisallowableAmountPage}
+import pages.expenses.repairsandmaintenance.{
+  RepairsAndMaintenanceAmountPage,
+  RepairsAndMaintenanceCostsCYAPage,
+  RepairsAndMaintenanceDisallowableAmountPage
+}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import play.api.mvc.Call
@@ -67,8 +71,7 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId =>
-            _ =>
-              journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
+            _ => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, NormalMode)
 
     case OtherExpensesAmountPage =>
       userAnswers =>

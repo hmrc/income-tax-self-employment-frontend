@@ -50,13 +50,8 @@ class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesAp
       )
 
       Ok(
-        view(
-          OtherExpensesCYAPage.toString,
-          taxYear,
-          request.user.userType,
-          summaryList,
-          OtherExpensesCYAController.onPageLoad(taxYear, businessId))
-        )
+        view(OtherExpensesCYAPage.toString, taxYear, request.user.userType, summaryList, OtherExpensesCYAController.onPageLoad(taxYear, businessId))
+      )
   }
 
   // TODO Implement Save & Continue in SASS-6216

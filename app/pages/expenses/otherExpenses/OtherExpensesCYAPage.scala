@@ -18,7 +18,6 @@ package pages.expenses.otherExpenses
 
 import pages.Page
 
-
 object OtherExpensesCYAPage extends Page {
   override def toString: String = "otherExpensesCYA"
 }

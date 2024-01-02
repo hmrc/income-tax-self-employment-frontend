@@ -95,7 +95,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is OtherExpensesAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the OtherExpensesDisallowableAmountController" in {
-                val data = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesDisallowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesDisallowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -105,7 +105,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "all expenses were claimed as allowable" - {
               "navigate to the OtherExpensesCYAController" in {
-                val data = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesAllowable"))
+                val data        = Json.obj(businessId.value -> Json.obj("otherExpenses" -> "yesAllowable"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
