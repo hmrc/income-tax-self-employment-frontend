@@ -25,11 +25,10 @@ import models.journeys.expenses.individualCategories.OtherExpenses.YesDisallowab
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 import viewmodels.ImplicitConversions
-import viewmodels.govuk.summarylist._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object OtherExpensesDisallowableAmountSummary extends ImplicitConversions {
 
@@ -44,19 +43,11 @@ object OtherExpensesDisallowableAmountSummary extends ImplicitConversions {
     for {
       amount             <- answers.get(OtherExpensesAmountPage, Some(businessId))
       disallowableAmount <- answers.get(OtherExpensesDisallowableAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"otherExpensesDisallowableAmount.title.$userType", formatMoney(amount)),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = messages(s"£${formatMoney(disallowableAmount)}"),
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel(messages("site.change"), OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("otherExpensesDisallowableAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"otherExpensesDisallowableAmount.title.$userType", formatMoney(amount)),
+      "otherExpensesDisallowableAmount.change.hidden"
     )
 
   private def areOtherExpensesDisallowable(otherExpenses: OtherExpenses): Boolean =

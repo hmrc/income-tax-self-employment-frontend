@@ -931,4 +931,4 @@ otherExpensesDisallowableAmount.title.agent = How much of the £{0} your client 
 otherExpensesDisallowableAmount.change.hidden = Change how much spent on other expenses is disallowable
 
 otherExpensesCYA.title.individual = Check your other expenses
-otherExpensesCYA.title.agent = Check your client's other expenses
+otherExpensesCYA.title.agent = Check your client’s other expenses

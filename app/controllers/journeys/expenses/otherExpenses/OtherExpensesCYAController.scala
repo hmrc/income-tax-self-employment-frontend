@@ -24,7 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.otherExpenses.{OtherExpensesAmountSummary, OtherExpensesDisallowableAmountSummary}
-import viewmodels.journeys.SummaryListCYA
+import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
@@ -42,12 +42,11 @@ class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesAp
     implicit request =>
       val user = request.userType
 
-      val summaryList = SummaryListCYA.summaryListOpt(
+      val summaryList = summaryListOpt(
         List(
           OtherExpensesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
           OtherExpensesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user)
-        )
-      )
+        ))
 
       Ok(
         view(OtherExpensesCYAPage.toString, taxYear, request.user.userType, summaryList, OtherExpensesCYAController.onPageLoad(taxYear, businessId))

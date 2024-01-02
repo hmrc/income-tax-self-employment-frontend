@@ -17,6 +17,7 @@
 package config
 
 import base.SpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.Application
 import play.api.i18n.MessagesApi
 
@@ -43,14 +44,13 @@ class MessagesSpec extends SpecBase {
     "journeys"
   )
 
-  private val illegalCharacters: Set[String] = Set("'", "`")
+  private val illegalCharacters: Set[Char] = Set('\'', '`')
 
   "messages must not contain any illegal characters" in {
-    val result = english.collect {
-      case (key, value) if illegalCharacters.exists(key.contains(_)) => value
-    }.toSet
-
-    result mustBe Set()
+    for {
+      char <- illegalCharacters
+      key  <- english.values.toList
+    } key should not contain char
   }
 
   "there should be no duplicate messages(values) in the" - {
