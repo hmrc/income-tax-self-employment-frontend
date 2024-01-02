@@ -26,18 +26,18 @@ import utils.MoneyUtils.formatMoney
 
 class InterestDisallowableAmountSummarySpec extends SummaryBaseSpec("InterestDisallowableAmountSummary") {
 
-  private lazy val allowableAmount: BigDecimal    = 500
-  private lazy val disallowableAmount: BigDecimal = 20
+  private val amount: BigDecimal             = 500
+  private val disallowableAmount: BigDecimal = 20
 
-  override lazy val validData: JsObject = Json.obj(
+  override val validData: JsObject = Json.obj(
     "disallowableInterest"       -> "yes",
-    "interestAmount"             -> allowableAmount,
+    "interestAmount"             -> amount,
     "interestDisallowableAmount" -> disallowableAmount
   )
-  override lazy val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
+  override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
-  override lazy val testKey: UserType => Text = (userType: UserType) => Text(messages(s"interestDisallowableAmount.title.$userType", allowableAmount))
-  override lazy val testValue: Text           = Text(s"£${formatMoney(disallowableAmount)}")
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"interestDisallowableAmount.title.$userType", amount))
+  override val testValue: Text           = Text(s"£${formatMoney(disallowableAmount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     InterestDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

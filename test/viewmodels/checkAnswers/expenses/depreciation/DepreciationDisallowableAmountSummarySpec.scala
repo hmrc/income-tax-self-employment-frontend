@@ -26,16 +26,16 @@ import utils.MoneyUtils.formatMoney
 
 class DepreciationDisallowableAmountSummarySpec extends SummaryBaseSpec("DepreciationDisallowableAmountSummary") {
 
-  private lazy val amount: BigDecimal = 500
+  private val amount: BigDecimal = 500
 
-  override lazy val validData: JsObject = Json.obj(
+  override val validData: JsObject = Json.obj(
     "depreciation"                   -> "yes",
     "depreciationDisallowableAmount" -> amount
   )
-  override lazy val invalidData: JsObject = Json.obj("otherPage" -> amount)
+  override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
-  override lazy val testKey: UserType => Text = (userType: UserType) => Text(s"depreciationDisallowableAmount.title.$userType")
-  override lazy val testValue: Text           = Text(s"£${formatMoney(amount)}")
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"depreciationDisallowableAmount.title.$userType")
+  override val testValue: Text           = Text(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     DepreciationDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

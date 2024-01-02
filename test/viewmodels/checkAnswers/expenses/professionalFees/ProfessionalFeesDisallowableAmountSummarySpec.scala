@@ -26,19 +26,18 @@ import utils.MoneyUtils.formatMoney
 
 class ProfessionalFeesDisallowableAmountSummarySpec extends SummaryBaseSpec("ProfessionalFeesDisallowableAmountSummary") {
 
-  private lazy val allowableAmount: BigDecimal    = 500
+  private lazy val amount: BigDecimal             = 500
   private lazy val disallowableAmount: BigDecimal = 20
 
   override lazy val validData: JsObject = Json.obj(
     "disallowableProfessionalFees"       -> "yes",
-    "professionalFeesAmount"             -> allowableAmount,
+    "professionalFeesAmount"             -> amount,
     "professionalFeesDisallowableAmount" -> disallowableAmount
   )
   override lazy val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
-  override lazy val testKey: UserType => Text = (userType: UserType) =>
-    Text(messages(s"professionalFeesDisallowableAmount.title.$userType", allowableAmount))
-  override lazy val testValue: Text = Text(s"£${formatMoney(disallowableAmount)}")
+  override lazy val testKey: UserType => Text = (userType: UserType) => Text(messages(s"professionalFeesDisallowableAmount.title.$userType", amount))
+  override lazy val testValue: Text           = Text(s"£${formatMoney(disallowableAmount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ProfessionalFeesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
