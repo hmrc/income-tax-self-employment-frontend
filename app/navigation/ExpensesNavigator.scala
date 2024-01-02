@@ -31,6 +31,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
+import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -39,7 +40,6 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceCostsCYAPage,
   RepairsAndMaintenanceDisallowableAmountPage
 }
-import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import play.api.mvc.Call
@@ -244,6 +244,9 @@ class ExpensesNavigator @Inject() () {
 
     case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
       _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+    case OtherExpensesAmountPage | OtherExpensesDisallowableAmountPage =>
+      _ => taxYear => businessId => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
