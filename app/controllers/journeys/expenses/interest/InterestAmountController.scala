@@ -68,13 +68,13 @@ class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
-            value => handleSuccess(value, accountingType)
+            value => handleSuccess(value)
           )
 
-      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+      def handleSuccess(value: BigDecimal): Future[Result] =
         selfEmploymentService
           .persistAnswer(businessId, request.userAnswers, value, InterestAmountPage)
-          .map(updated => Redirect(navigator.nextPage(InterestAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
+          .map(updated => Redirect(navigator.nextPage(InterestAmountPage, mode, updated, taxYear, businessId)))
 
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
         case Left(_)               => Future.successful(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
