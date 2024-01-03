@@ -130,7 +130,7 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(DisallowableSubcontractorCostsPage, Some(businessId)) match {
               case Some(DisallowableSubcontractorCosts.Yes) =>
                 construction.routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(_) =>
+              case Some(DisallowableSubcontractorCosts.No) =>
                 construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
               case None => standard.routes.JourneyRecoveryController.onPageLoad()
             }
@@ -145,7 +145,7 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
               case Some(DisallowableStaffCosts.Yes) =>
                 staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(_) =>
+              case Some(DisallowableStaffCosts.No) =>
                 staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
@@ -160,7 +160,7 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(DisallowableProfessionalFeesPage, Some(businessId)) match {
               case Some(DisallowableProfessionalFees.Yes) =>
                 professionalFees.routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(_) =>
+              case Some(DisallowableProfessionalFees.No) =>
                 professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
               case None => standard.routes.JourneyRecoveryController.onPageLoad()
             }
@@ -175,7 +175,7 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(DisallowableInterestPage, Some(businessId)) match {
               case Some(DisallowableInterest.Yes) =>
                 interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(_) =>
+              case Some(DisallowableInterest.No) =>
                 interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
               case None => standard.routes.JourneyRecoveryController.onPageLoad()
             }
