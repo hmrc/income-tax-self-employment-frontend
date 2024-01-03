@@ -883,6 +883,9 @@ interestDisallowableAmount.error.overAmount.individual = The disallowable amount
 interestDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on interest on bank and other business loans must be the same as or less than £{0}
 interestDisallowableAmount.change.hidden = Change how much spent on interest on bank and other business loans is disallowable
 
+interestCya.title.individual = Check your interest paid on loans expenses
+interestCya.title.agent = Check your client’s interest paid on loans expenses
+
 ########## Expenses - Depreciation ##########
 
 ## Depreciation disallowable amount

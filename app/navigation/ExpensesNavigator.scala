@@ -200,40 +200,25 @@ class ExpensesNavigator @Inject() () {
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
-    case AdvertisingOrMarketingAmountPage =>
-      _ => taxYear => businessId => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
-
-    case AdvertisingOrMarketingDisallowableAmountPage =>
+    case AdvertisingOrMarketingAmountPage | AdvertisingOrMarketingDisallowableAmountPage =>
       _ => taxYear => businessId => advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
-    case ConstructionIndustryAmountPage =>
+    case ConstructionIndustryAmountPage | ConstructionIndustryDisallowableAmountPage =>
       _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
-    case ConstructionIndustryDisallowableAmountPage =>
-      _ => taxYear => businessId => construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-    case ProfessionalFeesAmountPage =>
+    case ProfessionalFeesAmountPage | ProfessionalFeesDisallowableAmountPage =>
       _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
-    case ProfessionalFeesDisallowableAmountPage =>
-      _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
-
-    case InterestAmountPage =>
-      _ => taxYear => businessId => interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
-    case InterestDisallowableAmountPage =>
+    case InterestAmountPage | InterestDisallowableAmountPage =>
       _ => taxYear => businessId => interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
-    case StaffCostsAmountPage =>
-      _ => taxYear => businessId => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
-
-    case StaffCostsDisallowableAmountPage =>
+    case StaffCostsAmountPage | StaffCostsDisallowableAmountPage =>
       _ => taxYear => businessId => staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 
     case DepreciationDisallowableAmountPage =>
