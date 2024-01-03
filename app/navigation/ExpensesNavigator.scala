@@ -30,7 +30,9 @@ import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryCYAPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.{EntertainmentAmountPage, EntertainmentCYAPage}
+import pages.expenses.financialCharges.FinancialChargesAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, GoodsToSellOrUseCYAPage}
+import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesCYAPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -39,7 +41,6 @@ import pages.expenses.repairsandmaintenance.{
   RepairsAndMaintenanceCostsCYAPage,
   RepairsAndMaintenanceDisallowableAmountPage
 }
-import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsCYAPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import play.api.mvc.Call
@@ -90,6 +91,20 @@ class ExpensesNavigator @Inject() () {
 
     case OtherExpensesDisallowableAmountPage =>
       _ => taxYear => businessId => _ => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+    case FinancialChargesAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            _ =>
+              userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match { // TODO
+                case Some(DisallowableOtherFinancialCharges.Yes) =>
+                  otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+                case Some(DisallowableOtherFinancialCharges.No) =>
+                  journeys.expenses.otherExpenses.routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                case _ =>
+                  standard.routes.JourneyRecoveryController.onPageLoad()
+              }
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
