@@ -232,7 +232,7 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "navigate to the ConstructionIndustryCYAPage" - {
-              "all expenses were claimed as allowable" ignore {
+              "if all expenses were claimed as allowable" in {
                 val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "no"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
@@ -243,7 +243,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
           }
           "the page is ConstructionIndustryDisallowableAmountPage" - {
-            "navigate to the ConstructionIndustryCYAPage" ignore {
+            "navigate to the ConstructionIndustryCYAPage" in {
               val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
