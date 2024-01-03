@@ -24,7 +24,7 @@ import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableProfessionalFeesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableProfessionalFeesView
 
@@ -32,7 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DisallowableProfessionalFeesController @Inject() (override val messagesApi: MessagesApi,
-                                                        sessionRepository: SessionRepository,
+                                                        selfEmploymentService: SelfEmploymentService,
                                                         navigator: ExpensesTailoringNavigator,
                                                         identify: IdentifierAction,
                                                         getData: DataRetrievalAction,
@@ -60,10 +60,9 @@ class DisallowableProfessionalFeesController @Inject() (override val messagesApi
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableProfessionalFeesPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableProfessionalFeesPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, DisallowableProfessionalFeesPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(DisallowableProfessionalFeesPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 
