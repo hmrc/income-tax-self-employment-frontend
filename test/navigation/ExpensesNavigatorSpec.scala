@@ -111,14 +111,6 @@ class ExpensesNavigatorSpec extends SpecBase {
               navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
-          // TODO Implement below in SASS-6216
-//          "the page is OtherExpensesCYAPage" - {
-//            "navigate to the SectionCompletedStateController" in {
-//              val expectedResult = SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesOfficeSupplies.toString, mode)
-//
-//              navigator.nextPage(OfficeSuppliesCYAPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-//            }
-//          }
         }
 
         "GoodsToSellOrUse journey" - {
@@ -314,6 +306,21 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is OtherExpensesAmountPage" - {
+          "navigate to the OtherExpensesCYAController" in {
+            val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(OtherExpensesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is OtherExpensesDisallowableAmountPage" - {
+          "navigate to the OtherExpensesCYAController" in {
+            val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

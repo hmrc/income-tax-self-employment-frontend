@@ -194,6 +194,9 @@ class ExpensesNavigator @Inject() () {
     case OfficeSuppliesAmountPage | OfficeSuppliesDisallowableAmountPage =>
       _ => taxYear => businessId => officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
+    case OtherExpensesAmountPage | OtherExpensesDisallowableAmountPage =>
+      _ => taxYear => businessId => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
