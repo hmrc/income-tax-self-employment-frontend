@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.AdvertisingOrMarketingFormProvider
 import models.Mode
-import models.common.AccountingType.Accrual
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
@@ -57,28 +55,15 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingPage)
-                  .map(updatedAnswers =>
-                    Redirect(
-                      navigator
-                        .nextPage(
-                          AdvertisingOrMarketingPage,
-                          mode,
-                          updatedAnswers,
-                          taxYear,
-                          businessId,
-                          Some(accountingType.equals(Accrual.entryName)))))
-            )
-      }
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          value =>
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId)))
+        )
   }
 
 }
