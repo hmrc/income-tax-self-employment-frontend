@@ -97,14 +97,16 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             _ =>
-              userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match { // TODO
+              userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
                 case Some(DisallowableOtherFinancialCharges.Yes) =>
-                  otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+                  financialCharges.routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
                 case Some(DisallowableOtherFinancialCharges.No) =>
-                  journeys.expenses.otherExpenses.routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+                  standard.routes.JourneyRecoveryController.onPageLoad() // TODO: Implement CYA nav in SASS-6688
                 case _ =>
                   standard.routes.JourneyRecoveryController.onPageLoad()
               }
+
+          // TODO: Implement FinancialChargesDisallowableAmountPage nav to CYA in SASS-6688
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
