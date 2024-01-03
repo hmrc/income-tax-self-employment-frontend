@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.otherExpenses
 
 import cats.data.EitherT
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.handleServiceCall
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
@@ -70,13 +69,13 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
           .bindFromRequest()
           .fold(
             formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, accountingType, answer, taxYear, businessId))),
-            value => handleSuccess(value, accountingType)
+            value => handleSuccess(value)
           )
 
-      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+      def handleSuccess(value: BigDecimal): Future[Result] =
         service
           .persistAnswer(businessId, request.userAnswers, value, OtherExpensesAmountPage)
-          .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId, accountingType.some)))
+          .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId)))
 
       val resultT = for {
         tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
