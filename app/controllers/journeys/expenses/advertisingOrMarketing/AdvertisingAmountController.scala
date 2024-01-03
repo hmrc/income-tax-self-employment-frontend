@@ -17,14 +17,13 @@
 package controllers.journeys.expenses.advertisingOrMarketing
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.advertisingOrMarketing.AdvertisingAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
@@ -57,22 +56,15 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: String): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-            value => handleSuccess(value, AccountingType.withName(accountingType.toUpperCase))
-          )
-      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingAmountPage)
-          .map(updated => Redirect(navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
-
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_)               => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) => handleForm(accountingType)
-      }
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          value =>
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingAmountPage)
+              .map(updated => Redirect(navigator.nextPage(AdvertisingOrMarketingAmountPage, mode, updated, taxYear, businessId)))
+        )
   }
 
 }

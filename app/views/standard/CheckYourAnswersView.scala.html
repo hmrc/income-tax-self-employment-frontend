@@ -20,11 +20,9 @@
 @this(pageCYA: PageCYA)
 
 @(pageName: String,
-        taxYear: TaxYear,
-        userType: UserType,
-        summaryList: SummaryList,
-        onSubmitCall: Call
-)(implicit request: Request[_], messages: Messages)
-
+  taxYear: TaxYear,
+  userType: UserType,
+  summaryList: SummaryList,
+  onSubmitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @pageCYA(pageName, taxYear, userType, summaryList, onSubmitCall)

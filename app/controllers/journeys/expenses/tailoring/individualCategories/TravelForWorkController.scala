@@ -25,7 +25,7 @@ import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.TravelForWorkView
 
@@ -33,7 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
+                                         selfEmploymentService: SelfEmploymentService,
                                          navigator: ExpensesTailoringNavigator,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
@@ -67,10 +67,9 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, taxiDriver))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TravelForWorkPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, TravelForWorkPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(TravelForWorkPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

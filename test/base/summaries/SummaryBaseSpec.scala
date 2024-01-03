@@ -29,21 +29,21 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
 
   private val userTypes: List[UserType] = List(Individual, Agent)
 
-  protected implicit val messages: MessagesImpl = {
+  implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  protected val validData: JsObject
-  protected val invalidData: JsObject
+  val validData: JsObject
+  val invalidData: JsObject
 
-  protected val testKey: UserType => Text
-  protected val testValue: Text
+  val testKey: UserType => Text
+  val testValue: Text
 
-  private val validAnswers: UserAnswers   = buildUserAnswers(validData)
-  private val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
+  private lazy val validAnswers: UserAnswers   = buildUserAnswers(validData)
+  private lazy val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
 
-  protected def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]
+  def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]
 
   s"$summaryName should" - {
     userTypes.foreach { userType =>

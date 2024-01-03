@@ -123,22 +123,10 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
           AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
-      "AdvertisingOrMarketingPage must go to the" - {
-        "EntertainmentCostsPage when accounting type is 'ACCRUAL'" in {
+      "AdvertisingOrMarketingPage must go to the EntertainmentCostsPage" in {
 
-          navigator.nextPage(AdvertisingOrMarketingPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(true)) mustBe
-            EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
-        }
-        "ProfessionalServiceExpensesPage when accounting type is 'CASH'" in {
-
-          navigator.nextPage(AdvertisingOrMarketingPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(false)) mustBe
-            ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, NormalMode)
-        }
-        "Journey Recovery page when there is no accounting type" in {
-
-          navigator.nextPage(AdvertisingOrMarketingPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-            JourneyRecoveryController.onPageLoad()
-        }
+        navigator.nextPage(AdvertisingOrMarketingPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
+          EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)
       }
 
       "EntertainmentCostsPage must go to the ProfessionalServiceExpensesPage" in {

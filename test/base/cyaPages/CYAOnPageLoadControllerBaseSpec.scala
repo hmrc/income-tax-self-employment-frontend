@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
 
-  protected val pageHeading: String
+  val pageHeading: String
   val testDataCases: List[JsObject]
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call

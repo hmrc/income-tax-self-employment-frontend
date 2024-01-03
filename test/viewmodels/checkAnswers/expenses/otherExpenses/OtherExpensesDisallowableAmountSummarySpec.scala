@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.professionalFees
+package viewmodels.checkAnswers.expenses.otherExpenses
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
@@ -24,20 +24,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 
-class ProfessionalFeesAmountSummarySpec extends SummaryBaseSpec("ProfessionalFeesAmountSummary") {
+class OtherExpensesDisallowableAmountSummarySpec extends SummaryBaseSpec("OtherExpensesDisallowableAmountSummary") {
 
-  private val amount: BigDecimal = 500
+  private val amount = BigDecimal(500.00)
 
-  override val validData: JsObject = Json.obj(
-    "disallowableProfessionalFees" -> "yes",
-    "professionalFeesAmount"       -> amount
-  )
-  override val invalidData: JsObject = Json.obj("otherPage" -> amount)
+  override val validData: JsObject =
+    Json.obj("otherExpenses" -> "yesDisallowable", "otherExpensesAmount" -> amount, "otherExpensesDisallowableAmount" -> amount)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"professionalFeesAmount.title.$userType")
+  override val invalidData: JsObject =
+    Json.obj("otherExpenses" -> "no")
+
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"otherExpensesDisallowableAmount.title.$userType")
   override val testValue: Text           = Text(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ProfessionalFeesAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
-
+    OtherExpensesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 }

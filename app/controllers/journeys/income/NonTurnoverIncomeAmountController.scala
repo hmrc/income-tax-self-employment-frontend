@@ -24,7 +24,7 @@ import navigation.IncomeNavigator
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NonTurnoverIncomeAmountView
 
@@ -32,7 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                   sessionRepository: SessionRepository,
+                                                   selfEmploymentService: SelfEmploymentService,
                                                    navigator: IncomeNavigator,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
@@ -60,10 +60,9 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonTurnoverIncomeAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, NonTurnoverIncomeAmountPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 
