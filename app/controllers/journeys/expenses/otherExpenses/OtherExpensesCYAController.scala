@@ -17,45 +17,52 @@
 package controllers.journeys.expenses.otherExpenses
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesCYAController
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.journeys.Journey.ExpensesOtherExpenses
+import models.journeys.expenses.OtherExpensesJourneyAnswers
 import pages.expenses.otherExpenses.OtherExpensesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.otherExpenses.{OtherExpensesAmountSummary, OtherExpensesDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesApi,
                                             val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,
                                             getAnswers: DataRetrievalAction,
                                             requireAnswers: DataRequiredAction,
-                                            view: CheckYourAnswersView)
+                                            service: SelfEmploymentServiceBase,
+                                            view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
     implicit request =>
-      val user = request.userType
-
       val summaryList = summaryListOpt(
         List(
-          OtherExpensesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-          OtherExpensesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+          OtherExpensesAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          OtherExpensesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
         ))
 
-      Ok(
-        view(OtherExpensesCYAPage.toString, taxYear, request.user.userType, summaryList, OtherExpensesCYAController.onPageLoad(taxYear, businessId))
-      )
+      Ok(view(OtherExpensesCYAPage.toString, taxYear, request.userType, summaryList, OtherExpensesCYAController.onSubmit(taxYear, businessId)))
   }
 
-  // TODO Implement Save & Continue in SASS-6216
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(OtherExpensesCYAController.onPageLoad(taxYear, businessId))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesOtherExpenses)
+      val result  = service.submitAnswers[OtherExpensesJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }

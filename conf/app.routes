@@ -363,6 +363,7 @@ GET         /:taxYear/:businessId/expenses/change-other-expenses/disallowable-am
 POST        /:taxYear/:businessId/expenses/change-other-expenses/disallowable-amount                           controllers.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/other-expenses/check                                                controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/other-expenses/check                                                controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Fincancial Charges ##########
 
