@@ -58,7 +58,6 @@ class ConstructionIndustryAmountControllerSpec
     bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryAmountFormProvider()(userType)

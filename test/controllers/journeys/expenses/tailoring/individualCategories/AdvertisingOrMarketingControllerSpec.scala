@@ -139,7 +139,6 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -163,7 +162,6 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -186,7 +184,6 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)
@@ -213,7 +210,6 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
               val request =
                 FakeRequest(POST, advertisingOrMarketingRoute)
