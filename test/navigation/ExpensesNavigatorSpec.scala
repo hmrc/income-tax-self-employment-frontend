@@ -231,7 +231,7 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "navigate to the ConstructionIndustryCYAPage" - {
-              "all expenses were claimed as allowable" in {
+              "if all expenses were claimed as allowable" in {
                 val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "no"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
@@ -263,7 +263,7 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "navigate to the ProfessionalFeesCYAPage" - {
-              "all expenses were claimed as allowable" in {
+              "if all expenses were claimed as allowable" in {
                 val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "no"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
