@@ -17,14 +17,17 @@
 package controllers.journeys.expenses.financialCharges
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.financialCharges.routes._
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.ExpensesFinancialCharges
 import models.journeys.expenses.financialCharges.FinancialChargesJourneyAnswers
 import pages.expenses.financialCharges.FinancialChargesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.financialCharges.{FinancialChargesAmountSummary, FinancialChargesDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
@@ -38,9 +41,11 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
                                                getUserAnswers: DataRetrievalAction,
                                                getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireAnswers: DataRequiredAction,
+                                               service: SelfEmploymentServiceBase,
                                                view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[FinancialChargesJourneyAnswers](req =>
@@ -52,13 +57,16 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
         ))
 
       Ok(
-        view(FinancialChargesCYAPage.toString, taxYear, request.userType, summaryList, FinancialChargesCYAController.onPageLoad(taxYear, businessId))
+        view(FinancialChargesCYAPage.toString, taxYear, request.userType, summaryList, FinancialChargesCYAController.onSubmit(taxYear, businessId))
       )
     }
 
-  // TODO Implement Save & Continue in SASS-6211
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) { _ =>
-    Redirect(FinancialChargesCYAController.onPageLoad(taxYear, businessId))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesFinancialCharges)
+      val result  = service.submitAnswers[FinancialChargesJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }
