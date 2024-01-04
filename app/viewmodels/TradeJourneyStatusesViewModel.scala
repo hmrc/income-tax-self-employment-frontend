@@ -101,6 +101,10 @@ object TradeJourneyStatusesViewModel {
             ProfessionalServiceExpensesPage,
             ProfessionalServiceExpenses.Construction
           )
+        ),
+        buildRow(
+          ExpensesDepreciation,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
         )
       ).flatten
     )
@@ -223,8 +227,15 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesInterest | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesDepreciation |
-          ExpensesProfessionalFees | ExpensesOtherExpenses =>
+      case ExpensesDepreciation =>
+        determineUrl(
+          expenses.depreciation.routes.DepreciationDisallowableAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesInterest | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesProfessionalFees |
+          ExpensesOtherExpenses =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
