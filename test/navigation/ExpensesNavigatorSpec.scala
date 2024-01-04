@@ -21,7 +21,7 @@ import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
-import controllers.journeys.expenses.{advertisingOrMarketing, construction, professionalFees, staffCosts}
+import controllers.journeys.expenses._
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
@@ -32,6 +32,7 @@ import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, 
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -282,6 +283,38 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
+        "DisallowableInterest journey" - {
+          "the page is InterestAmountPage" - {
+            "some expenses were claimed to be disallowable" - {
+              "navigate to the InterestDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> "yes"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(InterestAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+            "navigate to the InterestCYAPage" - {
+              "if all expenses were claimed as allowable" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> "no"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(InterestAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+          }
+          "the page is InterestDisallowableAmountController" - {
+            "navigate to the InterestCYAController" in {
+              val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(InterestDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
             val expectedResult = JourneyRecoveryController.onPageLoad()
@@ -404,6 +437,21 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "the page is InterestAmountPage" - {
+          "navigate to the InterestCYAController" in {
+            val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(InterestAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+        "the page is InterestDisallowableAmountPage" - {
+          "navigate to the InterestCYAController" in {
+            val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
+
+            navigator.nextPage(InterestDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

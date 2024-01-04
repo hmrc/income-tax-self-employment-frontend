@@ -340,6 +340,9 @@ POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/disallow
 GET         /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                  controllers.journeys.expenses.interest.InterestCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                  controllers.journeys.expenses.interest.InterestCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Depreciation ##########
 
 GET         /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
