@@ -21,7 +21,7 @@ import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesCYAController
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.ExpensesOtherExpenses
-import models.journeys.expenses.OtherExpensesJourneyAnswers
+import models.journeys.expenses.otherExpenses.OtherExpensesJourneyAnswers
 import pages.expenses.otherExpenses.OtherExpensesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

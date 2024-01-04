@@ -224,7 +224,7 @@ object TradeJourneyStatusesViewModel {
           expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesInterest | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesDepreciation |
-          ExpensesProfessionalFees | ExpensesOtherExpenses =>
+          ExpensesProfessionalFees | ExpensesOtherExpenses | ExpensesFinancialCharges =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
