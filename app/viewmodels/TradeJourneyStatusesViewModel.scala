@@ -248,7 +248,6 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
         )
-
       case ExpensesProfessionalFees =>
         determineUrl(
           expenses.professionalFees.routes.ProfessionalFeesAmountController
