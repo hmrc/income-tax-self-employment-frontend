@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes._
+import controllers.journeys.expenses.financialCharges.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
@@ -31,6 +32,7 @@ import pages._
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -110,6 +112,37 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+        "FinancialCharges journey" - {
+          "the page is FinancialChargesAmountPage" - {
+            "some expenses were claimed to be disallowable" - {
+              "navigate to the FinancialChargesDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> "yes"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(FinancialChargesAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+            "no disallowable expenses" - {
+              "navigate to the FinancialChargesCYAController" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> "no"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+          }
+          "the page is FinancialChargesDisallowableAmountPage" - {
+            "navigate to the FinancialChargesCYAController" in {
+              val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
