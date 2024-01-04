@@ -27,6 +27,7 @@ import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.financialCharges.FinancialChargesAmountPage
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -75,6 +76,21 @@ class ExpensesNavigator @Inject() () {
 
     case OtherExpensesDisallowableAmountPage =>
       _ => taxYear => businessId => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+    case FinancialChargesAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(DisallowableOtherFinancialChargesPage, Some(businessId)) match {
+              case Some(DisallowableOtherFinancialCharges.Yes) =>
+                financialCharges.routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(DisallowableOtherFinancialCharges.No) =>
+                standard.routes.JourneyRecoveryController.onPageLoad() // TODO: Implement CYA nav in SASS-6688
+              case _ =>
+                standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+        // TODO: Implement FinancialChargesDisallowableAmountPage nav to CYA in SASS-6688
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>

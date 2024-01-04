@@ -19,7 +19,7 @@ package models.common
 import play.api.mvc.PathBindable
 
 final case class TaxYear(value: Int) extends AnyVal {
-  override def toString: String = value.toString()
+  override def toString: String = value.toString
 }
 
 object TaxYear {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,33 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.otherExpenses
+package controllers.journeys.expenses.financialCharges
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
+import forms.expenses.financialCharges.FinancialChargesAmountFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
+import pages.expenses.financialCharges.FinancialChargesAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentServiceBase
-import utils.MoneyUtils.formatMoney
-import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
+import views.html.journeys.expenses.financialCharges.FinancialChargesAmountView
 
 import scala.concurrent.Future
 
-class OtherExpensesDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec("OtherExpensesDisallowableAmountController", OtherExpensesDisallowableAmountPage) {
+class FinancialChargesAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesAmountController", FinancialChargesAmountPage) {
 
-  lazy val onPageLoadRoute: String = routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute: String   = routes.OtherExpensesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.FinancialChargesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.FinancialChargesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override lazy val onwardRoute: Call = routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+  override val onwardRoute: Call = routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   private val mockService = mock[SelfEmploymentServiceBase]
 
@@ -54,17 +51,14 @@ class OtherExpensesDisallowableAmountControllerSpec
     bind[SelfEmploymentServiceBase].toInstance(mockService)
   )
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OtherExpensesAmountPage, BigDecimal(123.00), businessId.some).success.value
-
-  override def createForm(userType: UserType): Form[BigDecimal] = new OtherExpensesDisallowableAmountFormProvider()(userType, BigDecimal(123.00))
+  override def createForm(user: UserType): Form[BigDecimal] = new FinancialChargesAmountFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[OtherExpensesDisallowableAmountView]
-    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(BigDecimal(123.00))).toString()
+    val view = application.injector.instanceOf[FinancialChargesAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
 }
