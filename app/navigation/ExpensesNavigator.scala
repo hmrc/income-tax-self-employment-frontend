@@ -27,7 +27,7 @@ import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
-import pages.expenses.financialCharges.FinancialChargesAmountPage
+import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -85,12 +85,13 @@ class ExpensesNavigator @Inject() () {
               case Some(DisallowableOtherFinancialCharges.Yes) =>
                 financialCharges.routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(DisallowableOtherFinancialCharges.No) =>
-                standard.routes.JourneyRecoveryController.onPageLoad() // TODO: Implement CYA nav in SASS-6688
+                financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
               case _ =>
                 standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
-        // TODO: Implement FinancialChargesDisallowableAmountPage nav to CYA in SASS-6688
+    case FinancialChargesDisallowableAmountPage =>
+      _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
@@ -212,6 +213,9 @@ class ExpensesNavigator @Inject() () {
 
     case OtherExpensesAmountPage | OtherExpensesDisallowableAmountPage =>
       _ => taxYear => businessId => otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
+
+    case FinancialChargesAmountPage | FinancialChargesDisallowableAmountPage =>
+      _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
