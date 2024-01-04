@@ -22,6 +22,7 @@ import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -75,6 +76,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
   case object ExpensesOtherExpenses extends Journey("expenses-other-expenses") {
     override val pageKeys: List[PageName] = List(OtherExpensesAmountPage.pageName, OtherExpensesDisallowableAmountPage.pageName)
+  }
+  case object ExpensesFinancialCharges extends Journey("expenses-financial-charges") {
+    override val pageKeys: List[PageName] = List(FinancialChargesAmountPage.pageName, FinancialChargesDisallowableAmountPage.pageName)
   }
   case object ExpensesEntertainment extends Journey("expenses-entertainment") {
     override val pageKeys: List[PageName] = List(EntertainmentAmountPage.pageName)
