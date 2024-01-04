@@ -44,7 +44,7 @@ class FinancialChargesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
     FinancialChargesCYAController.onPageLoad
 
   override def onSubmitCall: (TaxYear, BusinessId) => Call =
-    FinancialChargesCYAController.onPageLoad
+    FinancialChargesCYAController.onSubmit
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
