@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.expenses.financialCharges
 
-import models.Mode
-import models.common.{BusinessId, TaxYear, onwardRoute}
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.OneQuestionPage
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
-    desiredRoute
-
-}
-
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
+case object FinancialChargesAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "financialChargesAmount"
 }
