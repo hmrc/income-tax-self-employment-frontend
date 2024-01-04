@@ -16,10 +16,12 @@
 
 package controllers.journeys.expenses.financialCharges
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.financialCharges.routes._
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.ExpensesFinancialCharges
 import pages.expenses.financialCharges.FinancialChargesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -27,19 +29,22 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.financialCharges.{FinancialChargesAmountSummary, FinancialChargesDisallowableAmountSummary}
 
-class FinancialChargesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class FinancialChargesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String =
     FinancialChargesCYAPage.pageName.value
 
+  override val submissionData: JsObject =
+    Json.obj("disallowableOtherFinancialCharges" -> "yes", "financialChargesAmount" -> 123.00, "financialChargesDisallowableAmount" -> 123.00)
+
   override val testDataCases: List[JsObject] =
-    List(Json.obj("disallowableOtherFinancialCharges" -> "yes", "financialChargesAmount" -> 123.00, "financialChargesDisallowableAmount" -> 123.00))
+    List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call =
     FinancialChargesCYAController.onPageLoad
 
   override def onSubmitCall: (TaxYear, BusinessId) => Call =
-    FinancialChargesCYAController.onPageLoad
+    FinancialChargesCYAController.onSubmit
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
@@ -50,4 +55,6 @@ class FinancialChargesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  override val journey: Journey = ExpensesFinancialCharges
 }
