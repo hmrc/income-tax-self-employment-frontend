@@ -51,9 +51,9 @@
                        <div class="govuk-details__text">
                            <p>${messages(s"site.canInclude.$userType")}</p>
                            <ul class="govuk-body govuk-list--bullet">
-                               <li>@messages(s"expenses.interest.${accountingType.toString.toLowerCase}")</li>
-                               <li>@messages("expenses.feesForBuyingGoods")</li>
-                               <li>@messages("expenses.hirePurchase")</li>
+                               <li>${messages(s"expenses.interest.${accountingType.toString.toLowerCase}")}</li>
+                               <li>${messages("expenses.feesForBuyingGoods")}</li>
+                               <li>${messages("expenses.hirePurchase")}</li>
                            </ul>
                            <p>${messages(s"site.cannotInclude.$userType")}</p>
                            <ul class="govuk-body govuk-list--bullet">

@@ -340,6 +340,9 @@ POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/disallow
 GET         /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-interest-bank-business-loans/disallowable-amount             controllers.journeys.expenses.interest.InterestDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                  controllers.journeys.expenses.interest.InterestCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                  controllers.journeys.expenses.interest.InterestCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Depreciation ##########
 
 GET         /:taxYear/:businessId/expenses/depreciation/disallowable-amount                                    controllers.journeys.expenses.depreciation.DepreciationDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -364,3 +367,18 @@ POST        /:taxYear/:businessId/expenses/change-other-expenses/disallowable-am
 
 GET         /:taxYear/:businessId/expenses/other-expenses/check                                                controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/other-expenses/check                                                controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Expenses - Fincancial Charges ##########
+
+GET         /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/amount                            controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/amount                            controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-bank-credit-card-financial-charges/amount                     controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-bank-credit-card-financial-charges/amount                     controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/disallowable-amount               controllers.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/disallowable-amount               controllers.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-bank-credit-card-financial-charges/disallowable-amount        controllers.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-bank-credit-card-financial-charges/disallowable-amount        controllers.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/check                             controllers.journeys.expenses.financialCharges.FinancialChargesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/check                             controllers.journeys.expenses.financialCharges.FinancialChargesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
