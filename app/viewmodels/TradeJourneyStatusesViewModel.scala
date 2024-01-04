@@ -110,6 +110,20 @@ object TradeJourneyStatusesViewModel {
           )
         ),
         buildRow(
+          ExpensesInterest,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            FinancialExpensesPage,
+            FinancialExpenses.Interest
+          )
+        ),
+        buildRow(
+          ExpensesFinancialCharges,
+          expensesTailoringIsAnswered && conditionPassedForViewableLink(
+            FinancialExpensesPage,
+            FinancialExpenses.OtherFinancialCharges
+          )
+        ),
+        buildRow(
           ExpensesDepreciation,
           expensesTailoringIsAnswered && conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
         )
@@ -242,7 +256,20 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId).url
         )
-
+      case ExpensesInterest =>
+        determineUrl(
+          expenses.interest.routes.InterestAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.interest.routes.InterestCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesFinancialCharges =>
+        determineUrl(
+          expenses.financialCharges.routes.FinancialChargesAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId).url
+        )
       case ExpensesDepreciation =>
         determineUrl(
           expenses.depreciation.routes.DepreciationDisallowableAmountController
@@ -250,8 +277,7 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesInterest | ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses |
-          ExpensesFinancialCharges =>
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
