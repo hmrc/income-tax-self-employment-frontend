@@ -55,7 +55,7 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
         ))
 
       Ok(
-        view(FinancialChargesCYAPage.toString, taxYear, request.userType, summaryList, FinancialChargesCYAController.onPageLoad(taxYear, businessId))
+        view(FinancialChargesCYAPage.toString, taxYear, request.userType, summaryList, FinancialChargesCYAController.onSubmit(taxYear, businessId))
       )
   }
 
