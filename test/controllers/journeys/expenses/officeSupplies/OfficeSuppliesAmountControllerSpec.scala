@@ -36,7 +36,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
@@ -51,7 +50,6 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
   private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  private val mockSessionRepository     = mock[SessionRepository]
   private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[BigDecimal])
@@ -135,14 +133,12 @@ class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
           "when submitting a page" - {
             "when an accounting type is returned by the service" - {
               "must redirect to the next page when valid data is submitted" in {
-                when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
                 when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
                 val application =
                   applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
                     .overrides(
                       bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-                      bind[SessionRepository].toInstance(mockSessionRepository),
                       bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
                     )
                     .build()

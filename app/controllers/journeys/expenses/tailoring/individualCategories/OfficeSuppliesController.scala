@@ -25,7 +25,6 @@ import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
                                           selfEmploymentService: SelfEmploymentService,
-                                          sessionRepository: SessionRepository,
                                           navigator: ExpensesTailoringNavigator,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
@@ -71,10 +69,9 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesPage)
+                  .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }

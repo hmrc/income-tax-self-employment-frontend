@@ -35,7 +35,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
@@ -56,7 +56,7 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
   private lazy val officeSuppliesDisallowableAmountOnSubmitRoute =
     OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  private val mockSessionRepository = mock[SessionRepository]
+  private val mockService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType)
 
@@ -135,13 +135,12 @@ class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with Mocki
 
         "when submitting a page" - {
           "must redirect to the next page when valid data is submitted" in {
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
             val application =
               applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
                 .overrides(
                   bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-                  bind[SessionRepository].toInstance(mockSessionRepository)
+                  bind[SelfEmploymentService].toInstance(mockService)
                 )
                 .build()
 

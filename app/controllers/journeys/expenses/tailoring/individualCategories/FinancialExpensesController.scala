@@ -16,12 +16,15 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
+import cats.data.EitherT
 import controllers.actions._
+import controllers.handleResult
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.errors.ServiceError
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.{
   DisallowableInterest,
@@ -36,12 +39,13 @@ import pages.expenses.tailoring.individualCategories.{
   DisallowableOtherFinancialChargesPage,
   FinancialExpensesPage
 }
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.Settable
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
 import javax.inject.Inject
@@ -51,7 +55,6 @@ import scala.util.{Failure, Success, Try}
 
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
-                                             sessionRepository: SessionRepository,
                                              navigator: ExpensesTailoringNavigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
@@ -60,7 +63,8 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
                                              val controllerComponents: MessagesControllerComponents,
                                              view: FinancialExpensesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
@@ -72,27 +76,44 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
             case Some(value) => formProvider(request.userType).fill(value)
           }
 
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, AccountingType.withName(accountingType.toUpperCase())))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
-              value =>
-                for {
-                  clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(request.userAnswers, Some(businessId), value))
-                  updatedAnswers <- Future.fromTry(clearedAnswers.set(FinancialExpensesPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, businessId))
-            )
-      }
+      def handleError(formWithErrors: Form[_], userType: UserType, accountingType: AccountingType): Future[Result] =
+        Future.successful(
+          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType))
+        )
+
+      def handleSuccess(userAnswers: UserAnswers, answers: Set[FinancialExpenses]): Future[Result] =
+        for {
+          clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(userAnswers, Some(businessId), answers))
+          updatedAnswers <- selfEmploymentService.persistAnswer(businessId, clearedAnswers, answers, FinancialExpensesPage)
+        } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, businessId))
+
+      def handleForm(form: Form[Set[FinancialExpenses]],
+                     userType: UserType,
+                     accountingType: AccountingType,
+                     userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Left(handleError(formWithErrors, userType, accountingType)),
+            value => Right(handleSuccess(userAnswers, value))
+          )
+
+      val result = for {
+        accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
+        userType       = request.userType
+        userAnswers    = request.userAnswers
+        form           = formProvider(userType)
+        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
+      } yield finalResult
+
+      handleResult(result.value)
   }
 
   private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,

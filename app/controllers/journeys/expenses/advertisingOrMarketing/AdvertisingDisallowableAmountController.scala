@@ -25,7 +25,7 @@ import navigation.ExpensesNavigator
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
@@ -34,7 +34,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdvertisingDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                         sessionRepository: SessionRepository,
+                                                         selfEmploymentService: SelfEmploymentService,
                                                          navigator: ExpensesNavigator,
                                                          identify: IdentifierAction,
                                                          getData: DataRetrievalAction,
@@ -70,10 +70,10 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(amount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingOrMarketingDisallowableAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingDisallowableAmountPage)
+                  .map(updatedAnswers =>
+                    Redirect(navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }

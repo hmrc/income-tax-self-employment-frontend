@@ -25,7 +25,7 @@ import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
@@ -34,7 +34,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                              sessionRepository: SessionRepository,
+                                                              selfEmploymentService: SelfEmploymentService,
                                                               navigator: ExpensesNavigator,
                                                               identify: IdentifierAction,
                                                               getData: DataRetrievalAction,
@@ -71,10 +71,10 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
               formWithErrors =>
                 Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, DisallowableGoodsToSellOrUseAmountPage)
+                  .map(updatedAnswers =>
+                    Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }
