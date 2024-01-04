@@ -958,3 +958,6 @@ financialChargesDisallowableAmount.error.lessThanZero.agent = The disallowable a
 financialChargesDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on spent on bank, credit card and other financial charges must be the same as or less than £{0}
 financialChargesDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on spent on bank, credit card and other financial charges must be the same as or less than £{0}
 financialChargesDisallowableAmount.change.hidden = Change how much spent on financial charges is disallowable
+
+financialChargesCYA.title.individual = Check your financial charges expenses
+financialChargesCYA.title.agent = Check your client’s financial charges expenses
