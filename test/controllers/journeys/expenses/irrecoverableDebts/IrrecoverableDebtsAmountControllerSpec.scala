@@ -40,7 +40,7 @@ class IrrecoverableDebtsAmountControllerSpec
   lazy val onPageLoadRoute: String = routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.IrrecoverableDebtsAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override val onwardRoute: Call = routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   private val mockService = mock[SelfEmploymentServiceBase]
 

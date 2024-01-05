@@ -16,7 +16,7 @@
 
 @import models.common._
 @import viewmodels.InputWidth._
-@import controllers.journeys.expenses.financialCharges.routes.FinancialChargesAmountController
+@import controllers.journeys.expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController
 @import views.html.templates.helpers.Heading
 @import viewmodels.LabelSize
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -36,7 +36,7 @@
 
 @layout(pageTitle = title(form, messages(s"financialChargesAmount.title.$userType"))) {
 
-    @formHelper(action = FinancialChargesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = IrrecoverableDebtsAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
