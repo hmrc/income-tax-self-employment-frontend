@@ -33,15 +33,15 @@ import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallo
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IrrecoverableDebtsDisallowableAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                               navigator: ExpensesNavigator,
-                                                               identify: IdentifierAction,
-                                                               getAnswers: DataRetrievalAction,
-                                                               requireAnswers: DataRequiredAction,
-                                                               service: SelfEmploymentServiceBase,
-                                                               formProvider: IrrecoverableDebtsDisallowableAmountFormProvider,
-                                                               val controllerComponents: MessagesControllerComponents,
-                                                               view: IrrecoverableDebtsDisallowableAmountView)(implicit ec: ExecutionContext)
+class IrrecoverableDebtsDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                                navigator: ExpensesNavigator,
+                                                                identify: IdentifierAction,
+                                                                getAnswers: DataRetrievalAction,
+                                                                requireAnswers: DataRequiredAction,
+                                                                service: SelfEmploymentServiceBase,
+                                                                formProvider: IrrecoverableDebtsDisallowableAmountFormProvider,
+                                                                val controllerComponents: MessagesControllerComponents,
+                                                                view: IrrecoverableDebtsDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

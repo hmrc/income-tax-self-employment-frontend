@@ -38,7 +38,7 @@ import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallo
 import scala.concurrent.Future
 
 class IrrecoverableDebtsDisallowableAmountControllerSpec
-  extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesDisallowableAmountController", IrrecoverableDebtsDisallowableAmountPage) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesDisallowableAmountController", IrrecoverableDebtsDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.IrrecoverableDebtsDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
@@ -63,9 +63,9 @@ class IrrecoverableDebtsDisallowableAmountControllerSpec
   override def createForm(user: UserType): Form[BigDecimal] = new IrrecoverableDebtsDisallowableAmountFormProvider()(user, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[IrrecoverableDebtsDisallowableAmountView]
     view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(amount)).toString()
   }

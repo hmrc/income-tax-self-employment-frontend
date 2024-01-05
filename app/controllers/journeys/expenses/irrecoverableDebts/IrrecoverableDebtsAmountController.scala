@@ -32,15 +32,15 @@ import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountV
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IrrecoverableDebtsAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                   service: SelfEmploymentServiceBase,
-                                                   navigator: ExpensesNavigator,
-                                                   identify: IdentifierAction,
-                                                   getAnswers: DataRetrievalAction,
-                                                   requireAnswers: DataRequiredAction,
-                                                   formProvider: IrrecoverableDebtsAmountFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: IrrecoverableDebtsAmountView)(implicit ec: ExecutionContext)
+class IrrecoverableDebtsAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                    service: SelfEmploymentServiceBase,
+                                                    navigator: ExpensesNavigator,
+                                                    identify: IdentifierAction,
+                                                    getAnswers: DataRetrievalAction,
+                                                    requireAnswers: DataRequiredAction,
+                                                    formProvider: IrrecoverableDebtsAmountFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    view: IrrecoverableDebtsAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
