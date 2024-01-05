@@ -382,3 +382,11 @@ POST        /:taxYear/:businessId/expenses/change-bank-credit-card-financial-cha
 
 GET         /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/check                             controllers.journeys.expenses.financialCharges.FinancialChargesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/check                             controllers.journeys.expenses.financialCharges.FinancialChargesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Expenses - Irrecoverable Debts ##########
+
+GET         /:taxYear/:businessId/expenses/irrecoverable-debts/amount                                           controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/irrecoverable-debts/amount                                           controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-irrecoverable-debts/amount                                    controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-irrecoverable-debts/amount                                    controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
