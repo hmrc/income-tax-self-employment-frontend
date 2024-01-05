@@ -19,23 +19,25 @@ package forms.expenses.officeSupplies
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
-import play.api.i18n.Messages
 import utils.MoneyUtils
 
 import javax.inject.Inject
 
 class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds with MoneyUtils {
 
-  def apply(userType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] =
+  def apply(userType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] = {
+
+    val allowableAmountString = formatMoney(allowableAmount)
     Form(
       "value" -> currency(
-        requiredKey = messages(s"officeSuppliesDisallowableAmount.error.required.$userType", allowableAmount),
-        nonNumericKey = messages(s"officeSuppliesDisallowableAmount.error.nonNumeric.$userType", allowableAmount)
+        s"officeSuppliesDisallowableAmount.error.required.$userType",
+        s"officeSuppliesDisallowableAmount.error.nonNumeric.$userType",
+        Seq(allowableAmountString)
       )
+        .verifying(greaterThan(minimumValue, s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", Some(allowableAmountString)))
         .verifying(
-          greaterThan(minimumValue, messages(s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", formatMoney(allowableAmount))))
-        .verifying(
-          maximumValue(allowableAmount, messages(s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", formatMoney(allowableAmount))))
+          lessThanOrEqualTo(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", Some(allowableAmountString)))
     )
+  }
 
 }

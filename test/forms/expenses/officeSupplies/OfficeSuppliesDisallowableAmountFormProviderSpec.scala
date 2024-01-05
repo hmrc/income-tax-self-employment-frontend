@@ -19,7 +19,6 @@ package forms.expenses.officeSupplies
 import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
-import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
 class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
@@ -31,11 +30,6 @@ class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBe
   private val minimumAmount: BigDecimal   = 0
 
   private val validDataGenerator = currencyInRangeWithCommas(minimumAmount, allowableAmount)
-
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
 
   ".value" - {
     userTypes.foreach { authUser =>

@@ -17,258 +17,67 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.SpecBase
-import controllers.journeys.expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController
-import controllers.standard.routes.JourneyRecoveryController
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
+import models.NormalMode
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.{CheckMode, NormalMode}
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
+import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
 import scala.concurrent.Future
 
-class DisallowableGoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
+class DisallowableGoodsToSellOrUseAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "DisallowableGoodsToSellOrUseAmountController",
+      DisallowableGoodsToSellOrUseAmountPage
+    ) {
 
-  val formProvider            = new DisallowableGoodsToSellOrUseAmountFormProvider()
-  val validAnswer: BigDecimal = 10
-  val goodsAmount: BigDecimal = 1000.50
-  val goodsAmountString       = formatMoney(goodsAmount)
-  val onwardRoute             = Call("GET", "/foo")
+  lazy val onPageLoadRoute: String = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.DisallowableGoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  val baseUserAnswers: UserAnswers =
-    emptyUserAnswers.set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId)).success.value
+  override val onwardRoute: Call = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
-  case class UserScenario(userType: UserType, form: Form[BigDecimal])
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers
+      .set(GoodsToSellOrUsePage, YesDisallowable, Some(businessId))
+      .success
+      .value
+      .set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId))
+      .success
+      .value
 
-  val userScenarios = Seq(
-    UserScenario(Individual, formProvider(Individual, goodsAmount)),
-    UserScenario(Agent, formProvider(Agent, goodsAmount))
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  "DisallowableGoodsToSellOrUseAmount Controller" - {
-
-    "onPageLoad" - {
-
-      userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.userType}" - {
-          "must return OK and the correct view for a GET" in {
-
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-
-              val result = route(application, request).value
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must populate the view correctly on a GET when the question has previously been answered" in {
-
-            val userAnswers =
-              baseUserAnswers.set(DisallowableGoodsToSellOrUseAmountPage, validAnswer, Some(businessId)).success.value
-
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(userScenario.form.fill(validAnswer), CheckMode, userScenario.userType, taxYear, businessId, goodsAmountString)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-        }
-      }
-    }
-
-    "onSubmit" - {
-
-      "must redirect to the next page when valid data is submitted" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(userAnswers = Some(baseUserAnswers))
-            .overrides(
-              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
-      }
-
-      userScenarios.foreach { userScenario =>
-        s"when user is an ${userScenario.userType}" - {
-          "must return a Bad Request and errors when an empty form is submitted" in {
-
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", ""))
-
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when invalid data is submitted" in {
-
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when a negative number is submitted" in {
-
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", "-23"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "-23"))
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when disallowable amount exceeds goods amount" in {
-
-            val application = applicationBuilder(userAnswers = Some(baseUserAnswers), userScenario.userType).build()
-
-            running(application) {
-              val request =
-                FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", (goodsAmount + 0.01).toString()))
-
-              val boundForm = userScenario.form.bind(Map("value" -> (goodsAmount + 0.01).toString()))
-
-              val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, goodsAmountString)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-        }
-      }
-    }
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+
+  private val goodsAmount: BigDecimal = 1000.50
+  private val goodsAmountString       = formatMoney(goodsAmount)
+
+  def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, goodsAmount)
+
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, goodsAmountString).toString()
   }
 
 }

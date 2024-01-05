@@ -17,23 +17,27 @@
 package controllers.journeys.expenses.officeSupplies
 
 import base.SpecBase
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
+import models.journeys.expenses.individualCategories.OfficeSupplies
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
+import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -42,31 +46,35 @@ import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
 import scala.concurrent.Future
 
-class OfficeSuppliesAmountControllerSpec extends SpecBase with MockitoSugar {
+class OfficeSuppliesAmountControllerSpec
+  extends BigDecimalGetAndPostQuestionBaseSpec(
+    "OfficeSuppliesAmountController",
+    OfficeSuppliesAmountPage
+  ) {
 
-  private val formProvider = new OfficeSuppliesAmountFormProvider()
-  private val validAnswer  = BigDecimal(100.00)
+  lazy val onPageLoadRoute: String = routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  private val onwardRoute                            = Call("GET", "/foo")
-  private lazy val officeSuppliesAmountPageLoadRoute = OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  private lazy val officeSuppliesAmountOnSubmitRoute = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  override val onwardRoute: Call = routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockSessionRepository     = mock[SessionRepository]
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers.set(OfficeSuppliesPage, OfficeSupplies.YesDisallowable, Some(businessId)).success.value
 
-  case class UserScenario(userType: UserType, form: Form[BigDecimal])
-
-  private val userScenarios = Seq(
-    UserScenario(userType = Individual, form = formProvider(Individual)),
-    UserScenario(userType = Agent, form = formProvider(Agent))
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
 
-  private val someHttpError = ConnectorResponseError(HttpError(400, HttpErrorBody.SingleErrorBody("BAD_REQUEST", "some_reason")))
+  def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 
-  private def buildApplication(userAnswers: Option[UserAnswers], userType: UserType): Application =
-    applicationBuilder(userAnswers, userType)
-      .overrides(bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
-      .build()
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+                                                                   request: Request[_],
+                                                                   messages: Messages,
+                                                                   application: Application): String = {
+    val view = application.injector.instanceOf[OfficeSuppliesAmountView]
+    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, scenario.taxYear, scenario.businessId).toString()
+  }
 
   "OfficeSuppliesAmountController" - {
     userScenarios.foreach { userScenario =>
