@@ -16,84 +16,58 @@
 
 package controllers.journeys.expenses.staffCosts
 
-import base.SpecBase._
-import common.TestApp._
+import base.SpecBase
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
-import gens._
-import models.common.onwardRoute
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts.{No, Yes}
-import org.scalacheck.Gen
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.NormalMode
+import models.common.UserType
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.DisallowableStaffCosts.Yes
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
+import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView
 
-class StaffCostsAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
-  private val validAnswer                          = BigDecimal(100.00)
-  private val invalidAnswer                        = "invalid value"
-  val disallowableGen: Gen[DisallowableStaffCosts] = Gen.oneOf(Yes, No)
+import scala.concurrent.Future
 
-  "onPageLoad" should {
-    "return OK and render view" in {
-      forAll(userTypeGen, modeGen, disallowableGen) { (userType, mode, disallowable) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(businessId)).success.value
-        val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val form           = new StaffCostsAmountFormProvider()(userType)
-        val routeUnderTest = routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, mode).url
-        val getRequest     = FakeRequest(GET, routeUnderTest)
+class StaffCostsAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "StaffCostsAmountController",
+      StaffCostsAmountPage
+    ) {
 
-        val result = route(application, getRequest).value
+  lazy val onPageLoadRoute: String = routes.StaffCostsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.StaffCostsAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-        status(result) mustBe OK
+  override val onwardRoute: Call = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-        val view = application.injector.instanceOf[StaffCostsAmountView]
-        val expectedView =
-          view(form, mode, userType, taxYear, businessId, disallowable)(getRequest, messages(application))
-            .toString()
-        contentAsString(result) mustEqual expectedView
-      }
-    }
-  }
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
-  "onSubmit" should {
-    "redirect to next when valid data is submitted" in {
-      forAll(userTypeGen, modeGen) { (userType, mode) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
-        val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, businessId, mode).url
-        val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
 
-        val result = route(application, postRequest).value
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
-    "return bad request when invalid data is submitted" in {
-      forAll(userTypeGen, modeGen, disallowableGen) { (userType, mode, disallowable) =>
-        val userAnswers    = emptyUserAnswers.set(DisallowableStaffCostsPage, disallowable, Some(businessId)).success.value
-        val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsAmountController.onSubmit(taxYear, businessId, mode).url
-        val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
-        val view           = application.injector.instanceOf[StaffCostsAmountView]
-        val form           = new StaffCostsAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
-        val expectedView =
-          view(form, mode, userType, taxYear, businessId, disallowable)(postRequest, messages(application))
-            .toString()
+  def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 
-        val result = route(application, postRequest).value
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustEqual expectedView
-      }
-    }
-
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[StaffCostsAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Yes).toString()
   }
 
 }
