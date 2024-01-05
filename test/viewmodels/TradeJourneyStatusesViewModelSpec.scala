@@ -108,6 +108,14 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       tailoringCyaIsAnswered && userAnswers
         .get(ProfessionalServiceExpensesPage, Some(businessId))
         .contains(ProfessionalServiceExpenses.ProfessionalFees)
+    val interestIsYes =
+      tailoringCyaIsAnswered && userAnswers
+        .get(FinancialExpensesPage, Some(businessId))
+        .contains(FinancialExpenses.Interest)
+    val financialChargesIsYes =
+      tailoringCyaIsAnswered && userAnswers
+        .get(FinancialExpensesPage, Some(businessId))
+        .contains(FinancialExpenses.OtherFinancialCharges)
     val depreciationIsYes = tailoringCyaIsAnswered && userAnswers.get(DepreciationPage, Some(businessId)).exists(_ != Depreciation.No)
 
     Seq(
@@ -125,6 +133,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       buildOptionalRow(ExpensesStaffCosts, findJourneyStatus(journeyCompletedStates, ExpensesStaffCosts), staffCostsIsYes),
       buildOptionalRow(ExpensesConstruction, findJourneyStatus(journeyCompletedStates, ExpensesConstruction), constructionIsYes),
       buildOptionalRow(ExpensesProfessionalFees, findJourneyStatus(journeyCompletedStates, ExpensesProfessionalFees), professionalFeesIsYes),
+      buildOptionalRow(ExpensesInterest, findJourneyStatus(journeyCompletedStates, ExpensesInterest), interestIsYes),
+      buildOptionalRow(ExpensesFinancialCharges, findJourneyStatus(journeyCompletedStates, ExpensesFinancialCharges), financialChargesIsYes),
       buildOptionalRow(ExpensesDepreciation, findJourneyStatus(journeyCompletedStates, ExpensesDepreciation), depreciationIsYes)
     ).flatten
   }
@@ -177,6 +187,10 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         journeys.expenses.construction.routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesProfessionalFees =>
         journeys.expenses.professionalFees.routes.ProfessionalFeesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesInterest =>
+        journeys.expenses.interest.routes.InterestAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+      case ExpensesFinancialCharges =>
+        journeys.expenses.financialCharges.routes.FinancialChargesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case ExpensesDepreciation =>
         journeys.expenses.depreciation.routes.DepreciationDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
       case _ => "not implemented or error"
@@ -197,6 +211,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       case ExpensesStaffCosts       => journeys.expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesConstruction     => journeys.expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesProfessionalFees => journeys.expenses.professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesInterest         => journeys.expenses.interest.routes.InterestCYAController.onPageLoad(taxYear, businessId).url
+      case ExpensesFinancialCharges => journeys.expenses.financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId).url
       case ExpensesDepreciation =>
         journeys.expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
       case _ => "not implemented or error"

@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.financialCharges
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.financialCharges.routes._
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
@@ -38,7 +38,8 @@ import scala.concurrent.ExecutionContext
 class FinancialChargesCYAController @Inject() (override val messagesApi: MessagesApi,
                                                val controllerComponents: MessagesControllerComponents,
                                                identify: IdentifierAction,
-                                               getAnswers: DataRetrievalAction,
+                                               getUserAnswers: DataRetrievalAction,
+                                               getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireAnswers: DataRequiredAction,
                                                service: SelfEmploymentServiceBase,
                                                view: CheckYourAnswersView)(implicit ec: ExecutionContext)
@@ -46,8 +47,9 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[FinancialChargesJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesFinancialCharges)) andThen requireAnswers) { implicit request =>
       val summaryList = summaryListOpt(
         List(
           FinancialChargesAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
@@ -57,9 +59,9 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
       Ok(
         view(FinancialChargesCYAPage.toString, taxYear, request.userType, summaryList, FinancialChargesCYAController.onSubmit(taxYear, businessId))
       )
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesFinancialCharges)
       val result  = service.submitAnswers[FinancialChargesJourneyAnswers](context, request.userAnswers)
