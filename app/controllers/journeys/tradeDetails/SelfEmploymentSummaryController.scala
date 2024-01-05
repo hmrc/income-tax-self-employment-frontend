@@ -33,9 +33,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class SelfEmploymentSummaryController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,

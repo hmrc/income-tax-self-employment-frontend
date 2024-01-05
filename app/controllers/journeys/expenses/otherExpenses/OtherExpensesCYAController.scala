@@ -32,9 +32,10 @@ import viewmodels.checkAnswers.expenses.otherExpenses.{OtherExpensesAmountSummar
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesApi,
                                             val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,

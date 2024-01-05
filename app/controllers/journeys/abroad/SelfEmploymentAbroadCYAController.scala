@@ -29,8 +29,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
 import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,

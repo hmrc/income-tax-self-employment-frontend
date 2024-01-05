@@ -34,9 +34,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi: MessagesApi,
                                                        selfEmploymentService: SelfEmploymentServiceBase,
                                                        navigator: ExpensesNavigator,

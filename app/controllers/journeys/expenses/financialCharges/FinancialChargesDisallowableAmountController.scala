@@ -30,9 +30,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class FinancialChargesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                               navigator: ExpensesNavigator,
                                                               identify: IdentifierAction,

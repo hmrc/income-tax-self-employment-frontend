@@ -32,9 +32,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                             sessionRepository: SessionRepository,
                                                             navigator: ExpensesNavigator,

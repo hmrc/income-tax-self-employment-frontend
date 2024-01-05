@@ -44,11 +44,12 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
+@Singleton
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,
