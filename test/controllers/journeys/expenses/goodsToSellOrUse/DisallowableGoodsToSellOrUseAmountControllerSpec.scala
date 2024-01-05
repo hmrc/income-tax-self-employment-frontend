@@ -67,8 +67,8 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec
 
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
-  private val goodsAmount: BigDecimal = 1000.50
-  private val goodsAmountString       = formatMoney(goodsAmount)
+  private lazy val goodsAmount: BigDecimal = 1000.50
+  private lazy val goodsAmountString       = formatMoney(goodsAmount)
 
   def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, goodsAmount)
 
