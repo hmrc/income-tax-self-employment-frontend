@@ -28,9 +28,10 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TurnoverNotTaxableView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class TurnoverNotTaxableController @Inject() (override val messagesApi: MessagesApi,
                                               sessionRepository: SessionRepository,
                                               navigator: IncomeNavigator,

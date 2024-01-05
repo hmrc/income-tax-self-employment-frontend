@@ -31,9 +31,10 @@ import viewmodels.checkAnswers.expenses.depreciation.DepreciationDisallowableAmo
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class DepreciationCYAController @Inject() (override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            getUserAnswers: DataRetrievalAction,

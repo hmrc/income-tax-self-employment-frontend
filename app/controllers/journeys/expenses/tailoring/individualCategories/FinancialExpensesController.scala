@@ -23,19 +23,9 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
-import models.journeys.expenses.individualCategories.{
-  DisallowableInterest,
-  DisallowableIrrecoverableDebts,
-  DisallowableOtherFinancialCharges,
-  FinancialExpenses
-}
+import models.journeys.expenses.individualCategories.{DisallowableInterest, DisallowableIrrecoverableDebts, DisallowableOtherFinancialCharges, FinancialExpenses}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{
-  DisallowableInterestPage,
-  DisallowableIrrecoverableDebtsPage,
-  DisallowableOtherFinancialChargesPage,
-  FinancialExpensesPage
-}
+import pages.expenses.tailoring.individualCategories.{DisallowableInterestPage, DisallowableIrrecoverableDebtsPage, DisallowableOtherFinancialChargesPage, FinancialExpensesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -44,11 +34,12 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
+@Singleton
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
                                              selfEmploymentService: SelfEmploymentService,
                                              sessionRepository: SessionRepository,

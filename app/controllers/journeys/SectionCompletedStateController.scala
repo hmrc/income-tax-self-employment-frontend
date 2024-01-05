@@ -35,9 +35,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.SectionCompletedStateView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
                                                  service: SelfEmploymentServiceBase,
                                                  navigator: GeneralNavigator,
