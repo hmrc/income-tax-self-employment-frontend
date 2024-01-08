@@ -269,6 +269,13 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId).url
         )
+      case ExpensesIrrecoverableDebts =>
+        determineUrl(
+          expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          expenses.irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId).url
+        )
       case ExpensesDepreciation =>
         determineUrl(
           expenses.depreciation.routes.DepreciationDisallowableAmountController
