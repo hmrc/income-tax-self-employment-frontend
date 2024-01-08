@@ -27,16 +27,15 @@ class OfficeSuppliesDisallowableAmountFormProvider @Inject() extends Mappings wi
 
   def apply(userType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] = {
 
-    val allowableAmountString = formatMoney(allowableAmount)
+    val formattedAmount = formatMoney(allowableAmount)
     Form(
       "value" -> currency(
         s"officeSuppliesDisallowableAmount.error.required.$userType",
         s"officeSuppliesDisallowableAmount.error.nonNumeric.$userType",
-        Seq(allowableAmountString)
+        Seq(formattedAmount)
       )
-        .verifying(greaterThan(minimumValue, s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", Some(allowableAmountString)))
-        .verifying(
-          lessThanOrEqualTo(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", Some(allowableAmountString)))
+        .verifying(greaterThan(minimumValue, s"officeSuppliesDisallowableAmount.error.lessThanZero.$userType", Some(formattedAmount)))
+        .verifying(lessThanOrEqualTo(allowableAmount, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$userType", Some(formattedAmount)))
     )
   }
 
