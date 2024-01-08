@@ -28,11 +28,12 @@ class IrrecoverableDebtsDisallowableAmountFormProvider @Inject() extends Mapping
   def apply(user: UserType, totalAmount: BigDecimal): Form[BigDecimal] =
     Form(
       "value" -> currency(
-        s"financialChargesDisallowableAmount.error.required.$user",
-        s"financialChargesDisallowableAmount.error.nonNumeric.$user",
-        Seq(formatMoney(totalAmount)))
-        .verifying(greaterThan(minimumValue, s"financialChargesDisallowableAmount.error.lessThanZero.$user", Some(formatMoney(totalAmount))))
-        .verifying(lessThanOrEqualTo(totalAmount, s"financialChargesDisallowableAmount.error.overAmount.$user", Some(formatMoney(totalAmount))))
+        s"irrecoverableDebtsDisallowableAmount.error.required.$user",
+        s"irrecoverableDebtsDisallowableAmount.error.nonNumeric.$user",
+        Seq(formatMoney(totalAmount))
+      )
+        .verifying(greaterThan(minimumValue, s"irrecoverableDebtsDisallowableAmount.error.lessThanZero.$user", Some(formatMoney(totalAmount))))
+        .verifying(lessThan(maximumValue, s"irrecoverableDebtsDisallowableAmount.error.overMax.$user"))
     )
 
 }

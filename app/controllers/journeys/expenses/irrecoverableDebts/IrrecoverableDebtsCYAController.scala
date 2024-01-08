@@ -58,7 +58,12 @@ class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: Messa
         ))
 
       Ok(
-        view(IrrecoverableDebtsCYAPage.toString, taxYear, request.userType, summaryList, IrrecoverableDebtsCYAController.onSubmit(taxYear, businessId))
+        view(
+          IrrecoverableDebtsCYAPage.toString,
+          taxYear,
+          request.userType,
+          summaryList,
+          IrrecoverableDebtsCYAController.onSubmit(taxYear, businessId))
       )
     }
 

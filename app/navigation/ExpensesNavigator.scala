@@ -30,6 +30,7 @@ import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
+import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -92,6 +93,22 @@ class ExpensesNavigator @Inject() () {
 
     case FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+    case IrrecoverableDebtsAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(DisallowableIrrecoverableDebtsPage, Some(businessId)) match {
+              case Some(DisallowableIrrecoverableDebts.Yes) =>
+                irrecoverableDebts.routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(DisallowableIrrecoverableDebts.No) =>
+                irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+              case _ =>
+                standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case IrrecoverableDebtsDisallowableAmountPage =>
+      _ => taxYear => businessId => irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>

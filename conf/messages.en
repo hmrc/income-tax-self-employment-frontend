@@ -967,3 +967,32 @@ financialChargesDisallowableAmount.change.hidden = Change how much spent on fina
 
 financialChargesCYA.title.individual = Check your financial charges expenses
 financialChargesCYA.title.agent = Check your client’s financial charges expenses
+
+########## Expenses - Irrecoverable Debts ##########
+
+irrecoverableDebtsAmount.title.individual = What is the value of the irrecoverable debts you’ve written off?
+irrecoverableDebtsAmount.title.agent = What is the value of the irrecoverable debts your client has written off?
+irrecoverableDebtsAmount.error.required.individual = Enter the value of the irrecoverable debts you’ve written off
+irrecoverableDebtsAmount.error.required.agent = Enter the value of the irrecoverable debts your client has written off
+irrecoverableDebtsAmount.error.nonNumeric.individual = The value of the irrecoverable debts you’ve written off must be a number
+irrecoverableDebtsAmount.error.nonNumeric.agent = The value of the irrecoverable debts your client has written off must be a number
+irrecoverableDebtsAmount.error.lessThanZero.individual = The value of the irrecoverable debts you’ve written off must be more than £0
+irrecoverableDebtsAmount.error.lessThanZero.agent = The value of the irrecoverable debts your client has written off must be more than £0
+irrecoverableDebtsAmount.error.overMax.individual = The value of the irrecoverable debts you’ve written off must be less than £100,000,000,000
+irrecoverableDebtsAmount.error.overMax.agent = The value of the irrecoverable debts your client has written off must be less than £100,000,000,000
+irrecoverableDebtsAmount.change.hidden = Change how much was spent on financial charges
+
+irrecoverableDebtsDisallowableAmount.title.individual = How much of the £{0} you’re claiming in irrecoverable debts is disallowable?
+irrecoverableDebtsDisallowableAmount.title.agent = How much of the £{0} your client is claiming in irrecoverable debts is disallowable?
+irrecoverableDebtsDisallowableAmount.error.required.individual = Enter the amount of the £{0} in irrecoverable debts you're claiming that is disallowable
+irrecoverableDebtsDisallowableAmount.error.required.agent = Enter the amount of the £{0} in irrecoverable debts your client is claiming that is disallowable
+irrecoverableDebtsDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} in irrecoverable debts you're claiming must be a number
+irrecoverableDebtsDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} in irrecoverable debts your client is claiming must be a number
+irrecoverableDebtsDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} in irrecoverable debts you're claiming must be more than £0
+irrecoverableDebtsDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} in irrecoverable debts your client is claiming must be more than £0
+irrecoverableDebtsDisallowableAmount.error.overMax.individual = The disallowable amount of the £{0} in irrecoverable debts you're claiming must be less than £100,000,000,000
+irrecoverableDebtsDisallowableAmount.error.overMax.agent = The disallowable amount of the £{0} in irrecoverable debts your client is claiming must be less than £100,000,000,000
+irrecoverableDebtsDisallowableAmount.change.hidden = Change how much spent on financial charges is disallowable
+
+irrecoverableDebtsCYA.title.individual = Check you irrecoverable debts
+irrecoverableDebtsCYA.title.agent = Check your client’s irrecoverable debts
