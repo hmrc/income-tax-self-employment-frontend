@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.NormalMode
 import models.common.UserType
@@ -158,7 +158,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -170,7 +170,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
+              bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
 
@@ -261,7 +261,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
               status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+              redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
             }
           }
         }

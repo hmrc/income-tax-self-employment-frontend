@@ -23,8 +23,6 @@ import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.journeys.Journey.Abroad
 import navigation.{AbroadNavigator, FakeAbroadNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.data.Form
@@ -34,8 +32,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import views.html.journeys.abroad.SelfEmploymentAbroadView
-
-import scala.concurrent.Future
 
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 

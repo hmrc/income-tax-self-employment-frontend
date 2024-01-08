@@ -19,7 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import cats.data.EitherT
 import controllers.actions._
 import controllers.handleResult
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
@@ -70,7 +70,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
             case None        => formProvider(request.userType)

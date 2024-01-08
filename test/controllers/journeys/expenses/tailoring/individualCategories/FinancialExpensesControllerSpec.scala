@@ -17,11 +17,12 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.AccountingType.{Accrual, Cash}
 import models.common.UserType.{Agent, Individual}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -49,11 +50,11 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[Set[FinancialExpenses]], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[Set[FinancialExpenses]], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual),
-    UserScenario(userType = Agent, formProvider(Agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), Accrual),
+    UserScenario(userType = Agent, formProvider(Agent), Cash)
   )
 
   "FinancialExpenses Controller" - {
@@ -132,7 +133,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -140,8 +141,6 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
     "onSubmit" - {
 
       "must redirect to the next page when valid data is submitted" in {
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -239,7 +238,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

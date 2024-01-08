@@ -19,8 +19,9 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.AccountingType.{Accrual, Cash}
 import models.common.UserType.{Agent, Individual}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -51,11 +52,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual),
-    UserScenario(userType = Agent, formProvider(Agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), Accrual),
+    UserScenario(userType = Agent, formProvider(Agent), Cash)
   )
 
   "ProfessionalServiceExpenses Controller" - {

@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsFormProvider
 import models.NormalMode
 import models.common.UserType
@@ -25,8 +25,6 @@ import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsPage
 import play.api.data.Form
@@ -36,8 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsView
-
-import scala.concurrent.Future
 
 class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with MockitoSugar {
 
@@ -117,7 +113,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -127,8 +123,6 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
       "must redirect to the next page when valid data is submitted" in {
 
         val mockSelfEmploymentService = mock[SelfEmploymentService]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -213,7 +207,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

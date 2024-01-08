@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.journeys.expenses.tailoring.individualCategories.routes.DepreciationController
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.DepreciationFormProvider
 import models.NormalMode
 import models.common.UserType
@@ -26,8 +26,6 @@ import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.Depreciation
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.individualCategories.DepreciationPage
 import play.api.data.Form
@@ -37,8 +35,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.DepreciationView
-
-import scala.concurrent.Future
 
 class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
@@ -115,7 +111,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -125,8 +121,6 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
       "must redirect to the next page when valid data is submitted" in {
 
         val mockSelfEmploymentService = mock[SelfEmploymentService]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -211,7 +205,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

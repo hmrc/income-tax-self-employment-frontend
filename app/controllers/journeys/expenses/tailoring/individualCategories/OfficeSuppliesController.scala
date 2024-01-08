@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -48,7 +48,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
+        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(OfficeSuppliesPage, Some(businessId)) match {
             case None        => formProvider(request.userType)
@@ -62,7 +62,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           val form = formProvider(request.userType)
           form

@@ -25,8 +25,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.Yes
 import models.journeys.expenses.individualCategories.TravelForWork
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.individualCategories.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
 import play.api.data.Form
@@ -36,8 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.TravelForWorkView
-
-import scala.concurrent.Future
 
 class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 
@@ -148,8 +144,6 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
       "must redirect to the next page when valid data is submitted" in {
 
         val mockSelfEmploymentService = mock[SelfEmploymentService]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
