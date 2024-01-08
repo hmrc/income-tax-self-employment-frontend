@@ -33,7 +33,6 @@ class IrrecoverableDebtsDisallowableAmountFormProvider @Inject() extends Mapping
         Seq(formatMoney(totalAmount))
       )
         .verifying(greaterThan(minimumValue, s"irrecoverableDebtsDisallowableAmount.error.lessThanZero.$user", Some(formatMoney(totalAmount))))
-        .verifying(lessThanOrEqualTo(totalAmount, s"irrecoverableDebtsDisallowableAmount.error.overAmount.$user", Some(formatMoney(totalAmount))))
         .verifying(lessThan(maximumValue, s"irrecoverableDebtsDisallowableAmount.error.overMax.$user"))
     )
 
