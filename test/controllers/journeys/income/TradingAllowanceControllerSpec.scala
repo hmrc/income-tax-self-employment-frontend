@@ -17,8 +17,6 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceController}
-import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TradingAllowanceFormProvider
 import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
@@ -55,7 +53,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val userScenarios = Seq(
     UserScenario(userType = UserType.Individual, formProvider(UserType.Individual), AccountingType.Accrual),
-    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), AccountingType.Accrual)
+    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), AccountingType.Cash)
   )
 
   "TradingAllowance Controller" - {
