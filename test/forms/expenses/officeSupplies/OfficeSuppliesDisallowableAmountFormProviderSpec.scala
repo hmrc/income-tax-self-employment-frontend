@@ -16,68 +16,23 @@
 
 package forms.expenses.officeSupplies
 
-import forms.behaviours.BigDecimalFieldBehaviours
-import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
-import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
+import base.forms.CurrencyFormProviderBaseSpec
+import models.common.UserType
+import play.api.data.Form
+import utils.MoneyUtils.formatMoney
 
-class OfficeSuppliesDisallowableAmountFormProviderSpec extends BigDecimalFieldBehaviours {
+class OfficeSuppliesDisallowableAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("OfficeSuppliesDisallowableAmountFormProvider") {
 
-  private val userTypes = Seq(Individual, Agent)
+  private lazy val amount       = 5623.50
+  private lazy val amountString = formatMoney(amount, addDecimalForWholeNumbers = false)
 
-  private val fieldName = "value"
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new OfficeSuppliesDisallowableAmountFormProvider()(userType, amount)
 
-  private val allowableAmount: BigDecimal = BigDecimal.decimal(1000.00)
-  private val minimumAmount: BigDecimal   = 0
-
-  private val validDataGenerator = currencyInRangeWithCommas(minimumAmount, allowableAmount)
-
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
-
-  ".value" - {
-    userTypes.foreach { authUser =>
-      s"when the user is $authUser" - {
-        "form provider should" - {
-          val form = new OfficeSuppliesDisallowableAmountFormProvider()(authUser, allowableAmount)
-
-          behave like fieldThatBindsValidData(
-            form,
-            fieldName,
-            validDataGenerator
-          )
-
-          behave like bigDecimalField(
-            form,
-            fieldName,
-            nonNumericError = FormError(fieldName, s"officeSuppliesDisallowableAmount.error.nonNumeric.$authUser")
-          )
-
-          behave like bigDecimalFieldWithMinimum(
-            form,
-            fieldName,
-            minimumAmount,
-            expectedError = FormError(fieldName, s"officeSuppliesDisallowableAmount.error.lessThanZero.$authUser", Seq(minimumAmount))
-          )
-
-          behave like bigDecimalFieldWithMaximum(
-            form,
-            fieldName,
-            allowableAmount,
-            expectedError = FormError(fieldName, s"officeSuppliesDisallowableAmount.error.overAllowableMax.$authUser", Seq(allowableAmount))
-          )
-
-          behave like mandatoryField(
-            form,
-            fieldName,
-            requiredError = FormError(fieldName, s"officeSuppliesDisallowableAmount.error.required.$authUser")
-          )
-        }
-      }
-    }
-
-  }
+  override lazy val requiredError: String                  = "officeSuppliesDisallowableAmount.error.required"
+  override lazy val nonNumericError: String                = "officeSuppliesDisallowableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String              = "officeSuppliesDisallowableAmount.error.lessThanZero"
+  override lazy val overMaxError: String                   = "officeSuppliesDisallowableAmount.error.overAllowableMax"
+  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val maximum: BigDecimal                    = amount
 
 }

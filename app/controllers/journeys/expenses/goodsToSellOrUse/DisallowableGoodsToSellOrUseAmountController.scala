@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -30,9 +30,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messagesApi: MessagesApi,
                                                               selfEmploymentService: SelfEmploymentService,
                                                               navigator: ExpensesNavigator,
@@ -48,7 +49,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           val preparedForm =
             request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
@@ -63,7 +64,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           formProvider(request.userType, goodsAmount)
             .bindFromRequest()

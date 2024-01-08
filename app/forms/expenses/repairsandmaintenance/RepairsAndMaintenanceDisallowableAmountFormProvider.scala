@@ -19,23 +19,23 @@ package forms.expenses.repairsandmaintenance
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
-import play.api.i18n.Messages
 import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
 
 class RepairsAndMaintenanceDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType, allowableAmount: BigDecimal)(implicit messages: Messages): Form[BigDecimal] = {
+  def apply(userType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] = {
     val formattedMoney = formatMoney(allowableAmount)
 
     Form(
       "value" -> currency(
-        messages(s"repairsAndMaintenanceDisallowableAmount.error.required.$userType", formattedMoney),
-        messages(s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$userType", formattedMoney)
+        s"repairsAndMaintenanceDisallowableAmount.error.required.$userType",
+        s"repairsAndMaintenanceDisallowableAmount.error.nonNumeric.$userType",
+        Seq(formattedMoney)
       )
-        .verifying(greaterThan(minimumValue, messages(s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$userType", formattedMoney)))
-        .verifying(maximumValue(allowableAmount, messages(s"repairsAndMaintenanceDisallowableAmount.error.overAmount.$userType", formattedMoney)))
+        .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceDisallowableAmount.error.lessThanZero.$userType", Some(formattedMoney)))
+        .verifying(lessThanOrEqualTo(allowableAmount, s"repairsAndMaintenanceDisallowableAmount.error.overAmount.$userType", Some(formattedMoney)))
     )
   }
 

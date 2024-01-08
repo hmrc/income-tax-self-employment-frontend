@@ -16,80 +16,48 @@
 
 package controllers.journeys.expenses.staffCosts
 
-import base.SpecBase._
-import common.TestApp._
-import forms.expenses.staffCosts._
-import gens._
-import models.common.{TextAmount, onwardRoute}
+import base.SpecBase
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import forms.expenses.staffCosts.StaffCostsDisallowableAmountFormProvider
+import models.NormalMode
+import models.common.{TextAmount, UserType}
 import models.database.UserAnswers
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import views.html.journeys.expenses.staffCosts._
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import utils.MoneyUtils.formatMoney
+import views.html.journeys.expenses.staffCosts.StaffCostsDisallowableAmountView
 
-class StaffCostsDisallowableAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
-  private val validAnswer   = BigDecimal(200.00)
-  private val invalidAnswer = "invalid value"
-  private val data          = Json.obj(businessId.value -> Json.obj("staffCostsAmount" -> validAnswer))
-  private val userAnswers   = UserAnswers(userAnswersId, data)
+class StaffCostsDisallowableAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "StaffCostsDisallowableAmountController",
+      StaffCostsDisallowableAmountPage
+    ) {
 
-  "onPageLoad" should {
-    "return OK and render view" in {
-      forAll(userTypeGen, modeGen) { (userType, mode) =>
-        val application    = buildAppFromUserType(userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, mode).url
-        val getRequest     = FakeRequest(GET, routeUnderTest)
+  private lazy val allowableAmount: BigDecimal = 500.50
 
-        val result = route(application, getRequest).value
+  lazy val onPageLoadRoute: String = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-        status(result) mustBe OK
+  override val onwardRoute: Call = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-        val view         = application.injector.instanceOf[StaffCostsDisallowableAmountView]
-        val msg          = messages(application)
-        val form         = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer)
-        val expectedView = view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(getRequest, msg).toString()
-        contentAsString(result) mustEqual expectedView
-      }
-    }
-  }
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
-  "onSubmit" should {
-    "redirect to next when valid data is submitted" in {
-      forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application    = buildApp(accountingType, userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, businessId, mode).url
-        val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers.set(StaffCostsAmountPage, allowableAmount, Some(businessId)).success.value
 
-        val result = route(application, postRequest).value
+  def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsDisallowableAmountFormProvider()(userType, allowableAmount)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
-
-    "return bad request when invalid data is submitted" in {
-      forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application    = buildApp(accountingType, userType, Some(userAnswers))
-        val routeUnderTest = routes.StaffCostsDisallowableAmountController.onSubmit(taxYear, businessId, mode).url
-        val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
-
-        val result = route(application, postRequest).value
-
-        status(result) mustBe BAD_REQUEST
-
-        val view = application.injector.instanceOf[StaffCostsDisallowableAmountView]
-        val form = new StaffCostsDisallowableAmountFormProvider()(userType, validAnswer).bind(Map("value" -> invalidAnswer))
-        val expectedView =
-          view(form, mode, userType, taxYear, businessId, TextAmount(validAnswer))(postRequest, messages(application))
-            .toString()
-        contentAsString(result) mustEqual expectedView
-      }
-    }
-
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[StaffCostsDisallowableAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, TextAmount(formatMoney(allowableAmount))).toString()
   }
 
 }

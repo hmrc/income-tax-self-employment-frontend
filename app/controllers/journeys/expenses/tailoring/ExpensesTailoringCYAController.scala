@@ -34,9 +34,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.tailoring._
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ExpensesTailoringCYAController @Inject() (override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
                                                 getUserAnswers: DataRetrievalAction,

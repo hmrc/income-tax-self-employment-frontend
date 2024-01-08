@@ -18,7 +18,7 @@ package controllers.journeys.expenses.officeSupplies
 
 import cats.implicits.toBifunctorOps
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -32,9 +32,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                             selfEmploymentService: SelfEmploymentService,
                                                             navigator: ExpensesNavigator,
@@ -61,7 +62,8 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      obtainAllowableAmount(businessId).map { allowableAmount =>
+      obtainAllowableAmount(businessId)
+        .map { allowableAmount =>
           formProvider(request.userType, allowableAmount)
             .bindFromRequest()
             .fold(
@@ -79,6 +81,6 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
   }
 
   private def obtainAllowableAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
+    request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(routes.JourneyRecoveryController.onPageLoad()))
 
 }

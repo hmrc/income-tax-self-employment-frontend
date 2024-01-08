@@ -16,7 +16,7 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesCYAController
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
@@ -32,13 +32,15 @@ import viewmodels.checkAnswers.expenses.otherExpenses.{OtherExpensesAmountSummar
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesApi,
                                             val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,
-                                            getAnswers: DataRetrievalAction,
+                                            getUserAnswers: DataRetrievalAction,
+                                            getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                             requireAnswers: DataRequiredAction,
                                             service: SelfEmploymentServiceBase,
                                             view: CheckYourAnswersView)(implicit ec: ExecutionContext)
@@ -46,8 +48,9 @@ class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[OtherExpensesJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesOtherExpenses)) andThen requireAnswers) { implicit request =>
       val summaryList = summaryListOpt(
         List(
           OtherExpensesAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
@@ -55,9 +58,9 @@ class OtherExpensesCYAController @Inject() (override val messagesApi: MessagesAp
         ))
 
       Ok(view(OtherExpensesCYAPage.toString, taxYear, request.userType, summaryList, OtherExpensesCYAController.onSubmit(taxYear, businessId)))
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesOtherExpenses)
       val result  = service.submitAnswers[OtherExpensesJourneyAnswers](context, request.userAnswers)

@@ -31,9 +31,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.interest.InterestAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
                                           selfEmploymentService: SelfEmploymentService,
                                           navigator: ExpensesNavigator,

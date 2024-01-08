@@ -31,9 +31,10 @@ import viewmodels.checkAnswers.expenses.construction.{ConstructionIndustryAmount
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class ConstructionIndustryCYAController @Inject() (override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
                                                    getUserAnswers: DataRetrievalAction,
