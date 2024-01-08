@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.financialCharges.routes._
+import controllers.journeys.expenses.irrecoverableDebts.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
@@ -35,6 +36,7 @@ import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
+import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -143,6 +145,37 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+        "IrrecoverableDebts journey" - {
+          "the page is IrrecoverableDebtsAmountPage" - {
+            "some expenses were claimed to be disallowable" - {
+              "navigate to the IrrecoverableDebtsDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "yes"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(IrrecoverableDebtsAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+            "no disallowable expenses" - {
+              "navigate to the IrrecoverableDebtsCYAController" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "no"))
+                val userAnswers = UserAnswers(userAnswersId, data)
+
+                val expectedResult = IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+          }
+          "the page is IrrecoverableDebtsDisallowableAmountPage" - {
+            "navigate to the IrrecoverableDebtsCYAController" in {
+              val expectedResult = IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+
+              navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
