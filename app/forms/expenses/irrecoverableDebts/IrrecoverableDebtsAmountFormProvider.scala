@@ -26,8 +26,8 @@ class IrrecoverableDebtsAmountFormProvider @Inject() extends Mappings with Money
 
   def apply(user: UserType): Form[BigDecimal] =
     Form(
-      "value" -> currency(s"financialChargesAmount.error.required.$user", s"financialChargesAmount.error.nonNumeric.$user")
-        .verifying(greaterThan(minimumValue, s"financialChargesAmount.error.lessThanZero.$user"))
-        .verifying(lessThan(maximumValue, s"financialChargesAmount.error.overMax.$user"))
+      "value" -> currency(s"irrecoverableDebtsAmount.error.required.$user", s"irrecoverableDebtsAmount.error.nonNumeric.$user")
+        .verifying(greaterThan(minimumValue, s"irrecoverableDebtsAmount.error.lessThanZero.$user"))
+        .verifying(lessThan(maximumValue, s"irrecoverableDebtsAmount.error.overMax.$user"))
     )
 }

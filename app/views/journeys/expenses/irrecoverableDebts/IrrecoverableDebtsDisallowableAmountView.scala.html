@@ -34,7 +34,7 @@
   userType: UserType,
   amount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"financialChargesDisallowableAmount.title.$userType", amount))) {
+@layout(pageTitle = title(form, messages(s"irrecoverableDebtsDisallowableAmount.title.$userType", amount))) {
 
     @formHelper(action = IrrecoverableDebtsDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -45,7 +45,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"financialChargesDisallowableAmount.title.$userType", amount))
+                label = LabelViewModel(messages(s"irrecoverableDebtsDisallowableAmount.title.$userType", amount))
                             .asPageHeading(size = LabelSize.Large)
                             .withCssClass("govuk-!-margin-bottom-3")
                 )
