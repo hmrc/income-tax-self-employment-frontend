@@ -20,8 +20,8 @@ import base.SpecBase
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.RepairsAndMaintenanceFormProvider
 import models.NormalMode
-import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.RepairsAndMaintenance
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -49,11 +49,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual),
-    UserScenario(userType = Agent, formProvider(Agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual),
+    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash)
   )
 
   "RepairsAndMaintenance Controller" - {
@@ -150,7 +150,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =

@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.standard.routes
 import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
-import models.common.AccountingType.Accrual
 import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
@@ -73,7 +72,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherIncomeAmountPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType.equals(Accrual.entryName)))
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType))
                 )
             )
       }

@@ -18,7 +18,6 @@ package base
 
 import builders.UserBuilder
 import controllers.actions._
-import models.common.AccountingType.{Accrual, Cash}
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
@@ -52,8 +51,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val taxYear: TaxYear           = TaxYear(LocalDate.now().getYear)
   val userAnswersId              = "id"
-  val accrual: String            = Accrual.entryName
-  val cash: String               = Cash.entryName
   val someNino: Nino             = Nino("someNino")
   val mtditid                    = "someId"
   val businessId: BusinessId     = BusinessId("SJPR05893938418")
@@ -92,8 +89,6 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
-
-  protected def isAccrual(accountingType: String): Boolean = accountingType.equals(accrual)
 
   def applicationBuilder(userAnswers: Option[UserAnswers] = None, userType: UserType = Individual): GuiceApplicationBuilder = {
     val fakeIdentifierAction =

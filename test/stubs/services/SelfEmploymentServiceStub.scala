@@ -38,8 +38,9 @@ case class SelfEmploymentServiceStub(
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
 ) extends SelfEmploymentServiceBase {
 
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
-    Future.successful(accountingType.map(_.entryName))
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
+    Future.successful(accountingType)
 
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)

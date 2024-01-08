@@ -21,6 +21,7 @@ import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
+import models.common.AccountingType
 import models.database.UserAnswers
 import models.journeys.Journey.Income
 import models.journeys.income.HowMuchTradingAllowance
@@ -85,14 +86,14 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(true)) mustBe
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(AccountingType.Accrual)) mustBe
             TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when answer is 'No' and accounting type is 'CASH'" in {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(false)) mustBe
+          navigator.nextPage(AnyOtherIncomePage, NormalMode, userAnswers, taxYear, businessId, Some(AccountingType.Cash)) mustBe
             TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {
@@ -105,12 +106,12 @@ class IncomeNavigatorSpec extends SpecBase {
       "Other Income Amount Page must go to the" - {
         "Turnover Not Taxable page when accounting type is 'ACCRUAL'" in {
 
-          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(true)) mustBe
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(AccountingType.Accrual)) mustBe
             TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Trading Allowance page when accounting type is 'CASH'" in {
 
-          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(false)) mustBe
+          navigator.nextPage(OtherIncomeAmountPage, NormalMode, emptyUserAnswers, taxYear, businessId, Some(AccountingType.Cash)) mustBe
             TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
         }
         "Journey Recovery page when there is no accounting type" in {
@@ -247,7 +248,7 @@ class IncomeNavigatorSpec extends SpecBase {
 
           val userAnswers = UserAnswers(userAnswersId).set(AnyOtherIncomePage, false, Some(businessId)).success.value
 
-          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId, Some(true)) mustBe
+          navigator.nextPage(AnyOtherIncomePage, CheckMode, userAnswers, taxYear, businessId, Some(AccountingType.Accrual)) mustBe
             IncomeCYAController.onPageLoad(taxYear, businessId)
         }
         "Journey Recovery page when there are no UserAnswers for this page" in {

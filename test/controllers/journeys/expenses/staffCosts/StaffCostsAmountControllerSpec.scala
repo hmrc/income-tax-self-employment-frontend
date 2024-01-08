@@ -20,7 +20,7 @@ import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts.Yes
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -57,7 +57,7 @@ class StaffCostsAmountControllerSpec
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)

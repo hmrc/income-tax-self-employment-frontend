@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
@@ -52,11 +52,11 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[GoodsToSellOrUse], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[GoodsToSellOrUse], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual),
-    UserScenario(userType = Agent, formProvider(Agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual),
+    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash)
   )
 
   "GoodsToSellOrUse Controller" - {
@@ -133,7 +133,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Cash))
 
           val request = FakeRequest(GET, goodsToSellOrUseRoute)
 
@@ -142,7 +142,9 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
           val expectedResult =
-            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, cash, taxiDriver)(request, messages(application)).toString
+            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, AccountingType.Cash, taxiDriver)(
+              request,
+              messages(application)).toString
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual expectedResult
@@ -181,7 +183,7 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
           val request =
             FakeRequest(POST, goodsToSellOrUseRoute)

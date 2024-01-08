@@ -89,8 +89,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       val resultAccrual = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))
       val resultCash    = await(service.getAccountingType(nino.value, businessIdCash, mtditid))
 
-      resultAccrual shouldBe Right(accrual)
-      resultCash shouldBe Right(cash)
+      resultAccrual shouldBe Right(AccountingType.Accrual)
+      resultCash shouldBe Right(AccountingType.Cash)
     }
 
     "should return an error when" - {

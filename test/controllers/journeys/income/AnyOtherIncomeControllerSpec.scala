@@ -17,10 +17,10 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.journeys.income
+import controllers.standard
 import forms.income.AnyOtherIncomeFormProvider
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
@@ -41,19 +41,13 @@ import scala.concurrent.Future
 class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider           = new AnyOtherIncomeFormProvider()
-  val otherIncomeAmountCall  = OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-  val turnoverNotTaxableCall = TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-  val tradingAllowanceCall   = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-  val incomeCyaCall          = IncomeCYAController.onPageLoad(taxYear, businessId)
+  val otherIncomeAmountCall  = income.routes.OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val turnoverNotTaxableCall = income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceCall   = income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val incomeCyaCall          = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
-
-  def redirectCallFromNoResponse(accountingType: String) = accountingType match {
-    case `accrual` => turnoverNotTaxableCall
-    case `cash`    => tradingAllowanceCall
-    case _         => ???
-  }
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
@@ -73,7 +67,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
-              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
+              val request = FakeRequest(GET, income.routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -94,7 +88,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
-              val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
+              val request = FakeRequest(GET, income.routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[AnyOtherIncomeView]
 
@@ -115,12 +109,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
+          val request = FakeRequest(GET, income.routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -143,9 +137,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+            val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -169,9 +163,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
+            val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -188,12 +182,12 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
-          val accountingType = accrual
+          val accountingType = AccountingType.Accrual
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(turnoverNotTaxableCall)),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -203,7 +197,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
             when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accountingType))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+            val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -215,12 +209,10 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         }
         "the Trading Allowance page when journey is CASH accounting type" in {
 
-          val accountingType = cash
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
-                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(redirectCallFromNoResponse(accountingType))),
+                bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(tradingAllowanceCall)),
                 bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
@@ -228,9 +220,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+            val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -253,9 +245,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(cash))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Cash))
 
-            val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
+            val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -276,9 +268,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
-              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+              val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -301,9 +293,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
-              val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+              val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -327,13 +319,13 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(POST, AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
+          val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

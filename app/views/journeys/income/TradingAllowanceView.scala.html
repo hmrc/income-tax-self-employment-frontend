@@ -16,7 +16,7 @@
 
 @import models.journeys.income.TradingAllowance
 @import controllers.journeys.income.routes.TradingAllowanceController
-@import models.common.{BusinessId, TaxYear}
+@import models.common.{AccountingType, BusinessId, TaxYear}
 @import views.html.templates.helpers.Heading
 @import models.common.UserType
 
@@ -29,7 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("tradingAllowance.title"))) {
 
@@ -46,7 +46,7 @@
         <p>
             @messages(s"tradingAllowance.p2.$userType")
         </p>
-        @if(accountingType.equals("ACCRUAL")){
+        @if(accountingType == AccountingType.Accrual){
             <p>
                 @messages(s"tradingAllowance.p3.$userType")
             </p>
@@ -54,7 +54,7 @@
     </div>
 
 
-    @if(accountingType.equals("ACCRUAL")){
+    @if(accountingType == AccountingType.Accrual){
         <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
             <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">

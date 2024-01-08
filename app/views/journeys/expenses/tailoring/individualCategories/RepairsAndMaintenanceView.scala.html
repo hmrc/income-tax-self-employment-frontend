@@ -16,7 +16,7 @@
 
 @import models.journeys.expenses.individualCategories.RepairsAndMaintenance
 @import controllers.journeys.expenses.tailoring.individualCategories.routes.RepairsAndMaintenanceController
-@import models.common.{BusinessId, TaxYear, UserType}
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,7 +28,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("journeys.expenses-repairs-and-maintenance"))) {
 
@@ -44,7 +44,7 @@
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("repairsAndMaintenance.l1")</li>
-            @if(accountingType.equals("CASH")){
+            @if(accountingType == AccountingType.Cash){
                 <li>@messages("repairsAndMaintenance.l2")</li>
             }
         </ul>
@@ -54,7 +54,7 @@
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("repairsAndMaintenance.l3")</li>
             <li>@messages("repairsAndMaintenance.l4")</li>
-            @if(accountingType.equals("ACCRUAL")){
+            @if(accountingType == AccountingType.Accrual){
                 <li>@messages("repairsAndMaintenance.l2")</li>
             }
         </ul>
