@@ -24,8 +24,6 @@ import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.EntertainmentCosts
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.individualCategories.EntertainmentCostsPage
 import play.api.data.Form
@@ -33,10 +31,8 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.EntertainmentCostsView
-
-import scala.concurrent.Future
 
 class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
@@ -120,15 +116,13 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
     "onSubmit" - {
       "must redirect to the next page when valid data is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val mockSelfEmploymentService = mock[SelfEmploymentService]
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
             )
             .build()
 

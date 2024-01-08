@@ -18,7 +18,7 @@ package controllers.journeys.expenses.officeSupplies
 
 import cats.implicits.toBifunctorOps
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -81,6 +81,6 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
   }
 
   private def obtainAllowableAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
+    request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(routes.JourneyRecoveryController.onPageLoad()))
 
 }

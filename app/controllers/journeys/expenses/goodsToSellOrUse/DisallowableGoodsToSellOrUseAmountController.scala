@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -25,7 +25,7 @@ import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                              sessionRepository: SessionRepository,
+                                                              selfEmploymentService: SelfEmploymentService,
                                                               navigator: ExpensesNavigator,
                                                               identify: IdentifierAction,
                                                               getData: DataRetrievalAction,
@@ -49,7 +49,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           val preparedForm =
             request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
@@ -64,7 +64,7 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(goodsAmount) =>
           formProvider(request.userType, goodsAmount)
             .bindFromRequest()
@@ -72,10 +72,10 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
               formWithErrors =>
                 Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableGoodsToSellOrUseAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, DisallowableGoodsToSellOrUseAmountPage)
+                  .map(updatedAnswers =>
+                    Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }

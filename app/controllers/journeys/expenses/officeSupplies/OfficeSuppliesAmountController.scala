@@ -25,7 +25,6 @@ import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OfficeSuppliesAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
                                                 selfEmploymentService: SelfEmploymentService,
                                                 navigator: ExpensesNavigator,
                                                 identify: IdentifierAction,
@@ -56,7 +54,6 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
               case None        => formProvider(request.userType)
               case Some(value) => formProvider(request.userType).fill(value)
             }
-
           Ok(view(preparedForm, mode, request.userType, AccountingType.withName(accountingType), taxYear, businessId))
 
         case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
@@ -66,6 +63,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).flatMap {
+        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(request.userType)
             .bindFromRequest()
@@ -74,12 +72,10 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
                 Future.successful(
                   BadRequest(view(formWithErrors, mode, request.userType, AccountingType.withName(accountingType), taxYear, businessId))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesAmountPage)
+                  .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
-        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
       }
 
   }
