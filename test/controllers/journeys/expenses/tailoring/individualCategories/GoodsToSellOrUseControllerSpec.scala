@@ -142,7 +142,9 @@ class GoodsToSellOrUseControllerSpec extends SpecBase with MockitoSugar {
           val view = application.injector.instanceOf[GoodsToSellOrUseView]
 
           val expectedResult =
-            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, AccountingType.Cash, taxiDriver)(request, messages(application)).toString
+            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, AccountingType.Cash, taxiDriver)(
+              request,
+              messages(application)).toString
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual expectedResult

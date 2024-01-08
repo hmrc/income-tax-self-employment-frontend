@@ -55,10 +55,10 @@ class IncomeNavigator @Inject() () {
       userAnswers =>
         (taxYear, businessId, accountingType) =>
           userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
-            case Some(true)                               => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(true)                                     => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) if accountingType contains Accrual => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
             case Some(false) if accountingType contains Cash    => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-            case _                                        => JourneyRecoveryController.onPageLoad()
+            case _                                              => JourneyRecoveryController.onPageLoad()
           }
 
     case OtherIncomeAmountPage =>

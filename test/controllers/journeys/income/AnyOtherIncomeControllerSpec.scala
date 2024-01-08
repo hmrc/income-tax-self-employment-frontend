@@ -52,7 +52,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar {
   def redirectCallFromNoResponse(accountingType: AccountingType) = accountingType match {
     case AccountingType.Accrual => turnoverNotTaxableCall
     case AccountingType.Cash    => tradingAllowanceCall
-    case _         => ???
+    case _                      => ???
   }
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
