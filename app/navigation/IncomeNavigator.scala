@@ -16,11 +16,13 @@
 
 package navigation
 
+import controllers.journeys
 import controllers.journeys.income.routes._
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
-import models.common.{BusinessId, TaxYear}
+import models.common.AccountingType.{Accrual, Cash}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey.Income
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
@@ -30,12 +32,11 @@ import pages.income._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
-import controllers.journeys
 
 @Singleton
 class IncomeNavigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
+  private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId, Option[AccountingType]) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
@@ -52,21 +53,21 @@ class IncomeNavigator @Inject() () {
 
     case AnyOtherIncomePage =>
       userAnswers =>
-        (taxYear, businessId, optIsAccrual) =>
+        (taxYear, businessId, accountingType) =>
           userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
-            case Some(true)                                  => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) if optIsAccrual.contains(true)  => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) if optIsAccrual.contains(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-            case _                                           => JourneyRecoveryController.onPageLoad()
+            case Some(true)                               => OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if accountingType contains Accrual => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(false) if accountingType contains Cash    => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _                                        => JourneyRecoveryController.onPageLoad()
           }
 
     case OtherIncomeAmountPage =>
       _ =>
-        (taxYear, businessId, optIsAccrual) =>
-          optIsAccrual match {
-            case Some(true)  => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-            case Some(false) => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-            case _           => JourneyRecoveryController.onPageLoad()
+        (taxYear, businessId, accountingType) =>
+          accountingType match {
+            case Some(Accrual) => TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+            case Some(Cash)    => TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+            case _             => JourneyRecoveryController.onPageLoad()
           }
 
     case TurnoverNotTaxablePage =>
@@ -107,11 +108,11 @@ class IncomeNavigator @Inject() () {
     case _ => _ => (_, _, _) => JourneyRecoveryController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Option[Boolean]) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
 
     case IncomeNotCountedAsTurnoverPage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
+        (taxYear, businessId) =>
           userAnswers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)) match {
             case Some(true)  => NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
             case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -120,7 +121,7 @@ class IncomeNavigator @Inject() () {
 
     case AnyOtherIncomePage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
+        (taxYear, businessId) =>
           userAnswers.get(AnyOtherIncomePage, Some(businessId)) match {
             case Some(true)  => OtherIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode)
             case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -129,7 +130,7 @@ class IncomeNavigator @Inject() () {
 
     case TurnoverNotTaxablePage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
+        (taxYear, businessId) =>
           userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
             case Some(true)  => NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode)
             case Some(false) => IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -138,7 +139,7 @@ class IncomeNavigator @Inject() () {
 
     case TradingAllowancePage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
+        (taxYear, businessId) =>
           userAnswers.get(TradingAllowancePage, Some(businessId)) match {
             case Some(UseTradingAllowance) => HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
             case Some(DeclareExpenses)     => IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -147,7 +148,7 @@ class IncomeNavigator @Inject() () {
 
     case HowMuchTradingAllowancePage =>
       userAnswers =>
-        (taxYear, businessId, _) =>
+        (taxYear, businessId) =>
           userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
             case Some(LessThan) => TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
             case Some(Maximum)  => IncomeCYAController.onPageLoad(taxYear, businessId)
@@ -155,17 +156,22 @@ class IncomeNavigator @Inject() () {
           }
 
     case IncomeCYAPage =>
-      _ => (taxYear, businessId, _) => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
+      _ => (taxYear, businessId) => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income.toString, NormalMode)
 
-    case _ => _ => (taxYear, businessId, _) => IncomeCYAController.onPageLoad(taxYear, businessId)
+    case _ => _ => (taxYear, businessId) => IncomeCYAController.onPageLoad(taxYear, businessId)
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, isAccrual: Option[Boolean] = None): Call =
+  def nextPage(page: Page,
+               mode: Mode,
+               userAnswers: UserAnswers,
+               taxYear: TaxYear,
+               businessId: BusinessId,
+               accountingType: Option[AccountingType] = None): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId, isAccrual)
+        normalRoutes(page)(userAnswers)(taxYear, businessId, accountingType)
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId, isAccrual)
+        checkRouteMap(page)(userAnswers)(taxYear, businessId)
     }
 
 }

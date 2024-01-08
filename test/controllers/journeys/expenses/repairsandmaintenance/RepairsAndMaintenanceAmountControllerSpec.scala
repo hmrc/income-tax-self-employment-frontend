@@ -20,7 +20,7 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
@@ -51,7 +51,7 @@ class RepairsAndMaintenanceAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
     bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 

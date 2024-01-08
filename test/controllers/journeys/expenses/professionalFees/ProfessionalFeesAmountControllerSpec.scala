@@ -21,7 +21,7 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.professionalFees.ProfessionalFeesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableProfessionalFees.Yes
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -59,7 +59,7 @@ class ProfessionalFeesAmountControllerSpec
     bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesAmountFormProvider()(userType)

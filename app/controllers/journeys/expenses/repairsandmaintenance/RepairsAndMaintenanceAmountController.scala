@@ -54,8 +54,7 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val result = for {
-        accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
         userType       = request.userType
         userAnswers    = request.userAnswers
         existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
@@ -91,11 +90,10 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
           )
 
       val result = for {
-        accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
-        userType       = request.userType
-        userAnswers    = request.userAnswers
-        form           = formProvider(userType)
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        userType    = request.userType
+        userAnswers = request.userAnswers
+        form        = formProvider(userType)
         finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
       } yield finalResult
 
