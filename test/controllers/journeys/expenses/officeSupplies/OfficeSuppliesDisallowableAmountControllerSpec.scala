@@ -17,176 +17,49 @@
 package controllers.journeys.expenses.officeSupplies
 
 import base.SpecBase
-import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController
-import controllers.standard.routes.JourneyRecoveryController
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import play.api.Application
+import play.api.data.Form
 import play.api.i18n._
-import play.api.inject.bind
-import play.api.libs.json.Json
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
-import utils.MoneyUtils
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
-import scala.concurrent.Future
+class OfficeSuppliesDisallowableAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "OfficeSuppliesDisallowableAmountController",
+      OfficeSuppliesDisallowableAmountPage
+    ) {
 
-class OfficeSuppliesDisallowableAmountControllerSpec extends SpecBase with MockitoSugar with MoneyUtils {
+  lazy val onPageLoadRoute: String = routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  private val formProvider = new OfficeSuppliesDisallowableAmountFormProvider()
+  override val onwardRoute: Call = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-  private val validAnswer     = BigDecimal(1000.00)
-  private val allowableAmount = BigDecimal(1000.00)
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers.set(OfficeSuppliesAmountPage, allowableAmount, Some(businessId)).success.value
 
-  private val onwardRoute = Call("GET", "/foo")
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+  )
 
-  private lazy val officeSuppliesDisallowableAmountPageLoadRoute =
-    OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  private lazy val allowableAmount: BigDecimal = 1000
 
-  private lazy val officeSuppliesDisallowableAmountOnSubmitRoute =
-    OfficeSuppliesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesDisallowableAmountFormProvider()(userType, allowableAmount)
 
-  private val mockSessionRepository = mock[SessionRepository]
-
-  case class UserScenario(userType: UserType)
-
-  private val userScenarios = Seq(UserScenario(userType = Individual), UserScenario(userType = Agent))
-
-  private val data        = Json.obj(businessId.value -> Json.obj("officeSuppliesAmount" -> allowableAmount))
-  private val userAnswers = UserAnswers(userAnswersId, data)
-
-  "OfficeSuppliesDisallowableAmountController" - {
-    userScenarios.foreach { userScenario =>
-      s"when user is an ${userScenario.userType}" - {
-        "when loading a page" - {
-          "when office supplies allowable amount has been provided in the previous question" - {
-            "must return OK and the correct view" in {
-              val application = applicationBuilder(Some(userAnswers), userScenario.userType).build()
-
-              implicit val appMessages: Messages = messages(application)
-
-              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-
-              running(application) {
-                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-                val result  = route(application, request).value
-
-                status(result) mustEqual OK
-
-                contentAsString(result) mustEqual view(
-                  formProvider(userScenario.userType, allowableAmount),
-                  NormalMode,
-                  taxYear,
-                  businessId,
-                  userScenario.userType,
-                  formatMoney(allowableAmount))(request, appMessages).toString
-              }
-            }
-
-            "must populate the view correctly when the question has already been answered" in {
-              val existingUserAnswers = userAnswers.set(OfficeSuppliesDisallowableAmountPage, validAnswer, Some(businessId)).success.value
-
-              val application = applicationBuilder(Some(existingUserAnswers), userScenario.userType).build()
-
-              implicit val appMessages: Messages             = messages(application)
-              val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-
-              running(application) {
-                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-                val result  = route(application, request).value
-
-                status(result) mustEqual OK
-
-                contentAsString(result) mustEqual view(
-                  formProvider(userScenario.userType, allowableAmount).fill(validAnswer),
-                  NormalMode,
-                  taxYear,
-                  businessId,
-                  userScenario.userType,
-                  formatMoney(allowableAmount)
-                )(request, appMessages).toString
-              }
-            }
-          }
-          "when the allowable amount of office supplies has not been provided" - {
-            "must redirect to Journey Recovery if no existing data is found" in {
-              val application = applicationBuilder(userAnswers = None, userScenario.userType).build()
-
-              running(application) {
-                val request = FakeRequest(GET, officeSuppliesDisallowableAmountPageLoadRoute)
-                val result  = route(application, request).value
-
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-              }
-            }
-          }
-        }
-
-        "when submitting a page" - {
-          "must redirect to the next page when valid data is submitted" in {
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-            val application =
-              applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-                .overrides(
-                  bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-                  bind[SessionRepository].toInstance(mockSessionRepository)
-                )
-                .build()
-
-            running(application) {
-              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
-              val result  = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual onwardRoute.url
-            }
-          }
-
-          "must return a Bad Request and errors when invalid data is submitted" in {
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
-
-            val view: OfficeSuppliesDisallowableAmountView = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-            implicit val appMessages: Messages             = messages(application)
-
-            running(application) {
-              val request   = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", "invalid value"))
-              val boundForm = formProvider(userScenario.userType, allowableAmount).bind(Map("value" -> "invalid value"))
-              val result    = route(application, request).value
-
-              status(result) mustEqual BAD_REQUEST
-
-              contentAsString(result) mustEqual view(boundForm, NormalMode, taxYear, businessId, userScenario.userType, formatMoney(allowableAmount))(
-                request,
-                appMessages).toString
-            }
-          }
-
-          "must redirect to Journey Recovery if no existing data is found" in {
-            val application = applicationBuilder(userAnswers = None, userScenario.userType).build()
-
-            running(application) {
-              val request = FakeRequest(POST, officeSuppliesDisallowableAmountOnSubmitRoute).withFormUrlEncodedBody(("value", validAnswer.toString))
-              val result  = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-            }
-          }
-        }
-      }
-    }
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
+    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(allowableAmount)).toString()
   }
 
 }
