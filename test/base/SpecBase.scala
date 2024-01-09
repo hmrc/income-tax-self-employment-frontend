@@ -54,6 +54,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val someNino: Nino             = Nino("someNino")
   val mtditid                    = "someId"
   val businessId: BusinessId     = BusinessId("SJPR05893938418")
+  val tradingName: TradingName   = TradingName("Circus Performer")
   val zeroValue: BigDecimal      = 0
   val maxAmountValue: BigDecimal = 100000000000.00
 

@@ -19,7 +19,7 @@ package viewmodels
 import controllers.journeys.{abroad, expenses, income}
 import models._
 import models.common.JourneyStatus._
-import models.common.{BusinessId, JourneyStatus, TaxYear}
+import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
@@ -36,103 +36,121 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.SummaryListCYA
 
-case class TradeJourneyStatusesViewModel(tradingName: String, businessId: BusinessId, statusList: SummaryList)
+case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
 // TODO This is over complex class and needs to be simplified
 object TradeJourneyStatusesViewModel {
 
-  // noinspection ScalaStyle
   def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
       messages: Messages): SummaryList = {
-
     implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
     implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 
-    val expensesTailoringIsAnswered: Boolean = dependentJourneyIsInProgressOrCompleted(ExpensesTailoring)
+    val abroadRow = buildRowForDependentAnswered(Abroad, conditionPassedForViewableLink = true)
 
-    SummaryListCYA.summaryList(
-      List(
-        buildRow(Abroad),
-        buildRow(
-          Income,
-          dependentJourneyIsFinishedForClickableLink = dependentJourneyIsInProgressOrCompleted(Abroad, checkOnlyCompleted = true)
-        ),
-        buildRow(
-          ExpensesTailoring,
-          conditionPassedForViewableLink(TradingAllowancePage, Seq(TradingAllowance.DeclareExpenses)),
-          dependentJourneyIsInProgressOrCompleted(Income, checkOnlyCompleted = true)
-        ),
-        buildRow(
-          ExpensesOfficeSupplies,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))
-        ),
-        buildRow(
-          ExpensesGoodsToSellOrUse,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            GoodsToSellOrUsePage,
-            GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))
-        ),
-        buildRow(
-          ExpensesRepairsAndMaintenance,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            RepairsAndMaintenancePage,
-            RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
-        ),
-        buildRow(
-          ExpensesAdvertisingOrMarketing,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            AdvertisingOrMarketingPage,
-            AdvertisingOrMarketing.values.filterNot(_ == AdvertisingOrMarketing.No))
-        ),
-        buildRow(
-          ExpensesEntertainment,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            EntertainmentCostsPage,
-            EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))
-        ),
-        buildRow(
-          ExpensesStaffCosts,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)),
-        buildRow(
-          ExpensesConstruction,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            ProfessionalServiceExpensesPage,
-            ProfessionalServiceExpenses.Construction
-          )
-        ),
-        buildRow(
-          ExpensesProfessionalFees,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            ProfessionalServiceExpensesPage,
-            ProfessionalServiceExpenses.ProfessionalFees
-          )
-        ),
-        buildRow(
-          ExpensesInterest,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            FinancialExpensesPage,
-            FinancialExpenses.Interest
-          )
-        ),
-        buildRow(
-          ExpensesFinancialCharges,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(
-            FinancialExpensesPage,
-            FinancialExpenses.OtherFinancialCharges
-          )
-        ),
-        buildRow(
-          ExpensesDepreciation,
-          expensesTailoringIsAnswered && conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
-        )
-      ).flatten
-    )
+    val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
+    val incomeRow        = buildRow(Income, conditionPassedForViewableLink = true, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
+
+    val isIncomeAnswered     = isJourneyCompletedOrInProgress(tradesJourneyStatuses, Income)
+    val hasDeclareExpenses   = conditionPassedForViewableLink(TradingAllowancePage, List(TradingAllowance.DeclareExpenses))
+    val expensesTailoringRow = buildRow(ExpensesTailoring, hasDeclareExpenses, isIncomeAnswered)
+    val expensesCategories   = buildExpensesCategories
+
+    val rows: List[SummaryListRow] =
+      List(abroadRow, incomeRow).flatten ++
+        List(expensesTailoringRow).flatten ++
+        expensesCategories
+
+    SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(journey: Journey, conditionPassedForViewableLink: Boolean = true, dependentJourneyIsFinishedForClickableLink: Boolean = true)(
-      implicit
+  // noinspection ScalaStyle
+  private def buildExpensesCategories(implicit
+      tradesJourneyStatuses: TradesJourneyStatuses,
+      taxYear: TaxYear,
+      businessId: BusinessId,
+      userAnswers: Option[UserAnswers],
+      messages: Messages) = {
+    val isExpensesTailoringIsAnswered = tradesJourneyStatuses.getStatusOrNotStarted(ExpensesTailoring).isCompleted
+
+    val hasOfficeSupplies         = conditionPassedForViewableLink(OfficeSuppliesPage, OfficeSupplies.values.filterNot(_ == OfficeSupplies.No))
+    val expensesOfficeSuppliesRow = buildRowForDependentAnswered(ExpensesOfficeSupplies, isExpensesTailoringIsAnswered && hasOfficeSupplies)
+
+    val hasGoodsToSellOrUse = conditionPassedForViewableLink(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))
+    val expensesGoodsToSellOrUseRow = buildRowForDependentAnswered(ExpensesGoodsToSellOrUse, isExpensesTailoringIsAnswered && hasGoodsToSellOrUse)
+
+    val hasRepairsAndMaintenance =
+      conditionPassedForViewableLink(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
+    val expensesRepairsAndMaintenanceRow =
+      buildRowForDependentAnswered(ExpensesRepairsAndMaintenance, isExpensesTailoringIsAnswered && hasRepairsAndMaintenance)
+
+    val hasAdvertisingOrMarketing =
+      conditionPassedForViewableLink(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.filterNot(_ == AdvertisingOrMarketing.No))
+    val expensesAdvertisingOrMarketingRow =
+      buildRowForDependentAnswered(ExpensesAdvertisingOrMarketing, isExpensesTailoringIsAnswered && hasAdvertisingOrMarketing)
+
+    val hasEntertainmentCosts =
+      conditionPassedForViewableLink(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))
+    val expensesEntertainmentRow = buildRowForDependentAnswered(ExpensesEntertainment, isExpensesTailoringIsAnswered && hasEntertainmentCosts)
+
+    val hasProfessionalServiceExpenses =
+      conditionPassedForViewableLink(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Staff)
+    val expensesStaffCostsRow = buildRowForDependentAnswered(ExpensesStaffCosts, isExpensesTailoringIsAnswered && hasProfessionalServiceExpenses)
+
+    val hasConstruction         = conditionPassedForViewableLink(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.Construction)
+    val expensesConstructionRow = buildRowForDependentAnswered(ExpensesConstruction, isExpensesTailoringIsAnswered && hasConstruction)
+
+    val hasProfessionalFees =
+      conditionPassedForViewableLink(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.ProfessionalFees)
+    val expensesProfessionalFeesRow = buildRowForDependentAnswered(ExpensesProfessionalFees, isExpensesTailoringIsAnswered && hasProfessionalFees)
+
+    val hasInterest = conditionPassedForViewableLink(
+      FinancialExpensesPage,
+      FinancialExpenses.Interest
+    )
+    val expensesInterestRow = buildRowForDependentAnswered(ExpensesInterest, isExpensesTailoringIsAnswered && hasInterest)
+
+    val hasOtherFinancialCharges = conditionPassedForViewableLink(
+      FinancialExpensesPage,
+      FinancialExpenses.OtherFinancialCharges
+    )
+    val expensesFinancialChargesRow =
+      buildRowForDependentAnswered(ExpensesFinancialCharges, isExpensesTailoringIsAnswered && hasOtherFinancialCharges)
+
+    val hasDepreciation         = conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
+    val expensesDepreciationRow = buildRowForDependentAnswered(ExpensesDepreciation, isExpensesTailoringIsAnswered && hasDepreciation)
+
+    List(
+      expensesOfficeSuppliesRow,
+      expensesGoodsToSellOrUseRow,
+      expensesRepairsAndMaintenanceRow,
+      expensesAdvertisingOrMarketingRow,
+      expensesEntertainmentRow,
+      expensesStaffCostsRow,
+      expensesConstructionRow,
+      expensesProfessionalFeesRow,
+      expensesInterestRow,
+      expensesFinancialChargesRow,
+      expensesDepreciationRow
+    ).flatten
+  }
+
+  def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
+    getJourneyStatus(dependentJourney)(tradesJourneyStatuses) match {
+      case Completed | InProgress                        => true
+      case CheckOurRecords | CannotStartYet | NotStarted => false
+    }
+
+  private def buildRowForDependentAnswered(journey: Journey, conditionPassedForViewableLink: Boolean)(implicit
+      messages: Messages,
+      taxYear: TaxYear,
+      businessId: BusinessId,
+      journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] =
+    buildRow(journey, conditionPassedForViewableLink, dependentJourneyIsFinishedForClickableLink = true)
+
+  private def buildRow(journey: Journey, conditionPassedForViewableLink: Boolean, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
@@ -157,14 +175,6 @@ object TradeJourneyStatusesViewModel {
         ).withCssClass("app-task-list__item no-wrap no-after-content"))
     } else {
       None
-    }
-
-  private def dependentJourneyIsInProgressOrCompleted(dependentJourney: Journey, checkOnlyCompleted: Boolean = false)(implicit
-      journeyStatuses: TradesJourneyStatuses): Boolean =
-    getJourneyStatus(dependentJourney) match {
-      case Completed | InProgress if !checkOnlyCompleted => true
-      case Completed                                     => true
-      case _                                             => false
     }
 
   private def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit

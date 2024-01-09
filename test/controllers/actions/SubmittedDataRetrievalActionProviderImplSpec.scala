@@ -63,13 +63,13 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
     "should return an error if connector fails" in new TestCase {
       connector.getTaskList(*[String], *[TaxYear], *[Mtditid])(*, *) returns EitherT.leftT[Future, TaskList](
-        ServiceError.ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
+        ServiceError.ConnectorResponseError("method", "url", HttpError(404, HttpErrorBody.parsingError)))
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
 
       val result = underTest.loadTaskList(taxYear, fakeOptionalRequest).value.futureValue
 
-      result shouldBe Left(ServiceError.ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
+      result shouldBe Left(ServiceError.ConnectorResponseError("method", "url", HttpError(404, HttpErrorBody.parsingError)))
     }
   }
 

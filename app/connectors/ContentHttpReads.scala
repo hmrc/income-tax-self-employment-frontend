@@ -32,7 +32,7 @@ class ContentHttpReads[A: Reads] extends HttpReads[ContentResponse[A]] {
     if (isSuccess(response.status)) {
       readOne[A](response)
     } else {
-      Left(unsafePagerDutyError(response))
+      Left(unsafePagerDutyError(method, url, response))
     }
 }
 

@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import controllers.journeys
 import models.NormalMode
-import models.common.JourneyStatus
+import models.common.{JourneyStatus, TradingName}
 import models.common.JourneyStatus._
 import models.database.UserAnswers
 import models.journeys.Journey._
@@ -76,7 +76,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (journeyCompletedStates, userAnswers) =>
-        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some("tradingName"), journeyCompletedStates)
+        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), journeyCompletedStates)
         val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
 
         val expected = buildExpectedResult(journeyCompletedStates, userAnswers)
