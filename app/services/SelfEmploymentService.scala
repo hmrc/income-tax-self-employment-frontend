@@ -83,7 +83,6 @@ object SelfEmploymentService {
 
   private val maxAllowance = BigDecimal(1000.00)
 
-  // TODO: Return an error as left once we have impl. error handling instead of redirecting.
   def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[NotFoundError, BigDecimal] =
     userAnswers
       .get(TurnoverIncomeAmountPage, Some(businessId))
