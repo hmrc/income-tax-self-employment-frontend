@@ -24,7 +24,6 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.YesAllowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.Application
@@ -32,10 +31,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
-
-import scala.concurrent.Future
 
 class AdvertisingAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -51,14 +47,7 @@ class AdvertisingAmountControllerSpec
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(AdvertisingOrMarketingPage, YesAllowable, Some(businessId)).success.value
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
-  )
-
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   def createForm(userType: UserType): Form[BigDecimal] = new AdvertisingAmountFormProvider()(userType)
 

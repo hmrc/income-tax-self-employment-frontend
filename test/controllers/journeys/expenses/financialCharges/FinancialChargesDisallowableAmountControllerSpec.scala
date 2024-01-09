@@ -21,21 +21,17 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.financialCharges.FinancialChargesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentServiceBase
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountView
-
-import scala.concurrent.Future
 
 class FinancialChargesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesDisallowableAmountController", FinancialChargesDisallowableAmountPage) {
@@ -44,16 +40,9 @@ class FinancialChargesDisallowableAmountControllerSpec
   lazy val onSubmitRoute: String   = routes.FinancialChargesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call =
-    routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO: Add CYA nav.
+    routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockService = mock[SelfEmploymentServiceBase]
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentServiceBase].toInstance(mockService)
-  )
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(FinancialChargesAmountPage, amount, businessId.some).success.value

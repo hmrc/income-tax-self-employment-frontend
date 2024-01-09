@@ -24,7 +24,6 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.Application
@@ -32,11 +31,8 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
-
-import scala.concurrent.Future
 
 class DisallowableGoodsToSellOrUseAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -58,14 +54,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec
       .success
       .value
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
-  )
-
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   private lazy val goodsAmount: BigDecimal = 1000.50
   private lazy val goodsAmountString       = formatMoney(goodsAmount)

@@ -59,7 +59,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     val testScenarioContext: Journey => JourneyContextWithNino = (journey: Journey) =>
       JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
-    mockSessionRepository.set(*) returns Future.successful(true)
+    mockSessionRepository.set(*) returns Future.successful(true) // TODO remove this when controllers no longer interact with session repo
 
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
       val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings
