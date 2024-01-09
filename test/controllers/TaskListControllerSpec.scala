@@ -112,7 +112,8 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     "from the service" in {
       val application = createApp(
         stubService.copy(
-          loadTaskListRes = ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))).asLeft
+          loadTaskListRes =
+            ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))).asLeft
         ))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)

@@ -58,7 +58,6 @@ class SelfEmploymentService @Inject() (
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     connector.saveJourneyState(ctx, status)
 
-  // TODO return AccountingType not String
   // TODO HttpErrors in business layer may not be the best idea
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =

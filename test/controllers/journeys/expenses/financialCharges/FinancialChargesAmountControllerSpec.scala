@@ -19,17 +19,16 @@ package controllers.journeys.expenses.financialCharges
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.financialCharges.FinancialChargesAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.Mockito.when
 import pages.expenses.financialCharges.FinancialChargesAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.expenses.financialCharges.FinancialChargesAmountView
 
 import scala.concurrent.Future
@@ -42,14 +41,14 @@ class FinancialChargesAmountControllerSpec
 
   override val onwardRoute: Call = routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentServiceBase]
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentServiceBase].toInstance(mockService)
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
+
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   override def createForm(user: UserType): Form[BigDecimal] = new FinancialChargesAmountFormProvider()(user)
 

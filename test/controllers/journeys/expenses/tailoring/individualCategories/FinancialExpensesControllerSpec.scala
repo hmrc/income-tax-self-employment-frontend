@@ -17,11 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.NormalMode
-import models.common.{AccountingType, UserType}
 import models.common.UserType.{Agent, Individual}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -34,7 +34,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
@@ -133,7 +132,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -142,21 +141,17 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to the next page when valid data is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
 
         running(application) {
           when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
             FakeRequest(POST, financialExpensesRoute)
@@ -243,7 +238,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

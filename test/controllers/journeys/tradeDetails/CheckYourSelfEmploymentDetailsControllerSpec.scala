@@ -105,7 +105,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
           val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
           when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(
-            Left(ConnectorResponseError(HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found")))))
+            Left(ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found")))))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 

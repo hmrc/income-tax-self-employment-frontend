@@ -38,7 +38,8 @@ object ServiceError {
   type JsonErrorWithPath = List[(JsPath, scala.collection.Seq[JsonValidationError])]
 
   /** Use for code which has not yet been refactored to user Service Error and use HttpError directly */
-  final case class ConnectorResponseError(originalHttpError: HttpError) extends ServiceError(originalHttpError.status, Right("internal error")) {
+  final case class ConnectorResponseError(method: String, url: String, originalHttpError: HttpError)
+      extends ServiceError(originalHttpError.status, Right(s"internal error while calling: $method $url")) {
     override def httpError: HttpError = originalHttpError
   }
 
