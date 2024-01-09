@@ -162,7 +162,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(any, anyBusinessId, any)(any) returns Future(Right(AccountingType.Cash))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Cash))
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
