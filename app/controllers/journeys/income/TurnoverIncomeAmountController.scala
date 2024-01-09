@@ -16,18 +16,19 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.handleServiceCall
 import forms.income.TurnoverIncomeAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.income.TurnoverIncomeAmountView
 
 import javax.inject.{Inject, Singleton}
@@ -35,48 +36,45 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                selfEmploymentService: SelfEmploymentService,
-                                                sessionRepository: SessionRepository,
                                                 navigator: IncomeNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
+                                                service: SelfEmploymentServiceBase,
                                                 formProvider: TurnoverIncomeAmountFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: TurnoverIncomeAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
-        case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
-
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
-      }
+      (for {
+        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        form = request.userAnswers
+          .get(TurnoverIncomeAmountPage, Some(businessId))
+          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TurnoverIncomeAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
-            )
-      }
+      def handleForm(accountingType: AccountingType): Future[Result] =
+        formProvider(request.userType)
+          .bindFromRequest()
+          .fold(
+            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType))),
+            value =>
+              service
+                .persistAnswer(businessId, request.userAnswers, value, TurnoverIncomeAmountPage)
+                .map(updatedAnswers => Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
+          )
+
+      (for {
+        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        result         <- EitherT.right[Result](handleForm(accountingType))
+      } yield result).merge
   }
 
 }

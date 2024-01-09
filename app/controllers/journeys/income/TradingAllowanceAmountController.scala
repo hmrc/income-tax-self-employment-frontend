@@ -16,6 +16,7 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
 import controllers.actions._
 import forms.income.TradingAllowanceAmountFormProvider
 import models.Mode
@@ -23,9 +24,9 @@ import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.TradingAllowanceAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.SelfEmploymentService.getIncomeTradingAllowance
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentService.getMaxTradingAllowance
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TradingAllowanceAmountView
 
@@ -34,11 +35,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TradingAllowanceAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                  sessionRepository: SessionRepository,
                                                   navigator: IncomeNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
+                                                  service: SelfEmploymentServiceBase,
                                                   formProvider: TradingAllowanceAmountFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: TradingAllowanceAmountView)(implicit ec: ExecutionContext)
@@ -47,28 +48,33 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val preparedForm = request.userAnswers.get(TradingAllowanceAmountPage, Some(businessId)) match {
-        case None        => formProvider(request.userType, tradingAllowance)
-        case Some(value) => formProvider(request.userType, tradingAllowance).fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      (for {
+        allowance <- getMaxTradingAllowance(businessId, request.userAnswers)
+        form = request.userAnswers
+          .get(TradingAllowanceAmountPage, Some(businessId))
+          .fold(formProvider(request.userType, allowance))(formProvider(request.userType, allowance).fill)
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowance: BigDecimal = getIncomeTradingAllowance(businessId, request.userAnswers)
-      formProvider(request.userType, tradingAllowance)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TradingAllowanceAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      def handleForm(allowance: BigDecimal): Future[Result] =
+        formProvider(request.userType, allowance)
+          .bindFromRequest()
+          .fold(
+            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+            value => handleSuccess(value)
+          )
+
+      def handleSuccess(value: BigDecimal): Future[Result] =
+        service
+          .persistAnswer(businessId, request.userAnswers, value, TradingAllowanceAmountPage)
+          .map(updatedAnswers => Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, businessId)))
+
+      (for {
+        allowance <- EitherT.fromEither[Future](getMaxTradingAllowance(businessId, request.userAnswers))
+        result    <- EitherT.right[Result](handleForm(allowance))
+      } yield result).merge
   }
 
 }

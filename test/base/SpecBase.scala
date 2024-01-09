@@ -45,7 +45,7 @@ import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
@@ -116,6 +116,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stub))
       .build()
+
+  implicit class ToFutureOps[A](value: A) {
+    def asFuture: Future[A] = Future.successful(value)
+  }
 
 }
 

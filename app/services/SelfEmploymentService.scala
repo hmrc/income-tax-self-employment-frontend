@@ -16,7 +16,9 @@
 
 package services
 
+import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
+import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
@@ -26,6 +28,7 @@ import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.libs.json.{Format, Writes}
+import play.api.mvc.Result
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -82,10 +85,13 @@ class SelfEmploymentService @Inject() (
 
 object SelfEmploymentService {
 
-  private val maxIncomeTradingAllowance: BigDecimal = 1000
+  private val maxAllowance = BigDecimal(1000.00)
 
-  def getIncomeTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): BigDecimal = {
-    val turnover: BigDecimal = userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)).getOrElse(maxIncomeTradingAllowance)
-    if (turnover > maxIncomeTradingAllowance) maxIncomeTradingAllowance else turnover
-  }
+  // TODO: Return an error as left once we have impl. error handling instead of redirecting.
+  def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[Result, BigDecimal] =
+    userAnswers
+      .get(TurnoverIncomeAmountPage, Some(businessId))
+      .fold(redirectJourneyRecovery().asLeft[BigDecimal]) { turnover =>
+        if (turnover > maxAllowance) maxAllowance.asRight else turnover.asRight
+      }
 }
