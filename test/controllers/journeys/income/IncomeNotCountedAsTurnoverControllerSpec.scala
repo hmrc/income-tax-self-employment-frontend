@@ -36,7 +36,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 
 import scala.concurrent.Future
@@ -51,7 +51,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
   val onwardRouteNormalMode = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
   val onwardRouteCheckMode  = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else incomeCyaCall
 
-  val mockService = mock[SelfEmploymentServiceBase]
+  val mockService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
@@ -124,7 +124,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -150,7 +150,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -179,7 +179,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -207,7 +207,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 

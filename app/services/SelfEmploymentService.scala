@@ -35,8 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
-trait SelfEmploymentServiceBase {
+trait SelfEmploymentService {
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
@@ -45,11 +44,11 @@ trait SelfEmploymentServiceBase {
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
-class SelfEmploymentService @Inject() (
+class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
     sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
-    extends SelfEmploymentServiceBase
+    extends SelfEmploymentService
     with Logging {
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =

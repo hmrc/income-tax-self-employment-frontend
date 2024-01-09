@@ -25,7 +25,7 @@ import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
 import stubs.services.SelfEmploymentServiceStub
 
@@ -36,7 +36,7 @@ object TestApp {
     SpecBase
       .applicationBuilder(userAnswers, userType)
       .overrides(
-        bind[SelfEmploymentServiceBase].toInstance(selfEmploymentService),
+        bind[SelfEmploymentService].toInstance(selfEmploymentService),
         bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
         bind[SubmittedDataRetrievalActionProvider].toInstance(StubSubmittedDataRetrievalActionProvider())
       )

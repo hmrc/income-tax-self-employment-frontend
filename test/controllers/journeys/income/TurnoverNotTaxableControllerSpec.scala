@@ -32,7 +32,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.income.TurnoverNotTaxableView
 
 import scala.concurrent.Future
@@ -53,7 +53,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
     UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
     UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
-  val mockService = mock[SelfEmploymentServiceBase]
+  val mockService = mock[SelfEmploymentService]
 
   // TODO Clean these tests up, overly convoluted.
   "TurnoverNotTaxable Controller" - {
@@ -130,7 +130,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -153,7 +153,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -183,7 +183,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -210,7 +210,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 

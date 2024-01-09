@@ -28,7 +28,7 @@ import pages.expenses.otherExpenses.OtherExpensesAmountPage
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.otherExpenses.OtherExpensesAmountView
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OtherExpensesAmountController @Inject() (override val messagesApi: MessagesApi,
-                                               service: SelfEmploymentServiceBase,
+                                               service: SelfEmploymentService,
                                                navigator: ExpensesNavigator,
                                                identify: IdentifierAction,
                                                getAnswers: DataRetrievalAction,

@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.SectionCompletedStateView
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 
 class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPropertyChecks {
   val journey                           = Journey.Abroad
@@ -116,7 +116,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPrope
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[GeneralNavigator].toInstance(new FakeGeneralNavigator(journeyRecoveryCall)),
-              bind[SelfEmploymentServiceBase].toInstance(stubService)
+              bind[SelfEmploymentService].toInstance(stubService)
             )
             .build()
 

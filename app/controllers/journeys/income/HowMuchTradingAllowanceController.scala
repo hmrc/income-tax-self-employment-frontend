@@ -29,7 +29,7 @@ import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService.getMaxTradingAllowance
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.income.HowMuchTradingAllowanceView
@@ -44,7 +44,7 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   service: SelfEmploymentServiceBase,
+                                                   service: SelfEmploymentService,
                                                    formProvider: HowMuchTradingAllowanceFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: HowMuchTradingAllowanceView)(implicit ec: ExecutionContext)

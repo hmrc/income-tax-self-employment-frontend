@@ -29,7 +29,7 @@ import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                       selfEmploymentService: SelfEmploymentServiceBase,
+                                                       selfEmploymentService: SelfEmploymentService,
                                                        navigator: ExpensesNavigator,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,

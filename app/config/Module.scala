@@ -19,7 +19,7 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 import repositories.{SessionRepository, SessionRepositoryBase}
-import services.{SelfEmploymentService, SelfEmploymentServiceBase}
+import services.{SelfEmploymentService, SelfEmploymentServiceImpl}
 
 import java.time.{Clock, ZoneOffset}
 
@@ -35,7 +35,7 @@ class Module extends AbstractModule {
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
 
-    bind(classOf[SelfEmploymentServiceBase]).to(classOf[SelfEmploymentService]).asEagerSingleton()
+    bind(classOf[SelfEmploymentService]).to(classOf[SelfEmploymentServiceImpl]).asEagerSingleton()
 
     bind(classOf[SessionRepositoryBase]).to(classOf[SessionRepository]).asEagerSingleton()
 

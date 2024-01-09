@@ -33,7 +33,7 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.income.TradingAllowanceAmountView
 
 import scala.concurrent.Future
@@ -54,7 +54,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar wi
     UserScenario(userType = UserType.Individual, formIndividualWithMaxTA),
     UserScenario(userType = UserType.Agent, formAgentWithSmallTA)
   )
-  val mockService = mock[SelfEmploymentServiceBase]
+  val mockService = mock[SelfEmploymentService]
 
   val userAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> Json.obj("turnoverIncomeAmount" -> 1000.00)))
 
@@ -135,7 +135,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar wi
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -157,7 +157,7 @@ class TradingAllowanceAmountControllerSpec extends SpecBase with MockitoSugar wi
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
