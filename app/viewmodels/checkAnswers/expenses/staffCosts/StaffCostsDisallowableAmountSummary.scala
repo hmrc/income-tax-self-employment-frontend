@@ -25,10 +25,9 @@ import models.journeys.expenses.individualCategories.DisallowableStaffCosts.{No,
 import pages.expenses.staffCosts._
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object StaffCostsDisallowableAmountSummary {
 
@@ -42,19 +41,11 @@ object StaffCostsDisallowableAmountSummary {
     for {
       disallowableAmount <- answers.get(StaffCostsDisallowableAmountPage, Some(businessId))
       allowableAmount    <- answers.get(StaffCostsAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = s"£${formatMoney(disallowableAmount)}",
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel("site.change", routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("staffCostsDisallowableAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
+      "staffCostsDisallowableAmount.change.hidden"
     )
 
   private def isDisallowable(disallowableStaffCosts: DisallowableStaffCosts): Boolean =

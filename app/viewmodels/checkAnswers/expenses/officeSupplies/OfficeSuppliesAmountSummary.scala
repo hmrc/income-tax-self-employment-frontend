@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.officeSupplies
 
-import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
+import controllers.journeys.expenses.officeSupplies.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object OfficeSuppliesAmountSummary extends MoneyUtils {
     answers.get(OfficeSuppliesAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"officeSuppliesAmount.title.$userType",
         "officeSuppliesAmount.change.hidden"
       )

@@ -25,10 +25,9 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
 
@@ -42,21 +41,11 @@ object DisallowableGoodsToSellOrUseAmountSummary extends MoneyUtils {
     for {
       disallowableAmount <- answers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId))
       allowableAmount    <- answers.get(GoodsToSellOrUseAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", allowableAmount),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = s"£${formatMoney(disallowableAmount)}",
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel(
-          "site.change",
-          expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("disallowableGoodsToSellOrUseAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      expenses.goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", allowableAmount),
+      "disallowableGoodsToSellOrUseAmount.change.hidden"
     )
 
   private def areAnyGoodsToSellOrUseDisallowable(goodsToSellOrUse: GoodsToSellOrUse): Boolean =

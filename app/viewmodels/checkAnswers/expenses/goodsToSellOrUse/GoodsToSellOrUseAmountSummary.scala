@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
-import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
+import controllers.journeys.expenses.goodsToSellOrUse.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object GoodsToSellOrUseAmountSummary extends MoneyUtils {
     answers.get(GoodsToSellOrUseAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"goodsToSellOrUseAmount.title.$userType",
         "goodsToSellOrUseAmount.change.hidden"
       )

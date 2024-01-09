@@ -26,10 +26,9 @@ import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.RepairsAndMaintenancePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object RepairsAndMaintenanceDisallowableAmountSummary {
 
@@ -44,19 +43,11 @@ object RepairsAndMaintenanceDisallowableAmountSummary {
     for {
       disallowableAmount <- answers.get(RepairsAndMaintenanceDisallowableAmountPage, Some(businessId))
       allowableAmount    <- answers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = s"£${formatMoney(disallowableAmount)}",
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel("site.change", routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("repairsAndMaintenanceDisallowableAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
+      "repairsAndMaintenanceDisallowableAmount.change.hidden"
     )
 
   private def areAnyDisallowable(repairsAndMaintenance: RepairsAndMaintenance): Boolean =

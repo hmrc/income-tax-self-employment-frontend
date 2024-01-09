@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TradingAllowanceController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -39,7 +39,7 @@ object TradingAllowanceSummary {
         key = Key(content = s"tradingAllowance.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
+          ActionItemViewModel("site.change", routes.TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
             .withVisuallyHiddenText(messages("tradingAllowance.change.hidden"))
         )
       )

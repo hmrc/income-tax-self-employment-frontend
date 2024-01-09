@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.advertisingOrMarketing
 
-import controllers.journeys.expenses
+import controllers.journeys.expenses.advertisingOrMarketing.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -25,10 +25,9 @@ import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.{No,
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object AdvertisingDisallowableAmountSummary extends MoneyUtils {
 
@@ -43,21 +42,11 @@ object AdvertisingDisallowableAmountSummary extends MoneyUtils {
     for {
       disallowableAmount <- answers.get(AdvertisingOrMarketingDisallowableAmountPage, Some(businessId))
       allowableAmount    <- answers.get(AdvertisingOrMarketingAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"advertisingDisallowableAmount.title.$userType", allowableAmount),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = s"£${formatMoney(disallowableAmount)}",
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel(
-          "site.change",
-          expenses.advertisingOrMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("advertisingDisallowableAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"advertisingDisallowableAmount.title.$userType", allowableAmount),
+      "advertisingDisallowableAmount.change.hidden"
     )
 
   private def areAnyAdvertisingDisallowable(advertisingAnswer: AdvertisingOrMarketing): Boolean =
