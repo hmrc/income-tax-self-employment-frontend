@@ -21,17 +21,17 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.Mockito.when
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
 
@@ -45,14 +45,14 @@ class OtherExpensesDisallowableAmountControllerSpec
 
   override lazy val onwardRoute: Call = routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockService = mock[SelfEmploymentServiceBase]
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentServiceBase].toInstance(mockService)
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
+
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(OtherExpensesAmountPage, BigDecimal(123.00), businessId.some).success.value

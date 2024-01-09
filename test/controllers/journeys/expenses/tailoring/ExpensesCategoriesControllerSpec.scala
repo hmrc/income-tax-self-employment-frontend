@@ -24,6 +24,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Application
@@ -32,7 +33,10 @@ import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
+
+import scala.concurrent.Future
 
 class ExpensesCategoriesControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec[ExpensesTailoring](
@@ -53,7 +57,14 @@ class ExpensesCategoriesControllerSpec
   override val blankUserAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
   override val filledUserAnswers: UserAnswers      = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
 
-  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+  )
+
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 
