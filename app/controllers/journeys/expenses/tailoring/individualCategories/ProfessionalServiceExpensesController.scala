@@ -83,15 +83,10 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], userType: UserType, accountingType: AccountingType): Future[Result] =
-        Future.successful(
-          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType))
-        )
-
-      def handleSuccess(userAnswers: UserAnswers, answers: Set[ProfessionalServiceExpenses]): Future[Result] =
+      def handleSuccess(userAnswers: UserAnswers, expenses: Set[ProfessionalServiceExpenses]): Future[Result] =
         for {
-          clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(userAnswers, Some(businessId), answers))
-          updatedAnswers <- selfEmploymentService.persistAnswer(businessId, clearedAnswers, answers, ProfessionalServiceExpensesPage)
+          clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(userAnswers, Some(businessId), expenses))
+          updatedAnswers <- selfEmploymentService.persistAnswer(businessId, clearedAnswers, expenses, ProfessionalServiceExpensesPage)
         } yield Redirect(navigator.nextPage(ProfessionalServiceExpensesPage, mode, updatedAnswers, taxYear, businessId))
 
       def handleForm(form: Form[Set[ProfessionalServiceExpenses]],
@@ -101,7 +96,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Left(handleError(formWithErrors, userType, accountingType)),
+            formWithErrors => Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType)))),
             value => Right(handleSuccess(userAnswers, value))
           )
 
