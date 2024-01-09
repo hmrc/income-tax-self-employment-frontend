@@ -16,6 +16,7 @@
 
 package controllers.journeys.income
 
+import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
 import forms.income.TurnoverNotTaxableFormProvider
 import models.Mode
@@ -23,22 +24,23 @@ import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TurnoverNotTaxableView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class TurnoverNotTaxableController @Inject() (override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
                                               navigator: IncomeNavigator,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: TurnoverNotTaxableFormProvider,
+                                              service: SelfEmploymentServiceBase,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: TurnoverNotTaxableView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -46,30 +48,29 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TurnoverNotTaxablePage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val preparedForm = request.userAnswers
+        .get(TurnoverNotTaxablePage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      def handleSuccess(value: Boolean): Future[Result] = {
+        val adjustedAnswers =
+          if (value) request.userAnswers.pure[Try] else request.userAnswers.remove(NotTaxableAmountPage, Some(businessId))
+        for {
+          answers        <- Future.fromTry(adjustedAnswers)
+          updatedAnswers <- service.persistAnswer(businessId, answers, value, TurnoverNotTaxablePage)
+        } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))
+      }
+
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry {
-                val userAnswers =
-                  if (!value) request.userAnswers.remove(NotTaxableAmountPage, Some(businessId)).get
-                  else request.userAnswers
-                userAnswers.set(TurnoverNotTaxablePage, value, Some(businessId))
-              }
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          value => handleSuccess(value)
         )
   }
 

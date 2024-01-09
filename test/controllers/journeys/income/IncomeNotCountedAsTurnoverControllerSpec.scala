@@ -17,31 +17,26 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{
-  IncomeCYAController,
-  IncomeNotCountedAsTurnoverController,
-  NonTurnoverIncomeAmountController,
-  TurnoverIncomeAmountController
-}
+import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController, NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SelfEmploymentServiceBase
 import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 
 import scala.concurrent.Future
 
-class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSugar {
+class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
   val formProvider                = new IncomeNotCountedAsTurnoverFormProvider()
   val nonTurnoverIncomeAmountCall = NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
@@ -51,7 +46,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
   val onwardRouteNormalMode = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else turnoverIncomeAmountCall
   val onwardRouteCheckMode  = (userAnswer: Boolean) => if (userAnswer) nonTurnoverIncomeAmountCall else incomeCyaCall
 
-  val mockSessionRepository = mock[SessionRepository]
+  val mockService = mock[SelfEmploymentServiceBase]
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
@@ -60,6 +55,7 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
     UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
 
+  // TODO Clean these tests up, overly convoluted.
   "IncomeNotCountedAsTurnover Controller" - {
 
     "onPageLoad" - {
@@ -117,13 +113,13 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           val userAnswer = true
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
@@ -143,13 +139,13 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
           val userAnswer = true
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
@@ -172,13 +168,13 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
           val userAnswer  = false
           val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
@@ -200,13 +196,13 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
           val userAnswer  = false
           val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 

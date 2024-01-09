@@ -16,80 +16,83 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
+import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.handleServiceCall
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.journeys.income.TradingAllowance.DeclareExpenses
+import models.common.{AccountingType, BusinessId, TaxYear}
+import models.journeys.income.TradingAllowance
+import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentServiceBase
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.income.TradingAllowanceView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class TradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                            selfEmploymentService: SelfEmploymentService,
-                                            sessionRepository: SessionRepository,
                                             navigator: IncomeNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: TradingAllowanceFormProvider,
+                                            service: SelfEmploymentServiceBase,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: TradingAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-        case Left(_) => Redirect(JourneyRecoveryController.onPageLoad())
-        case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(TradingAllowancePage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
-
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
-      }
+      (for {
+        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        form = request.userAnswers
+          .get(TradingAllowancePage, Some(businessId))
+          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry {
-                    val userAnswers =
-                      if (value.equals(DeclareExpenses)) {
-                        request.userAnswers
-                          .remove(HowMuchTradingAllowancePage, Some(businessId))
-                          .get
-                          .remove(TradingAllowanceAmountPage, Some(businessId))
-                          .get
-                      } else {
-                        request.userAnswers
-                      }
-                    userAnswers.set(TradingAllowancePage, value, Some(businessId))
-                  }
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
-            )
+      def handleForm(accountingType: AccountingType): Future[Result] =
+        formProvider(request.userType)
+          .bindFromRequest()
+          .fold(
+            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType))),
+            value => handleSuccess(value)
+          )
+
+      def handleSuccess(value: TradingAllowance): Future[Result] = {
+        val adjustedAnswers = value match {
+          case DeclareExpenses =>
+            request.userAnswers
+              .remove(HowMuchTradingAllowancePage, Some(businessId))
+              .flatMap(_.remove(TradingAllowanceAmountPage, Some(businessId)))
+
+          case UseTradingAllowance =>
+            request.userAnswers.pure[Try]
+        }
+        for {
+          answers        <- Future.fromTry(adjustedAnswers)
+          updatedAnswers <- service.persistAnswer(businessId, answers, value, TradingAllowancePage)
+        } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
       }
+
+      (for {
+        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        result         <- EitherT.right[Result](handleForm(accountingType))
+      } yield result).merge
+
   }
 
 }
