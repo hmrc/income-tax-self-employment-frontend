@@ -22,29 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.tailoring.individualCategories.ProfessionalServiceExpensesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatProfessionalServiceExpensesAnswers
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object ProfessionalServiceExpensesSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(ProfessionalServiceExpensesPage, Some(businessId)).map { answers =>
-      SummaryListRowViewModel(
-        key = Key(
-          content = s"professionalServiceExpenses.subHeading.$userType",
-          classes = "govuk-!-width-two-thirds"
-        ),
-        value = Value(
-          content = HtmlContent(formatProfessionalServiceExpensesAnswers(answers, userType)),
-          classes = "govuk-!-width-one-third"
-        ),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("professionalServiceExpenses.change.hidden"))
-        )
+      buildRowString(
+        formatProfessionalServiceExpensesAnswers(answers, userType),
+        routes.ProfessionalServiceExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+        s"professionalServiceExpenses.subHeading.$userType",
+        "professionalServiceExpenses.change.hidden"
       )
     }
 }

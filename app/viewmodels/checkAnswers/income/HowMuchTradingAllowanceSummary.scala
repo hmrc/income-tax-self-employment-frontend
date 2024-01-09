@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.HowMuchTradingAllowanceController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -45,7 +45,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
         rowValue <- rowValueOrError
       } yield buildRowString(
         rowValue,
-        HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
         s"howMuchTradingAllowance.checkYourAnswersLabel.$userType",
         "howMuchTradingAllowance.change.hidden"
       )

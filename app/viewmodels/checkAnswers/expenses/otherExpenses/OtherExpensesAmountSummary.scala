@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.otherExpenses
 
-import controllers.journeys.expenses.otherExpenses.routes._
+import controllers.journeys.expenses.otherExpenses.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -33,7 +33,7 @@ object OtherExpensesAmountSummary {
       .map { answer =>
         buildRowBigDecimal(
           answer,
-          OtherExpensesAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, CheckMode),
           s"otherExpensesAmount.title.$userType",
           "otherExpensesAmount.change.hidden"
         )

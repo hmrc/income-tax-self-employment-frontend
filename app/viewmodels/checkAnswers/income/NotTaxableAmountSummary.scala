@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.NotTaxableAmountController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object NotTaxableAmountSummary extends MoneyUtils {
     answers.get(NotTaxableAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.NotTaxableAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"notTaxableAmount.title.$userType",
         "notTaxableAmount.change.hidden"
       )

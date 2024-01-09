@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.financialCharges
 
-import controllers.journeys.expenses.financialCharges.routes._
+import controllers.journeys.expenses.financialCharges.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -45,7 +45,7 @@ object FinancialChargesDisallowableAmountSummary extends ImplicitConversions {
       disallowableAmount <- answers.get(FinancialChargesDisallowableAmountPage, Some(businessId))
     } yield buildRowBigDecimal(
       disallowableAmount,
-      FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
       messages(s"financialChargesDisallowableAmount.title.$userType", formatMoney(amount)),
       "financialChargesDisallowableAmount.change.hidden"
     )

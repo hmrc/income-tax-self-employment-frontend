@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.entertainment
 
-import controllers.journeys.expenses.entertainment.routes.EntertainmentAmountController
+import controllers.journeys.expenses.entertainment.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object EntertainmentAmountSummary extends MoneyUtils {
     answers.get(EntertainmentAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        EntertainmentAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"entertainment.title.$userType",
         "entertainment.change.hidden"
       )

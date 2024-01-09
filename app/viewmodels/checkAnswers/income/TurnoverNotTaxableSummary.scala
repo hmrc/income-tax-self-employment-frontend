@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TurnoverNotTaxableController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -31,7 +31,7 @@ object TurnoverNotTaxableSummary {
     answers.get(TurnoverNotTaxablePage, Some(businessId)).map { answer =>
       buildRowBoolean(
         answer,
-        TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode),
         s"income.turnoverExemptFromTax.$userType",
         "turnoverNotTaxable.change.hidden"
       )

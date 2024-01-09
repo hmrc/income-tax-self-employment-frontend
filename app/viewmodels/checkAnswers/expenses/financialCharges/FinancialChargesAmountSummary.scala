@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.expenses.financialCharges
 
-import controllers.journeys.expenses.financialCharges.routes._
+import controllers.journeys.expenses.financialCharges.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -33,7 +33,7 @@ object FinancialChargesAmountSummary {
       .map { answer =>
         buildRowBigDecimal(
           answer,
-          FinancialChargesAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          routes.FinancialChargesAmountController.onPageLoad(taxYear, businessId, CheckMode),
           s"financialChargesAmount.title.$userType",
           "financialChargesAmount.change.hidden"
         )
