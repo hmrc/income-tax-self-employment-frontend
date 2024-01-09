@@ -30,6 +30,6 @@ class OptionalContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Optio
     } else if (isSuccess(response.status)) {
       readOne[A](response).map(Some(_))
     } else {
-      Left(unsafePagerDutyError(response))
+      Left(unsafePagerDutyError(method, url, response))
     }
 }

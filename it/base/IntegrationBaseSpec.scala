@@ -45,7 +45,7 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
 
   protected val headersSentToBE: Seq[HttpHeader] = Seq(new HttpHeader("mtditid", mtditid.value))
 
-  protected val parsingError: ServiceError = ConnectorResponseError(HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
+  protected val parsingError: ServiceError = ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val hc: HeaderCarrier    = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))

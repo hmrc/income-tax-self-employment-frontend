@@ -105,11 +105,11 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
       "an error is returned from the backend" in {
         mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(
-          Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
+          Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
 
         val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))(10.seconds)
 
-        result shouldBe Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
+        result shouldBe Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
       }
     }
   }

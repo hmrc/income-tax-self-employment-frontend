@@ -7,11 +7,7 @@
                 <expression>
                     // Define a condition to filter out static assets based on the message content
                     return (
-                        message.contains(".js") ||
-                        message.contains(".css") ||
-                        message.contains(".png") ||
-                        message.contains(".jpg") ||
-                        message.contains(".ico")
+                        message.contains("/assets/")
                     );
                 </expression>
             </evaluator>

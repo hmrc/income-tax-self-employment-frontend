@@ -63,7 +63,7 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
 
     "an error occurred during answer submission" - {
       "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
-        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(ConnectorResponseError(httpError).asLeft))
+        mockService.submitAnswers(*, *)(*, *) returns EitherT(Future.successful(ConnectorResponseError("method", "url", httpError).asLeft))
 
         val result: Future[Result] = route(application, postRequest).value
 

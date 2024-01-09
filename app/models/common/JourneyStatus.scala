@@ -22,6 +22,8 @@ import models.requests.TradesJourneyStatuses
 
 sealed abstract class JourneyStatus(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
+
+  def isCompleted: Boolean = this == JourneyStatus.Completed
 }
 
 object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[JourneyStatus] {

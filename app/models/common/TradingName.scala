@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package connectors
+package models.common
 
-import cats.implicits.catsSyntaxEitherId
-import connectors.httpParser.HttpParser.unsafePagerDutyError
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import play.api.libs.json.{Format, Json}
 
-object NoContentHttpReads extends HttpReads[NoContentResponse] {
-  override def read(method: String, url: String, response: HttpResponse): NoContentResponse =
-    if (isSuccess(response.status)) ().asRight else unsafePagerDutyError(method, url, response).asLeft
+final case class TradingName(value: String) extends AnyVal {
+  override def toString: String = value
+
+  def withSuffixStr(suffix: String): String = if (value.isEmpty) suffix else s"$value - $suffix"
+}
+
+object TradingName {
+  implicit val format: Format[TradingName] = Json.valueFormat[TradingName]
+
+  def empty: TradingName = TradingName("")
 }
