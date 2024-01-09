@@ -55,7 +55,7 @@ class OtherExpensesAmountControllerSpec
 
   private val mockService = mock[SelfEmploymentService]
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(accrual))
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
 
   override val bindings: List[Binding[_]] = List(
@@ -70,7 +70,7 @@ class OtherExpensesAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[OtherExpensesAmountView]
-    view(form, scenario.mode, scenario.userType, AccountingType.withName(accrual), tailoringAnswer, scenario.taxYear, scenario.businessId)
+    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, tailoringAnswer, scenario.taxYear, scenario.businessId)
       .toString()
   }
 

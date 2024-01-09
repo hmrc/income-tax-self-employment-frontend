@@ -27,7 +27,7 @@ import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                            sessionRepository: SessionRepository,
+                                                            selfEmploymentService: SelfEmploymentService,
                                                             navigator: ExpensesNavigator,
                                                             identify: IdentifierAction,
                                                             getData: DataRetrievalAction,
@@ -70,10 +70,10 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
               formWithErrors =>
                 Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesDisallowableAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesDisallowableAmountPage)
+                  .map(updatedAnswers =>
+                    Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
         }
         .leftMap(Future.successful)

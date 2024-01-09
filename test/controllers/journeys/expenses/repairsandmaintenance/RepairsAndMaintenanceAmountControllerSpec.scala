@@ -16,80 +16,51 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import base.SpecBase._
-import common.TestApp._
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
-import gens._
-import models.common.onwardRoute
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import models.NormalMode
+import models.common.AccountingType.Accrual
+import models.common.UserType
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
+import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
-class RepairsAndMaintenanceAmountControllerSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
-  private val validAnswer   = BigDecimal(100.00)
-  private val invalidAnswer = "invalid value"
+import scala.concurrent.Future
 
-  "onPageLoad" should {
-    "return OK and render view" in {
-      forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application = buildApp(accountingType, userType)
-        running(application) {
-          val form           = new RepairsAndMaintenanceAmountFormProvider()(userType)
-          val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, mode).url
-          val getRequest     = FakeRequest(GET, routeUnderTest)
+class RepairsAndMaintenanceAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "RepairsAndMaintenanceAmountController",
+      RepairsAndMaintenanceAmountPage
+    ) {
 
-          val result = route(application, getRequest).value
+  lazy val onPageLoadRoute: String = routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-          status(result) mustBe OK
+  override val onwardRoute: Call = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-          val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
-          val expectedView =
-            view(form, mode, userType, taxYear, businessId, accountingType)(getRequest, messages(application)).toString()
-          contentAsString(result) mustEqual expectedView
-        }
-      }
-    }
-  }
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
 
-  "onSubmit" should {
-    "redirect to next when valid data is submitted" in {
-      forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application = buildApp(accountingType, userType)
-        running(application) {
-          val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode).url
-          val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", validAnswer.toString))
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
 
-          val result = route(application, postRequest).value
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
-      }
-    }
-
-    "return bad request when invalid data is submitted" in {
-      forAll(userTypeGen, accountingTypeGen, modeGen) { (userType, accountingType, mode) =>
-        val application = buildApp(accountingType, userType)
-        running(application) {
-          val routeUnderTest = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode).url
-          val postRequest    = FakeRequest(POST, routeUnderTest).withFormUrlEncodedBody(("value", invalidAnswer))
-          val view           = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
-          val form           = new RepairsAndMaintenanceAmountFormProvider()(userType).bind(Map("value" -> invalidAnswer))
-          val expectedView =
-            view(form, mode, userType, taxYear, businessId, accountingType)(postRequest, messages(application))
-              .toString()
-
-          val result = route(application, postRequest).value
-
-          status(result) mustBe BAD_REQUEST
-          contentAsString(result) mustEqual expectedView
-        }
-      }
-    }
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[RepairsAndMaintenanceAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
 
 }

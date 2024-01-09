@@ -16,7 +16,7 @@
 
 @import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 @import controllers.journeys.expenses.tailoring.individualCategories.routes.GoodsToSellOrUseController
-@import models.common.{BusinessId, TaxYear, UserType}
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -28,7 +28,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("journeys.expenses-goods-to-sell-or-use"))) {
 
@@ -55,7 +55,7 @@
             <li>@messages("expenses.costOfRawMaterials")</li>
             <li>@messages("expenses.stockBought")</li>
             <li>@messages("expenses.directCostsOfProducing")</li>
-            @if(accountingType.equals("ACCRUAL")) {
+            @if(accountingType == AccountingType.Accrual) {
                 <li>@messages("expenses.adjustments")</li>
             }
             <li>@messages("expenses.commissions")</li>
@@ -66,7 +66,7 @@
         @messages(s"site.cannotInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-        @if(accountingType.equals("CASH")) {
+        @if(accountingType == AccountingType.Cash) {
             <li>@messages("expenses.costsForPrivateUse")</li>
 
         }
