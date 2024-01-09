@@ -24,14 +24,18 @@ import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountView
+
+import scala.concurrent.Future
 
 class FinancialChargesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesDisallowableAmountController", FinancialChargesDisallowableAmountPage) {
@@ -42,7 +46,14 @@ class FinancialChargesDisallowableAmountControllerSpec
   override val onwardRoute: Call =
     routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+  )
+
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   override lazy val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(FinancialChargesAmountPage, amount, businessId.some).success.value
