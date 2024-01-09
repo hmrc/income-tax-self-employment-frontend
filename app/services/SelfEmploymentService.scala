@@ -18,7 +18,6 @@ package services
 
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
@@ -28,14 +27,12 @@ import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.libs.json.{Format, Writes}
-import play.api.mvc.Result
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentService {
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
@@ -45,7 +42,7 @@ trait SelfEmploymentService {
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
 
-class SelfEmploymentServiceImp @Inject() (
+class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
     sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
@@ -87,10 +84,10 @@ object SelfEmploymentService {
   private val maxAllowance = BigDecimal(1000.00)
 
   // TODO: Return an error as left once we have impl. error handling instead of redirecting.
-  def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[Result, BigDecimal] =
+  def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[NotFoundError, BigDecimal] =
     userAnswers
       .get(TurnoverIncomeAmountPage, Some(businessId))
-      .fold(redirectJourneyRecovery().asLeft[BigDecimal]) { turnover =>
+      .fold(NotFoundError("TurnoverIncomeAmount not found").asLeft[BigDecimal]) { turnover =>
         if (turnover > maxAllowance) maxAllowance.asRight else turnover.asRight
       }
 }
