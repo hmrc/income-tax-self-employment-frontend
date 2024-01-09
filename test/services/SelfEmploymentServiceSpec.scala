@@ -48,7 +48,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val mockSessionRepository                    = mock[SessionRepository]
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
 
-  val service: SelfEmploymentService = new SelfEmploymentService(mockConnector, mockSessionRepository)
+  val service: SelfEmploymentService = new SelfEmploymentServiceImp(mockConnector, mockSessionRepository)
 
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")

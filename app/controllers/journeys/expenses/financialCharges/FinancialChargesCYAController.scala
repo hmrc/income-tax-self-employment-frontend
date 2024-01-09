@@ -25,7 +25,7 @@ import models.journeys.expenses.financialCharges.FinancialChargesJourneyAnswers
 import pages.expenses.financialCharges.FinancialChargesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.financialCharges.{FinancialChargesAmountSummary, FinancialChargesDisallowableAmountSummary}
@@ -42,7 +42,7 @@ class FinancialChargesCYAController @Inject() (override val messagesApi: Message
                                                getUserAnswers: DataRetrievalAction,
                                                getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireAnswers: DataRequiredAction,
-                                               service: SelfEmploymentServiceBase,
+                                               service: SelfEmploymentService,
                                                view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport

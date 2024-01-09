@@ -29,7 +29,7 @@ import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
-                                                 service: SelfEmploymentServiceBase,
+                                                 service: SelfEmploymentService,
                                                  navigator: GeneralNavigator,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,

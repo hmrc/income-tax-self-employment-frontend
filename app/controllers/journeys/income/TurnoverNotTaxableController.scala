@@ -25,7 +25,7 @@ import navigation.IncomeNavigator
 import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TurnoverNotTaxableView
 
@@ -40,7 +40,7 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: TurnoverNotTaxableFormProvider,
-                                              service: SelfEmploymentServiceBase,
+                                              service: SelfEmploymentService,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: TurnoverNotTaxableView)(implicit ec: ExecutionContext)
     extends FrontendBaseController

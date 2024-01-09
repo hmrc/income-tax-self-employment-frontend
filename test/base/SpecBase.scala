@@ -39,7 +39,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetrievalAction, StubSubmittedDataRetrievalActionProvider}
 import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
@@ -110,7 +110,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   def createApp(stub: SelfEmploymentServiceStub) =
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
-      .overrides(bind[SelfEmploymentServiceBase].toInstance(stub))
+      .overrides(bind[SelfEmploymentService].toInstance(stub))
       .build()
 
   def createApp(stub: StubSubmittedDataRetrievalActionProvider) =

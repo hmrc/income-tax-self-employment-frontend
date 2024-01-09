@@ -36,7 +36,7 @@ import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
 import scala.concurrent.Future
@@ -55,7 +55,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
 
   val onwardRoute = (userAnswer: HowMuchTradingAllowance) => if (userAnswer.equals(LessThan)) tradingAllowanceAmountCall else incomeCyaCall
 
-  val mockService = mock[SelfEmploymentServiceBase]
+  val mockService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
@@ -160,7 +160,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -185,7 +185,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -213,7 +213,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -240,7 +240,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 

@@ -27,7 +27,7 @@ import navigation.IncomeNavigator
 import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.income.AnyOtherIncomeView
@@ -42,7 +42,7 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          service: SelfEmploymentServiceBase,
+                                          service: SelfEmploymentService,
                                           formProvider: AnyOtherIncomeFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: AnyOtherIncomeView)(implicit ec: ExecutionContext)

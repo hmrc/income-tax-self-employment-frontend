@@ -25,7 +25,7 @@ import navigation.ExpensesNavigator
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
@@ -39,7 +39,7 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
                                                            identify: IdentifierAction,
                                                            getAnswers: DataRetrievalAction,
                                                            requireAnswers: DataRequiredAction,
-                                                           service: SelfEmploymentServiceBase,
+                                                           service: SelfEmploymentService,
                                                            formProvider: OtherExpensesDisallowableAmountFormProvider,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            view: OtherExpensesDisallowableAmountView)(implicit ec: ExecutionContext)

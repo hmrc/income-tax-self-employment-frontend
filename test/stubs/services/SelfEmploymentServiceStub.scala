@@ -25,18 +25,18 @@ import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsObject, Writes}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
-    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Cash),
+    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
     getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
     getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
-) extends SelfEmploymentServiceBase {
+) extends SelfEmploymentService {
 
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =

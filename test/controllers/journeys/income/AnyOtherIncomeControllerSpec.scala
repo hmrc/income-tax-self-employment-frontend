@@ -34,7 +34,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import views.html.journeys.income.AnyOtherIncomeView
 
 import scala.concurrent.Future
@@ -47,7 +47,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
   val tradingAllowanceCall   = income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   val incomeCyaCall          = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  val mockService: SelfEmploymentServiceBase   = mock[SelfEmploymentServiceBase]
+  val mockService: SelfEmploymentService       = mock[SelfEmploymentService]
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
@@ -132,7 +132,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -157,7 +157,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -188,7 +188,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(turnoverNotTaxableCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -211,7 +211,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(tradingAllowanceCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
 
@@ -234,7 +234,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(incomeCyaCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService),
+                bind[SelfEmploymentService].toInstance(mockService),
                 bind[SessionRepository].toInstance(mockSessionRepository)
               )
               .build()
@@ -259,7 +259,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
           "must return a Bad Request and errors when an empty form is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
-              .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
@@ -284,7 +284,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
-              .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
+              .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
