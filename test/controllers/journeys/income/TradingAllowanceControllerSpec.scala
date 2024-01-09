@@ -20,28 +20,27 @@ import base.SpecBase
 import controllers.journeys.income
 import controllers.standard
 import forms.income.TradingAllowanceFormProvider
-import models.common.{AccountingType, UserType}
+import models.common.{AccountingType, BusinessId, UserType}
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance.LessThan
 import models.journeys.income.TradingAllowance
 import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import services.SelfEmploymentService
+import services.SelfEmploymentServiceBase
 import views.html.journeys.income.TradingAllowanceView
 
 import scala.concurrent.Future
 
-class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
+class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
   val formProvider                = new TradingAllowanceFormProvider()
   val howMuchTradingAllowanceCall = income.routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -49,7 +48,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val onwardRoute = (userAnswer: TradingAllowance) => if (userAnswer.equals(UseTradingAllowance)) howMuchTradingAllowanceCall else incomeCyaCall
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockService = mock[SelfEmploymentServiceBase]
 
   case class UserScenario(userType: UserType, form: Form[TradingAllowance], accountingType: AccountingType)
 
@@ -58,6 +57,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
     UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), AccountingType.Cash)
   )
 
+  // TODO Clean these tests up, overly convoluted.
   "TradingAllowance Controller" - {
 
     "onPageLoad" - {
@@ -66,11 +66,13 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
           "must return OK and the correct view" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(userScenario.accountingType))
+              mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
+
               val request = FakeRequest(GET, income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
@@ -93,11 +95,12 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
               UserAnswers(userAnswersId).set(TradingAllowancePage, TradingAllowance.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
+              .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(userScenario.accountingType))
+              mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
               val request = FakeRequest(GET, income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
 
@@ -142,21 +145,17 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswer = UseTradingAllowance
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentService].toInstance(mockService),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
               FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -172,21 +171,17 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswer = UseTradingAllowance
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentService].toInstance(mockService),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
               FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, CheckMode).url)
@@ -212,21 +207,17 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             .success
             .value
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentService].toInstance(mockService),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
               FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -251,21 +242,17 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             .success
             .value
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SelfEmploymentService].toInstance(mockService),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
               FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, CheckMode).url)
@@ -287,11 +274,12 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             "an empty form is submitted" in {
 
               val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
-                .overrides(bind[SelfEmploymentService].toInstance(mockService))
+                .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
                 .build()
 
               running(application) {
-                when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(userScenario.accountingType))
+                mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
                 val request =
                   FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -316,11 +304,12 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
             "invalid data is submitted" in {
 
               val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
-                .overrides(bind[SelfEmploymentService].toInstance(mockService))
+                .overrides(bind[SelfEmploymentServiceBase].toInstance(mockService))
                 .build()
 
               running(application) {
-                when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+                mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(userScenario.accountingType))
+                mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
                 val request =
                   FakeRequest(POST, income.routes.TradingAllowanceController.onSubmit(taxYear, businessId, NormalMode).url)
