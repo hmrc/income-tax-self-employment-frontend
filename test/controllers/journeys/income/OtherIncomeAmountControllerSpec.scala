@@ -133,7 +133,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar with Ma
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(AccountingType.Accrual))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService),
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
@@ -158,7 +158,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar with Ma
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(AccountingType.Cash))),
-                bind[SelfEmploymentServiceBase].toInstance(mockService),
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 
@@ -183,7 +183,7 @@ class OtherIncomeAmountControllerSpec extends SpecBase with MockitoSugar with Ma
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(cyaCall)),
-                bind[SelfEmploymentServiceBase].toInstance(mockService),
+                bind[SelfEmploymentServiceBase].toInstance(mockService)
               )
               .build()
 

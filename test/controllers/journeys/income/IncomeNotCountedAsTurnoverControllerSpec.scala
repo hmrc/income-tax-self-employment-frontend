@@ -17,7 +17,12 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{IncomeCYAController, IncomeNotCountedAsTurnoverController, NonTurnoverIncomeAmountController, TurnoverIncomeAmountController}
+import controllers.journeys.income.routes.{
+  IncomeCYAController,
+  IncomeNotCountedAsTurnoverController,
+  NonTurnoverIncomeAmountController,
+  TurnoverIncomeAmountController
+}
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
