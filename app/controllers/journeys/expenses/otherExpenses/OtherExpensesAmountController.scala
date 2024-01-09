@@ -58,7 +58,7 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
         form = request.userAnswers
           .get(OtherExpensesAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, AccountingType.withName(accountingType), tailoringAnswer, taxYear, businessId))
+      } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))
 
       resultT.merge
     }
@@ -81,7 +81,7 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
       val resultT = for {
         tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
         accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        result          <- EitherT.right[Result](handleForm(AccountingType.withName(accountingType), tailoringAnswer))
+        result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
       } yield result
 
       resultT.merge

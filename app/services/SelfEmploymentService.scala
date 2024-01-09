@@ -25,20 +25,19 @@ import models.errors.ServiceError.NotFoundError
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
-import play.api.libs.json.Format
-import play.api.libs.json.Writes
+import play.api.libs.json.{Format, Writes}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 // TODO Remove Base, and rename SelfEmploymentService to have Impl suffix
 trait SelfEmploymentServiceBase {
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]]
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -58,9 +57,10 @@ class SelfEmploymentService @Inject() (
 
   // TODO return AccountingType not String
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
     connector.getBusiness(nino, businessId, mtditid).map {
-      case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(businesses.head.accountingType.get)
+      case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(AccountingType.withName(businesses.head.accountingType.get))
       case Left(error)                                                       => Left(error)
       case _                                                                 => Left(NotFoundError("Business not found"))
     }
