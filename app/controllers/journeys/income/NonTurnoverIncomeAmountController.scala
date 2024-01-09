@@ -46,10 +46,9 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NonTurnoverIncomeAmountPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val preparedForm = request.userAnswers
+        .get(NonTurnoverIncomeAmountPage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }

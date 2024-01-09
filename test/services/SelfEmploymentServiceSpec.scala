@@ -37,7 +37,7 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
-import services.SelfEmploymentService.getIncomeTradingAllowance
+import services.SelfEmploymentService.getMaxTradingAllowance
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -119,7 +119,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
         val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
 
-        getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
+        getMaxTradingAllowance(businessId, userAnswers) shouldBe smallTurnover.asRight
       }
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
@@ -128,8 +128,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
 
-        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
-        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
+        getMaxTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance.asRight
+        getMaxTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance.asRight
       }
     }
   }
