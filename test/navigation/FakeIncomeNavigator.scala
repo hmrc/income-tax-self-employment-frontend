@@ -17,7 +17,7 @@
 package navigation
 
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages._
 import play.api.mvc.Call
@@ -29,6 +29,6 @@ class FakeIncomeNavigator(desiredRoute: Call) extends IncomeNavigator {
                         userAnswers: UserAnswers,
                         taxYear: TaxYear,
                         businessId: BusinessId,
-                        isAccrual: Option[Boolean]): Call =
+                        accountingType: Option[AccountingType]): Call =
     desiredRoute
 }

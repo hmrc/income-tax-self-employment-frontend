@@ -66,7 +66,7 @@ class GoodsToSellOrUseAmountControllerSpec
     bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
   when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
@@ -76,7 +76,7 @@ class GoodsToSellOrUseAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual.entryName, true).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual, true).toString()
   }
 
 }

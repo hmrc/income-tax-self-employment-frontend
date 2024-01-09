@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.standard.routes
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -57,7 +57,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
               case Some(value) => formProvider(request.userType).fill(value)
             }
 
-          Ok(view(preparedForm, mode, request.userType, AccountingType.withName(accountingType), taxYear, businessId))
+          Ok(view(preparedForm, mode, request.userType, accountingType, taxYear, businessId))
 
         case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
       }
@@ -70,9 +70,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
           formProvider(request.userType)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(
-                  BadRequest(view(formWithErrors, mode, request.userType, AccountingType.withName(accountingType), taxYear, businessId))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, accountingType, taxYear, businessId))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeSuppliesAmountPage, value, Some(businessId)))

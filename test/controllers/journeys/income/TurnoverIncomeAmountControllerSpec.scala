@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.income.routes.{AnyOtherIncomeController, IncomeCYAController, TurnoverIncomeAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverIncomeAmountFormProvider
-import models.common.UserType
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
@@ -47,11 +47,11 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[BigDecimal], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[BigDecimal], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual), accrual),
-    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), cash)
+    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual), AccountingType.Accrual),
+    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent), AccountingType.Cash)
   )
 
   "TurnoverIncomeAmount Controller" - {
@@ -148,7 +148,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
             val request =
               FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -177,7 +177,7 @@ class TurnoverIncomeAmountControllerSpec extends SpecBase with MockitoSugar {
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+            when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
 
             val request =
               FakeRequest(POST, TurnoverIncomeAmountController.onSubmit(taxYear, businessId, CheckMode).url)
