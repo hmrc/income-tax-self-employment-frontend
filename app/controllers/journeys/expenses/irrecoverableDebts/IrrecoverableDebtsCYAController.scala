@@ -16,11 +16,9 @@
 
 package controllers.journeys.expenses.irrecoverableDebts
 
-import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
-import models.errors.ServiceError
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesIrrecoverableDebts
 import models.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsJourneyAnswers
@@ -35,7 +33,7 @@ import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: MessagesApi,
