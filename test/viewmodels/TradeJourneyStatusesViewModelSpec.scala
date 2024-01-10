@@ -18,6 +18,8 @@ package viewmodels
 
 import base.SpecBase
 import cats.implicits._
+import controllers.journeys.{abroad, expenses, income}
+import models._
 import models.common.JourneyStatus._
 import models.common.{JourneyStatus, TradingName}
 import models.database.UserAnswers
@@ -47,6 +49,15 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     _.set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, businessId.some)
   )
 
+  private val abroadUrl               = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val abroadCyaUrl            = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+  private val incomeUrl               = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val incomeCyaUrl            = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+  private val expensesTailoringCyaUrl = expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
+  private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
+  private val irrecoverableUrl        = expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+
   private val testScenarios = Table(
     ("JourneyNameAndStatus", "userAnswers", "expected"),
     // No statuses, no answers
@@ -54,7 +65,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Nil,
       Nil,
       List(
-        expectedRow("/2024/SJPR05893938418/details/self-employment-abroad", "", Journey.Abroad, NotStarted),
+        expectedRow(abroadUrl, "", Journey.Abroad, NotStarted),
         expectedRow("#", " class='govuk-deadlink'", Journey.Income, CannotStartYet)
       )),
     // Just one route: Abroad in progress
@@ -62,7 +73,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(JourneyNameAndStatus(Abroad, InProgress)),
       Nil,
       List(
-        expectedRow("/2024/SJPR05893938418/self-employment/details/check", "", Journey.Abroad, InProgress),
+        expectedRow(abroadCyaUrl, "", Journey.Abroad, InProgress),
         expectedRow("#", " class='govuk-deadlink'", Journey.Income, CannotStartYet)
       )),
     // Abroad, Income there, but income without answers so no expenses tailoring rendered
@@ -74,8 +85,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       ),
       Nil,
       List(
-        expectedRow("/2024/SJPR05893938418/self-employment/details/check", "", Journey.Abroad, Completed),
-        expectedRow("/2024/SJPR05893938418/income/not-counted-turnover", "", Journey.Income, CheckOurRecords)
+        expectedRow(abroadCyaUrl, "", Journey.Abroad, Completed),
+        expectedRow(incomeUrl, "", Journey.Income, CheckOurRecords)
       )),
     // Expense Tailoring there, with some sub journeys
     (
@@ -88,12 +99,12 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       ),
       categoriesExpenses,
       List(
-        expectedRow("/2024/SJPR05893938418/self-employment/details/check", "", Journey.Abroad, Completed),
-        expectedRow("/2024/SJPR05893938418/income/check-your-income", "", Journey.Income, Completed),
-        expectedRow("/2024/SJPR05893938418/expenses/check", "", Journey.ExpensesTailoring, Completed),
-        expectedRow("/2024/SJPR05893938418/expenses/office-supplies/amount", "", Journey.ExpensesOfficeSupplies, CheckOurRecords),
-        expectedRow("/2024/SJPR05893938418/expenses/goods-sell-use/check", "", Journey.ExpensesGoodsToSellOrUse, InProgress),
-        expectedRow("/2024/SJPR05893938418/expenses/irrecoverable-debts/amount", "", Journey.ExpensesIrrecoverableDebts, NotStarted)
+        expectedRow(abroadCyaUrl, "", Journey.Abroad, Completed),
+        expectedRow(incomeCyaUrl, "", Journey.Income, Completed),
+        expectedRow(expensesTailoringCyaUrl, "", Journey.ExpensesTailoring, Completed),
+        expectedRow(officeSuppliesUrl, "", Journey.ExpensesOfficeSupplies, CheckOurRecords),
+        expectedRow(goodsToSellCyaUrl, "", Journey.ExpensesGoodsToSellOrUse, InProgress),
+        expectedRow(irrecoverableUrl, "", Journey.ExpensesIrrecoverableDebts, NotStarted)
       )
     )
   )
