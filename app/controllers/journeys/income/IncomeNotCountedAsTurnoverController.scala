@@ -46,6 +46,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
+  // TODO Add requireData action during SASS-5878 (see comment attached to this ticket).
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
     val preparedForm = request.userAnswers
       .getOrElse(UserAnswers(request.userId))
