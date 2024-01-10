@@ -48,17 +48,15 @@ class IrrecoverableDebtsDisallowableAmountControllerSpec
 
   private val mockService = mock[SelfEmploymentService]
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(pageAnswers)
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
     bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  override lazy val emptyUserAnswers: UserAnswers =
+  override val emptyUserAnswers: UserAnswers =
     SpecBase.emptyUserAnswers.set(IrrecoverableDebtsAmountPage, amount, businessId.some).success.value
-
-  private lazy val amount = BigDecimal(123.00)
 
   override def createForm(user: UserType): Form[BigDecimal] = new IrrecoverableDebtsDisallowableAmountFormProvider()(user, amount)
 

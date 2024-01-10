@@ -16,17 +16,15 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
-import models.common.{AccountingType, UserType}
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.OfficeSupplies
+import models.common.AccountingType.Accrual
+import models.common.{AccountingType, BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
-import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -35,31 +33,22 @@ import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
-import scala.concurrent.Future
-
-class OfficeSuppliesAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "OfficeSuppliesAmountController",
-      OfficeSuppliesAmountPage
-    ) {
+class OfficeSuppliesAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec("OfficeSuppliesAmountController", OfficeSuppliesAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val onwardRoute: Call = routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OfficeSuppliesPage, OfficeSupplies.YesDisallowable, Some(businessId)).success.value
-
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 

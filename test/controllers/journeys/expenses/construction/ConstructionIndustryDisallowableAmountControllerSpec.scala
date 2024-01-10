@@ -16,14 +16,12 @@
 
 package controllers.journeys.expenses.construction
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.construction.ConstructionIndustryDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
@@ -34,41 +32,36 @@ import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
 
-import scala.concurrent.Future
-
 class ConstructionIndustryDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
       "ConstructionIndustryDisallowableAmountController",
       ConstructionIndustryDisallowableAmountPage
     ) {
 
-  private lazy val allowableAmount: BigDecimal = 500.50
-
   lazy val onPageLoadRoute: String = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
+
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  override def baseAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(ConstructionIndustryAmountPage, allowableAmount, Some(businessId)).success.value
-
-  def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, allowableAmount)
+  def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ConstructionIndustryDisallowableAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(allowableAmount)).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
 
 }

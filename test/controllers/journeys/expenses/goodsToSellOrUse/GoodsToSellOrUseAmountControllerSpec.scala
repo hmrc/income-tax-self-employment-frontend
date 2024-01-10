@@ -16,19 +16,17 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.common.{BusinessId, UserType}
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -36,8 +34,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
-
-import scala.concurrent.Future
 
 class GoodsToSellOrUseAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -50,24 +46,20 @@ class GoodsToSellOrUseAmountControllerSpec
 
   override val onwardRoute: Call = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers
-      .set(GoodsToSellOrUsePage, YesDisallowable, Some(businessId))
-      .success
-      .value
-      .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId))
-      .success
-      .value
+  override def baseAnswers = emptyUserAnswers
+    .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId))
+    .success
+    .value
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
 

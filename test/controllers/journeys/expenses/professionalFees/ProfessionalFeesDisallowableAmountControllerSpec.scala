@@ -16,14 +16,12 @@
 
 package controllers.journeys.expenses.professionalFees
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.professionalFees.ProfessionalFeesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
@@ -34,41 +32,36 @@ import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.professionalFees.ProfessionalFeesDisallowableAmountView
 
-import scala.concurrent.Future
-
 class ProfessionalFeesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
       "ProfessionalFeesDisallowableAmountController",
       ProfessionalFeesDisallowableAmountPage
     ) {
 
-  private lazy val allowableAmount: BigDecimal = 500.50
-
   lazy val onPageLoadRoute: String = routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.ProfessionalFeesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(ProfessionalFeesAmountPage, allowableAmount, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswers.set(ProfessionalFeesAmountPage, amount, Some(businessId)).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesDisallowableAmountFormProvider()(userType, allowableAmount)
+  def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ProfessionalFeesDisallowableAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(allowableAmount)).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
 
 }

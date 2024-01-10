@@ -16,17 +16,13 @@
 
 package controllers.journeys.expenses.advertisingOrMarketing
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.advertisingOrMarketing.AdvertisingAmountFormProvider
 import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.YesAllowable
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
-import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -34,8 +30,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
-
-import scala.concurrent.Future
 
 class AdvertisingAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -48,17 +42,14 @@ class AdvertisingAmountControllerSpec
 
   override val onwardRoute: Call = routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(AdvertisingOrMarketingPage, YesAllowable, Some(businessId)).success.value
+  private val mockService = mock[SelfEmploymentService]
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
-
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new AdvertisingAmountFormProvider()(userType)
 

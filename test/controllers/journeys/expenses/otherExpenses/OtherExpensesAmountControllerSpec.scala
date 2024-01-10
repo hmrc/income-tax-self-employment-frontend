@@ -16,12 +16,12 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, UserType}
-import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -34,8 +34,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
 import services.SelfEmploymentService
 import views.html.journeys.expenses.otherExpenses.OtherExpensesAmountView
-
-import scala.concurrent.Future
 
 class OtherExpensesAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -50,13 +48,12 @@ class OtherExpensesAmountControllerSpec
 
   private val tailoringAnswer = OtherExpenses.YesDisallowable
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OtherExpensesPage, tailoringAnswer, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswers.set(OtherExpensesPage, tailoringAnswer, Some(businessId)).success.value
 
   private val mockService = mock[SelfEmploymentService]
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),

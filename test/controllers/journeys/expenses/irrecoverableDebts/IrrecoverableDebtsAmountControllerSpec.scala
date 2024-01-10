@@ -44,7 +44,7 @@ class IrrecoverableDebtsAmountControllerSpec
 
   private val mockService = mock[SelfEmploymentService]
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(pageAnswers)
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),

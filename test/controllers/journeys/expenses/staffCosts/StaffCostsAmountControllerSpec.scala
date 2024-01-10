@@ -16,15 +16,15 @@
 
 package controllers.journeys.expenses.staffCosts
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.NormalMode
-import models.common.{AccountingType, UserType}
-import models.database.UserAnswers
+import models.common.AccountingType.Accrual
+import models.common.{BusinessId, UserType}
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts.Yes
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.Application
@@ -34,8 +34,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView
-
-import scala.concurrent.Future
 
 class StaffCostsAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -48,17 +46,15 @@ class StaffCostsAmountControllerSpec
 
   override val onwardRoute: Call = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
+  override val bindings: List[Binding[_]] =
+    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)), bind[SelfEmploymentService].toInstance(mockService))
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 

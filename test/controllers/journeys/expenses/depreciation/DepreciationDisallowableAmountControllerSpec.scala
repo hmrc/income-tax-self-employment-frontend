@@ -16,17 +16,13 @@
 
 package controllers.journeys.expenses.depreciation
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.depreciation.DepreciationDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.Depreciation.Yes
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
-import pages.expenses.tailoring.individualCategories.DepreciationPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -34,8 +30,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
-
-import scala.concurrent.Future
 
 class DepreciationDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -48,17 +42,14 @@ class DepreciationDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(DepreciationPage, Yes, Some(businessId)).success.value
+  private val mockService = mock[SelfEmploymentService]
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
-
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new DepreciationDisallowableAmountFormProvider()(userType)
 

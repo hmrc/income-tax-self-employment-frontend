@@ -17,12 +17,13 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.Application
 import play.api.data.Form
@@ -31,8 +32,6 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
-
-import scala.concurrent.Future
 
 class RepairsAndMaintenanceAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -45,14 +44,14 @@ class RepairsAndMaintenanceAmountControllerSpec
 
   override val onwardRoute: Call = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService))
+  override val bindings: List[Binding[_]] =
+    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)), bind[SelfEmploymentService].toInstance(mockService))
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
+
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit

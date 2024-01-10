@@ -19,9 +19,9 @@ package controllers.journeys.expenses.entertainment
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.Application
 import play.api.data.Form
@@ -31,27 +31,25 @@ import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.entertainment.EntertainmentAmountView
 
-import scala.concurrent.Future
-
 class EntertainmentAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
       "EntertainmentAmountController",
       EntertainmentAmountPage
     ) {
 
-  override val onwardRoute: Call = models.common.onwardRoute
+  val onwardRoute: Call = models.common.onwardRoute
 
   lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
+
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
-
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType)
 
@@ -62,5 +60,4 @@ class EntertainmentAmountControllerSpec
     val view = application.injector.instanceOf[EntertainmentAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
 }

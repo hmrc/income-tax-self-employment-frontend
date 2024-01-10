@@ -52,7 +52,7 @@ class TotalExpensesControllerSpec
     bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new TotalExpensesFormProvider()(userType)
 

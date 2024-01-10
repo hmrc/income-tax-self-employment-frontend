@@ -16,15 +16,13 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
@@ -35,8 +33,6 @@ import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
 
-import scala.concurrent.Future
-
 class OtherExpensesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("OtherExpensesDisallowableAmountController", OtherExpensesDisallowableAmountPage) {
 
@@ -45,26 +41,25 @@ class OtherExpensesDisallowableAmountControllerSpec
 
   override lazy val onwardRoute: Call = routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  private val mockService = mock[SelfEmploymentService]
+
+  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  override def baseAnswers = emptyUserAnswers.set(OtherExpensesAmountPage, amount, businessId.some).success.value
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OtherExpensesAmountPage, BigDecimal(123.00), businessId.some).success.value
-
-  override def createForm(userType: UserType): Form[BigDecimal] = new OtherExpensesDisallowableAmountFormProvider()(userType, BigDecimal(123.00))
+  override def createForm(userType: UserType): Form[BigDecimal] = new OtherExpensesDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[OtherExpensesDisallowableAmountView]
-    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(BigDecimal(123.00))).toString()
+    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(amount)).toString()
   }
 
 }
