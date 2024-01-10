@@ -16,7 +16,6 @@
 
 package controllers.journeys.expenses.irrecoverableDebts
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountFormProvider
@@ -35,8 +34,6 @@ import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountView
 
-import scala.concurrent.Future
-
 class IrrecoverableDebtsDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesDisallowableAmountController", IrrecoverableDebtsDisallowableAmountPage) {
 
@@ -48,15 +45,14 @@ class IrrecoverableDebtsDisallowableAmountControllerSpec
 
   private val mockService = mock[SelfEmploymentService]
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(pageAnswers)
+  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
     bind[SelfEmploymentService].toInstance(mockService)
   )
 
-  override val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(IrrecoverableDebtsAmountPage, amount, businessId.some).success.value
+  override def baseAnswers = emptyUserAnswers.set(IrrecoverableDebtsAmountPage, amount, businessId.some).success.value
 
   override def createForm(user: UserType): Form[BigDecimal] = new IrrecoverableDebtsDisallowableAmountFormProvider()(user, amount)
 

@@ -22,7 +22,7 @@ import models.NormalMode
 import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.expenses.officeSupplies.OfficeSuppliesDisallowableAmountPage
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n._
@@ -51,6 +51,8 @@ class OfficeSuppliesDisallowableAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
     bind[SelfEmploymentService].toInstance(mockService)
   )
+
+  override def baseAnswers = emptyUserAnswers.set(OfficeSuppliesAmountPage, amount, Some(businessId)).success.value
 
   def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesDisallowableAmountFormProvider()(userType, amount)
 
