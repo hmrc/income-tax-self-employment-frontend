@@ -35,6 +35,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.SummaryListCYA
+import cats.implicits._
 
 case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
@@ -122,6 +123,13 @@ object TradeJourneyStatusesViewModel {
     val hasDepreciation         = conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
     val expensesDepreciationRow = buildRowForDependentAnswered(ExpensesDepreciation, isExpensesTailoringIsAnswered && hasDepreciation)
 
+    val hasIrrecoverableDebts = conditionPassedForViewableLink(
+      FinancialExpensesPage,
+      FinancialExpenses.IrrecoverableDebts
+    )
+    val irrecoverableDebtsRow =
+      buildRowForDependentAnswered(Journey.ExpensesIrrecoverableDebts, isExpensesTailoringIsAnswered && hasIrrecoverableDebts)
+
     List(
       expensesOfficeSuppliesRow,
       expensesGoodsToSellOrUseRow,
@@ -133,6 +141,7 @@ object TradeJourneyStatusesViewModel {
       expensesProfessionalFeesRow,
       expensesInterestRow,
       expensesFinancialChargesRow,
+      irrecoverableDebtsRow,
       expensesDepreciationRow
     ).flatten
   }
@@ -158,24 +167,28 @@ object TradeJourneyStatusesViewModel {
     if (conditionPassedForViewableLink) {
       val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
       val keyString             = messages(s"journeys.$journey")
-      val statusString          = messages(s"status.${status.entryName}")
       val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
       val href                  = getUrl(journey, status, businessId, taxYear)
 
-      Some(
-        SummaryListRowViewModel(
-          key = KeyViewModel(HtmlContent(
-            s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
-          value = Value(),
-          actions = Seq(
-            ActionItemViewModel(
-              href = href,
-              content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>"))
-              .withCssClass("tag-float"))
-        ).withCssClass("app-task-list__item no-wrap no-after-content"))
+      buildSummaryRow(href, optDeadlinkStyle, keyString, status).some
     } else {
       None
     }
+
+  private[viewmodels] def buildSummaryRow(href: String, optDeadlinkStyle: String, keyString: String, status: JourneyStatus)(implicit
+      messages: Messages) = {
+    val statusString = messages(s"status.${status.entryName}")
+    SummaryListRowViewModel(
+      key = KeyViewModel(
+        HtmlContent(s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
+      value = Value(),
+      actions = Seq(
+        ActionItemViewModel(
+          href = href,
+          content = HtmlContent(s"<strong class='govuk-tag app-task-list__tag govuk-tag--$status'> $statusString </strong>"))
+          .withCssClass("tag-float"))
+    ).withCssClass("app-task-list__item no-wrap no-after-content")
+  }
 
   private def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
@@ -286,7 +299,12 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses | ExpensesIrrecoverableDebts =>
+      case ExpensesIrrecoverableDebts =>
+        determineUrl(
+          expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
