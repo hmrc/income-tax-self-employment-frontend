@@ -286,7 +286,7 @@ object TradeJourneyStatusesViewModel {
             .url,
           expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses =>
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses | ExpensesIrrecoverableDebts =>
         ??? // TODO Other Journeys not yet implemented
     }
   }

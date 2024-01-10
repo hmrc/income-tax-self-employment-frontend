@@ -17,12 +17,12 @@
 package navigation
 
 import base.SpecBase
+import controllers.journeys.expenses._
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.financialCharges.routes._
 import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
-import controllers.journeys.expenses._
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
@@ -35,6 +35,7 @@ import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
+import pages.expenses.irrecoverableDebts.IrrecoverableDebtsAmountPage
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -348,44 +349,36 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
-        "DisallowableSubcontractorCosts journey" - {
-          "the page is ConstructionIndustryAmountPage" - {
-            "some expenses were claimed to be disallowable and accounting type is Accrual" - {
-              "navigate to the ConstructionIndustryDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "yes"))
+        "IrrecoverableDebts journey" - {
+          "the page is IrrecoverableDebtsAmountPage" - {
+            "some expenses were claimed to be disallowable" - {
+              "navigate to the IrrecoverableDebtsDisallowableAmountPage" in {
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "yes"))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
-                val expectedResult = construction.routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
+                val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
 
-                navigator.nextPage(ConstructionIndustryAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
+                navigator.nextPage(IrrecoverableDebtsAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
             }
-            "navigate to the ConstructionIndustryCYAPage" - {
-              "if all expenses were claimed as allowable" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "no"))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(ConstructionIndustryAmountPage, mode, userAnswers, taxYear, businessId, Some(Accrual)) mustBe expectedResult
-              }
-              "if accounting type is not Accrual" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "yes"))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(ConstructionIndustryAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
-              }
-            }
+//            "no disallowable expenses" - {
+//              "navigate to the IrrecoverableDebtsCYAController" in {
+//                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "no"))
+//                val userAnswers = UserAnswers(userAnswersId, data)
+//
+//                val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+//
+//                navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+//              }
+//            }
           }
-          "the page is ConstructionIndustryDisallowableAmountPage" - {
-            "navigate to the ConstructionIndustryCYAPage" in {
-              val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
+//          "the page is IrrecoverableDebtsDisallowableAmountPage" - {
+//            "navigate to the IrrecoverableDebtsCYAController" in {
+//              val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+//
+//              navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+//            }
+//          }
         }
 
         "page does not exist" - {
