@@ -369,6 +369,8 @@ GET         /:taxYear/:businessId/expenses/irrecoverable-debts/disallowable-amou
 POST        /:taxYear/:businessId/expenses/irrecoverable-debts/disallowable-amount                              controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/change-irrecoverable-debts/disallowable-amount                       controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-irrecoverable-debts/disallowable-amount                       controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/irrecoverable-debts/check                                            controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/irrecoverable-debts/check                                            controllers.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Expenses - Depreciation ##########
 
