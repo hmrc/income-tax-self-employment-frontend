@@ -25,6 +25,7 @@ import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
+import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -101,6 +102,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   case object ExpensesRepairsAndMaintenance extends Journey("expenses-repairs-and-maintenance") {
     override val pageKeys: List[PageName] = List(RepairsAndMaintenanceAmountPage.pageName, RepairsAndMaintenanceDisallowableAmountPage.pageName)
+  }
+
+  case object ExpensesIrrecoverableDebts extends Journey("expenses-irrecoverable-debts") {
+    override val pageKeys: List[PageName] = List(IrrecoverableDebtsAmountPage.pageName, IrrecoverableDebtsDisallowableAmountPage.pageName)
   }
 
   case object NationalInsurance extends Journey("national-insurance")
