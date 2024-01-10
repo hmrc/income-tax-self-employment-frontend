@@ -17,352 +17,66 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.SpecBase
-import controllers.journeys.expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController
-import controllers.standard.routes.JourneyRecoveryController
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
+import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.{No, Yes}
-import models.{CheckMode, NormalMode}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
 import services.SelfEmploymentService
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 import scala.concurrent.Future
 
-class GoodsToSellOrUseAmountControllerSpec extends SpecBase with MockitoSugar {
+class GoodsToSellOrUseAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "GoodsToSellOrUseAmountController",
+      GoodsToSellOrUseAmountPage
+    ) {
 
-  val formProvider            = new GoodsToSellOrUseAmountFormProvider()
-  val validAnswer: BigDecimal = 10
-  val onwardRoute             = Call("GET", "/foo")
+  lazy val onPageLoadRoute = routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  override val onwardRoute: Call = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  case class UserScenario(userType: UserType, form: Form[BigDecimal], accountingType: String, taxiDriver: TaxiMinicabOrRoadHaulage)
+  override lazy val emptyUserAnswers: UserAnswers =
+    SpecBase.emptyUserAnswers
+      .set(GoodsToSellOrUsePage, YesDisallowable, Some(businessId))
+      .success
+      .value
+      .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId))
+      .success
+      .value
 
-  val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual, taxiDriver = Yes),
-    UserScenario(userType = Agent, formProvider(Agent), cash, taxiDriver = No)
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
   )
 
-  "GoodsToSellOrUseAmount Controller" - {
-
-    "onPageLoad" - {
-
-      userScenarios.foreach { userScenario =>
-        s"when ${userScenario.userType}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
-          else ""}a taxi driver" - {
-          "must return OK and the correct view for a GET" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-
-              val result = route(application, request).value
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val expectedResult =
-                view(
-                  userScenario.form,
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must populate the view correctly on a GET when the question has previously been answered" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(GoodsToSellOrUseAmountPage, validAnswer, Some(businessId))
-              .success
-              .value
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(
-                  userScenario.form.fill(validAnswer),
-                  CheckMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes)
-                )(request, messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
-
-        val application = applicationBuilder(userAnswers = None)
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-        }
-      }
-    }
-
-    "onSubmit" - {
-
-      "must redirect to the next page when valid data is submitted" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
-
-        running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
-
-          val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
-      }
-
-      userScenarios.foreach { userScenario =>
-        s"when ${userScenario.userType}, ${userScenario.accountingType} and is ${if (!userScenario.taxiDriver.equals(Yes)) "not "
-          else ""}a taxi driver" - {
-          "must return a Bad Request and errors when an empty form is submitted" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", ""))
-
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(
-                  boundForm,
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when invalid data is submitted" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(
-                  boundForm,
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when a zero or negative number is submitted" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", "0"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "0"))
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(
-                  boundForm,
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-
-          "must return a Bad Request and errors when amount exceeds the maximum" in {
-
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, userScenario.taxiDriver, Some(businessId))
-              .success
-              .value
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
-
-            running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
-
-              val request =
-                FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-                  .withFormUrlEncodedBody(("value", "1006454566540"))
-
-              val boundForm = userScenario.form.bind(Map("value" -> "1006454566540"))
-
-              val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
-
-              val result = route(application, request).value
-
-              val expectedResult =
-                view(
-                  boundForm,
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType,
-                  userScenario.taxiDriver.equals(Yes))(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
-
-        val application = applicationBuilder(userAnswers = None)
-          .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url)
-              .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-        }
-      }
-    }
+  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+
+  def createForm(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
+
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[GoodsToSellOrUseAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual, true).toString()
   }
 
 }

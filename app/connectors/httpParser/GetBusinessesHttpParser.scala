@@ -33,9 +33,9 @@ object GetBusinessesHttpParser extends HttpParser {
         case OK =>
           response.json
             .validate[Seq[BusinessData]]
-            .fold[GetBusinessesResponse](_ => Left(nonModelValidatingJsonFromAPI), parsedModel => Right(parsedModel))
+            .fold[GetBusinessesResponse](_ => Left(nonModelValidatingJsonFromAPI(method, url)), parsedModel => Right(parsedModel))
 
-        case _ => Left(pagerDutyError(response))
+        case _ => Left(unsafePagerDutyError(method, url, response))
       }
   }
 }

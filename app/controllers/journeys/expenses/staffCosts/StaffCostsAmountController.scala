@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.standard.routes
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
@@ -28,15 +28,16 @@ import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class StaffCostsAmountController @Inject() (override val messagesApi: MessagesApi,
-                                            selfEmploymentService: SelfEmploymentServiceBase,
+                                            selfEmploymentService: SelfEmploymentService,
                                             navigator: ExpensesNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
@@ -63,32 +64,25 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: String, disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+      def handleForm(disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
         formProvider(request.userType)
           .bindFromRequest()
           .fold(
             formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
-            value => handleSuccess(value, AccountingType.withName(accountingType.toUpperCase))
+            value => handleSuccess(value)
           )
       def handleError(formWithErrors: Form[_], disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
         Future.successful(
           BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
         )
-      def handleSuccess(value: BigDecimal, accountingType: AccountingType): Future[Result] =
+      def handleSuccess(value: BigDecimal): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId, Some(accountingType))))
+          .persistAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
+          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId)))
 
-      val getDisallowableStaffCosts = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId))
-
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap { getAccountingType =>
-        (getAccountingType, getDisallowableStaffCosts) match {
-          case (Right(accountingType), Some(disallowableStaffCosts)) =>
-            handleForm(accountingType, disallowableStaffCosts)
-          case (_, _) =>
-            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        }
-
+      request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
+        case Some(disallowableStaffCosts) => handleForm(disallowableStaffCosts)
+        case _                            => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
       }
   }
 

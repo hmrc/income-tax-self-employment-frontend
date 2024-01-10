@@ -27,16 +27,17 @@ import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, Re
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RepairsAndMaintenanceDisallowableAmountController @Inject() (
     override val messagesApi: MessagesApi,
-    selfEmploymentService: SelfEmploymentServiceBase,
+    selfEmploymentService: SelfEmploymentService,
     navigator: ExpensesNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -67,7 +68,7 @@ class RepairsAndMaintenanceDisallowableAmountController @Inject() (
 
       def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
         selfEmploymentService
-          .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceDisallowableAmountPage)
+          .persistAnswer(businessId, userAnswers, value, RepairsAndMaintenanceDisallowableAmountPage)
           .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceDisallowableAmountPage, mode, updated, taxYear, businessId)))
 
       def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =

@@ -22,9 +22,11 @@ import models.requests.TradesJourneyStatuses
 
 sealed abstract class JourneyStatus(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
+
+  def isCompleted: Boolean = this == JourneyStatus.Completed
 }
 
-object JourneyStatus extends Enum[JourneyStatus] {
+object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[JourneyStatus] {
   val values = findValues
 
   case object CheckOurRecords extends JourneyStatus("checkOurRecords")
@@ -34,20 +36,5 @@ object JourneyStatus extends Enum[JourneyStatus] {
   case object Completed       extends JourneyStatus("completed")
 
   def getJourneyStatus(journey: Journey, journeyStatuses: TradesJourneyStatuses): JourneyStatus =
-    statusFromCompletedState(getCompletedState(journey, journeyStatuses))
-
-  def statusFromCompletedState(value: Option[Boolean]): JourneyStatus =
-    value.fold[JourneyStatus](NotStarted) {
-      case false => InProgress
-      case true  => Completed
-    }
-
-  private def getCompletedState(journey: Journey, journeyStatuses: TradesJourneyStatuses): Option[Boolean] =
-    journeyStatuses.journeyStatuses.find(_.journey == journey).flatMap(_.completedState)
-
-  def tradeDetailsStatusFromCompletedState(value: Option[Boolean]): JourneyStatus =
-    value.fold[JourneyStatus](CheckOurRecords) {
-      case false => InProgress
-      case true  => Completed
-    }
+    journeyStatuses.journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
 }

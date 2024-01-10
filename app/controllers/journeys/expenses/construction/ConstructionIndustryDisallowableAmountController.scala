@@ -27,16 +27,17 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ConstructionIndustryDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                                  selfEmploymentService: SelfEmploymentServiceBase,
+                                                                  selfEmploymentService: SelfEmploymentService,
                                                                   navigator: ExpensesNavigator,
                                                                   identify: IdentifierAction,
                                                                   getData: DataRetrievalAction,
@@ -66,7 +67,7 @@ class ConstructionIndustryDisallowableAmountController @Inject() (override val m
 
       def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
         selfEmploymentService
-          .saveAnswer(businessId, userAnswers, value, ConstructionIndustryDisallowableAmountPage)
+          .persistAnswer(businessId, userAnswers, value, ConstructionIndustryDisallowableAmountPage)
           .map(updated => Redirect(navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, updated, taxYear, businessId)))
 
       def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =

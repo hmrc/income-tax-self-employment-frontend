@@ -20,28 +20,28 @@ import base.SpecBase
 import controllers.journeys.income.routes.{HowMuchTradingAllowanceController, IncomeCYAController, TradingAllowanceAmountController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
 import scala.concurrent.Future
 
-class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
+class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
   val formProvider                      = new HowMuchTradingAllowanceFormProvider()
   val maxTradingAllowance: BigDecimal   = 1000.00
@@ -55,7 +55,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
   val onwardRoute = (userAnswer: HowMuchTradingAllowance) => if (userAnswer.equals(LessThan)) tradingAllowanceAmountCall else incomeCyaCall
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[HowMuchTradingAllowance], allowance: BigDecimal, allowanceString: String)
 
@@ -64,9 +64,12 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
     UserScenario(userType = UserType.Agent, formAgentWithSmallTA, smallTradingAllowance, smallTradingAllowanceString)
   )
 
+  val userAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> Json.obj("turnoverIncomeAmount" -> 500.00)))
+
   def formTypeToString(form: Form[HowMuchTradingAllowance]): String =
     if (form.equals(formIndividualWithMaxTA)) "max allowance" else "non-max allowance"
 
+  // TODO Clean these tests up, overly convoluted.
   "HowMuchTradingAllowance Controller" - {
 
     "onPageLoad" - {
@@ -153,17 +156,15 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswer = LessThan
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
             val request =
@@ -180,17 +181,15 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswer = LessThan
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
             val request =
@@ -208,20 +207,17 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
       "must clear TradingAllowanceAmount data and redirect to the Income CYA page when 'Maximum' answer is submitted" - {
         "in NormalMode" in {
 
-          val userAnswer  = Maximum
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId)).success.value
-
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          val userAnswer = Maximum
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
 
@@ -238,20 +234,17 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar {
         }
         "in CheckMode" in {
 
-          val userAnswer  = Maximum
-          val userAnswers = UserAnswers(userAnswersId).set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId)).success.value
-
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          val userAnswer = Maximum
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
 

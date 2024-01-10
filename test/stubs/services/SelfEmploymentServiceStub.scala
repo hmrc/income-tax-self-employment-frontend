@@ -16,39 +16,42 @@
 
 package stubs.services
 
+import base.SpecBase._
 import cats.data.EitherT
 import models.common._
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.Journey
-import models.requests.TradesJourneyStatuses
+import models.journeys.{TaskList, TaskListWithRequest}
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsObject, Writes}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
-    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Cash),
+    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
-    submittedAnswers: Either[ServiceError, Option[JsObject]] = Right(Some(JsObject.empty))
-) extends SelfEmploymentServiceBase {
+    getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
+    getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
+    setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
+) extends SelfEmploymentService {
 
-  def getJourneyStatus(journey: Journey, nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] = ???
+  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
+    Future.successful(accountingType)
 
-  def getCompletedTradeDetails(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[List[TradesJourneyStatuses]] =
-    ???
-
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit hc: HeaderCarrier): Future[Either[ServiceError, String]] =
-    Future.successful(accountingType.map(_.entryName))
-
-  def saveAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
+  def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
 
-  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = ???
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.pure[Future, ServiceError](())
 
-  def getSubmittedAnswers[A: Format](context: JourneyContext)(implicit hc: HeaderCarrier): ApiResultT[Option[A]] =
-    EitherT(Future.successful(submittedAnswers.asInstanceOf[Either[ServiceError, Option[A]]]))
+  def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
+    EitherT.fromEither[Future](getJourneyStatusResult)
+
+  def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](setJourneyStatusResult)
+
 }

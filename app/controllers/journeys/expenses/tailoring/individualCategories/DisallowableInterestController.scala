@@ -24,15 +24,16 @@ import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableInterestView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class DisallowableInterestController @Inject() (override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
+                                                selfEmploymentService: SelfEmploymentService,
                                                 navigator: ExpensesTailoringNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
@@ -60,10 +61,9 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableInterestPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, DisallowableInterestPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

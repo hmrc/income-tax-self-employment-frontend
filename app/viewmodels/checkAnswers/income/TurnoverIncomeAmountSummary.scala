@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TurnoverIncomeAmountController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object TurnoverIncomeAmountSummary extends MoneyUtils {
     answers.get(TurnoverIncomeAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"turnoverIncomeAmount.subHeading.$userType",
         "turnoverIncomeAmount.change.hidden"
       )

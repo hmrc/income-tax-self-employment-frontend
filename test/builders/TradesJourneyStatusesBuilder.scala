@@ -16,26 +16,29 @@
 
 package builders
 
-import models.journeys.Journey.{Abroad, ExpensesGoodsToSellOrUse, ExpensesTailoring, Income, NationalInsurance}
+import models.common.{BusinessId, JourneyStatus, TradingName}
+import models.journeys.Journey._
+import models.journeys.{JourneyNameAndStatus, TaskList}
 import models.requests.TradesJourneyStatuses
-import models.requests.TradesJourneyStatuses.JourneyCompletedState
 
 object TradesJourneyStatusesBuilder {
 
   val aTadesJourneyStatusesModel = TradesJourneyStatuses(
-    "BusinessId1",
-    Some("TradingName1"),
-    Seq(
-      JourneyCompletedState(Abroad, Some(true)),
-      JourneyCompletedState(Income, Some(false)),
-      JourneyCompletedState(ExpensesTailoring, None),
-      JourneyCompletedState(ExpensesGoodsToSellOrUse, None),
-      JourneyCompletedState(NationalInsurance, None)
+    BusinessId("BusinessId1"),
+    Some(TradingName("TradingName1")),
+    List(
+      JourneyNameAndStatus(Abroad, JourneyStatus.Completed),
+      JourneyNameAndStatus(Income, JourneyStatus.InProgress),
+      JourneyNameAndStatus(ExpensesTailoring, JourneyStatus.CheckOurRecords),
+      JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.CheckOurRecords),
+      JourneyNameAndStatus(NationalInsurance, JourneyStatus.CheckOurRecords)
     )
   )
 
-  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses("BusinessId2", None, Seq.empty)
+  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(BusinessId("BusinessId2"), None, Nil)
 
   val aSequenceTadesJourneyStatusesModel = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
+  val aTaskList =
+    TaskList(Some(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed)), List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel))
 
 }

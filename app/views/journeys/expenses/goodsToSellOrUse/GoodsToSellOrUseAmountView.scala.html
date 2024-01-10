@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.common.{BusinessId, TaxYear, UserType}
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.goodsToSellOrUse.routes
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: String, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"goodsToSellOrUseAmount.title.$userType"))) {
 
@@ -54,15 +54,15 @@
                             <ul class="govuk-body govuk-list--bullet">
                                 ${if (taxiDriver) <li>{messages("expenses.fuelCosts")}</li> else ""}
                                 <li>${messages("expenses.costOfRawMaterials")}</li>
-                                ${if (accountingType.equals("CASH")) <li>{messages("expenses.stockBought")}</li> else ""}
+                                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.stockBought")}</li> else ""}
                                 <li>${messages("expenses.directCostsOfProducing")}</li>
-                                ${if (accountingType.equals("ACCRUAL")) <li>{messages("expenses.adjustments")}</li> else ""}
+                                ${if (accountingType == AccountingType.Accrual) <li>{messages("expenses.adjustments")}</li> else ""}
                                 <li>${messages("expenses.commissions")}</li>
                                 <li>${messages("expenses.discounts")}</li>
                             </ul>
                             <p>${messages(s"site.cannotInclude.$userType")}</p>
                             <ul class="govuk-body govuk-list--bullet">
-                                ${if (accountingType.equals("CASH")) <li>{messages("expenses.costsForPrivateUse")}</li> else ""}
+                                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.costsForPrivateUse")}</li> else ""}
                                 <li>${messages("expenses.depreciationOfEquipment")}</li>
                             </ul>
                         </div>

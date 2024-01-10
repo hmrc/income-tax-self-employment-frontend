@@ -24,15 +24,16 @@ import navigation.IncomeNavigator
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NonTurnoverIncomeAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                   sessionRepository: SessionRepository,
+                                                   selfEmploymentService: SelfEmploymentService,
                                                    navigator: IncomeNavigator,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
@@ -45,10 +46,9 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NonTurnoverIncomeAmountPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val preparedForm = request.userAnswers
+        .get(NonTurnoverIncomeAmountPage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
@@ -60,10 +60,9 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonTurnoverIncomeAmountPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId))
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, NonTurnoverIncomeAmountPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

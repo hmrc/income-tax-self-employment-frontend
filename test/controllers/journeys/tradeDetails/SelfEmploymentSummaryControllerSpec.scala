@@ -18,11 +18,10 @@ package controllers.journeys.tradeDetails
 
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessDataNoneResponse, aBusinessDataResponse}
-import builders.UserBuilder
 import connectors.SelfEmploymentConnector
-import controllers.journeys.routes.SectionCompletedStateController
+import controllers.journeys
+import controllers.journeys.tradeDetails
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
-import controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController
 import models.NormalMode
 import models.common.BusinessId
 import models.database.UserAnswers
@@ -43,13 +42,13 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
   val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
   val userAnswers                            = UserAnswers("1345566")
-  val businessID                             = BusinessId("trade-details" + "-" + UserBuilder.aNoddyUser.nino)
+  val businessID                             = BusinessId("trade-details")
 
   "SelfEmploymentSummary Controller" - {
 
     "onPageLoad" - {
 
-      def nextRoute = SectionCompletedStateController.onPageLoad(taxYear, businessID, "trade-details", NormalMode).url
+      def nextRoute = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, "trade-details", NormalMode).url
 
       "must return OK and the correct view when there are no self-employments" in {
 
@@ -61,7 +60,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(Right(Seq()))
 
-          val request = FakeRequest(GET, SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value
 
@@ -85,7 +84,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(aBusinessDataNoneResponse)
 
-          val request = FakeRequest(GET, SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value
 
@@ -109,7 +108,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
           when(mockConnector.getBusinesses(any, any)(any, any)) thenReturn Future(aBusinessDataResponse)
 
-          val request = FakeRequest(GET, SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
 
           val result = route(application, request).value
 

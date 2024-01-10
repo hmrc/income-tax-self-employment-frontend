@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.advertisingOrMarketing
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard.routes
 import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -25,16 +25,17 @@ import navigation.ExpensesNavigator
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class AdvertisingDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                         sessionRepository: SessionRepository,
+                                                         selfEmploymentService: SelfEmploymentService,
                                                          navigator: ExpensesNavigator,
                                                          identify: IdentifierAction,
                                                          getData: DataRetrievalAction,
@@ -48,7 +49,7 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(AdvertisingOrMarketingAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(amount) =>
           val preparedForm =
             request.userAnswers.get(AdvertisingOrMarketingDisallowableAmountPage, Some(businessId)) match {
@@ -63,17 +64,17 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(AdvertisingOrMarketingAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(JourneyRecoveryController.onPageLoad()))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(amount) =>
           formProvider(request.userType, amount)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(amount)))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AdvertisingOrMarketingDisallowableAmountPage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingDisallowableAmountPage)
+                  .map(updatedAnswers =>
+                    Redirect(navigator.nextPage(AdvertisingOrMarketingDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }

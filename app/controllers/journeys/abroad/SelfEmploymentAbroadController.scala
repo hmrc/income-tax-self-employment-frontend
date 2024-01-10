@@ -17,7 +17,6 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
 import forms.abroad.SelfEmploymentAbroadFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -26,15 +25,16 @@ import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.abroad.SelfEmploymentAbroadView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
+                                                selfEmploymentService: SelfEmploymentService,
                                                 navigator: AbroadNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
@@ -59,16 +59,9 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(
-              request.userAnswers.getOrElse(UserAnswers(request.userId)).set(SelfEmploymentAbroadPage, value, Some(businessId)))
-            isSuccessful <- sessionRepository.set(updatedAnswers)
-          } yield {
-            val redirectLocation =
-              if (isSuccessful) navigator.nextPage(SelfEmploymentAbroadPage, mode, updatedAnswers, taxYear, businessId)
-              else JourneyRecoveryController.onPageLoad()
-            Redirect(redirectLocation)
-          }
+          selfEmploymentService
+            .persistAnswer(businessId, request.userAnswers.getOrElse(UserAnswers(request.userId)), value, SelfEmploymentAbroadPage)
+            .map(updated => Redirect(navigator.nextPage(SelfEmploymentAbroadPage, mode, updated, taxYear, businessId)))
       )
   }
 

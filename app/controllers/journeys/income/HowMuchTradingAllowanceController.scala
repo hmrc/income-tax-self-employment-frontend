@@ -16,30 +16,35 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
+import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.income.HowMuchTradingAllowance.Maximum
+import models.journeys.income.HowMuchTradingAllowance
+import models.journeys.income.HowMuchTradingAllowance.{LessThan, Maximum}
 import navigation.IncomeNavigator
 import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.SelfEmploymentService.getIncomeTradingAllowance
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentService.getMaxTradingAllowance
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
+@Singleton
 class HowMuchTradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                                   sessionRepository: SessionRepository,
                                                    navigator: IncomeNavigator,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
+                                                   service: SelfEmploymentService,
                                                    formProvider: HowMuchTradingAllowanceFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: HowMuchTradingAllowanceView)(implicit ec: ExecutionContext)
@@ -49,38 +54,40 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
-      val preparedForm = request.userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)) match {
-        case None        => formProvider(request.userType, tradingAllowanceString)
-        case Some(value) => formProvider(request.userType, tradingAllowanceString).fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, tradingAllowanceString))
+      (for {
+        allowance <- getMaxTradingAllowance(businessId, request.userAnswers)
+        formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
+        form = request.userAnswers
+          .get(HowMuchTradingAllowancePage, Some(businessId))
+          .fold(formProvider(request.userType, formattedAllowance))(formProvider(request.userType, formattedAllowance).fill)
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formattedAllowance))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingAllowance       = getIncomeTradingAllowance(businessId, request.userAnswers)
-      val tradingAllowanceString = formatMoney(tradingAllowance, addDecimalForWholeNumbers = false)
-      formProvider(request.userType, tradingAllowanceString)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, tradingAllowanceString))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry {
-                val userAnswers =
-                  if (value.equals(Maximum)) {
-                    request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId)).get
-                  } else {
-                    request.userAnswers
-                  }
-                userAnswers.set(HowMuchTradingAllowancePage, value, Some(businessId))
-              }
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
-        )
-  }
+      def handleForm(allowance: String): Future[Result] =
+        formProvider(request.userType, allowance)
+          .bindFromRequest()
+          .fold(
+            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, allowance))),
+            value => handleSuccess(value)
+          )
 
+      def handleSuccess(value: HowMuchTradingAllowance): Future[Result] = {
+        val adjustedAnswers = value match {
+          case Maximum  => request.userAnswers.remove(TradingAllowanceAmountPage, Some(businessId))
+          case LessThan => request.userAnswers.pure[Try]
+        }
+        for {
+          answers        <- Future.fromTry(adjustedAnswers)
+          updatedAnswers <- service.persistAnswer(businessId, answers, value, HowMuchTradingAllowancePage)
+        } yield Redirect(navigator.nextPage(HowMuchTradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
+      }
+
+      (for {
+        allowance <- EitherT.fromEither[Future](getMaxTradingAllowance(businessId, request.userAnswers))
+        formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
+        result <- EitherT.right[Result](handleForm(formattedAllowance))
+      } yield result).merge
+  }
 }

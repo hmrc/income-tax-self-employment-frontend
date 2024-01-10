@@ -26,12 +26,15 @@ import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
-import viewmodels.checkAnswers.expenses.advertisingOrMarketing._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.expenses.advertisingOrMarketing.{AdvertisingAmountSummary, AdvertisingDisallowableAmountSummary}
 
 class AdvertisingCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = AdvertisingOrMarketingCYAPage.toString
+
+  private val allowableAmount    = BigDecimal(200.00)
+  private val disallowableAmount = BigDecimal(100.00)
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = advertisingOrMarketing.routes.AdvertisingCYAController.onSubmit
@@ -49,9 +52,8 @@ class AdvertisingCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with 
 
   override val submissionData = Json.obj(
     "advertisingOrMarketing"                   -> "yesDisallowable",
-    "advertisingOrMarketingAmount"             -> 200.00,
-    "advertisingOrMarketingDisallowableAmount" -> 100.00
+    "advertisingOrMarketingAmount"             -> allowableAmount,
+    "advertisingOrMarketingDisallowableAmount" -> disallowableAmount
   )
   override val testDataCases: List[JsObject] = List(submissionData)
-
 }

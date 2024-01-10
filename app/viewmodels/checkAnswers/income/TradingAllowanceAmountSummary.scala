@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.TradingAllowanceAmountController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -32,7 +32,7 @@ object TradingAllowanceAmountSummary extends MoneyUtils {
     answers.get(TradingAllowanceAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
-        TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
         s"tradingAllowanceAmount.title.$userType",
         "tradingAllowanceAmount.change.hidden"
       )

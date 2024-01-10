@@ -33,9 +33,10 @@ import viewmodels.checkAnswers.income._
 import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
                                      identify: IdentifierAction,
                                      getUserAnswers: DataRetrievalAction,

@@ -31,12 +31,14 @@ import viewmodels.checkAnswers.expenses.staffCosts._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class StaffCostsCYAController @Inject() (override val messagesApi: MessagesApi,
                                          identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
+                                         getUserAnswers: DataRetrievalAction,
+                                         getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                          requireData: DataRequiredAction,
                                          service: SelfEmploymentService,
                                          val controllerComponents: MessagesControllerComponents,
@@ -45,18 +47,20 @@ class StaffCostsCYAController @Inject() (override val messagesApi: MessagesApi,
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(
-      rows = List(
-        StaffCostsAmountSummary.row(request, taxYear, businessId),
-        StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[StaffCostsJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesStaffCosts)) andThen requireData) { implicit request =>
+      val summaryList = SummaryListCYA.summaryListOpt(
+        rows = List(
+          StaffCostsAmountSummary.row(request, taxYear, businessId),
+          StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+        )
       )
-    )
 
-    Ok(view(StaffCostsCYAPage.toString, taxYear, request.userType, summaryList, routes.StaffCostsCYAController.onSubmit(taxYear, businessId)))
-  }
+      Ok(view(StaffCostsCYAPage.toString, taxYear, request.userType, summaryList, routes.StaffCostsCYAController.onSubmit(taxYear, businessId)))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesStaffCosts)
       val result  = service.submitAnswers[StaffCostsJourneyAnswers](context, request.userAnswers)

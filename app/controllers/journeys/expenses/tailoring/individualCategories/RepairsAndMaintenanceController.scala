@@ -25,17 +25,16 @@ import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.RepairsAndMaintenancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.RepairsAndMaintenanceView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RepairsAndMaintenanceController @Inject() (override val messagesApi: MessagesApi,
                                                  selfEmploymentService: SelfEmploymentService,
-                                                 sessionRepository: SessionRepository,
                                                  navigator: ExpensesTailoringNavigator,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
@@ -70,10 +69,9 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(RepairsAndMaintenancePage, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers, taxYear, businessId))
+                selfEmploymentService
+                  .persistAnswer(businessId, request.userAnswers, value, RepairsAndMaintenancePage)
+                  .map(updatedAnswers => Redirect(navigator.nextPage(RepairsAndMaintenancePage, mode, updatedAnswers, taxYear, businessId)))
             )
       }
   }

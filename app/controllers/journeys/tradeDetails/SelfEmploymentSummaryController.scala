@@ -23,7 +23,6 @@ import handlers.ErrorHandler
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.TradeDetails
 import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage
@@ -34,9 +33,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class SelfEmploymentSummaryController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
@@ -59,10 +59,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
   }
 
   private def navigate(taxYear: TaxYear, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
-    val businessId =
-      BusinessId(
-        TradeDetails.toString + "-" + request.user.nino
-      ) // TODO Replace with correct one - we will get it from backend / get business endpoint
+    val businessId = BusinessId.tradeDetailsId
     navigator
       .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
       .url

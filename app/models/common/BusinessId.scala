@@ -16,6 +16,7 @@
 
 package models.common
 
+import play.api.libs.json.{Format, Json}
 import play.api.mvc.PathBindable
 
 final case class BusinessId(value: String) extends AnyVal {
@@ -23,6 +24,9 @@ final case class BusinessId(value: String) extends AnyVal {
 }
 
 object BusinessId {
+
+  /** Special Business Id for trade details which is not business specific */
+  val tradeDetailsId: BusinessId = BusinessId(s"trade-details")
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[BusinessId] = new PathBindable[BusinessId] {
 
@@ -34,4 +38,5 @@ object BusinessId {
 
   }
 
+  implicit val format: Format[BusinessId] = Json.valueFormat[BusinessId]
 }

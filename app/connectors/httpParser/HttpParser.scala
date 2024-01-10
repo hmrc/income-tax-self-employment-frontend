@@ -20,6 +20,7 @@ import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import play.api.http.Status._
+import play.api.libs.json.{JsObject, Json, OWrites}
 import uk.gov.hmrc.http.HttpResponse
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.{getCorrelationId, pagerDutyLog}
@@ -32,9 +33,9 @@ trait HttpParser {
   def logMessage(response: HttpResponse): String =
     s"[$parserName][read] Received ${response.status} from $parserName. Body:${response.body} ${getCorrelationId(response)}"
 
-  def nonModelValidatingJsonFromAPI: ConnectorResponseError = {
+  def nonModelValidatingJsonFromAPI(method: String, url: String): ConnectorResponseError = {
     pagerDutyLog(BAD_SUCCESS_JSON_FROM_CONNECTOR, s"[$parserName][read] Invalid Json from $parserName")
-    ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
+    ConnectorResponseError(method, url, HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))
   }
 
   def handleHttpError(response: HttpResponse, statusOverride: Option[Int] = None): HttpError = {
@@ -53,7 +54,9 @@ trait HttpParser {
 
   }
 
-  def pagerDutyError(response: HttpResponse): ServiceError = {
+  /** Unsafe because it has a side effect: logs the error message which then is parsed by Pager Duty for alerts
+    */
+  def unsafePagerDutyError(method: String, url: String, response: HttpResponse): ServiceError = {
     val httpError = response.status match {
       case BAD_REQUEST =>
         pagerDutyLog(FOURXX_RESPONSE_FROM_CONNECTOR, logMessage(response))
@@ -72,6 +75,14 @@ trait HttpParser {
         handleHttpError(response, Some(INTERNAL_SERVER_ERROR))
     }
 
-    ConnectorResponseError(httpError)
+    ConnectorResponseError(method, url, httpError)
+  }
+}
+
+object HttpParser extends HttpParser {
+  val parserName: String = "httpParser"
+
+  implicit object StringWrites extends OWrites[String] {
+    override def writes(o: String): JsObject = Json.obj()
   }
 }

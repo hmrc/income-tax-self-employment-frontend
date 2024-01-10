@@ -21,13 +21,17 @@ import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
 import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
+import services.SelfEmploymentService
 import views.html.journeys.expenses.entertainment.EntertainmentAmountView
+
+import scala.concurrent.Future
 
 class EntertainmentAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -40,7 +44,14 @@ class EntertainmentAmountControllerSpec
   lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val bindings: List[Binding[_]] = List(bind[ExpensesNavigator].toInstance(FakeExpensesNavigator()))
+  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+
+  override val bindings: List[Binding[_]] = List(
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
+    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+  )
+
+  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType)
 

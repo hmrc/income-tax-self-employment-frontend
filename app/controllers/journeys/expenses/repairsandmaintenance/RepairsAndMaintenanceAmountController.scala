@@ -29,19 +29,21 @@ import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentServiceBase
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                       selfEmploymentService: SelfEmploymentServiceBase,
+                                                       selfEmploymentService: SelfEmploymentService,
                                                        navigator: ExpensesNavigator,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction,
                                                        formProvider: RepairsAndMaintenanceAmountFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: RepairsAndMaintenanceAmountView)(implicit ec: ExecutionContext)
@@ -49,53 +51,53 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    val result = for {
-      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-      accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
-      userType       = request.userType
-      userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
-      existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
-      form           = formProvider(userType)
-      preparedForm   = existingAnswer.fold(form)(form.fill)
-    } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val result = for {
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        userType       = request.userType
+        userAnswers    = request.userAnswers
+        existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
+        form           = formProvider(userType)
+        preparedForm   = existingAnswer.fold(form)(form.fill)
+      } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
 
-    handleResult(result.value)
+      handleResult(result.value)
 
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    def handleError(formWithErrors: Form[_], userType: UserType, accountingType: AccountingType) =
-      Future.successful(
-        BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType))
-      )
-
-    def handleSuccess(userAnswers: UserAnswers, value: BigDecimal) =
-      selfEmploymentService
-        .saveAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
-        .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId)))
-
-    def handleForm(form: Form[BigDecimal],
-                   userType: UserType,
-                   accountingType: AccountingType,
-                   userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Left(handleError(formWithErrors, userType, accountingType)),
-          value => Right(handleSuccess(userAnswers, value))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      def handleError(formWithErrors: Form[_], userType: UserType, accountingType: AccountingType): Future[Result] =
+        Future.successful(
+          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType))
         )
 
-    val result = for {
-      accountingTypeStr <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-      accountingType = AccountingType.withName(accountingTypeStr.toUpperCase())
-      userType       = request.userType
-      userAnswers    = request.userAnswers.getOrElse(UserAnswers(request.userId))
-      form           = formProvider(userType)
-      finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
-    } yield finalResult
+      def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
+        selfEmploymentService
+          .persistAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
+          .map(updated => Redirect(navigator.nextPage(RepairsAndMaintenanceAmountPage, mode, updated, taxYear, businessId)))
 
-    handleResult(result.value)
+      def handleForm(form: Form[BigDecimal],
+                     userType: UserType,
+                     accountingType: AccountingType,
+                     userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Left(handleError(formWithErrors, userType, accountingType)),
+            value => Right(handleSuccess(userAnswers, value))
+          )
+
+      val result = for {
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        userType    = request.userType
+        userAnswers = request.userAnswers
+        form        = formProvider(userType)
+        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
+      } yield finalResult
+
+      handleResult(result.value)
   }
 
 }

@@ -25,11 +25,9 @@ import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowa
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
 
@@ -43,21 +41,11 @@ object OfficeSuppliesDisallowableAmountSummary extends MoneyUtils {
     for {
       disallowableAmount <- answers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId))
       allowableAmount    <- answers.get(OfficeSuppliesAmountPage, Some(businessId))
-    } yield SummaryListRowViewModel(
-      key = Key(
-        content = messages(s"officeSuppliesDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
-        classes = "govuk-!-width-two-thirds"
-      ),
-      value = Value(
-        content = s"£${formatMoney(disallowableAmount)}",
-        classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(
-        ActionItemViewModel(
-          "site.change",
-          expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode).url)
-          .withVisuallyHiddenText(messages("officeSuppliesDisallowableAmount.change.hidden"))
-      )
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      expenses.officeSupplies.routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"officeSuppliesDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
+      "officeSuppliesDisallowableAmount.change.hidden"
     )
 
   private def areAnyOfficeSuppliesDisallowable(officeSupplies: OfficeSupplies): Boolean =

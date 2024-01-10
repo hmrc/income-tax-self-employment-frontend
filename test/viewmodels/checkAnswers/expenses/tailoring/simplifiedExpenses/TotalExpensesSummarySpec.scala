@@ -25,8 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TotalExpensesSummarySpec extends SummaryBaseSpec("TotalExpensesSummary") {
 
-  override lazy val validData: JsObject   = Json.obj("totalAmount" -> 2552.4)
-  override lazy val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
+  override val validData: JsObject   = Json.obj("totalAmount" -> 2552.4)
+  override val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"totalExpenses.title.$userType")
   override val testValue: Text           = Text("£2,552.40")

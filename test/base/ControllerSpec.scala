@@ -22,7 +22,6 @@ import models.database.UserAnswers
 import models.journeys.Journey
 import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchersSugar
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -31,7 +30,6 @@ import play.api.inject.{Binding, bind}
 import repositories.SessionRepository
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks with ArgumentMatchersSugar {
 
@@ -58,8 +56,6 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
     val testScenarioContext: Journey => JourneyContextWithNino = (journey: Journey) =>
       JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
-
-    mockSessionRepository.set(*) returns Future.successful(true)
 
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
       val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings

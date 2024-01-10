@@ -18,15 +18,16 @@ package services
 
 import base.SpecBase
 import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
-import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import models.common.{BusinessId, JourneyAnswersContext, Mtditid, Nino}
+import controllers.actions.SubmittedDataRetrievalActionProvider
+import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.{Journey, JourneyNameAndStatus}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -36,16 +37,18 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
-import services.SelfEmploymentService.getIncomeTradingAllowance
+import services.SelfEmploymentService.getMaxTradingAllowance
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
 class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
-  val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
-  val mockSessionRepository                  = mock[SessionRepository]
-  val service: SelfEmploymentService         = new SelfEmploymentService(mockConnector, mockSessionRepository)
+  val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
+  val mockSessionRepository                    = mock[SessionRepository]
+  val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
+
+  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, mockSessionRepository)
 
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
@@ -55,22 +58,26 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val smallTurnover: BigDecimal             = 450.00
   val largeTurnover: BigDecimal             = 45000.00
 
-  "getCompletedTradeDetails" - {
-    "should return a Right(Seq(TradesJourneyStatuses)) when this is returned from the backend" in {
-      mockConnector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
-        Right(aSequenceTadesJourneyStatusesModel))
+  "getJourneyStatus" - {
+    "should return status" in {
+      val status = JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.Completed)
+      mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](status)
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, Mtditid(mtditid)).value)
+      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)).value.futureValue
 
-      result shouldBe Right(aSequenceTadesJourneyStatusesModel)
+      result shouldBe status.journeyStatus.asRight
     }
-    "should return an error if connector fails" in {
-      mockConnector.getCompletedTradesWithStatuses(nino.value, taxYear, mtditid)(*, *) returns Future.successful(
-        Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError))))
+  }
 
-      val result = await(service.getCompletedTradeDetails(nino, taxYear, Mtditid(mtditid)).value)
-
-      result shouldBe Left(ConnectorResponseError(HttpError(404, HttpErrorBody.parsingError)))
+  "setJourneyStatus" - {
+    "should save status" in {
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+      val result = service
+        .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
+        .value
+        .futureValue
+      result shouldBe ().asRight
     }
   }
 
@@ -82,8 +89,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       val resultAccrual = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))
       val resultCash    = await(service.getAccountingType(nino.value, businessIdCash, mtditid))
 
-      resultAccrual shouldBe Right(accrual)
-      resultCash shouldBe Right(cash)
+      resultAccrual shouldBe Right(AccountingType.Accrual)
+      resultCash shouldBe Right(AccountingType.Cash)
     }
 
     "should return an error when" - {
@@ -98,11 +105,11 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
       "an error is returned from the backend" in {
         mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(
-          Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
+          Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
 
         val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))(10.seconds)
 
-        result shouldBe Left(ConnectorResponseError(HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
+        result shouldBe Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
       }
     }
   }
@@ -112,7 +119,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
         val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
 
-        getIncomeTradingAllowance(businessId, userAnswers) mustEqual smallTurnover
+        getMaxTradingAllowance(businessId, userAnswers) shouldBe smallTurnover.asRight
       }
 
       "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
@@ -121,8 +128,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         val userAnswersEqualToMax =
           UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
 
-        getIncomeTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance
-        getIncomeTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance
+        getMaxTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance.asRight
+        getMaxTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance.asRight
       }
     }
   }

@@ -20,24 +20,24 @@ import base.SpecBase
 import controllers.journeys.income.routes.{IncomeCYAController, NotTaxableAmountController, TradingAllowanceController, TurnoverNotTaxableController}
 import controllers.standard.routes.JourneyRecoveryController
 import forms.income.TurnoverNotTaxableFormProvider
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{NotTaxableAmountPage, TurnoverNotTaxablePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.income.TurnoverNotTaxableView
 
 import scala.concurrent.Future
 
-class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
+class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
   val formProvider         = new TurnoverNotTaxableFormProvider()
   val notTaxableAmountCall = NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
@@ -53,9 +53,9 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
     UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
     UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
+  val mockService = mock[SelfEmploymentService]
 
-  val mockSessionRepository = mock[SessionRepository]
-
+  // TODO Clean these tests up, overly convoluted.
   "TurnoverNotTaxable Controller" - {
 
     "onPageLoad" - {
@@ -126,15 +126,15 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
         "NormalMode" in {
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           running(application) {
             val request =
@@ -149,16 +149,15 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
         }
 
         "CheckMode" in {
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
           running(application) {
             val request =
@@ -180,15 +179,15 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteNormalMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
             val request =
@@ -207,15 +206,15 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar {
 
           val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRouteCheckMode(userAnswer))),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[SelfEmploymentService].toInstance(mockService)
               )
               .build()
+
+          mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(userAnswers)
 
           running(application) {
             val request =

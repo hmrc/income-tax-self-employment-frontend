@@ -19,8 +19,8 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
-import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
@@ -33,7 +33,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.ProfessionalServiceExpensesView
 
@@ -52,11 +51,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: String)
+  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: AccountingType)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), accrual),
-    UserScenario(userType = Agent, formProvider(Agent), cash)
+    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual),
+    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash)
   )
 
   "ProfessionalServiceExpenses Controller" - {
@@ -146,21 +145,17 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
       "must redirect to the next page when valid data is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SelfEmploymentService].toInstance(mockService),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(accrual))
+          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)

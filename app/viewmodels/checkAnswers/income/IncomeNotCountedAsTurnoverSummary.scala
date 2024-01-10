@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
+import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -31,7 +31,7 @@ object IncomeNotCountedAsTurnoverSummary {
     answers.get(IncomeNotCountedAsTurnoverPage, Some(businessId)).map { answer =>
       buildRowBoolean(
         answer,
-        IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode),
+        routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode),
         s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType",
         "incomeNotCountedAsTurnover.change.hidden"
       )
