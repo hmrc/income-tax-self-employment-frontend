@@ -28,10 +28,9 @@ import viewmodels.checkAnswers.expenses.irrecoverableDebts.{IrrecoverableDebtsAm
 
 class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
-  override val pageHeading: String =
-    IrrecoverableDebtsCYAPage.pageName.value
+  override val pageHeading: String = IrrecoverableDebtsCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] =
+  override lazy val testDataCases: List[JsObject] =
     List(
       Json.obj(
         "disallowableIrrecoverableDebts"       -> "yes",
@@ -40,8 +39,7 @@ class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
       ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.IrrecoverableDebtsCYAController.onPageLoad
-
-  override def onSubmitCall: (TaxYear, BusinessId) => Call = routes.IrrecoverableDebtsCYAController.onPageLoad
+  override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.IrrecoverableDebtsCYAController.onSubmit
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =

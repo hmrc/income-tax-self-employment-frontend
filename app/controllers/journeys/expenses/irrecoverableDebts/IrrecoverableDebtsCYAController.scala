@@ -22,7 +22,7 @@ import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.financialCharges.{FinancialChargesAmountSummary, FinancialChargesDisallowableAmountSummary}
+import viewmodels.checkAnswers.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountSummary, IrrecoverableDebtsDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
@@ -42,8 +42,8 @@ class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: Messa
     implicit request =>
       val summaryList = summaryListOpt(
         List(
-          FinancialChargesAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-          FinancialChargesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+          IrrecoverableDebtsAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          IrrecoverableDebtsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
         ))
 
       Ok(
