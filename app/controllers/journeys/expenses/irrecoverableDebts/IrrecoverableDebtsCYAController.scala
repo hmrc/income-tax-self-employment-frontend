@@ -16,30 +16,37 @@
 
 package controllers.journeys.expenses.irrecoverableDebts
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey.ExpensesIrrecoverableDebts
+import models.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsJourneyAnswers
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountSummary, IrrecoverableDebtsDisallowableAmountSummary}
 import viewmodels.journeys.SummaryListCYA.summaryListOpt
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: MessagesApi,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  identify: IdentifierAction,
-                                                 getAnswers: DataRetrievalAction,
+                                                 getUserAnswers: DataRetrievalAction,
+                                                 getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                  requireAnswers: DataRequiredAction,
-                                                 view: CheckYourAnswersView)
+                                                 view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getUserAnswers andThen getJourneyAnswers[IrrecoverableDebtsJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesIrrecoverableDebts)) andThen requireAnswers) { implicit request =>
       val summaryList = summaryListOpt(
         List(
           IrrecoverableDebtsAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
@@ -54,9 +61,9 @@ class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: Messa
           summaryList,
           routes.IrrecoverableDebtsCYAController.onSubmit(taxYear, businessId))
       )
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) { _ =>
     Redirect(routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId))
   }
 
