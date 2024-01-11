@@ -16,27 +16,21 @@
 
 package controllers.journeys.expenses.interest
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.interest.InterestAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableInterest.Yes
+import models.common.{BusinessId, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.interest.InterestAmountPage
-import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.interest.InterestAmountView
-
-import scala.concurrent.Future
 
 class InterestAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -49,18 +43,11 @@ class InterestAmountControllerSpec
 
   override val onwardRoute: Call = routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(DisallowableInterestPage, Yes, Some(businessId)).success.value
-
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockSelfEmploymentService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new InterestAmountFormProvider()(userType)
 

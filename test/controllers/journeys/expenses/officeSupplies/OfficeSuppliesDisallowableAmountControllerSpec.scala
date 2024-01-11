@@ -16,25 +16,19 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n._
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
-
-import scala.concurrent.Future
 
 class OfficeSuppliesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -47,28 +41,20 @@ class OfficeSuppliesDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OfficeSuppliesAmountPage, allowableAmount, Some(businessId)).success.value
-
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  override def baseAnswers = emptyUserAnswers.set(OfficeSuppliesAmountPage, amount, Some(businessId)).success.value
 
-  private lazy val allowableAmount: BigDecimal = 1000
-
-  def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesDisallowableAmountFormProvider()(userType, allowableAmount)
+  def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[OfficeSuppliesDisallowableAmountView]
-    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(allowableAmount)).toString()
+    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, formatMoney(amount)).toString()
   }
 
 }
