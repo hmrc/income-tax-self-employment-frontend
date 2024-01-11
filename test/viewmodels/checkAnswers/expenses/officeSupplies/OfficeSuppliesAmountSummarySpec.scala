@@ -22,7 +22,7 @@ import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesAmountSummarySpec extends SpecBase {
@@ -44,7 +44,7 @@ class OfficeSuppliesAmountSummarySpec extends SpecBase {
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text(s"officeSuppliesAmount.title.$userType")
-        result.get.value.content shouldBe Text("£123.45")
+        result.get.value.content shouldBe HtmlContent("£123.45")
       }
     }
     "user answers do not exist for OfficeSuppliesAmountPage" - {

@@ -20,7 +20,7 @@ import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 
@@ -35,7 +35,7 @@ class DepreciationDisallowableAmountSummarySpec extends SummaryBaseSpec("Depreci
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"depreciationDisallowableAmount.title.$userType")
-  override val testValue: Text           = Text(s"£${formatMoney(amount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     DepreciationDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

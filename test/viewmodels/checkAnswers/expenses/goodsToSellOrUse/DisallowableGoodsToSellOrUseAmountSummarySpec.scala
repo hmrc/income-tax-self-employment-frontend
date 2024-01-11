@@ -22,7 +22,7 @@ import models.common.UserType.Individual
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
@@ -36,7 +36,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"disallowableGoodsToSellOrUseAmount.title.$userType")
-            result.get.value.content mustBe Text("£100.00")
+            result.get.value.content mustBe HtmlContent("£100.00")
           }
         }
 

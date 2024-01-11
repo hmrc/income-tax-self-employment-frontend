@@ -20,7 +20,7 @@ import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TotalExpensesSummarySpec extends SummaryBaseSpec("TotalExpensesSummary") {
@@ -29,7 +29,7 @@ class TotalExpensesSummarySpec extends SummaryBaseSpec("TotalExpensesSummary") {
   override val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"totalExpenses.title.$userType")
-  override val testValue: Text           = Text("£2,552.40")
+  override val testValue: HtmlContent    = HtmlContent("£2,552.40")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     TotalExpensesSummary.row()(messages, userAnswers, taxYear, businessId, userType)
