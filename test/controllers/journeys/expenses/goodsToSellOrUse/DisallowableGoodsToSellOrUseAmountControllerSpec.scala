@@ -16,27 +16,19 @@
 
 package controllers.journeys.expenses.goodsToSellOrUse
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
-import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
-
-import scala.concurrent.Future
 
 class DisallowableGoodsToSellOrUseAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -49,35 +41,20 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec
 
   override val onwardRoute: Call = routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers
-      .set(GoodsToSellOrUsePage, YesDisallowable, Some(businessId))
-      .success
-      .value
-      .set(GoodsToSellOrUseAmountPage, goodsAmount, Some(businessId))
-      .success
-      .value
-
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
+  override def baseAnswers = emptyUserAnswers.set(GoodsToSellOrUseAmountPage, amount, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-
-  private lazy val goodsAmount: BigDecimal = 1000.50
-  private lazy val goodsAmountString       = formatMoney(goodsAmount)
-
-  def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, goodsAmount)
+  def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[DisallowableGoodsToSellOrUseAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, goodsAmountString).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
 
 }

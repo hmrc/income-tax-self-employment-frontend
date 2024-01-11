@@ -46,6 +46,7 @@ journeys.expenses-construction = Construction industry subcontractors
 journeys.expenses-professional-fees = Professional fees
 journeys.expenses-interest = Interest paid on bank and other business loans
 journeys.expenses-financial-charges = Bank, credit card and other financial charges
+journeys.expenses-irrecoverable-debts = Irrecoverable debts
 journeys.expenses-depreciation = Depreciation costs
 
 date.day = Day

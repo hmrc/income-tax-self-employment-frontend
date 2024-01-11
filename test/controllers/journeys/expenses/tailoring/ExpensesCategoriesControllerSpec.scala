@@ -33,7 +33,6 @@ import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
 import scala.concurrent.Future
@@ -57,14 +56,11 @@ class ExpensesCategoriesControllerSpec
   override val blankUserAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
   override val filledUserAnswers: UserAnswers      = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 

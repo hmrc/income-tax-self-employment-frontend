@@ -16,12 +16,12 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import base.SpecBase
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxEitherId
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, UserType}
-import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -32,10 +32,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
-import services.SelfEmploymentService
 import views.html.journeys.expenses.otherExpenses.OtherExpensesAmountView
-
-import scala.concurrent.Future
 
 class OtherExpensesAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
@@ -48,20 +45,13 @@ class OtherExpensesAmountControllerSpec
 
   override val onwardRoute = routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val tailoringAnswer = OtherExpenses.YesDisallowable
-
-  override lazy val emptyUserAnswers: UserAnswers =
-    SpecBase.emptyUserAnswers.set(OtherExpensesPage, tailoringAnswer, Some(businessId)).success.value
-
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(filledUserAnswers)
+  override def baseAnswers = emptyUserAnswers.set(OtherExpensesPage, OtherExpenses.YesDisallowable, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
+
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 
@@ -70,7 +60,7 @@ class OtherExpensesAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[OtherExpensesAmountView]
-    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, tailoringAnswer, scenario.taxYear, scenario.businessId)
+    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, OtherExpenses.YesDisallowable, scenario.taxYear, scenario.businessId)
       .toString()
   }
 
