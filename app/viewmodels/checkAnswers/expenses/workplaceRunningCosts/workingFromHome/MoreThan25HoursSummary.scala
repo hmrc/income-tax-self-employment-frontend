@@ -16,22 +16,22 @@
 
 package viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome
 
+import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object MoreThan25HoursSummary {
 
   def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
     answers.get(MoreThan25HoursPage, Some(businessId)).map { answer =>
-      buildRowString(
-        formatAnswer(answer.toString),
-        routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
+      buildRowBoolean(
+        answer,
+        workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
         s"moreThan25Hours.title.$userType",
         "moreThan25Hours.change.hidden"
       )
