@@ -16,9 +16,10 @@
 
 package controllers.journeys.expenses.irrecoverableDebts
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -26,7 +27,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountSummary, IrrecoverableDebtsDisallowableAmountSummary}
 
-class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = IrrecoverableDebtsCYAPage.pageName.value
 
@@ -50,4 +51,13 @@ class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  protected val journey: Journey = Journey.ExpensesIrrecoverableDebts
+
+  protected val submissionData: JsObject = Json.obj(
+    "financialExpenses"                    -> List("irrecoverableDebts"),
+    "disallowableIrrecoverableDebts"       -> "yesDisallowable",
+    "irrecoverableDebtsAmount"             -> 200.00,
+    "irrecoverableDebtsDisallowableAmount" -> 100.00
+  )
 }
