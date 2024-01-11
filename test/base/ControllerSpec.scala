@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 
 import java.time.LocalDate
@@ -51,21 +50,16 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
                           businessId: BusinessId = businessId,
                           accountingType: Option[AccountingType] = None) {
 
-    private val mockSessionRepository = mock[SessionRepository] // TODO Remove this. Controllers should talk to repository through service.
-
-    implicit val application: Application = createApp(userType, answers, mockSessionRepository, mockService)
+    implicit val application: Application = createApp(userType, answers, mockService)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
     implicit val appMessages: Messages    = messages(application)
 
     val testScenarioContext: Journey => JourneyContextWithNino = (journey: Journey) =>
       JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
-    private def createApp(userType: UserType,
-                          answers: Option[UserAnswers],
-                          mockSessionRepository: SessionRepository,
-                          mockService: SelfEmploymentService): Application = {
+    private def createApp(userType: UserType, answers: Option[UserAnswers], mockService: SelfEmploymentService): Application = {
       val overrideBindings: List[Binding[_]] =
-        List(bind[SessionRepository].toInstance(mockSessionRepository), bind[SelfEmploymentService].toInstance(mockService)) ++ bindings
+        bind[SelfEmploymentService].toInstance(mockService) :: bindings
 
       applicationBuilder(answers, userType)
         .overrides(overrideBindings)
