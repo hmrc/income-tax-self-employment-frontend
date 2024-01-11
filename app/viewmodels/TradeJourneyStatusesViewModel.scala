@@ -130,9 +130,8 @@ object TradeJourneyStatusesViewModel {
     val irrecoverableDebtsRow =
       buildRowForDependentAnswered(Journey.ExpensesIrrecoverableDebts, isExpensesTailoringIsAnswered && hasIrrecoverableDebts)
 
-    val hasOtherExpenses = conditionPassedForViewableLink(OtherExpensesPage, OtherExpenses.values.filterNot(_ == OtherExpenses.No))
+    val hasOtherExpenses         = conditionPassedForViewableLink(OtherExpensesPage, OtherExpenses.values.filterNot(_ == OtherExpenses.No))
     val expensesOtherExpensesRow = buildRowForDependentAnswered(ExpensesOtherExpenses, isExpensesTailoringIsAnswered && hasOtherExpenses)
-
 
     List(
       expensesOfficeSuppliesRow,
