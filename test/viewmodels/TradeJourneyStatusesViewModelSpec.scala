@@ -97,8 +97,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed),
         JourneyNameAndStatus(ExpensesOfficeSupplies, CheckOurRecords),
-        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress),
-        JourneyNameAndStatus(ExpensesOtherExpenses, InProgress)
+        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress)
       ),
       categoriesExpenses,
       List(
@@ -108,7 +107,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(officeSuppliesUrl, "", Journey.ExpensesOfficeSupplies, CheckOurRecords),
         expectedRow(goodsToSellCyaUrl, "", Journey.ExpensesGoodsToSellOrUse, InProgress),
         expectedRow(irrecoverableUrl, "", Journey.ExpensesIrrecoverableDebts, NotStarted),
-        expectedRow(otherExpensesUrl, "", Journey.ExpensesOtherExpenses, InProgress)
+        expectedRow(otherExpensesUrl, "", Journey.ExpensesOtherExpenses, NotStarted)
       )
     )
   )
