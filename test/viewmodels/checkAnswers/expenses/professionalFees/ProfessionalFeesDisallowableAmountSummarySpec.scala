@@ -20,7 +20,7 @@ import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 
@@ -37,7 +37,7 @@ class ProfessionalFeesDisallowableAmountSummarySpec extends SummaryBaseSpec("Pro
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"professionalFeesDisallowableAmount.title.$userType", amount))
-  override val testValue: Text           = Text(s"£${formatMoney(disallowableAmount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ProfessionalFeesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

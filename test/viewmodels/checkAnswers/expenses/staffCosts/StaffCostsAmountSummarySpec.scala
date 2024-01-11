@@ -26,7 +26,7 @@ import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class StaffCostsAmountSummarySpec extends SpecBase {
@@ -58,7 +58,7 @@ class StaffCostsAmountSummarySpec extends SpecBase {
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"staffCostsAmount.title.${userScenario.userType}")
-            result.get.value.content mustBe Text("£2,552.40")
+            result.get.value.content mustBe HtmlContent("£2,552.40")
           }
         }
       }

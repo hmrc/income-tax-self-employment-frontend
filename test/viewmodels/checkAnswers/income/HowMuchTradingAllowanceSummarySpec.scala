@@ -25,6 +25,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
@@ -61,7 +62,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
             resultT.map { row =>
               row.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-              row.value.content shouldBe Text("The maximum £456.00")
+              row.value.content shouldBe HtmlContent("The maximum £456.00")
             }
 
           }
@@ -81,7 +82,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
           resultT.map { row =>
             row.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-            row.value.content shouldBe Text("howMuchTradingAllowance.lowerAmount")
+            row.value.content shouldBe HtmlContent("howMuchTradingAllowance.lowerAmount")
           }
         }
       }
