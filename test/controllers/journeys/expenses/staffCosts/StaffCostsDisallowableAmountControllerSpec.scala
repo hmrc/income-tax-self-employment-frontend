@@ -19,16 +19,14 @@ package controllers.journeys.expenses.staffCosts
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.staffCosts.StaffCostsDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, TextAmount, UserType}
+import models.common.{TextAmount, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.staffCosts.StaffCostsDisallowableAmountView
 
@@ -43,13 +41,9 @@ class StaffCostsDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   override def baseAnswers = emptyUserAnswers.set(StaffCostsAmountPage, amount, Some(businessId)).success.value
 

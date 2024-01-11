@@ -32,7 +32,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
-import services.SelfEmploymentService
 import views.html.journeys.expenses.otherExpenses.OtherExpensesAmountView
 
 class OtherExpensesAmountControllerSpec
@@ -46,19 +45,13 @@ class OtherExpensesAmountControllerSpec
 
   override val onwardRoute = routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val tailoringAnswer = OtherExpenses.YesDisallowable
-
-  override def baseAnswers = emptyUserAnswers.set(OtherExpensesPage, tailoringAnswer, Some(businessId)).success.value
-
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
+  override def baseAnswers = emptyUserAnswers.set(OtherExpensesPage, OtherExpenses.YesDisallowable, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
+
+  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 
@@ -67,7 +60,7 @@ class OtherExpensesAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[OtherExpensesAmountView]
-    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, tailoringAnswer, scenario.taxYear, scenario.businessId)
+    view(form, scenario.mode, scenario.userType, AccountingType.Accrual, OtherExpenses.YesDisallowable, scenario.taxYear, scenario.businessId)
       .toString()
   }
 

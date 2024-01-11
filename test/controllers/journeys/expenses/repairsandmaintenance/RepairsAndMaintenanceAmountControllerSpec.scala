@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
 class RepairsAndMaintenanceAmountControllerSpec
@@ -44,13 +43,10 @@ class RepairsAndMaintenanceAmountControllerSpec
 
   override val onwardRoute: Call = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] =
-    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)), bind[SelfEmploymentService].toInstance(mockService))
+    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 

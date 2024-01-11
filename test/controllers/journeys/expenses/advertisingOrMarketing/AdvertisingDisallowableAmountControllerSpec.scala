@@ -20,16 +20,14 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.tailoring
 import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
@@ -44,13 +42,8 @@ class AdvertisingDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   override def baseAnswers = emptyUserAnswers.set(AdvertisingOrMarketingAmountPage, amount, Some(businessId)).success.value

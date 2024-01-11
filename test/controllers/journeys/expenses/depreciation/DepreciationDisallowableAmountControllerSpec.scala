@@ -19,16 +19,14 @@ package controllers.journeys.expenses.depreciation
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.depreciation.DepreciationDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 class DepreciationDisallowableAmountControllerSpec
@@ -42,13 +40,8 @@ class DepreciationDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   def createForm(userType: UserType): Form[BigDecimal] = new DepreciationDisallowableAmountFormProvider()(userType)

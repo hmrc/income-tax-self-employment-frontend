@@ -19,16 +19,14 @@ package controllers.journeys.expenses.construction
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.construction.ConstructionIndustryAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 class ConstructionIndustryAmountControllerSpec
@@ -42,13 +40,8 @@ class ConstructionIndustryAmountControllerSpec
 
   override val onwardRoute: Call = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryAmountFormProvider()(userType)

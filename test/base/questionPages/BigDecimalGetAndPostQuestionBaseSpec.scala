@@ -19,8 +19,9 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import models.common.UserType
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.QuestionPage
 import play.api.Application
@@ -50,6 +51,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
   def createForm(userType: UserType): Form[BigDecimal]
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
+
+  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   private lazy val getRequest  = FakeRequest(GET, onPageLoadRoute)
   private lazy val postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))

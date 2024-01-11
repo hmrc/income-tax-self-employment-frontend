@@ -19,16 +19,14 @@ package controllers.journeys.expenses.interest
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.interest.InterestDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.interest.InterestDisallowableAmountView
 
@@ -43,13 +41,8 @@ class InterestDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   override def baseAnswers = emptyUserAnswers.set(InterestAmountPage, amount, Some(businessId)).success.value

@@ -19,20 +19,15 @@ package controllers.journeys.expenses.irrecoverableDebts
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.irrecoverableDebts.IrrecoverableDebtsAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountView
-
-import scala.concurrent.Future
 
 class IrrecoverableDebtsAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("IrrecoverableDebtsAmountController", IrrecoverableDebtsAmountPage) {
@@ -42,13 +37,8 @@ class IrrecoverableDebtsAmountControllerSpec
 
   override val onwardRoute: Call = routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(pageAnswers)
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   override def createForm(user: UserType): Form[BigDecimal] = new IrrecoverableDebtsAmountFormProvider()(user)

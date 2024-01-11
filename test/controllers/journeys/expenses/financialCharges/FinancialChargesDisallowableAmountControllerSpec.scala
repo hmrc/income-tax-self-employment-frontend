@@ -20,16 +20,14 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.financialCharges.FinancialChargesDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountView
 
@@ -41,13 +39,8 @@ class FinancialChargesDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockService = mock[SelfEmploymentService]
-
-  mockService.persistAnswer(*[BusinessId], *, *, *)(*) returns pageAnswers.asFuture
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   override def baseAnswers = emptyUserAnswers.set(FinancialChargesAmountPage, amount, businessId.some).success.value
