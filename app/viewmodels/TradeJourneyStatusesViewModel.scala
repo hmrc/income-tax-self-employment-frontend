@@ -130,6 +130,9 @@ object TradeJourneyStatusesViewModel {
     val irrecoverableDebtsRow =
       buildRowForDependentAnswered(Journey.ExpensesIrrecoverableDebts, isExpensesTailoringIsAnswered && hasIrrecoverableDebts)
 
+    val hasOtherExpenses         = conditionPassedForViewableLink(OtherExpensesPage, OtherExpenses.values.filterNot(_ == OtherExpenses.No))
+    val expensesOtherExpensesRow = buildRowForDependentAnswered(ExpensesOtherExpenses, isExpensesTailoringIsAnswered && hasOtherExpenses)
+
     List(
       expensesOfficeSuppliesRow,
       expensesGoodsToSellOrUseRow,
@@ -142,7 +145,8 @@ object TradeJourneyStatusesViewModel {
       expensesInterestRow,
       expensesFinancialChargesRow,
       irrecoverableDebtsRow,
-      expensesDepreciationRow
+      expensesDepreciationRow,
+      expensesOtherExpensesRow
     ).flatten
   }
 
@@ -304,7 +308,12 @@ object TradeJourneyStatusesViewModel {
           expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | ExpensesOtherExpenses =>
+      case ExpensesOtherExpenses =>
+        determineUrl(
+          expenses.otherExpenses.routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId).url
+        )
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing =>
         ??? // TODO Other Journeys not yet implemented
     }
   }
