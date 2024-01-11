@@ -51,7 +51,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
                           businessId: BusinessId = businessId,
                           accountingType: Option[AccountingType] = None) {
 
-    private val mockSessionRepository = mock[SessionRepository] // TODO Remove this? Controllers shouldn't interact with repository directly.
+    private val mockSessionRepository = mock[SessionRepository] // TODO Remove this. Controllers should talk to repository through service.
 
     implicit val application: Application = createApp(userType, answers, mockSessionRepository, mockService)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
