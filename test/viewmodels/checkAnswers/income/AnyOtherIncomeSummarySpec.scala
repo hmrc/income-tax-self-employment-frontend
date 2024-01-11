@@ -20,7 +20,7 @@ import models.common.UserType
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class AnyOtherIncomeSummarySpec extends SpecBase {
@@ -45,7 +45,7 @@ class AnyOtherIncomeSummarySpec extends SpecBase {
 
         result.get mustBe a[SummaryListRow]
         result.get.key.content mustBe Text("anyOtherIncome.title.individual")
-        result.get.value.content mustBe Text("site.yes")
+        result.get.value.content mustBe HtmlContent("site.yes")
       }
     }
 

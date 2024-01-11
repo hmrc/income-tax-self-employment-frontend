@@ -21,7 +21,7 @@ import models.common.UserType.Individual
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SelfEmploymentAbroadSummarySpec extends SpecBase {
@@ -61,7 +61,7 @@ class SelfEmploymentAbroadSummarySpec extends SpecBase {
 
         result mustBe a[SummaryListRow]
         result.key.content mustBe Text("selfEmploymentAbroad.title.individual")
-        result.value.content mustBe Text("site.yes")
+        result.value.content mustBe HtmlContent("site.yes")
       }
     }
     "when no user answers exist for SelfEmploymentAbroadPage" - {

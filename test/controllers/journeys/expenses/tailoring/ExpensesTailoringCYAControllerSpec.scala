@@ -28,7 +28,7 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.JsObject
 import play.api.mvc.{Call, Request}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.tailoring.buildTailoringSummaryList
 import views.html.standard.CheckYourAnswersView
@@ -53,7 +53,7 @@ class ExpensesTailoringCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec
                                   request: Request[_]): String = {
     val view         = application.injector.instanceOf[CheckYourAnswersView]
     val categoryText = summaryList.rows.head.value.content
-    val optCategory  = if (categoryText == Text(messages(s"expenses.$IndividualCategories"))) "Categories" else ""
+    val optCategory  = if (categoryText == HtmlContent(messages(s"expenses.$IndividualCategories"))) "Categories" else ""
     val heading      = s"$pageHeading$optCategory"
     view(heading, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
   }

@@ -19,6 +19,7 @@ package viewmodels
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
@@ -35,7 +36,7 @@ package object checkAnswers {
   def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
-      value = Value(content = answer, classes = "govuk-!-width-one-third"),
+      value = Value(content = HtmlContent(answer), classes = "govuk-!-width-one-third"),
       actions = Seq(
         ActionItemViewModel("site.change", callLink.url)
           .withVisuallyHiddenText(messages(changeMessage))

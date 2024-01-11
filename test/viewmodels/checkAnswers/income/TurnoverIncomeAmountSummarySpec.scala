@@ -22,7 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.Json
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
@@ -48,7 +48,7 @@ class TurnoverIncomeAmountSummarySpec extends AnyWordSpec with Matchers {
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("turnoverIncomeAmount.subHeading.agent")
-        result.get.value.content shouldBe Text("£123.45")
+        result.get.value.content shouldBe HtmlContent("£123.45")
       }
     }
   }
