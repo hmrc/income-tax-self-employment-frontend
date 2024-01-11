@@ -712,6 +712,15 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 
 ########## Expenses - Advertising or Marketing ##########
 
+## More Than 25 Hours
+moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
+moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
+moreThan25Hours.error.required.individual = Select if you worked from home for more than 25 hours a month
+moreThan25Hours.error.required.agent = Select if your client worked from home for more than 25 hours a month
+moreThan25Hours.change.hidden = // TODO replace when CYA page made
+
+########## Expenses - Advertising or Marketing ##########
+
 ## Advertising amount
 advertisingAmount.title.individual = How much did you spend on advertising or marketing?
 advertisingAmount.title.agent = How much did your client spend on advertising or marketing?
