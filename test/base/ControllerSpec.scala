@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
-import repositories.SessionRepository
+import services.SelfEmploymentService
 
 import java.time.LocalDate
 
@@ -39,6 +39,8 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
     UserType.Agent
   )
 
+  val mockService = mock[SelfEmploymentService]
+
   val bindings: List[Binding[_]] = Nil
 
   case class TestScenario(userType: UserType,
@@ -48,17 +50,16 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
                           businessId: BusinessId = businessId,
                           accountingType: Option[AccountingType] = None) {
 
-    private val mockSessionRepository = mock[SessionRepository]
-
-    implicit val application: Application = createApp(userType, answers, mockSessionRepository)
+    implicit val application: Application = createApp(userType, answers, mockService)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
     implicit val appMessages: Messages    = messages(application)
 
     val testScenarioContext: Journey => JourneyContextWithNino = (journey: Journey) =>
       JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
-    private def createApp(userType: UserType, answers: Option[UserAnswers], mockSessionRepository: SessionRepository): Application = {
-      val overrideBindings: List[Binding[_]] = bind[SessionRepository].toInstance(mockSessionRepository) :: bindings
+    private def createApp(userType: UserType, answers: Option[UserAnswers], mockService: SelfEmploymentService): Application = {
+      val overrideBindings: List[Binding[_]] =
+        bind[SelfEmploymentService].toInstance(mockService) :: bindings
 
       applicationBuilder(answers, userType)
         .overrides(overrideBindings)

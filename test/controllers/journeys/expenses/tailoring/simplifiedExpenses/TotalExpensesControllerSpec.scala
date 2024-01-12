@@ -29,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.simplifiedExpenses.TotalExpensesView
 
 import scala.concurrent.Future
@@ -45,14 +44,11 @@ class TotalExpensesControllerSpec
 
   override val onwardRoute: Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
-  private val mockSelfEmploymentService = mock[SelfEmploymentService]
-
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
-    bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
+    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockSelfEmploymentService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
 
   def createForm(userType: UserType): Form[BigDecimal] = new TotalExpensesFormProvider()(userType)
 

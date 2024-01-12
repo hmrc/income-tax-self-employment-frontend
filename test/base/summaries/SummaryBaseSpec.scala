@@ -22,7 +22,7 @@ import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.JsObject
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
@@ -38,7 +38,7 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
   val invalidData: JsObject
 
   val testKey: UserType => Text
-  val testValue: Text
+  val testValue: HtmlContent
 
   private lazy val validAnswers: UserAnswers   = buildUserAnswers(validData)
   private lazy val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)

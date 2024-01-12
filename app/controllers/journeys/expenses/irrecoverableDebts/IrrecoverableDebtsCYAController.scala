@@ -17,12 +17,15 @@
 package controllers.journeys.expenses.irrecoverableDebts
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import models.common.{BusinessId, TaxYear}
+import controllers.handleSubmitAnswersResult
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.journeys.Journey
 import models.journeys.Journey.ExpensesIrrecoverableDebts
 import models.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsJourneyAnswers
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountSummary, IrrecoverableDebtsDisallowableAmountSummary}
@@ -38,6 +41,7 @@ class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: Messa
                                                  identify: IdentifierAction,
                                                  getUserAnswers: DataRetrievalAction,
                                                  getJourneyAnswers: SubmittedDataRetrievalActionProvider,
+                                                 service: SelfEmploymentService,
                                                  requireAnswers: DataRequiredAction,
                                                  view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -63,8 +67,12 @@ class IrrecoverableDebtsCYAController @Inject() (override val messagesApi: Messa
       )
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) { _ =>
-    Redirect(routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Journey.ExpensesIrrecoverableDebts)
+      val result  = service.submitAnswers[IrrecoverableDebtsJourneyAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
   }
 
 }

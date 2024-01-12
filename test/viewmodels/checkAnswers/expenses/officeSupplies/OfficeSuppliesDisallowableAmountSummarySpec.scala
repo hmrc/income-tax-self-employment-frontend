@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
@@ -38,7 +38,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$userType")
-            result.get.value.content shouldBe Text("£100.00")
+            result.get.value.content shouldBe HtmlContent("£100.00")
           }
         }
         "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {
