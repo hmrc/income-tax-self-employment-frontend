@@ -22,7 +22,7 @@ import org.scalatest.Assertions._
 
 object Assertions {
 
-  /** Use this assertions if two strings are large, it make investigation what is wrong much easier
+  /** Use this assertion if two strings are large, it make investigation what is wrong much easier
     */
   def assertEqualWithDiff(actual: String, expected: String): Assertion = {
     val actualLines   = actual.split("\n")
