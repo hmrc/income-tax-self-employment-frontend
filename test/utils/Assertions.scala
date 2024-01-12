@@ -16,7 +16,7 @@
 
 package utils
 
-import base.SpecBase.{===, withClue}
+import base.SpecBase.withClue
 import org.scalatest.Assertion
 import org.scalatest.Assertions._
 
