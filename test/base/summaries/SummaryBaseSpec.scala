@@ -21,7 +21,7 @@ import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -35,7 +35,7 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
   }
 
   val validData: JsObject
-  val invalidData: JsObject
+  val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
 
   val testKey: UserType => Text
   val testValue: HtmlContent
@@ -43,6 +43,7 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
   private lazy val validAnswers: UserAnswers   = buildUserAnswers(validData)
   private lazy val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
 
+  /** method under test */
   def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]
 
   s"$summaryName should" - {
