@@ -18,15 +18,16 @@ package forms.expenses.workplaceRunningCosts.workingFromHome
 
 import forms.mappings.Mappings
 import models.common.UserType
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class MoreThan25HoursFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Boolean] =
+  def apply(userType: UserType): Form[MoreThan25Hours] =
     Form(
-      "value" -> boolean(s"moreThan25Hours.error.required.$userType")
+      "value" -> enumerable[MoreThan25Hours](s"moreThan25Hours.error.required.$userType")
     )
 
 }
