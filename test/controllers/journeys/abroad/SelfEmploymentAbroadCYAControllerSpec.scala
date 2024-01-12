@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
 import viewmodels.journeys.SummaryListCYA
 
 class SelfEmploymentAbroadCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
-  val pageHeading: String           = "common.checkYourDetailsa"
+  val pageHeading: String           = "common.checkYourDetails"
   val journey: Journey              = Journey.Abroad
   val submissionData: JsObject      = Json.obj("selfEmploymentAbroad" -> true)
   val testDataCases: List[JsObject] = List(submissionData)
