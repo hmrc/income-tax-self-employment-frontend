@@ -17,29 +17,38 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxOptionId
 import forms.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursFormProvider
-import models.NormalMode
 import models.common.UserType
+import models.common.UserType.Individual
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.{CheckMode, Mode, NormalMode}
+import navigation.{ExpensesNavigator, FakeExpensesTwoRoutesNavigator}
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.prop.TableFor4
 import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursView
 
 class MoreThan25HoursControllerSpec extends BooleanGetAndPostQuestionBaseSpec("MoreThan25HoursController", MoreThan25HoursPage) {
 
   override def onPageLoadCall: Call = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, NormalMode)
-  override def onwardRoute: Call    = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = submissionCall(NormalMode)
+  override def onwardRoute: Call    = expectedRedirectCall(NormalMode)
+
+  private def submissionCall(mode: Mode): Call       = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode)
+  private def expectedRedirectCall(mode: Mode): Call = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, mode)
 
   override def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+    bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
   )
 
   override def createForm(userType: UserType): Form[Boolean] = new MoreThan25HoursFormProvider()(userType)
@@ -50,5 +59,35 @@ class MoreThan25HoursControllerSpec extends BooleanGetAndPostQuestionBaseSpec("M
       application: Application): String = {
     val view = application.injector.instanceOf[MoreThan25HoursView]
     view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+  }
+
+  private lazy val cases: TableFor4[Option[Boolean], Boolean, Mode, Mode] = Table(
+    ("prevAnswer", "currAnswer", "submissionMode", "expectedRedirectMode"),
+    (None, true, NormalMode, NormalMode),
+    (None, false, NormalMode, NormalMode),
+    (Some(true), true, NormalMode, NormalMode),
+    (Some(true), false, NormalMode, NormalMode),
+    (Some(false), true, NormalMode, NormalMode),
+    (Some(false), false, NormalMode, NormalMode),
+    (Some(true), true, CheckMode, CheckMode),
+    (Some(true), false, CheckMode, CheckMode),
+    (Some(false), true, CheckMode, NormalMode),
+    (Some(false), false, CheckMode, CheckMode)
+  )
+
+  "On successful submission, redirect should have the correct Mode type" - {
+    forAll(cases) { case (prevAnswer, currAnswer, submissionMode, expectedRedirectMode) =>
+      val answers: UserAnswers = prevAnswer.fold(baseAnswers)(ans => baseAnswers.set(page, ans, Some(businessId)).success.value)
+
+      s"when previous answer was $prevAnswer, submitted answer is $currAnswer and submission mode was $submissionMode" in
+        new TestScenario(Individual, answers = answers.some) {
+          running(application) {
+            val request = FakeRequest(POST, submissionCall(submissionMode).url).withFormUrlEncodedBody(("value", currAnswer.toString))
+            val result  = route(application, request).value
+
+            redirectLocation(result).value shouldBe expectedRedirectCall(expectedRedirectMode).url
+          }
+        }
+    }
   }
 }
