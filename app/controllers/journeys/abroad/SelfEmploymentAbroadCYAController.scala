@@ -24,7 +24,6 @@ import models.journeys.Journey
 import models.journeys.Journey.Abroad
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import pages.Page
-import pages.abroad.SelfEmploymentAbroadCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
