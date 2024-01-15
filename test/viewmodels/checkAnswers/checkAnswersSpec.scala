@@ -16,45 +16,42 @@
 
 package viewmodels.checkAnswers
 
-import base.SpecBase
-import base.SpecBase.applicationBuilder
+import base.SpecBase.{TestCase, emptyCall}
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.i18n.Messages
-import play.api.mvc.Call
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import viewmodels.checkAnswers.checkAnswersSpec.TestCase
 
 class checkAnswersSpec extends AnyWordSpecLike {
+  private def expectedRow(expectedAnswer: String) = SummaryListRow(
+    Key(Text("keyMessage"), "govuk-!-width-two-thirds"),
+    Value(HtmlContent(expectedAnswer), "govuk-!-width-one-third"),
+    "",
+    Some(Actions("", List(ActionItem("", Text("Change"), Some("changeMessage"), "", Map()))))
+  )
 
   "buildRowBoolean" should {
-    def expectedRow(expectedAnswer: String) = SummaryListRow(
-      Key(Text("keyMessage"), "govuk-!-width-two-thirds"),
-      Value(HtmlContent(expectedAnswer), "govuk-!-width-one-third"),
-      "",
-      Some(Actions("", List(ActionItem("", Text("Change"), Some("changeMessage"), "", Map()))))
-    )
 
     "return a SummaryListRow with Yes for answer=True" in new TestCase {
-      running(application) {
-        val result = buildRowBoolean(answer = true, Call("", "", ""), "keyMessage", "changeMessage")
-        assert(result === expectedRow("Yes"))
-      }
+      val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
+      assert(result === expectedRow("Yes"))
     }
 
     "return a SummaryListRow with No for answer=False" in new TestCase {
-      running(application) {
-        val result = buildRowBoolean(answer = false, Call("", "", ""), "keyMessage", "changeMessage")
-        assert(result === expectedRow("No"))
-      }
+      val result = buildRowBoolean(answer = false, emptyCall, "keyMessage", "changeMessage")
+      assert(result === expectedRow("No"))
     }
-
   }
-}
 
-object checkAnswersSpec {
-  trait TestCase {
-    val application            = applicationBuilder(userAnswers = None).build()
-    implicit val msg: Messages = SpecBase.messages(application)
+  "buildRowBigDecimal" should {
+    "return a SummaryListRow with formatted money" in new TestCase {
+      val result = buildRowBigDecimal(1.0, emptyCall, "keyMessage", "changeMessage")
+      assert(result === expectedRow("£1.00"))
+    }
+  }
+
+  "buildRowString" should {
+    "return a SummaryListRow with a proper key, value and actions" in new TestCase {
+      val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage")
+      assert(result === expectedRow("strAnswer"))
+    }
   }
 }
