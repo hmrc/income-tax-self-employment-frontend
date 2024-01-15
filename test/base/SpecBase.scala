@@ -37,7 +37,7 @@ import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import services.SelfEmploymentService
 import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetrievalAction, StubSubmittedDataRetrievalActionProvider}
@@ -124,4 +124,11 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
 }
 
-object SpecBase extends SpecBase
+object SpecBase extends SpecBase {
+  abstract class TestCase(userAnswers: Option[UserAnswers] = None) {
+    val application            = applicationBuilder(userAnswers = userAnswers).build()
+    implicit val msg: Messages = SpecBase.messages(application)
+  }
+
+  val emptyCall: Call = Call("", "", "")
+}

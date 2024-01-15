@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.journeys.abroad
 
-import models.common.PageName
+import play.api.libs.json.{Json, OFormat}
 
-import scala.language.implicitConversions
+final case class SelfEmploymentAbroadAnswers(selfEmploymentAbroad: Boolean)
 
-trait Page {
-  def pageName: PageName = PageName(toString)
-}
-
-object Page {
-
-  implicit def toString(page: Page): String =
-    page.toString
-
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
+object SelfEmploymentAbroadAnswers {
+  implicit val format: OFormat[SelfEmploymentAbroadAnswers] = Json.format[SelfEmploymentAbroadAnswers]
 }

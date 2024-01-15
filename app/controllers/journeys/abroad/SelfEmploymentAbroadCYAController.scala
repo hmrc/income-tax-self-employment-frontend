@@ -16,44 +16,65 @@
 
 package controllers.journeys.abroad
 
-import controllers.actions._
-import models.NormalMode
-import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
-import navigation.AbroadNavigator
-import pages.abroad.SelfEmploymentAbroadCYAPage
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
+import controllers.journeys.abroad
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.journeys.Journey
+import models.journeys.Journey.Abroad
+import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
-import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
+import viewmodels.journeys.SummaryListCYA
+import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
+                                                   getUserAnswers: DataRetrievalAction,
+                                                   getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                                    requireData: DataRequiredAction,
-                                                   navigator: AbroadNavigator,
+                                                   service: SelfEmploymentService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: SelfEmploymentAbroadCYAView)
+                                                   view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryListRows = SelfEmploymentAbroadSummary.row(taxYear, request.user.userType, businessId, request.userAnswers)
-    val summaryList     = SummaryList(Seq(summaryListRows))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen
+    getJourneyAnswersIfAny[SelfEmploymentAbroadAnswers](request =>
+      request.mkJourneyNinoContext(taxYear, businessId, Journey.Abroad)) andThen requireData) { implicit request =>
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
+        SelfEmploymentAbroadSummary.row(taxYear, request.user.userType, businessId, request.userAnswers)
+      )
+    )
 
-    val nextRoute = nextPageUrl(taxYear, businessId, navigator)
-
-    Ok(view(taxYear, summaryList, nextRoute, request.userType))
+    Ok(
+      view(
+        Page.cyaHeadingKeyPrefix,
+        taxYear,
+        request.userType,
+        summaryList,
+        abroad.routes.SelfEmploymentAbroadCYAController.onSubmit(taxYear, businessId)
+      )
+    )
   }
 
-  private def nextPageUrl(taxYear: TaxYear, businessId: BusinessId, navigator: AbroadNavigator)(implicit request: DataRequest[AnyContent]): String =
-    navigator
-      .nextPage(SelfEmploymentAbroadCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
-      .url
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Abroad)
+      val result  = service.submitAnswers[SelfEmploymentAbroadAnswers](context, request.userAnswers)
+
+      handleSubmitAnswersResult(context, result)
+  }
 
 }

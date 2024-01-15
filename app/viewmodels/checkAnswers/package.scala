@@ -27,8 +27,10 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
-    buildRowString(if (answer) "site.yes" else "site.no", callLink, keyMessage, changeMessage)
+  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow = {
+    val messageKey = if (answer) "site.yes" else "site.no"
+    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage)
+  }
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage)
