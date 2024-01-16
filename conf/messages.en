@@ -998,3 +998,47 @@ otherExpensesDisallowableAmount.change.hidden = Change how much spent on other e
 
 otherExpensesCYA.title.individual = Check your other expenses
 otherExpensesCYA.title.agent = Check your client’s other expenses
+
+########## Capital Allowances - Tailoring ##########
+claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
+claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
+
+claimCapitalAllowances.title.Accrual = Allowances for vehicles, equipment and buildings
+claimCapitalAllowances.title.Cash = Cars and asset-based allowances
+claimCapitalAllowances.p1.individual.Cash = You can claim ’capital’ allowances for cars and certain items or assets used in your business
+claimCapitalAllowances.p1.agent.Cash = Your client can claim ’capital’ allowances for cars and certain items or assets used in their business
+claimCapitalAllowances.p1.individual.Accrual = You can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in your business.
+claimCapitalAllowances.p1.agent.Accrual = Your client can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in their business.
+claimCapitalAllowances.p2.individual = The type of allowance and the amount you can claim depends on your assets and other circumstances. For example, there are special rules for cars.
+claimCapitalAllowances.p2.agent = The type of allowance and the amount they can claim depends on their assets and other circumstances. For example, there are special rules for cars.
+claimCapitalAllowances.p3.individual.Cash = If you’re also claiming the trading allowance, you cannot claim these allowances.
+claimCapitalAllowances.p3.agent.Cash = If your client is also claiming the trading allowance, they cannot claim these allowances.
+claimCapitalAllowances.p3.individual.Accrual = You cannot claim these allowances if you‘re claiming the trading allowance
+claimCapitalAllowances.p3.agent.accrual = Your client cannot claim these allowances if they are claiming the trading allowance
+claimCapitalAllowances.p4.individual = If you have sold any assets you may have to declare a balancing charge.
+claimCapitalAllowances.p4.agent = If your client has sold any assets they may have to declare a balancing charge.
+claimCapitalAllowances.subHeading.individual = Do you want to claim any capital allowances or declare a charge?
+claimCapitalAllowances.subHeading.agent = Does your client want to claim any capital allowances or declare a charge?
+
+selectCapitalAllowances.title = Select which allowances you want to claim
+selectCapitalAllowances.subHeading.zeroEmissions = 100% zero-emission cars and vehicles
+selectCapitalAllowances.subHeading.structuresAndBuildings = Structures and buildings
+selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances and charges
+selectCapitalAllowances.zeroEmissionCar = Zero-emission car allowance
+selectCapitalAllowances.zeroEmissionGoodsVehicle = Zero-emission goods vehicle allowance
+selectCapitalAllowances.electricVehicleChargepoint = Electric vehicle charge-point allowance
+selectCapitalAllowances.structuresAndBuildings = Structures and buildings allowance
+selectCapitalAllowances.specialTaxSitesStructuresAndBuildings = Special tax sites structures and buildings allowance
+selectCapitalAllowances.annualInvestment = Annual investment allowance
+selectCapitalAllowances.writingDown = Writing down allowance
+selectCapitalAllowances.balancing = Balancing allowance (allowance on sales)
+selectCapitalAllowances.balancingCharge = Balancing charge
+selectCapitalAllowances.subText.zeroEmissionCar = Claim the full cost of new and unused cars used for your self-employment.
+selectCapitalAllowances.subText.zeroEmissionGoodsVehicle = Claim the full cost of new and unused vehicles used for your self-employment.
+selectCapitalAllowances.subText.electricVehicleChargepoint = Claim 100% first year allowances if you buy and install new and unused electric charge-points for electric vehicles.
+selectCapitalAllowances.subText.structuresAndBuildings = If you built, bought or leased a structure or building, signed contracts and began construction on or after 29 October 2018, you may be able to claim tax relief.
+selectCapitalAllowances.subText.specialTaxSitesStructuresAndBuildings = Claim tax relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
+selectCapitalAllowances.subText.annualInvestment = Claim the full cost, up to the annual limit of £1million, if you bought equipment (but not cars) during the year.
+selectCapitalAllowances.subText.writingDown = Claim 18% or 6% of the balance of the value of items in your main rate and special rate capital allowance pools respectively. Items can include non zero-emission vehicles and business equipment.
+selectCapitalAllowances.subText.balancing = Claim if you sold or stopped using an asset in your business (for less than its tax value).
+selectCapitalAllowances.subText.balancingCharge = If you sold, gave away or stopped using an item in your business that you claimed capital allowances for, you may have to include a balancing charge.

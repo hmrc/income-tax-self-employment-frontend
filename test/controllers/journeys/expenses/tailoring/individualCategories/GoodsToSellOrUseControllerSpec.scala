@@ -31,7 +31,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
 
@@ -42,8 +41,6 @@ class GoodsToSellOrUseControllerSpec
       "GoodsToSellOrUseController",
       GoodsToSellOrUsePage
     ) {
-
-  override implicit val writes: Writes[GoodsToSellOrUse] = Writes(value => JsString(value.toString))
 
   override lazy val onPageLoadCall: Call          = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
   override lazy val onSubmitCall: Call            = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
