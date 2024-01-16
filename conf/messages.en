@@ -24,6 +24,7 @@ site.theseInclude = These include:
 site.theyInclude = They include:
 site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
+site.months = months
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -720,6 +721,37 @@ moreThan25Hours.title.agent = Did your client work from home for more than 25 ho
 moreThan25Hours.error.required.individual = Select if you worked from home for more than 25 hours a month
 moreThan25Hours.error.required.agent = Select if your client worked from home for more than 25 hours a month
 moreThan25Hours.change.hidden = // TODO replace when CYA page made
+
+## Working from home hours
+workingFromHomeHours.title.individual = Your working-from-home hours
+workingFromHomeHours.title.agent = Your client’s working-from-home hours
+workingFromHomeHours.p1.individual = Tell us how much you worked from home over the tax year and we’ll work out the flat rate amount you can claim. You’ll still have the choice of using actual amounts instead.
+workingFromHomeHours.p1.agent = Tell us how much your client worked from home over the tax year and we’ll work out the flat rate amount they can claim. You’ll still have the choice of using actual amounts instead.
+workingFromHomeHours.p2.individual = Remember to consider any months in which you did not work your usual number of hours.
+workingFromHomeHours.p2.agent = Remember to consider any months in which your client did not work their usual number of hours.
+workingFromHomeHours.p3 = The flat rate does not include telephone or internet expenses.
+workingFromHomeHours.subHeading.individual = How much did you work from home?
+workingFromHomeHours.subHeading.agent = How much did your client work from home?
+workingFromHomeHours.hint.individual = Enter the number of months you worked each amount of hours. The total number of months must not add up to more than 12.
+workingFromHomeHours.hint.agent = Enter the number of months your client worked each amount of hours. The total number of months must not add up to more than 12.
+workingFromHomeHours.value25To50 = 25 - 50 hours
+workingFromHomeHours.value51To100 = 51 - 100 hours
+workingFromHomeHours.value101Plus = 101 hours or more
+workingFromHomeHours.error.required.value25To50 = You must enter a number for 25 to 50 hours
+workingFromHomeHours.error.required.value51To100 = You must enter a number for 51 to 100 hours
+workingFromHomeHours.error.required.value101Plus = You must enter a number for 101 hours or more
+workingFromHomeHours.error.lessThanZero = The amount must be 0 or more
+workingFromHomeHours.error.nonNumeric = The amount must be a number
+workingFromHomeHours.error.noDecimals = The number cannot have decimal places
+workingFromHomeHours.error.overMax.value25To50.individual = The number of months you worked from home for 25 to 50 hours must be 12 or fewer
+workingFromHomeHours.error.overMax.value25To50.agent = The number of months your client worked from home for 25 to 50 hours must be 12 or fewer
+workingFromHomeHours.error.overMax.value51To100.individual = The number of months you worked from home for 51 to 100 hours must be 12 or fewer
+workingFromHomeHours.error.overMax.value51To100.agent = The number of months your client worked from home for 51 to 100 hours must be 12 or fewer
+workingFromHomeHours.error.overMax.value101Plus.individual = The number of months you worked from home for 101 hours or more must be 12 or fewer
+workingFromHomeHours.error.overMax.value101Plus.agent = The number of months your client worked from home for 101 hours or more must be 12 or fewer
+workingFromHomeHours.error.overMax.total.individual = The number of months you worked from home must be {0} or fewer
+workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
+workingFromHomeHours.change.hidden = // TODO replace when CYA page made
 
 ########## Expenses - Advertising or Marketing ##########
 

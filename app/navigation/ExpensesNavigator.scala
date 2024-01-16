@@ -22,6 +22,7 @@ import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories._
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import pages._
 import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
@@ -37,7 +38,7 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WorkingFromHomeHoursPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -125,8 +126,22 @@ class ExpensesNavigator @Inject() () {
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
-    case MoreThan25HoursPage => // TODO replace when next journey page is created
-      _ => taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+    case MoreThan25HoursPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
+              case Some(MoreThan25Hours.Yes) =>
+                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(MoreThan25Hours.No) => // TODO when page created /workplace-running-costs/working-from-home/private-use
+                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case WorkingFromHomeHoursPage => // TODO replace when page created /workplace-running-costs/working-from-home/flat-rate
+      _ =>
+        taxYear =>
+          businessId => workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>
