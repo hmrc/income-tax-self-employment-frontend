@@ -55,7 +55,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
-  private lazy val getRequest  = FakeRequest(GET, onPageLoadRoute)
+  private lazy val getRequest = FakeRequest(GET, onPageLoadRoute)
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded]
 
   forAll(userTypeCases) { user =>

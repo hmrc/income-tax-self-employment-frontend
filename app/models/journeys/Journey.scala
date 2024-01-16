@@ -18,6 +18,7 @@ package models.journeys
 
 import enumeratum._
 import models.common.PageName
+import pages.abroad.SelfEmploymentAbroadPage
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
@@ -38,14 +39,21 @@ import play.api.mvc.PathBindable
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
 
-  val pageKeys: List[PageName] = Nil
+  /** Used to recognize if there are any answers for that journey. Only leave it Nil if there are no answers to store */
+  val pageKeys: List[PageName]
 }
 
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   val values: IndexedSeq[Journey] = findValues
 
-  case object TradeDetails extends Journey("trade-details")
-  case object Abroad       extends Journey("self-employment-abroad")
+  case object TradeDetails extends Journey("trade-details") {
+    override val pageKeys: List[PageName] = Nil
+  }
+  case object Abroad extends Journey("self-employment-abroad") {
+    override val pageKeys: List[PageName] = List(
+      SelfEmploymentAbroadPage.pageName
+    )
+  }
   case object Income extends Journey("income") {
     override val pageKeys: List[PageName] = List(
       AnyOtherIncomePage.pageName,
@@ -60,7 +68,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       TurnoverNotTaxablePage.pageName
     )
   }
-  case object ExpensesTotal extends Journey("expenses-total")
+  case object ExpensesTotal extends Journey("expenses-total") {
+    override val pageKeys: List[PageName] = Nil
+  }
   case object ExpensesTailoring extends Journey("expenses-categories") {
     override val pageKeys: List[PageName] = List(
       ExpensesCategoriesPage.pageName
@@ -108,7 +118,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(IrrecoverableDebtsAmountPage.pageName, IrrecoverableDebtsDisallowableAmountPage.pageName)
   }
 
-  case object NationalInsurance extends Journey("national-insurance")
+  case object NationalInsurance extends Journey("national-insurance") {
+    override val pageKeys: List[PageName] = Nil
+  }
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
 

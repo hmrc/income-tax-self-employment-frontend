@@ -720,7 +720,7 @@ moreThan25Hours.title.individual = Did you work from home for more than 25 hours
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
 moreThan25Hours.error.required.individual = Select if you worked from home for more than 25 hours a month
 moreThan25Hours.error.required.agent = Select if your client worked from home for more than 25 hours a month
-moreThan25Hours.change.hidden = // TODO replace when CYA page made
+moreThan25Hours.change.hidden = Change if more that 25 hours a month were worked from home
 
 ## Working from home hours
 workingFromHomeHours.title.individual = Your working-from-home hours
@@ -751,7 +751,7 @@ workingFromHomeHours.error.overMax.value101Plus.individual = The number of month
 workingFromHomeHours.error.overMax.value101Plus.agent = The number of months your client worked from home for 101 hours or more must be 12 or fewer
 workingFromHomeHours.error.overMax.total.individual = The number of months you worked from home must be {0} or fewer
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
-workingFromHomeHours.change.hidden = // TODO replace when CYA page made
+workingFromHomeHours.change.hidden = Change how many hours were worked from home
 
 ########## Expenses - Advertising or Marketing ##########
 

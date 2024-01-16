@@ -43,6 +43,7 @@ GET         /:taxYear/:businessId/details/self-employment-abroad/change         
 POST        /:taxYear/:businessId/details/self-employment-abroad/change                                               controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/self-employment/details/check                                                       controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/self-employment/details/check                                                       controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Income Journey ##########
 

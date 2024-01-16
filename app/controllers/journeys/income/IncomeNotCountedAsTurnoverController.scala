@@ -21,7 +21,6 @@ import controllers.actions._
 import forms.income.IncomeNotCountedAsTurnoverFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import navigation.IncomeNavigator
 import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,6 +38,7 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
                                                       navigator: IncomeNavigator,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
                                                       formProvider: IncomeNotCountedAsTurnoverFormProvider,
                                                       service: SelfEmploymentService,
                                                       val controllerComponents: MessagesControllerComponents,
@@ -46,36 +46,36 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
     extends FrontendBaseController
     with I18nSupport {
 
-  // TODO Add requireData action during SASS-5878 (see comment attached to this ticket).
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers
-      .getOrElse(UserAnswers(request.userId))
-      .get(IncomeNotCountedAsTurnoverPage, Some(businessId))
-      .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val preparedForm = request.userAnswers
+        .get(IncomeNotCountedAsTurnoverPage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-    Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    def handleSuccess(value: Boolean): Future[Result] = {
-      val adjustedAnswers =
-        if (value) {
-          request.userAnswers.getOrElse(UserAnswers(request.userId)).pure[Try]
-        } else {
-          request.userAnswers.getOrElse(UserAnswers(request.userId)).remove(NonTurnoverIncomeAmountPage, Some(businessId))
-        }
-      for {
-        answers        <- Future.fromTry(adjustedAnswers)
-        updatedAnswers <- service.persistAnswer(businessId, answers, value, IncomeNotCountedAsTurnoverPage)
-      } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, businessId))
-    }
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      def handleSuccess(value: Boolean): Future[Result] = {
+        val adjustedAnswers =
+          if (value) {
+            request.userAnswers.pure[Try]
+          } else {
+            request.userAnswers.remove(NonTurnoverIncomeAmountPage, Some(businessId))
+          }
+        for {
+          answers        <- Future.fromTry(adjustedAnswers)
+          updatedAnswers <- service.persistAnswer(businessId, answers, value, IncomeNotCountedAsTurnoverPage)
+        } yield Redirect(navigator.nextPage(IncomeNotCountedAsTurnoverPage, mode, updatedAnswers, taxYear, businessId))
+      }
 
-    formProvider(request.userType)
-      .bindFromRequest()
-      .fold(
-        formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-        value => handleSuccess(value)
-      )
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          value => handleSuccess(value)
+        )
   }
 
 }

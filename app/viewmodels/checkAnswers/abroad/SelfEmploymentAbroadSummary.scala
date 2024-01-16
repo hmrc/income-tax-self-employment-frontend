@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.abroad
 
-import controllers.journeys.abroad.routes.SelfEmploymentAbroadController
+import controllers.journeys.abroad.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -27,17 +27,13 @@ import viewmodels.checkAnswers.buildRowBoolean
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, userAnswers: UserAnswers)(implicit messages: Messages): SummaryListRow =
-    userAnswers.get(SelfEmploymentAbroadPage, Some(businessId)) match {
-      case Some(answer) =>
-        buildRowBoolean(
-          answer,
-          SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),
-          s"selfEmploymentAbroad.title.$userType",
-          "selfEmploymentAbroad.change.hidden"
-        )
-
-      case None => throw new RuntimeException("No UserAnswers retrieved for SelfEmploymentAbroadPage")
+  def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(SelfEmploymentAbroadPage, Some(businessId)).map { answer =>
+      buildRowBoolean(
+        answer,
+        routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),
+        s"selfEmploymentAbroad.title.$userType",
+        "selfEmploymentAbroad.change.hidden"
+      )
     }
-
 }
