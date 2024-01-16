@@ -46,7 +46,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     _.set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.Yes, businessId.some),
     _.set(TradingAllowancePage, TradingAllowance.DeclareExpenses, businessId.some),
     _.set(OfficeSuppliesPage, OfficeSupplies.YesAllowable, businessId.some),
-    _.set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, businessId.some)
+    _.set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, businessId.some),
+    _.set(OtherExpensesPage, OtherExpenses.YesDisallowable, businessId.some)
   )
 
   private val abroadUrl               = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -57,6 +58,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
   private val irrecoverableUrl = expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val otherExpensesUrl = expenses.otherExpenses.routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
 
   private val testScenarios = Table(
     ("JourneyNameAndStatus", "userAnswers", "expected"),
@@ -104,7 +106,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(expensesTailoringCyaUrl, "", Journey.ExpensesTailoring, Completed),
         expectedRow(officeSuppliesUrl, "", Journey.ExpensesOfficeSupplies, CheckOurRecords),
         expectedRow(goodsToSellCyaUrl, "", Journey.ExpensesGoodsToSellOrUse, InProgress),
-        expectedRow(irrecoverableUrl, "", Journey.ExpensesIrrecoverableDebts, NotStarted)
+        expectedRow(irrecoverableUrl, "", Journey.ExpensesIrrecoverableDebts, NotStarted),
+        expectedRow(otherExpensesUrl, "", Journey.ExpensesOtherExpenses, NotStarted)
       )
     )
   )

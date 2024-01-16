@@ -33,12 +33,6 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
   val mtditid: Mtditid     = Mtditid(user.mtditid)
 
-  def mkJourneyAnswersContext(taxYear: TaxYear,
-                              businessId: BusinessId,
-                              journey: Journey,
-                              extraContext: Option[String] = None): JourneyAnswersContext =
-    JourneyAnswersContext(taxYear, businessId, mtditid, journey, extraContext)
-
   def mkJourneyNinoContext(taxYear: TaxYear, businessId: BusinessId, journey: Journey, extraContext: Option[String] = None): JourneyContextWithNino =
     JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey, extraContext)
 }

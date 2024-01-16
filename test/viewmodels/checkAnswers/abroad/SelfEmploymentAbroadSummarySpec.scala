@@ -16,64 +16,20 @@
 
 package viewmodels.checkAnswers.abroad
 
-import base.SpecBase
-import models.common.UserType.Individual
+import base.summaries.SummaryBaseSpec
+import models.common.UserType
 import models.database.UserAnswers
-import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class SelfEmploymentAbroadSummarySpec extends SpecBase {
+class SelfEmploymentAbroadSummarySpec extends SummaryBaseSpec("SelfEmploymentAbroadSummary") {
+  override val validData: JsObject = Json.obj("selfEmploymentAbroad" -> true)
 
-  private val data = Json
-    .parse(s"""
-       |{
-       |"$businessId": {
-       |  "selfEmploymentAbroad": true
-       |  }
-       |}
-       |""".stripMargin)
-    .as[JsObject]
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"selfEmploymentAbroad.title.$userType")
+  override val testValue: HtmlContent    = HtmlContent("site.yes")
 
-  private val someOtherData = Json
-    .parse(s"""
-       |{
-       |"$businessId": {
-       |  "someOtherPage": true
-       |  }
-       |}
-       |""".stripMargin)
-    .as[JsObject]
-
-  private val userAnswers          = UserAnswers(userAnswersId, data)
-  private val someOtherUserAnswers = UserAnswers(userAnswersId, someOtherData)
-
-  private implicit val messages: MessagesImpl = {
-    val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
-    MessagesImpl(Lang("en"), messagesApi)
-  }
-
-  "SelfEmploymentAbroadSummary" - {
-    "when user answers for SelfEmploymentAbroadPage exist" - {
-      "should generate a summary list row" in {
-        val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, userAnswers)
-
-        result mustBe a[SummaryListRow]
-        result.key.content mustBe Text("selfEmploymentAbroad.title.individual")
-        result.value.content mustBe HtmlContent("site.yes")
-      }
-    }
-    "when no user answers exist for SelfEmploymentAbroadPage" - {
-      "should return None and throw runtime exception" in {
-        lazy val result = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessId, someOtherUserAnswers)
-
-        val exception = intercept[RuntimeException](result)
-
-        exception.getMessage mustBe "No UserAnswers retrieved for SelfEmploymentAbroadPage"
-      }
-    }
-
-  }
+  def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
+    SelfEmploymentAbroadSummary.row(taxYear, userType, businessId, userAnswers)(messages)
 
 }
