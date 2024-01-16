@@ -27,6 +27,7 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
@@ -41,6 +42,7 @@ import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisal
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
 import play.api.libs.json.Json
 
 class ExpensesNavigatorSpec extends SpecBase {
@@ -176,6 +178,29 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
+
+        "WorkplaceRunningCosts journey" - {
+          "the page is MoreThan25HoursPage" - {
+            "the user answers 'Yes'" - {
+              "navigate to the WorkingFromHomeHoursController" in {
+                val userAnswers = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.Yes, Some(businessId)).success.value
+
+                val expectedResult = workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, mode)
+                // TODO SASS-6797 expected result = WorkingFromHomeHoursController
+                navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+            "the user answers 'No'" - {
+              "navigate to the WorkingFromHomeHoursController" in {
+                val userAnswers = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.No, Some(businessId)).success.value
+
+                val expectedResult = workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
             }
           }
         }

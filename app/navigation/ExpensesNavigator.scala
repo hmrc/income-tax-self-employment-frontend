@@ -22,6 +22,7 @@ import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories._
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import pages._
 import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
@@ -125,8 +126,17 @@ class ExpensesNavigator @Inject() () {
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
-    case MoreThan25HoursPage => // TODO replace when next journey page is created
-      _ => taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+    case MoreThan25HoursPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
+              case Some(MoreThan25Hours.Yes) => // TODO SASS-6797 replace call /workplace-running-costs/working-from-home/time
+                workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(MoreThan25Hours.No) =>
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>
