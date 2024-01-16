@@ -712,7 +712,7 @@ repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDis
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
 repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
-########## Expenses - Advertising or Marketing ##########
+########## Expenses - Workplace Running Costs ##########
 
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
@@ -720,6 +720,15 @@ moreThan25Hours.title.agent = Did your client work from home for more than 25 ho
 moreThan25Hours.error.required.individual = Select if you worked from home for more than 25 hours a month
 moreThan25Hours.error.required.agent = Select if your client worked from home for more than 25 hours a month
 moreThan25Hours.change.hidden = // TODO replace when CYA page made
+
+## Live at Business Premises
+liveAtBusinessPremises.title.individual = Did you live at your business premises?
+liveAtBusinessPremises.title.agent = Did your client live at their business premises?
+liveAtBusinessPremises.heading = Personal use of business premises
+liveAtBusinessPremises.error.required.individual = Select no if you only lived at your home address.
+liveAtBusinessPremises.error.required.agent = Select no if your client only lived at their home address.
+liveAtBusinessPremises.change.hidden = // TODO replace when CYA page made
+liveAtBusinessPremises.l1 = This only applies to a small number of self-employments, for example guesthouses, bed and breakfasts or small care homes.
 
 ########## Expenses - Advertising or Marketing ##########
 
