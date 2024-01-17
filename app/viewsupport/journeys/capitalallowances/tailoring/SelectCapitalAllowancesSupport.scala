@@ -16,7 +16,7 @@
 
 package viewsupport.journeys.capitalallowances.tailoring
 
-import models.journeys.capitalallowances.tailoring.CapitalAllowances
+import models.journeys.capitalallowances.tailoring._
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -27,6 +27,9 @@ import viewmodels.govuk.checkbox._
 import viewmodels.govuk.fieldset._
 
 object SelectCapitalAllowancesSupport {
+
+  val allowanceGroups: List[AllowanceType] =
+    List(ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup)
 
   def buildCheckboxItems(allowances: List[CapitalAllowances])(implicit messages: Messages): List[CheckboxItem] =
     allowances.zipWithIndex

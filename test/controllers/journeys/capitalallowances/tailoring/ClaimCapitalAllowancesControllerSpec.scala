@@ -47,7 +47,6 @@ class ClaimCapitalAllowancesControllerSpec
 
   override def createForm(user: UserType): Form[Boolean] = new ClaimCapitalAllowancesFormProvider()(user)
 
-  // Do we need both accounting types here?
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,

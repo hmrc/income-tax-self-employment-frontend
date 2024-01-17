@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.expenses.tailoring.individualCategories.routes.ProfessionalServiceExpensesController
+@import controllers.journeys.capitalallowances.tailoring.routes._
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.common.AccountingType.{Cash, Accrual}
 @import views.html.templates.helpers.Heading
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances._
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances
-@import viewsupport.journeys.capitalallowances.tailoring.SelectCapitalAllowancesSupport._
+@import viewsupport.journeys.capitalallowances.tailoring.SelectCapitalAllowancesSupport.{allowanceGroups, buildCheckboxItems, buildCheckboxes}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, Checkboxes}
 @import models.journeys.capitalallowances.tailoring.{AllowanceType, ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup}
@@ -46,18 +47,19 @@
 
     @heading(messages("selectCapitalAllowances.title"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
 
-    @formHelper(action = ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
-        @if(accountingType == AccountingType.Cash) {
-            @govukCheckboxes(buildCheckboxes(buildCheckboxItems(allCashAllowances), HtmlFormat.empty, form))
-        } else {
-            @{List(ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup)
-                .map(value => constructCheckboxes(value.accrualAllowances, value.identifier))}
-        }
+        @{accountingType match {
+            case Cash => {
+                govukCheckboxes(buildCheckboxes(buildCheckboxItems(allCashAllowances), HtmlFormat.empty, form))
+            }
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+            case Accrual => {
+                allowanceGroups.map(value => constructCheckboxes(value.accrualAllowances, value.identifier))
+            }
+        }}
+
+        @govukButton(ButtonViewModel(messages("site.continue")))
     }
 }
 

@@ -44,7 +44,7 @@ class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override def createForm(user: UserType): Form[Set[CapitalAllowances]] = new SelectCapitalAllowancesFormProvider()(user)
+  override def createForm(user: UserType): Form[Set[CapitalAllowances]] = new SelectCapitalAllowancesFormProvider()()
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

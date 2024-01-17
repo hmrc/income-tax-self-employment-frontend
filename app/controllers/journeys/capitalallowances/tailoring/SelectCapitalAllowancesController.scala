@@ -55,7 +55,7 @@ class SelectCapitalAllowancesController @Inject() (override val messagesApi: Mes
         accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
         form = request.userAnswers
           .get(SelectCapitalAllowancesPage, businessId.some)
-          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+          .fold(formProvider())(formProvider().fill)
       } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
 
   }
@@ -63,13 +63,10 @@ class SelectCapitalAllowancesController @Inject() (override val messagesApi: Mes
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider(request.userType)
+        formProvider()
           .bindFromRequest()
           .fold(
-            formErrors => {
-              println("%%" + formErrors)
-              Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType)))
-            },
+            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType))),
             value =>
               service
                 .persistAnswer(businessId, request.userAnswers, value, SelectCapitalAllowancesPage)

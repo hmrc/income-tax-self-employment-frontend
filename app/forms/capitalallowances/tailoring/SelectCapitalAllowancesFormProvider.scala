@@ -17,7 +17,6 @@
 package forms.capitalallowances.tailoring
 
 import forms.mappings.Mappings
-import models.common.UserType
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import play.api.data.Form
 import play.api.data.Forms.set
@@ -26,11 +25,6 @@ import javax.inject.Inject
 
 class SelectCapitalAllowancesFormProvider @Inject() extends Mappings {
 
-  // Check what validation we need here as not clear from the prototype and google doc Tim sent.
-  def apply(userType: UserType): Form[Set[CapitalAllowances]] =
-    Form(
-      "value" -> set(enumerable[CapitalAllowances](s"selectCapitalAllowances.error.required.$userType"))
-        .verifying(nonEmptySet(s"selectCapitalAllowances.error.required.$userType"))
-    )
-
+  def apply(): Form[Set[CapitalAllowances]] =
+    Form("value" -> set(enumerable[CapitalAllowances]()))
 }
