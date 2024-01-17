@@ -17,18 +17,22 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.standard.routes
 import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider
 import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.ExpensesNavigator
 import pages.expenses.workplaceRunningCosts.workingFromHome._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.TaxYearHelper.taxYearCutoffDate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursView
 
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,27 +48,57 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val formProvider =
-        WorkingFromHomeHoursFormProvider(request.userType, maxMonths = 12) // TODO get self employment duration to max 12 months).getOrElse(12)
-      val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
-      val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
-      val value101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
-      val filledForm = (value25To50, value51To100, value101Plus) match {
-        case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
-          formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
-        case _ => formProvider
-      }
+      (for {
+        business <- service.getBusiness(request.nino, businessId, request.mtditid).left.map(_ => Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        startDate <- business.head.commencementDate.toRight(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+      } yield (business, startDate)) map {
+        case (business, startDate) =>
+          val maxMonths    = determineMaxMonths(LocalDate.parse(startDate))
+          val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
+          val formValues   = (
+            request.getValue(WorkingFromHomeHours25To50, businessId),
+            request.getValue(WorkingFromHomeHours51To100, businessId),
+            request.getValue(WorkingFromHomeHours101Plus, businessId)
+          )
 
-      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
+          val filledForm = formValues match {
+            case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
+              formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
+            case _ => formProvider
+          }
+
+          Ok(view(filledForm, mode, request.userType, taxYear, businessId, maxMonths.toString))
+      }
+  }
+
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      service.getBusiness(request.nino, businessId, request.mtditid) map {
+        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
+        case Right(business) =>
+          business.head.commencementDate match {
+            case None => Redirect(routes.JourneyRecoveryController.onPageLoad())
+            case Some(startDate) =>
+              val maxMonths    = determineMaxMonths(LocalDate.parse(startDate))
+              val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
+              val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
+              val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
+              val value101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
+              val filledForm = (value25To50, value51To100, value101Plus) match {
+                case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
+                  formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
+                case _ => formProvider
+              }
+
+              Ok(view(filledForm, mode, request.userType, taxYear, businessId, maxMonths.toString))
+          }
+      }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val formProvider =
-        WorkingFromHomeHoursFormProvider(request.userType, maxMonths = 12) // TODO get self employment duration to max 12 months).getOrElse(12)
-
       def handleSuccess(form: WorkingFromHomeHoursFormModel): Future[Result] =
         for {
           firstUpdated  <- service.persistAnswer(businessId, request.userAnswers, form.value25To50, WorkingFromHomeHours25To50)
@@ -74,12 +108,30 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
             .map(updated => Redirect(navigator.nextPage(WorkingFromHomeHoursPage, mode, updated, taxYear, businessId)))
         } yield result
 
-      formProvider
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          successfulForm => handleSuccess(successfulForm)
-        )
+      service.getBusiness(request.nino, businessId, request.mtditid) flatMap {
+        case Left(_) => Future(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        case Right(business) =>
+          val startDate    = LocalDate.parse(business.head.commencementDate.get)
+          val maxMonths    = determineMaxMonths(startDate)
+          val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
+          formProvider
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, maxMonths.toString))),
+              successfulForm => handleSuccess(successfulForm)
+            )
+      }
+  }
+  val bool = if (LocalDate.now().isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
+
+  private def determineMaxMonths(startDate: LocalDate): Int = {
+    val defaultMaxMonths              = 12
+    val startDateIsInTaxYear: Boolean = ChronoUnit.YEARS.between(startDate, taxYearCutoffDate) < 1
+    if (startDateIsInTaxYear) {
+      ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt
+    } else {
+      defaultMaxMonths
+    }
   }
 
 }

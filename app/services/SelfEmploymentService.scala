@@ -18,6 +18,7 @@ package services
 
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
+import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers
@@ -36,6 +37,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 trait SelfEmploymentService {
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse]
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
@@ -50,6 +52,9 @@ class SelfEmploymentServiceImpl @Inject() (
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {
+
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): Future[GetBusinessesResponse] =
+    connector.getBusiness(nino.value, businessId, mtditid.value)
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)

@@ -39,9 +39,9 @@ object WorkingFromHomeHoursFormProvider extends Mappings {
     val totalOverMaxError = "workingFromHomeHours.error.overMax.total."
 
     def validateHours(valueKey: String): Mapping[Int] =
-      int(s"$requiredError$valueKey", noDecimalsError, nonNumericError)
+      int(messages(s"$requiredError$valueKey", maxMonths), messages(noDecimalsError, maxMonths), messages(nonNumericError, maxMonths))
         .verifying(minimumValue(0, lessThanZeroError))
-        .verifying(lessThanOrEqualTo(maxMonths, s"$overMaxError$valueKey.$userType", Some(maxMonths.toString)))
+        .verifying(lessThanOrEqualTo(maxMonths, messages(s"$overMaxError$valueKey.$userType", maxMonths), Some(maxMonths.toString)))
 
     Form[WorkingFromHomeHoursFormModel](
       mapping(
