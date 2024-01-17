@@ -53,8 +53,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
-  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString)) // Do we need withFormUrlEncodedBody?
-  println("***" + answer.toString)
+  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {

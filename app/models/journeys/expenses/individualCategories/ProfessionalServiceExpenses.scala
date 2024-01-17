@@ -40,7 +40,6 @@ object ProfessionalServiceExpenses extends Enumerable.Implicits {
     No
   )
 
-  // Below doesn't feel like it should belong here.
   def checkboxItems(userType: UserType)(implicit messages: Messages): Seq[CheckboxItem] =
     values.zipWithIndex.map {
 
