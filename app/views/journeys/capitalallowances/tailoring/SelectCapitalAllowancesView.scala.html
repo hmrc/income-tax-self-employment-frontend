@@ -39,13 +39,13 @@
   businessId: BusinessId,
   accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selectCapitalAllowances.title"))) {
+@layout(pageTitle = title(form, messages(s"selectCapitalAllowances.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("selectCapitalAllowances.title"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+    @heading(messages(s"selectCapitalAllowances.title.$userType"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
 
     @formHelper(action = SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
