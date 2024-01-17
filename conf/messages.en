@@ -1029,7 +1029,8 @@ claimCapitalAllowances.p4.agent = If your client has sold any assets they may ha
 claimCapitalAllowances.subHeading.individual = Do you want to claim any capital allowances or declare a charge?
 claimCapitalAllowances.subHeading.agent = Does your client want to claim any capital allowances or declare a charge?
 
-selectCapitalAllowances.title = Select which allowances you want to claim
+selectCapitalAllowances.title.individual = Select the allowances you want to claim
+selectCapitalAllowances.title.agent = Select the allowances your client wants to claim
 selectCapitalAllowances.subHeading.zeroEmissions = 100% zero-emission cars and vehicles
 selectCapitalAllowances.subHeading.structuresAndBuildings = Structures and buildings
 selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances and charges
