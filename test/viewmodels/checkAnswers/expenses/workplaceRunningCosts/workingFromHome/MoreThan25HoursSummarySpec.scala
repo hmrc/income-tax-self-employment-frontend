@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.abroad
+package viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class SelfEmploymentAbroadSummarySpec extends SummaryBaseSpec("SelfEmploymentAbroadSummary") {
-  override val validData: JsObject = Json.obj("selfEmploymentAbroad" -> true)
+class MoreThan25HoursSummarySpec extends SummaryBaseSpec("MoreThan25HoursSummary") {
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"selfEmploymentAbroad.title.$userType")
+  override val validData: JsObject   = Json.obj("moreThan25Hours" -> "yes")
+  override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
+
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"moreThan25Hours.title.$userType")
   override val testValue: HtmlContent    = HtmlContent("site.yes")
 
-  def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    SelfEmploymentAbroadSummary.row(taxYear, userType, businessId, userAnswers)(messages)
+  override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
+    MoreThan25HoursSummary.row()(messages, userAnswers, taxYear, businessId, userType)
 
 }

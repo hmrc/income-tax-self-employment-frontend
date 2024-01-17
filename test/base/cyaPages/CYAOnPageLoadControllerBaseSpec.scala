@@ -29,6 +29,7 @@ import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import utils.Assertions.assertEqualWithDiff
 import views.html.standard.CheckYourAnswersView
 
 import scala.concurrent.Future
@@ -53,10 +54,8 @@ trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
       userTypes.foreach { userType =>
         s"should return Ok and render correct view for various data when user is an $userType" in {
           testDataCases.foreach { data =>
-            val application   = buildAppFromUserType(userType, Some(buildUserAnswers(data)))
-            val msg: Messages = SpecBase.messages(application)
-
-            implicit val impMsg: Messages = SpecBase.messages(application)
+            val application            = buildAppFromUserType(userType, Some(buildUserAnswers(data)))
+            implicit val msg: Messages = SpecBase.messages(application)
 
             val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
             val summaryList: SummaryList = expectedSummaryList(buildUserAnswers(data), taxYear, businessId, userType)
@@ -66,7 +65,7 @@ trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
               createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
 
             status(result) mustBe OK
-            contentAsString(result) mustEqual expectedResult
+            assertEqualWithDiff(contentAsString(result), expectedResult)
           }
         }
       }

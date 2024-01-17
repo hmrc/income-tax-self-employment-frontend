@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package navigation
 
-import models.common.PageName
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.{CheckMode, Mode, NormalMode}
+import pages._
+import play.api.mvc.Call
 
-import scala.language.implicitConversions
-
-trait Page {
-  def pageName: PageName = PageName(toString)
-}
-
-object Page {
-
-  implicit def toString(page: Page): String =
-    page.toString
-
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
+class FakeExpensesTwoRoutesNavigator(desiredRoute: Call, checkDesiredRoute: Call) extends ExpensesNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
+    mode match {
+      case NormalMode => desiredRoute
+      case CheckMode  => checkDesiredRoute
+    }
 }

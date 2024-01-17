@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms.expenses.workplaceRunningCosts.workingFromHome
 
-import models.common.PageName
+import forms.mappings.Mappings
+import models.common.UserType
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
+import play.api.data.Form
 
-import scala.language.implicitConversions
+import javax.inject.Inject
 
-trait Page {
-  def pageName: PageName = PageName(toString)
-}
+class MoreThan25HoursFormProvider @Inject() extends Mappings {
 
-object Page {
+  def apply(userType: UserType): Form[MoreThan25Hours] =
+    Form(
+      "value" -> enumerable[MoreThan25Hours](s"moreThan25Hours.error.required.$userType")
+    )
 
-  implicit def toString(page: Page): String =
-    page.toString
-
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
 }

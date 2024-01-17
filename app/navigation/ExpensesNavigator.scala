@@ -37,6 +37,7 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
+import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -123,6 +124,9 @@ class ExpensesNavigator @Inject() () {
 
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case MoreThan25HoursPage => // TODO replace when next journey page is created
+      _ => taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>

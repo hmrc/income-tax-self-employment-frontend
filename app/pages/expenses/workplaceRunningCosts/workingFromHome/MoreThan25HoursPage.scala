@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.expenses.workplaceRunningCosts.workingFromHome
 
-import models.common.PageName
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
+import pages.OneQuestionPage
 
-import scala.language.implicitConversions
-
-trait Page {
-  def pageName: PageName = PageName(toString)
-}
-
-object Page {
-
-  implicit def toString(page: Page): String =
-    page.toString
-
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
+case object MoreThan25HoursPage extends OneQuestionPage[MoreThan25Hours] {
+  override def toString: String = "moreThan25Hours"
 }
