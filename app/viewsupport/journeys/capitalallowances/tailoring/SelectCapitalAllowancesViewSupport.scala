@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import viewmodels.govuk.checkbox._
 import viewmodels.govuk.fieldset._
 
-object SelectCapitalAllowancesSupport {
+object SelectCapitalAllowancesViewSupport {
 
   val allowanceGroups: List[AllowanceType] =
     List(ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup)
