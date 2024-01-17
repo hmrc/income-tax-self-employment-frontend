@@ -725,10 +725,12 @@ moreThan25Hours.change.hidden = // TODO replace when CYA page made
 liveAtBusinessPremises.title.individual = Did you live at your business premises?
 liveAtBusinessPremises.title.agent = Did your client live at their business premises?
 liveAtBusinessPremises.heading = Personal use of business premises
-liveAtBusinessPremises.error.required.individual = Select no if you only lived at your home address.
-liveAtBusinessPremises.error.required.agent = Select no if your client only lived at their home address.
-liveAtBusinessPremises.change.hidden = // TODO replace when CYA page made
 liveAtBusinessPremises.l1 = This only applies to a small number of self-employments, for example guesthouses, bed and breakfasts or small care homes.
+liveAtBusinessPremises.hint.individual = Select no if you only lived at your home address.
+liveAtBusinessPremises.hint.agent = Select no if your client only lived at their home address.
+liveAtBusinessPremises.error.required.individual = Select yes if you lived at your business address.
+liveAtBusinessPremises.error.required.agent = Select yes if your client lived at their business premises.
+liveAtBusinessPremises.change.hidden = // TODO replace when CYA page made
 
 ########## Expenses - Advertising or Marketing ##########
 
