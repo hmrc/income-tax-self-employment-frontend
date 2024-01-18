@@ -18,16 +18,15 @@ package connectors
 
 import cats.data.EitherT
 import config.FrontendAppConfig
-import connectors.httpParser.GetBusinessesHttpParser.{GetBusinessesHttpReads, GetBusinessesResponse}
 import connectors.httpParser.HttpParser.StringWrites
 import models.common._
-import models.domain.ApiResultT
+import models.domain.{ApiResultT, BusinessData}
 import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
@@ -40,18 +39,18 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val url = buildUrl(s"individuals/business/details/${nino.value}/list")
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid.value), ec)
+  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Seq[BusinessData]] = {
+    val url      = buildUrl(s"individuals/business/details/${nino.value}/list")
+    val response = get[Seq[BusinessData]](http, url, mtditid)
+    EitherT(response)
   }
 
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): Future[GetBusinessesResponse] = {
-
-    val url = buildUrl(s"individuals/business/details/${nino.value}/${businessId.value}")
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid.value), ec)
+      ec: ExecutionContext): ApiResultT[Seq[BusinessData]] = {
+    val url      = buildUrl(s"individuals/business/details/${nino.value}/${businessId.value}")
+    val response = get[Seq[BusinessData]](http, url, mtditid)
+    EitherT(response)
   }
 
   def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit
