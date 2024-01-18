@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.Writes
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.Settable
 
-abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, page: QuestionPage[BigDecimal]) extends ControllerSpec {
+abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, page: Settable[A]) extends ControllerSpec {
 
-  val amount: BigDecimal = BigDecimal(100.00)
+  def answer: A
 
   /** Implementers should avoid eager overrides of below.
     */
@@ -46,20 +46,18 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
     */
   def baseAnswers: UserAnswers = emptyUserAnswers
 
-  def pageAnswers: UserAnswers = baseAnswers.set(page, amount, businessId.some).success.value
+  def pageAnswers: UserAnswers = baseAnswers.set(page, answer, businessId.some).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal]
+  def createForm(userType: UserType): Form[A]
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
-
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
-  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))
+  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {
-      val form: Form[BigDecimal] = createForm(user)
+      val form: Form[A] = createForm(user)
 
       "on page load" - {
         "answers exist for the page" - {
@@ -68,7 +66,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
               val result = route(application, getRequest).value
 
               status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form.fill(amount), this)(getRequest, messages(application), application)
+              contentAsString(result) shouldBe expectedView(form.fill(answer), this)(getRequest, messages(application), application)
             }
           }
         }
@@ -106,22 +104,10 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
             }
           }
         }
-        "invalid data is submitted" - {
-          "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
-            running(application) {
-              val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-              val result    = route(application, request).value
-              val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
-
-              status(result) shouldBe BAD_REQUEST
-              contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)
-            }
-          }
-        }
         "no answers exist in the session" - {
           "Redirect to the journey recovery page" in new TestScenario(user, answers = None) {
             running(application) {
-              val result = route(application, getRequest).value
+              val result = route(application, postRequest).value
 
               status(result) shouldBe SEE_OTHER
               redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url

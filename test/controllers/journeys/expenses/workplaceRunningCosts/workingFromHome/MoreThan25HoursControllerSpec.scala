@@ -34,7 +34,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,8 +42,6 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreTh
 import scala.concurrent.Future
 
 class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec[MoreThan25Hours]("MoreThan25HoursController", MoreThan25HoursPage) {
-
-  override implicit val writes: Writes[MoreThan25Hours] = Writes(value => JsString(value.toString))
 
   override lazy val onPageLoadCall: Call         = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
   override lazy val onSubmitCall: Call           = submissionCall(NormalMode)

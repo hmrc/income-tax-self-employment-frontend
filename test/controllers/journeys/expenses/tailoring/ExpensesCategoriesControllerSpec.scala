@@ -31,7 +31,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
@@ -42,8 +41,6 @@ class ExpensesCategoriesControllerSpec
       "ExpensesCategoriesController",
       ExpensesCategoriesPage
     ) {
-
-  override implicit val writes: Writes[ExpensesTailoring] = Writes(value => JsString(value.toString))
 
   private lazy val incomeAmount: BigDecimal       = 80000
   private lazy val incomeThreshold: BigDecimal    = 85000
