@@ -69,7 +69,7 @@ class ConstructionIndustryCYAController @Inject() (override val messagesApi: Mes
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
       val context =
-        JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesConstruction)
+        JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesConstruction)
       val result = service.submitAnswers[ConstructionJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)

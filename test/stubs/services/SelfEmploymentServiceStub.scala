@@ -38,7 +38,7 @@ case class SelfEmploymentServiceStub(
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
 ) extends SelfEmploymentService {
 
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
     Future.successful(accountingType)
 

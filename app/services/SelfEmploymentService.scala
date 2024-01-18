@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait SelfEmploymentService {
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
@@ -58,7 +58,7 @@ class SelfEmploymentServiceImpl @Inject() (
     connector.saveJourneyState(ctx, status)
 
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
     connector.getBusiness(nino, businessId, mtditid).map {
       case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(AccountingType.withName(businesses.head.accountingType.get))

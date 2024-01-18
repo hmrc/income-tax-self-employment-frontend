@@ -40,18 +40,18 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def getBusinesses(nino: String, mtditid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
+  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val url = buildUrl(s"individuals/business/details/$nino/list")
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+    val url = buildUrl(s"individuals/business/details/${nino.value}/list")
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid.value), ec)
   }
 
-  def getBusiness(nino: String, businessId: BusinessId, mtditid: String)(implicit
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[GetBusinessesResponse] = {
 
-    val url = buildUrl(s"individuals/business/details/$nino/${businessId.value}")
-    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid), ec)
+    val url = buildUrl(s"individuals/business/details/${nino.value}/${businessId.value}")
+    http.GET[GetBusinessesResponse](url)(GetBusinessesHttpReads, hc.withExtraHeaders(headers = "mtditid" -> mtditid.value), ec)
   }
 
   def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit
@@ -68,8 +68,8 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def getTaskList(nino: String, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[TaskList] = {
-    val url      = buildUrl(s"${taxYear.value}/$nino/task-list")
+  def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[TaskList] = {
+    val url      = buildUrl(s"${taxYear.value}/${nino.value}/task-list")
     val response = get[TaskList](http, url, mtditid)
     EitherT(response)
   }
