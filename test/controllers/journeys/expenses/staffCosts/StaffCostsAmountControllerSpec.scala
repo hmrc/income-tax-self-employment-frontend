@@ -50,7 +50,7 @@ class StaffCostsAmountControllerSpec
 
   override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*, *[BusinessId], *)(*).value returns Accrual.asRight.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 

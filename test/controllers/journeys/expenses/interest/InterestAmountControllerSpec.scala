@@ -47,7 +47,7 @@ class InterestAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*, *[BusinessId], *)(*).value returns Accrual.asRight.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new InterestAmountFormProvider()(userType)
 

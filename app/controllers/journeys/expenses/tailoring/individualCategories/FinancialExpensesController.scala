@@ -16,15 +16,12 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.handleResult
-import controllers.standard.routes
+import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.errors.ServiceError
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.{
   DisallowableInterest,
@@ -69,15 +66,13 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
-        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
-        case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
+      returnAccountingType(selfEmploymentService, request.nino, businessId, request.mtditid) map { accountingType =>
+        val preparedForm = request.userAnswers.get(FinancialExpensesPage, Some(businessId)) match {
+          case None        => formProvider(request.userType)
+          case Some(value) => formProvider(request.userType).fill(value)
+        }
 
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
       }
   }
 
@@ -100,15 +95,13 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
             value => Right(handleSuccess(userAnswers, value))
           )
 
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+      for {
+        accountingType <- returnAccountingType(selfEmploymentService, request.nino, businessId, request.mtditid)
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
-      } yield finalResult
-
-      handleResult(result.value)
+        result <- handleForm(form, userType, accountingType, userAnswers).merge
+      } yield result
   }
 
   private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,

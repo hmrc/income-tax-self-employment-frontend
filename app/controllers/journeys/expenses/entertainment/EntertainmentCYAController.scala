@@ -64,7 +64,7 @@ class EntertainmentCYAController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
-      val context = JourneyContextWithNino(taxYear, Nino(request.user.nino), businessId, Mtditid(request.user.mtditid), ExpensesEntertainment)
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesEntertainment)
       val result  = service.submitAnswers[EntertainmentJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)

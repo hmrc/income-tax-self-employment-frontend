@@ -55,7 +55,7 @@ class OfficeSuppliesControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
+  when(mockService.getAccountingType(any, anyBusinessId, any)(any).value) thenReturn Future(Right(Accrual))
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[OfficeSupplies] = new OfficeSuppliesFormProvider()(userType)

@@ -16,9 +16,8 @@
 
 package controllers.journeys.income
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.handleServiceCall
+import controllers.returnAccountingType
 import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -71,10 +70,10 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
                   Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType))))
           )
 
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        result         <- EitherT.right[Result](handleForm(accountingType))
-      } yield result).merge
+      for {
+        accountingType <- returnAccountingType(service, request.nino, businessId, request.mtditid)
+        result         <- handleForm(accountingType)
+      } yield result
   }
 
 }

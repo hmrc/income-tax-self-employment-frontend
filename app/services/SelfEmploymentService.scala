@@ -21,8 +21,7 @@ import connectors.SelfEmploymentConnector
 import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers
-import models.domain.ApiResultT
-import models.errors.ServiceError
+import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError.NotFoundError
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
@@ -36,10 +35,11 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 trait SelfEmploymentService {
+  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]]
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData]
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
-      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]]
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -51,6 +51,15 @@ class SelfEmploymentServiceImpl @Inject() (
     extends SelfEmploymentService
     with Logging {
 
+  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
+    connector.getBusinesses(nino, mtditid)
+
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData] =
+    connector.getBusiness(nino, businessId, mtditid).map(_.headOption).subflatMap {
+      case Some(value) => value.asRight
+      case None        => NotFoundError(s"Unable to find business with ID: $businessId").asLeft
+    }
+
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)
 
@@ -58,12 +67,10 @@ class SelfEmploymentServiceImpl @Inject() (
     connector.saveJourneyState(ctx, status)
 
   // TODO HttpErrors in business layer may not be the best idea
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
-      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
-    connector.getBusiness(nino, businessId, mtditid).map {
-      case Right(businesses) if businesses.exists(_.accountingType.nonEmpty) => Right(AccountingType.withName(businesses.head.accountingType.get))
-      case Left(error)                                                       => Left(error)
-      case _                                                                 => Left(NotFoundError("Business not found"))
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType] =
+    getBusiness(nino, businessId, mtditid).map(business => business.accountingType).subflatMap {
+      case Some(accountingType) => AccountingType.withName(accountingType).asRight
+      case None                 => NotFoundError(s"Unable to find accounting type of business with ID: $businessId").asLeft
     }
 
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,

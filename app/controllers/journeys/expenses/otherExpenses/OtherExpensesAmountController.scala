@@ -18,7 +18,7 @@ package controllers.journeys.expenses.otherExpenses
 
 import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleServiceCall
+import controllers.returnAccountingType
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -52,15 +52,16 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      val resultT = for {
-        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        form = request.userAnswers
-          .get(OtherExpensesAmountPage, Some(businessId))
-          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))
+      returnAccountingType(service, request.nino, businessId, request.mtditid) flatMap { accountingType =>
+        val resultT = for {
+          tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
+          form = request.userAnswers
+            .get(OtherExpensesAmountPage, Some(businessId))
+            .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+        } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))
 
-      resultT.merge
+        resultT.merge
+      }
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
@@ -78,12 +79,13 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
           .persistAnswer(businessId, request.userAnswers, value, OtherExpensesAmountPage)
           .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId)))
 
-      val resultT = for {
-        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
-        result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
-      } yield result
+      returnAccountingType(service, request.nino, businessId, request.mtditid) flatMap { accountingType =>
+        val resultT = for {
+          tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
+          result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
+        } yield result
 
-      resultT.merge
+        resultT.merge
+      }
     }
 }

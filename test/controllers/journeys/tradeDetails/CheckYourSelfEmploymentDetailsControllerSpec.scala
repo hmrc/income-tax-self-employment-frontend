@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val nino = "AA370343B"
-  val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
+  val user = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   val aBusinessData: BusinessData = BusinessData(
     businessId = "businessId",

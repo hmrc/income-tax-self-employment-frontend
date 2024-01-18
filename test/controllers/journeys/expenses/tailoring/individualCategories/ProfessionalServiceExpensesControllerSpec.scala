@@ -71,7 +71,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(any, anyBusinessId, any)(any).value) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 

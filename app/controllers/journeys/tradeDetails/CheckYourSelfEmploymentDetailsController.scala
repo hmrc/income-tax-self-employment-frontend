@@ -16,8 +16,8 @@
 
 package controllers.journeys.tradeDetails
 
-import connectors.SelfEmploymentConnector
 import controllers.actions._
+import controllers.handleResultT
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
@@ -27,7 +27,9 @@ import navigation.TradeDetailsNavigator
 import pages.tradeDetails.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
@@ -38,23 +40,21 @@ import scala.concurrent.ExecutionContext
 class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesApi: MessagesApi,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
-                                                          selfEmploymentConnector: SelfEmploymentConnector,
+                                                          service: SelfEmploymentService,
                                                           navigator: TradeDetailsNavigator,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
-      case Right(business: Seq[BusinessData]) =>
-        val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, request.userType)
-        val nextRoute             = navigate(taxYear, businessId, navigator)
-        Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
-      // TODO in View replace RemoveSelfEmployment button's href to RemoveController when created
-      case _ =>
-        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+    val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
+      val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
+      val nextRoute             = navigate(taxYear, businessId, navigator)
+      Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
     }
+    handleResultT(result)
   }
 
   private def navigate(taxYear: TaxYear, businessId: BusinessId, navigator: TradeDetailsNavigator)(implicit

@@ -51,7 +51,7 @@ class OtherExpensesAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*, *[BusinessId], *)(*).value returns Accrual.asRight.asFuture
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 

@@ -17,9 +17,12 @@
 package controllers.journeys.income
 
 import base.SpecBase
+import cats.data.EitherT
+import cats.implicits.catsSyntaxEitherId
 import controllers.journeys.income
 import controllers.standard
 import forms.income.AnyOtherIncomeFormProvider
+import models.common.AccountingType.Accrual
 import models.common.{AccountingType, BusinessId, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
@@ -137,7 +140,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*, *[BusinessId], *)(*).value returns Accrual.asRight.asFuture
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -162,7 +165,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*, *[BusinessId], *)(*) returns Future.successful(Right(AccountingType.Cash))
+            mockService.getAccountingType(*, *[BusinessId], *)(*) returns EitherT(AccountingType.Cash.asRight.asFuture)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)

@@ -17,13 +17,15 @@
 import cats.data.EitherT
 import cats.implicits.catsStdInstancesForFuture
 import models.NormalMode
-import models.common.{BusinessId, JourneyContext, TaxYear}
+import models.common._
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import services.SelfEmploymentService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -61,4 +63,9 @@ package object controllers {
     val resultT = result.map(_ => redirectJourneyCompletedState(ctx.taxYear, ctx.businessId, ctx.journey))
     handleResultT(resultT)
   }
+
+  def returnAccountingType(service: SelfEmploymentService, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      ec: ExecutionContext,
+      hc: HeaderCarrier): Future[AccountingType] =
+    handleApiResult(service.getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid))
 }

@@ -16,14 +16,12 @@
 
 package controllers.journeys.expenses.repairsandmaintenance
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.handleResult
+import controllers.returnAccountingType
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.errors.ServiceError
 import navigation.ExpensesNavigator
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.data.Form
@@ -53,17 +51,14 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+      for {
+        accountingType <- returnAccountingType(selfEmploymentService, request.nino, businessId, request.mtditid)
         userType       = request.userType
         userAnswers    = request.userAnswers
         existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
         form           = formProvider(userType)
         preparedForm   = existingAnswer.fold(form)(form.fill)
       } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
-
-      handleResult(result.value)
-
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -89,15 +84,13 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
             value => Right(handleSuccess(userAnswers, value))
           )
 
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+      for {
+        accountingType <- returnAccountingType(selfEmploymentService, request.nino, businessId, request.mtditid)
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
-      } yield finalResult
-
-      handleResult(result.value)
+        result <- handleForm(form, userType, accountingType, userAnswers).merge
+      } yield result
   }
 
 }
