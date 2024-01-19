@@ -18,7 +18,6 @@ package services
 
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
-import connectors.httpParser.GetBusinessesHttpParser.GetBusinessesResponse
 import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers

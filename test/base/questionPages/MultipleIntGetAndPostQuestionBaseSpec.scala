@@ -19,9 +19,8 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import models.common.{BusinessId, UserType}
+import models.common.UserType
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import play.api.Application
@@ -30,6 +29,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import stubs.services.SelfEmploymentServiceStub
 
 abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String, page: Page) extends ControllerSpec {
 
@@ -51,20 +51,20 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
   def createForm(userType: UserType): Form[A]
   def validFormModel: A
 
-  def expectedView(expectedForm: Form[A], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
+  def stubbedService: SelfEmploymentServiceStub = SelfEmploymentServiceStub(saveAnswerResult = pageAnswers)
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
+  def expectedView(expectedForm: Form[A], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   private lazy val getRequest = FakeRequest(GET, onPageLoadRoute)
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded]
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {
-      val form: Form[A] = createForm(user)
+      def form: Form[A] = createForm(user)
 
       "on page load" - {
         "answers exist for the page" - {
-          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
+          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some, service = stubbedService) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -74,7 +74,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
           }
         }
         "the page has no existing answers" - {
-          "return Ok" in new TestScenario(user, answers = baseAnswers.some) {
+          "return Ok" in new TestScenario(user, answers = baseAnswers.some, service = stubbedService) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -85,7 +85,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
         }
         // Below test for checking `requireData` is invoked.
         "no answers exist in the session" - {
-          "redirect to the journey recovery controller" in new TestScenario(user, answers = None) {
+          "redirect to the journey recovery controller" in new TestScenario(user, answers = None, service = stubbedService) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -98,7 +98,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
 
       "on page submission" - {
         "valid data is submitted" - {
-          "redirect to the next page" in new TestScenario(user, answers = pageAnswers.some) {
+          "redirect to the next page" in new TestScenario(user, answers = pageAnswers.some, service = stubbedService) {
             running(application) {
               val result = route(application, postRequest).value
 
@@ -108,7 +108,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
           }
         }
         "invalid data is submitted" - {
-          "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
+          "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some, service = stubbedService) {
             running(application) {
               val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
               val result    = route(application, request).value
@@ -120,7 +120,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
           }
         }
         "no answers exist in the session" - {
-          "Redirect to the journey recovery page" in new TestScenario(user, answers = None) {
+          "Redirect to the journey recovery page" in new TestScenario(user, answers = None, service = stubbedService) {
             running(application) {
               val result = route(application, getRequest).value
 

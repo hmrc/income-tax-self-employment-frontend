@@ -48,9 +48,10 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
                           mode: Mode = NormalMode,
                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
                           businessId: BusinessId = businessId,
-                          accountingType: Option[AccountingType] = None) {
+                          accountingType: Option[AccountingType] = None,
+                          service: SelfEmploymentService = mockService) {
 
-    implicit val application: Application = createApp(userType, answers, mockService)
+    implicit val application: Application = createApp(userType, answers, service)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
     implicit val appMessages: Messages    = messages(application)
 

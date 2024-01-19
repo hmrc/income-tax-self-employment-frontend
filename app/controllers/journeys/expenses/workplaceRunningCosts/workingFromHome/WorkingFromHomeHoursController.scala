@@ -91,8 +91,8 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
       val result: EitherT[Future, ServiceError, Result] =
         service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
           getMaxMonthsOrRedirect(business) match {
-            case Left(redirect: Result) => EitherT.rightT[Future, ServiceError](redirect)
-            case Right(maxMonths: Int)  => EitherT.rightT[Future, ServiceError](handleForm(maxMonths))
+            case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
+            case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))
           })
 
       handleResultT(result)

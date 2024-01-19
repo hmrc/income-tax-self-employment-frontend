@@ -29,7 +29,12 @@
         heading: Heading
 )
 
-@(form: Form[WorkingFromHomeHoursFormModel], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, maxMonths: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[WorkingFromHomeHoursFormModel],
+        mode: Mode,
+        userType: UserType,
+        taxYear: TaxYear,
+        businessId: BusinessId,
+        maxMonths: String)(implicit request: Request[_], messages: Messages)
 
 @wholeFormError = @{
     form.errors.contains(FormError("",List(messages(s"workingFromHomeHours.error.overMax.total.$userType", maxMonths))))
@@ -49,7 +54,7 @@
 @layout(pageTitle = title(form, messages(s"workingFromHomeHours.subHeading.$userType"))) {
 
     @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value25To50")))
+        @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
     @heading(messages(s"workingFromHomeHours.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-2")
@@ -63,8 +68,8 @@
     @formHelper(action = routes.WorkingFromHomeHoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         <fieldset class="govuk-fieldset"
-            <div class=@{ if (wholeFormError) "govuk-form-group--error" else "" }>
                 aria-describedby="expenses-working-from-home-simplified@{if (wholeFormError) "-error" else ""}expenses-working-from-home-simplified-hint">
+            <div class=@{ if (wholeFormError) "govuk-form-group--error" else "" }>
 
                 <label class="govuk-label govuk-label--m">
                     @{messages(s"workingFromHomeHours.subHeading.$userType")}

@@ -24,7 +24,6 @@ import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.Application
 import play.api.data.Form
@@ -34,8 +33,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursView
-
-import scala.concurrent.Future
 
 class WorkingFromHomeHoursControllerSpec
     extends MultipleIntGetAndPostQuestionBaseSpec[WorkingFromHomeHoursFormModel]("WorkingFromHomeHoursController", WorkingFromHomeHoursPage) {
@@ -61,9 +58,8 @@ class WorkingFromHomeHoursControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
+  private val maxMonths = 11
 
-  private val maxMonths                                                            = 12
   override def createForm(userType: UserType): Form[WorkingFromHomeHoursFormModel] = WorkingFromHomeHoursFormProvider(userType, maxMonths)
   override def validFormModel: WorkingFromHomeHoursFormModel                       = WorkingFromHomeHoursFormModel(amount, amount, amount)
 
@@ -78,7 +74,7 @@ class WorkingFromHomeHoursControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[WorkingFromHomeHoursView]
-    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, maxMonths.toString).toString()
   }
 
 }
