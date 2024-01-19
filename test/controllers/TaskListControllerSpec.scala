@@ -39,7 +39,7 @@ import views.html.journeys.TaskListView
 
 class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   val nino       = "AA370343B"
-  val user: User = User(mtditid, None, nino, AffinityGroup.Individual.toString)
+  val user: User = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   private val stubService = StubSubmittedDataRetrievalActionProvider()
 

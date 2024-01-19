@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxEitherId
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, UserType}
+import models.common.{BusinessId, Mtditid, Nino, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
@@ -46,7 +46,7 @@ class RepairsAndMaintenanceAmountControllerSpec
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 

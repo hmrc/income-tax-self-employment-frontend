@@ -47,7 +47,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).map {
+      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid).map {
         case Right(accountingType) =>
           val preparedForm =
             request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)) match {
@@ -63,7 +63,7 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid).flatMap {
+      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid).flatMap {
         case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
           formProvider(request.userType)

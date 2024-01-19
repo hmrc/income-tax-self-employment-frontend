@@ -17,10 +17,11 @@
 package stubs.services
 
 import base.SpecBase._
+import builders.BusinessDataBuilder.aBusinessData
 import cats.data.EitherT
 import models.common._
 import models.database.UserAnswers
-import models.domain.ApiResultT
+import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
 import pages.QuestionPage
@@ -31,6 +32,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
+    getBusinessesResult: Either[ServiceError, Seq[BusinessData]] = Right(Seq(aBusinessData)),
+    getBusinessResult: Either[ServiceError, BusinessData] = Right(aBusinessData),
     accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
     getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
@@ -38,7 +41,13 @@ case class SelfEmploymentServiceStub(
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
 ) extends SelfEmploymentService {
 
-  def getAccountingType(nino: String, businessId: BusinessId, mtditid: String)(implicit
+  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
+    EitherT.fromEither[Future](getBusinessesResult)
+
+  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData] =
+    EitherT.fromEither[Future](getBusinessResult)
+
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
     Future.successful(accountingType)
 

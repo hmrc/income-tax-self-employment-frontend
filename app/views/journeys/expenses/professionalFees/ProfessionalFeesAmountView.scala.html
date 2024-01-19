@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages(s"professionalFeesIndustryAmount.title.$userType"))) {
+    @layout(pageTitle = title(form, messages(s"professionalFeesAmount.title.$userType"))) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
