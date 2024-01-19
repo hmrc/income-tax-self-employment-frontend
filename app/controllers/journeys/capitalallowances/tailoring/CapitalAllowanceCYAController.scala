@@ -53,13 +53,7 @@ class CapitalAllowanceCYAController @Inject() (override val messagesApi: Message
             SelectCapitalAllowancesSummary.row(request.userAnswers, taxYear, businessId)
           ))
 
-      Ok(
-        view(
-          CapitalAllowancesCYAPage.toString,
-          taxYear,
-          request.userType,
-          summaryList,
-          CapitalAllowanceCYAController.onSubmit(taxYear, businessId)))
+      Ok(view(CapitalAllowancesCYAPage.toString, taxYear, request.userType, summaryList, CapitalAllowanceCYAController.onSubmit(taxYear, businessId)))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>

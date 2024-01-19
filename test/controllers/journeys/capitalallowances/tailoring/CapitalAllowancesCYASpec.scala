@@ -37,7 +37,7 @@ class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec {
     List(Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar")))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = CapitalAllowanceCYAController.onPageLoad
-  override def onSubmitCall: (TaxYear, BusinessId) => Call   = CapitalAllowanceCYAController.onPageLoad
+  override def onSubmitCall: (TaxYear, BusinessId) => Call   = CapitalAllowanceCYAController.onSubmit
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
