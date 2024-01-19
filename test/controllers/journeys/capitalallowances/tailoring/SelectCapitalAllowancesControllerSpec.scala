@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxEitherId
 import forms.capitalallowances.tailoring.SelectCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, UserType}
+import models.common.{BusinessId, Mtditid, Nino, UserType}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.journeys.capitalallowances.tailoring.CapitalAllowances.ElectricVehicleChargepoint
@@ -54,7 +54,7 @@ class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns accountingType.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns accountingType.asRight.asFuture
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   override def answer: Set[CapitalAllowances] = Set(ElectricVehicleChargepoint)

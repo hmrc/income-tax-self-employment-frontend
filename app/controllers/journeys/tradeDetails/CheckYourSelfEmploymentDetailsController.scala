@@ -46,7 +46,7 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentConnector.getBusiness(request.user.nino, businessId, request.user.mtditid) map {
+    selfEmploymentConnector.getBusiness(request.nino, businessId, request.mtditid) map {
       case Right(business: Seq[BusinessData]) =>
         val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business.head, request.userType)
         val nextRoute             = navigate(taxYear, businessId, navigator)

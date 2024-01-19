@@ -79,7 +79,7 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
       }
 
       (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         result         <- EitherT.right[Result](handleForm(accountingType))
       } yield result).merge
 

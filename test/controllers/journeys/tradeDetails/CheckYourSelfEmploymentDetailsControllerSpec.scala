@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val nino = "AA370343B"
-  val user = User(mtditid, None, nino, AffinityGroup.Individual.toString)
+  val user = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   val aBusinessData: BusinessData = BusinessData(
     businessId = "businessId",
@@ -82,7 +82,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
         running(application) {
           val nextRoute = SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
-          when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
+          when(mockConnector.getBusiness(anyNino, anyBusinessId, anyMtditid)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
@@ -104,7 +104,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
         running(application) {
           val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
-          when(mockConnector.getBusiness(any, anyBusinessId, any)(any, any)) thenReturn Future(
+          when(mockConnector.getBusiness(anyNino, anyBusinessId, anyMtditid)(any, any)) thenReturn Future(
             Left(ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found")))))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)

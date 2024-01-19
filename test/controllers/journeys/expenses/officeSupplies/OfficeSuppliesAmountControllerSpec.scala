@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxEitherId
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{AccountingType, BusinessId, UserType}
+import models.common.{AccountingType, BusinessId, Mtditid, Nino, UserType}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
@@ -43,7 +43,7 @@ class OfficeSuppliesAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
 
   def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 

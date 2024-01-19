@@ -49,7 +49,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
+    selfEmploymentConnector.getBusinesses(request.nino, request.mtditid).map {
       case Left(_) => errorHandler.internalServerError()
       case Right(model) =>
         val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))

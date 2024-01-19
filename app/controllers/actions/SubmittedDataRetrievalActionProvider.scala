@@ -66,7 +66,7 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     val mtditid = request.mtditid
 
     for {
-      taskList <- connector.getTaskList(nino.value, taxYear, mtditid)
+      taskList <- connector.getTaskList(nino, taxYear, mtditid)
       businesses = taskList.businesses
       abroadUpdated   <- loadAnswers[SelfEmploymentAbroadAnswers](taxYear, businesses, request, Journey.Abroad)
       incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, abroadUpdated, Journey.Income)

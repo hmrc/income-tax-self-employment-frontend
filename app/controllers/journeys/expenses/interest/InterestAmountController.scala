@@ -51,7 +51,7 @@ class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType     = request.userType
         userAnswers  = request.userAnswers.get(InterestAmountPage, Some(businessId))
         form         = formProvider(userType)
@@ -76,7 +76,7 @@ class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
           .persistAnswer(businessId, request.userAnswers, value, InterestAmountPage)
           .map(updated => Redirect(navigator.nextPage(InterestAmountPage, mode, updated, taxYear, businessId)))
 
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) flatMap {
         case Left(_)               => Future.successful(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) => handleForm(accountingType)
       }
