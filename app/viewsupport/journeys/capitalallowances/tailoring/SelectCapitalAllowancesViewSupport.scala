@@ -16,6 +16,7 @@
 
 package viewsupport.journeys.capitalallowances.tailoring
 
+import models.journeys.capitalallowances.tailoring.Group.{AssetAndAllowances, BuildingsAndStructures, ZeroEmissions}
 import models.journeys.capitalallowances.tailoring._
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -26,21 +27,36 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import viewmodels.govuk.checkbox._
 import viewmodels.govuk.fieldset._
 
+import scala.collection.immutable.SortedMap
+
 object SelectCapitalAllowancesViewSupport {
 
-  val allowanceGroups: List[AllowanceType] =
-    List(ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup)
-
-  def buildCheckboxItems(allowances: List[CapitalAllowances])(implicit messages: Messages): List[CheckboxItem] =
-    allowances.zipWithIndex
-      .map { case (allowance, i) =>
-        CheckboxItemViewModel(
-          content = Text(messages(s"selectCapitalAllowances.$allowance")),
-          fieldId = "value",
-          index = i,
-          value = allowance.toString
-        ).withHint(Hint(content = Text(messages(s"selectCapitalAllowances.subText.$allowance"))))
+  def sortByAllowanceGroups(allowances: List[CapitalAllowances]): SortedMap[Group, List[(CapitalAllowances, Int)]] = {
+    // So to enforce a vertical ordering of checkboxes during view rendering.
+    val ordering: Ordering[Group] =
+      Ordering.by {
+        case ZeroEmissions          => 1
+        case BuildingsAndStructures => 2
+        case AssetAndAllowances     => 3
       }
+    // So to provide a unique checkbox index
+    val unsortedWithIndex = allowances.zipWithIndex
+      .groupBy { case (allowances, _) =>
+        allowances.identifier
+      }
+
+    SortedMap(unsortedWithIndex.toList: _*)(ordering)
+  }
+
+  def buildCheckboxItems(allowances: List[(CapitalAllowances, Int)])(implicit messages: Messages): List[CheckboxItem] =
+    allowances.map { case (value, i) =>
+      CheckboxItemViewModel(
+        content = Text(messages(s"selectCapitalAllowances.$value")),
+        fieldId = "value",
+        index = i,
+        value = value.toString
+      ).withHint(Hint(content = Text(messages(s"selectCapitalAllowances.subText.$value"))))
+    }
 
   def buildCheckboxes(items: List[CheckboxItem], content: Html, form: Form[_])(implicit messages: Messages): Checkboxes =
     CheckboxesViewModel(

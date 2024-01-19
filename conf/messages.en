@@ -4,6 +4,7 @@ site.back = Back
 site.remove = Remove
 site.change = Change
 site.no = No
+site.none = None
 site.yes = Yes
 site.continue = Continue
 site.start = Start now
@@ -1011,7 +1012,6 @@ otherExpensesCYA.title.agent = Check your client’s other expenses
 ########## Capital Allowances - Tailoring ##########
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
-
 claimCapitalAllowances.title.Accrual = Allowances for vehicles, equipment and buildings
 claimCapitalAllowances.title.Cash = Cars and asset-based allowances
 claimCapitalAllowances.p1.individual.Cash = You can claim ’capital’ allowances for cars and certain items or assets used in your business
@@ -1032,7 +1032,7 @@ claimCapitalAllowances.subHeading.agent = Does your client want to claim any cap
 selectCapitalAllowances.title.individual = Select the allowances you want to claim
 selectCapitalAllowances.title.agent = Select the allowances your client wants to claim
 selectCapitalAllowances.subHeading.zeroEmissions = 100% zero-emission cars and vehicles
-selectCapitalAllowances.subHeading.structuresAndBuildings = Structures and buildings
+selectCapitalAllowances.subHeading.buildingsAndStructures = Structures and buildings
 selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances and charges
 selectCapitalAllowances.zeroEmissionCar = Zero-emission car allowance
 selectCapitalAllowances.zeroEmissionGoodsVehicle = Zero-emission goods vehicle allowance
@@ -1052,3 +1052,12 @@ selectCapitalAllowances.subText.annualInvestment = Claim the full cost, up to th
 selectCapitalAllowances.subText.writingDown = Claim 18% or 6% of the balance of the value of items in your main rate and special rate capital allowance pools respectively. Items can include non zero-emission vehicles and business equipment.
 selectCapitalAllowances.subText.balancing = Claim if you sold or stopped using an asset in your business (for less than its tax value).
 selectCapitalAllowances.subText.balancingCharge = If you sold, gave away or stopped using an item in your business that you claimed capital allowances for, you may have to include a balancing charge.
+
+capitalAllowancesCYA.key1.individual = Do you want to claim any capital allowances?
+capitalAllowancesCYA.key1.agent = Does your client want to claim any capital allowances?
+capitalAllowancesCYA.key1.change.hidden = Change your answer for claiming capital allowances
+capitalAllowances.CYA.key2 = Capital Allowances
+capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to claim for
+capitalAllowancesCYA.title.individual = Check your answers
+capitalAllowancesCYA.title.agent = Check your client's answers
+

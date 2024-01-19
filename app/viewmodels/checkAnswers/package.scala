@@ -37,8 +37,8 @@ package object checkAnswers {
 
   def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
-      key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
-      value = Value(content = HtmlContent(answer), classes = "govuk-!-width-one-third"),
+      key = Key(content = keyMessage, classes = "govuk-summary-list__key govuk-!-width-one-third"),
+      value = Value(content = HtmlContent(answer), classes = "govuk-summary-list__value govuk-!-width-two-thirds"),
       actions = Seq(
         ActionItemViewModel("site.change", callLink.url)
           .withVisuallyHiddenText(messages(changeMessage))

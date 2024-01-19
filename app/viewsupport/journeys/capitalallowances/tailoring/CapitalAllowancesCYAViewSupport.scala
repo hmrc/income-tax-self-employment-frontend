@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.tailoring
+package viewsupport.journeys.capitalallowances.tailoring
 
-import forms.behaviours.CheckboxFieldBehaviours
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
-import models.journeys.capitalallowances.tailoring.CapitalAllowances.{accrualAllowances, cashAllowances}
-import play.api.data.FormError
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 
-class SelectCapitalAllowancesFormProviderSpec extends CheckboxFieldBehaviours {
+object CapitalAllowancesCYAViewSupport {
 
-  val form = new SelectCapitalAllowancesFormProvider()()
-
-  val fieldName = "value"
-
-  behave like checkboxField[CapitalAllowances](
-    form,
-    fieldName,
-    validValues = (cashAllowances ++ accrualAllowances).distinct,
-    invalidError = FormError(s"$fieldName[0]", "error.invalid")
-  )
+  def renderCyaValue(allowances: Set[CapitalAllowances])(implicit messages: Messages): String =
+    allowances
+      .map(value => messages(s"selectCapitalAllowances.${value.toString}"))
+      .map(HtmlFormat.escape)
+      .mkString("<br>")
 }
