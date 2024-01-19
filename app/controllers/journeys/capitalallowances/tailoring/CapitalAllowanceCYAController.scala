@@ -18,7 +18,10 @@ package controllers.journeys.capitalallowances.tailoring
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys.capitalallowances.tailoring.routes._
+import controllers.journeys.routes._
+import models.NormalMode
 import models.common._
+import models.journeys.Journey.CapitalAllowancesTailoring
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,11 +59,11 @@ class CapitalAllowanceCYAController @Inject() (override val messagesApi: Message
           taxYear,
           request.userType,
           summaryList,
-          CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)))
+          CapitalAllowanceCYAController.onSubmit(taxYear, businessId)))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(CapitalAllowanceCYAController.onPageLoad(taxYear, businessId))
+    Redirect(SectionCompletedStateController.onPageLoad(taxYear, businessId, CapitalAllowancesTailoring.entryName, NormalMode))
   }
 
 }
