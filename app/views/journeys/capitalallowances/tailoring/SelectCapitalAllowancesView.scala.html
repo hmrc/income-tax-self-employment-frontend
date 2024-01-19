@@ -17,13 +17,14 @@
 @import controllers.journeys.capitalallowances.tailoring.routes._
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import models.common.AccountingType.{Cash, Accrual}
+@import cats.implicits._
 @import views.html.templates.helpers.Heading
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances._
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances
-@import viewsupport.journeys.capitalallowances.tailoring.SelectCapitalAllowancesViewSupport.{allowanceGroups, buildCheckboxItems, buildCheckboxes}
+@import viewsupport.journeys.capitalallowances.tailoring.SelectCapitalAllowancesViewSupport.{buildCheckboxItems, buildCheckboxes, sortByAllowanceGroups}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, Checkboxes}
-@import models.journeys.capitalallowances.tailoring.{AllowanceType, ZeroEmissionsGroup, StructuresAndBuildingsGroup, AssetAndAllowancesGroup}
+@import models.journeys.capitalallowances.tailoring._
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
@@ -50,23 +51,28 @@
     @formHelper(action = SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @{accountingType match {
-            case Cash => {
-                govukCheckboxes(buildCheckboxes(buildCheckboxItems(allCashAllowances), HtmlFormat.empty, form))
-            }
+            case Cash => generateCheckboxes(cashAllowances.zipWithIndex, None)
 
-            case Accrual => {
-                allowanceGroups.map(value => constructCheckboxes(value.accrualAllowances, value.identifier))
-            }
+            case Accrual =>
+                sortByAllowanceGroups(accrualAllowances).map { case (k, v) =>
+                    generateCheckboxes(v, k.toString.some)
+                }
         }}
 
         @govukButton(ButtonViewModel(messages("site.continue")))
     }
 }
 
-@constructCheckboxes(allowances: List[CapitalAllowances], identifier: String) = {
-    @govukCheckboxes(buildCheckboxes(buildCheckboxItems(allowances), legendContent(identifier), form))
+@generateCheckboxes(allowances: List[(CapitalAllowances, Int)], identifier: Option[String]) = {
+    @govukCheckboxes(
+        buildCheckboxes(
+            items = buildCheckboxItems(allowances),
+            content = identifier.fold(HtmlFormat.empty)(i => legendContent(i)),
+            form = form
+        )
+    )
 }
 
 @legendContent(identifier: String) = {
-    <legend>@messages(s"selectCapitalAllowances.subHeading.${identifier}")</legend>
+    <legend>@messages(s"selectCapitalAllowances.subHeading.$identifier")</legend>
 }

@@ -17,77 +17,74 @@
 package models.journeys.capitalallowances.tailoring
 
 import models.common.{Enumerable, WithName}
-import models.journeys.capitalallowances.tailoring.CapitalAllowances.{
-  AnnualInvestment,
-  Balancing,
-  BalancingCharge,
-  ElectricVehicleChargepoint,
-  SpecialTaxSitesStructuresAndBuildings,
-  StructuresAndBuildings,
-  WritingDown,
-  ZeroEmissionCar,
-  ZeroEmissionGoodsVehicle
-}
+import models.journeys.capitalallowances.tailoring.Group.{AssetAndAllowances, BuildingsAndStructures, ZeroEmissions}
 
-sealed trait CapitalAllowances
+sealed trait Group
 
-object CapitalAllowances extends Enumerable.Implicits {
-
-  case object ZeroEmissionCar                       extends WithName("zeroEmissionCar") with CapitalAllowances
-  case object ZeroEmissionGoodsVehicle              extends WithName("zeroEmissionGoodsVehicle") with CapitalAllowances
-  case object ElectricVehicleChargepoint            extends WithName("electricVehicleChargepoint") with CapitalAllowances
-  case object StructuresAndBuildings                extends WithName("structuresAndBuildings") with CapitalAllowances
-  case object SpecialTaxSitesStructuresAndBuildings extends WithName("specialTaxSitesStructuresAndBuildings") with CapitalAllowances
-  case object AnnualInvestment                      extends WithName("annualInvestment") with CapitalAllowances
-  case object WritingDown                           extends WithName("writingDown") with CapitalAllowances
-  case object Balancing                             extends WithName("balancing") with CapitalAllowances
-  case object BalancingCharge                       extends WithName("balancingCharge") with CapitalAllowances
-
-  val allAccrualAllowances: List[CapitalAllowances] =
-    ZeroEmissionsGroup.accrualAllowances ++ StructuresAndBuildingsGroup.accrualAllowances ++ AssetAndAllowancesGroup.accrualAllowances
-
-  val allCashAllowances: List[CapitalAllowances] =
-    ZeroEmissionsGroup.cashAllowances ++ StructuresAndBuildingsGroup.cashAllowances ++ AssetAndAllowancesGroup.cashAllowances
-
-  implicit val enumerable: Enumerable[CapitalAllowances] =
-    Enumerable(
-      (allCashAllowances ++ allAccrualAllowances.distinct)
-        .map(v => v.toString -> v): _*)
-
+object Group {
+  case object ZeroEmissions          extends WithName("zeroEmissions") with Group
+  case object BuildingsAndStructures extends WithName("buildingsAndStructures") with Group
+  case object AssetAndAllowances     extends WithName("assetAndAllowances") with Group
 }
 
 sealed trait AllowanceType {
-  val identifier: String
-  val accrualAllowances: List[CapitalAllowances]
-  val cashAllowances: List[CapitalAllowances]
+  val identifier: Group
 }
 
-object ZeroEmissionsGroup extends AllowanceType {
-  override val identifier: String = "zeroEmissions"
+sealed trait CapitalAllowances extends AllowanceType
 
-  override val accrualAllowances: List[CapitalAllowances] =
-    List(ZeroEmissionCar, ZeroEmissionGoodsVehicle, ElectricVehicleChargepoint)
+object CapitalAllowances extends Enumerable.Implicits {
 
-  override val cashAllowances: List[CapitalAllowances] =
-    List(ZeroEmissionCar)
-}
+  case object ZeroEmissionCar extends WithName("zeroEmissionCar") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = ZeroEmissions
+  }
+  case object ZeroEmissionGoodsVehicle extends WithName("zeroEmissionGoodsVehicle") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = ZeroEmissions
+  }
+  case object ElectricVehicleChargepoint extends WithName("electricVehicleChargepoint") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = ZeroEmissions
+  }
+  case object StructuresAndBuildings extends WithName("structuresAndBuildings") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = BuildingsAndStructures
+  }
+  case object SpecialTaxSitesStructuresAndBuildings
+      extends WithName("specialTaxSitesStructuresAndBuildings")
+      with AllowanceType
+      with CapitalAllowances {
+    override val identifier: Group = BuildingsAndStructures
+  }
+  case object AnnualInvestment extends WithName("annualInvestment") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = AssetAndAllowances
+  }
+  case object WritingDown extends WithName("writingDown") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = AssetAndAllowances
+  }
+  case object Balancing extends WithName("balancing") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = AssetAndAllowances
+  }
+  case object BalancingCharge extends WithName("balancingCharge") with AllowanceType with CapitalAllowances {
+    override val identifier: Group = AssetAndAllowances
+  }
 
-object StructuresAndBuildingsGroup extends AllowanceType {
-  override val identifier: String = "structuresAndBuildings"
+  val accrualAllowances: List[CapitalAllowances] =
+    List(
+      ZeroEmissionCar,
+      ZeroEmissionGoodsVehicle,
+      ElectricVehicleChargepoint,
+      StructuresAndBuildings,
+      SpecialTaxSitesStructuresAndBuildings,
+      AnnualInvestment,
+      WritingDown,
+      Balancing,
+      BalancingCharge
+    )
 
-  override val accrualAllowances: List[CapitalAllowances] =
-    List(StructuresAndBuildings, SpecialTaxSitesStructuresAndBuildings)
+  val cashAllowances: List[CapitalAllowances] =
+    List(ZeroEmissionCar, WritingDown, Balancing, BalancingCharge)
 
-  override val cashAllowances: List[CapitalAllowances] =
-    List.empty
-}
+  implicit val enumerable: Enumerable[CapitalAllowances] =
+    Enumerable(
+      (cashAllowances ++ accrualAllowances).distinct
+        .map(v => v.toString -> v): _*)
 
-object AssetAndAllowancesGroup extends AllowanceType {
-  override val identifier: String = "assetAndAllowances"
-
-  override val accrualAllowances: List[CapitalAllowances] =
-    List(AnnualInvestment, WritingDown, Balancing, BalancingCharge)
-
-  override val cashAllowances: List[CapitalAllowances] =
-    List(WritingDown, Balancing, BalancingCharge)
 }
