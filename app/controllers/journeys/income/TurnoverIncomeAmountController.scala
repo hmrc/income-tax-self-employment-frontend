@@ -51,7 +51,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(TurnoverIncomeAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
@@ -72,7 +72,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
           )
 
       (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         result         <- EitherT.right[Result](handleForm(accountingType))
       } yield result).merge
   }

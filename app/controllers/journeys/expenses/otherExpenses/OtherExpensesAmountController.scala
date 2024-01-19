@@ -54,7 +54,7 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
       val resultT = for {
         tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(OtherExpensesAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
@@ -80,7 +80,7 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
 
       val resultT = for {
         tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
       } yield result
 

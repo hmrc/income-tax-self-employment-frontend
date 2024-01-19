@@ -51,7 +51,7 @@ class ProfessionalFeesAmountController @Inject() (override val messagesApi: Mess
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType     = request.userType
         userAnswers  = request.userAnswers.get(ProfessionalFeesAmountPage, Some(businessId))
         form         = formProvider(userType)
@@ -76,7 +76,7 @@ class ProfessionalFeesAmountController @Inject() (override val messagesApi: Mess
           .persistAnswer(businessId, request.userAnswers, value, ProfessionalFeesAmountPage)
           .map(updated => Redirect(navigator.nextPage(ProfessionalFeesAmountPage, mode, updated, taxYear, businessId)))
 
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) flatMap {
+      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) flatMap {
         case Left(_)               => Future.successful(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) => handleForm(accountingType)
       }

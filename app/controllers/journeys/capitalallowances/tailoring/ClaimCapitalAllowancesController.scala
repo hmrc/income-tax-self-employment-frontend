@@ -52,7 +52,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(ClaimCapitalAllowancesPage, businessId.some)
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
@@ -73,7 +73,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
           )
 
       (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         result         <- EitherT.right[Result](handleForm(accountingType))
       } yield result).merge
 

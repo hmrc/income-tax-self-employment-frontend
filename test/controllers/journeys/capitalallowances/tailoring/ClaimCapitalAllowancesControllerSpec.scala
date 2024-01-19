@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, UserType}
+import models.common.{BusinessId, Mtditid, Nino, UserType}
 import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -57,7 +57,7 @@ class ClaimCapitalAllowancesControllerSpec
 
   override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, businessId.some).success.value
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns accountingType.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns accountingType.asRight.asFuture
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
