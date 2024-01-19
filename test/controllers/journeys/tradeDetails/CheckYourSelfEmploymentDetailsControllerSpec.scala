@@ -17,16 +17,14 @@
 package controllers.journeys.tradeDetails
 
 import base.SpecBase
-import connectors.SelfEmploymentConnector
+import cats.data.EitherT
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.tradeDetails.routes._
 import controllers.standard.routes._
 import models.common.BusinessId
 import models.common.UserType.Individual
 import models.domain.BusinessData
-import models.errors.HttpError
-import models.errors.HttpErrorBody.SingleErrorBody
-import models.errors.ServiceError.ConnectorResponseError
+import models.errors.ServiceError.NotFoundError
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,11 +32,10 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SelfEmploymentService
 import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
-
-import scala.concurrent.Future
 
 class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
@@ -65,7 +62,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
     businessAddressCountryCode = "GB"
   )
 
-  val mockConnector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   "CheckYourSelfEmploymentDetails Controller" - {
 
@@ -74,7 +71,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
       "must return OK with the correct view content" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .build()
 
         val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual)(messages(application))
@@ -82,7 +79,7 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
         running(application) {
           val nextRoute = SelfEmploymentSummaryController.onPageLoad(taxYear).url
 
-          when(mockConnector.getBusiness(anyNino, anyBusinessId, anyMtditid)(any, any)) thenReturn Future(Right(Seq(aBusinessData)))
+          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(aBusinessData)
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
@@ -98,14 +95,14 @@ class CheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with Mockito
       "must redirect to the journey recovery page when an invalid business ID returns an error from the backend" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentConnector].toInstance(mockConnector))
+          .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .build()
 
         running(application) {
           val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
-          when(mockConnector.getBusiness(anyNino, anyBusinessId, anyMtditid)(any, any)) thenReturn Future(
-            Left(ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, SingleErrorBody("404", "BusinessID not found")))))
+          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.leftT(
+            NotFoundError(s"Unable to find business with ID: $businessId"))
 
           val request = FakeRequest(GET, CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 
