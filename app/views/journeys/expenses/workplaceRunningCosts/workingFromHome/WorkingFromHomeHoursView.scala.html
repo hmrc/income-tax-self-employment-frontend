@@ -1,0 +1,118 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.InputWidth.Fixed5
+@import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
+@import views.html.templates.helpers.Heading
+
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        heading: Heading
+)
+
+@(form: Form[WorkingFromHomeHoursFormModel],
+        mode: Mode,
+        userType: UserType,
+        taxYear: TaxYear,
+        businessId: BusinessId,
+        maxMonths: String)(implicit request: Request[_], messages: Messages)
+
+@wholeFormError = @{
+    form.errors.contains(FormError("",List(messages(s"workingFromHomeHours.error.overMax.total.$userType", maxMonths))))
+}
+@inputErrorClass = @{
+    if (wholeFormError) "govuk-input--error" else ""
+}
+@wholeFormErrorMsg = @{
+    if (wholeFormError) {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            {messages(s"workingFromHomeHours.error.overMax.total.$userType", maxMonths)}
+        </p>
+    }
+}
+
+@layout(pageTitle = title(form, messages(s"workingFromHomeHours.subHeading.$userType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"workingFromHomeHours.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-2")
+
+    <div class="govuk-body">
+        <p>@messages(s"workingFromHomeHours.p1.$userType")</p>
+        <p>@messages(s"workingFromHomeHours.p2.$userType")</p>
+        <p>@messages("workingFromHomeHours.p3")</p>
+    </div>
+
+    @formHelper(action = routes.WorkingFromHomeHoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        <fieldset class="govuk-fieldset"
+                aria-describedby="expenses-working-from-home-simplified@{if (wholeFormError) "-error" else ""}expenses-working-from-home-simplified-hint">
+            <div class=@{ if (wholeFormError) "govuk-form-group--error" else "" }>
+
+                <label class="govuk-label govuk-label--m">
+                    @{messages(s"workingFromHomeHours.subHeading.$userType")}
+                </label>
+                <div class="govuk-hint">
+                    @{messages(s"workingFromHomeHours.hint.$userType", maxMonths)}
+                </div>
+
+                @wholeFormErrorMsg
+
+                @govukInput(
+                    InputViewModel(
+                        field = form("value25To50"),
+                        label = LabelViewModel(messages("workingFromHomeHours.value25To50"))
+                    )
+                    .withWidth(Fixed5)
+                    .withSuffix(PrefixOrSuffix(content = messages("site.months")))
+                    .withCssClass(inputErrorClass)
+                )
+                @govukInput(
+                    InputViewModel(
+                        field = form("value51To100"),
+                        label = LabelViewModel(messages(s"workingFromHomeHours.value51To100"))
+                    )
+                    .withWidth(Fixed5)
+                    .withSuffix(PrefixOrSuffix(content = messages("site.months")))
+                    .withCssClass(inputErrorClass)
+                )
+                @govukInput(
+                    InputViewModel(
+                        field = form("value101Plus"),
+                        label = LabelViewModel(messages("workingFromHomeHours.value101Plus"))
+                    )
+                    .withWidth(Fixed5)
+                    .withSuffix(PrefixOrSuffix(content = messages("site.months")))
+                    .withCssClass(inputErrorClass)
+                )
+            </div>
+        </fieldset>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+
+    }
+}

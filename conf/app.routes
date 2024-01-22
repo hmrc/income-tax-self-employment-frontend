@@ -266,6 +266,11 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/more-than-25-hours        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/more-than-25-hours        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/time                             controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/time                             controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 ########## Expenses - Advertising or Marketing ##########
 
 GET         /:taxYear/:businessId/expenses/advertising-marketing/amount                                               controllers.journeys.expenses.advertisingOrMarketing.AdvertisingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

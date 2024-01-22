@@ -49,7 +49,7 @@ class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpe
   override lazy val validAnswer: MoreThan25Hours = Yes
 
   private def submissionCall(mode: Mode): Call       = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode)
-  private def expectedRedirectCall(mode: Mode): Call = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, mode)
+  private def expectedRedirectCall(mode: Mode): Call = routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
   override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
 
