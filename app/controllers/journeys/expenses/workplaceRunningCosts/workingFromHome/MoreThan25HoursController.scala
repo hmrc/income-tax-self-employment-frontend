@@ -24,16 +24,17 @@ import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours._
 import models.{Mode, NormalMode}
 import navigation.ExpensesNavigator
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import queries.Settable
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi,
@@ -62,7 +63,7 @@ class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi
       def handleSuccess(userAnswers: UserAnswers, answer: MoreThan25Hours): Future[Result] = {
         val redirectMode = continueAsNormalModeIfPrevAnswerChanged(answer)
         for {
-          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, answer))
+          editedUserAnswers <- clearDataFromUserAnswers(userAnswers, answer, businessId)
           result <- service
             .persistAnswer(businessId, editedUserAnswers, answer, MoreThan25HoursPage)
             .map(updated => Redirect(navigator.nextPage(MoreThan25HoursPage, redirectMode, updated, taxYear, businessId)))
@@ -82,12 +83,21 @@ class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi
         )
   }
 
-  private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: MoreThan25Hours): Try[UserAnswers] =
+  private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: MoreThan25Hours, businessId: BusinessId): Future[UserAnswers] =
     if (pageAnswer == No) {
-      // TODO clear data from 'Will you report your client's working-from-home expenses as a flat rate of £108.00 or actual costs?' page
-      //    and 'How much did your client work from home?' page. Combine this with the continueAsNormalModeIfPrevAnswerChanged method?
-      Try(userAnswers)
+      def removePageData(page: Settable[_], userAnswers: UserAnswers): Try[UserAnswers] =
+        userAnswers.remove(page, Some(businessId)) match {
+          case Success(updatedUserAnswers) => Try(updatedUserAnswers)
+          case Failure(exception)          => Failure(exception)
+        }
+
+      for {
+        update1 <- Future.fromTry(removePageData(WorkingFromHomeHours25To50, userAnswers))
+        update2 <- Future.fromTry(removePageData(WorkingFromHomeHours51To100, update1))
+        update3 <- Future.fromTry(removePageData(WorkingFromHomeHours101Plus, update2))
+        result  <- Future.fromTry(removePageData(WfhFlatRateOrActualCostsPage, update3))
+      } yield result
     } else {
-      Try(userAnswers)
+      Future(userAnswers)
     }
 }

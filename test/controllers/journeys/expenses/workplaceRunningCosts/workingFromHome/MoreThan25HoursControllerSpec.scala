@@ -34,7 +34,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
