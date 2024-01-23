@@ -42,20 +42,20 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPre
 
 import scala.concurrent.Future
 
-class LiveAtBusinessPremisesControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec[LiveAtBusinessPremises](
-  "LiveAtBusinessPremisesController", LiveAtBusinessPremisesPage) {
+class LiveAtBusinessPremisesControllerSpec
+    extends RadioButtonGetAndPostQuestionBaseSpec[LiveAtBusinessPremises]("LiveAtBusinessPremisesController", LiveAtBusinessPremisesPage) {
 
   override implicit val writes: Writes[LiveAtBusinessPremises] = Writes(value => JsString(value.toString))
 
-  override lazy val onPageLoadCall: Call         = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call           = submissionCall(NormalMode)
-  override lazy val onwardRoute: Call            = expectedRedirectCall(NormalMode)
+  override lazy val onPageLoadCall: Call                = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+  override lazy val onSubmitCall: Call                  = submissionCall(NormalMode)
+  override lazy val onwardRoute: Call                   = expectedRedirectCall(NormalMode)
   override lazy val validAnswer: LiveAtBusinessPremises = Yes
 
   private def submissionCall(mode: Mode): Call       = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode)
   private def expectedRedirectCall(mode: Mode): Call = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, mode)
 
-  override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override lazy val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
@@ -66,9 +66,9 @@ class LiveAtBusinessPremisesControllerSpec extends RadioButtonGetAndPostQuestion
   override def createForm(userType: UserType): Form[LiveAtBusinessPremises] = new LiveAtBusinessPremisesFormProvider()(userType)
 
   override def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
-                                                                           request: Request[_],
-                                                                           messages: Messages,
-                                                                           application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[LiveAtBusinessPremisesView]
     view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
@@ -103,4 +103,3 @@ class LiveAtBusinessPremisesControllerSpec extends RadioButtonGetAndPostQuestion
     }
   }
 }
-

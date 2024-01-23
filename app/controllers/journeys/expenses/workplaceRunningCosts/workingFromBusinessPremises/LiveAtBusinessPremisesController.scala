@@ -60,33 +60,33 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-    def handleSuccess(userAnswers: UserAnswers, answer: LiveAtBusinessPremises): Future[Result] = {
-      val redirectMode = continueAsNormalModeIfPrevAnswerChanged(answer)
-      for {
-        editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, answer))
-        result <- selfEmploymentService
-          .persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
-          .map(updated => Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updated, taxYear, businessId)))
-      } yield result
-    }
-
-    def continueAsNormalModeIfPrevAnswerChanged(currentAnswer: LiveAtBusinessPremises): Mode =
-      request.getValue(LiveAtBusinessPremisesPage, businessId) match {
-        case Some(No) if currentAnswer == Yes => NormalMode
-        case _ => mode
+      def handleSuccess(userAnswers: UserAnswers, answer: LiveAtBusinessPremises): Future[Result] = {
+        val redirectMode = continueAsNormalModeIfPrevAnswerChanged(answer)
+        for {
+          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, answer))
+          result <- selfEmploymentService
+            .persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
+            .map(updated => Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updated, taxYear, businessId)))
+        } yield result
       }
 
-    formProvider(request.userType)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-        value => handleSuccess(request.userAnswers, value)
-      )
+      def continueAsNormalModeIfPrevAnswerChanged(currentAnswer: LiveAtBusinessPremises): Mode =
+        request.getValue(LiveAtBusinessPremisesPage, businessId) match {
+          case Some(No) if currentAnswer == Yes => NormalMode
+          case _                                => mode
+        }
+
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          value => handleSuccess(request.userAnswers, value)
+        )
   }
 
   private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: LiveAtBusinessPremises): Try[UserAnswers] =
     if (pageAnswer == No) {
-     Try(userAnswers)
+      Try(userAnswers)
     } else {
       Try(userAnswers)
     }

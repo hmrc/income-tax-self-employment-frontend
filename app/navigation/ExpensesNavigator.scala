@@ -130,8 +130,10 @@ class ExpensesNavigator @Inject() () {
       _ => taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
 
     case LiveAtBusinessPremisesPage => // TODO replace when next journey page is created
-      _ => taxYear => businessId => workplaceRunningCosts.workingFromBusinessPremises.routes.
-        LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>
