@@ -67,8 +67,7 @@
 
     @formHelper(action = routes.WorkingFromHomeHoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        <fieldset class="govuk-fieldset"
-                aria-describedby="expenses-working-from-home-simplified@{if (wholeFormError) "-error" else ""}expenses-working-from-home-simplified-hint">
+        <fieldset class="govuk-fieldset">
             <div class=@{ if (wholeFormError) "govuk-form-group--error" else "" }>
 
                 <label class="govuk-label govuk-label--m">
