@@ -34,6 +34,8 @@ case class FlatRateViewModel(months25To50: String,
 object FlatRateViewModel {
 
   def calculateFlatRate(request: DataRequest[_], businessId: BusinessId): Either[Result, FlatRateViewModel] = {
+    def formatMonths(months: Int): String = if (months == 1) s"$months month" else s"$months months"
+
     val months25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
     val months51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
     val months101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
@@ -45,11 +47,11 @@ object FlatRateViewModel {
         val flatRate      = amount25To50 + amount51To100 + amount101Plus
         Right(
           FlatRateViewModel(
-            months25To50.toString,
+            formatMonths(months25To50),
             formatMoney(amount25To50),
-            months51To100.toString,
+            formatMonths(months51To100),
             formatMoney(amount51To100),
-            months101Plus.toString,
+            formatMonths(months101Plus),
             formatMoney(amount101Plus),
             formatMoney(flatRate)
           ))
