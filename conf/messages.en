@@ -730,7 +730,7 @@ liveAtBusinessPremises.hint.individual = Select no if you only lived at your hom
 liveAtBusinessPremises.hint.agent = Select no if your client only lived at their home address.
 liveAtBusinessPremises.error.required.individual = Select yes if you lived at your business address.
 liveAtBusinessPremises.error.required.agent = Select yes if your client lived at their business premises.
-liveAtBusinessPremises.change.hidden = // TODO replace when CYA page made
+liveAtBusinessPremises.change.hidden = // TODO replace when CYA page is made
 
 ########## Expenses - Advertising or Marketing ##########
 

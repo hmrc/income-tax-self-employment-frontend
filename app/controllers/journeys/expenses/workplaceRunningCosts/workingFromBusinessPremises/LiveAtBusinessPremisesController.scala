@@ -18,18 +18,22 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessP
 
 import controllers.actions._
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesFormProvider
-import models.Mode
+import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
+import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises.{No, Yes}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class LiveAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
@@ -56,15 +60,35 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, LiveAtBusinessPremisesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, mode, updatedAnswers, taxYear, businessId)))
-        )
+    def handleSuccess(userAnswers: UserAnswers, answer: LiveAtBusinessPremises): Future[Result] = {
+      val redirectMode = continueAsNormalModeIfPrevAnswerChanged(answer)
+      for {
+        editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, answer))
+        result <- selfEmploymentService
+          .persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
+          .map(updated => Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updated, taxYear, businessId)))
+      } yield result
+    }
+
+    def continueAsNormalModeIfPrevAnswerChanged(currentAnswer: LiveAtBusinessPremises): Mode =
+      request.getValue(LiveAtBusinessPremisesPage, businessId) match {
+        case Some(No) if currentAnswer == Yes => NormalMode
+        case _ => mode
+      }
+
+    formProvider(request.userType)
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+        value => handleSuccess(request.userAnswers, value)
+      )
   }
+
+  private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: LiveAtBusinessPremises): Try[UserAnswers] =
+    if (pageAnswer == No) {
+     Try(userAnswers)
+    } else {
+      Try(userAnswers)
+    }
 
 }
