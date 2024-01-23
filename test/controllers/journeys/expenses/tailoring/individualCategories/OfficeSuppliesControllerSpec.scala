@@ -42,11 +42,11 @@ class OfficeSuppliesControllerSpec
       OfficeSuppliesPage
     ) {
 
-  override lazy val onPageLoadCall: Call        = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call          = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
-  override lazy val onwardRoute: Call           = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val validAnswer: OfficeSupplies = YesDisallowable
-  override val filledUserAnswers: UserAnswers   = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def onPageLoadCall: Call           = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call             = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call              = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: OfficeSupplies    = YesDisallowable
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

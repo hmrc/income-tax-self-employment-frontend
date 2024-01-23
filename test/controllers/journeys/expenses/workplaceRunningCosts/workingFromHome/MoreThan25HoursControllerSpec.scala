@@ -43,15 +43,15 @@ import scala.concurrent.Future
 
 class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec[MoreThan25Hours]("MoreThan25HoursController", MoreThan25HoursPage) {
 
-  override lazy val onPageLoadCall: Call         = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call           = submissionCall(NormalMode)
-  override lazy val onwardRoute: Call            = expectedRedirectCall(NormalMode)
-  override lazy val validAnswer: MoreThan25Hours = Yes
+  override def onPageLoadCall: Call         = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call           = submissionCall(NormalMode)
+  override def onwardRoute: Call            = expectedRedirectCall(NormalMode)
+  override def validAnswer: MoreThan25Hours = Yes
 
   private def submissionCall(mode: Mode): Call       = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode)
   private def expectedRedirectCall(mode: Mode): Call = routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
-  override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))

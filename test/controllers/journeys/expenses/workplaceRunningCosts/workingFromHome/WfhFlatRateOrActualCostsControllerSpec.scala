@@ -45,21 +45,22 @@ import scala.concurrent.Future
 class WfhFlatRateOrActualCostsControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec[WfhFlatRateOrActualCosts]("WfhFlatRateOrActualCostsController", WfhFlatRateOrActualCostsPage) {
 
-  override lazy val onPageLoadCall: Call                  = routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call                    = submissionCall(NormalMode)
-  override lazy val onwardRoute: Call                     = expectedRedirectCall(NormalMode)
-  override lazy val validAnswer: WfhFlatRateOrActualCosts = FlatRate
-  private lazy val validMonths                            = 3
-  private lazy val amount25To50                           = validMonths * 10
-  private lazy val amount51To100                          = validMonths * 18
-  private lazy val amount101Plus                          = validMonths * 26
-  private lazy val flatRate                               = amount25To50 + amount51To100 + amount101Plus
+  override def onPageLoadCall: Call                  = routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call                    = submissionCall(NormalMode)
+  override def onwardRoute: Call                     = expectedRedirectCall(NormalMode)
+  override def validAnswer: WfhFlatRateOrActualCosts = FlatRate
+  private lazy val validMonths                       = 3
+  private lazy val validMonthsText                   = s"$validMonths months"
+  private lazy val amount25To50                      = validMonths * 10
+  private lazy val amount51To100                     = validMonths * 18
+  private lazy val amount101Plus                     = validMonths * 26
+  private lazy val flatRate                          = amount25To50 + amount51To100 + amount101Plus
   private lazy val flatRateViewModel = FlatRateViewModel(
-    validMonths.toString,
+    validMonthsText,
     formatMoney(amount25To50),
-    validMonths.toString,
+    validMonthsText,
     formatMoney(amount51To100),
-    validMonths.toString,
+    validMonthsText,
     formatMoney(amount101Plus),
     formatMoney(flatRate)
   )
@@ -68,7 +69,7 @@ class WfhFlatRateOrActualCostsControllerSpec
   private def expectedRedirectCall(mode: Mode): Call =
     routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, mode) // TODO SASS-6800 update onward route
 
-  override val blankUserAnswers: UserAnswers = emptyUserAnswers
+  override def baseAnswers: UserAnswers = emptyUserAnswers
     .set(WorkingFromHomeHours25To50, validMonths, Some(businessId))
     .success
     .value
@@ -78,7 +79,7 @@ class WfhFlatRateOrActualCostsControllerSpec
     .set(WorkingFromHomeHours101Plus, validMonths, Some(businessId))
     .success
     .value
-  override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
