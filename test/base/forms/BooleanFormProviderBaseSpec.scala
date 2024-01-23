@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,32 @@ import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import play.api.data.{Form, FormError}
 
-abstract case class BooleanFormProviderBaseSpec(formProviderName: String) extends BooleanFieldBehaviours {
+abstract class BooleanFormProviderBaseSpec(formProvider: String) extends BooleanFieldBehaviours {
 
-  private val fieldName = "value"
+  val fieldName = "value"
 
-  private val userTypes: List[UserType] = List(Individual, Agent)
+  val userTypes: List[UserType] = List(Individual, Agent)
 
-  def requiredError: String
+  val invalidErrorKey = "error.boolean"
 
-  def getFormProvider(userType: UserType): Form[Boolean]
+  def requiredErrorKey: String
 
-  userTypes.foreach { userType =>
-    s"$formProviderName for $userType, form should" - {
-      val form: Form[Boolean] = getFormProvider(userType)
+  def formProvider(user: UserType): Form[Boolean]
+
+  userTypes.foreach { user =>
+    s"For user = $user, $formProvider should " - {
+      val form = formProvider(user)
 
       behave like booleanField(
         form,
         fieldName,
-        invalidError = FormError(fieldName, "error.boolean")
+        invalidError = FormError(fieldName, invalidErrorKey)
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, s"$requiredError.$userType")
+        requiredError = FormError(fieldName, s"$requiredErrorKey.$user")
       )
     }
   }

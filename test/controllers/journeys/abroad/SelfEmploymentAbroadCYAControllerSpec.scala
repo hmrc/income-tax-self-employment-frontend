@@ -16,69 +16,31 @@
 
 package controllers.journeys.abroad
 
-import base.SpecBase
-import builders.UserBuilder
-import models.NormalMode
-import models.common.BusinessId
-import models.common.UserType.Individual
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey.Abroad
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.Json
-import play.api.mvc.Result
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import models.journeys.Journey
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
-import viewmodels.govuk.SummaryListFluency
-import views.html.journeys.abroad.SelfEmploymentAbroadCYAView
+import viewmodels.journeys.SummaryListCYA
 
-import scala.concurrent.Future
+class SelfEmploymentAbroadCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
+  val pageHeading: String           = "common.checkYourDetails"
+  val journey: Journey              = Journey.Abroad
+  val submissionData: JsObject      = Json.obj("selfEmploymentAbroad" -> true)
+  val testDataCases: List[JsObject] = List(submissionData)
 
-class SelfEmploymentAbroadCYAControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.SelfEmploymentAbroadCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.SelfEmploymentAbroadCYAController.onSubmit
 
-  private val businessID = BusinessId("trade-details" + "-" + UserBuilder.aNoddyUser.nino)
-
-  private lazy val requestUrl = controllers.journeys.abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessID).url
-
-  private lazy val nextRoute =
-    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, Abroad.toString, NormalMode).url
-
-  "SelfEmploymentAbroadCYAController" - {
-    "when user answers are present" - {
-      "must return OK and the correct view for a GET" in {
-        val userAnswers                 = UserAnswers("someId", Json.obj("trade-details-nino" -> Json.obj("selfEmploymentAbroad" -> true)))
-        val application                 = applicationBuilder(userAnswers = Some(userAnswers)).build()
-        val selfEmploymentAbroadCYAView = application.injector.instanceOf[SelfEmploymentAbroadCYAView]
-
-        running(application) {
-          val expectedMaybeSummaryListRow = SelfEmploymentAbroadSummary.row(taxYear, Individual, businessID, userAnswers)(messages(application))
-          val expectedSummaryList         = SummaryList(Seq(expectedMaybeSummaryListRow))
-
-          val request                = FakeRequest(GET, requestUrl)
-          val result: Future[Result] = route(application, request).value
-
-          status(result) shouldBe OK
-
-          contentAsString(result) shouldBe selfEmploymentAbroadCYAView(taxYear, expectedSummaryList, nextRoute, Individual)(
-            request,
-            messages(application)).toString
-        }
-      }
-    }
-    "when user answers are not provided" - {
-      "must redirect to the JourneyRecoveryController for a GET" in {
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val request                = FakeRequest(GET, requestUrl)
-          val result: Future[Result] = route(application, request).value
-
-          status(result) shouldBe SEE_OTHER
-        }
-      }
-    }
-  }
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): SummaryList =
+    SummaryListCYA.summaryListOpt(
+      List(
+        SelfEmploymentAbroadSummary.row(taxYear, userType, businessId, userAnswers)
+      ))
 
 }

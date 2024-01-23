@@ -81,31 +81,4 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
       }
   }
 
-//  <dl class="govuk-summary-list govuk-summary-list--half">
-//    <div class="govuk-summary-list__row">
-//      <dt class="govuk-summary-list__key govuk-!-font-weight-regular">
-//        @messages("wfhFlatRateOrActualCosts.months25To50", flatRateViewModel.months25To50.toString)
-//      </dt>
-//      <dd class="govuk-summary-list__value govuk-!-text-align-right">
-//        @messages("wfhFlatRateOrActualCosts.amount25To50", flatRateViewModel.amount25To50.toString)
-//      </dd>
-//    </div>
-//    <div class="govuk-summary-list__row">
-//      <dt class="govuk-summary-list__key govuk-!-font-weight-regular">
-//        @messages("wfhFlatRateOrActualCosts.months51To100", flatRateViewModel.months51To100.toString)
-//      </dt>
-//      <dd class="govuk-summary-list__value govuk-!-text-align-right">
-//        @messages("wfhFlatRateOrActualCosts.amount51To100", flatRateViewModel.amount51To100.toString)
-//      </dd>
-//    </div>
-//    <div class="govuk-summary-list__row">
-//      <dt class="govuk-summary-list__key govuk-!-font-weight-regular">
-//        @messages("wfhFlatRateOrActualCosts.months101Plus", flatRateViewModel.months101Plus.toString)
-//      </dt>
-//      <dd class="govuk-summary-list__value govuk-!-text-align-right">
-//        @messages("wfhFlatRateOrActualCosts.amount101Plus", flatRateViewModel.amount101Plus.toString)
-//      </dd>
-//    </div>
-//  </dl>
-
 }

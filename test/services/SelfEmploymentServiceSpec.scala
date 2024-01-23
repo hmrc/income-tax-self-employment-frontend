@@ -24,6 +24,7 @@ import connectors.SelfEmploymentConnector
 import controllers.actions.SubmittedDataRetrievalActionProvider
 import models.common._
 import models.database.UserAnswers
+import models.domain.BusinessData
 import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
@@ -40,7 +41,6 @@ import repositories.SessionRepository
 import services.SelfEmploymentService.getMaxTradingAllowance
 
 import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
 
@@ -64,7 +64,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](status)
 
-      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)).value.futureValue
+      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse)).value.futureValue
 
       result shouldBe status.journeyStatus.asRight
     }
@@ -74,20 +74,20 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
     "should save status" in {
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
       val result = service
-        .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
+        .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
         .value
         .futureValue
       result shouldBe ().asRight
     }
   }
 
-  "getBusinessAccountingType" - {
+  "getAccountingType" - {
     "should return a BusinessID's accounting type in a Right when this is returned from the backend" in {
-      mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(Right(aBusinessData))
-      mockConnector.getBusiness(nino.value, businessIdCash, mtditid) returns Future.successful(Right(aBusinessDataCashAccounting))
+      mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessData))
+      mockConnector.getBusiness(nino, businessIdCash, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessDataCashAccounting))
 
-      val resultAccrual = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))
-      val resultCash    = await(service.getAccountingType(nino.value, businessIdCash, mtditid))
+      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
+      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))
 
       resultAccrual shouldBe Right(AccountingType.Accrual)
       resultCash shouldBe Right(AccountingType.Cash)
@@ -96,18 +96,18 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
     "should return an error when" - {
 
       "an empty sequence is returned from the backend" in {
-        mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(Right(Seq.empty))
+        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq.empty)
 
-        val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
 
-        result shouldBe Left(NotFoundError("Business not found"))
+        result shouldBe Left(NotFoundError(s"Unable to find business with ID: $businessIdAccrual"))
       }
 
       "an error is returned from the backend" in {
-        mockConnector.getBusiness(nino.value, businessIdAccrual, mtditid) returns Future.successful(
-          Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError))))
+        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.leftT[Future, Seq[BusinessData]](
+          ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
 
-        val result = await(service.getAccountingType(nino.value, businessIdAccrual, mtditid))(10.seconds)
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
 
         result shouldBe Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
       }
@@ -144,7 +144,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
            |""".stripMargin)
       .as[JsObject]
     val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-    val ctx                      = JourneyAnswersContext(taxYear, businessId, Mtditid(mtditid), ExpensesGoodsToSellOrUse)
+    val ctx                      = JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse)
     mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))
 
     "submit answers to the connector" in {

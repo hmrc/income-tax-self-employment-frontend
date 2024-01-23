@@ -32,7 +32,7 @@ import stubs.services.SelfEmploymentServiceStub
 object TestApp {
 
   def buildApp(accountingType: AccountingType, userType: UserType, userAnswers: Option[UserAnswers] = None): Application = {
-    val selfEmploymentService = SelfEmploymentServiceStub(Right(accountingType), emptyUserAnswers)
+    val selfEmploymentService = SelfEmploymentServiceStub(accountingType = Right(accountingType), saveAnswerResult = emptyUserAnswers)
     SpecBase
       .applicationBuilder(userAnswers, userType)
       .overrides(

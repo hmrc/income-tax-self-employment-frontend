@@ -34,8 +34,8 @@
 
 @summaryListRow(key: String, value: String) = {
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key govuk-!-font-weight-regular">key</dt>
-        <dd class="govuk-summary-list__value govuk-!-text-align-right">value</dd>
+        <dt class="govuk-summary-list--half govuk-summary-list__key govuk-!-font-weight-regular">@key</dt>
+        <dd class="govuk-summary-list__value govuk-!-text-align-right">@value</dd>
     </div>
 }
 
@@ -45,7 +45,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate), None, extraClasses = "govuk-!-margin-bottom-2")
+    @heading(messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate), None, extraClasses = "govuk-!-padding-top-0 govuk-!-margin-bottom-3")
 
     <p class="govuk-body">@messages("wfhFlatRateOrActualCosts.howWeCalculatedThis")</p>
     <dl class="govuk-summary-list govuk-summary-list--half">
@@ -69,7 +69,7 @@
         @govukRadios(
             RadiosViewModel(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType"))
+                legend = LegendViewModel(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
                             .asPageHeading(size = Medium),
                 items = WfhFlatRateOrActualCosts.options(flatRateViewModel.flatRate)
             )

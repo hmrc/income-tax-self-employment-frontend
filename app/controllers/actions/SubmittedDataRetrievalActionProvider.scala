@@ -24,6 +24,7 @@ import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
 import models.journeys.TaskListWithRequest
+import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.income.IncomeJourneyAnswers
 import models.requests.OptionalDataRequest
@@ -55,6 +56,9 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
       ec: ExecutionContext): SubmittedDataRetrievalAction =
     new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](mkJourneyContext, connector, sessionRepository)
 
+  // TODO PERFORMANCE: Refactor this to be one call to the backend
+  // We can consider for simplicity to downlad all answers we have in the database.
+  // getJourneyAnswers in controllers will only fetch IFS answers in a lazy manner, on demand.
   def loadTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[TaskListWithRequest] = {
@@ -62,9 +66,10 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     val mtditid = request.mtditid
 
     for {
-      taskList <- connector.getTaskList(nino.value, taxYear, mtditid)
+      taskList <- connector.getTaskList(nino, taxYear, mtditid)
       businesses = taskList.businesses
-      incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, request, Journey.Income)
+      abroadUpdated   <- loadAnswers[SelfEmploymentAbroadAnswers](taxYear, businesses, request, Journey.Abroad)
+      incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, abroadUpdated, Journey.Income)
       expensesUpdated <- loadAnswers[ExpensesTailoringAnswers](taxYear, businesses, incomeUpdated, Journey.ExpensesTailoring)
     } yield TaskListWithRequest(taskList, expensesUpdated)
   }

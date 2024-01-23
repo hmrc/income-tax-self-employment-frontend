@@ -31,7 +31,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
 
@@ -43,8 +42,6 @@ class OfficeSuppliesControllerSpec
       OfficeSuppliesPage
     ) {
 
-  override implicit val writes: Writes[OfficeSupplies] = Writes(value => JsString(value.toString))
-
   override lazy val onPageLoadCall: Call        = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
   override lazy val onSubmitCall: Call          = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
   override lazy val onwardRoute: Call           = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
@@ -55,7 +52,7 @@ class OfficeSuppliesControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
+  when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(Accrual))
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[OfficeSupplies] = new OfficeSuppliesFormProvider()(userType)

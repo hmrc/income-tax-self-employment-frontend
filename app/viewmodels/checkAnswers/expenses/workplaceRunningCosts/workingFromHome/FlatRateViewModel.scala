@@ -21,6 +21,7 @@ import models.common.BusinessId
 import models.requests.DataRequest
 import pages.expenses.workplaceRunningCosts.workingFromHome.{WorkingFromHomeHours101Plus, WorkingFromHomeHours25To50, WorkingFromHomeHours51To100}
 import play.api.mvc.Result
+import utils.MoneyUtils.formatMoney
 
 case class FlatRateViewModel(months25To50: String,
                              amount25To50: String,
@@ -45,12 +46,12 @@ object FlatRateViewModel {
         Right(
           FlatRateViewModel(
             months25To50.toString,
-            amount25To50.toString,
+            formatMoney(amount25To50),
             months51To100.toString,
-            amount51To100.toString,
+            formatMoney(amount51To100),
             months101Plus.toString,
-            amount101Plus.toString,
-            flatRate.toString
+            formatMoney(amount101Plus),
+            formatMoney(flatRate)
           ))
       case _ => Left(redirectJourneyRecovery())
     }

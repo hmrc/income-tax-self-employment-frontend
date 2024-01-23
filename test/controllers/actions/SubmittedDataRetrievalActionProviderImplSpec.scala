@@ -21,7 +21,7 @@ import builders.TradesJourneyStatusesBuilder._
 import cats.data.EitherT
 import cats.implicits._
 import connectors.SelfEmploymentConnector
-import models.common.{JourneyAnswersContext, Mtditid, TaxYear}
+import models.common.{JourneyAnswersContext, Mtditid, Nino, TaxYear}
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.{Journey, TaskList, TaskListWithRequest}
 import models.requests.OptionalDataRequest
@@ -49,7 +49,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
   "loadTaskList" should {
     "should return a task list for multiple journeys and businesses" in new TestCase {
-      connector.getTaskList(*[String], *[TaxYear], *[Mtditid])(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
+      connector.getTaskList(*[Nino], *[TaxYear], *[Mtditid])(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
       connector.getSubmittedAnswers[JsObject](*)(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
       repo.set(*) returns Future.successful(true)
 
@@ -62,7 +62,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
     }
 
     "should return an error if connector fails" in new TestCase {
-      connector.getTaskList(*[String], *[TaxYear], *[Mtditid])(*, *) returns EitherT.leftT[Future, TaskList](
+      connector.getTaskList(*[Nino], *[TaxYear], *[Mtditid])(*, *) returns EitherT.leftT[Future, TaskList](
         ServiceError.ConnectorResponseError("method", "url", HttpError(404, HttpErrorBody.parsingError)))
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)

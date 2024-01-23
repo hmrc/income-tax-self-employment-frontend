@@ -16,20 +16,22 @@
 
 package controllers.journeys.tradeDetails
 
-import connectors.SelfEmploymentConnector
 import controllers.actions._
+import controllers.handleResultT
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
-import handlers.ErrorHandler
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.domain.BusinessData
 import models.requests.OptionalDataRequest
 import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentSummaryViewModel.row
 import views.html.journeys.tradeDetails.SelfEmploymentSummaryView
 
@@ -40,22 +42,21 @@ import scala.concurrent.ExecutionContext
 class SelfEmploymentSummaryController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
-                                                 errorHandler: ErrorHandler,
-                                                 selfEmploymentConnector: SelfEmploymentConnector,
+                                                 service: SelfEmploymentService,
                                                  navigator: TradeDetailsNavigator,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SelfEmploymentSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    selfEmploymentConnector.getBusinesses(request.user.nino, request.user.mtditid).map {
-      case Left(_) => errorHandler.internalServerError()
-      case Right(model) =>
-        val viewModel = generateRowList(taxYear, model.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
-        val nextRoute = navigate(taxYear, navigator)
-        Ok(view(viewModel, nextRoute))
+    val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
+      val viewModel = generateRowList(taxYear, businesses.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
+      val nextRoute = navigate(taxYear, navigator)
+      Ok(view(viewModel, nextRoute))
     }
+    handleResultT(result)
   }
 
   private def navigate(taxYear: TaxYear, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {

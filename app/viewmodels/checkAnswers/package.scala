@@ -27,16 +27,18 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
-    buildRowString(if (answer) "site.yes" else "site.no", callLink, keyMessage, changeMessage)
+  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow = {
+    val messageKey = if (answer) "site.yes" else "site.no"
+    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage)
+  }
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage)
 
   def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
-      key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
-      value = Value(content = HtmlContent(answer), classes = "govuk-!-width-one-third"),
+      key = Key(content = keyMessage, classes = "govuk-summary-list__key govuk-!-width-one-third"),
+      value = Value(content = HtmlContent(answer), classes = "govuk-summary-list__value govuk-!-width-two-thirds"),
       actions = Seq(
         ActionItemViewModel("site.change", callLink.url)
           .withVisuallyHiddenText(messages(changeMessage))

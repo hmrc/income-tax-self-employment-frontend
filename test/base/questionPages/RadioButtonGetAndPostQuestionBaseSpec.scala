@@ -24,21 +24,17 @@ import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.Writes
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](
-    controllerName: String,
-    page: QuestionPage[A]
-) extends ControllerSpec {
+// TODO: Clean this base class up.
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
 
   val onPageLoadCall: Call
   val onSubmitCall: Call
   val onwardRoute: Call
   val validAnswer: A
-  implicit val writes: Writes[A]
 
   def createForm(userType: UserType): Form[A]
 

@@ -22,6 +22,8 @@ import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories._
+import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import pages._
 import pages.expenses.advertisingOrMarketing._
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
@@ -37,7 +39,7 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -125,8 +127,34 @@ class ExpensesNavigator @Inject() () {
     case RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
 
-    case MoreThan25HoursPage => // TODO replace when next journey page is created
-      _ => taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+    case MoreThan25HoursPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
+              case Some(MoreThan25Hours.Yes) =>
+                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(MoreThan25Hours.No) => // TODO 6788 when page created /workplace-running-costs/working-from-home/private-use
+                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case WorkingFromHomeHoursPage =>
+      _ =>
+        taxYear =>
+          businessId => workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case WfhFlatRateOrActualCostsPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
+              case Some(WfhFlatRateOrActualCosts.FlatRate) => // TODO SASS-6800, redirect to DoYouLiveAtYourBusinessPremisesController
+                workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WfhFlatRateOrActualCosts.ActualCosts) => // TODO SASS-6788 redirect to WfhExpensesInfo page
+                workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>

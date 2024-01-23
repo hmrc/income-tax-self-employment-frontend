@@ -43,6 +43,7 @@ GET         /:taxYear/:businessId/details/self-employment-abroad/change         
 POST        /:taxYear/:businessId/details/self-employment-abroad/change                                               controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/self-employment/details/check                                                       controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/self-employment/details/check                                                       controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Income Journey ##########
 
@@ -265,6 +266,11 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/more-than-25-hours        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/more-than-25-hours        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/time                             controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/time                             controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/flat-rate                        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/flat-rate                        controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/flat-rate                 controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
@@ -409,3 +415,18 @@ POST        /:taxYear/:businessId/expenses/change-other-expenses/disallowable-am
 
 GET         /:taxYear/:businessId/expenses/other-expenses/check                                                       controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/other-expenses/check                                                       controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances Tailoring ##########
+
+GET         /:taxYear/:businessId/capital-allowances                                                                  controllers.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances                                                                  controllers.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances                                                           controllers.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances                                                           controllers.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/capital-allowances/claim-list                                                       controllers.journeys.capitalallowances.tailoring.SelectCapitalAllowancesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/claim-list                                                       controllers.journeys.capitalallowances.tailoring.SelectCapitalAllowancesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/claim-list                                                controllers.journeys.capitalallowances.tailoring.SelectCapitalAllowancesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances/claim-list                                                controllers.journeys.capitalallowances.tailoring.SelectCapitalAllowancesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/capital-allowances/check                                                            controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/capital-allowances/check                                                            controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
