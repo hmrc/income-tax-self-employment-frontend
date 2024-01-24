@@ -37,16 +37,16 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPre
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessPremisesAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                 selfEmploymentService: SelfEmploymentService,
-                                                 navigator: ExpensesNavigator,
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: BusinessPremisesAmountFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: BusinessPremisesAmountView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+class BusinessPremisesAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                  selfEmploymentService: SelfEmploymentService,
+                                                  navigator: ExpensesNavigator,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: BusinessPremisesAmountFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: BusinessPremisesAmountView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 
@@ -100,4 +100,3 @@ class BusinessPremisesAmountController @Inject()(override val messagesApi: Messa
   }
 
 }
-

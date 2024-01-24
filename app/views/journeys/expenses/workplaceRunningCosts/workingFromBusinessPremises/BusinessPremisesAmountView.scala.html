@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.expenses.repairsandmaintenance.routes
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.components.{SingleAmountContent, ErrorSummarySection, FoldableDetails, Heading}
 
@@ -35,11 +35,11 @@
         businessId: BusinessId,
         accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceAmount.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"businessPremisesAmount.title.$userType"))) {
 
     @errorSummary(form)
 
-    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BusinessPremisesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
             @heading(messages("businessPremisesAmount.title"))
 

@@ -271,7 +271,7 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/time                      controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-########## Expenses - Working From Home ##########
+########## Expenses - Working From Business Premises ##########
 
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                            controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                             controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

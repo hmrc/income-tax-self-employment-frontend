@@ -26,8 +26,8 @@ class BusinessPremisesAmountFormProvider @Inject() extends Mappings with MoneyBo
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> currency(s"repairsAndMaintenanceAmount.error.required.$userType", s"repairsAndMaintenanceAmount.error.nonNumeric.$userType")
-        .verifying(greaterThan(minimumValue, s"repairsAndMaintenanceAmount.error.lessThanZero.$userType"))
-        .verifying(lessThan(maximumValue, s"repairsAndMaintenanceAmount.error.overMax.$userType"))
+      "value" -> currency(s"businessPremisesAmount.error.required.$userType", s"businessPremisesAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"businessPremisesAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"businessPremisesAmount.error.overMax.$userType"))
     )
 }

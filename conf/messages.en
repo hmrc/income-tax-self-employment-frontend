@@ -767,7 +767,14 @@ businessPremisesAmount.heating = heating
 businessPremisesAmount.power = power
 businessPremisesAmount.insurance = property insurance
 businessPremisesAmount.security = security
-
+businessPremisesAmount.error.required.individual = Enter the amount you spent on business premises expenses
+businessPremisesAmount.error.required.agent = Enter the amount your client spent on business premises expenses
+businessPremisesAmount.error.nonNumeric.individual = The amount you spent on business premises expenses must be a number
+businessPremisesAmount.error.nonNumeric.agent = The amount your client spent on business premises expenses must be a number
+businessPremisesAmount.error.lessThanZero.individual = The amount you spent on business premises expenses must be more than £0
+businessPremisesAmount.error.lessThanZero.agent = The amount your client spent on business premises expenses must be more than £0
+businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
+businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
 
 ########## Expenses - Advertising or Marketing ##########
 
