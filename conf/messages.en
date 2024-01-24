@@ -354,6 +354,8 @@ expenses.feesForBuyingGoods = fees for buying goods
 expenses.hirePurchase = hire purchase (do not include any repayments made against the borrowed amount)
 expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
+expenses.flatRate = A flat rate of £{0}
+expenses.actualCosts = Actual costs
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -753,6 +755,24 @@ workingFromHomeHours.error.overMax.value101Plus.agent = The number of months you
 workingFromHomeHours.error.overMax.total.individual = The number of months you worked from home must be {0} or fewer
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
 workingFromHomeHours.change.hidden = Change how many hours were worked from home
+
+## Flat Rate Or Actual Costs
+wfhFlatRateOrActualCosts.title.individual = Your flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.title.agent = Your client’s flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.howWeCalculatedThis = How we calculated this:
+wfhFlatRateOrActualCosts.months25To50 = {0} at 25 to 50 hours
+wfhFlatRateOrActualCosts.months51To100 = {0} at 51 to 100 hours
+wfhFlatRateOrActualCosts.months101Plus = {0} at 101 or more hours
+wfhFlatRateOrActualCosts.amount25To50 = £{0} (£10 per month)
+wfhFlatRateOrActualCosts.amount51To100 = £{0} (£18 per month)
+wfhFlatRateOrActualCosts.amount101Plus = £{0} (£26 per month)
+wfhFlatRateOrActualCosts.p1.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
+wfhFlatRateOrActualCosts.p1.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+wfhFlatRateOrActualCosts.subHeading.individual = Will you report you working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.error.required.agent = Select if you will report your client’s working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.change.hidden = Change whether to continue with the flat rate amount or enter the actual expenses instead
 
 ########## Expenses - Advertising or Marketing ##########
 

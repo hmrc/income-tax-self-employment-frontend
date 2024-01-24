@@ -50,5 +50,4 @@ abstract class BooleanFormProviderBaseSpec(formProvider: String) extends Boolean
       )
     }
   }
-
 }
