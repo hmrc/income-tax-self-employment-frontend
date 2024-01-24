@@ -754,6 +754,21 @@ workingFromHomeHours.error.overMax.total.individual = The number of months you w
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
 workingFromHomeHours.change.hidden = Change how many hours were worked from home
 
+## Working from Business Premises
+businessPremisesAmount.title = Business premises expenses
+businessPremisesAmount.amount.individual = How much were your business premises expenses?
+businessPremisesAmount.amount.agent = How much were your client’s business premises expenses?
+businessPremisesAmount.claim.individual = You can claim:
+businessPremisesAmount.claim.agent = Your client can claim:
+businessPremisesAmount.rent = rent for business premises
+businessPremisesAmount.businessAndWater = business and water rates
+businessPremisesAmount.lighting =  lighting
+businessPremisesAmount.heating = heating
+businessPremisesAmount.power = power
+businessPremisesAmount.insurance = property insurance
+businessPremisesAmount.security = security
+
+
 ########## Expenses - Advertising or Marketing ##########
 
 ## Advertising amount

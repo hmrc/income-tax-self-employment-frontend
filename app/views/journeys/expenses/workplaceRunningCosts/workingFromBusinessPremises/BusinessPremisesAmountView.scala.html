@@ -1,0 +1,74 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.expenses.repairsandmaintenance.routes
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import views.html.components.{SingleAmountContent, ErrorSummarySection, FoldableDetails, Heading}
+
+@this(layout: templates.Layout,
+        heading: Heading,
+        errorSummary: ErrorSummarySection,
+        foldableDetails: FoldableDetails,
+        singleAmountContent: SingleAmountContent,
+        formHelper: FormWithCSRF,
+        govukInput: GovukInput,
+        govukButton: GovukButton
+)
+
+@(form: Form[_],
+        mode: Mode,
+        userType: UserType,
+        taxYear: TaxYear,
+        businessId: BusinessId,
+        accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"repairsAndMaintenanceAmount.title.$userType"))) {
+
+    @errorSummary(form)
+
+    @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        @singleAmountContent(form) {
+            @heading(messages("businessPremisesAmount.title"))
+
+            <div class="govuk-body govuk-!-margin-top-6">
+                <p>
+                @messages(s"businessPremisesAmount.claim.$userType")
+                </p>
+
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("businessPremisesAmount.rent")</li>
+            <li>@messages("businessPremisesAmount.businessAndWater")</li>
+            <li>@messages("businessPremisesAmount.lighting")</li>
+            <li>@messages("businessPremisesAmount.heating")</li>
+            <li>@messages("businessPremisesAmount.power")</li>
+            <li>@messages("businessPremisesAmount.insurance")</li>
+            <li>@messages("businessPremisesAmount.security")</li>
+
+            </ul>
+
+          <P class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
+             @messages(s"businessPremisesAmount.amount.$userType")
+            </P>
+
+            </div>
+
+        }
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
