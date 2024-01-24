@@ -31,7 +31,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
@@ -43,18 +42,16 @@ class ExpensesCategoriesControllerSpec
       ExpensesCategoriesPage
     ) {
 
-  override implicit val writes: Writes[ExpensesTailoring] = Writes(value => JsString(value.toString))
-
   private lazy val incomeAmount: BigDecimal       = 80000
   private lazy val incomeThreshold: BigDecimal    = 85000
   private lazy val incomeIsOverThreshold: Boolean = incomeAmount > incomeThreshold
 
-  override lazy val onPageLoadCall: Call           = routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call             = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, NormalMode)
-  override lazy val onwardRoute: Call              = routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
-  override lazy val validAnswer: ExpensesTailoring = NoExpenses
-  override val blankUserAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
-  override val filledUserAnswers: UserAnswers      = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def onPageLoadCall: Call           = routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call             = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call              = routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
+  override def validAnswer: ExpensesTailoring = NoExpenses
+  override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

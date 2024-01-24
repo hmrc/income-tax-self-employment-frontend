@@ -87,7 +87,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val body     = Json.stringify(Json.toJson(taskList))
       stubGetWithResponseBody(taskListUrl, OK, body, headersSentToBE)
 
-      val result = connector.getTaskList(nino.value, taxYear, mtditid).value.futureValue
+      val result = connector.getTaskList(nino, taxYear, mtditid).value.futureValue
 
       result shouldBe taskList.asRight
     }

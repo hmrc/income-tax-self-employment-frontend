@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxEitherId
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{AccountingType, BusinessId, UserType}
+import models.common.{AccountingType, BusinessId, Mtditid, Nino, UserType}
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -51,7 +51,7 @@ class OtherExpensesAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*, *[BusinessId], *)(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 

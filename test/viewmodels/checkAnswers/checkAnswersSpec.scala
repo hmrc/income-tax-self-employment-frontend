@@ -22,8 +22,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 class checkAnswersSpec extends AnyWordSpecLike {
   private def expectedRow(expectedAnswer: String) = SummaryListRow(
-    Key(Text("keyMessage"), "govuk-!-width-two-thirds"),
-    Value(HtmlContent(expectedAnswer), "govuk-!-width-one-third"),
+    Key(Text("keyMessage"), "govuk-summary-list__key govuk-!-width-one-third"),
+    Value(HtmlContent(expectedAnswer), "govuk-summary-list__value govuk-!-width-two-thirds"),
     "",
     Some(Actions("", List(ActionItem("", Text("Change"), Some("changeMessage"), "", Map()))))
   )

@@ -34,7 +34,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -45,17 +44,15 @@ import scala.concurrent.Future
 class LiveAtBusinessPremisesControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec[LiveAtBusinessPremises]("LiveAtBusinessPremisesController", LiveAtBusinessPremisesPage) {
 
-  override implicit val writes: Writes[LiveAtBusinessPremises] = Writes(value => JsString(value.toString))
-
-  override lazy val onPageLoadCall: Call                = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call                  = submissionCall(NormalMode)
-  override lazy val onwardRoute: Call                   = expectedRedirectCall(NormalMode)
-  override lazy val validAnswer: LiveAtBusinessPremises = Yes
+  override def onPageLoadCall: Call                = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call                  = submissionCall(NormalMode)
+  override def onwardRoute: Call                   = expectedRedirectCall(NormalMode)
+  override def validAnswer: LiveAtBusinessPremises = Yes
 
   private def submissionCall(mode: Mode): Call       = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode)
   private def expectedRedirectCall(mode: Mode): Call = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, mode)
 
-  override lazy val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
