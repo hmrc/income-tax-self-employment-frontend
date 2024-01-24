@@ -23,7 +23,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises.{No, Yes}
-import navigation.ExpensesTailoringNavigator
+import navigation.ExpensesNavigator
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ import scala.util.Try
 @Singleton
 class LiveAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
                                                   selfEmploymentService: SelfEmploymentService,
-                                                  navigator: ExpensesTailoringNavigator,
+                                                  navigator: ExpensesNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
