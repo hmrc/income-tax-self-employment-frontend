@@ -144,7 +144,7 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId => workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case BusinessPremisesAmountPage =>
+    case BusinessPremisesAmountPage => // TODO /workplace-running-costs/live-business premises/people if yesDisallowable or /workplace-running-costs/check
       _ =>
         taxYear =>
           businessId =>
