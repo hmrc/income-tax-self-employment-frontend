@@ -38,6 +38,7 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WorkingFromHomeHoursPage}
 import play.api.mvc.Call
 
@@ -142,6 +143,12 @@ class ExpensesNavigator @Inject() () {
       _ =>
         taxYear =>
           businessId => workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case BusinessPremisesAmountPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>

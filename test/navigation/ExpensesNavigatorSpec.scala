@@ -42,6 +42,7 @@ import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisal
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WorkingFromHomeHoursPage}
 import play.api.libs.json.Json
 
@@ -199,6 +200,13 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
               navigator.nextPage(WorkingFromHomeHoursPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          "the page is BusinessPremisesAmountPage" - {
+            "navigate to the BusinessPremisesAmountController" in { // TODO update when page created /workplace-running-costs/business premises/disallowable-amount
+              val expectedResult = workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
+
+              navigator.nextPage(BusinessPremisesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
