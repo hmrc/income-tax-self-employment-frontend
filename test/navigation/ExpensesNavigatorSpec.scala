@@ -204,7 +204,8 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
           "the page is BusinessPremisesAmountPage" - {
             "navigate to the BusinessPremisesAmountController" in { // TODO update when page created /workplace-running-costs/business premises/disallowable-amount
-              val expectedResult = workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
 
               navigator.nextPage(BusinessPremisesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
