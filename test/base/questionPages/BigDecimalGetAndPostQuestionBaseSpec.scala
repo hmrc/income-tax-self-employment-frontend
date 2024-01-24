@@ -54,8 +54,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
-  private lazy val getRequest  = FakeRequest(GET, onPageLoadRoute)
-  private lazy val postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))
+  private def getRequest  = FakeRequest(GET, onPageLoadRoute)
+  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {

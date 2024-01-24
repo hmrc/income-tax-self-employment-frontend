@@ -27,6 +27,7 @@ import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.DisallowableStaffCosts
+import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
@@ -42,7 +43,7 @@ import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisal
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
 import play.api.libs.json.Json
 
 class ExpensesNavigatorSpec extends SpecBase {
@@ -186,20 +187,48 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is MoreThan25HoursPage" - {
             "the user answers 'Yes'" - {
               "navigate to the WorkingFromHomeHoursController" in {
-                val userAnswers = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.Yes, Some(businessId)).success.value
+                val userAnswers    = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.Yes, Some(businessId)).success.value
+                val expectedResult = workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
-                val expectedResult = workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, mode)
-                // TODO SASS-6797 expected result = WorkingFromHomeHoursController
                 navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
               }
             }
             "the user answers 'No'" - {
-              "navigate to the WorkingFromHomeHoursController" in {
-                val userAnswers = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.No, Some(businessId)).success.value
-
+              "navigate to the WfhExpensesInfoController" in {
+                val userAnswers    = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.No, Some(businessId)).success.value
                 val expectedResult = workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
+          }
+          "the page is WorkingFromHomeHoursPage" - {
+            "navigate to the WfhFlatRateOrActualCostsController" in {
+              val expectedResult =
+                workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, mode)
+
+              navigator.nextPage(WorkingFromHomeHoursPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          "the page is WfhFlatRateOrActualCostsPage" - {
+            "the answer is Flat Rate" - {
+              "navigate to the DoYouLiveAtYourBusinessPremisesController" ignore { // TODO SASS-6800 unignore, finish test
+                val userAnswers =
+                  emptyUserAnswers.set(WfhFlatRateOrActualCostsPage, WfhFlatRateOrActualCosts.FlatRate, Some(businessId)).success.value
+                val expectedResult =
+                  workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
+
+                navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              }
+            }
+            "the answer is Actual Costs" - {
+              "navigate to the WfhExpensesInfoController" in {
+                val userAnswers =
+                  emptyUserAnswers.set(WfhFlatRateOrActualCostsPage, WfhFlatRateOrActualCosts.ActualCosts, Some(businessId)).success.value
+                val expectedResult =
+                  workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
             }
           }

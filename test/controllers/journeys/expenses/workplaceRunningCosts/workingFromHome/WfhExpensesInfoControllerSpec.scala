@@ -29,8 +29,11 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExp
 class WfhExpensesInfoControllerSpec extends ControllerSpec {
 
   private lazy val onPageLoadCall = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
-  private lazy val redirectCall   = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId) // TODO SASS-6799 change redirect route to '/workplace-running-costs/working-from-home/amount' when page made
-  private lazy val getRequest     = FakeRequest(GET, onPageLoadCall.url)
+  private lazy val redirectCall = routes.WfhExpensesInfoController.onPageLoad(
+    taxYear,
+    businessId
+  ) // TODO SASS-6799 change redirect route to '/workplace-running-costs/working-from-home/amount' when page made
+  private lazy val getRequest = FakeRequest(GET, onPageLoadCall.url)
 
   private def expectedView(scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[WfhExpensesInfoView]

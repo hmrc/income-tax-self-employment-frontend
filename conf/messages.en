@@ -4,6 +4,7 @@ site.back = Back
 site.remove = Remove
 site.change = Change
 site.no = No
+site.none = None
 site.yes = Yes
 site.continue = Continue
 site.start = Start now
@@ -25,6 +26,7 @@ site.theseInclude = These include:
 site.theyInclude = They include:
 site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
+site.months = months
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -353,6 +355,8 @@ expenses.feesForBuyingGoods = fees for buying goods
 expenses.hirePurchase = hire purchase (do not include any repayments made against the borrowed amount)
 expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
+expenses.flatRate = A flat rate of £{0}
+expenses.actualCosts = Actual costs
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -720,7 +724,56 @@ moreThan25Hours.title.individual = Did you work from home for more than 25 hours
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
 moreThan25Hours.error.required.individual = Select if you worked from home for more than 25 hours a month
 moreThan25Hours.error.required.agent = Select if your client worked from home for more than 25 hours a month
-moreThan25Hours.change.hidden = // TODO replace when CYA page made
+moreThan25Hours.change.hidden = Change if more that 25 hours a month were worked from home
+
+## Working from home hours
+workingFromHomeHours.title.individual = Your working-from-home hours
+workingFromHomeHours.title.agent = Your client’s working-from-home hours
+workingFromHomeHours.p1.individual = Tell us how much you worked from home over the tax year and we’ll work out the flat rate amount you can claim. You’ll still have the choice of using actual amounts instead.
+workingFromHomeHours.p1.agent = Tell us how much your client worked from home over the tax year and we’ll work out the flat rate amount they can claim. You’ll still have the choice of using actual amounts instead.
+workingFromHomeHours.p2.individual = Remember to consider any months in which you did not work your usual number of hours.
+workingFromHomeHours.p2.agent = Remember to consider any months in which your client did not work their usual number of hours.
+workingFromHomeHours.p3 = The flat rate does not include telephone or internet expenses.
+workingFromHomeHours.subHeading.individual = How much did you work from home?
+workingFromHomeHours.subHeading.agent = How much did your client work from home?
+workingFromHomeHours.hint.individual = Enter the number of months you worked each amount of hours. The total number of months must not add up to more than {0}.
+workingFromHomeHours.hint.agent = Enter the number of months your client worked each amount of hours. The total number of months must not add up to more than {0}.
+workingFromHomeHours.value25To50 = 25 - 50 hours
+workingFromHomeHours.value51To100 = 51 - 100 hours
+workingFromHomeHours.value101Plus = 101 hours or more
+workingFromHomeHours.error.required.value25To50 = You must enter a number for 25 to 50 hours
+workingFromHomeHours.error.required.value51To100 = You must enter a number for 51 to 100 hours
+workingFromHomeHours.error.required.value101Plus = You must enter a number for 101 hours or more
+workingFromHomeHours.error.lessThanZero = The amount must be 0 or more
+workingFromHomeHours.error.nonNumeric = The amount must be a number
+workingFromHomeHours.error.noDecimals = The number cannot have decimal places
+workingFromHomeHours.error.overMax.value25To50.individual = The number of months you worked from home for 25 to 50 hours must be {0} or fewer
+workingFromHomeHours.error.overMax.value25To50.agent = The number of months your client worked from home for 25 to 50 hours must be {0} or fewer
+workingFromHomeHours.error.overMax.value51To100.individual = The number of months you worked from home for 51 to 100 hours must be {0} or fewer
+workingFromHomeHours.error.overMax.value51To100.agent = The number of months your client worked from home for 51 to 100 hours must be {0} or fewer
+workingFromHomeHours.error.overMax.value101Plus.individual = The number of months you worked from home for 101 hours or more must be {0} or fewer
+workingFromHomeHours.error.overMax.value101Plus.agent = The number of months your client worked from home for 101 hours or more must be {0} or fewer
+workingFromHomeHours.error.overMax.total.individual = The number of months you worked from home must be {0} or fewer
+workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
+workingFromHomeHours.change.hidden = Change how many hours were worked from home
+
+## Flat Rate Or Actual Costs
+wfhFlatRateOrActualCosts.title.individual = Your flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.title.agent = Your client’s flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.howWeCalculatedThis = How we calculated this:
+wfhFlatRateOrActualCosts.months25To50 = {0} at 25 to 50 hours
+wfhFlatRateOrActualCosts.months51To100 = {0} at 51 to 100 hours
+wfhFlatRateOrActualCosts.months101Plus = {0} at 101 or more hours
+wfhFlatRateOrActualCosts.amount25To50 = £{0} (£10 per month)
+wfhFlatRateOrActualCosts.amount51To100 = £{0} (£18 per month)
+wfhFlatRateOrActualCosts.amount101Plus = £{0} (£26 per month)
+wfhFlatRateOrActualCosts.p1.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
+wfhFlatRateOrActualCosts.p1.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+wfhFlatRateOrActualCosts.subHeading.individual = Will you report you working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.error.required.agent = Select if you will report your client’s working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.change.hidden = Change whether to continue with the flat rate amount or enter the actual expenses instead
 
 ## WFH Expenses info
 wfhExpensesInfo.title = Working-from-home expenses
@@ -1021,3 +1074,56 @@ otherExpensesDisallowableAmount.change.hidden = Change how much spent on other e
 
 otherExpensesCYA.title.individual = Check your other expenses
 otherExpensesCYA.title.agent = Check your client’s other expenses
+
+########## Capital Allowances - Tailoring ##########
+claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
+claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
+claimCapitalAllowances.title.Accrual = Allowances for vehicles, equipment and buildings
+claimCapitalAllowances.title.Cash = Cars and asset-based allowances
+claimCapitalAllowances.p1.individual.Cash = You can claim ’capital’ allowances for cars and certain items or assets used in your business
+claimCapitalAllowances.p1.agent.Cash = Your client can claim ’capital’ allowances for cars and certain items or assets used in their business
+claimCapitalAllowances.p1.individual.Accrual = You can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in your business.
+claimCapitalAllowances.p1.agent.Accrual = Your client can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in their business.
+claimCapitalAllowances.p2.individual = The type of allowance and the amount you can claim depends on your assets and other circumstances. For example, there are special rules for cars.
+claimCapitalAllowances.p2.agent = The type of allowance and the amount they can claim depends on their assets and other circumstances. For example, there are special rules for cars.
+claimCapitalAllowances.p3.individual.Cash = If you’re also claiming the trading allowance, you cannot claim these allowances.
+claimCapitalAllowances.p3.agent.Cash = If your client is also claiming the trading allowance, they cannot claim these allowances.
+claimCapitalAllowances.p3.individual.Accrual = You cannot claim these allowances if you‘re claiming the trading allowance
+claimCapitalAllowances.p3.agent.accrual = Your client cannot claim these allowances if they are claiming the trading allowance
+claimCapitalAllowances.p4.individual = If you have sold any assets you may have to declare a balancing charge.
+claimCapitalAllowances.p4.agent = If your client has sold any assets they may have to declare a balancing charge.
+claimCapitalAllowances.subHeading.individual = Do you want to claim any capital allowances or declare a charge?
+claimCapitalAllowances.subHeading.agent = Does your client want to claim any capital allowances or declare a charge?
+
+selectCapitalAllowances.title.individual = Select the allowances you want to claim
+selectCapitalAllowances.title.agent = Select the allowances your client wants to claim
+selectCapitalAllowances.subHeading.zeroEmissions = 100% zero-emission cars and vehicles
+selectCapitalAllowances.subHeading.buildingsAndStructures = Structures and buildings
+selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances and charges
+selectCapitalAllowances.zeroEmissionCar = Zero-emission car allowance
+selectCapitalAllowances.zeroEmissionGoodsVehicle = Zero-emission goods vehicle allowance
+selectCapitalAllowances.electricVehicleChargepoint = Electric vehicle charge-point allowance
+selectCapitalAllowances.structuresAndBuildings = Structures and buildings allowance
+selectCapitalAllowances.specialTaxSitesStructuresAndBuildings = Special tax sites structures and buildings allowance
+selectCapitalAllowances.annualInvestment = Annual investment allowance
+selectCapitalAllowances.writingDown = Writing down allowance
+selectCapitalAllowances.balancing = Balancing allowance (allowance on sales)
+selectCapitalAllowances.balancingCharge = Balancing charge
+selectCapitalAllowances.subText.zeroEmissionCar = Claim the full cost of new and unused cars used for your self-employment.
+selectCapitalAllowances.subText.zeroEmissionGoodsVehicle = Claim the full cost of new and unused vehicles used for your self-employment.
+selectCapitalAllowances.subText.electricVehicleChargepoint = Claim 100% first year allowances if you buy and install new and unused electric charge-points for electric vehicles.
+selectCapitalAllowances.subText.structuresAndBuildings = If you built, bought or leased a structure or building, signed contracts and began construction on or after 29 October 2018, you may be able to claim tax relief.
+selectCapitalAllowances.subText.specialTaxSitesStructuresAndBuildings = Claim tax relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
+selectCapitalAllowances.subText.annualInvestment = Claim the full cost, up to the annual limit of £1million, if you bought equipment (but not cars) during the year.
+selectCapitalAllowances.subText.writingDown = Claim 18% or 6% of the balance of the value of items in your main rate and special rate capital allowance pools respectively. Items can include non zero-emission vehicles and business equipment.
+selectCapitalAllowances.subText.balancing = Claim if you sold or stopped using an asset in your business (for less than its tax value).
+selectCapitalAllowances.subText.balancingCharge = If you sold, gave away or stopped using an item in your business that you claimed capital allowances for, you may have to include a balancing charge.
+
+capitalAllowancesCYA.key1.individual = Do you want to claim any capital allowances?
+capitalAllowancesCYA.key1.agent = Does your client want to claim any capital allowances?
+capitalAllowancesCYA.key1.change.hidden = Change your answer for claiming capital allowances
+capitalAllowances.CYA.key2 = Capital Allowances
+capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to claim for
+capitalAllowancesCYA.title.individual = Check your answers
+capitalAllowancesCYA.title.agent = Check your client’s answers
+

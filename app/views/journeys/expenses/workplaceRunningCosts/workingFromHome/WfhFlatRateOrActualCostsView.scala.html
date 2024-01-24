@@ -1,0 +1,82 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.LegendSize.Medium
+@import viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome.FlatRateViewModel
+@import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+@import views.html.templates.helpers.Heading
+
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        heading: Heading
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, flatRateViewModel: FlatRateViewModel)(implicit request: Request[_], messages: Messages)
+
+@summaryListRow(key: String, value: String) = {
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list--half govuk-summary-list__key govuk-!-font-weight-regular">@key</dt>
+        <dd class="govuk-summary-list__value govuk-!-text-align-right">@value</dd>
+    </div>
+}
+
+@layout(pageTitle = title(form, messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    @heading(messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate), None, extraClasses = "govuk-!-padding-top-0 govuk-!-margin-bottom-3")
+
+    <p class="govuk-body">@messages("wfhFlatRateOrActualCosts.howWeCalculatedThis")</p>
+    <dl class="govuk-summary-list govuk-summary-list--half">
+        @summaryListRow(
+            messages("wfhFlatRateOrActualCosts.months25To50", flatRateViewModel.months25To50),
+            messages("wfhFlatRateOrActualCosts.amount25To50", flatRateViewModel.amount25To50)
+        )
+        @summaryListRow(
+            messages("wfhFlatRateOrActualCosts.months51To100", flatRateViewModel.months51To100),
+            messages("wfhFlatRateOrActualCosts.amount51To100", flatRateViewModel.amount51To100)
+        )
+        @summaryListRow(
+            messages("wfhFlatRateOrActualCosts.months101Plus", flatRateViewModel.months101Plus),
+            messages("wfhFlatRateOrActualCosts.amount101Plus", flatRateViewModel.amount101Plus)
+        )
+    </dl>
+    <p class="govuk-body">@messages(s"wfhFlatRateOrActualCosts.p1.$userType")</p>
+
+    @formHelper(action = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @govukRadios(
+            RadiosViewModel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
+                            .asPageHeading(size = Medium),
+                items = WfhFlatRateOrActualCosts.options(flatRateViewModel.flatRate)
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

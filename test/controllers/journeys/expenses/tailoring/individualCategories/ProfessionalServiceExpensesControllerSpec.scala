@@ -71,7 +71,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -102,7 +102,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -154,7 +154,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(AccountingType.Accrual))
+          when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Accrual))
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -178,7 +178,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(userScenario.accountingType))
+              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
 
               val request =
                 FakeRequest(POST, professionalServiceExpensesRoute)

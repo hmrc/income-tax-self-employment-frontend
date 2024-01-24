@@ -69,7 +69,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid) map {
+      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) map {
         case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
         case Right(accountingType) =>
           val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
@@ -101,7 +101,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
           )
 
       val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.user.nino, businessId, request.user.mtditid))
+        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)

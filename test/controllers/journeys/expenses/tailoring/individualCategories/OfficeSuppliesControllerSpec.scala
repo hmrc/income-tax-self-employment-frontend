@@ -31,7 +31,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
 
@@ -43,19 +42,17 @@ class OfficeSuppliesControllerSpec
       OfficeSuppliesPage
     ) {
 
-  override implicit val writes: Writes[OfficeSupplies] = Writes(value => JsString(value.toString))
-
-  override lazy val onPageLoadCall: Call        = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call          = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
-  override lazy val onwardRoute: Call           = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val validAnswer: OfficeSupplies = YesDisallowable
-  override val filledUserAnswers: UserAnswers   = blankUserAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def onPageLoadCall: Call           = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call             = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call              = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: OfficeSupplies    = YesDisallowable
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  when(mockService.getAccountingType(any, anyBusinessId, any)(any)) thenReturn Future(Right(Accrual))
+  when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(Accrual))
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[OfficeSupplies] = new OfficeSuppliesFormProvider()(userType)
