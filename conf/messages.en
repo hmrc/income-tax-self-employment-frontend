@@ -754,6 +754,29 @@ workingFromHomeHours.error.overMax.total.individual = The number of months you w
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
 workingFromHomeHours.change.hidden = Change how many hours were worked from home
 
+## WFH Claiming amount
+wfhClaimingAmount.title.individual = Your working-from-home expenses
+wfhClaimingAmount.title.agent = Your client’s working-from-home expenses
+wfhClaimingAmount.p1.individual = You may be able to claim a proportion of your costs during the tax year for things like:
+wfhClaimingAmount.p1.agent = Your client may be able to claim a proportion of their costs during the tax year for things like:
+wfhClaimingAmount.l1 = heating
+wfhClaimingAmount.l2 = electricity
+wfhClaimingAmount.l3 = Council Tax
+wfhClaimingAmount.l4 = mortgage interest or rent
+wfhClaimingAmount.l5 = any amounts that cover personal use
+wfhClaimingAmount.p3 = You cannot include any amounts that cover personal use.
+wfhClaimingAmount.subHeading.individual = How much are you claiming in working-from-home expenses?
+wfhClaimingAmount.subHeading.agent = How much is your client claiming in working-from-home expenses?
+wfhClaimingAmount.error.required.individual = Enter the amount you spent on working-from-home expenses
+wfhClaimingAmount.error.required.agent = Enter the amount your client spent on working-from-home expenses
+wfhClaimingAmount.error.nonNumeric.individual = The amount you spent on working-from-home expenses must be a number
+wfhClaimingAmount.error.nonNumeric.agent = The amount your client spent on working-from-home expenses must be a number
+wfhClaimingAmount.error.lessThanZero.individual = The amount you spent on working-from-home expenses must be more than £0
+wfhClaimingAmount.error.lessThanZero.agent = The amount your client spent on working-from-home expenses must be more than £0
+wfhClaimingAmount.error.overMax.individual = The amount you spent on working-from-home expenses must be less than £100,000,000,000
+wfhClaimingAmount.error.overMax.agent = The amount your client spent on working-from-home expenses must be less than £100,000,000,000
+wfhClaimingAmount.change.hidden = Change how much was spent on working-from-home expenses
+
 ########## Expenses - Advertising or Marketing ##########
 
 ## Advertising amount
