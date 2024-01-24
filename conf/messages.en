@@ -14,6 +14,7 @@ site.govuk = GOV.UK
 site.view = View
 site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
+site.example = Example
 site.hint.amount = For example, £193.54
 site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
@@ -773,6 +774,19 @@ wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s work
 wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
 wfhFlatRateOrActualCosts.error.required.agent = Select if you will report your client’s working-from-home expenses as actual costs or simplified expenses
 wfhFlatRateOrActualCosts.change.hidden = Change whether to continue with the flat rate amount or enter the actual expenses instead
+
+## WFH Expenses info
+wfhExpensesInfo.title = Working-from-home expenses
+wfhExpensesInfo.p1.individual = You can only claim expenses for work use. So, if you use something for both your self-employment and other things, you’ll need to find a reasonable way of dividing your costs.
+wfhExpensesInfo.p1.agent = Your client can only claim expenses for work use. So, if they use something for both their self-employment and other things, you’ll need to find a reasonable way of dividing their costs.
+wfhExpensesInfo.p2.individual = This could be by the number of rooms you use for work or the amount of time you spend working from home.
+wfhExpensesInfo.p2.agent = This could be by the number of rooms they use for work or the amount of time they spend working from home.
+wfhExpensesInfo.p3.individual = You have 4 rooms in your home, one of which you use only as an office.
+wfhExpensesInfo.p3.agent = Your client has 4 rooms in their home, one of which they use only as an office.
+wfhExpensesInfo.p4.individual = Your electricity bill for the year is £400. Assuming all the rooms in your home use equal amounts of electricity, you can claim £100 as allowable expenses (£400 divided by 4).
+wfhExpensesInfo.p4.agent = Their electricity bill for the year is £400. Assuming all the rooms in their home use equal amounts of electricity, they can claim £100 as allowable expenses (£400 divided by 4).
+wfhExpensesInfo.p5.individual = If you worked only one day a week from home, you could claim £14.29 as allowable expenses (£100 divided by 7).
+wfhExpensesInfo.p5.agent = If they worked only one day a week from home, they could claim £14.29 as allowable expenses (£100 divided by 7).
 
 ########## Expenses - Advertising or Marketing ##########
 

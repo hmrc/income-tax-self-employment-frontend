@@ -187,16 +187,23 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is MoreThan25HoursPage" - {
             "the user answers 'Yes'" - {
               "navigate to the WorkingFromHomeHoursController" in {
-                val userAnswers = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.Yes, Some(businessId)).success.value
-
+                val userAnswers    = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.Yes, Some(businessId)).success.value
                 val expectedResult = workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
                 navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
               }
-            } // TODO 6788 add test for 'No' when page created /workplace-running-costs/working-from-home/private-use
+            }
+            "the user answers 'No'" - {
+              "navigate to the WfhExpensesInfoController" in {
+                val userAnswers    = emptyUserAnswers.set(MoreThan25HoursPage, MoreThan25Hours.No, Some(businessId)).success.value
+                val expectedResult = workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+
+                navigator.nextPage(MoreThan25HoursPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
+              }
+            }
           }
           "the page is WorkingFromHomeHoursPage" - {
-            "navigate to the WorkingFromHomeHoursController" in {
+            "navigate to the WfhFlatRateOrActualCostsController" in {
               val expectedResult =
                 workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, mode)
 
@@ -215,11 +222,11 @@ class ExpensesNavigatorSpec extends SpecBase {
               }
             }
             "the answer is Actual Costs" - {
-              "navigate to the DoYouLiveAtYourBusinessPremisesController" ignore { // TODO SASS-6788 unignore, finish test
+              "navigate to the WfhExpensesInfoController" in {
                 val userAnswers =
                   emptyUserAnswers.set(WfhFlatRateOrActualCostsPage, WfhFlatRateOrActualCosts.ActualCosts, Some(businessId)).success.value
                 val expectedResult =
-                  workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
+                  workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
 
                 navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
