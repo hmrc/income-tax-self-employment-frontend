@@ -29,8 +29,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, personalUse: Boolean
-    )(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"wfhClaimingAmount.title.$userType"))) {
 
@@ -52,9 +51,6 @@
         <ul class="govuk-list--bullet">
             <li>@messages("expenses.listItem.anyAmount")</li>
         </ul>
-        @if(personalUse) {
-            <p>@messages("wfhClaimingAmount.p3")</p>
-        }
     </div>
 
     @formHelper(action = routes.WfhClaimingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

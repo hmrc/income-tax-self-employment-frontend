@@ -51,7 +51,7 @@ class WfhClaimingAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[WfhClaimingAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, personalUse = true).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
 }

@@ -51,7 +51,7 @@ class WfhClaimingAmountController @Inject() (override val messagesApi: MessagesA
         .get(WfhClaimingAmountPage, Some(businessId))
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-      Ok(view(form, mode, request.userType, taxYear, businessId, true))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -64,7 +64,7 @@ class WfhClaimingAmountController @Inject() (override val messagesApi: MessagesA
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, true))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value => handleSuccess(request.userAnswers, value)
         )
   }
