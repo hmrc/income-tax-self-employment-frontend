@@ -59,6 +59,9 @@ strong {
       content: None;
       display: block
     }
+    .govuk-summary-list--half .govuk-summary-list__key {
+       width: 50%;
+    }
 }
 
 @media only screen and (min-width: 28.125em) {

@@ -31,7 +31,7 @@ class WfhClaimingAmountSummarySpec extends SummaryBaseSpec("WfhClaimingAmountSum
   override val validData: JsObject   = Json.obj("wfhClaimingAmount" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"professionalFeesAmount.title.$userType")
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfhClaimingAmount.subHeading.$userType")
   override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =

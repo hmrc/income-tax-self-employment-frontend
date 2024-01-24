@@ -84,7 +84,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
         for {
           firstUpdated  <- service.persistAnswer(businessId, request.userAnswers, form.value25To50, WorkingFromHomeHours25To50)
           secondUpdated <- service.persistAnswer(businessId, firstUpdated, form.value51To100, WorkingFromHomeHours51To100)
-          thirdUpdated  <- service.persistAnswer(businessId, secondUpdated, form.value101Plus, WorkingFromHomeHours51To100)
+          thirdUpdated  <- service.persistAnswer(businessId, secondUpdated, form.value101Plus, WorkingFromHomeHours101Plus)
           result = Redirect(navigator.nextPage(WorkingFromHomeHoursPage, mode, thirdUpdated, taxYear, businessId))
         } yield result
 
