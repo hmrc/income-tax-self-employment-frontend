@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +37,6 @@ class WfhExpensesInfoController @Inject() (override val messagesApi: MessagesApi
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view(request.userType, routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId).url))
+    Ok(view(request.userType, routes.WfhClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url))
   } // TODO SASS-6799 change redirect route to '/workplace-running-costs/working-from-home/amount' when page made
 }
