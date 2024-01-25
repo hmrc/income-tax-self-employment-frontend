@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit messages: Messages): SummaryListRow = {
+  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
+      messages: Messages): SummaryListRow = {
     val messageKey = if (answer) "site.yes" else "site.no"
     buildRowString(messages(messageKey), callLink, keyMessage, changeMessage, rightTextAlign)
   }

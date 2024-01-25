@@ -37,7 +37,7 @@ package object tailoring {
     implicit val impTaxYear: TaxYear         = taxYear
     implicit val impBusinessId: BusinessId   = businessId
     implicit val impUserType: UserType       = userType
-    val answerIsTotalAmount = answers.get(ExpensesCategoriesPage, Some(businessId)).contains(TotalAmount)
+    val answerIsTotalAmount                  = answers.get(ExpensesCategoriesPage, Some(businessId)).contains(TotalAmount)
 
     SummaryListCYA.summaryListOpt(
       List(
