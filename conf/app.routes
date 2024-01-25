@@ -285,6 +285,11 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-workin
 
 ########## Expenses - Working From Business Premises ##########
 
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/live-business-premises               controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/live-business-premises               controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-live-business-premises        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-live-business-premises        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                            controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                             controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-workplace-running-costs/business-premises/amount        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)

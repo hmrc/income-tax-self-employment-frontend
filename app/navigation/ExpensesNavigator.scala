@@ -40,7 +40,7 @@ import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, Re
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{LiveAtBusinessPremisesPage, BusinessPremisesAmountPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -156,6 +156,12 @@ class ExpensesNavigator @Inject() () {
                 workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
+
+    case LiveAtBusinessPremisesPage => // TODO replace when next journey page is created
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case BusinessPremisesAmountPage => // TODO /workplace-running-costs/live-business premises/people if yesDisallowable or /workplace-running-costs/check
       _ =>
