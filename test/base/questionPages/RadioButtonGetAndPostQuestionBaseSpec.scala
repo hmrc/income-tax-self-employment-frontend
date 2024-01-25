@@ -31,17 +31,17 @@ import play.api.test.Helpers._
 // TODO: Clean this base class up.
 abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
 
-  val onPageLoadCall: Call
-  val onSubmitCall: Call
-  val onwardRoute: Call
-  val validAnswer: A
+  def onPageLoadCall: Call
+  def onSubmitCall: Call
+  def onwardRoute: Call
+  def validAnswer: A
 
   def createForm(userType: UserType): Form[A]
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  val blankUserAnswers: UserAnswers = emptyUserAnswers
-  val filledUserAnswers: UserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswers
+  def filledUserAnswers: UserAnswers
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadCall.url)
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -60,7 +60,7 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: Str
           }
         }
 
-        "Return OK for a GET if an empty page" in new TestScenario(userType, Some(blankUserAnswers)) {
+        "Return OK for a GET if an empty page" in new TestScenario(userType, Some(baseAnswers)) {
           running(application) {
             val result = route(application, getRequest).value
             status(result) mustEqual OK

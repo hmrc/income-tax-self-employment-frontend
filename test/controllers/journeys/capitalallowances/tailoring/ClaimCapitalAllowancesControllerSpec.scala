@@ -36,12 +36,12 @@ import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesVie
 class ClaimCapitalAllowancesControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
 
-  private val accountingType = Accrual
+  private def accountingType = Accrual
 
-  override lazy val onPageLoadCall: Call = routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
-  override lazy val onSubmitCall: Call   = routes.ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = routes.ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, NormalMode)
 
-  override val onwardRoute: Call = models.common.onwardRoute
+  override def onwardRoute: Call = models.common.onwardRoute
 
   override val validAnswer: Boolean = true
 
@@ -55,7 +55,7 @@ class ClaimCapitalAllowancesControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, accountingType, scenario.businessId).toString()
   }
 
-  override val filledUserAnswers: UserAnswers = blankUserAnswers.set(page, validAnswer, businessId.some).success.value
+  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
   mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns accountingType.asRight.asFuture
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture

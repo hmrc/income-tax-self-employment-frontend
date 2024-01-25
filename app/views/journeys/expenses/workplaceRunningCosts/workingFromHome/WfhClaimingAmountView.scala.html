@@ -1,0 +1,74 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.InputWidth._
+@import viewmodels.LabelSize.Medium
+@import views.html.templates.helpers.Heading
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    heading: Heading
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"wfhClaimingAmount.title.$userType"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(messages(s"wfhClaimingAmount.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
+
+    <div class="govuk-body">
+        <p>@messages(s"wfhClaimingAmount.p1.$userType")</p>
+        <ul class="govuk-list--bullet">
+            <li>@messages("common.workplaceRunning.heating")</li>
+            <li>@messages("wfhClaimingAmount.l2")</li>
+            <li>@messages("wfhClaimingAmount.l3")</li>
+            <li>@messages("wfhClaimingAmount.l4")</li>
+        </ul>
+        <p>@messages(s"site.cannotInclude.$userType")</p>
+        <ul class="govuk-list--bullet">
+            <li>@messages("expenses.listItem.anyAmount")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = routes.WfhClaimingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(messages(s"wfhClaimingAmount.subHeading.$userType"))
+                .asPageHeading(size = Medium)
+                .withCssClass("govuk-!-margin-bottom-4")
+            )
+            .asNumeric()
+            .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

@@ -14,6 +14,7 @@ site.govuk = GOV.UK
 site.view = View
 site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
+site.example = Example
 site.hint.amount = For example, £193.54
 site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
@@ -354,6 +355,8 @@ expenses.feesForBuyingGoods = fees for buying goods
 expenses.hirePurchase = hire purchase (do not include any repayments made against the borrowed amount)
 expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
+expenses.flatRate = A flat rate of £{0}
+expenses.actualCosts = Actual costs
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -714,7 +717,9 @@ repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDis
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
 repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and maintenance costs
 
-########## Expenses - Advertising or Marketing ##########
+########## Expenses - Workplace Running Costs ##########
+
+common.workplaceRunning.heating = heating
 
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
@@ -754,6 +759,58 @@ workingFromHomeHours.error.overMax.total.individual = The number of months you w
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
 workingFromHomeHours.change.hidden = Change how many hours were worked from home
 
+## Flat Rate Or Actual Costs
+wfhFlatRateOrActualCosts.title.individual = Your flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.title.agent = Your client’s flat rate for working from home is £{0}
+wfhFlatRateOrActualCosts.howWeCalculatedThis = How we calculated this:
+wfhFlatRateOrActualCosts.months25To50 = {0} at 25 to 50 hours
+wfhFlatRateOrActualCosts.months51To100 = {0} at 51 to 100 hours
+wfhFlatRateOrActualCosts.months101Plus = {0} at 101 or more hours
+wfhFlatRateOrActualCosts.amount25To50 = £{0} (£10 per month)
+wfhFlatRateOrActualCosts.amount51To100 = £{0} (£18 per month)
+wfhFlatRateOrActualCosts.amount101Plus = £{0} (£26 per month)
+wfhFlatRateOrActualCosts.p1.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
+wfhFlatRateOrActualCosts.p1.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+wfhFlatRateOrActualCosts.subHeading.individual = Will you report you working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.error.required.agent = Select if you will report your client’s working-from-home expenses as actual costs or simplified expenses
+wfhFlatRateOrActualCosts.change.hidden = Change whether to continue with the flat rate amount or enter the actual expenses instead
+
+## WFH Expenses info
+wfhExpensesInfo.title = Working-from-home expenses
+wfhExpensesInfo.p1.individual = You can only claim expenses for work use. So, if you use something for both your self-employment and other things, you’ll need to find a reasonable way of dividing your costs.
+wfhExpensesInfo.p1.agent = Your client can only claim expenses for work use. So, if they use something for both their self-employment and other things, you’ll need to find a reasonable way of dividing their costs.
+wfhExpensesInfo.p2.individual = This could be by the number of rooms you use for work or the amount of time you spend working from home.
+wfhExpensesInfo.p2.agent = This could be by the number of rooms they use for work or the amount of time they spend working from home.
+wfhExpensesInfo.p3.individual = You have 4 rooms in your home, one of which you use only as an office.
+wfhExpensesInfo.p3.agent = Your client has 4 rooms in their home, one of which they use only as an office.
+wfhExpensesInfo.p4.individual = Your electricity bill for the year is £400. Assuming all the rooms in your home use equal amounts of electricity, you can claim £100 as allowable expenses (£400 divided by 4).
+wfhExpensesInfo.p4.agent = Their electricity bill for the year is £400. Assuming all the rooms in their home use equal amounts of electricity, they can claim £100 as allowable expenses (£400 divided by 4).
+wfhExpensesInfo.p5.individual = If you worked only one day a week from home, you could claim £14.29 as allowable expenses (£100 divided by 7).
+wfhExpensesInfo.p5.agent = If they worked only one day a week from home, they could claim £14.29 as allowable expenses (£100 divided by 7).
+
+## WFH Claiming amount
+wfhClaimingAmount.title.individual = Your working-from-home expenses
+wfhClaimingAmount.title.agent = Your client’s working-from-home expenses
+wfhClaimingAmount.p1.individual = You may be able to claim a proportion of your costs during the tax year for things like:
+wfhClaimingAmount.p1.agent = Your client may be able to claim a proportion of their costs during the tax year for things like:
+wfhClaimingAmount.l2 = electricity
+wfhClaimingAmount.l3 = Council Tax
+wfhClaimingAmount.l4 = mortgage interest or rent
+wfhClaimingAmount.p3 = You cannot include any amounts that cover personal use.
+wfhClaimingAmount.subHeading.individual = How much are you claiming in working-from-home expenses?
+wfhClaimingAmount.subHeading.agent = How much is your client claiming in working-from-home expenses?
+wfhClaimingAmount.error.required.individual = Enter the amount you spent on working-from-home expenses
+wfhClaimingAmount.error.required.agent = Enter the amount your client spent on working-from-home expenses
+wfhClaimingAmount.error.nonNumeric.individual = The amount you spent on working-from-home expenses must be a number
+wfhClaimingAmount.error.nonNumeric.agent = The amount your client spent on working-from-home expenses must be a number
+wfhClaimingAmount.error.lessThanZero.individual = The amount you spent on working-from-home expenses must be more than £0
+wfhClaimingAmount.error.lessThanZero.agent = The amount your client spent on working-from-home expenses must be more than £0
+wfhClaimingAmount.error.overMax.individual = The amount you spent on working-from-home expenses must be less than £100,000,000,000
+wfhClaimingAmount.error.overMax.agent = The amount your client spent on working-from-home expenses must be less than £100,000,000,000
+wfhClaimingAmount.change.hidden = Change how much was spent on working-from-home expenses
+
 ## Working from Business Premises
 businessPremisesAmount.title = Business premises expenses
 businessPremisesAmount.amount.individual = How much were your business premises expenses?
@@ -763,7 +820,6 @@ businessPremisesAmount.claim.agent = Your client can claim:
 businessPremisesAmount.rent = rent for business premises
 businessPremisesAmount.businessAndWater = business and water rates
 businessPremisesAmount.lighting =  lighting
-businessPremisesAmount.heating = heating
 businessPremisesAmount.power = power
 businessPremisesAmount.insurance = property insurance
 businessPremisesAmount.security = security
