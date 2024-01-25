@@ -86,6 +86,7 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
 
   private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: LiveAtBusinessPremises): Try[UserAnswers] =
     if (pageAnswer == No) {
+      // TODO add removePageData for months someone lived at your business premises page and claim personal use amount as a flat rate of £ or actual costs page
       Try(userAnswers)
     } else {
       Try(userAnswers)
