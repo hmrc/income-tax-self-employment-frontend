@@ -135,8 +135,8 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
               case Some(MoreThan25Hours.Yes) =>
                 workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(MoreThan25Hours.No) => // TODO 6788 when page created /workplace-running-costs/working-from-home/private-use
-                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(MoreThan25Hours.No) =>
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -152,8 +152,8 @@ class ExpensesNavigator @Inject() () {
             userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
               case Some(WfhFlatRateOrActualCosts.FlatRate) => // TODO SASS-6800, redirect to DoYouLiveAtYourBusinessPremisesController
                 workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(WfhFlatRateOrActualCosts.ActualCosts) => // TODO SASS-6788 redirect to WfhExpensesInfo page
-                workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
