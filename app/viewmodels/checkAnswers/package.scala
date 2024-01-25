@@ -27,18 +27,19 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow = {
+  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit messages: Messages): SummaryListRow = {
     val messageKey = if (answer) "site.yes" else "site.no"
-    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage)
+    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage, rightTextAlign)
   }
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
-    buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage)
+    buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
 
-  def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
+  def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
+      messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
-      key = Key(content = keyMessage, classes = "govuk-summary-list__key govuk-!-width-one-third"),
-      value = Value(content = HtmlContent(answer), classes = "govuk-summary-list__value govuk-!-width-two-thirds"),
+      key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
+      value = Value(content = HtmlContent(answer), classes = s"govuk-!-width-one-third${if (rightTextAlign) " govuk-!-text-align-right" else ""}"),
       actions = Seq(
         ActionItemViewModel("site.change", callLink.url)
           .withVisuallyHiddenText(messages(changeMessage))

@@ -22,26 +22,19 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowString
 
 object TradingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TradingAllowancePage, Some(businessId)).map { answer =>
-      val value = Value(content = HtmlContent(HtmlFormat.escape(messages(s"tradingAllowance.$answer"))), classes = "govuk-!-width-one-third")
-
-      SummaryListRowViewModel(
-        key = Key(content = s"tradingAllowance.checkYourAnswersLabel.$userType", classes = "govuk-!-width-two-thirds"),
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("tradingAllowance.change.hidden"))
-        )
+      buildRowString(
+        messages(s"tradingAllowance.$answer"),
+        routes.TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
+        s"tradingAllowance.checkYourAnswersLabel.$userType",
+        "tradingAllowance.change.hidden",
+        rightTextAlign = true
       )
     }
 

@@ -47,7 +47,8 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
         rowValue,
         routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
         s"howMuchTradingAllowance.checkYourAnswersLabel.$userType",
-        "howMuchTradingAllowance.change.hidden"
+        "howMuchTradingAllowance.change.hidden",
+        rightTextAlign = true
       )
     }
 
