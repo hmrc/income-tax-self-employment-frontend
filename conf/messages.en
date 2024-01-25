@@ -810,6 +810,17 @@ wfhClaimingAmount.error.overMax.individual = The amount you spent on working-fro
 wfhClaimingAmount.error.overMax.agent = The amount your client spent on working-from-home expenses must be less than £100,000,000,000
 wfhClaimingAmount.change.hidden = Change how much was spent on working-from-home expenses
 
+businessPremisesDisallowableAmount.title.individual = How much of the £ you spent on business premises expenses is disallowable?
+businessPremisesDisallowableAmount.title.agent = How much of the £{0} your client spent on business premises expenses is disallowable?
+businessPremisesDisallowableAmount.error.required.individual = Enter the amount of the £ you spent on business premises expenses that is disallowable
+businessPremisesDisallowableAmount.error.required.agent = Enter the amount of the £ your client spent on business premises expenses that is disallowable
+businessPremisesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £ you spent on business premises expenses must be a number
+businessPremisesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £ your client spent on business premises expenses must be a number
+businessPremisesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £ you spent on business premises expenses must be more than £0
+businessPremisesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £ your client spent on business premises expenses must be more than £0
+businessPremisesDisallowableAmount.error.overMax.individual = The disallowable amount of the £ you spent on business premises expenses must be less than £100,000,000,000
+businessPremisesDisallowableAmount.error.overMax.agent = The disallowable amount of the £ your client spent on business premises expenses must be less than £100,000,000,000
+
 ########## Expenses - Advertising or Marketing ##########
 
 ## Advertising amount

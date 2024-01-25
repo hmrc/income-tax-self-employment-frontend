@@ -283,6 +283,13 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+########## Expenses - Working From Business Premises ##########
+
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/disallowable-amount                           controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/disallowable-amount                           controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-business-premises/disallowable-amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-business-premises/disallowable-amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 ########## Expenses - Advertising or Marketing ##########
 
 GET         /:taxYear/:businessId/expenses/advertising-marketing/amount                                               controllers.journeys.expenses.advertisingOrMarketing.AdvertisingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
