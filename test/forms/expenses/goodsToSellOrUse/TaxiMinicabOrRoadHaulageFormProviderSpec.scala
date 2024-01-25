@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring.individualCategories
+package forms.expenses.goodsToSellOrUse
 
 import forms.behaviours.OptionFieldBehaviours
 import models.common.UserType

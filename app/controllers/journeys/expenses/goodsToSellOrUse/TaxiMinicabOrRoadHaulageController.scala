@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.tailoring.individualCategories
+package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import forms.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageFormProvider
+import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import navigation.ExpensesNavigator
+import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: MessagesApi,
                                                     selfEmploymentService: SelfEmploymentService,
-                                                    navigator: ExpensesTailoringNavigator,
+                                                    navigator: ExpensesNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

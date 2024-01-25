@@ -22,11 +22,11 @@ import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
-import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, TaxiMinicabOrRoadHaulage}
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
-import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -42,13 +42,10 @@ class GoodsToSellOrUseControllerSpec
       GoodsToSellOrUsePage
     ) {
 
-  override def onPageLoadCall: Call          = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call            = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
-  override def onwardRoute: Call             = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
-  override def validAnswer: GoodsToSellOrUse = YesDisallowable
-
-  override def baseAnswers: UserAnswers =
-    emptyUserAnswers.set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId)).success.value
+  override def onPageLoadCall: Call           = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call             = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call              = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: GoodsToSellOrUse  = YesDisallowable
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
@@ -65,7 +62,7 @@ class GoodsToSellOrUseControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[GoodsToSellOrUseView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual, taxiDriver = true).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
 
 }

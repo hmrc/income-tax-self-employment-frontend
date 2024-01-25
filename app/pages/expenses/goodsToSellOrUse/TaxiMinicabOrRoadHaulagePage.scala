@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring.individualCategories
+package pages.expenses.goodsToSellOrUse
 
-import forms.mappings.Mappings
-import models.common.UserType
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-import play.api.data.Form
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class TaxiMinicabOrRoadHaulageFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[TaxiMinicabOrRoadHaulage] =
-    Form(
-      "value" -> enumerable[TaxiMinicabOrRoadHaulage](s"taxiMinicabOrRoadHaulage.error.required.$userType")
-    )
-
+case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[TaxiMinicabOrRoadHaulage] {
+  override def toString: String = "taxiMinicabOrRoadHaulage"
 }

@@ -412,13 +412,6 @@ officeSupplies.error.required.individual = Select if all your office supplies ex
 officeSupplies.error.required.agent = Select if all your client’s office supplies expenses are allowable, some of them are disallowable or they do not have any office supplies expenses
 officeSupplies.change.hidden = OfficeSupplies
 
-## Taxi Minicab or Road Haulage
-taxiMinicabOrRoadHaulage.title.individual = Were you a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.title.agent = Was your client a taxi, minicab or road haulage industry driver?
-taxiMinicabOrRoadHaulage.error.required.individual = Select yes if you were a taxi, minicab or road haulage industry driver
-taxiMinicabOrRoadHaulage.error.required.agent = Select yes if your client was a taxi, minicab or road haulage industry driver
-taxiMinicabOrRoadHaulage.change.hidden = TaxiMinicabOrRoadHaulage
-
 ## Goods to sell or use
 goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
 goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
@@ -652,6 +645,13 @@ officeSuppliesCYA.title.individual = Check your office supplies expenses
 officeSuppliesCYA.title.agent = Check your client’s office supplies expenses
 
 ########## Expenses - Goods to sell or use ##########
+
+## Taxi Minicab or Road Haulage
+taxiMinicabOrRoadHaulage.title.individual = Were you a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.title.agent = Was your client a taxi, minicab or road haulage industry driver?
+taxiMinicabOrRoadHaulage.error.required.individual = Select yes if you were a taxi, minicab or road haulage industry driver
+taxiMinicabOrRoadHaulage.error.required.agent = Select yes if your client was a taxi, minicab or road haulage industry driver
+taxiMinicabOrRoadHaulage.change.hidden = Change if you were a taxi, minicab or road haulage industry driver
 
 ## Goods to sell or use amount
 goodsToSellOrUseAmount.title.individual = How much did you spend on goods to sell or use?
