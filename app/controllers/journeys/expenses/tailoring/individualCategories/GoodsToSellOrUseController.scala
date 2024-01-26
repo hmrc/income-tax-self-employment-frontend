@@ -24,9 +24,9 @@ import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.errors.ServiceError
-import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, TaxiMinicabOrRoadHaulage}
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -54,14 +54,13 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val isTaxiDriver = request.userAnswers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(TaxiMinicabOrRoadHaulage.Yes)
       for {
         accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType       = request.userType
         existingAnswer = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId))
         form           = formProvider(userType)
         preparedForm   = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType, isTaxiDriver))
+      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -74,23 +73,20 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
       def handleForm(form: Form[GoodsToSellOrUse],
                      userType: UserType,
                      accountingType: AccountingType,
-                     isTaxiDriver: Boolean,
                      userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
         form
           .bindFromRequest()
           .fold(
-            formWithErrors =>
-              Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType, isTaxiDriver)))),
+            formWithErrors => Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType)))),
             value => Right(handleSuccess(userAnswers, value))
           )
 
-      val isTaxiDriver = request.userAnswers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(TaxiMinicabOrRoadHaulage.Yes)
       for {
         accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)
-        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, isTaxiDriver, userAnswers).merge))
+        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge))
       } yield finalResult
   }
 

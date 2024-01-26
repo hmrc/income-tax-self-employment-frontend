@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.expenses.tailoring.individualCategories
+package pages.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import pages.OneQuestionPage
 
-case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[TaxiMinicabOrRoadHaulage] {
-  override def toString: String = "taxiMinicabOrRoadHaulage"
+case object BusinessPremisesAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "businessPremisesAmount"
 }

@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import cats.implicits._
 import controllers.journeys.{abroad, expenses, income}
 import models._
 import models.common.JourneyStatus._
@@ -35,7 +36,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.SummaryListCYA
-import cats.implicits._
 
 case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
@@ -243,7 +243,7 @@ object TradeJourneyStatusesViewModel {
         )
       case ExpensesGoodsToSellOrUse =>
         determineUrl(
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.goodsToSellOrUse.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesRepairsAndMaintenance =>

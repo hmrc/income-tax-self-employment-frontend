@@ -24,7 +24,6 @@ object ExpensesTailoringJsonBuilder {
     "expensesCategories"          -> "individualCategories",
     "officeSupplies"              -> "no",
     "officeSupplies"              -> "no",
-    "taxiMinicabOrRoadHaulage"    -> "no",
     "goodsToSellOrUse"            -> "no",
     "repairsAndMaintenance"       -> "no",
     "workFromHome"                -> "no",
@@ -41,7 +40,6 @@ object ExpensesTailoringJsonBuilder {
   val allYesIndividualCategoriesAnswers = Json.obj(
     "expensesCategories"                -> "individualCategories",
     "officeSupplies"                    -> "yesAllowable",
-    "taxiMinicabOrRoadHaulage"          -> "yesDisallowable",
     "goodsToSellOrUse"                  -> "yesDisallowable",
     "repairsAndMaintenance"             -> "yesDisallowable",
     "workFromHome"                      -> "yes",
@@ -64,7 +62,6 @@ object ExpensesTailoringJsonBuilder {
   val mixedIndividualCategoriesAnswers = Json.obj(
     "expensesCategories"           -> "individualCategories",
     "officeSupplies"               -> "yesAllowable",
-    "taxiMinicabOrRoadHaulage"     -> "no",
     "goodsToSellOrUse"             -> "no",
     "repairsAndMaintenance"        -> "yesDisallowable",
     "workFromHome"                 -> "yes",

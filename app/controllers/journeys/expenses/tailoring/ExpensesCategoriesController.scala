@@ -25,6 +25,7 @@ import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
+import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.tailoring._
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses._

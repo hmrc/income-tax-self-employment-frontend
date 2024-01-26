@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.tailoring.individualCategories
+package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import forms.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageFormProvider
-import models.Mode
+import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
+import models.{Mode, NormalMode}
+import navigation.ExpensesNavigator
+import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -34,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: MessagesApi,
                                                     selfEmploymentService: SelfEmploymentService,
-                                                    navigator: ExpensesTailoringNavigator,
+                                                    navigator: ExpensesNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
@@ -56,14 +57,21 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      def normalModeIfAnswerChanged(currentAnswer: TaxiMinicabOrRoadHaulage): Mode =
+        request.getValue(TaxiMinicabOrRoadHaulagePage, businessId) match {
+          case Some(answer) if currentAnswer != answer => NormalMode
+          case _                                       => mode
+        }
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
+          value => {
+            val redirectMode = normalModeIfAnswerChanged(value)
             selfEmploymentService
               .persistAnswer(businessId, request.userAnswers, value, TaxiMinicabOrRoadHaulagePage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, mode, updatedAnswers, taxYear, businessId)))
+              .map(updatedAnswers => Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, redirectMode, updatedAnswers, taxYear, businessId)))
+          }
         )
   }
 

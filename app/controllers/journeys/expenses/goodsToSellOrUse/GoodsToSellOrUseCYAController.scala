@@ -27,7 +27,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
+import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{
+  DisallowableGoodsToSellOrUseAmountSummary,
+  GoodsToSellOrUseAmountSummary,
+  TaxiMinicabOrRoadHaulageSummary
+}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -54,6 +58,7 @@ class GoodsToSellOrUseCYAController @Inject() (override val messagesApi: Message
 
       val summaryList = SummaryListCYA.summaryListOpt(
         List(
+          TaxiMinicabOrRoadHaulageSummary.row(request.userAnswers, taxYear, businessId, user),
           GoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user),
           DisallowableGoodsToSellOrUseAmountSummary.row(request.userAnswers, taxYear, businessId, user)
         )

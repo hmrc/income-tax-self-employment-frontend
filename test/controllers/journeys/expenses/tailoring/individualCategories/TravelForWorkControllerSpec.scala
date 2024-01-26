@@ -22,13 +22,12 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage.Yes
 import models.journeys.expenses.individualCategories.TravelForWork
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -47,7 +46,6 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
     controllers.journeys.expenses.tailoring.individualCategories.routes.TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new TravelForWorkFormProvider()
-  val taxiDriver   = false
 
   case class UserScenario(userType: UserType, form: Form[TravelForWork])
 
@@ -76,7 +74,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
+                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -98,34 +96,13 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(
+                view(userScenario.form.fill(TravelForWork.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
                   request,
                   messages(application)).toString
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
             }
           }
-        }
-      }
-
-      "must return OK and the correct view for a GET when user is taxi driver" in {
-        val taxiDriver  = true
-        val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, Yes, Some(businessId)).success.value
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-
-          val request = FakeRequest(GET, travelForWorkRoute)
-
-          val view = application.injector.instanceOf[TravelForWorkView]
-
-          val result = route(application, request).value
-
-          val expectedResult =
-            view(formProvider(Individual), NormalMode, Individual, taxYear, businessId, taxiDriver)(request, messages(application)).toString
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual expectedResult
         }
       }
 
@@ -190,7 +167,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult
@@ -213,7 +190,7 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, taxiDriver)(request, messages(application)).toString
+                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual expectedResult

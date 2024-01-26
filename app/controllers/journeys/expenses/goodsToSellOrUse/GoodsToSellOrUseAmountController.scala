@@ -23,8 +23,7 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
-import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -63,15 +62,14 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid)) flatMap { accountingType =>
-        val user = request.userType
         val taxiDriver = request.userAnswers
           .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
           .contains(TaxiMinicabOrRoadHaulage.Yes)
-        val form = formProvider(user)
-        form
+        formProvider(request.userType)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, user, taxYear, businessId, accountingType, taxiDriver))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
             value =>
               selfEmploymentService
                 .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUseAmountPage)
