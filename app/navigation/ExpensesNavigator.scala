@@ -30,7 +30,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -40,6 +40,7 @@ import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, Re
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{LiveAtBusinessPremisesPage, BusinessPremisesAmountPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -96,6 +97,9 @@ class ExpensesNavigator @Inject() () {
 
     case FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+    case TaxiMinicabOrRoadHaulagePage =>
+      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
@@ -155,6 +159,19 @@ class ExpensesNavigator @Inject() () {
                 workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
+
+    case LiveAtBusinessPremisesPage => // TODO replace when next journey page is created
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case BusinessPremisesAmountPage => // TODO /workplace-running-costs/live-business premises/people if yesDisallowable or /workplace-running-costs/check
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesDisallowableAmountController
+              .onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>
       userAnswers =>
@@ -265,7 +282,7 @@ class ExpensesNavigator @Inject() () {
     case FinancialChargesAmountPage | FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-    case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
+    case TaxiMinicabOrRoadHaulagePage | GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case AdvertisingOrMarketingAmountPage | AdvertisingOrMarketingDisallowableAmountPage =>

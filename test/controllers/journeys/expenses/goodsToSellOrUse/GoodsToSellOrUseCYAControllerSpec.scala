@@ -27,7 +27,11 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
-import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountSummary, GoodsToSellOrUseAmountSummary}
+import viewmodels.checkAnswers.expenses.goodsToSellOrUse.{
+  DisallowableGoodsToSellOrUseAmountSummary,
+  GoodsToSellOrUseAmountSummary,
+  TaxiMinicabOrRoadHaulageSummary
+}
 
 class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
@@ -41,17 +45,19 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList = SummaryList(
     rows = Seq(
+      TaxiMinicabOrRoadHaulageSummary.row(userAnswers, taxYear, businessId, userType).value,
       GoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
       DisallowableGoodsToSellOrUseAmountSummary.row(userAnswers, taxYear, businessId, userType).value
     ),
     classes = "govuk-!-margin-bottom-7"
   )
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
+    "taxiMinicabOrRoadHaulage"           -> "yes",
     "goodsToSellOrUse"                   -> "yesDisallowable",
     "goodsToSellOrUseAmount"             -> 100.00,
     "disallowableGoodsToSellOrUseAmount" -> 100.00
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
 }

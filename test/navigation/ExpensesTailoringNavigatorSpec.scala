@@ -75,21 +75,15 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
         }
       }
 
-      "TotalExpensesPage must go to the TaxiMinicabOrRoadHaulagePage" in {
+      "TotalExpensesPage must go to the ExpensesTailoringCYAPage" in {
 
         navigator.nextPage(TotalExpensesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
           tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
       }
 
-      "OfficeSuppliesPage must go to the TaxiMinicabOrRoadHaulagePage" in {
+      "OfficeSuppliesPage must go to the GoodsToSellOrUsePage" in {
 
         navigator.nextPage(OfficeSuppliesPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
-      }
-
-      "TaxiMinicabOrRoadHaulagePage must go to the GoodsToSellOrUsePage" in {
-
-        navigator.nextPage(TaxiMinicabOrRoadHaulagePage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
           GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
       }
 

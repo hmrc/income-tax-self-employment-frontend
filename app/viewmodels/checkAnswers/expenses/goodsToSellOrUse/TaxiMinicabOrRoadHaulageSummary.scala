@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.tailoring.individualCategories
+package viewmodels.checkAnswers.expenses.goodsToSellOrUse
 
-import controllers.journeys.expenses.tailoring.individualCategories.routes
+import controllers.journeys.expenses.goodsToSellOrUse.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object TaxiMinicabOrRoadHaulageSummary {
 
-  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).map { answer =>
       buildRowString(
         formatAnswer(answer.toString),

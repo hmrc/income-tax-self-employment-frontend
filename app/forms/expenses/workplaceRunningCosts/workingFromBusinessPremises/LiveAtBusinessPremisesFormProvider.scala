@@ -17,24 +17,17 @@
 package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import forms.mappings.Mappings
-import models.common.{MoneyBounds, UserType}
+import models.common.UserType
+import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import play.api.data.Form
-import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
 
-class BusinessPremisesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
+class LiveAtBusinessPremisesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType, disallowableAmount: BigDecimal): Form[BigDecimal] = {
-    val disallowableAmountString = formatMoney(disallowableAmount)
+  def apply(userType: UserType): Form[LiveAtBusinessPremises] =
     Form(
-      "value" -> currency(
-        s"businessPremisesDisallowableAmount.error.required.$userType",
-        s"businessPremisesDisallowableAmount.error.nonNumeric.$userType",
-        Seq(disallowableAmountString)
-      )
-        .verifying(greaterThan(minimumValue, s"businessPremisesDisallowableAmount.error.lessThanZero.$userType"))
-        .verifying(lessThan(maximumValue, s"businessPremisesDisallowableAmount.error.overMax.$userType"))
+      "value" -> enumerable[LiveAtBusinessPremises](s"liveAtBusinessPremises.error.required.$userType")
     )
-  }
+
 }

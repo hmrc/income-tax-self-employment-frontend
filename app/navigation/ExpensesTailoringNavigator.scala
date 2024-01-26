@@ -53,9 +53,6 @@ class ExpensesTailoringNavigator @Inject() () {
     case TotalExpensesPage => _ => (taxYear, businessId) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case OfficeSuppliesPage =>
-      _ => (taxYear, businessId) => individualCategories.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode)
-
-    case TaxiMinicabOrRoadHaulagePage =>
       _ => (taxYear, businessId) => individualCategories.routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
 
     case GoodsToSellOrUsePage =>

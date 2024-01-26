@@ -23,7 +23,7 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import navigation.ExpensesNavigator
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -35,28 +35,30 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessPremisesDisallowableAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                             service: SelfEmploymentService,
-                                                             navigator: ExpensesNavigator,
-                                                             identify: IdentifierAction,
-                                                             getData: DataRetrievalAction,
-                                                             requireData: DataRequiredAction,
-                                                             formProvider: BusinessPremisesDisallowableAmountFormProvider,
-                                                             val controllerComponents: MessagesControllerComponents,
-                                                             view: BusinessPremisesDisallowableAmountView)(implicit ec: ExecutionContext)
+class BusinessPremisesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                              service: SelfEmploymentService,
+                                                              navigator: ExpensesNavigator,
+                                                              identify: IdentifierAction,
+                                                              getData: DataRetrievalAction,
+                                                              requireData: DataRequiredAction,
+                                                              formProvider: BusinessPremisesDisallowableAmountFormProvider,
+                                                              val controllerComponents: MessagesControllerComponents,
+                                                              view: BusinessPremisesDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(disallowableAmount) =>
           val form = request.userAnswers
-            .get(BusinessPremisesDisallowableAmountPage, Some(businessId))
-            .fold(formProvider(request.userType, disallowableAmount))(formProvider(request.userType, disallowableAmount).fill)
+            .get(BusinessPremisesDisallowableAmountPage, Some(businessId)) match {
+            case Some(value) => formProvider(request.userType, disallowableAmount).fill(value)
+            case None        => formProvider(request.userType, disallowableAmount)
+          }
+          Future.successful(Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount))))
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
 
-          Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount)))
       }
   }
 
@@ -65,7 +67,6 @@ class BusinessPremisesDisallowableAmountController @Inject()(override val messag
       request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)) match {
         case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(disallowableAmount) =>
-
           def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
             service
               .persistAnswer(businessId, userAnswers, value, BusinessPremisesDisallowableAmountPage)
@@ -74,7 +75,8 @@ class BusinessPremisesDisallowableAmountController @Inject()(override val messag
           formProvider(request.userType, disallowableAmount)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount)))),
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount)))),
               value => handleSuccess(request.userAnswers, value)
             )
       }
