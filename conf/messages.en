@@ -719,6 +719,8 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 
 ########## Expenses - Workplace Running Costs ##########
 
+common.workplaceRunning.heating = heating
+
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
@@ -793,7 +795,6 @@ wfhClaimingAmount.title.individual = Your working-from-home expenses
 wfhClaimingAmount.title.agent = Your client’s working-from-home expenses
 wfhClaimingAmount.p1.individual = You may be able to claim a proportion of your costs during the tax year for things like:
 wfhClaimingAmount.p1.agent = Your client may be able to claim a proportion of their costs during the tax year for things like:
-wfhClaimingAmount.l1 = heating
 wfhClaimingAmount.l2 = electricity
 wfhClaimingAmount.l3 = Council Tax
 wfhClaimingAmount.l4 = mortgage interest or rent
@@ -821,6 +822,25 @@ liveAtBusinessPremises.error.required.individual = Select yes if you lived at yo
 liveAtBusinessPremises.error.required.agent = Select yes if your client lived at their business premises
 liveAtBusinessPremises.change.hidden = // TODO replace when CYA page is made
 
+businessPremisesAmount.title = Business premises expenses
+businessPremisesAmount.amount.individual = How much were your business premises expenses?
+businessPremisesAmount.amount.agent = How much were your client’s business premises expenses?
+businessPremisesAmount.claim.individual = You can claim:
+businessPremisesAmount.claim.agent = Your client can claim:
+businessPremisesAmount.rent = rent for business premises
+businessPremisesAmount.businessAndWater = business and water rates
+businessPremisesAmount.lighting =  lighting
+businessPremisesAmount.power = power
+businessPremisesAmount.insurance = property insurance
+businessPremisesAmount.security = security
+businessPremisesAmount.error.required.individual = Enter the amount you spent on business premises expenses
+businessPremisesAmount.error.required.agent = Enter the amount your client spent on business premises expenses
+businessPremisesAmount.error.nonNumeric.individual = The amount you spent on business premises expenses must be a number
+businessPremisesAmount.error.nonNumeric.agent = The amount your client spent on business premises expenses must be a number
+businessPremisesAmount.error.lessThanZero.individual = The amount you spent on business premises expenses must be more than £0
+businessPremisesAmount.error.lessThanZero.agent = The amount your client spent on business premises expenses must be more than £0
+businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
+businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
 
 ########## Expenses - Advertising or Marketing ##########
 
