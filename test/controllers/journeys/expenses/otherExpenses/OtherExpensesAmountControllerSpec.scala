@@ -17,11 +17,11 @@
 package controllers.journeys.expenses.otherExpenses
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{AccountingType, BusinessId, Mtditid, Nino, UserType}
+import models.common._
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -51,7 +51,7 @@ class OtherExpensesAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 

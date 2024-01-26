@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.staffCosts
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -50,7 +50,7 @@ class StaffCostsAmountControllerSpec
 
   override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 

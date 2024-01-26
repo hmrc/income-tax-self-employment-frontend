@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -46,7 +46,7 @@ class BusinessPremisesAmountControllerSpec
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new BusinessPremisesAmountFormProvider()(userType)
 

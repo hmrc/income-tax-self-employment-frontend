@@ -18,8 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import cats.data.EitherT
 import controllers.actions._
-import controllers.handleResult
-import controllers.standard.routes
+import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
@@ -69,16 +68,12 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) map {
-        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
-        case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
-
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
-      }
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+        existingAnswer = request.userAnswers.get(ProfessionalServiceExpensesPage, Some(businessId))
+        form           = formProvider(request.userType)
+        preparedForm   = existingAnswer.fold(form)(form.fill)
+      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -100,15 +95,13 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
             value => Right(handleSuccess(userAnswers, value))
           )
 
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
+        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge))
       } yield finalResult
-
-      handleResult(result.value)
   }
 
   private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,

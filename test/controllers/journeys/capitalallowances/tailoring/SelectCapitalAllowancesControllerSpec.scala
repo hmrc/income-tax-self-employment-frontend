@@ -17,7 +17,7 @@
 package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.CheckboxControllerBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.capitalallowances.tailoring.SelectCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -37,8 +37,6 @@ import views.html.journeys.capitalallowances.tailoring.SelectCapitalAllowancesVi
 
 class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("SelectCapitalAllowancesController", SelectCapitalAllowancesPage) {
 
-  private val accountingType = Accrual
-
   override def onPageLoadRoute = routes.SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url
   override def onSubmitRoute   = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, NormalMode).url
 
@@ -54,7 +52,7 @@ class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns accountingType.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   override def answer: Set[CapitalAllowances] = Set(ElectricVehicleChargepoint)

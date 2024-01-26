@@ -17,7 +17,8 @@
 package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
+import cats.data.EitherT
+import cats.implicits.catsSyntaxOptionId
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -57,7 +58,7 @@ class ClaimCapitalAllowancesControllerSpec
 
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns accountingType.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(accountingType)
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(

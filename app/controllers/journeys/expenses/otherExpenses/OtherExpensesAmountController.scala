@@ -52,15 +52,13 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      val resultT = for {
-        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
+      (for {
+        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid).value)
+        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId))
         form = request.userAnswers
           .get(OtherExpensesAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))
-
-      resultT.merge
+      } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))).merge
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
@@ -78,12 +76,10 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
           .persistAnswer(businessId, request.userAnswers, value, OtherExpensesAmountPage)
           .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId)))
 
-      val resultT = for {
+      (for {
+        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid).value)
         tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
         result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
-      } yield result
-
-      resultT.merge
+      } yield result).merge
     }
 }

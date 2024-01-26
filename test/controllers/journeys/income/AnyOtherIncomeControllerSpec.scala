@@ -17,15 +17,15 @@
 package controllers.journeys.income
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.journeys.income
 import controllers.standard
 import forms.income.AnyOtherIncomeFormProvider
-import models.common.{AccountingType, BusinessId, Mtditid, Nino, UserType}
+import models.common._
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import org.mockito.Mockito.when
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
@@ -137,7 +137,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -162,7 +162,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Cash))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
@@ -193,7 +193,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(accountingType))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(accountingType)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -216,7 +216,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Cash))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -240,7 +240,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Cash))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -263,7 +263,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Accrual))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
 
               val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", ""))
@@ -288,7 +288,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Accrual))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
 
               val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", "non-Boolean"))
