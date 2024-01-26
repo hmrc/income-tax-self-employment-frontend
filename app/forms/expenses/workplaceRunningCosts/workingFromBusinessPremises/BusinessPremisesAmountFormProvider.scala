@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring.individualCategories
+package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import forms.mappings.Mappings
-import models.common.UserType
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TaxiMinicabOrRoadHaulageFormProvider @Inject() extends Mappings {
+class BusinessPremisesAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType): Form[TaxiMinicabOrRoadHaulage] =
+  def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> enumerable[TaxiMinicabOrRoadHaulage](s"taxiMinicabOrRoadHaulage.error.required.$userType")
+      "value" -> currency(s"businessPremisesAmount.error.required.$userType", s"businessPremisesAmount.error.nonNumeric.$userType")
+        .verifying(greaterThan(minimumValue, s"businessPremisesAmount.error.lessThanZero.$userType"))
+        .verifying(lessThan(maximumValue, s"businessPremisesAmount.error.overMax.$userType"))
     )
-
 }

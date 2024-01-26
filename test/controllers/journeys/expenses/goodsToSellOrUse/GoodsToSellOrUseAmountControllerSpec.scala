@@ -25,8 +25,7 @@ import models.common.{BusinessId, Mtditid, Nino, UserType}
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountPage
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages

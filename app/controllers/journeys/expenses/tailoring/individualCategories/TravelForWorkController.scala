@@ -20,9 +20,8 @@ import controllers.actions._
 import forms.expenses.tailoring.individualCategories.TravelForWorkFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{TaxiMinicabOrRoadHaulagePage, TravelForWorkPage}
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -51,22 +50,15 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
         case None        => formProvider(request.userType)
         case Some(value) => formProvider(request.userType).fill(value)
       }
-      val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-        .contains(TaxiMinicabOrRoadHaulage.Yes)
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, taxiDriver))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-        .contains(TaxiMinicabOrRoadHaulage.Yes)
-
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, taxiDriver))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             selfEmploymentService
               .persistAnswer(businessId, request.userAnswers, value, TravelForWorkPage)

@@ -124,11 +124,6 @@ POST        /:taxYear/:businessId/expenses/office-supplies                      
 GET         /:taxYear/:businessId/expenses/change-office-supplies                                                     controllers.journeys.expenses.tailoring.individualCategories.OfficeSuppliesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-office-supplies                                                     controllers.journeys.expenses.tailoring.individualCategories.OfficeSuppliesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/taxi-minicab-road-haulage-industry-driver                                  controllers.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/taxi-minicab-road-haulage-industry-driver                                  controllers.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-taxi-minicab-road-haulage-industry-driver                           controllers.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-taxi-minicab-road-haulage-industry-driver                           controllers.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-
 GET         /:taxYear/:businessId/expenses/goods-sell-use                                                             controllers.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/goods-sell-use                                                             controllers.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/change-goods-sell-use                                                      controllers.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
@@ -231,6 +226,11 @@ POST        /:taxYear/:businessId/expenses/office-supplies/check                
 
 ########## Expenses - Goods to sell or use ##########
 
+GET         /:taxYear/:businessId/expenses/goods-sell-use/taxi-minicab-road-haulage-industry-driver                   controllers.journeys.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/goods-sell-use/taxi-minicab-road-haulage-industry-driver                   controllers.journeys.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-goods-sell-use/taxi-minicab-road-haulage-industry-driver            controllers.journeys.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-goods-sell-use/taxi-minicab-road-haulage-industry-driver            controllers.journeys.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 GET         /:taxYear/:businessId/expenses/goods-sell-use/amount                                                      controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/goods-sell-use/amount                                                      controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/change-goods-sell-use/amount                                               controllers.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
@@ -282,6 +282,18 @@ GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/amount                           controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/amount                    controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+########## Expenses - Working From Business Premises ##########
+
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/live-business-premises               controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/live-business-premises               controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-live-business-premises        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-live-business-premises        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                            controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/business-premises/amount                             controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-workplace-running-costs/business-premises/amount        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-workplace-running-costs/business-premises/amount        controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 ########## Expenses - Advertising or Marketing ##########
 

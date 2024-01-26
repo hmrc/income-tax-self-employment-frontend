@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.goodsToSellOrUse
+package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-import play.api.libs.json._
+import forms.mappings.Mappings
+import models.common.UserType
+import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
+import play.api.data.Form
 
-case class GoodsToSellOrUseJourneyAnswers(taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
-                                          goodsToSellOrUseAmount: BigDecimal,
-                                          disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
+import javax.inject.Inject
 
-object GoodsToSellOrUseJourneyAnswers {
-  implicit val formats: OFormat[GoodsToSellOrUseJourneyAnswers] = Json.format[GoodsToSellOrUseJourneyAnswers]
+class LiveAtBusinessPremisesFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[LiveAtBusinessPremises] =
+    Form(
+      "value" -> enumerable[LiveAtBusinessPremises](s"liveAtBusinessPremises.error.required.$userType")
+    )
+
 }

@@ -44,7 +44,6 @@ package object tailoring {
         ExpensesTailoringSummary.row(answerIsTotalAmount),
         TotalExpensesSummary.row(),
         OfficeSuppliesSummary.row(),
-        TaxiMinicabOrRoadHaulageSummary.row(),
         GoodsToSellOrUseSummary.row(),
         RepairsAndMaintenanceSummary.row(),
         WorkFromHomeSummary.row(),

@@ -28,7 +28,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("journeys.expenses-goods-to-sell-or-use"))) {
 
@@ -38,20 +38,16 @@
 
     @heading(messages("journeys.expenses-goods-to-sell-or-use"), None, extraClasses = "no-padding-top")
 
-    @if(taxiDriver) {
-        <div class="govuk-inset-text">
-            <p>@messages("goodsToSellOrUse.insetText")</p>
-        </div>
-    }
+    <div class="govuk-inset-text">
+        <p>@messages("goodsToSellOrUse.insetText")</p>
+    </div>
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
         @messages(s"site.canInclude.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-            @if(taxiDriver) {
-                <li>@messages("expenses.fuelCosts")</li>
-            }
+            <li>@messages("expenses.fuelCosts")</li>
             <li>@messages("expenses.costOfRawMaterials")</li>
             <li>@messages("expenses.stockBought")</li>
             <li>@messages("expenses.directCostsOfProducing")</li>

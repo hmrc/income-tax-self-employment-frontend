@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package models.journeys.expenses.goodsToSellOrUse
+package pages.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-import play.api.libs.json._
+import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
+import pages.OneQuestionPage
 
-case class GoodsToSellOrUseJourneyAnswers(taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
-                                          goodsToSellOrUseAmount: BigDecimal,
-                                          disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
-
-object GoodsToSellOrUseJourneyAnswers {
-  implicit val formats: OFormat[GoodsToSellOrUseJourneyAnswers] = Json.format[GoodsToSellOrUseJourneyAnswers]
+case object LiveAtBusinessPremisesPage extends OneQuestionPage[LiveAtBusinessPremises] {
+  override def toString: String = "liveAtBusinessPremises"
 }
