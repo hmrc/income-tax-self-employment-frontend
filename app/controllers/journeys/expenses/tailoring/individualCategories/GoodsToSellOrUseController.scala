@@ -21,9 +21,8 @@ import controllers.standard.routes
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -55,10 +54,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
             case None        => formProvider(request.userType)
             case Some(value) => formProvider(request.userType).fill(value)
           }
-          val taxiDriver = request.userAnswers
-            .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-            .contains(TaxiMinicabOrRoadHaulage.Yes)
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
       }
   }
 
@@ -67,15 +63,11 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
       selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) flatMap {
         case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Right(accountingType) =>
-          val taxiDriver = request.userAnswers
-            .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-            .contains(TaxiMinicabOrRoadHaulage.Yes)
           val form = formProvider(request.userType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
               value =>
                 selfEmploymentService
                   .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUsePage)

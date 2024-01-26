@@ -16,9 +16,12 @@
 
 package models.journeys.expenses.goodsToSellOrUse
 
+import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import play.api.libs.json._
 
-case class GoodsToSellOrUseJourneyAnswers(goodsToSellOrUseAmount: BigDecimal, disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
+case class GoodsToSellOrUseJourneyAnswers(taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
+                                          goodsToSellOrUseAmount: BigDecimal,
+                                          disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
 
 object GoodsToSellOrUseJourneyAnswers {
   implicit val formats: OFormat[GoodsToSellOrUseJourneyAnswers] = Json.format[GoodsToSellOrUseJourneyAnswers]

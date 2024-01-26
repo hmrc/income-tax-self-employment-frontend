@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.tailoring.individualCategories
+package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageFormProvider
+import controllers.standard
+import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -28,7 +28,7 @@ import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulagePage
+import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -41,7 +41,7 @@ import scala.concurrent.Future
 
 class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = routes.GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode)
 
   lazy val taxiMinicabOrRoadHaulageRoute = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode).url
 
@@ -118,7 +118,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -212,7 +212,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
               status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+              redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
             }
           }
         }

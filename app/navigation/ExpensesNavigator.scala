@@ -30,7 +30,7 @@ import pages.expenses.construction.{ConstructionIndustryAmountPage, Construction
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -97,6 +97,9 @@ class ExpensesNavigator @Inject() () {
 
     case FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+    case TaxiMinicabOrRoadHaulagePage =>
+      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case GoodsToSellOrUseAmountPage =>
       userAnswers =>
@@ -272,7 +275,7 @@ class ExpensesNavigator @Inject() () {
     case FinancialChargesAmountPage | FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-    case GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
+    case TaxiMinicabOrRoadHaulagePage | GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
       _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 
     case AdvertisingOrMarketingAmountPage | AdvertisingOrMarketingDisallowableAmountPage =>

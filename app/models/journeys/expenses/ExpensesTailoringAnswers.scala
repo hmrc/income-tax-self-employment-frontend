@@ -50,7 +50,6 @@ object ExpensesTailoringAnswers {
 
   final case class ExpensesTailoringIndividualCategoriesAnswers(
       officeSupplies: OfficeSupplies,
-      taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
       goodsToSellOrUse: GoodsToSellOrUse,
       repairsAndMaintenance: RepairsAndMaintenance,
       workFromHome: WorkFromHome,
