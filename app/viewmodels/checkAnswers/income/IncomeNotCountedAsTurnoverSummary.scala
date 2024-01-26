@@ -33,7 +33,8 @@ object IncomeNotCountedAsTurnoverSummary {
         answer,
         routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, CheckMode),
         s"incomeNotCountedAsTurnover.checkYourAnswersLabel.$userType",
-        "incomeNotCountedAsTurnover.change.hidden"
+        "incomeNotCountedAsTurnover.change.hidden",
+        rightTextAlign = true
       )
     }
 

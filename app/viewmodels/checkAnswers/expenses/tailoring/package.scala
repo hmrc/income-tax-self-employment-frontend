@@ -18,9 +18,11 @@ package viewmodels.checkAnswers.expenses
 
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.TotalAmount
 import models.journeys.expenses.individualCategories.FinancialExpenses.NoFinancialExpenses
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.No
 import models.journeys.expenses.individualCategories.{FinancialExpenses, ProfessionalServiceExpenses}
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.expenses.tailoring.individualCategories._
@@ -35,10 +37,11 @@ package object tailoring {
     implicit val impTaxYear: TaxYear         = taxYear
     implicit val impBusinessId: BusinessId   = businessId
     implicit val impUserType: UserType       = userType
+    val answerIsTotalAmount                  = answers.get(ExpensesCategoriesPage, Some(businessId)).contains(TotalAmount)
 
     SummaryListCYA.summaryListOpt(
       List(
-        ExpensesTailoringSummary.row(),
+        ExpensesTailoringSummary.row(answerIsTotalAmount),
         TotalExpensesSummary.row(),
         OfficeSuppliesSummary.row(),
         GoodsToSellOrUseSummary.row(),

@@ -21,18 +21,24 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 class checkAnswersSpec extends AnyWordSpecLike {
-  private def expectedRow(expectedAnswer: String) = SummaryListRow(
-    Key(Text("keyMessage"), "govuk-summary-list__key govuk-!-width-one-third"),
-    Value(HtmlContent(expectedAnswer), "govuk-summary-list__value govuk-!-width-two-thirds"),
+  private def expectedRow(expectedAnswer: String, rightTextAlign: Boolean = false) = SummaryListRow(
+    Key(Text("keyMessage"), "govuk-!-width-two-thirds"),
+    Value(HtmlContent(expectedAnswer), s"govuk-!-width-one-third${if (rightTextAlign) " govuk-!-text-align-right" else ""}"),
     "",
     Some(Actions("", List(ActionItem("", Text("Change"), Some("changeMessage"), "", Map()))))
   )
 
   "buildRowBoolean" should {
 
-    "return a SummaryListRow with Yes for answer=True" in new TestCase {
-      val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
-      assert(result === expectedRow("Yes"))
+    "return a SummaryListRow with Yes for answer=True" when {
+      "value is default aligned left" in new TestCase {
+        val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
+        assert(result === expectedRow("Yes"))
+      }
+      "value is specified as aligned right" in new TestCase {
+        val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
+        assert(result === expectedRow("Yes"))
+      }
     }
 
     "return a SummaryListRow with No for answer=False" in new TestCase {
@@ -42,16 +48,22 @@ class checkAnswersSpec extends AnyWordSpecLike {
   }
 
   "buildRowBigDecimal" should {
-    "return a SummaryListRow with formatted money" in new TestCase {
+    "return a SummaryListRow with formatted money aligned right" in new TestCase {
       val result = buildRowBigDecimal(1.0, emptyCall, "keyMessage", "changeMessage")
-      assert(result === expectedRow("£1.00"))
+      assert(result === expectedRow("£1.00", rightTextAlign = true))
     }
   }
 
   "buildRowString" should {
-    "return a SummaryListRow with a proper key, value and actions" in new TestCase {
-      val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage")
-      assert(result === expectedRow("strAnswer"))
+    "return a SummaryListRow with a proper key, value and actions" when {
+      "value is default aligned left" in new TestCase {
+        val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage")
+        assert(result === expectedRow("strAnswer"))
+      }
+      "value is specified as aligned right" in new TestCase {
+        val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage", rightTextAlign = true)
+        assert(result === expectedRow("strAnswer", rightTextAlign = true))
+      }
     }
   }
 }
