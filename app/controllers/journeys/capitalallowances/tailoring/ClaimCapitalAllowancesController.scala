@@ -16,10 +16,9 @@
 
 package controllers.journeys.capitalallowances.tailoring
 
-import cats.data.EitherT
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleServiceCall
+import controllers.handleApiResult
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -51,12 +50,12 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(ClaimCapitalAllowancesPage, businessId.some)
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, accountingType, businessId))).merge
+      } yield Ok(view(form, mode, request.userType, taxYear, accountingType, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -72,10 +71,10 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
                 .map(updatedAnswers => Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
           )
 
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- EitherT.right[Result](handleForm(accountingType))
-      } yield result).merge
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
+        result         <- handleForm(accountingType)
+      } yield result
 
   }
 

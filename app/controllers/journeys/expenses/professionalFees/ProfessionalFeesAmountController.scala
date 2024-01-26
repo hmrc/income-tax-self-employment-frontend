@@ -16,9 +16,8 @@
 
 package controllers.journeys.expenses.professionalFees
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.{handleResult, standard}
+import controllers.handleApiResult
 import forms.expenses.professionalFees.ProfessionalFeesAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -50,15 +49,13 @@ class ProfessionalFeesAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType     = request.userType
         userAnswers  = request.userAnswers.get(ProfessionalFeesAmountPage, Some(businessId))
         form         = formProvider(userType)
         preparedForm = userAnswers.fold(form)(form.fill)
       } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
-
-      handleResult(result.value)
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -76,9 +73,8 @@ class ProfessionalFeesAmountController @Inject() (override val messagesApi: Mess
           .persistAnswer(businessId, request.userAnswers, value, ProfessionalFeesAmountPage)
           .map(updated => Redirect(navigator.nextPage(ProfessionalFeesAmountPage, mode, updated, taxYear, businessId)))
 
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) flatMap {
-        case Left(_)               => Future.successful(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) => handleForm(accountingType)
+      handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid)) flatMap { accountingType =>
+        handleForm(accountingType)
       }
   }
 }

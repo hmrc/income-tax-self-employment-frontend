@@ -16,10 +16,9 @@
 
 package controllers.journeys.capitalallowances.tailoring
 
-import cats.data.EitherT
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleServiceCall
+import controllers.handleApiResult
 import forms.capitalallowances.tailoring.SelectCapitalAllowancesFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -51,12 +50,12 @@ class SelectCapitalAllowancesController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(SelectCapitalAllowancesPage, businessId.some)
           .fold(formProvider())(formProvider().fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))
 
   }
 
@@ -73,10 +72,10 @@ class SelectCapitalAllowancesController @Inject() (override val messagesApi: Mes
                 .map(updatedAnswers => Redirect(navigator.nextPage(SelectCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
           )
 
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- EitherT.right[Result](handleForm(accountingType))
-      } yield result).merge
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
+        result         <- handleForm(accountingType)
+      } yield result
 
   }
 

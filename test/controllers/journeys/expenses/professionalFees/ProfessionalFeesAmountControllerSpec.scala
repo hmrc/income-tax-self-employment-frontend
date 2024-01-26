@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.professionalFees
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.professionalFees.ProfessionalFeesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -47,7 +47,7 @@ class ProfessionalFeesAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesAmountFormProvider()(userType)
 

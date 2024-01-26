@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
@@ -54,7 +54,7 @@ class GoodsToSellOrUseAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
 

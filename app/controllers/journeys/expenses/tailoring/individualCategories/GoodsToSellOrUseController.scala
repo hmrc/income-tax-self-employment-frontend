@@ -16,18 +16,23 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
+import cats.data.EitherT
 import controllers.actions._
-import controllers.standard.routes
+import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
+import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
+import models.errors.ServiceError
+import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, TaxiMinicabOrRoadHaulage}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{GoodsToSellOrUsePage, TaxiMinicabOrRoadHaulagePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
 
 import javax.inject.{Inject, Singleton}
@@ -44,44 +49,49 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
                                             val controllerComponents: MessagesControllerComponents,
                                             view: GoodsToSellOrUseView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) map {
-        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
-        case Right(accountingType) =>
-          val preparedForm = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
-          val taxiDriver = request.userAnswers
-            .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-            .contains(TaxiMinicabOrRoadHaulage.Yes)
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))
-      }
+      val isTaxiDriver = request.userAnswers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(TaxiMinicabOrRoadHaulage.Yes)
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+        userType       = request.userType
+        existingAnswer = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId))
+        form           = formProvider(userType)
+        preparedForm   = existingAnswer.fold(form)(form.fill)
+      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType, isTaxiDriver))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid) flatMap {
-        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          val taxiDriver = request.userAnswers
-            .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-            .contains(TaxiMinicabOrRoadHaulage.Yes)
-          val form = formProvider(request.userType)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType, taxiDriver))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUsePage)
-                  .map(updatedAnswers => Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updatedAnswers, taxYear, businessId)))
-            )
-      }
+      def handleSuccess(userAnswers: UserAnswers, value: GoodsToSellOrUse): Future[Result] =
+        selfEmploymentService
+          .persistAnswer(businessId, userAnswers, value, GoodsToSellOrUsePage)
+          .map(updated => Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updated, taxYear, businessId)))
+
+      def handleForm(form: Form[GoodsToSellOrUse],
+                     userType: UserType,
+                     accountingType: AccountingType,
+                     isTaxiDriver: Boolean,
+                     userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType, isTaxiDriver)))),
+            value => Right(handleSuccess(userAnswers, value))
+          )
+
+      val isTaxiDriver = request.userAnswers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).contains(TaxiMinicabOrRoadHaulage.Yes)
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+        userType    = request.userType
+        userAnswers = request.userAnswers
+        form        = formProvider(userType)
+        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, isTaxiDriver, userAnswers).merge))
+      } yield finalResult
   }
 
 }

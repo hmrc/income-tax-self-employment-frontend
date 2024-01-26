@@ -17,15 +17,17 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
 import models.common.UserType.{Agent, Individual}
-import models.common.{AccountingType, UserType}
+import models.common._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
+import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.individualCategories.ProfessionalServiceExpensesPage
 import play.api.data.Form
@@ -38,7 +40,7 @@ import views.html.journeys.expenses.tailoring.individualCategories.ProfessionalS
 
 import scala.concurrent.Future
 
-class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSugar {
+class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -71,7 +73,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -102,7 +104,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -154,7 +156,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             .build()
 
         running(application) {
-          when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(AccountingType.Accrual))
+          mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -178,7 +180,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              when(mockService.getAccountingType(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn Future(Right(userScenario.accountingType))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request =
                 FakeRequest(POST, professionalServiceExpensesRoute)

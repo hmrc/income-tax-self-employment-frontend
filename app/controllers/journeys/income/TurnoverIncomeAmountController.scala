@@ -16,9 +16,8 @@
 
 package controllers.journeys.income
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.handleServiceCall
+import controllers.handleApiResult
 import forms.income.TurnoverIncomeAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -50,12 +49,12 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(TurnoverIncomeAmountPage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -71,10 +70,10 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
                 .map(updatedAnswers => Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
           )
 
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- EitherT.right[Result](handleForm(accountingType))
-      } yield result).merge
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
+        result         <- handleForm(accountingType)
+      } yield result
   }
 
 }

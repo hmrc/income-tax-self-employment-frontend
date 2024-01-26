@@ -17,6 +17,7 @@
 package controllers.journeys.income
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.journeys.income
 import controllers.standard
 import forms.income.TradingAllowanceFormProvider
@@ -70,7 +71,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(userScenario.accountingType))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
               mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
               val request = FakeRequest(GET, income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url)
@@ -99,7 +100,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(userScenario.accountingType))
+              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
               mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
               val request = FakeRequest(GET, income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, CheckMode).url)
@@ -154,7 +155,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
@@ -180,7 +181,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
@@ -216,7 +217,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
@@ -251,7 +252,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(AccountingType.Accrual))
+            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request =
@@ -278,7 +279,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
                 .build()
 
               running(application) {
-                mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(userScenario.accountingType))
+                mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
                 mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
                 val request =
@@ -308,7 +309,7 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
                 .build()
 
               running(application) {
-                mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Future.successful(Right(userScenario.accountingType))
+                mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
                 mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
                 val request =
