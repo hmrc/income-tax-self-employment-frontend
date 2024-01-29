@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package forms.expenses.workplaceRunningCosts.workingFromHome
+package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import forms.behaviours.IntFieldBehaviours
 import models.common.UserType.Individual
 import play.api.data.FormError
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
-class WorkingFromHomeHoursFormProviderSpec extends IntFieldBehaviours {
+class WorkingFromBusinessPremisesProviderSpec extends IntFieldBehaviours {
 
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
   private val maxMonths               = 12
 
-  private val fieldNames: Seq[String] = Seq("value25To50", "value51To100", "value101Plus")
-  private val form                    = WorkingFromHomeHoursFormProvider(Individual, maxMonths)
+  private val fieldNames: Seq[String] = Seq("onePerson", "twoPeople", "threePeople")
+  private val form                    = PeopleLivingAtBusinessPremisesFormProvider(Individual, maxMonths)
   private val nonNumericError         = "expenses.error.nonNumeric"
   private val noDecimalsError         = "expenses.error.noDecimals"
   private val lessThanZeroError       = "expenses.error.lessThanZero"
-  private val totalOverMaxError       = "workingFromHomeHours.error.overMax.total.individual"
+  private val totalOverMaxError       = "peopleLivingAtBusinessPremises.error.overMax.total.individual"
 
   fieldNames.foreach { fieldName =>
     s"for input field: $fieldName, form should" - {
-      val requiredError = s"workingFromHomeHours.error.required.$fieldName"
-      val overMaxError  = s"workingFromHomeHours.error.overMax.$fieldName.individual"
+      val requiredError = s"peopleLivingAtBusinessPremises.error.required.$fieldName"
+      val overMaxError  = s"peopleLivingAtBusinessPremises.error.overMax.$fieldName.individual"
 
       behave like intField(
         form,

@@ -18,13 +18,16 @@ import cats.data.EitherT
 import cats.implicits.catsStdInstancesForFuture
 import models.NormalMode
 import models.common.{BusinessId, JourneyContext, TaxYear}
-import models.domain.ApiResultT
+import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.journeys.Journey
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import utils.TaxYearHelper.taxYearCutoffDate
 
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers {
@@ -60,5 +63,20 @@ package object controllers {
   def handleSubmitAnswersResult(ctx: JourneyContext, result: ApiResultT[_])(implicit ec: ExecutionContext, logger: Logger): Future[Result] = {
     val resultT = result.map(_ => redirectJourneyCompletedState(ctx.taxYear, ctx.businessId, ctx.journey))
     handleResultT(resultT)
+  }
+
+  def getMaxMonthsWithinTaxYearOrRedirect(business: BusinessData): Either[Result, Int] = {
+    val defaultMaxMonths = 12
+    business.commencementDate.fold[Either[Result, Int]] {
+      Left(redirectJourneyRecovery())
+    } { date =>
+      val startDate: LocalDate          = LocalDate.parse(date)
+      val startDateIsInTaxYear: Boolean = ChronoUnit.YEARS.between(startDate, taxYearCutoffDate) < 1
+      if (startDateIsInTaxYear) {
+        Right(ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt)
+      } else {
+        Right(defaultMaxMonths)
+      }
+    }
   }
 }

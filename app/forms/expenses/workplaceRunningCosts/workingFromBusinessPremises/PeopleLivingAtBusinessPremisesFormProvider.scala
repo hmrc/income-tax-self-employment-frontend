@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.expenses.workplaceRunningCosts.workingFromHome
+package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import forms.mappings.Mappings
 import models.common.UserType
@@ -22,34 +22,34 @@ import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 
-object WorkingFromHomeHoursFormProvider extends Mappings {
+object PeopleLivingAtBusinessPremisesFormProvider extends Mappings {
 
-  case class WorkingFromHomeHoursFormModel(value25To50: Int, value51To100: Int, value101Plus: Int)
+  case class PeopleLivingAtBusinessPremisesFormModel(onePerson: Int, twoPeople: Int, threePeople: Int)
 
-  private val value25To50  = "value25To50"
-  private val value51To100 = "value51To100"
-  private val value101Plus = "value101Plus"
+  private val onePerson   = "onePerson"
+  private val twoPeople   = "twoPeople"
+  private val threePeople = "threePeople"
 
-  def apply(userType: UserType, maxMonths: Int)(implicit messages: Messages): Form[WorkingFromHomeHoursFormModel] = {
-    val requiredError     = "workingFromHomeHours.error.required."
+  def apply(userType: UserType, maxMonths: Int)(implicit messages: Messages): Form[PeopleLivingAtBusinessPremisesFormModel] = {
+    val requiredError     = "peopleLivingAtBusinessPremises.error.required."
     val nonNumericError   = "expenses.error.nonNumeric"
     val noDecimalsError   = "expenses.error.noDecimals"
     val lessThanZeroError = "expenses.error.lessThanZero"
-    val overMaxError      = "workingFromHomeHours.error.overMax."
-    val totalOverMaxError = "workingFromHomeHours.error.overMax.total."
+    val overMaxError      = "peopleLivingAtBusinessPremises.error.overMax."
+    val totalOverMaxError = "peopleLivingAtBusinessPremises.error.overMax.total."
 
-    def validateHours(valueKey: String): Mapping[Int] =
+    def validateNumberOfPeople(valueKey: String): Mapping[Int] =
       int(messages(s"$requiredError$valueKey", maxMonths), messages(noDecimalsError, maxMonths), messages(nonNumericError, maxMonths))
         .verifying(minimumValue(0, lessThanZeroError))
         .verifying(lessThanOrEqualTo(maxMonths, messages(s"$overMaxError$valueKey.$userType", maxMonths), Some(maxMonths.toString)))
 
-    Form[WorkingFromHomeHoursFormModel](
+    Form[PeopleLivingAtBusinessPremisesFormModel](
       mapping(
-        value25To50  -> validateHours(value25To50),
-        value51To100 -> validateHours(value51To100),
-        value101Plus -> validateHours(value101Plus)
-      )(WorkingFromHomeHoursFormModel.apply)(WorkingFromHomeHoursFormModel.unapply)
-        .verifying(messages(s"$totalOverMaxError$userType", maxMonths), form => form.value25To50 + form.value51To100 + form.value101Plus <= maxMonths)
+        onePerson   -> validateNumberOfPeople(onePerson),
+        twoPeople   -> validateNumberOfPeople(twoPeople),
+        threePeople -> validateNumberOfPeople(threePeople)
+      )(PeopleLivingAtBusinessPremisesFormModel.apply)(PeopleLivingAtBusinessPremisesFormModel.unapply)
+        .verifying(messages(s"$totalOverMaxError$userType", maxMonths), form => form.onePerson + form.twoPeople + form.threePeople <= maxMonths)
     )
   }
 

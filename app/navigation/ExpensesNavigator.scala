@@ -22,7 +22,7 @@ import models._
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories._
-import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, WfhFlatRateOrActualCosts}
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import pages._
 import pages.expenses.advertisingOrMarketing._
@@ -39,8 +39,17 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories._
-import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{LiveAtBusinessPremisesPage, BusinessPremisesAmountPage}
+import pages.expenses.workplaceRunningCosts.workingFromHome.{
+  MoreThan25HoursPage,
+  WfhClaimingAmountPage,
+  WfhFlatRateOrActualCostsPage,
+  WorkingFromHomeHoursPage
+}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
+  BusinessPremisesAmountPage,
+  LiveAtBusinessPremisesPage,
+  PeopleLivingAtBusinessPremisesPage
+}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -153,23 +162,41 @@ class ExpensesNavigator @Inject() () {
         taxYear =>
           businessId =>
             userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
-              case Some(WfhFlatRateOrActualCosts.FlatRate) => // TODO SASS-6800, redirect to DoYouLiveAtYourBusinessPremisesController
-                workplaceRunningCosts.workingFromHome.routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WfhFlatRateOrActualCosts.FlatRate) => // TODO 6983 if WFBP = No => CYA
+                workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
                 workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
-    case LiveAtBusinessPremisesPage => // TODO replace when next journey page is created
+    case WfhClaimingAmountPage =>
       _ =>
         taxYear =>
-          businessId =>
+          businessId => // TODO 6983 if WFBP = No => CYA
             workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case BusinessPremisesAmountPage => // TODO /workplace-running-costs/live-business premises/people if yesDisallowable or /workplace-running-costs/check
+    case LiveAtBusinessPremisesPage =>
       _ =>
         taxYear =>
           businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case BusinessPremisesAmountPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)) match {
+              case Some(LiveAtBusinessPremises.Yes) => // TODO 6983 if WFBP = Allowable => PeopleLivingAtBusinessPremisesPage
+                advertisingOrMarketing.routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(LiveAtBusinessPremises.No | LiveAtBusinessPremises.Yes) =>
+                advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId) // TODO 6949 to DisallowableAmountPage
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case PeopleLivingAtBusinessPremisesPage =>
+      _ =>
+        taxYear =>
+          businessId => // TODO 6951 replace with flat rate or actual costs page
             workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingAmountPage =>

@@ -43,8 +43,8 @@ import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisal
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
-import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{MoreThan25HoursPage, WfhFlatRateOrActualCostsPage, WorkingFromHomeHoursPage}
 import play.api.libs.json.Json
 
 class ExpensesNavigatorSpec extends SpecBase {
@@ -211,23 +211,13 @@ class ExpensesNavigatorSpec extends SpecBase {
               navigator.nextPage(WorkingFromHomeHoursPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
-          "the page is BusinessPremisesAmountPage" - {
-            "navigate to the BusinessPremisesAmountController" in {
-              // TODO update when page created /workplace-running-costs/business premises/disallowable-amount
-              val expectedResult =
-                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
-
-              navigator.nextPage(BusinessPremisesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-
           "the page is WfhFlatRateOrActualCostsPage" - {
             "the answer is Flat Rate" - {
-              "navigate to the DoYouLiveAtYourBusinessPremisesController" ignore { // TODO SASS-6800 unignore, finish test
+              "navigate to the DoYouLiveAtYourBusinessPremisesController" in {
                 val userAnswers =
                   emptyUserAnswers.set(WfhFlatRateOrActualCostsPage, WfhFlatRateOrActualCosts.FlatRate, Some(businessId)).success.value
                 val expectedResult =
-                  workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
+                  workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, mode)
 
                 navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
@@ -241,6 +231,16 @@ class ExpensesNavigatorSpec extends SpecBase {
 
                 navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
               }
+            }
+          }
+
+          "the page is BusinessPremisesAmountPage" - {
+            "navigate to the BusinessPremisesAmountController" ignore {
+              // TODO 6983 add full suite of tests
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
+
+              navigator.nextPage(BusinessPremisesAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
