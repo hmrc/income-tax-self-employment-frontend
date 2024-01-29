@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome
+package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
 import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
 import models.CheckMode

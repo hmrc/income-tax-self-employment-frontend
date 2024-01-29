@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome
+package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
 import controllers.redirectJourneyRecovery
 import models.common.BusinessId
@@ -23,17 +23,17 @@ import pages.expenses.workplaceRunningCosts.workingFromHome.{WorkingFromHomeHour
 import play.api.mvc.Result
 import utils.MoneyUtils.formatMoney
 
-case class FlatRateViewModel(months25To50: String,
-                             amount25To50: String,
-                             months51To100: String,
-                             amount51To100: String,
-                             months101Plus: String,
-                             amount101Plus: String,
-                             flatRate: String)
+case class WfhFlatRateViewModel(months25To50: String,
+                                amount25To50: String,
+                                months51To100: String,
+                                amount51To100: String,
+                                months101Plus: String,
+                                amount101Plus: String,
+                                flatRate: String)
 
-object FlatRateViewModel {
+object WfhFlatRateViewModel {
 
-  def calculateFlatRate(request: DataRequest[_], businessId: BusinessId): Either[Result, FlatRateViewModel] = {
+  def calculateFlatRate(request: DataRequest[_], businessId: BusinessId): Either[Result, WfhFlatRateViewModel] = {
     def formatMonths(months: Int): String = if (months == 1) s"$months month" else s"$months months"
 
     val months25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
@@ -46,7 +46,7 @@ object FlatRateViewModel {
         val amount101Plus = months101Plus * 26
         val flatRate      = amount25To50 + amount51To100 + amount101Plus
         Right(
-          FlatRateViewModel(
+          WfhFlatRateViewModel(
             formatMonths(months25To50),
             formatMoney(amount25To50),
             formatMonths(months51To100),

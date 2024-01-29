@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
+package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsFormProvider
+import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
 import navigation.WorkplaceRunningCostsNavigator
-import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel.calculateFlatRate
-import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsView
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfbpFlatRateViewModel.calculateFlatRate
+import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: MessagesApi,
-                                                    service: SelfEmploymentService,
-                                                    navigator: WorkplaceRunningCostsNavigator,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: WfhFlatRateOrActualCostsFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: WfhFlatRateOrActualCostsView)(implicit ec: ExecutionContext)
+class WfbpFlatRateOrActualCostsController @Inject() (override val messagesApi: MessagesApi,
+                                                     service: SelfEmploymentService,
+                                                     navigator: WorkplaceRunningCostsNavigator,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: WfbpFlatRateOrActualCostsFormProvider,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     view: WfbpFlatRateOrActualCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -52,27 +52,26 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
       calculateFlatRate(request, businessId) match {
         case Left(redirect) => redirect
         case Right(flatRateViewModel) =>
-          val form = request
-            .getValue(WfhFlatRateOrActualCostsPage, businessId)
-            .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+          val form       = formProvider(request.userType, flatRateViewModel.flatRate)
+          val filledForm = request.getValue(WfbpFlatRateOrActualCostsPage, businessId).fold(form)(form.fill)
 
-          Ok(view(form, mode, request.userType, taxYear, businessId, flatRateViewModel))
+          Ok(view(filledForm, mode, request.userType, taxYear, businessId, flatRateViewModel))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, answer: WfhFlatRateOrActualCosts): Future[Result] =
+      def handleSuccess(userAnswers: UserAnswers, answer: WfbpFlatRateOrActualCosts): Future[Result] =
         for {
           result <- service
-            .persistAnswer(businessId, userAnswers, answer, WfhFlatRateOrActualCostsPage)
-            .map(updated => Redirect(navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, updated, taxYear, businessId)))
+            .persistAnswer(businessId, userAnswers, answer, WfbpFlatRateOrActualCostsPage)
+            .map(updated => Redirect(navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, updated, taxYear, businessId)))
         } yield result
 
       calculateFlatRate(request, businessId) match {
         case Left(redirect) => Future.successful(redirect)
         case Right(flatRateViewModel) =>
-          formProvider(request.userType)
+          formProvider(request.userType, flatRateViewModel.flatRate)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
