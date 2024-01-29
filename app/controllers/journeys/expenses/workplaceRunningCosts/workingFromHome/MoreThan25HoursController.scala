@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours._
 import models.{Mode, NormalMode}
-import navigation.ExpensesNavigator
+import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -39,7 +39,7 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi,
                                            service: SelfEmploymentService,
-                                           navigator: ExpensesNavigator,
+                                           navigator: WorkplaceRunningCostsNavigator,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,

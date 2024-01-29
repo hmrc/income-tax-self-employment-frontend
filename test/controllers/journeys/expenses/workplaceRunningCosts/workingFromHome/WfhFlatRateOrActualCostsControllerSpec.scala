@@ -22,8 +22,8 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts.FlatRate
-import models.{CheckMode, Mode, NormalMode}
-import navigation.{ExpensesNavigator, FakeExpensesTwoRoutesNavigator}
+import models.{Mode, NormalMode}
+import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.Mockito.when
 import pages.expenses.workplaceRunningCosts.workingFromHome.{
   WfhFlatRateOrActualCostsPage,
@@ -47,7 +47,7 @@ class WfhFlatRateOrActualCostsControllerSpec
 
   override def onPageLoadCall: Call                  = routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call                    = submissionCall(NormalMode)
-  override def onwardRoute: Call                     = expectedRedirectCall(NormalMode)
+  override def onwardRoute: Call                     = expectedRedirectCall()
   override def validAnswer: WfhFlatRateOrActualCosts = FlatRate
   private lazy val validMonths                       = 3
   private lazy val validMonthsText                   = s"$validMonths months"
@@ -66,8 +66,7 @@ class WfhFlatRateOrActualCostsControllerSpec
   )
 
   private def submissionCall(mode: Mode): Call = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode)
-  private def expectedRedirectCall(mode: Mode): Call =
-    routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, mode) // TODO SASS-6800 update onward route
+  private def expectedRedirectCall(): Call     = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
 
   override def baseAnswers: UserAnswers = emptyUserAnswers
     .set(WorkingFromHomeHours25To50, validMonths, Some(businessId))
@@ -81,9 +80,7 @@ class WfhFlatRateOrActualCostsControllerSpec
     .value
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
-  )
+  override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 

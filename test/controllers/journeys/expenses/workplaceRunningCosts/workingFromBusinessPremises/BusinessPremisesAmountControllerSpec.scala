@@ -22,7 +22,7 @@ import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.Business
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.{BusinessId, Mtditid, Nino, UserType}
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import play.api.Application
@@ -44,7 +44,7 @@ class BusinessPremisesAmountControllerSpec
   override val onwardRoute: Call = routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override val bindings: List[Binding[_]] =
-    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
+    List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
   mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 

@@ -25,7 +25,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours.{No, Yes}
 import models.{CheckMode, Mode, NormalMode}
-import navigation.{ExpensesNavigator, FakeExpensesTwoRoutesNavigator}
+import navigation.{FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatest.prop.TableFor4
@@ -54,7 +54,8 @@ class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpe
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
+    bind[WorkplaceRunningCostsNavigator].toInstance(
+      new FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)

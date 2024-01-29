@@ -23,7 +23,7 @@ import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLi
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import play.api.Application
 import play.api.data.Form
@@ -57,7 +57,7 @@ class PeopleLivingAtBusinessPremisesControllerSpec
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+    bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
   private val maxMonths = 11
