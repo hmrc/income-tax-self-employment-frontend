@@ -27,7 +27,12 @@ import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, W
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, LiveAtBusinessPremisesPage, PeopleLivingAtBusinessPremisesPage, WfbpFlatRateOrActualCostsPage}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
+  BusinessPremisesAmountPage,
+  LiveAtBusinessPremisesPage,
+  PeopleLivingAtBusinessPremisesPage,
+  WfbpFlatRateOrActualCostsPage
+}
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 
 class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
