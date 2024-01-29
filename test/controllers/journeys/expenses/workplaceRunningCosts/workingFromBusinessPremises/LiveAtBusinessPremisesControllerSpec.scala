@@ -25,7 +25,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises.{No, Yes}
 import models.{CheckMode, Mode, NormalMode}
-import navigation.{ExpensesNavigator, FakeExpensesTwoRoutesNavigator}
+import navigation.{FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatest.prop.TableFor4
@@ -50,12 +50,13 @@ class LiveAtBusinessPremisesControllerSpec
   override def validAnswer: LiveAtBusinessPremises = Yes
 
   private def submissionCall(mode: Mode): Call       = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode)
-  private def expectedRedirectCall(mode: Mode): Call = routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, mode)
+  private def expectedRedirectCall(mode: Mode): Call = routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, mode)
 
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
+    bind[WorkplaceRunningCostsNavigator].toInstance(
+      new FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)

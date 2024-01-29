@@ -26,7 +26,7 @@ import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessData
 import models.errors.ServiceError
 import models.requests.DataRequest
-import navigation.ExpensesNavigator
+import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import play.api.data.Form
 import play.api.i18n._
@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
                                                           service: SelfEmploymentService,
-                                                          navigator: ExpensesNavigator,
+                                                          navigator: WorkplaceRunningCostsNavigator,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction,

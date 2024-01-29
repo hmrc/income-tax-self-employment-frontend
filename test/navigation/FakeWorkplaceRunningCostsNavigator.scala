@@ -16,16 +16,19 @@
 
 package navigation
 
-import models.common.{BusinessId, TaxYear}
+import models.Mode
+import models.common.{BusinessId, TaxYear, onwardRoute}
 import models.database.UserAnswers
-import models.{CheckMode, Mode, NormalMode}
 import pages._
 import play.api.mvc.Call
 
-class FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator(desiredRoute: Call, checkDesiredRoute: Call) extends WorkplaceRunningCostsNavigator {
+class FakeWorkplaceRunningCostsNavigator(desiredRoute: Call) extends WorkplaceRunningCostsNavigator {
+
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
-    mode match {
-      case NormalMode => desiredRoute
-      case CheckMode  => checkDesiredRoute
-    }
+    desiredRoute
+
+}
+
+object FakeWorkplaceRunningCostsNavigator {
+  def apply(): FakeWorkplaceRunningCostsNavigator = new FakeWorkplaceRunningCostsNavigator(onwardRoute)
 }
