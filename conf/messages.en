@@ -357,6 +357,9 @@ expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
 expenses.flatRate = A flat rate of £{0}
 expenses.actualCosts = Actual costs
+expenses.error.lessThanZero = The amount must be 0 or more
+expenses.error.nonNumeric = The amount must be a number
+expenses.error.noDecimals = The number cannot have decimal places
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -746,9 +749,6 @@ workingFromHomeHours.value101Plus = 101 hours or more
 workingFromHomeHours.error.required.value25To50 = You must enter a number for 25 to 50 hours
 workingFromHomeHours.error.required.value51To100 = You must enter a number for 51 to 100 hours
 workingFromHomeHours.error.required.value101Plus = You must enter a number for 101 hours or more
-workingFromHomeHours.error.lessThanZero = The amount must be 0 or more
-workingFromHomeHours.error.nonNumeric = The amount must be a number
-workingFromHomeHours.error.noDecimals = The number cannot have decimal places
 workingFromHomeHours.error.overMax.value25To50.individual = The number of months you worked from home for 25 to 50 hours must be {0} or fewer
 workingFromHomeHours.error.overMax.value25To50.agent = The number of months your client worked from home for 25 to 50 hours must be {0} or fewer
 workingFromHomeHours.error.overMax.value51To100.individual = The number of months you worked from home for 51 to 100 hours must be {0} or fewer
@@ -841,6 +841,31 @@ businessPremisesAmount.error.lessThanZero.individual = The amount you spent on b
 businessPremisesAmount.error.lessThanZero.agent = The amount your client spent on business premises expenses must be more than £0
 businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
 businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
+
+## People Living at Business Premises
+peopleLivingAtBusinessPremises.title.individual = People living at your business premises
+peopleLivingAtBusinessPremises.title.agent = People living at your client’s business premises
+peopleLivingAtBusinessPremises.p1.individual = Tell us how many months people lived at your business premises over the tax year and we’ll work out the personal use amount you can claim. You’ll still have the choice of using actual amounts instead.
+peopleLivingAtBusinessPremises.p1.agent = Tell us how many months people lived at your client’s business premises over the tax year and we’ll work out the personal use amount you can claim. You’ll still have the choice of using actual amounts instead.
+peopleLivingAtBusinessPremises.subHeading.individual = How many months did someone live at your business premises?
+peopleLivingAtBusinessPremises.subHeading.agent = How many months did someone live at your client’s business premises?
+peopleLivingAtBusinessPremises.hint.individual = Enter the number of months people lived at your business premises. The total number of months must not add up to more than {0}.
+peopleLivingAtBusinessPremises.hint.agent = Enter the number of months people lived at your client’s business premises. The total number of months must not add up to more than {0}.
+peopleLivingAtBusinessPremises.onePerson = 1 person
+peopleLivingAtBusinessPremises.twoPeople = 2 people
+peopleLivingAtBusinessPremises.threePeople = 3 people or more
+peopleLivingAtBusinessPremises.error.required.onePerson = You must enter a number for 1 person
+peopleLivingAtBusinessPremises.error.required.twoPeople = You must enter a number for 2 people
+peopleLivingAtBusinessPremises.error.required.threePeople = You must enter a number for 3 or more people
+peopleLivingAtBusinessPremises.error.overMax.onePerson.individual = The number of months 1 person lived at your business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.onePerson.agent = The number of months 1 person lived at your client’s business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.twoPeople.individual = The number of months 2 people lived at your business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.twoPeople.agent = The number of months 2 people lived at your client’s business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.threePeople.individual = The number of months 3 or more people lived at your business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.threePeople.agent = The number of months 3 or more people lived at your client’s business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.total.individual = The total number of months people lived at your business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.error.overMax.total.agent = The total number of months people lived at your client’s business premises must be {0} or fewer
+peopleLivingAtBusinessPremises.change.hidden = Change how many months people lived at the business premises
 
 ########## Expenses - Advertising or Marketing ##########
 

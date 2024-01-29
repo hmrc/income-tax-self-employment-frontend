@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms.expenses.workplaceRunningCosts.LiveAtBusinessPremises
+package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import base.forms.RadioButtonFormProviderBaseSpec
-import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesFormProvider
 import models.common.UserType
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import play.api.data.Form
