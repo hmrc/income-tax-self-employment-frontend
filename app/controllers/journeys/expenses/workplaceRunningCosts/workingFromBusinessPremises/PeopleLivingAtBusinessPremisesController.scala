@@ -18,7 +18,7 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessP
 
 import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.{handleResultT, redirectJourneyRecovery}
+import controllers.{getMaxMonthsWithinTaxYearOrRedirect, handleResultT}
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider.PeopleLivingAtBusinessPremisesFormModel
 import models.Mode
@@ -34,11 +34,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.TaxYearHelper.taxYearCutoffDate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesView
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
