@@ -18,7 +18,7 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.{handleResultT, redirectJourneyRecovery}
+import controllers.{getMaxMonthsWithinTaxYearOrRedirect, handleResultT}
 import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider
 import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
 import models.Mode
@@ -34,11 +34,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.TaxYearHelper.taxYearCutoffDate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursView
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,8 +51,6 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport
     with Logging {
-
-  private val defaultMaxMonths = 12
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
@@ -90,7 +85,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
 
       val result: EitherT[Future, ServiceError, Result] =
         service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
-          getMaxMonthsOrRedirect(business) match {
+          getMaxMonthsWithinTaxYearOrRedirect(business) match {
             case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
             case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))
           })
@@ -100,7 +95,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
       messages: Messages): Either[Result, (Form[WorkingFromHomeHoursFormModel], Int)] =
-    getMaxMonthsOrRedirect(business) match {
+    getMaxMonthsWithinTaxYearOrRedirect(business) match {
       case Left(redirect) => Left(redirect)
       case Right(maxMonths) =>
         val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
@@ -113,19 +108,6 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
           case _ => formProvider
         }
         Right((filledForm, maxMonths))
-    }
-
-  private def getMaxMonthsOrRedirect(business: BusinessData): Either[Result, Int] =
-    business.commencementDate.fold[Either[Result, Int]] {
-      Left(redirectJourneyRecovery())
-    } { date =>
-      val startDate: LocalDate          = LocalDate.parse(date)
-      val startDateIsInTaxYear: Boolean = ChronoUnit.YEARS.between(startDate, taxYearCutoffDate) < 1
-      if (startDateIsInTaxYear) {
-        Right(ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt)
-      } else {
-        Right(defaultMaxMonths)
-      }
     }
 
 }

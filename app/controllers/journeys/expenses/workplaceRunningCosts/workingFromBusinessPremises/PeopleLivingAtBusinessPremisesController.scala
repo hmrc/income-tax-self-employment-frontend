@@ -55,8 +55,6 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
     with I18nSupport
     with Logging {
 
-  private val defaultMaxMonths = 12
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business =>
@@ -90,7 +88,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
       val result: EitherT[Future, ServiceError, Result] =
         service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
-          getMaxMonthsOrRedirect(business) match {
+          getMaxMonthsWithinTaxYearOrRedirect(business) match {
             case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
             case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))
           })
@@ -100,7 +98,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
       messages: Messages): Either[Result, (Form[PeopleLivingAtBusinessPremisesFormModel], Int)] =
-    getMaxMonthsOrRedirect(business) match {
+    getMaxMonthsWithinTaxYearOrRedirect(business) match {
       case Left(redirect) => Left(redirect)
       case Right(maxMonths) =>
         val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
@@ -113,19 +111,6 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
           case _ => formProvider
         }
         Right((filledForm, maxMonths))
-    }
-
-  private def getMaxMonthsOrRedirect(business: BusinessData): Either[Result, Int] =
-    business.commencementDate.fold[Either[Result, Int]] {
-      Left(redirectJourneyRecovery())
-    } { date =>
-      val startDate: LocalDate          = LocalDate.parse(date)
-      val startDateIsInTaxYear: Boolean = ChronoUnit.YEARS.between(startDate, taxYearCutoffDate) < 1
-      if (startDateIsInTaxYear) {
-        Right(ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt)
-      } else {
-        Right(defaultMaxMonths)
-      }
     }
 
 }
