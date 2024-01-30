@@ -18,15 +18,18 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessP
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
+import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts.{ActualCosts, FlatRate}
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.WorkplaceRunningCostsNavigator
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{WfbpClaimingAmountPage, WfbpFlatRateOrActualCostsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfbpFlatRateViewModel.calculateFlatRate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsView
@@ -61,12 +64,11 @@ class WfbpFlatRateOrActualCostsController @Inject() (override val messagesApi: M
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, answer: WfbpFlatRateOrActualCosts): Future[Result] =
+      def handleSuccess(answer: WfbpFlatRateOrActualCosts): Future[Result] =
         for {
-          result <- service
-            .persistAnswer(businessId, userAnswers, answer, WfbpFlatRateOrActualCostsPage)
-            .map(updated => Redirect(navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, updated, taxYear, businessId)))
-        } yield result
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, WfbpFlatRateOrActualCostsPage)
+        } yield Redirect(navigator.nextPage(WfbpFlatRateOrActualCostsPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
       calculateFlatRate(request, businessId) match {
         case Left(redirect) => Future.successful(redirect)
@@ -75,9 +77,24 @@ class WfbpFlatRateOrActualCostsController @Inject() (override val messagesApi: M
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
-              value => handleSuccess(request.userAnswers, value)
+              value => handleSuccess(value)
             )
       }
+  }
+
+  private def handleGatewayQuestion(currentAnswer: WfbpFlatRateOrActualCosts,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val clearUserAnswerDataIfNeeded = currentAnswer match {
+      case FlatRate    => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(WfbpClaimingAmountPage), Some(businessId)))
+      case ActualCosts => Future(request.userAnswers)
+    }
+    val redirectMode = request.getValue(WfbpFlatRateOrActualCostsPage, businessId) match {
+      case Some(FlatRate) if currentAnswer == ActualCosts => NormalMode
+      case _                                              => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }

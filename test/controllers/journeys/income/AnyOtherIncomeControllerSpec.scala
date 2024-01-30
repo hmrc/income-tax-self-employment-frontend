@@ -176,9 +176,9 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
         }
       }
 
-      "when a user answer 'No' is submitted, must clear OtherIncomeAmount data and redirect to" - {
+      "when a user answer 'No' is submitted, must redirect to" - {
         val userAnswer  = false
-        val userAnswers = UserAnswers(userAnswersId).set(OtherIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
+        val userAnswers = UserAnswers(userAnswersId)
 
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
@@ -202,7 +202,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverNotTaxableCall.url
-            UserAnswers(userAnswersId).get(OtherIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
         "the Trading Allowance page when journey is CASH accounting type" in {

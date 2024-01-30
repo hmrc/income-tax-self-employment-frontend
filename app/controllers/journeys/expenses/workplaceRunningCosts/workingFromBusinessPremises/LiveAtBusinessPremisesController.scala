@@ -22,18 +22,20 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises.{No, Yes}
+import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.WorkplaceRunningCostsNavigator
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import queries.Settable
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class LiveAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
@@ -60,36 +62,41 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, answer: LiveAtBusinessPremises): Future[Result] = {
-        val redirectMode = continueAsNormalModeIfPrevAnswerChanged(answer)
+      def handleSuccess(answer: LiveAtBusinessPremises): Future[Result] =
         for {
-          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, answer))
-          result <- selfEmploymentService
-            .persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
-            .map(updated => Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updated, taxYear, businessId)))
-        } yield result
-      }
-
-      def continueAsNormalModeIfPrevAnswerChanged(currentAnswer: LiveAtBusinessPremises): Mode =
-        request.getValue(LiveAtBusinessPremisesPage, businessId) match {
-          case Some(No) if currentAnswer == Yes => NormalMode
-          case _                                => mode
-        }
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          updatedUserAnswers                <- selfEmploymentService.persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
+        } yield Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value => handleSuccess(request.userAnswers, value)
+          value => handleSuccess(value)
         )
   }
 
-  private def clearDataFromUserAnswers(userAnswers: UserAnswers, pageAnswer: LiveAtBusinessPremises): Try[UserAnswers] =
-    if (pageAnswer == No) {
-      // TODO add removePageData for months someone lived at your business premises page and claim personal use amount as a flat rate of £ or actual costs page
-      Try(userAnswers)
-    } else {
-      Try(userAnswers)
+  private def handleGatewayQuestion(currentAnswer: LiveAtBusinessPremises,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val pagesToBeCleared: List[Settable[_]] =
+      List(
+        LivingAtBusinessPremisesOnePerson,
+        LivingAtBusinessPremisesTwoPeople,
+        LivingAtBusinessPremisesThreePlusPeople,
+        WfbpFlatRateOrActualCostsPage,
+        WfbpClaimingAmountPage
+      )
+    val clearUserAnswerDataIfNeeded = currentAnswer match {
+      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case Yes => Future(request.userAnswers)
     }
+    val redirectMode = request.getValue(LiveAtBusinessPremisesPage, businessId) match {
+      case Some(No) if currentAnswer == Yes => NormalMode
+      case _                                => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
+  }
 
 }

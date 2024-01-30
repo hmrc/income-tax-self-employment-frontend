@@ -204,7 +204,7 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
         }
       }
 
-      "must clear TradingAllowanceAmount data and redirect to the Income CYA page when 'Maximum' answer is submitted" - {
+      "must redirect to the Income CYA page when 'Maximum' answer is submitted" - {
         "in NormalMode" in {
 
           val userAnswer = Maximum
@@ -229,7 +229,6 @@ class HowMuchTradingAllowanceControllerSpec extends SpecBase with MockitoSugar w
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
         "in CheckMode" in {

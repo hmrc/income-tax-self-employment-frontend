@@ -33,12 +33,13 @@ import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
-import services.SelfEmploymentService.getMaxTradingAllowance
+import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
 
 import scala.concurrent.Future
 
@@ -150,6 +151,39 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
     "submit answers to the connector" in {
       val result = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue
       result shouldBe ().asRight
+    }
+  }
+
+  "clearDataFromUserAnswers" - {
+    val userAnswers = emptyUserAnswers
+      .set(LivingAtBusinessPremisesOnePerson, 2, None)
+      .success
+      .value
+      .set(LivingAtBusinessPremisesTwoPeople, 1, None)
+      .success
+      .value
+      .set(LivingAtBusinessPremisesThreePlusPeople, 5, None)
+      .success
+      .value
+    val fullPageList = List(LivingAtBusinessPremisesOnePerson, LivingAtBusinessPremisesTwoPeople, LivingAtBusinessPremisesThreePlusPeople)
+    val emptyList    = List.empty
+    "should clear UserAnswers data page in the list and return the result" in {
+      val result = clearDataFromUserAnswers(userAnswers, fullPageList, None)
+
+      result.success.value.data shouldBe Json.obj()
+    }
+    "should handle an empty list of pages" in {
+      val result = clearDataFromUserAnswers(userAnswers, emptyList, None)
+
+      result.success.value.data shouldBe Json.obj(
+        "livingAtBusinessPremises-onePerson"       -> 2,
+        "livingAtBusinessPremises-twoPeople"       -> 1,
+        "livingAtBusinessPremises-threePlusPeople" -> 5)
+    }
+    "should handle trying to clear data when there is none saved" in {
+      val result = clearDataFromUserAnswers(emptyUserAnswers, fullPageList, None)
+
+      result.success.value.data shouldBe Json.obj()
     }
   }
 
