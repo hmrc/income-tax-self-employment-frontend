@@ -27,12 +27,7 @@ import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, W
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
-  BusinessPremisesAmountPage,
-  LiveAtBusinessPremisesPage,
-  PeopleLivingAtBusinessPremisesPage,
-  WfbpFlatRateOrActualCostsPage
-}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 
 class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
@@ -219,12 +214,11 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
 
         "the page is WfbpFlatRateOrActualCostsPage" - {
           "the answer is Actual Costs" - {
-            "navigate to the WfbpClaimAmountController" ignore {
-              val userAnswers = // TODO 6998 unignore, add redirect to claim amount page
+            "navigate to the WfbpClaimAmountController" in {
+              val userAnswers =
                 emptyUserAnswers.set(WfbpFlatRateOrActualCostsPage, WfbpFlatRateOrActualCosts.ActualCosts, Some(businessId)).success.value
               val expectedResult =
-                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
-                  .onPageLoad(taxYear, businessId, NormalMode)
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
               navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
             }
@@ -242,7 +236,14 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
           }
         }
 
-        // TODO 6998 add tests for claim amount page
+        "the page is WfbpClaimingAmountPage" - {
+          "navigate to the CYA page" ignore {
+            val expectedResult = // TODO 6997 unignore, add redirect to CYA page
+              workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpClaimingAmountController.onPageLoad(taxYear, businessId, mode)
+
+            navigator.nextPage(WfbpClaimingAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+        }
 
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {

@@ -28,11 +28,11 @@ class ConstructionIndustryDisallowableAmountFormProviderSpec extends CurrencyFor
 
   override def getFormProvider(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
 
-  override lazy val requiredError: String                  = "constructionIndustryDisallowableAmount.error.required"
-  override lazy val nonNumericError: String                = "constructionIndustryDisallowableAmount.error.nonNumeric"
-  override lazy val lessThanZeroError: String              = "constructionIndustryDisallowableAmount.error.lessThanZero"
-  override lazy val overMaxError: String                   = "constructionIndustryDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
-  override lazy val maximum: BigDecimal                    = amount
+  override lazy val requiredError: String                     = "constructionIndustryDisallowableAmount.error.required"
+  override lazy val nonNumericError: String                   = "constructionIndustryDisallowableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String                 = "constructionIndustryDisallowableAmount.error.lessThanZero"
+  override lazy val overMaxError: String                      = "constructionIndustryDisallowableAmount.error.overAmount"
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val maximum: BigDecimal                       = amount
 
 }
