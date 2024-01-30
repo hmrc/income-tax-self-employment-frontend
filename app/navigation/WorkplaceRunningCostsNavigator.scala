@@ -23,10 +23,16 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories._
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
-import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, WfhFlatRateOrActualCosts}
+import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, WfbpFlatRateOrActualCosts, WfhFlatRateOrActualCosts}
 import pages._
 import pages.expenses.tailoring.individualCategories._
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage, LiveAtBusinessPremisesPage, PeopleLivingAtBusinessPremisesPage}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
+  BusinessPremisesAmountPage,
+  BusinessPremisesDisallowableAmountPage,
+  LiveAtBusinessPremisesPage,
+  PeopleLivingAtBusinessPremisesPage,
+  WfbpFlatRateOrActualCostsPage
+}
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.mvc.Call
 
@@ -116,24 +122,35 @@ class WorkplaceRunningCostsNavigator @Inject() {
       userAnswers =>
         taxYear =>
           businessId =>
-           userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)) match {
-             case Some(LiveAtBusinessPremises.Yes) =>
-               workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-               // TODO SASS-6951 navigate to WfbpFlatRateOrActualCostsController
-             case Some(LiveAtBusinessPremises.No) =>
-               workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
-             // TODO change to cya page
-             case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-           }
+            userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)) match {
+              case Some(LiveAtBusinessPremises.Yes) =>
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, NormalMode)
+              case Some(LiveAtBusinessPremises.No) =>
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              // TODO change to cya page
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case PeopleLivingAtBusinessPremisesPage =>
       _ =>
         taxYear =>
-          businessId => // TODO 6951 replace with flat rate or actual costs page
-            workplaceRunningCosts.workingFromBusinessPremises.routes.PeopleLivingAtBusinessPremisesController
-              .onPageLoad(taxYear, businessId, NormalMode)
+          businessId =>
+            workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
 
-          // TODO 6951 add navigation for flat rate or actual costs page
+    case WfbpFlatRateOrActualCostsPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(WfbpFlatRateOrActualCostsPage, Some(businessId)) match {
+              case Some(WfbpFlatRateOrActualCosts.ActualCosts) => // TODO 6998 replace with WFBP claim amount page
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WfbpFlatRateOrActualCosts.FlatRate) => // TODO 6997 replace with CYA page
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
         // TODO 6998 add navigation for claim amount page
 

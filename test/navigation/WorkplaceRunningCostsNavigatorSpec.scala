@@ -23,14 +23,15 @@ import models._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
-import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, WfhFlatRateOrActualCosts}
+import models.journeys.expenses.workplaceRunningCosts.{LiveAtBusinessPremises, WfbpFlatRateOrActualCosts, WfhFlatRateOrActualCosts}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
   BusinessPremisesAmountPage,
   LiveAtBusinessPremisesPage,
-  PeopleLivingAtBusinessPremisesPage
+  PeopleLivingAtBusinessPremisesPage,
+  WfbpFlatRateOrActualCostsPage
 }
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 
@@ -208,15 +209,38 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
         // TODO 6949 add tests for Disallowable amount page
 
         "the page is PeopleLivingAtBusinessPremisesPage" - {
-          "navigate to the PeopleLivingAtBusinessPremisesController" in {
+          "navigate to the WfbpFlatRateOrActualCostsController" in {
             val expectedResult =
-              workplaceRunningCosts.workingFromBusinessPremises.routes.PeopleLivingAtBusinessPremisesController.onPageLoad(taxYear, businessId, mode)
+              workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, mode)
 
             navigator.nextPage(PeopleLivingAtBusinessPremisesPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 
-        // TODO 6951 add tests for flat rate or actual costs page
+        "the page is WfbpFlatRateOrActualCostsPage" - {
+          "the answer is Actual Costs" - {
+            "navigate to the WfbpClaimAmountController" ignore {
+              val userAnswers = // TODO 6998 unignore, add redirect to claim amount page
+                emptyUserAnswers.set(WfbpFlatRateOrActualCostsPage, WfbpFlatRateOrActualCosts.ActualCosts, Some(businessId)).success.value
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, NormalMode)
+
+              navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          "the answer is Flat Rate" - {
+            "navigate to the CYA page" ignore {
+              val userAnswers = // TODO 6997 unignore, add redirect to CYA page
+                emptyUserAnswers.set(WfbpFlatRateOrActualCostsPage, WfbpFlatRateOrActualCosts.FlatRate, Some(businessId)).success.value
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, NormalMode)
+
+              navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+        }
 
         // TODO 6998 add tests for claim amount page
 

@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.LegendSize.Medium
-@import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel
-@import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+@import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfbpFlatRateViewModel
+@import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -30,7 +30,7 @@
         heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, flatRateViewModel: WfhFlatRateViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, flatRateViewModel: WfbpFlatRateViewModel)(implicit request: Request[_], messages: Messages)
 
 @summaryListRow(key: String, value: String) = {
     <div class="govuk-summary-list__row">
@@ -39,39 +39,39 @@
     </div>
 }
 
-@layout(pageTitle = title(form, messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate))) {
+@layout(pageTitle = title(form, messages(s"wfbpFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate), None, extraClasses = "govuk-!-padding-top-0 govuk-!-margin-bottom-3")
+    @heading(messages(s"wfbpFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate), None, extraClasses = "govuk-!-padding-top-0 govuk-!-margin-bottom-3")
 
     <p class="govuk-body">@messages("expenses.howWeCalculatedThis")</p>
     <dl class="govuk-summary-list govuk-summary-list--half">
         @summaryListRow(
-            messages("wfhFlatRateOrActualCosts.months25To50", flatRateViewModel.months25To50),
-            messages("wfhFlatRateOrActualCosts.amount25To50", flatRateViewModel.amount25To50)
+            messages("wfbpFlatRateOrActualCosts.months1Person", flatRateViewModel.months1Person),
+            messages("wfbpFlatRateOrActualCosts.amount1Person", flatRateViewModel.amount1Person)
         )
         @summaryListRow(
-            messages("wfhFlatRateOrActualCosts.months51To100", flatRateViewModel.months51To100),
-            messages("wfhFlatRateOrActualCosts.amount51To100", flatRateViewModel.amount51To100)
+            messages("wfbpFlatRateOrActualCosts.months2People", flatRateViewModel.months2People),
+            messages("wfbpFlatRateOrActualCosts.amount2People", flatRateViewModel.amount2People)
         )
         @summaryListRow(
-            messages("wfhFlatRateOrActualCosts.months101Plus", flatRateViewModel.months101Plus),
-            messages("wfhFlatRateOrActualCosts.amount101Plus", flatRateViewModel.amount101Plus)
+            messages("wfbpFlatRateOrActualCosts.months3People", flatRateViewModel.months3People),
+            messages("wfbpFlatRateOrActualCosts.amount3People", flatRateViewModel.amount3People)
         )
     </dl>
     <p class="govuk-body">@messages(s"expenses.flatRateOrActualCosts.$userType")</p>
 
-    @formHelper(action = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.WfbpFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
+                legend = LegendViewModel(messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
                             .asPageHeading(size = Medium),
-                items = WfhFlatRateOrActualCosts.options(flatRateViewModel.flatRate)
+                items = WfbpFlatRateOrActualCosts.options(flatRateViewModel.flatRate)
             )
         )
 

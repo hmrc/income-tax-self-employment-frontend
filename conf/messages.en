@@ -360,6 +360,9 @@ expenses.actualCosts = Actual costs
 expenses.error.lessThanZero = The amount must be 0 or more
 expenses.error.nonNumeric = The amount must be a number
 expenses.error.noDecimals = The number cannot have decimal places
+expenses.howWeCalculatedThis = How we calculated this:
+expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
+expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -759,18 +762,15 @@ workingFromHomeHours.error.overMax.total.individual = The number of months you w
 workingFromHomeHours.error.overMax.total.agent = The number of months your client worked from home must be {0} or fewer
 workingFromHomeHours.change.hidden = Change how many hours were worked from home
 
-## Flat Rate Or Actual Costs
+## WFH Flat Rate Or Actual Costs
 wfhFlatRateOrActualCosts.title.individual = Your flat rate for working from home is £{0}
 wfhFlatRateOrActualCosts.title.agent = Your client’s flat rate for working from home is £{0}
-wfhFlatRateOrActualCosts.howWeCalculatedThis = How we calculated this:
 wfhFlatRateOrActualCosts.months25To50 = {0} at 25 to 50 hours
 wfhFlatRateOrActualCosts.months51To100 = {0} at 51 to 100 hours
 wfhFlatRateOrActualCosts.months101Plus = {0} at 101 or more hours
 wfhFlatRateOrActualCosts.amount25To50 = £{0} (£10 per month)
 wfhFlatRateOrActualCosts.amount51To100 = £{0} (£18 per month)
 wfhFlatRateOrActualCosts.amount101Plus = £{0} (£26 per month)
-wfhFlatRateOrActualCosts.p1.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
-wfhFlatRateOrActualCosts.p1.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
 wfhFlatRateOrActualCosts.subHeading.individual = Will you report you working-from-home expenses as a flat rate of £{0} or actual costs?
 wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s working-from-home expenses as a flat rate of £{0} or actual costs?
 wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
@@ -877,6 +877,21 @@ peopleLivingAtBusinessPremises.error.overMax.threePeople.agent = The number of m
 peopleLivingAtBusinessPremises.error.overMax.total.individual = The total number of months people lived at your business premises must be {0} or fewer
 peopleLivingAtBusinessPremises.error.overMax.total.agent = The total number of months people lived at your client’s business premises must be {0} or fewer
 peopleLivingAtBusinessPremises.change.hidden = Change how many months people lived at the business premises
+
+## WFBP Flat Rate Or Actual Costs
+wfbpFlatRateOrActualCosts.title.individual = Your personal use amount for living at your business premises is £{0}
+wfbpFlatRateOrActualCosts.title.agent = Your client’s personal use amount for living at their business premises is £{0}
+wfbpFlatRateOrActualCosts.months1Person = {0} 1 person lived there
+wfbpFlatRateOrActualCosts.months2People = {0} 2 people lived there
+wfbpFlatRateOrActualCosts.months3People = {0} 3 or more people lived there
+wfbpFlatRateOrActualCosts.amount1Person = £{0} (£350 per month)
+wfbpFlatRateOrActualCosts.amount2People = £{0} (£500 per month)
+wfbpFlatRateOrActualCosts.amount3People = £{0} (£650 per month)
+wfbpFlatRateOrActualCosts.subHeading.individual = Do you want to claim your personal use amount as a flat rate of £{0} or actual costs?
+wfbpFlatRateOrActualCosts.subHeading.agent = Will your client claim their personal use amount as a flat rate of £{0} or actual costs?
+wfbpFlatRateOrActualCosts.error.required.individual = Select if you want to claim your personal use amount as a flat rate of £{0} or actual costs
+wfbpFlatRateOrActualCosts.error.required.agent = Select if your client wants to claim your personal use amount as a flat rate of £{0} or actual costs?
+wfbpFlatRateOrActualCosts.change.hidden = Change whether to claim the personal use amount as a flat rate or enter the actual costs instead
 
 ########## Expenses - Advertising or Marketing ##########
 
