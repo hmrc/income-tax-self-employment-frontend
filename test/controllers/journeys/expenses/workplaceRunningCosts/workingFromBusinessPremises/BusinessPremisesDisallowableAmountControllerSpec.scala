@@ -1,0 +1,4 @@
+package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
+
+class BusinessPremisesDisallowableAmountControllerSpec {
+}

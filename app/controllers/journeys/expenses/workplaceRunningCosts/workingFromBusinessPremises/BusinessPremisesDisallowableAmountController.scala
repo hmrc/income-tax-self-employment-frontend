@@ -50,14 +50,15 @@ class BusinessPremisesDisallowableAmountController @Inject() (override val messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)) match {
+        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case Some(disallowableAmount) =>
-          val form = request.userAnswers
-            .get(BusinessPremisesDisallowableAmountPage, Some(businessId)) match {
-            case Some(value) => formProvider(request.userType, disallowableAmount).fill(value)
-            case None        => formProvider(request.userType, disallowableAmount)
+          val form =
+            request.userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId)) match {
+              case None => formProvider(request.userType, disallowableAmount)
+              case Some(value) => formProvider(request.userType, disallowableAmount).fill(value)
           }
           Future.successful(Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount))))
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+
 
       }
   }
