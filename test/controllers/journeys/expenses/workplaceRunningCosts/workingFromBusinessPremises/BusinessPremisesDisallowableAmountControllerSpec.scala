@@ -32,7 +32,7 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPre
 
 class BusinessPremisesDisallowableAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
-      "DisallowableGoodsToSellOrUseAmountController",
+      "BusinessPremisesDisallowableAmountController",
       BusinessPremisesDisallowableAmountPage
     ) {
 
