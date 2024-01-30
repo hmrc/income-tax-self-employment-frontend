@@ -167,7 +167,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       .value
     val fullPageList = List(LivingAtBusinessPremisesOnePerson, LivingAtBusinessPremisesTwoPeople, LivingAtBusinessPremisesThreePlusPeople)
     val emptyList    = List.empty
-    "should clear UserAnswers data page in the list and return the result" in {
+    "should clear UserAnswers data from pages in the list and return the result" in {
       val result = clearDataFromUserAnswers(userAnswers, fullPageList, None)
 
       result.success.value.data shouldBe Json.obj()
