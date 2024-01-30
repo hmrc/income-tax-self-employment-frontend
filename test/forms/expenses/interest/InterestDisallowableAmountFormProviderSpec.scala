@@ -32,7 +32,7 @@ class InterestDisallowableAmountFormProviderSpec extends CurrencyFormProviderBas
   override lazy val nonNumericError: String                = "interestDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "interestDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "interestDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
   override lazy val maximum: BigDecimal                    = amount
 
 }

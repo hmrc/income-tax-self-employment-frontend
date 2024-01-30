@@ -31,7 +31,7 @@ class OtherExpensesDisallowableAmountFormProviderSpec extends CurrencyFormProvid
   override lazy val nonNumericError: String                = "otherExpensesDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "otherExpensesDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "otherExpensesDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(formatMoney(amount)))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(formatMoney(amount)))
   override lazy val maximum: BigDecimal                    = amount
 
 }

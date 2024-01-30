@@ -32,7 +32,7 @@ class ProfessionalFeesDisallowableAmountFormProviderSpec extends CurrencyFormPro
   override lazy val nonNumericError: String                = "professionalFeesDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "professionalFeesDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "professionalFeesDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
   override lazy val maximum: BigDecimal                    = amount
 
 }

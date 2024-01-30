@@ -26,10 +26,12 @@ abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) exten
 
   private val fieldName = "value"
 
-  protected lazy val minimum: BigDecimal                    = zeroValue
-  protected lazy val maximum: BigDecimal                    = maxAmountValue
-  protected lazy val validDataGenerator: Gen[String]        = currencyInRangeWithCommas(minimum, maximum)
-  protected lazy val optionalArguments: Option[Seq[String]] = None
+  protected lazy val minimum: BigDecimal             = zeroValue
+  protected lazy val maximum: BigDecimal             = maxAmountValue
+  protected lazy val validDataGenerator: Gen[String] = currencyInRangeWithCommas(minimum, maximum)
+
+  protected lazy val optionalArgumentsAll: Option[Seq[String]]     = None
+  protected lazy val optionalArgumentsMaximum: Option[Seq[String]] = None
 
   private val userTypes: List[UserType] = List(Individual, Agent)
 
@@ -53,7 +55,7 @@ abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) exten
       behave like bigDecimalField(
         form,
         fieldName,
-        nonNumericError = optionalArguments match {
+        nonNumericError = optionalArgumentsAll match {
           case Some(args) => FormError(fieldName, s"$nonNumericError.$userType", args)
           case _          => FormError(fieldName, s"$nonNumericError.$userType")
         }
@@ -63,20 +65,21 @@ abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) exten
         form,
         fieldName,
         minimum,
-        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", optionalArguments.getOrElse(Seq(minimum)))
+        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", optionalArgumentsAll.getOrElse(Seq(minimum)))
       )
 
       behave like bigDecimalFieldWithMaximum(
         form,
         fieldName,
         maximum,
-        expectedError = FormError(fieldName, s"$overMaxError.$userType", optionalArguments.getOrElse(Seq(maximum)))
+        expectedError =
+          FormError(fieldName, s"$overMaxError.$userType", optionalArgumentsAll.orElse(optionalArgumentsMaximum).getOrElse(Seq(maximum)))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = optionalArguments match {
+        requiredError = optionalArgumentsAll match {
           case Some(args) => FormError(fieldName, s"$requiredError.$userType", args)
           case _          => FormError(fieldName, s"$requiredError.$userType")
         }

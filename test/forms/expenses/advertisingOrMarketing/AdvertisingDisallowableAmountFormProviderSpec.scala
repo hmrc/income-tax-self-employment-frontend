@@ -32,7 +32,7 @@ class AdvertisingDisallowableAmountFormProviderSpec extends CurrencyFormProvider
   override lazy val nonNumericError: String                = "advertisingDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "advertisingDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "advertisingDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
   override lazy val maximum: BigDecimal                    = amount
 
 }

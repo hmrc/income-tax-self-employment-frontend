@@ -32,7 +32,7 @@ class ConstructionIndustryDisallowableAmountFormProviderSpec extends CurrencyFor
   override lazy val nonNumericError: String                = "constructionIndustryDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "constructionIndustryDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "constructionIndustryDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
   override lazy val maximum: BigDecimal                    = amount
 
 }

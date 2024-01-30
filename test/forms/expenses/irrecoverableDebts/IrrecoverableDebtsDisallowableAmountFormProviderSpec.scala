@@ -32,7 +32,7 @@ class IrrecoverableDebtsDisallowableAmountFormProviderSpec extends CurrencyFormP
   override lazy val nonNumericError: String                = "irrecoverableDebtsDisallowableAmount.error.nonNumeric"
   override lazy val lessThanZeroError: String              = "irrecoverableDebtsDisallowableAmount.error.lessThanZero"
   override lazy val overMaxError: String                   = "irrecoverableDebtsDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
   override lazy val maximum: BigDecimal                    = amount
 
 }
