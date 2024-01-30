@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome
+package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType

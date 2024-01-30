@@ -37,7 +37,7 @@ import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.workingFromHome.FlatRateViewModel
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsView
 
 import scala.concurrent.Future
@@ -55,7 +55,7 @@ class WfhFlatRateOrActualCostsControllerSpec
   private lazy val amount51To100                     = validMonths * 18
   private lazy val amount101Plus                     = validMonths * 26
   private lazy val flatRate                          = amount25To50 + amount51To100 + amount101Plus
-  private lazy val flatRateViewModel = FlatRateViewModel(
+  private lazy val flatRateViewModel = WfhFlatRateViewModel(
     validMonthsText,
     formatMoney(amount25To50),
     validMonthsText,
