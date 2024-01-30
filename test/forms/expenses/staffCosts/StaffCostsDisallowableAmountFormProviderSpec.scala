@@ -29,10 +29,10 @@ class StaffCostsDisallowableAmountFormProviderSpec extends CurrencyFormProviderB
 
   override def getFormProvider(userType: UserType): Form[BigDecimal] = new StaffCostsDisallowableAmountFormProvider()(userType, staffCosts)
 
-  override lazy val requiredError: String                  = "staffCostsDisallowableAmount.error.required"
-  override lazy val nonNumericError: String                = "staffCostsDisallowableAmount.error.nonNumeric"
-  override lazy val lessThanZeroError: String              = "staffCostsDisallowableAmount.error.lessThanZero"
-  override lazy val overMaxError: String                   = "staffCostsDisallowableAmount.error.overMax"
+  override lazy val requiredError: String                     = "staffCostsDisallowableAmount.error.required"
+  override lazy val nonNumericError: String                   = "staffCostsDisallowableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String                 = "staffCostsDisallowableAmount.error.lessThanZero"
+  override lazy val overMaxError: String                      = "staffCostsDisallowableAmount.error.overMax"
   override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(staffCostsString))
-  override lazy val validDataGenerator: Gen[String]        = currencyInRangeWithCommas(minimum, staffCosts)
+  override lazy val validDataGenerator: Gen[String]           = currencyInRangeWithCommas(minimum, staffCosts)
 }
