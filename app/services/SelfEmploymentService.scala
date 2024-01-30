@@ -22,7 +22,6 @@ import controllers.redirectJourneyRecovery
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
-import models.errors.ServiceError
 import models.errors.ServiceError.NotFoundError
 import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
@@ -40,8 +39,7 @@ trait SelfEmploymentService {
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData]
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]]
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -68,13 +66,10 @@ class SelfEmploymentServiceImpl @Inject() (
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     connector.saveJourneyState(ctx, status)
 
-  // TODO getAccountingType to return ApiResultT[AccountingType] and add handleGetAccountingType as a controller package method
-  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): Future[Either[ServiceError, AccountingType]] =
-    getBusiness(nino, businessId, mtditid).value map {
-      case Right(business: BusinessData) if business.accountingType.nonEmpty => Right(AccountingType.withName(business.accountingType.get))
-      case Left(error)                                                       => Left(error)
-      case _                                                                 => Left(NotFoundError("Business not found"))
+  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType] =
+    getBusiness(nino, businessId, mtditid).map(business => business.accountingType).subflatMap {
+      case Some(accountingType) => AccountingType.withName(accountingType).asRight
+      case None                 => NotFoundError(s"Unable to find accounting type of business with ID: $businessId").asLeft
     }
 
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,

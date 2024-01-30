@@ -27,14 +27,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 
 object ExpensesTailoringSummary {
-  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+  def row(rightTextAlign: Boolean = false)(implicit
+      messages: Messages,
+      answers: UserAnswers,
+      taxYear: TaxYear,
+      businessId: BusinessId,
+      userType: UserType): Option[SummaryListRow] =
     answers.get(ExpensesCategoriesPage, Some(businessId)).map { answer =>
       val optUserType = if (answer == NoExpenses) s".$userType" else ""
       buildRowString(
         messages(s"expenses.$answer$optUserType"),
         routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, CheckMode),
         s"expenses.cyaSummary.$userType",
-        "expensesCategories.change.hidden"
+        "expensesCategories.change.hidden",
+        rightTextAlign
       )
     }
 

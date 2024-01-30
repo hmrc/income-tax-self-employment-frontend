@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.{CheckMode, Mode, NormalMode}
-import pages._
-import play.api.mvc.Call
+import pages.OneQuestionPage
 
-class FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator(desiredRoute: Call, checkDesiredRoute: Call) extends WorkplaceRunningCostsNavigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
-    mode match {
-      case NormalMode => desiredRoute
-      case CheckMode  => checkDesiredRoute
-    }
+case object LivingAtBusinessPremisesOnePerson extends OneQuestionPage[Int] {
+  override def toString: String = "livingAtBusinessPremises-onePerson"
 }

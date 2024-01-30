@@ -17,11 +17,11 @@
 package controllers.journeys.expenses.officeSupplies
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxEitherId
+import cats.data.EitherT
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{AccountingType, BusinessId, Mtditid, Nino, UserType}
+import models.common._
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
@@ -43,7 +43,7 @@ class OfficeSuppliesAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns Accrual.asRight.asFuture
+  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 

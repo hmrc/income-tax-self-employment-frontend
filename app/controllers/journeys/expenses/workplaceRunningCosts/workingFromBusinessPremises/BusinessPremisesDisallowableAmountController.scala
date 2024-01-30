@@ -22,7 +22,7 @@ import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.Business
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BusinessPremisesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                               service: SelfEmploymentService,
-                                                              navigator: ExpensesNavigator,
+                                                              navigator: WorkplaceRunningCostsNavigator,
                                                               identify: IdentifierAction,
                                                               getData: DataRetrievalAction,
                                                               requireData: DataRequiredAction,

@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
+package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.{getMaxMonthsWithinTaxYearOrRedirect, handleResultT}
-import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider
-import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
+import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider
+import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider.PeopleLivingAtBusinessPremisesFormModel
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessData
 import models.errors.ServiceError
 import models.requests.DataRequest
 import navigation.WorkplaceRunningCostsNavigator
-import pages.expenses.workplaceRunningCosts.workingFromHome._
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import play.api.data.Form
 import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursView
+import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WorkingFromHomeHoursController @Inject() (override val messagesApi: MessagesApi,
-                                                service: SelfEmploymentService,
-                                                navigator: WorkplaceRunningCostsNavigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: WorkingFromHomeHoursView)(implicit ec: ExecutionContext)
+class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
+                                                          service: SelfEmploymentService,
+                                                          navigator: WorkplaceRunningCostsNavigator,
+                                                          identify: IdentifierAction,
+                                                          getData: DataRetrievalAction,
+                                                          requireData: DataRequiredAction,
+                                                          val controllerComponents: MessagesControllerComponents,
+                                                          view: PeopleLivingAtBusinessPremisesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -57,7 +57,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
       val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business =>
         getFilledFormAndMaxMonths(request, business, businessId) match {
           case Left(redirectError) => redirectError
-          case Right((filledForm: Form[WorkingFromHomeHoursFormModel], maxMonths: Int)) =>
+          case Right((filledForm: Form[PeopleLivingAtBusinessPremisesFormModel], maxMonths: Int)) =>
             Ok(view(filledForm, mode, request.userType, taxYear, businessId, maxMonths.toString))
         }
       }
@@ -67,7 +67,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleForm(maxMonths: Int): Future[Result] = {
-        val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
+        val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
         formProvider
           .bindFromRequest()
           .fold(
@@ -75,12 +75,12 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
             successfulForm => handleSuccess(successfulForm)
           )
       }
-      def handleSuccess(form: WorkingFromHomeHoursFormModel): Future[Result] =
+      def handleSuccess(form: PeopleLivingAtBusinessPremisesFormModel): Future[Result] =
         for {
-          firstUpdated  <- service.persistAnswer(businessId, request.userAnswers, form.value25To50, WorkingFromHomeHours25To50)
-          secondUpdated <- service.persistAnswer(businessId, firstUpdated, form.value51To100, WorkingFromHomeHours51To100)
-          thirdUpdated  <- service.persistAnswer(businessId, secondUpdated, form.value101Plus, WorkingFromHomeHours101Plus)
-          result = Redirect(navigator.nextPage(WorkingFromHomeHoursPage, mode, thirdUpdated, taxYear, businessId))
+          firstUpdated  <- service.persistAnswer(businessId, request.userAnswers, form.onePerson, LivingAtBusinessPremisesOnePerson)
+          secondUpdated <- service.persistAnswer(businessId, firstUpdated, form.twoPeople, LivingAtBusinessPremisesTwoPeople)
+          thirdUpdated  <- service.persistAnswer(businessId, secondUpdated, form.threePeople, LivingAtBusinessPremisesThreePlusPeople)
+          result = Redirect(navigator.nextPage(PeopleLivingAtBusinessPremisesPage, mode, thirdUpdated, taxYear, businessId))
         } yield result
 
       val result: EitherT[Future, ServiceError, Result] =
@@ -94,17 +94,17 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
   }
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
-      messages: Messages): Either[Result, (Form[WorkingFromHomeHoursFormModel], Int)] =
+      messages: Messages): Either[Result, (Form[PeopleLivingAtBusinessPremisesFormModel], Int)] =
     getMaxMonthsWithinTaxYearOrRedirect(business) match {
       case Left(redirect) => Left(redirect)
       case Right(maxMonths) =>
-        val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
-        val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
-        val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
-        val value101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
-        val filledForm: Form[WorkingFromHomeHoursFormModel] = (value25To50, value51To100, value101Plus) match {
-          case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
-            formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
+        val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
+        val onePerson    = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
+        val twoPeople    = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
+        val threePeople  = request.getValue(LivingAtBusinessPremisesThreePlusPeople, businessId)
+        val filledForm: Form[PeopleLivingAtBusinessPremisesFormModel] = (onePerson, twoPeople, threePeople) match {
+          case (Some(onePerson), Some(twoPeople), Some(threePeople)) =>
+            formProvider.fill(PeopleLivingAtBusinessPremisesFormModel(onePerson, twoPeople, threePeople))
           case _ => formProvider
         }
         Right((filledForm, maxMonths))

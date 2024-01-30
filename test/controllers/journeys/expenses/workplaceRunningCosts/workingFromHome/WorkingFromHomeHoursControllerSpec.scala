@@ -23,7 +23,7 @@ import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHours
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.Application
 import play.api.data.Form
@@ -39,7 +39,7 @@ class WorkingFromHomeHoursControllerSpec
 
   override def onPageLoadRoute: String = routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode).url
   override def onSubmitRoute: String   = routes.WorkingFromHomeHoursController.onSubmit(taxYear, businessId, NormalMode).url
-  override def onwardRoute: Call       = routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call       = routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def pageAnswers: UserAnswers = baseAnswers
     .set(WorkingFromHomeHours25To50, amount, businessId.some)
@@ -55,7 +55,7 @@ class WorkingFromHomeHoursControllerSpec
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
 
   override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+    bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
   private val maxMonths = 11

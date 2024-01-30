@@ -18,7 +18,7 @@ package controllers.journeys.expenses.repairsandmaintenance
 
 import cats.data.EitherT
 import controllers.actions._
-import controllers.handleResult
+import controllers.{handleApiResult, handleResultT}
 import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
@@ -53,8 +53,8 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType       = request.userType
         userAnswers    = request.userAnswers
         existingAnswer = userAnswers.get(RepairsAndMaintenanceAmountPage, Some(businessId))
@@ -62,17 +62,10 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
         preparedForm   = existingAnswer.fold(form)(form.fill)
       } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
 
-      handleResult(result.value)
-
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], userType: UserType, accountingType: AccountingType): Future[Result] =
-        Future.successful(
-          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType))
-        )
-
       def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
         selfEmploymentService
           .persistAnswer(businessId, userAnswers, value, RepairsAndMaintenanceAmountPage)
@@ -85,19 +78,17 @@ class RepairsAndMaintenanceAmountController @Inject() (override val messagesApi:
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Left(handleError(formWithErrors, userType, accountingType)),
+            formWithErrors => Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType)))),
             value => Right(handleSuccess(userAnswers, value))
           )
 
-      val result = for {
-        accountingType <- EitherT(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
         userType    = request.userType
         userAnswers = request.userAnswers
         form        = formProvider(userType)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge)
+        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge))
       } yield finalResult
-
-      handleResult(result.value)
   }
 
 }

@@ -19,8 +19,10 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
+import navigation.WorkplaceRunningCostsNavigator
+import pages.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoView
 
@@ -28,6 +30,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class WfhExpensesInfoController @Inject() (override val messagesApi: MessagesApi,
+                                           navigator: WorkplaceRunningCostsNavigator,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
@@ -37,6 +40,7 @@ class WfhExpensesInfoController @Inject() (override val messagesApi: MessagesApi
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view(request.userType, routes.WfhClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url))
-  } // TODO SASS-6799 change redirect route to '/workplace-running-costs/working-from-home/amount' when page made
+    val redirectRoute: Call = navigator.nextPage(WfhExpensesInfoPage, NormalMode, request.userAnswers, taxYear, businessId)
+    Ok(view(request.userType, redirectRoute.url))
+  }
 }

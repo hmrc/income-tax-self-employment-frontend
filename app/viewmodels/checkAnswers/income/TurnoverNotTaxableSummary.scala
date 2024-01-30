@@ -33,7 +33,8 @@ object TurnoverNotTaxableSummary {
         answer,
         routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode),
         s"income.turnoverExemptFromTax.$userType",
-        "turnoverNotTaxable.change.hidden"
+        "turnoverNotTaxable.change.hidden",
+        rightTextAlign = true
       )
     }
 

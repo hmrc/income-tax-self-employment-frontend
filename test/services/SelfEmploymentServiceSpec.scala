@@ -86,8 +86,8 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessData))
       mockConnector.getBusiness(nino, businessIdCash, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessDataCashAccounting))
 
-      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
-      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid))
+      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
+      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid).value)
 
       resultAccrual shouldBe Right(AccountingType.Accrual)
       resultCash shouldBe Right(AccountingType.Cash)
@@ -98,7 +98,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       "an empty sequence is returned from the backend" in {
         mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq.empty)
 
-        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
 
         result shouldBe Left(NotFoundError(s"Unable to find business with ID: $businessIdAccrual"))
       }
@@ -107,7 +107,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.leftT[Future, Seq[BusinessData]](
           ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
 
-        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid))
+        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
 
         result shouldBe Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
       }

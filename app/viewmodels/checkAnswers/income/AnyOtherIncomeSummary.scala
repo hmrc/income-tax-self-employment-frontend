@@ -33,7 +33,9 @@ object AnyOtherIncomeSummary {
         answer,
         routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, CheckMode),
         s"anyOtherIncome.title.$userType",
-        "anyOtherIncome.change.hidden")
+        "anyOtherIncome.change.hidden",
+        rightTextAlign = true
+      )
     }
 
 }

@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.officeSupplies
 
 import controllers.actions._
-import controllers.standard.routes
+import controllers.handleApiResult
 import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -47,36 +47,28 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid).map {
-        case Right(accountingType) =>
-          val preparedForm =
-            request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)) match {
-              case None        => formProvider(request.userType)
-              case Some(value) => formProvider(request.userType).fill(value)
-            }
+      handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid)) map { accountingType =>
+        val preparedForm = request.userAnswers
+          .get(OfficeSuppliesAmountPage, Some(businessId))
+          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-          Ok(view(preparedForm, mode, request.userType, accountingType, taxYear, businessId))
-
-        case Left(_) => Redirect(routes.JourneyRecoveryController.onPageLoad())
+        Ok(view(preparedForm, mode, request.userType, accountingType, taxYear, businessId))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid).flatMap {
-        case Left(_) => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Right(accountingType) =>
-          formProvider(request.userType)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, accountingType, taxYear, businessId))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesAmountPage)
-                  .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId)))
-            )
+      handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid)) flatMap { accountingType =>
+        formProvider(request.userType)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, accountingType, taxYear, businessId))),
+            value =>
+              selfEmploymentService
+                .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesAmountPage)
+                .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId)))
+          )
       }
-
   }
 
 }

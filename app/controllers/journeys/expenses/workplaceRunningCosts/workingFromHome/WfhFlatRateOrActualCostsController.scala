@@ -22,7 +22,7 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
-import navigation.ExpensesNavigator
+import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: MessagesApi,
                                                     service: SelfEmploymentService,
-                                                    navigator: ExpensesNavigator,
+                                                    navigator: WorkplaceRunningCostsNavigator,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

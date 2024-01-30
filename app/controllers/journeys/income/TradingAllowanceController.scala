@@ -16,10 +16,9 @@
 
 package controllers.journeys.income
 
-import cats.data.EitherT
 import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
-import controllers.handleServiceCall
+import controllers.handleApiResult
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -54,12 +53,12 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
         form = request.userAnswers
           .get(TradingAllowancePage, Some(businessId))
           .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))).merge
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -78,7 +77,6 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
             request.userAnswers
               .remove(HowMuchTradingAllowancePage, Some(businessId))
               .flatMap(_.remove(TradingAllowanceAmountPage, Some(businessId)))
-
           case UseTradingAllowance =>
             request.userAnswers.pure[Try]
         }
@@ -88,10 +86,10 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
         } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
       }
 
-      (for {
-        accountingType <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- EitherT.right[Result](handleForm(accountingType))
-      } yield result).merge
+      for {
+        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
+        result         <- handleForm(accountingType)
+      } yield result
 
   }
 
