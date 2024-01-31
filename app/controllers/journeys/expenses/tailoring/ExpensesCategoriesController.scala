@@ -33,15 +33,14 @@ import pages.income.TurnoverIncomeAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.Settable
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
 import javax.inject.{Inject, Singleton}
-import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 @Singleton
 class ExpensesCategoriesController @Inject() (override val messagesApi: MessagesApi,
@@ -79,7 +78,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring): Future[Result] = {
         val redirectMode = continueAsNormalModeIfPrevAnswerChanged(value)
         for {
-          editedUserAnswers <- Future.fromTry(clearDataFromUserAnswers(userAnswers, Some(businessId), value))
+          editedUserAnswers <- Future.fromTry(clearDependentPageAnswers(userAnswers, Some(businessId), value))
           result <- selfEmploymentService
             .persistAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
             .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, redirectMode, updated, taxYear, businessId)))
@@ -115,8 +114,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       result.merge
   }
 
-  private def clearDataFromUserAnswers(userAnswers: UserAnswers, businessId: Option[BusinessId], pageAnswer: ExpensesTailoring): Try[UserAnswers] = {
-
+  private def clearDependentPageAnswers(userAnswers: UserAnswers, businessId: Option[BusinessId], pageAnswer: ExpensesTailoring): Try[UserAnswers] = {
     val tailoringList = List(
       AdvertisingOrMarketingPage,
       DepreciationPage,
@@ -139,27 +137,11 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       WorkFromBusinessPremisesPage,
       TotalExpensesPage
     )
-
     val toBeRemoved = pageAnswer match {
       case NoExpenses           => tailoringList
       case IndividualCategories => tailoringList.filter(_ == TotalExpensesPage)
       case TotalAmount          => tailoringList.filterNot(_ == TotalExpensesPage)
     }
-
-    @tailrec
-    def removeData(userAnswers: UserAnswers, pages: List[Settable[_]]): Try[UserAnswers] =
-      pages match {
-        case Nil =>
-          Try(userAnswers)
-        case head :: tail =>
-          userAnswers.remove(head, businessId) match {
-            case Success(updatedUserAnswers) =>
-              removeData(updatedUserAnswers, tail)
-            case Failure(exception) =>
-              Failure(exception)
-          }
-      }
-
-    removeData(userAnswers, toBeRemoved)
+    clearDataFromUserAnswers(userAnswers, toBeRemoved, businessId)
   }
 }

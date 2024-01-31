@@ -196,17 +196,11 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
         }
       }
 
-      "must clear any old existing data and redirect to the Income CYA page when 'DeclareExpenses' answer is submitted" - {
+      "must redirect to the Income CYA page when 'DeclareExpenses' answer is submitted" - {
         "in NormalMode" in {
 
-          val userAnswer = DeclareExpenses
+          val userAnswer  = DeclareExpenses
           val userAnswers = UserAnswers(userAnswersId)
-            .set(HowMuchTradingAllowancePage, LessThan, Some(businessId))
-            .success
-            .value
-            .set(TradingAllowanceAmountPage, BigDecimal(400), Some(businessId))
-            .success
-            .value
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
@@ -228,8 +222,6 @@ class TradingAllowanceControllerSpec extends SpecBase with MockitoSugar with Mac
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual incomeCyaCall.url
-            UserAnswers(userAnswersId).get(HowMuchTradingAllowancePage, Some(businessId)) mustBe None
-            UserAnswers(userAnswersId).get(TradingAllowanceAmountPage, Some(businessId)) mustBe None
           }
         }
         "in CheckMode" in {

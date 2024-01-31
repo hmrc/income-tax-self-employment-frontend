@@ -28,11 +28,14 @@ import pages.income.TurnoverIncomeAmountPage
 import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
+import queries.Settable
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
+import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 trait SelfEmploymentService {
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]]
@@ -98,4 +101,22 @@ object SelfEmploymentService {
       .fold(redirectJourneyRecovery().asLeft[BigDecimal]) { turnover =>
         if (turnover > maxAllowance) maxAllowance.asRight else turnover.asRight
       }
+
+  def clearDataFromUserAnswers(userAnswers: UserAnswers, pages: List[Settable[_]], businessId: Option[BusinessId]): Try[UserAnswers] = {
+    @tailrec
+    def removePageData(userAnswers: UserAnswers, pages: List[Settable[_]]): Try[UserAnswers] =
+      pages match {
+        case Nil =>
+          Try(userAnswers)
+        case head :: tail =>
+          userAnswers.remove(head, businessId) match {
+            case Success(updatedUserAnswers) =>
+              removePageData(updatedUserAnswers, tail)
+            case Failure(exception) =>
+              Failure(exception)
+          }
+      }
+
+    removePageData(userAnswers, pages)
+  }
 }
