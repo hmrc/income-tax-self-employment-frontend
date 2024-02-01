@@ -28,11 +28,11 @@ class InterestDisallowableAmountFormProviderSpec extends CurrencyFormProviderBas
 
   override def getFormProvider(userType: UserType): Form[BigDecimal] = new InterestDisallowableAmountFormProvider()(userType, amount)
 
-  override lazy val requiredError: String                  = "interestDisallowableAmount.error.required"
-  override lazy val nonNumericError: String                = "interestDisallowableAmount.error.nonNumeric"
-  override lazy val lessThanZeroError: String              = "interestDisallowableAmount.error.lessThanZero"
-  override lazy val overMaxError: String                   = "interestDisallowableAmount.error.overAmount"
-  override lazy val optionalArguments: Option[Seq[String]] = Some(Seq(amountString))
-  override lazy val maximum: BigDecimal                    = amount
+  override lazy val requiredError: String                     = "interestDisallowableAmount.error.required"
+  override lazy val nonNumericError: String                   = "interestDisallowableAmount.error.nonNumeric"
+  override lazy val lessThanZeroError: String                 = "interestDisallowableAmount.error.lessThanZero"
+  override lazy val overMaxError: String                      = "interestDisallowableAmount.error.overAmount"
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val maximum: BigDecimal                       = amount
 
 }

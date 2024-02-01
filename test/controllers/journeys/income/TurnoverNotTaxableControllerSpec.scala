@@ -172,12 +172,12 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
         }
       }
 
-      "when a user answer 'No' is submitted must clear NotTaxableAmount data and redirect to the" - {
+      "when a user answer 'No' is submitted must redirect to the" - {
         val userAnswer = false
 
         "Trading Allowance page when in NormalMode" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(NotTaxableAmountPage, BigDecimal(400), Some(businessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId)
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
@@ -198,7 +198,6 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual tradingAllowanceCall.url
-            UserAnswers(userAnswersId).get(NotTaxableAmountPage, Some(businessId)) mustBe None
           }
         }
 

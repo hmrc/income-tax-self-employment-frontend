@@ -167,11 +167,11 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
         }
       }
 
-      "when a user answer 'No' is submitted must clear NonTurnoverIncomeAmount data and redirect to the" - {
+      "when a user answer 'No' is submitted must redirect to the" - {
         "Turnover Income Amount page when in NormalMode" in {
 
           val userAnswer  = false
-          val userAnswers = UserAnswers(userAnswersId).set(NonTurnoverIncomeAmountPage, BigDecimal(400), Some(businessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId)
 
           mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
@@ -192,7 +192,6 @@ class IncomeNotCountedAsTurnoverControllerSpec extends SpecBase with MockitoSuga
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual turnoverIncomeAmountCall.url
-            UserAnswers(userAnswersId).get(NonTurnoverIncomeAmountPage, Some(businessId)) mustBe None
           }
         }
 

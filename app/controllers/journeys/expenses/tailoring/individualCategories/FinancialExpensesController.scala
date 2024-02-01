@@ -43,14 +43,15 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.Settable
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
 import javax.inject.{Inject, Singleton}
-import scala.annotation.{nowarn, tailrec}
+import scala.annotation.nowarn
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 @Singleton
 class FinancialExpensesController @Inject() (override val messagesApi: MessagesApi,
@@ -82,7 +83,7 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
     implicit request =>
       def handleSuccess(userAnswers: UserAnswers, financialExpenses: Set[FinancialExpenses]): Future[Result] =
         for {
-          clearedAnswers <- Future.fromTry(clearPageDataFromUserAnswers(userAnswers, Some(businessId), financialExpenses))
+          clearedAnswers <- Future.fromTry(clearDependentPageAnswers(userAnswers, Some(businessId), financialExpenses))
           updatedAnswers <- selfEmploymentService.persistAnswer(businessId, clearedAnswers, financialExpenses, FinancialExpensesPage)
         } yield Redirect(navigator.nextPage(FinancialExpensesPage, mode, updatedAnswers, taxYear, businessId))
 
@@ -106,33 +107,19 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
       } yield finalResult
   }
 
-  private def clearPageDataFromUserAnswers(userAnswers: UserAnswers,
-                                           businessId: Option[BusinessId],
-                                           pageAnswers: Set[FinancialExpenses]): Try[UserAnswers] = {
+  private def clearDependentPageAnswers(userAnswers: UserAnswers,
+                                        businessId: Option[BusinessId],
+                                        pageAnswers: Set[FinancialExpenses]): Try[UserAnswers] = {
     @nowarn("msg=match may not be exhaustive")
-    @tailrec
-    def removeData(userAnswers: UserAnswers, pages: List[FinancialExpenses]): Try[UserAnswers] =
-      pages match {
-        case Nil =>
-          Try(userAnswers)
-        case head :: tail =>
-          val page = head match {
-            case Interest              => DisallowableInterestPage: Settable[DisallowableInterest]
-            case OtherFinancialCharges => DisallowableOtherFinancialChargesPage: Settable[DisallowableOtherFinancialCharges]
-            case IrrecoverableDebts    => DisallowableIrrecoverableDebtsPage: Settable[DisallowableIrrecoverableDebts]
-          }
+    def getPageFromAnswer(value: FinancialExpenses): Settable[_] = value match {
+      case Interest              => DisallowableInterestPage: Settable[DisallowableInterest]
+      case OtherFinancialCharges => DisallowableOtherFinancialChargesPage: Settable[DisallowableOtherFinancialCharges]
+      case IrrecoverableDebts    => DisallowableIrrecoverableDebtsPage: Settable[DisallowableIrrecoverableDebts]
+    }
+    val uncheckedAnswers: List[FinancialExpenses] = List(Interest, OtherFinancialCharges, IrrecoverableDebts).filterNot(pageAnswers.contains(_))
+    val pagesToBeRemoved: List[Settable[_]]       = uncheckedAnswers.map(getPageFromAnswer)
 
-          userAnswers.remove(page, businessId) match {
-            case Success(updatedUserAnswers) =>
-              removeData(updatedUserAnswers, tail)
-            case Failure(exception) =>
-              Failure(exception)
-          }
-      }
-
-    val toBeRemoved = List(Interest, OtherFinancialCharges, IrrecoverableDebts).filterNot(pageAnswers.contains(_))
-
-    removeData(userAnswers, toBeRemoved)
+    clearDataFromUserAnswers(userAnswers, pagesToBeRemoved, businessId)
   }
 
 }

@@ -18,15 +18,18 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts.{ActualCosts, FlatRate}
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.WorkplaceRunningCostsNavigator
-import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{WfhClaimingAmountPage, WfhFlatRateOrActualCostsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel.calculateFlatRate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsView
@@ -62,12 +65,11 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, answer: WfhFlatRateOrActualCosts): Future[Result] =
+      def handleSuccess(answer: WfhFlatRateOrActualCosts): Future[Result] =
         for {
-          result <- service
-            .persistAnswer(businessId, userAnswers, answer, WfhFlatRateOrActualCostsPage)
-            .map(updated => Redirect(navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, updated, taxYear, businessId)))
-        } yield result
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, WfhFlatRateOrActualCostsPage)
+        } yield Redirect(navigator.nextPage(WfhFlatRateOrActualCostsPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
       calculateFlatRate(request, businessId) match {
         case Left(redirect) => Future.successful(redirect)
@@ -76,9 +78,24 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
-              value => handleSuccess(request.userAnswers, value)
+              value => handleSuccess(value)
             )
       }
+  }
+
+  private def handleGatewayQuestion(currentAnswer: WfhFlatRateOrActualCosts,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val clearUserAnswerDataIfNeeded = currentAnswer match {
+      case FlatRate    => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(WfhClaimingAmountPage), Some(businessId)))
+      case ActualCosts => Future(request.userAnswers)
+    }
+    val redirectMode = request.getValue(WfhFlatRateOrActualCostsPage, businessId) match {
+      case Some(FlatRate) if currentAnswer == ActualCosts => NormalMode
+      case _                                              => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }

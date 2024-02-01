@@ -893,6 +893,20 @@ wfbpFlatRateOrActualCosts.error.required.individual = Select if you want to clai
 wfbpFlatRateOrActualCosts.error.required.agent = Select if your client wants to claim your personal use amount as a flat rate of £{0} or actual costs?
 wfbpFlatRateOrActualCosts.change.hidden = Change whether to claim the personal use amount as a flat rate or enter the actual costs instead
 
+## WFBP Claiming amount
+wfbpClaimingAmount.title.individual = How much are you claiming as your personal use amount?
+wfbpClaimingAmount.title.agent = How much is your client claiming as their personal use amount?
+wfbpClaimingAmount.hint = This amount must not include business use.
+wfbpClaimingAmount.error.required.individual = Enter the personal use amount you’re claiming
+wfbpClaimingAmount.error.required.agent = Enter the personal use amount your client is claiming
+wfbpClaimingAmount.error.nonNumeric.individual = The personal use amount you’re claiming must be a number
+wfbpClaimingAmount.error.nonNumeric.agent = The personal use amount your client is claiming must be a number
+wfbpClaimingAmount.error.lessThanZero.individual = The personal use amount you’re claiming must be more than £0
+wfbpClaimingAmount.error.lessThanZero.agent = The personal use amount your client is claiming must be more than £0
+wfbpClaimingAmount.error.overMax.individual = The personal use amount you’re claiming must be less than {0}
+wfbpClaimingAmount.error.overMax.agent = The personal use amount your client is claiming must be less than {0}
+wfbpClaimingAmount.change.hidden = Change how much is being claimed on the personal use amount
+
 ########## Expenses - Advertising or Marketing ##########
 
 ## Advertising amount

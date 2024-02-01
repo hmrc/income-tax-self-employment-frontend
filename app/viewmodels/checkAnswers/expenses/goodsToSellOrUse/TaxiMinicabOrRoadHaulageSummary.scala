@@ -34,7 +34,8 @@ object TaxiMinicabOrRoadHaulageSummary {
         formatAnswer(answer.toString),
         routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, CheckMode),
         s"taxiMinicabOrRoadHaulage.title.$userType",
-        "taxiMinicabOrRoadHaulage.change.hidden"
+        "taxiMinicabOrRoadHaulage.change.hidden",
+        rightTextAlign = true
       )
     }
 

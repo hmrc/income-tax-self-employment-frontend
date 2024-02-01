@@ -18,26 +18,22 @@ package controllers.actions
 
 import cats.data.EitherT
 import connectors.SelfEmploymentConnector
-import models.common.JourneyContext
-import models.common.TaxYear
+import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.Journey
-import models.journeys.TaskListWithRequest
+import models.journeys.{Journey, TaskListWithRequest}
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
+import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
-import models.requests.OptionalDataRequest
-import models.requests.TradesJourneyStatuses
+import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
 import play.api.mvc.AnyContent
 import repositories.SessionRepositoryBase
 import uk.gov.hmrc.http.HeaderCarrier
 
-import javax.inject.Inject
-import javax.inject.Singleton
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait SubmittedDataRetrievalActionProvider {
   def apply[SubsetOfAnswers: Format](mkJourneyContext: OptionalDataRequest[_] => JourneyContext)(implicit
@@ -71,7 +67,8 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
       abroadUpdated   <- loadAnswers[SelfEmploymentAbroadAnswers](taxYear, businesses, request, Journey.Abroad)
       incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, abroadUpdated, Journey.Income)
       expensesUpdated <- loadAnswers[ExpensesTailoringAnswers](taxYear, businesses, incomeUpdated, Journey.ExpensesTailoring)
-    } yield TaskListWithRequest(taskList, expensesUpdated)
+      gtsouUpdated    <- loadAnswers[GoodsToSellOrUseJourneyAnswers](taxYear, businesses, expensesUpdated, Journey.ExpensesGoodsToSellOrUse)
+    } yield TaskListWithRequest(taskList, gtsouUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
