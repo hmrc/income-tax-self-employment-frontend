@@ -34,6 +34,8 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
+import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import play.api.mvc.PathBindable
 
@@ -113,6 +115,27 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   case object ExpensesRepairsAndMaintenance extends Journey("expenses-repairs-and-maintenance") {
     override val pageKeys: List[PageName] = List(RepairsAndMaintenanceAmountPage.pageName, RepairsAndMaintenanceDisallowableAmountPage.pageName)
+  }
+
+  case object ExpensesWorkplaceRunningCosts extends Journey("expenses-workplace-running-costs") {
+    override val pageKeys: List[PageName] = List(
+      BusinessPremisesAmountPage.pageName,
+      LiveAtBusinessPremisesPage.pageName,
+      LivingAtBusinessPremisesOnePerson.pageName,
+      LivingAtBusinessPremisesTwoPeople.pageName,
+      LivingAtBusinessPremisesThreePlusPeople.pageName,
+      PeopleLivingAtBusinessPremisesPage.pageName,
+      WfbpClaimingAmountPage.pageName,
+      WfbpFlatRateOrActualCostsPage.pageName,
+      MoreThan25HoursPage.pageName,
+      WfhClaimingAmountPage.pageName,
+      WfhExpensesInfoPage.pageName,
+      WfhFlatRateOrActualCostsPage.pageName,
+      WorkingFromHomeHours25To50.pageName,
+      WorkingFromHomeHours51To100.pageName,
+      WorkingFromHomeHours101Plus.pageName,
+      WorkingFromHomeHoursPage.pageName
+    )
   }
 
   case object ExpensesIrrecoverableDebts extends Journey("expenses-irrecoverable-debts") {
