@@ -25,16 +25,16 @@ import javax.inject.Inject
 
 class BusinessPremisesDisallowableAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType, disallowableAmount: BigDecimal): Form[BigDecimal] = {
-    val disallowableAmountString = formatMoney(disallowableAmount)
+  def apply(userType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] = {
+    val allowableAmountString = formatMoney(allowableAmount)
     Form(
       "value" -> currency(
         s"businessPremisesDisallowableAmount.error.required.$userType",
         s"businessPremisesDisallowableAmount.error.nonNumeric.$userType",
-        Seq(disallowableAmountString)
+        Seq(allowableAmountString)
       )
-        .verifying(greaterThan(minimumValue, s"businessPremisesDisallowableAmount.error.lessThanZero.$userType"))
-        .verifying(lessThan(maximumValue, s"businessPremisesDisallowableAmount.error.overMax.$userType"))
+        .verifying(greaterThan(minimumValue, s"businessPremisesDisallowableAmount.error.lessThanZero.$userType", Some(allowableAmountString)))
+        .verifying(lessThan(maximumValue, s"businessPremisesDisallowableAmount.error.overMax.$userType", Some(allowableAmountString)))
     )
   }
 }

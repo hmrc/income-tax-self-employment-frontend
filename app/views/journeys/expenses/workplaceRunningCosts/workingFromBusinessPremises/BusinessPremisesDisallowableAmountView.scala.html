@@ -31,9 +31,9 @@
 )
 
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, disallowableAmount: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, allowableAmount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"businessPremisesDisallowableAmount.title.$userType", disallowableAmount))) {
+@layout(pageTitle = title(form, messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -44,7 +44,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"businessPremisesDisallowableAmount.title.$userType", disallowableAmount))
+                label = LabelViewModel(messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount))
                 .asPageHeading(size = Large)
                 .withCssClass("govuk-!-margin-bottom-4")
             )
