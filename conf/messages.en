@@ -844,6 +844,17 @@ businessPremisesAmount.error.lessThanZero.agent = The amount your client spent o
 businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
 businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
 
+businessPremisesDisallowableAmount.title.individual = How much of the £{0} you spent on business premises expenses is disallowable?
+businessPremisesDisallowableAmount.title.agent = How much of the £{0} your client spent on business premises expenses is disallowable?
+businessPremisesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on business premises expenses that is disallowable
+businessPremisesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on business premises expenses that is disallowable
+businessPremisesDisallowableAmount.error.nonNumeric.individual = The disallowable amount of the £{0} you spent on business premises expenses must be a number
+businessPremisesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on business premises expenses must be a number
+businessPremisesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on business premises expenses must be more than £0
+businessPremisesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on business premises expenses must be more than £0
+businessPremisesDisallowableAmount.error.overMax.individual = The disallowable amount you spent on business premises expenses must be the same as or less than £{0}
+businessPremisesDisallowableAmount.error.overMax.agent = The disallowable amount your client spent on business premises expenses must be the same as or less than £{0}
+
 ## People Living at Business Premises
 peopleLivingAtBusinessPremises.title.individual = People living at your business premises
 peopleLivingAtBusinessPremises.title.agent = People living at your client’s business premises
