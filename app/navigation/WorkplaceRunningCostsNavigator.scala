@@ -79,7 +79,7 @@ class WorkplaceRunningCostsNavigator @Inject() {
     case WfhClaimingAmountPage =>
       userAnswers =>
         taxYear =>
-          businessId => // TODO 6983 if WFBP = No => CYA
+          businessId =>
             userAnswers.get(WorkFromBusinessPremisesPage, Some(businessId)) match {
               case Some(WorkFromBusinessPremises.YesAllowable | WorkFromBusinessPremises.YesDisallowable) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -122,7 +122,7 @@ class WorkplaceRunningCostsNavigator @Inject() {
                   .onPageLoad(taxYear, businessId, NormalMode)
               case Some(LiveAtBusinessPremises.No) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              // TODO change to cya page
+              // TODO 6997 replace with CYA page
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
