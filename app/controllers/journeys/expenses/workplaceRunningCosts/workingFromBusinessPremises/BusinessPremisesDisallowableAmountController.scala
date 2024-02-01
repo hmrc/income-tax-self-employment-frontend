@@ -16,12 +16,11 @@
 
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
+import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.standard.routes
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,38 +46,32 @@ class BusinessPremisesDisallowableAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Some(disallowableAmount) =>
-          val form =
-            request.userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId)) match {
-              case None        => formProvider(request.userType, disallowableAmount)
-              case Some(value) => formProvider(request.userType, disallowableAmount).fill(value)
-            }
-          Future.successful(Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount))))
-
-      }
+      (for {
+        allowableAmount <- request.valueOrRedirectDefault(BusinessPremisesAmountPage, businessId)
+        form       = formProvider(request.userType, allowableAmount)
+        filledForm = request.getValue(BusinessPremisesDisallowableAmountPage, businessId).fold(form)(form.fill)
+      } yield Ok(view(filledForm, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Some(disallowableAmount) =>
-          def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
-            service
-              .persistAnswer(businessId, userAnswers, value, BusinessPremisesDisallowableAmountPage)
-              .map(updated => Redirect(navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, updated, taxYear, businessId)))
-
-          formProvider(request.userType, disallowableAmount)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(disallowableAmount)))),
-              value => handleSuccess(request.userAnswers, value)
-            )
-      }
+      def handleForm(allowableAmount: BigDecimal): Future[Result] =
+        formProvider(request.userType, allowableAmount)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))),
+            value => handleSuccess(value)
+          )
+      def handleSuccess(value: BigDecimal): Future[Result] =
+        service
+          .persistAnswer(businessId, request.userAnswers, value, BusinessPremisesDisallowableAmountPage)
+          .map(updated => Redirect(navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, updated, taxYear, businessId)))
+      (for {
+        allowableAmount <- EitherT.fromEither[Future](request.valueOrRedirectDefault(BusinessPremisesAmountPage, businessId))
+        result          <- EitherT.right[Result](handleForm(allowableAmount))
+      } yield result).merge
   }
 }

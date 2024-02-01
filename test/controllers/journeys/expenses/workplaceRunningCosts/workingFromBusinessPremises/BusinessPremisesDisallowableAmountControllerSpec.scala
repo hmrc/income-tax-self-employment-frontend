@@ -36,10 +36,10 @@ class BusinessPremisesDisallowableAmountControllerSpec
       BusinessPremisesDisallowableAmountPage
     ) {
 
-  lazy val onPageLoadRoute: String = routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute: String   = routes.BusinessPremisesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  override def onPageLoadRoute: String = routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  override def onSubmitRoute: String   = routes.BusinessPremisesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call = routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
   // TODO change to workplace running costs cya
 
   override def baseAnswers = emptyUserAnswers.set(BusinessPremisesAmountPage, amount, Some(businessId)).success.value
@@ -48,7 +48,7 @@ class BusinessPremisesDisallowableAmountControllerSpec
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
-  def createForm(userType: UserType): Form[BigDecimal] = new BusinessPremisesDisallowableAmountFormProvider()(userType, amount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new BusinessPremisesDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
