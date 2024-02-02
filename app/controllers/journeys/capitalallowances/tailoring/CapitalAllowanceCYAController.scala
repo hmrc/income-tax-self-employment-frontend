@@ -66,7 +66,6 @@ class CapitalAllowanceCYAController @Inject() (override val messagesApi: Message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
     implicit request =>
-      println("------- userAnswers " + request.userAnswers)
       val context = JourneyAnswersContext(taxYear, businessId, request.mtditid, CapitalAllowancesTailoring)
       val result  = service.submitAnswers[CapitalAllowancesTailoringAnswers](context, request.userAnswers)
 

@@ -61,7 +61,6 @@ package object controllers {
   // Redirection to journey recovery on downstream error retrieval is a temporary action until we pick up the unhappy
   // path tickets (JIRA TBA).
   def handleSubmitAnswersResult(ctx: JourneyContext, result: ApiResultT[_])(implicit ec: ExecutionContext, logger: Logger): Future[Result] = {
-    println("------- reuslt " + result)
     val resultT = result.map(_ => redirectJourneyCompletedState(ctx.taxYear, ctx.businessId, ctx.journey))
     handleResultT(resultT)
   }
