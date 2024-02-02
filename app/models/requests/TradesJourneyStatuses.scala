@@ -22,8 +22,8 @@ import models.database.UserAnswers
 import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import viewmodels.TradeJourneyStatusesViewModel
-import viewmodels.TradeJourneyStatusesViewModel.buildSummaryList
+import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel
+import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryList
 
 case class TradesJourneyStatuses(businessId: BusinessId, tradingName: Option[TradingName], journeyStatuses: List[JourneyNameAndStatus]) {
   def getStatusOrNotStarted(journey: Journey): JourneyStatus =
