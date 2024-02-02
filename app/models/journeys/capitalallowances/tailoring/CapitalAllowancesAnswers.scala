@@ -18,7 +18,7 @@ package models.journeys.capitalallowances.tailoring
 
 import play.api.libs.json.{Format, Json}
 
-case class CapitalAllowancesTailoringAnswers(claimAnyCapitalAllowances: Boolean, selectCapitalAllowances: List[CapitalAllowances])
+case class CapitalAllowancesTailoringAnswers(claimCapitalAllowances: Boolean, selectCapitalAllowances: List[CapitalAllowances])
 
 object CapitalAllowancesTailoringAnswers {
   implicit val formats: Format[CapitalAllowancesTailoringAnswers] = Json.format[CapitalAllowancesTailoringAnswers]
