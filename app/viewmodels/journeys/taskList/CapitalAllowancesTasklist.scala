@@ -25,14 +25,14 @@ import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
-import viewmodels.journeys.{determineUrl, getJourneyStatusOrCannotStartYet, returnRowIfConditionPassed}
+import viewmodels.journeys.{determineJourneyStartOrCyaUrl, checkIfCannotStartYet, returnRowIfConditionPassed}
 
 object CapitalAllowancesTasklist {
 
   def buildCapitalAllowances(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, businessId: BusinessId)(implicit
       messages: Messages): List[SummaryListRow] = {
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
-    val tailoringStatus   = getJourneyStatusOrCannotStartYet(CapitalAllowancesTailoring)(tradesJourneyStatuses)
+    val tailoringStatus   = checkIfCannotStartYet(CapitalAllowancesTailoring)(tradesJourneyStatuses)
     val tailoringHref     = getCapitalAllowanceUrl(tailoringStatus, businessId, taxYear)
     val tailoringRow = returnRowIfConditionPassed(
       buildSummaryRow(tailoringHref, messages(s"journeys.$CapitalAllowancesTailoring"), tailoringStatus),
@@ -42,7 +42,7 @@ object CapitalAllowancesTasklist {
   }
 
   private def getCapitalAllowanceUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url,
       capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)

@@ -28,12 +28,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 package object journeys {
 
   def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
-    getJourneyStatusOrCannotStartYet(dependentJourney)(tradesJourneyStatuses) match {
+    checkIfCannotStartYet(dependentJourney)(tradesJourneyStatuses) match {
       case Completed | InProgress                        => true
       case CheckOurRecords | CannotStartYet | NotStarted => false
     }
 
-  def getJourneyStatusOrCannotStartYet(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
+  def checkIfCannotStartYet(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
     JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
       case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
@@ -41,10 +41,10 @@ package object journeys {
       case status: JourneyStatus                                     => status
     }
 
-  def getAnswer[A](page: OneQuestionPage[A])(implicit businessId: BusinessId, userAnswers: Option[UserAnswers], reads: Reads[A]): Option[A] =
+  def getPageAnswer[A](page: OneQuestionPage[A])(implicit businessId: BusinessId, userAnswers: Option[UserAnswers], reads: Reads[A]): Option[A] =
     userAnswers.flatMap(_.get(page, Some(businessId)))
 
-  def determineUrl(startUrl: String, cyaUrl: String)(implicit status: JourneyStatus): String =
+  def determineJourneyStartOrCyaUrl(startUrl: String, cyaUrl: String)(implicit status: JourneyStatus): String =
     status match {
       case CannotStartYet               => "#"
       case Completed | InProgress       => cyaUrl

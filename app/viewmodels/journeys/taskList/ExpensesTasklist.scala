@@ -83,7 +83,7 @@ object ExpensesTasklist {
       conditionPassedForViewableLink(WorkFromHomePage, Seq(Yes)) ||
         conditionPassedForViewableLink(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.filterNot(_ == WorkFromBusinessPremises.No))
     val expensesWorkplaceRunningCostsRow = {
-      val optWfhMsg = getAnswer(WorkFromHomePage).collect { case Yes => ".wfh" }
+      val optWfhMsg = getPageAnswer(WorkFromHomePage).collect { case Yes => ".wfh" }
       buildWorkplaceRunningCostsRow(ExpensesWorkplaceRunningCosts, isExpensesTailoringIsAnswered && hasWorkplaceRunningCosts, userAnswers, optWfhMsg)
     }
 
@@ -157,7 +157,7 @@ object ExpensesTasklist {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
-    val status: JourneyStatus = getJourneyStatusOrCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
     val href                  = getExpensesUrl(journey, status, businessId, taxYear)
@@ -174,7 +174,7 @@ object ExpensesTasklist {
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
     val optWfh    = optWfhMsg.getOrElse("")
-    val status    = getJourneyStatusOrCannotStartYet(journey)
+    val status    = checkIfCannotStartYet(journey)
     val keyString = messages(s"journeys.$journey$optWfh")
     val href      = getWorkplaceRunningCostsUrl(status, userAnswers, taxYear)
     val row       = buildSummaryRow(href, keyString, status)
@@ -185,84 +185,84 @@ object ExpensesTasklist {
     implicit val status: JourneyStatus = journeyStatus
     journey match {
       case ExpensesTailoring =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesOfficeSupplies =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.officeSupplies.routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesGoodsToSellOrUse =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.goodsToSellOrUse.routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesRepairsAndMaintenance =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesAdvertisingOrMarketing =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.advertisingOrMarketing.routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.advertisingOrMarketing.routes.AdvertisingCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesEntertainment =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.entertainment.routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesStaffCosts =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.staffCosts.routes.StaffCostsAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesConstruction =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.construction.routes.ConstructionIndustryAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesProfessionalFees =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.professionalFees.routes.ProfessionalFeesAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesInterest =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.interest.routes.InterestAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.interest.routes.InterestCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesFinancialCharges =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.financialCharges.routes.FinancialChargesAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesDepreciation =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.depreciation.routes.DepreciationDisallowableAmountController
             .onPageLoad(taxYear, businessId, NormalMode)
             .url,
           expenses.depreciation.routes.DepreciationCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesIrrecoverableDebts =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.irrecoverableDebts.routes.IrrecoverableDebtsAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesOtherExpenses =>
-        determineUrl(
+        determineJourneyStartOrCyaUrl(
           expenses.otherExpenses.routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId).url
         )
@@ -274,9 +274,9 @@ object ExpensesTasklist {
       businessId: BusinessId,
       wfhReads: Reads[WorkFromHome],
       wfbpReads: Reads[WorkFromBusinessPremises]): String = {
-    val wfhTailoring: Option[WorkFromHome] = getAnswer[WorkFromHome](WorkFromHomePage)(businessId, userAnswers, wfhReads)
+    val wfhTailoring: Option[WorkFromHome] = getPageAnswer[WorkFromHome](WorkFromHomePage)(businessId, userAnswers, wfhReads)
     val wfbpTailoring: Option[WorkFromBusinessPremises] =
-      getAnswer[WorkFromBusinessPremises](WorkFromBusinessPremisesPage)(businessId, userAnswers, wfbpReads)
+      getPageAnswer[WorkFromBusinessPremises](WorkFromBusinessPremisesPage)(businessId, userAnswers, wfbpReads)
     val cyaUrl = // TODO 6997 replace with CYA page
       expenses.workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController
         .onPageLoad(taxYear, businessId, NormalMode)
@@ -297,11 +297,11 @@ object ExpensesTasklist {
       businessId: BusinessId,
       userAnswers: Option[UserAnswers],
       readsA: Reads[A]): Boolean =
-    getAnswer(page).fold(false)(acceptableAnswers.contains(_))
+    getPageAnswer(page).fold(false)(acceptableAnswers.contains(_))
 
   private def conditionPassedForViewableLink[A](page: OneQuestionPage[Set[A]], requiredAnswer: A)(implicit
       businessId: BusinessId,
       userAnswers: Option[UserAnswers],
       readsA: Reads[A]): Boolean =
-    getAnswer(page).fold(false)(_.contains(requiredAnswer))
+    getPageAnswer(page).fold(false)(_.contains(requiredAnswer))
 }

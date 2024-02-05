@@ -30,7 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.taskList.CapitalAllowancesTasklist.buildCapitalAllowances
 import viewmodels.journeys.taskList.ExpensesTasklist.buildExpensesCategories
-import viewmodels.journeys.{SummaryListCYA, determineUrl, getJourneyStatusOrCannotStartYet}
+import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, checkIfCannotStartYet}
 
 case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
@@ -61,7 +61,7 @@ object TradeJourneyStatusesViewModel {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatusOrCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
     val href = journey match {
@@ -89,12 +89,12 @@ object TradeJourneyStatusesViewModel {
   }
 
   private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
       abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
