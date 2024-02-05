@@ -313,7 +313,7 @@ object TradeJourneyStatusesViewModel {
           expenses.otherExpenses.routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | CapitalAllowancesTailoring =>
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | CapitalAllowancesTailoring |  ExpensesWorkplaceRunningCosts=>
         ??? // TODO Other Journeys not yet implemented
     }
   }

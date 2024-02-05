@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,28 @@
 
 package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
-import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
+import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object MoreThan25HoursSummary {
+object WfhFlatRateOrActualCostsSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MoreThan25HoursPage, Some(businessId)).map { answer =>
+
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+                                                                                                  messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)).map { answer =>
       buildRowString(
-        formatAnswer(answer.toString),
-        workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
-        s"moreThan25Hours.title.$userType",
-        "moreThan25Hours.change.hidden"
+        answer.toString,
+        routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+        messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", answer), // TODO change to flat rate view model
+        "wfhFlatRateOrActualCosts.change.hidden"
       )
     }
+
 
 }

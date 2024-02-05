@@ -34,6 +34,26 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
+  BusinessPremisesAmountPage,
+  LiveAtBusinessPremisesPage,
+  LivingAtBusinessPremisesOnePerson,
+  LivingAtBusinessPremisesThreePlusPeople,
+  LivingAtBusinessPremisesTwoPeople,
+  PeopleLivingAtBusinessPremisesPage,
+  WfbpClaimingAmountPage,
+  WfbpFlatRateOrActualCostsPage
+}
+import pages.expenses.workplaceRunningCosts.workingFromHome.{
+  MoreThan25HoursPage,
+  WfhClaimingAmountPage,
+  WfhExpensesInfoPage,
+  WfhFlatRateOrActualCostsPage,
+  WorkingFromHomeHours101Plus,
+  WorkingFromHomeHours25To50,
+  WorkingFromHomeHours51To100,
+  WorkingFromHomeHoursPage
+}
 import pages.income._
 import play.api.mvc.PathBindable
 
@@ -125,6 +145,27 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   case object CapitalAllowancesTailoring extends Journey("capital-allowances-tailoring") {
     override val pageKeys: List[PageName] = List(ClaimCapitalAllowancesPage.pageName, SelectCapitalAllowancesPage.pageName)
+  }
+
+  case object ExpensesWorkplaceRunningCosts extends Journey("workplace-running-costs") {
+    override val pageKeys: List[PageName] = List(
+      MoreThan25HoursPage.pageName,
+      WfhClaimingAmountPage.pageName,
+      WfhExpensesInfoPage.pageName,
+      WfhFlatRateOrActualCostsPage.pageName,
+      WorkingFromHomeHours25To50.pageName,
+      WorkingFromHomeHours51To100.pageName,
+      WorkingFromHomeHours101Plus.pageName,
+      WorkingFromHomeHoursPage.pageName,
+      BusinessPremisesAmountPage.pageName,
+      LiveAtBusinessPremisesPage.pageName,
+      LivingAtBusinessPremisesOnePerson.pageName,
+      LivingAtBusinessPremisesTwoPeople.pageName,
+      LivingAtBusinessPremisesThreePlusPeople.pageName,
+      PeopleLivingAtBusinessPremisesPage.pageName,
+      WfbpClaimingAmountPage.pageName,
+      WfbpFlatRateOrActualCostsPage.pageName
+    )
   }
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {

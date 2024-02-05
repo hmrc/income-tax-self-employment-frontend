@@ -727,6 +727,20 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 
 common.workplaceRunning.heating = heating
 
+## CYA
+worklpaceRunningCostsCya.title.individual =  Check your workplace running costs
+worklpaceRunningCostsCya.title.agent =  Check your client’s workplace running costs
+wfbpClaimingAmount.subHeading.individual = How much are you claiming as your personal use amount?
+wfbpClaimingAmount.subHeading.agent = How much is your client claiming as their personal use amount?
+wfh25To50Hours.subHeading.individual = How many months did you work 25 to 50 hours from home?
+wfh25To50Hours.subHeading.agent = How many months did your client work 25 to 50 hours from home?
+wfh51To100Hours.subHeading.individual = How many months did you work 51 to 100 hours from home?
+wfh51To100Hours.subHeading.agent = How many months did your client work 51 to 100 hours from home?
+wfh101PlusHours.subHeading.individual = How many months did you work 101 or more hours from home?
+wfh101PlusHours.subHeading.agent = How many months did your client work 101 or more hours from home?
+wfhFlatRateOrActualCosts.subHeading.individual = Do you want to report your working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Does your client want to report their working-from-home expenses as a flat rate of £{0} or actual costs?
+
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
