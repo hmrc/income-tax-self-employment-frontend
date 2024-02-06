@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{LiveAtBusinessPremisesSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{BusinessPremisesAmountSummary, LiveAtBusinessPremisesSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -55,13 +55,14 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
       val summaryList = SummaryListCYA.summaryListOpt(
         List(
           MoreThan25HoursSummary.row(request.userAnswers, taxYear, businessId, user),
-          WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-            WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
           WorkingFromHome25To50HoursSummary.row(request.userAnswers, taxYear, businessId, user),
           WorkingFromHome51To100HoursSummary.row(request.userAnswers, taxYear, businessId, user),
           WorkingFromHome101PlusHoursSummary.row(request.userAnswers, taxYear, businessId, user),
           WfhFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user),
-          LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user)
+          WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
+          BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user)
         )
       )
 
