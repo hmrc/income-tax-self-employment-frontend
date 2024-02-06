@@ -205,9 +205,9 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         result shouldBe expectedResult
       }
       "input sequence is empty" in {
-        val result = service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty).value
+        val result = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
 
-        result shouldBe None
+        result shouldBe Json.obj()
       }
     }
   }
