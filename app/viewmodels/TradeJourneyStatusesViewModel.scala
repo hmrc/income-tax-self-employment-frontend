@@ -24,6 +24,8 @@ import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
+import models.journeys.expenses.individualCategories.WorkFromBusinessPremises.No
+import models.journeys.expenses.individualCategories.WorkFromHome.Yes
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
@@ -87,6 +89,18 @@ object TradeJourneyStatusesViewModel {
     val expensesRepairsAndMaintenanceRow =
       buildRowForDependentAnswered(ExpensesRepairsAndMaintenance, isExpensesTailoringIsAnswered && hasRepairsAndMaintenance)
 
+    val hasWorkplaceRunningCosts =
+      conditionPassedForViewableLink(WorkFromHomePage, Seq(Yes)) ||
+        conditionPassedForViewableLink(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.filterNot(_ == WorkFromBusinessPremises.No))
+    val expensesWorkplaceRunningCostsRow = {
+      val wfhMsg: Option[String] = getAnswer(WorkFromHomePage).collect { case Yes => ".wfh" }
+      buildRowForDependentAnswered(
+        ExpensesWorkplaceRunningCosts,
+        isExpensesTailoringIsAnswered && hasWorkplaceRunningCosts,
+        userAnswers,
+        optExtraMsg = wfhMsg)
+    }
+
     val hasAdvertisingOrMarketing =
       conditionPassedForViewableLink(AdvertisingOrMarketingPage, AdvertisingOrMarketing.values.filterNot(_ == AdvertisingOrMarketing.No))
     val expensesAdvertisingOrMarketingRow =
@@ -137,6 +151,7 @@ object TradeJourneyStatusesViewModel {
       expensesOfficeSuppliesRow,
       expensesGoodsToSellOrUseRow,
       expensesRepairsAndMaintenanceRow,
+      expensesWorkplaceRunningCostsRow,
       expensesAdvertisingOrMarketingRow,
       expensesEntertainmentRow,
       expensesStaffCostsRow,
@@ -150,29 +165,40 @@ object TradeJourneyStatusesViewModel {
     ).flatten
   }
 
-  def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
+  private def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
     getJourneyStatus(dependentJourney)(tradesJourneyStatuses) match {
       case Completed | InProgress                        => true
       case CheckOurRecords | CannotStartYet | NotStarted => false
     }
 
-  private def buildRowForDependentAnswered(journey: Journey, conditionPassedForViewableLink: Boolean)(implicit
+  private def buildRowForDependentAnswered(journey: Journey,
+                                           conditionPassedForViewableLink: Boolean,
+                                           userAnswers: Option[UserAnswers] = None,
+                                           optExtraMsg: Option[String] = None)(implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] =
-    buildRow(journey, conditionPassedForViewableLink, dependentJourneyIsFinishedForClickableLink = true)
+    buildRow(journey, conditionPassedForViewableLink, dependentJourneyIsFinishedForClickableLink = true, userAnswers, optExtraMsg)
 
-  private def buildRow(journey: Journey, conditionPassedForViewableLink: Boolean, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
+  private def buildRow(journey: Journey,
+                       conditionPassedForViewableLink: Boolean,
+                       dependentJourneyIsFinishedForClickableLink: Boolean,
+                       userAnswers: Option[UserAnswers] = None,
+                       optExtraMsg: Option[String] = None)(implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] =
     if (conditionPassedForViewableLink) {
+      val extraMsg: String      = optExtraMsg.getOrElse("")
       val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
-      val keyString             = messages(s"journeys.$journey")
+      val keyString             = messages(s"journeys.$journey$extraMsg")
       val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
-      val href                  = getUrl(journey, status, businessId, taxYear)
+      val href = journey match {
+        case ExpensesWorkplaceRunningCosts => getWorkplaceRunningCostsUrl(status, userAnswers, taxYear)
+        case _                             => getUrl(journey, status, businessId, taxYear)
+      }
 
       buildSummaryRow(href, optDeadlinkStyle, keyString, status).some
     } else {
@@ -313,8 +339,32 @@ object TradeJourneyStatusesViewModel {
           expenses.otherExpenses.routes.OtherExpensesAmountController.onPageLoad(taxYear, businessId, NormalMode).url,
           expenses.otherExpenses.routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId).url
         )
-      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | CapitalAllowancesTailoring |  ExpensesWorkplaceRunningCosts=>
+      case ExpensesTotal | NationalInsurance | TradeDetails | ExpensesAdvertisingOrMarketing | CapitalAllowancesTailoring |
+          ExpensesWorkplaceRunningCosts =>
         ??? // TODO Other Journeys not yet implemented
+    }
+  }
+
+  private def getWorkplaceRunningCostsUrl(journeyStatus: JourneyStatus, userAnswers: Option[UserAnswers], taxYear: TaxYear)(implicit
+      businessId: BusinessId,
+      wfhReads: Reads[WorkFromHome],
+      wfbpReads: Reads[WorkFromBusinessPremises]): String = {
+    val wfhTailoring: Option[WorkFromHome] = getAnswer[WorkFromHome](WorkFromHomePage)(businessId, userAnswers, wfhReads)
+    val wfbpTailoring: Option[WorkFromBusinessPremises] =
+      getAnswer[WorkFromBusinessPremises](WorkFromBusinessPremisesPage)(businessId, userAnswers, wfbpReads)
+    val cyaUrl = // TODO 6997 replace with CYA page
+      expenses.workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController
+        .onPageLoad(taxYear, businessId, NormalMode)
+        .url
+    val wfhUrl = expenses.workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode).url
+    val wfbpUrl = expenses.workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController
+      .onPageLoad(taxYear, businessId, NormalMode)
+      .url
+    journeyStatus match {
+      case Completed | InProgress                                         => cyaUrl
+      case NotStarted | CheckOurRecords if wfhTailoring contains Yes      => wfhUrl
+      case NotStarted | CheckOurRecords if wfbpTailoring exists (_ != No) => wfbpUrl
+      case _                                                              => "#"
     }
   }
 

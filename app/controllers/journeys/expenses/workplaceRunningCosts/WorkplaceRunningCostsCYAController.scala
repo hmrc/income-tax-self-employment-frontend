@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{BusinessPremisesAmountSummary, LiveAtBusinessPremisesSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{BusinessPremisesAmountSummary, BusinessPremisesDisallowableAmountSummary, LiveAtBusinessPremisesSummary, LivingAtBusinessPremisesOnePersonSummary, LivingAtBusinessPremisesThreePlusPeopleSummary, LivingAtBusinessPremisesTwoPeopleSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfbpFlatRateOrActualCostsSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -62,6 +62,11 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
           WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
           LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
           BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          BusinessPremisesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesOnePersonSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesTwoPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesThreePlusPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfbpFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user),
           WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user)
         )
       )
