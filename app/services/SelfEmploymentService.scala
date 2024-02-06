@@ -23,8 +23,8 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError.NotFoundError
-import pages.QuestionPage
 import pages.income.TurnoverIncomeAmountPage
+import pages.{QuestionPage, TradeAccountingType}
 import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
@@ -33,7 +33,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -71,8 +71,10 @@ class SelfEmploymentServiceImpl @Inject() (
 
   def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType] =
     getBusiness(nino, businessId, mtditid).map(business => business.accountingType).subflatMap {
-      case Some(accountingType) => AccountingType.withName(accountingType).asRight
-      case None                 => NotFoundError(s"Unable to find accounting type of business with ID: $businessId").asLeft
+      case Some("ACCRUAL")     => AccountingType.Accrual.asRight
+      case Some("CASH")        => AccountingType.Cash.asRight
+      case Some(invalidString) => NotFoundError(s"Accounting type of business with ID: $businessId has invalid value: $invalidString").asLeft
+      case None                => NotFoundError(s"Unable to find accounting type of business with ID: $businessId").asLeft
     }
 
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
@@ -118,5 +120,30 @@ object SelfEmploymentService {
       }
 
     removePageData(userAnswers, pages)
+  }
+
+  @tailrec
+  @nowarn("msg=match may not be exhaustive")
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Try[UserAnswers] = {
+    println("---- new pass")
+    println("---- pairedIdsAndAccounting" + pairedIdsAndAccounting)
+    pairedIdsAndAccounting match {
+      case Nil =>
+        Try(userAnswers)
+      case (accountingType: AccountingType, businessId: BusinessId) :: tail =>
+        println("---- accountingType" + accountingType)
+        println("---- businessId" + businessId)
+        println("---- userAnswers" + userAnswers)
+        userAnswers.set(TradeAccountingType, accountingType, Some(businessId)) match {
+          case Success(updatedUserAnswers) =>
+            println("---- in Success")
+            println("---- TradeAccountingType" + TradeAccountingType)
+            println("---- updatedUserAnswers" + updatedUserAnswers)
+            setAccountingTypeForIds(updatedUserAnswers, tail)
+          case Failure(exception) =>
+            println("---- in Failure")
+            Failure(exception)
+        }
+    }
   }
 }

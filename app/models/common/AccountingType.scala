@@ -17,14 +17,31 @@
 package models.common
 
 import enumeratum._
+import play.api.mvc.PathBindable
 
 sealed trait AccountingType extends EnumEntry {
   override def entryName: String = toString.toUpperCase
 }
 
-object AccountingType extends Enum[AccountingType] {
-  val values = findValues
+object AccountingType extends Enumerable.Implicits {
+  val values: Seq[AccountingType] = Seq(Accrual, Cash)
 
-  case object Accrual extends AccountingType
-  case object Cash    extends AccountingType
+  case object Accrual extends WithName("ACCRUAL") with AccountingType
+  case object Cash    extends WithName("CASH") with AccountingType
+
+  implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[AccountingType] = new PathBindable[AccountingType] {
+
+    override def bind(key: String, value: String): Either[String, AccountingType] =
+      values.find(_.toString.equalsIgnoreCase(value)).toRight(s"Invalid accounting type with key $key and value $value")
+
+    override def unbind(key: String, accountingType: AccountingType): String =
+      strBinder.unbind(key, accountingType.entryName)
+  }
+
+//  implicit val reads: Reads[AccountingType]    = Json.reads[AccountingType]
+//  implicit val writes: Writes[AccountingType]  = (value: AccountingType) => Json.toJson(value.entryName)
+//  implicit val format: OFormat[AccountingType] = Json.format[AccountingType]
+
+  implicit val enumerable: Enumerable[AccountingType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }
