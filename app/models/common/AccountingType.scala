@@ -38,10 +38,6 @@ object AccountingType extends Enumerable.Implicits {
       strBinder.unbind(key, accountingType.entryName)
   }
 
-//  implicit val reads: Reads[AccountingType]    = Json.reads[AccountingType]
-//  implicit val writes: Writes[AccountingType]  = (value: AccountingType) => Json.toJson(value.entryName)
-//  implicit val format: OFormat[AccountingType] = Json.format[AccountingType]
-
   implicit val enumerable: Enumerable[AccountingType] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

@@ -45,6 +45,7 @@ trait SelfEmploymentService {
   def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -90,6 +91,17 @@ class SelfEmploymentServiceImpl @Inject() (
     val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
     connector.submitAnswers(context, journeyAnswers)
   }
+
+  @nowarn("msg=match may not be exhaustive")
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
+    pairedIdsAndAccounting match {
+      case Nil =>
+        Future(userAnswers)
+      case (accountingType: AccountingType, businessId: BusinessId) :: tail =>
+        persistAnswer(businessId, userAnswers, accountingType, TradeAccountingType) flatMap { updatedUserAnswers: UserAnswers =>
+          setAccountingTypeForIds(updatedUserAnswers, tail)
+        }
+    }
 }
 
 object SelfEmploymentService {
@@ -122,28 +134,4 @@ object SelfEmploymentService {
     removePageData(userAnswers, pages)
   }
 
-  @tailrec
-  @nowarn("msg=match may not be exhaustive")
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Try[UserAnswers] = {
-    println("---- new pass")
-    println("---- pairedIdsAndAccounting" + pairedIdsAndAccounting)
-    pairedIdsAndAccounting match {
-      case Nil =>
-        Try(userAnswers)
-      case (accountingType: AccountingType, businessId: BusinessId) :: tail =>
-        println("---- accountingType" + accountingType)
-        println("---- businessId" + businessId)
-        println("---- userAnswers" + userAnswers)
-        userAnswers.set(TradeAccountingType, accountingType, Some(businessId)) match {
-          case Success(updatedUserAnswers) =>
-            println("---- in Success")
-            println("---- TradeAccountingType" + TradeAccountingType)
-            println("---- updatedUserAnswers" + updatedUserAnswers)
-            setAccountingTypeForIds(updatedUserAnswers, tail)
-          case Failure(exception) =>
-            println("---- in Failure")
-            Failure(exception)
-        }
-    }
-  }
 }

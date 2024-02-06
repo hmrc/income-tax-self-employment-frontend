@@ -25,7 +25,7 @@ import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
 import pages.QuestionPage
-import play.api.libs.json.{Format, JsObject, Writes}
+import play.api.libs.json.{Format, JsObject, Json, Writes}
 import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -38,7 +38,8 @@ case class SelfEmploymentServiceStub(
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
     getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
     getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
-    setJourneyStatusResult: Either[ServiceError, Unit] = Right(())
+    setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
+    getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL")))
 ) extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -61,5 +62,8 @@ case class SelfEmploymentServiceStub(
 
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](setJourneyStatusResult)
+
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
+    Future(getUserAnswersWithAccrual)
 
 }
