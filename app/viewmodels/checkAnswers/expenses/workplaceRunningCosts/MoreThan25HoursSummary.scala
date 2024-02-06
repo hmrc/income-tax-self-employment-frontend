@@ -34,7 +34,8 @@ object MoreThan25HoursSummary {
         formatAnswer(answer.toString),
         workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
         s"moreThan25Hours.title.$userType",
-        "moreThan25Hours.change.hidden"
+        "moreThan25Hours.change.hidden",
+        rightTextAlign = true
       )
     }
 

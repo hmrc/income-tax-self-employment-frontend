@@ -35,7 +35,8 @@ object LiveAtBusinessPremisesSummary {
         answer.toString,
         routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode),
         s"liveAtBusinessPremises.title.$userType",
-        "liveAtBusinessPremises.change.hidden"
+        "liveAtBusinessPremises.change.hidden",
+        rightTextAlign = true
       )
     }
 
