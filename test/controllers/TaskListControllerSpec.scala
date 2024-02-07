@@ -24,8 +24,8 @@ import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.common.JourneyStatus
-import models.errors.{HttpError, HttpErrorBody}
 import models.errors.ServiceError.ConnectorResponseError
+import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
@@ -53,7 +53,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         ))
 
       val selfEmploymentList =
-        aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswers))(messages(application)))
+        aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswersAccrual))(messages(application)))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value

@@ -146,7 +146,7 @@ object TradeJourneyStatusesViewModelSpec {
 
   def buildAnswers(setOps: List[UserAnswers => Try[UserAnswers]]): UserAnswers =
     setOps
-      .foldRight(Try(SpecBase.emptyUserAnswers)) { (setAnswer, currentAnswers) =>
+      .foldRight(Try(SpecBase.emptyUserAnswersAccrual)) { (setAnswer, currentAnswers) =>
         setAnswer(currentAnswers.success.value)
       }
       .success
