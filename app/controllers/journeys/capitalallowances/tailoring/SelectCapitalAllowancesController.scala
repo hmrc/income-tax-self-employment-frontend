@@ -18,14 +18,14 @@ package controllers.journeys.capitalallowances.tailoring
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.capitalallowances.tailoring.SelectCapitalAllowancesFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -48,35 +48,27 @@ class SelectCapitalAllowancesController @Inject() (override val messagesApi: Mes
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        form = request.userAnswers
-          .get(SelectCapitalAllowancesPage, businessId.some)
-          .fold(formProvider())(formProvider().fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))
+      val form = request.userAnswers
+        .get(SelectCapitalAllowancesPage, businessId.some)
+        .fold(formProvider())(formProvider().fill)
 
+      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider()
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType))),
-            value =>
-              service
-                .persistAnswer(businessId, request.userAnswers, value, SelectCapitalAllowancesPage)
-                .map(updatedAnswers => Redirect(navigator.nextPage(SelectCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
-          )
-
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- handleForm(accountingType)
-      } yield result
-
+      formProvider()
+        .bindFromRequest()
+        .fold(
+          formErrors =>
+            Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+          value =>
+            service
+              .persistAnswer(businessId, request.userAnswers, value, SelectCapitalAllowancesPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(SelectCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
+        )
   }
 
 }
