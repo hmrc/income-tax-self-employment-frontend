@@ -139,9 +139,8 @@ class WorkplaceRunningCostsNavigator @Inject() {
               case Some(WfbpFlatRateOrActualCosts.ActualCosts) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpClaimingAmountController
                   .onPageLoad(taxYear, businessId, NormalMode)
-              case Some(WfbpFlatRateOrActualCosts.FlatRate) => // TODO 6997 replace with CYA page
-                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
-                  .onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WfbpFlatRateOrActualCosts.FlatRate) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -155,7 +154,78 @@ class WorkplaceRunningCostsNavigator @Inject() {
   }
 
   private val checkRouteMap: Page => UserAnswers => TaxYear => BusinessId => Call = {
-    // TODO 6997 add check mode navigation for CYA page as default
+    case MoreThan25HoursPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
+              case Some(MoreThan25Hours.Yes) =>
+                workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, CheckMode)
+            case Some(MoreThan25Hours.No) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case WorkingFromHomeHoursPage =>
+      _ =>
+      taxYear =>
+        businessId =>
+          workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case WfhFlatRateOrActualCostsPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
+              case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+              case Some(WfhFlatRateOrActualCosts.FlatRate) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case WfhClaimingAmountPage =>
+        _ =>
+          taxYear =>
+          businessId =>
+            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case LiveAtBusinessPremisesPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)) match {
+              case Some(LiveAtBusinessPremises.Yes) =>
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, CheckMode)
+              case Some(LiveAtBusinessPremises.No) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case BusinessPremisesDisallowableAmountPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case BusinessPremisesAmountPage =>
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case PeopleLivingAtBusinessPremisesPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case WfbpFlatRateOrActualCostsPage =>
+    _ =>
+    taxYear =>
+      businessId =>
+        workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
+    case WfbpClaimingAmountPage =>
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
 
   }

@@ -33,8 +33,8 @@ object BusinessPremisesDisallowableAmountSummary {
       buildRowBigDecimal(
         answer,
         routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
-        s"businessPremisesDisallowableAmount.title.amount.$userType",
-        "businessPremisesDisallowableAmount.title.amount.hidden"
+        s"businessPremisesDisallowableAmount.title.$userType",
+        "businessPremisesDisallowableAmount.title.hidden"
       )
     }
 
