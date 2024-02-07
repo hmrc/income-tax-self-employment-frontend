@@ -34,7 +34,7 @@ object WfhFlatRateOrActualCostsSummary {
       buildRowString(
         answer.toString,
         routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-        messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", answer), // TODO change to flat rate view model
+        messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", answer), // TODO change to flatRateViewModel.flatRate
         "wfhFlatRateOrActualCosts.change.hidden",
         rightTextAlign = true
       )

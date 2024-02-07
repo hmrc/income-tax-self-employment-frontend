@@ -23,15 +23,15 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class MoreThan25HoursSummarySpec extends SummaryBaseSpec("MoreThan25HoursSummary") {
+class WfhFlatRateOrActualCostsSummarySpec extends SummaryBaseSpec("WfhFlatRateOrActualCostsSummary") {
 
-  override val validData: JsObject   = Json.obj("moreThan25Hours" -> "yes")
+  override val validData: JsObject   = Json.obj("wfhFlatRateOrActualCosts" -> "flatRate")
   override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"moreThan25Hours.title.$userType")
-  override val testValue: HtmlContent    = HtmlContent("site.yes")
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfhFlatRateOrActualCosts.subHeading.$userType")
+  override val testValue: HtmlContent    = HtmlContent("flatRate")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    MoreThan25HoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }
