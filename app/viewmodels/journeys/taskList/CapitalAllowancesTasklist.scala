@@ -16,33 +16,39 @@
 
 package viewmodels.journeys.taskList
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances
 import models.NormalMode
+import models.common.AccountingType.Cash
 import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
+import models.database.UserAnswers
 import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring}
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
-import viewmodels.journeys.{determineUrl, getJourneyStatusOrCannotStartYet, returnRowIfConditionPassed}
+import viewmodels.journeys.{checkIfCannotStartYet, determineJourneyStartOrCyaUrl}
 
 object CapitalAllowancesTasklist {
 
   def buildCapitalAllowances(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, businessId: BusinessId)(implicit
-      messages: Messages): List[SummaryListRow] = {
+      messages: Messages,
+      userAnswers: Option[UserAnswers]): List[SummaryListRow] = {
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
-    val tailoringStatus   = getJourneyStatusOrCannotStartYet(CapitalAllowancesTailoring)(tradesJourneyStatuses)
+    val tailoringStatus   = checkIfCannotStartYet(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
     val tailoringHref     = getCapitalAllowanceUrl(tailoringStatus, businessId, taxYear)
-    val tailoringRow = returnRowIfConditionPassed(
-      buildSummaryRow(tailoringHref, messages(s"journeys.$CapitalAllowancesTailoring"), tailoringStatus),
-      conditionIsPassed = abroadIsCompleted)
+    val isCashHeading: String = userAnswers.flatMap(_.getAccountingType(businessId)) match {
+      case Some(Cash) => s".$Cash"
+      case _          => ""
+    }
+    val tailoringRow = buildSummaryRow(tailoringHref, messages(s"journeys.$CapitalAllowancesTailoring$isCashHeading"), tailoringStatus).some
 
     List(tailoringRow).flatten
   }
 
   private def getCapitalAllowanceUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url,
       capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)

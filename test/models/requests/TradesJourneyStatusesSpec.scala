@@ -17,16 +17,18 @@
 package models.requests
 
 import base.SpecBase._
+import cats.implicits._
+import models.common.AccountingType.Accrual
 import models.common.JourneyStatus
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.wordspec.AnyWordSpecLike
-import cats.implicits._
 
 class TradesJourneyStatusesSpec extends AnyWordSpecLike {
 
   val statuses = TradesJourneyStatuses(
     businessId,
     tradingName.some,
+    Accrual,
     List(
       JourneyNameAndStatus(Journey.ExpensesConstruction, JourneyStatus.Completed)
     ))

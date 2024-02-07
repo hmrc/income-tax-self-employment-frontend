@@ -30,7 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.taskList.CapitalAllowancesTasklist.buildCapitalAllowances
 import viewmodels.journeys.taskList.ExpensesTasklist.buildExpensesCategories
-import viewmodels.journeys.{SummaryListCYA, determineUrl, getJourneyStatusOrCannotStartYet}
+import viewmodels.journeys.{SummaryListCYA, checkIfCannotStartYet, determineJourneyStartOrCyaUrl}
 
 case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
@@ -61,21 +61,20 @@ object TradeJourneyStatusesViewModel {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatusOrCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
-    val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
     val href = journey match {
       case Abroad => getAbroadUrl(status, businessId, taxYear)
       case Income => getIncomeUrl(status, businessId, taxYear)
       case _      => "#"
     }
 
-    buildSummaryRow(href, keyString, status, optDeadlinkStyle)
+    buildSummaryRow(href, keyString, status)
   }
 
-  private[viewmodels] def buildSummaryRow(href: String, keyString: String, status: JourneyStatus, optDeadlinkStyle: String = "")(implicit
-      messages: Messages) = {
-    val statusString = messages(s"status.${status.entryName}")
+  private[viewmodels] def buildSummaryRow(href: String, keyString: String, status: JourneyStatus)(implicit messages: Messages) = {
+    val statusString     = messages(s"status.${status.entryName}")
+    val optDeadlinkStyle = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
     SummaryListRowViewModel(
       key = KeyViewModel(
         HtmlContent(s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
@@ -89,12 +88,12 @@ object TradeJourneyStatusesViewModel {
   }
 
   private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
       abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineUrl(
+    determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
