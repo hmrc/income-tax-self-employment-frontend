@@ -164,14 +164,17 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
 
         "the page is BusinessPremisesAmountPage" - {
           "the BusinessPremises tailoring answer is 'YesDisallowable" - {
-            "navigate to the DisallowableBusinessPremisesAmountController" ignore { // TODO 6949 finish test
+            "navigate to the BusinessPremisesDisallowableAmountController" in {
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesDisallowableAmountController
+                  .onPageLoad(taxYear, businessId, mode)
 
               navigator.nextPage(
                 BusinessPremisesAmountPage,
                 mode,
                 userAnswersBPDisallowable(emptyUserAnswers),
                 taxYear,
-                businessId) shouldBe liveAtBPResult(mode)
+                businessId) shouldBe expectedResult
             }
           }
           "the BusinessPremises tailoring answer is 'YesAllowable'" - {
@@ -201,7 +204,34 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
           }
         }
 
-        // TODO 6949 add tests for Disallowable amount page
+        "the page is BusinessPremisesDisallowableAmountPage" - {
+          "the LiveAtBusinessPremises answer is 'Yes" - {
+            "navigate to the WfbpFlatRateOrActualCostsController" in {
+              val userAnswers = emptyUserAnswers.set(LiveAtBusinessPremisesPage, LiveAtBusinessPremises.Yes, Some(businessId)).success.value
+              val expectedResult =
+                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                  .onPageLoad(taxYear, businessId, mode)
+
+              navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          "the LiveAtBusinessPremises answer is 'No" - {
+            "navigate to the CYA page" in {
+              val userAnswers = emptyUserAnswers.set(LiveAtBusinessPremisesPage, LiveAtBusinessPremises.No, Some(businessId)).success.value
+              val expectedResult = // TODO 6997 replace with CYA page
+                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController
+                  .onPageLoad(taxYear, businessId, mode)
+
+              navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+            }
+          }
+          "there isn't relevant data" - {
+            "navigate to the JourneyRecoveryController" in {
+
+              navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe errorResult
+            }
+          }
+        }
 
         "the page is PeopleLivingAtBusinessPremisesPage" - {
           "navigate to the WfbpFlatRateOrActualCostsController" in {
