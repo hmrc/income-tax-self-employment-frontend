@@ -18,7 +18,7 @@ package viewmodels.journeys.taskList
 
 import controllers.journeys.expenses
 import models.NormalMode
-import models.common.JourneyStatus.{CannotStartYet, CheckOurRecords, Completed, InProgress, NotStarted}
+import models.common.JourneyStatus.{CheckOurRecords, Completed, InProgress, NotStarted}
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
@@ -159,9 +159,8 @@ object ExpensesTasklist {
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
     val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
-    val optDeadlinkStyle      = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
     val href                  = getExpensesUrl(journey, status, businessId, taxYear)
-    val row                   = buildSummaryRow(href, keyString, status, optDeadlinkStyle)
+    val row                   = buildSummaryRow(href, keyString, status)
     returnRowIfConditionPassed(row, conditionPassedForViewableLink)
   }
 
