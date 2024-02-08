@@ -31,6 +31,7 @@ import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
@@ -48,6 +49,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
   val mockSessionRepository                    = mock[SessionRepository]
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
+  when(mockSessionRepository.set(any)) thenReturn Future.successful(true)
 
   val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, mockSessionRepository)
 
@@ -184,6 +186,29 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       val result = clearDataFromUserAnswers(emptyUserAnswers, fullPageList, None)
 
       result.success.value.data shouldBe Json.obj()
+    }
+  }
+
+  "setAccountingTypeForIds" - {
+    "should set the AccountingType of each supplied BusinessId to the UserAnswers, returning the updated UserAnswers when" - {
+      "supplied a valid sequence of BusinessIds and AccountingTypes" in {
+        val testList = Seq(
+          (AccountingType.Accrual, BusinessId("testId1")),
+          (AccountingType.Cash, BusinessId("testId2")),
+          (AccountingType.Accrual, BusinessId("testId3")))
+        val result = await(service.setAccountingTypeForIds(emptyUserAnswers, testList)).data
+        val expectedResult = Json.obj(
+          "testId1" -> Json.obj("accountingType" -> "ACCRUAL"),
+          "testId2" -> Json.obj("accountingType" -> "CASH"),
+          "testId3" -> Json.obj("accountingType" -> "ACCRUAL"))
+
+        result shouldBe expectedResult
+      }
+      "input sequence is empty" in {
+        val result = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
+
+        result shouldBe Json.obj()
+      }
     }
   }
 

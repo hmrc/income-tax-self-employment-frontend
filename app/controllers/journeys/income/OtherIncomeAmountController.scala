@@ -17,14 +17,14 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.income.OtherIncomeAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -58,22 +58,17 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-            value =>
-              service
-                .persistAnswer(businessId, request.userAnswers, value, OtherIncomeAmountPage)
-                .map(updatedAnswers =>
-                  Redirect(navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(accountingType))))
-          )
-
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- handleForm(accountingType)
-      } yield result
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          value =>
+            service
+              .persistAnswer(businessId, request.userAnswers, value, OtherIncomeAmountPage)
+              .map(updatedAnswers =>
+                Redirect(
+                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(returnAccountingType(businessId)))))
+        )
   }
 
 }
