@@ -17,7 +17,6 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import cats.data.EitherT
 import controllers.journeys.income
 import controllers.standard
 import forms.income.AnyOtherIncomeFormProvider
@@ -129,7 +128,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
           val userAnswer = true
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(emptyUserAnswersAccrual))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
                 bind[SelfEmploymentService].toInstance(mockService)
@@ -137,7 +136,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
@@ -154,7 +152,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
           val userAnswer = true
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(emptyUserAnswersCash))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(otherIncomeAmountCall)),
                 bind[SelfEmploymentService].toInstance(mockService)
@@ -162,7 +160,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
             mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns Future.successful(emptyUserAnswers)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
@@ -177,13 +174,11 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
       }
 
       "when a user answer 'No' is submitted, must redirect to" - {
-        val userAnswer  = false
-        val userAnswers = UserAnswers(userAnswersId)
+        val userAnswer = false
 
         "the Turnover Not Taxable page when journey is ACCRUAL accounting type" in {
 
-          val accountingType = AccountingType.Accrual
-
+          val userAnswers = emptyUserAnswersAccrual
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
@@ -193,7 +188,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(accountingType)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -206,6 +200,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
         }
         "the Trading Allowance page when journey is CASH accounting type" in {
 
+          val userAnswers = emptyUserAnswersCash
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
@@ -215,7 +210,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -230,7 +224,7 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
         "the CYA page when in CheckMode and income model is now completed" in {
 
           val application =
-            applicationBuilder(userAnswers = Some(userAnswers))
+            applicationBuilder(userAnswers = Some(emptyUserAnswersCash))
               .overrides(
                 bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(incomeCyaCall)),
                 bind[SelfEmploymentService].toInstance(mockService),
@@ -239,7 +233,6 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
               .build()
 
           running(application) {
-            mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Cash)
 
             val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, CheckMode).url)
               .withFormUrlEncodedBody(("value", userAnswer.toString))
@@ -257,12 +250,11 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
         s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswersAccrual), userType = userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
 
               val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", ""))
@@ -282,12 +274,11 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
           }
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswersAccrual), userType = userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
 
               val request = FakeRequest(POST, income.routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", "non-Boolean"))

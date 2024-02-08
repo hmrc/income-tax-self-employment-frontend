@@ -40,7 +40,7 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: Str
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  def baseAnswers: UserAnswers = emptyUserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswersAccrual
   def filledUserAnswers: UserAnswers
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadCall.url)

@@ -18,10 +18,10 @@ package controllers.journeys.income
 
 import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import models.journeys.income.TradingAllowance
 import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
 import navigation.IncomeNavigator
@@ -51,26 +51,17 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        form = request.userAnswers
-          .get(TradingAllowancePage, Some(businessId))
-          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, accountingType))
+      val form = request.userAnswers
+        .get(TradingAllowancePage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+
+      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, accountingType))),
-            value => handleSuccess(value)
-          )
-
       def handleSuccess(value: TradingAllowance): Future[Result] = {
         val adjustedAnswers = value match {
           case DeclareExpenses =>
@@ -86,10 +77,13 @@ class TradingAllowanceController @Inject() (override val messagesApi: MessagesAp
         } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
       }
 
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- handleForm(accountingType)
-      } yield result
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors =>
+            Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+          value => handleSuccess(value)
+        )
 
   }
 

@@ -38,7 +38,7 @@ object CapitalAllowancesTasklist {
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
     val tailoringStatus   = checkIfCannotStartYet(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
     val tailoringHref     = getCapitalAllowanceUrl(tailoringStatus, businessId, taxYear)
-    val isCashHeading: String = userAnswers.flatMap(_.getAccountingType(businessId)) match {
+    val isCashHeading: String = userAnswers.map(_.getAccountingType(businessId)) match {
       case Some(Cash) => s".$Cash"
       case _          => ""
     }
