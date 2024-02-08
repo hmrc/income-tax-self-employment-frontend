@@ -56,6 +56,7 @@ journeys.expenses-depreciation = Depreciation costs
 journeys.expenses-other-expenses = Other Expenses
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
+journeys.capital-allowances-zero-emission-cars = Zero-emission cars
 
 date.day = Day
 date.month = Month
@@ -1270,6 +1271,3 @@ zecUsedForWork.hint.individual = This includes cars bought through a hire purcha
 zecUsedForWork.hint.agent = This includes cars bought through a hire purchase scheme. Your client cannot claim for cars that are on lease.
 zecUsedForWork.error.required.individual = Select yes if you bought any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
 zecUsedForWork.error.required.agent = Select yes if your client bought any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
-
-zeroEmissionCarsCYA.title.individual = Check your answers
-zeroEmissionCarsCYA.title.agent = Check your client’s answers

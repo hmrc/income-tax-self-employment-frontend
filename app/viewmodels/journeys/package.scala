@@ -28,12 +28,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 package object journeys {
 
   def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
-    checkIfCannotStartYet(dependentJourney)(tradesJourneyStatuses) match {
+    getStatusAndCheckIfCannotStartYet(dependentJourney)(tradesJourneyStatuses) match {
       case Completed | InProgress                        => true
       case CheckOurRecords | CannotStartYet | NotStarted => false
     }
 
-  def checkIfCannotStartYet(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
+  def getStatusAndCheckIfCannotStartYet(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
     JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
       case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
@@ -54,4 +54,15 @@ package object journeys {
   def returnRowIfConditionPassed(row: SummaryListRow, conditionIsPassed: Boolean): Option[SummaryListRow] =
     if (conditionIsPassed) Some(row) else None
 
+  def conditionPassedForViewableLink[A](page: OneQuestionPage[A], acceptableAnswers: Seq[A])(implicit
+      businessId: BusinessId,
+      userAnswers: Option[UserAnswers],
+      readsA: Reads[A]): Boolean =
+    getPageAnswer(page).fold(false)(acceptableAnswers.contains(_))
+
+  def conditionPassedForViewableLink[A](page: OneQuestionPage[Set[A]], requiredAnswer: A)(implicit
+      businessId: BusinessId,
+      userAnswers: Option[UserAnswers],
+      readsA: Reads[A]): Boolean =
+    getPageAnswer(page).fold(false)(_.contains(requiredAnswer))
 }

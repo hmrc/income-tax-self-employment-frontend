@@ -30,7 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.taskList.CapitalAllowancesTasklist.buildCapitalAllowances
 import viewmodels.journeys.taskList.ExpensesTasklist.buildExpensesCategories
-import viewmodels.journeys.{SummaryListCYA, checkIfCannotStartYet, determineJourneyStartOrCyaUrl}
+import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getStatusAndCheckIfCannotStartYet}
 
 case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
 
@@ -51,7 +51,7 @@ object TradeJourneyStatusesViewModel {
     val rows: List[SummaryListRow] =
       List(abroadRow, incomeRow) ++
         buildExpensesCategories ++
-        buildCapitalAllowances(tradesJourneyStatuses, taxYear, businessId)
+        buildCapitalAllowances(tradesJourneyStatuses, taxYear)
 
     SummaryListCYA.summaryList(rows)
   }
@@ -61,7 +61,7 @@ object TradeJourneyStatusesViewModel {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getStatusAndCheckIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
       case Abroad => getAbroadUrl(status, businessId, taxYear)

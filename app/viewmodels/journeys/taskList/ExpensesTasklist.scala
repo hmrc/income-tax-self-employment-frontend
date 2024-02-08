@@ -22,29 +22,11 @@ import models.common.JourneyStatus.{CheckOurRecords, Completed, InProgress, NotS
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
-import models.journeys.Journey.{
-  ExpensesAdvertisingOrMarketing,
-  ExpensesConstruction,
-  ExpensesDepreciation,
-  ExpensesEntertainment,
-  ExpensesFinancialCharges,
-  ExpensesGoodsToSellOrUse,
-  ExpensesInterest,
-  ExpensesIrrecoverableDebts,
-  ExpensesOfficeSupplies,
-  ExpensesOtherExpenses,
-  ExpensesProfessionalFees,
-  ExpensesRepairsAndMaintenance,
-  ExpensesStaffCosts,
-  ExpensesTailoring,
-  ExpensesWorkplaceRunningCosts,
-  Income
-}
+import models.journeys.Journey._
 import models.journeys.expenses.individualCategories.WorkFromHome.Yes
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
-import pages.OneQuestionPage
 import pages.expenses.tailoring.individualCategories._
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
@@ -157,7 +139,7 @@ object ExpensesTasklist {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
-    val status: JourneyStatus = checkIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getStatusAndCheckIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val href                  = getExpensesUrl(journey, status, businessId, taxYear)
     val row                   = buildSummaryRow(href, keyString, status)
@@ -173,7 +155,7 @@ object ExpensesTasklist {
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
     val optWfh    = optWfhMsg.getOrElse("")
-    val status    = checkIfCannotStartYet(journey)
+    val status    = getStatusAndCheckIfCannotStartYet(journey)
     val keyString = messages(s"journeys.$journey$optWfh")
     val href      = getWorkplaceRunningCostsUrl(status, userAnswers, taxYear)
     val row       = buildSummaryRow(href, keyString, status)
@@ -291,16 +273,4 @@ object ExpensesTasklist {
       case _                                                                                       => "#"
     }
   }
-
-  private def conditionPassedForViewableLink[A](page: OneQuestionPage[A], acceptableAnswers: Seq[A])(implicit
-      businessId: BusinessId,
-      userAnswers: Option[UserAnswers],
-      readsA: Reads[A]): Boolean =
-    getPageAnswer(page).fold(false)(acceptableAnswers.contains(_))
-
-  private def conditionPassedForViewableLink[A](page: OneQuestionPage[Set[A]], requiredAnswer: A)(implicit
-      businessId: BusinessId,
-      userAnswers: Option[UserAnswers],
-      readsA: Reads[A]): Boolean =
-    getPageAnswer(page).fold(false)(_.contains(requiredAnswer))
 }
