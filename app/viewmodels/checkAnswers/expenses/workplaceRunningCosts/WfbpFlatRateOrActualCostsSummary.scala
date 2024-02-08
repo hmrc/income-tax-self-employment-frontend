@@ -20,6 +20,7 @@ import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPr
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,18 +28,28 @@ import viewmodels.checkAnswers.buildRowString
 
 object WfbpFlatRateOrActualCostsSummary {
 
-
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                  messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(WfbpFlatRateOrActualCostsPage, Some(businessId)).map { answer =>
-      buildRowString(
-        answer.toString,
-        routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-        messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", answer), // TODO change to flat rate view model
-        "wfbpFlatRateOrActualCosts.change.hidden",
-        rightTextAlign = true
-      )
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, flatRate: String)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(WfbpFlatRateOrActualCostsPage, Some(businessId)) match {
+      case Some(WfbpFlatRateOrActualCosts.FlatRate) =>
+        Some(
+          buildRowString(
+            s"£$flatRate",
+            routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+            messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRate),
+            "wfbpFlatRateOrActualCosts.change.hidden",
+            rightTextAlign = true
+          ))
+      case Some(WfbpFlatRateOrActualCosts.ActualCosts) =>
+        Some(
+          buildRowString(
+            Messages("expenses.actualCosts"),
+            routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+            messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRate),
+            "wfbpFlatRateOrActualCosts.change.hidden",
+            rightTextAlign = true
+          ))
+      case _ => None
     }
-
 
 }

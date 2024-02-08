@@ -27,13 +27,13 @@ import viewmodels.checkAnswers.buildRowBigDecimal
 
 object BusinessPremisesDisallowableAmountSummary {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, allowableAmount: BigDecimal)(implicit
       messages: Messages): Option[SummaryListRow] =
     userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId)).map { answer =>
       buildRowBigDecimal(
         answer,
         routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
-        s"businessPremisesDisallowableAmount.title.$userType",
+        messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
         "businessPremisesDisallowableAmount.title.hidden"
       )
     }

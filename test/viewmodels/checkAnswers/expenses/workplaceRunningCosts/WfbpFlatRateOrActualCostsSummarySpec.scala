@@ -23,17 +23,15 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class WorkingFromHome101PlusHoursSummarySpec extends SummaryBaseSpec("WorkingFromHome101PlusHoursSummary") {
+class WfbpFlatRateOrActualCostsSummarySpec extends SummaryBaseSpec("WfbpFlatRateOrActualCostsSummary") {
 
-  private val amount: Int = 1
+  override val validData: JsObject   = Json.obj("wfbpFlatRateOrActualCosts" -> "flatRate")
+  override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
 
-  override val validData: JsObject   = Json.obj("wfhHours-101Plus" -> amount)
-  override val invalidData: JsObject = Json.obj("otherPage" -> amount)
-
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfh101PlusHours.subHeading.$userType")
-  override val testValue: HtmlContent    = HtmlContent("1")
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfbpFlatRateOrActualCosts.subHeading.$userType")
+  override val testValue: HtmlContent    = HtmlContent("£12")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    WorkingFromHome101PlusHoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    WfbpFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "12")(messages)
 
 }

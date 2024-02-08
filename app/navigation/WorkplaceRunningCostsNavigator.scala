@@ -45,7 +45,7 @@ class WorkplaceRunningCostsNavigator @Inject() {
               case Some(MoreThan25Hours.Yes) =>
                 workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(MoreThan25Hours.No) =>
-                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -62,7 +62,7 @@ class WorkplaceRunningCostsNavigator @Inject() {
             val optFlatRateOrActualCosts = userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId))
             (optWFBP, optFlatRateOrActualCosts) match {
               case (_, Some(WfhFlatRateOrActualCosts.ActualCosts)) =>
-                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId, NormalMode)
               case (
                     Some(WorkFromBusinessPremises.YesAllowable | WorkFromBusinessPremises.YesDisallowable),
                     Some(WfhFlatRateOrActualCosts.FlatRate)) =>
@@ -83,8 +83,8 @@ class WorkplaceRunningCostsNavigator @Inject() {
             userAnswers.get(WorkFromBusinessPremisesPage, Some(businessId)) match {
               case Some(WorkFromBusinessPremises.YesAllowable | WorkFromBusinessPremises.YesDisallowable) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(WorkFromBusinessPremises.No) => // TODO 6997 replace with CYA page
-                workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(WorkFromBusinessPremises.No) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -107,8 +107,8 @@ class WorkplaceRunningCostsNavigator @Inject() {
               case (Some(WorkFromBusinessPremises.YesAllowable), Some(LiveAtBusinessPremises.Yes)) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.PeopleLivingAtBusinessPremisesController
                   .onPageLoad(taxYear, businessId, NormalMode)
-              case (Some(WorkFromBusinessPremises.YesAllowable), Some(LiveAtBusinessPremises.No)) => // TODO 6997 replace with CYA page
-                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController.onPageLoad(taxYear, businessId, NormalMode)
+              case (Some(WorkFromBusinessPremises.YesAllowable), Some(LiveAtBusinessPremises.No)) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -145,10 +145,7 @@ class WorkplaceRunningCostsNavigator @Inject() {
             }
 
     case WfbpClaimingAmountPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -161,16 +158,13 @@ class WorkplaceRunningCostsNavigator @Inject() {
             userAnswers.get(MoreThan25HoursPage, Some(businessId)) match {
               case Some(MoreThan25Hours.Yes) =>
                 workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, CheckMode)
-            case Some(MoreThan25Hours.No) =>
+              case Some(MoreThan25Hours.No) =>
                 workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
-              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case WorkingFromHomeHoursPage =>
-      _ =>
-      taxYear =>
-        businessId =>
-          workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case WfhFlatRateOrActualCostsPage =>
       userAnswers =>
@@ -178,17 +172,18 @@ class WorkplaceRunningCostsNavigator @Inject() {
           businessId =>
             userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
               case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
-                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+                workplaceRunningCosts.workingFromHome.routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId, CheckMode)
               case Some(WfhFlatRateOrActualCosts.FlatRate) =>
                 workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
+    case WfhExpensesInfoPage =>
+      _ =>
+        taxYear => businessId => workplaceRunningCosts.workingFromHome.routes.WfhClaimingAmountController.onPageLoad(taxYear, businessId, CheckMode)
+
     case WfhClaimingAmountPage =>
-        _ =>
-          taxYear =>
-          businessId =>
-            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case LiveAtBusinessPremisesPage =>
       userAnswers =>
@@ -203,25 +198,16 @@ class WorkplaceRunningCostsNavigator @Inject() {
             }
 
     case BusinessPremisesDisallowableAmountPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case BusinessPremisesAmountPage =>
       _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case PeopleLivingAtBusinessPremisesPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case WfbpFlatRateOrActualCostsPage =>
-    _ =>
-    taxYear =>
-      businessId =>
-        workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
     case WfbpClaimingAmountPage =>
       _ => taxYear => businessId => workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)

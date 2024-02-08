@@ -23,17 +23,17 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class WorkingFromHome101PlusHoursSummarySpec extends SummaryBaseSpec("WorkingFromHome101PlusHoursSummary") {
+class LivingAtBusinessPremisesThreePlusPeopleSummarySpec extends SummaryBaseSpec("LivingAtBusinessPremisesThreePlusPeopleSummary") {
 
   private val amount: Int = 1
 
-  override val validData: JsObject   = Json.obj("wfhHours-101Plus" -> amount)
+  override val validData: JsObject   = Json.obj("livingAtBusinessPremises-threePlusPeople" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfh101PlusHours.subHeading.$userType")
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfbpThreePlusPeople.subHeading.$userType")
   override val testValue: HtmlContent    = HtmlContent("1")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    WorkingFromHome101PlusHoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    LivingAtBusinessPremisesThreePlusPeopleSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }

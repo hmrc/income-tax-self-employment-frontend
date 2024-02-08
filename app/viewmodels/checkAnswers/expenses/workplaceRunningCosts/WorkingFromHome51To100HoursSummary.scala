@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.buildRowInt
 object WorkingFromHome51To100HoursSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                  messages: Messages): Option[SummaryListRow] =
+      messages: Messages): Option[SummaryListRow] =
     userAnswers.get(WorkingFromHomeHours51To100, Some(businessId)).map { answer =>
       buildRowInt(
         answer,
@@ -37,6 +37,5 @@ object WorkingFromHome51To100HoursSummary {
         "wfh51To100Hours.change.hidden"
       )
     }
-
 
 }

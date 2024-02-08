@@ -27,11 +27,11 @@ class WorkingFromHome51To100HoursSummarySpec extends SummaryBaseSpec("WorkingFro
 
   private val amount: Int = 1
 
-  override val validData: JsObject = Json.obj("wfhHours-51To100" -> amount)
+  override val validData: JsObject   = Json.obj("wfhHours-51To100" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"wfh51To100Hours.subHeading.$userType")
-  override val testValue: HtmlContent = HtmlContent("1")
+  override val testValue: HtmlContent    = HtmlContent("1")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     WorkingFromHome51To100HoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)

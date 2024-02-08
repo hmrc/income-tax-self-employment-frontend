@@ -20,6 +20,7 @@ import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.route
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,18 +28,27 @@ import viewmodels.checkAnswers.buildRowString
 
 object WfhFlatRateOrActualCostsSummary {
 
-
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                  messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)).map { answer =>
-      buildRowString(
-        answer.toString,
-        routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-        messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", answer), // TODO change to flatRateViewModel.flatRate
-        "wfhFlatRateOrActualCosts.change.hidden",
-        rightTextAlign = true
-      )
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, flatRate: String)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
+      case Some(WfhFlatRateOrActualCosts.FlatRate) =>
+        Some(
+          buildRowString(
+            s"£$flatRate",
+            routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+            messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRate),
+            "wfhFlatRateOrActualCosts.change.hidden",
+            rightTextAlign = true
+          ))
+      case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
+        Some(
+          buildRowString(
+            Messages("expenses.actualCosts"),
+            routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+            messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRate),
+            "wfhFlatRateOrActualCosts.change.hidden",
+            rightTextAlign = true
+          ))
+      case _ => None
     }
-
-
 }

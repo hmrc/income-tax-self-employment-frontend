@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.buildRowInt
 object LivingAtBusinessPremisesOnePersonSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                  messages: Messages): Option[SummaryListRow] =
+      messages: Messages): Option[SummaryListRow] =
     userAnswers.get(LivingAtBusinessPremisesOnePerson, Some(businessId)).map { answer =>
       buildRowInt(
         answer,
@@ -37,6 +37,5 @@ object LivingAtBusinessPremisesOnePersonSummary {
         "wfbpOnePerson.change.hidden"
       )
     }
-
 
 }

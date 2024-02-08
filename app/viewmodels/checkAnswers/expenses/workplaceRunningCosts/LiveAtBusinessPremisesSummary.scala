@@ -24,21 +24,20 @@ import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBu
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object LiveAtBusinessPremisesSummary {
 
-
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-                                                                                                  messages: Messages): Option[SummaryListRow] =
+      messages: Messages): Option[SummaryListRow] =
     userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)).map { answer =>
       buildRowString(
-        answer.toString,
+        formatAnswer(answer.toString),
         routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode),
         s"liveAtBusinessPremises.title.$userType",
         "liveAtBusinessPremises.change.hidden",
         rightTextAlign = true
       )
     }
-
 
 }

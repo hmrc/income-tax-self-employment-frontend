@@ -29,9 +29,9 @@ class WfhFlatRateOrActualCostsSummarySpec extends SummaryBaseSpec("WfhFlatRateOr
   override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"wfhFlatRateOrActualCosts.subHeading.$userType")
-  override val testValue: HtmlContent    = HtmlContent("flatRate")
+  override val testValue: HtmlContent    = HtmlContent("£12")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "12")(messages)
 
 }

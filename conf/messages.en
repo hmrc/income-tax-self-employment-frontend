@@ -748,8 +748,6 @@ wfbpTwoPeople.subHeading.individual = How many months did 2 people live at your 
 wfbpTwoPeople.subHeading.agent = How many months did 2 people live at your client’s business premises?
 wfbpThreePlusPeople.subHeading.individual = How many months did 3 or more people live at your business premises?
 wfbpThreePlusPeople.subHeading.agent = How many months did 3 or more people live at your client’s business premises?
-wfbpFlatRateOrActualCosts.subHeading.individual = Do you want to claim your personal use amount as a flat rate of £{0} or actual costs?
-wfbpFlatRateOrActualCosts.subHeading.agent = Does your client want to claim their personal use amount as a flat rate of £{0} or actual costs?
 
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
