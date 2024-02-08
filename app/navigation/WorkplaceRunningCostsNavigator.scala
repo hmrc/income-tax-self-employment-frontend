@@ -67,8 +67,8 @@ class WorkplaceRunningCostsNavigator @Inject() {
                     Some(WorkFromBusinessPremises.YesAllowable | WorkFromBusinessPremises.YesDisallowable),
                     Some(WfhFlatRateOrActualCosts.FlatRate)) =>
                 workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
-              case (Some(WorkFromBusinessPremises.No), Some(WfhFlatRateOrActualCosts.FlatRate)) => // TODO 6997 replace with CYA page
-                workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
+              case (Some(WorkFromBusinessPremises.No), Some(WfhFlatRateOrActualCosts.FlatRate)) =>
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 

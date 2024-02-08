@@ -206,10 +206,10 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
 
         "the page is BusinessPremisesDisallowableAmountPage" - {
           "the LiveAtBusinessPremises answer is 'Yes" - {
-            "navigate to the WfbpFlatRateOrActualCostsController" in {
+            "navigate to the peopleLivingAtBusinessPremisesPage" in {
               val userAnswers = emptyUserAnswers.set(LiveAtBusinessPremisesPage, LiveAtBusinessPremises.Yes, Some(businessId)).success.value
               val expectedResult =
-                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
+                workplaceRunningCosts.workingFromBusinessPremises.routes.PeopleLivingAtBusinessPremisesController
                   .onPageLoad(taxYear, businessId, mode)
 
               navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
@@ -218,9 +218,9 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
           "the LiveAtBusinessPremises answer is 'No" - {
             "navigate to the CYA page" in {
               val userAnswers = emptyUserAnswers.set(LiveAtBusinessPremisesPage, LiveAtBusinessPremises.No, Some(businessId)).success.value
-              val expectedResult = // TODO 6997 replace with CYA page
-                workplaceRunningCosts.workingFromBusinessPremises.routes.BusinessPremisesAmountController
-                  .onPageLoad(taxYear, businessId, mode)
+              val expectedResult =
+                workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController
+                  .onPageLoad(taxYear, businessId)
 
               navigator.nextPage(BusinessPremisesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
             }

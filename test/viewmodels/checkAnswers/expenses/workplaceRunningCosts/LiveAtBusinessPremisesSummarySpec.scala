@@ -29,7 +29,7 @@ class LiveAtBusinessPremisesSummarySpec extends SummaryBaseSpec("LiveAtBusinessP
   override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"liveAtBusinessPremises.title.$userType")
-  override val testValue: HtmlContent    = HtmlContent("yes")
+  override val testValue: HtmlContent    = HtmlContent("site.yes")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     LiveAtBusinessPremisesSummary.row(userAnswers, taxYear, businessId, userType)(messages)
