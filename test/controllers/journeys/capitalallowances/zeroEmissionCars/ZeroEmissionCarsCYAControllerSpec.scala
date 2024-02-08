@@ -19,17 +19,17 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZeroEmissionCarsCYAPage
+import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.zeroEmissionCars.ZecUsedForWorkSummary
 
-class ZeroEmissionCarsCYASpec extends CYAOnPageLoadControllerBaseSpec {
+class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val pageHeading: String =
-    ZeroEmissionCarsCYAPage.pageName.value
+    CapitalAllowancesCYAPage.pageName.value
 
   override val testDataCases: List[JsObject] =
     List(Json.obj("zeroEmissionCarsUsedForWork" -> true))

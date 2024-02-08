@@ -22,7 +22,7 @@ import controllers.journeys.capitalallowances.zeroEmissionCars
 import models.NormalMode
 import models.common._
 import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
-import pages.capitalallowances.zeroEmissionCars.ZeroEmissionCarsCYAPage
+import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -54,7 +54,7 @@ class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: Message
 
       Ok(
         view(
-          ZeroEmissionCarsCYAPage,
+          CapitalAllowancesCYAPage,
           taxYear,
           request.userType,
           summaryList,
