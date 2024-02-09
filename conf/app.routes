@@ -469,3 +469,12 @@ POST        /:taxYear/:businessId/change-capital-allowances/claim-list          
 
 GET         /:taxYear/:businessId/capital-allowances/check                                                                             controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/check                                                                             controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances Zero Emission Cars ##########
+
+########## Capital Allowances ZEC Use Outside SE ##########
+
+GET         /:taxYear/:businessId/capital-allowances/cars/amount-outside-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST         /:taxYear/:businessId/capital-allowances/cars/amount-outside-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/cars/amount-outside-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST         /:taxYear/:businessId/change-capital-allowances/cars/amount-outside-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
