@@ -42,7 +42,7 @@ object CapitalAllowances extends Enumerable.Implicits {
     override val identifier: Group = ZeroEmissions
   }
   case object ElectricVehicleChargepoint extends WithName("electricVehicleChargepoint") with AllowanceType with CapitalAllowances {
-    override val identifier: Group = ZeroEmissions
+    override val identifier: Group = BuildingsAndStructures
   }
   case object StructuresAndBuildings extends WithName("structuresAndBuildings") with AllowanceType with CapitalAllowances {
     override val identifier: Group = BuildingsAndStructures
@@ -80,7 +80,7 @@ object CapitalAllowances extends Enumerable.Implicits {
     )
 
   val cashAllowances: List[CapitalAllowances] =
-    List(ZeroEmissionCar, WritingDown, Balancing, BalancingCharge)
+    List(ZeroEmissionCar, WritingDown, BalancingCharge, Balancing)
 
   implicit val enumerable: Enumerable[CapitalAllowances] =
     Enumerable(

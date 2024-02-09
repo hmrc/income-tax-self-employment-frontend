@@ -18,15 +18,18 @@ package controllers.journeys.capitalallowances.tailoring
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
-import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.tailoring.ClaimCapitalAllowancesPage
+import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
@@ -48,34 +51,46 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        form = request.userAnswers
-          .get(ClaimCapitalAllowancesPage, businessId.some)
-          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, accountingType, businessId))
+      val form = request.userAnswers
+        .get(ClaimCapitalAllowancesPage, businessId.some)
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+
+      Ok(view(form, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, accountingType, businessId))),
-            value =>
-              service
-                .persistAnswer(businessId, request.userAnswers, value, ClaimCapitalAllowancesPage)
-                .map(updatedAnswers => Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
-          )
+      def handleSuccess(answer: Boolean): Future[Result] =
+        for {
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ClaimCapitalAllowancesPage)
+        } yield Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- handleForm(accountingType)
-      } yield result
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors =>
+            Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))),
+          value => handleSuccess(value)
+        )
+  }
 
+  private def handleGatewayQuestion(currentAnswer: Boolean,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val clearUserAnswerDataIfNeeded =
+      if (currentAnswer) Future(request.userAnswers)
+      else {
+        Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(SelectCapitalAllowancesPage), Some(businessId)))
+      }
+    val redirectMode = request.getValue(ClaimCapitalAllowancesPage, businessId) match {
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }

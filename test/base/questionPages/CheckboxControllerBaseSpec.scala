@@ -44,7 +44,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
 
   /** Implementers can provide prerequisite answers the controller requires.
     */
-  def baseAnswers: UserAnswers = emptyUserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswersAccrual
 
   def pageAnswers: UserAnswers = baseAnswers.set(page, answer, businessId.some).success.value
 

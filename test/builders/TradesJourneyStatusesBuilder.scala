@@ -16,7 +16,8 @@
 
 package builders
 
-import models.common.{BusinessId, JourneyStatus, TradingName}
+import base.SpecBase.businessId
+import models.common.{AccountingType, JourneyStatus, TradingName}
 import models.journeys.Journey._
 import models.journeys.{JourneyNameAndStatus, TaskList}
 import models.requests.TradesJourneyStatuses
@@ -24,8 +25,9 @@ import models.requests.TradesJourneyStatuses
 object TradesJourneyStatusesBuilder {
 
   val aTadesJourneyStatusesModel = TradesJourneyStatuses(
-    BusinessId("BusinessId1"),
+    businessId,
     Some(TradingName("TradingName1")),
+    AccountingType.Accrual,
     List(
       JourneyNameAndStatus(Abroad, JourneyStatus.Completed),
       JourneyNameAndStatus(Income, JourneyStatus.InProgress),
@@ -35,7 +37,7 @@ object TradesJourneyStatusesBuilder {
     )
   )
 
-  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(BusinessId("BusinessId2"), None, Nil)
+  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(businessId, None, AccountingType.Accrual, Nil)
 
   val aSequenceTadesJourneyStatusesModel = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
   val aTaskList =

@@ -18,8 +18,9 @@ package viewmodels
 
 import base.SpecBase
 import cats.implicits._
-import controllers.journeys.{abroad, expenses, income}
+import controllers.journeys._
 import models._
+import models.common.AccountingType.Accrual
 import models.common.JourneyStatus._
 import models.common.{JourneyStatus, TradingName}
 import models.database.UserAnswers
@@ -33,8 +34,9 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import pages.expenses.tailoring.individualCategories._
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
-import viewmodels.TradeJourneyStatusesViewModel.buildSummaryRow
 import viewmodels.TradeJourneyStatusesViewModelSpec._
+import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel
+import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
 
 import scala.util.Try
 
@@ -50,10 +52,12 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     _.set(OtherExpensesPage, OtherExpenses.YesDisallowable, businessId.some)
   )
 
-  private val abroadUrl               = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  private val abroadCyaUrl            = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
-  private val incomeUrl               = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
-  private val incomeCyaUrl            = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+  private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val abroadCyaUrl = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+  private val incomeUrl    = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val incomeCyaUrl = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+  private val capitalAllowancesUrl =
+    capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url
   private val expensesTailoringCyaUrl = expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
   private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
@@ -67,28 +71,32 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Nil,
       Nil,
       List(
-        expectedRow(abroadUrl, "", Journey.Abroad, NotStarted),
-        expectedRow("#", " class='govuk-deadlink'", Journey.Income, CannotStartYet)
+        expectedRow(abroadUrl, Abroad, NotStarted),
+        expectedRow("#", Income, CannotStartYet),
+        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet)
       )),
     // Just one route: Abroad in progress
     (
       List(JourneyNameAndStatus(Abroad, InProgress)),
       Nil,
       List(
-        expectedRow(abroadCyaUrl, "", Journey.Abroad, InProgress),
-        expectedRow("#", " class='govuk-deadlink'", Journey.Income, CannotStartYet)
+        expectedRow(abroadCyaUrl, Abroad, InProgress),
+        expectedRow("#", Income, CannotStartYet),
+        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet)
       )),
-    // Abroad, Income there, but income without answers so no expenses tailoring rendered
+    // Abroad, Income and CapAllowances there, but income without answers so no expenses tailoring rendered
     (
       List(
         JourneyNameAndStatus(Abroad, Completed),
-        JourneyNameAndStatus(Income, CheckOurRecords),
+        JourneyNameAndStatus(Income, NotStarted),
+        JourneyNameAndStatus(CapitalAllowancesTailoring, NotStarted),
         JourneyNameAndStatus(ExpensesTailoring, Completed)
       ),
       Nil,
       List(
-        expectedRow(abroadCyaUrl, "", Journey.Abroad, Completed),
-        expectedRow(incomeUrl, "", Journey.Income, CheckOurRecords)
+        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(incomeUrl, Income, NotStarted),
+        expectedRow(capitalAllowancesUrl, CapitalAllowancesTailoring, NotStarted)
       )),
     // Expense Tailoring there, with some sub journeys
     (
@@ -96,18 +104,20 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed),
-        JourneyNameAndStatus(ExpensesOfficeSupplies, CheckOurRecords),
-        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress)
+        JourneyNameAndStatus(ExpensesOfficeSupplies, NotStarted),
+        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress),
+        JourneyNameAndStatus(CapitalAllowancesTailoring, NotStarted)
       ),
       categoriesExpenses,
       List(
-        expectedRow(abroadCyaUrl, "", Journey.Abroad, Completed),
-        expectedRow(incomeCyaUrl, "", Journey.Income, Completed),
-        expectedRow(expensesTailoringCyaUrl, "", Journey.ExpensesTailoring, Completed),
-        expectedRow(officeSuppliesUrl, "", Journey.ExpensesOfficeSupplies, CheckOurRecords),
-        expectedRow(goodsToSellCyaUrl, "", Journey.ExpensesGoodsToSellOrUse, InProgress),
-        expectedRow(irrecoverableUrl, "", Journey.ExpensesIrrecoverableDebts, NotStarted),
-        expectedRow(otherExpensesUrl, "", Journey.ExpensesOtherExpenses, NotStarted)
+        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(incomeCyaUrl, Income, Completed),
+        expectedRow(expensesTailoringCyaUrl, ExpensesTailoring, Completed),
+        expectedRow(officeSuppliesUrl, ExpensesOfficeSupplies, NotStarted),
+        expectedRow(goodsToSellCyaUrl, ExpensesGoodsToSellOrUse, InProgress),
+        expectedRow(irrecoverableUrl, ExpensesIrrecoverableDebts, NotStarted),
+        expectedRow(otherExpensesUrl, ExpensesOtherExpenses, NotStarted),
+        expectedRow(capitalAllowancesUrl, CapitalAllowancesTailoring, NotStarted)
       )
     )
   )
@@ -116,7 +126,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (journeyCompletedStates, answers, expectedRows) =>
         val userAnswers           = buildAnswers(answers)
-        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), journeyCompletedStates)
+        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), Accrual, journeyCompletedStates)
         val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
 
         withClue(s"""
@@ -136,13 +146,13 @@ object TradeJourneyStatusesViewModelSpec {
 
   def buildAnswers(setOps: List[UserAnswers => Try[UserAnswers]]): UserAnswers =
     setOps
-      .foldRight(Try(SpecBase.emptyUserAnswers)) { (setAnswer, currentAnswers) =>
+      .foldRight(Try(SpecBase.emptyUserAnswersAccrual)) { (setAnswer, currentAnswers) =>
         setAnswer(currentAnswers.success.value)
       }
       .success
       .value
 
-  def expectedRow(href: String, optDeadlinkStyle: String, journey: Journey, status: JourneyStatus)(implicit messages: Messages) =
-    buildSummaryRow(href, optDeadlinkStyle, s"journeys.$journey", status)
+  def expectedRow(href: String, journey: Journey, status: JourneyStatus)(implicit messages: Messages) =
+    buildSummaryRow(href, s"journeys.$journey", status)
 
 }

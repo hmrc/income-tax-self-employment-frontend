@@ -17,13 +17,11 @@
 package controllers.journeys.expenses.professionalFees
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import forms.expenses.professionalFees.ProfessionalFeesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.professionalFees.ProfessionalFeesAmountPage
 import play.api.Application
 import play.api.data.Form
@@ -46,8 +44,6 @@ class ProfessionalFeesAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesAmountFormProvider()(userType)
 

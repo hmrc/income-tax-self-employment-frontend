@@ -17,14 +17,11 @@
 package controllers.journeys.expenses.otherExpenses
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.NormalMode
-import models.common.AccountingType.Accrual
 import models.common._
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.otherExpenses.OtherExpensesAmountPage
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.Application
@@ -45,13 +42,11 @@ class OtherExpensesAmountControllerSpec
 
   override val onwardRoute = routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def baseAnswers = emptyUserAnswers.set(OtherExpensesPage, OtherExpenses.YesDisallowable, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswersAccrual.set(OtherExpensesPage, OtherExpenses.YesDisallowable, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   override def createForm(user: UserType): Form[BigDecimal] = new OtherExpensesAmountFormProvider()(user)
 

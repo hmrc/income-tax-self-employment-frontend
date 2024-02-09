@@ -31,6 +31,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.TradeAccountingType
 import play.api.Application
 import play.api.http.Status.BAD_REQUEST
 import play.api.i18n._
@@ -78,7 +79,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val httpError: HttpError = HttpError(BAD_REQUEST, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"))
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+  def emptyUserAnswers: UserAnswers        = UserAnswers(userAnswersId)
+  def emptyUserAnswersAccrual: UserAnswers = emptyUserAnswers.set(TradeAccountingType, AccountingType.Accrual, Some(businessId)).success.value
+  def emptyUserAnswersCash: UserAnswers    = emptyUserAnswers.set(TradeAccountingType, AccountingType.Cash, Some(businessId)).success.value
 
   def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
 

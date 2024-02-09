@@ -16,10 +16,12 @@
 
 package controllers.journeys.capitalallowances.tailoring
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.capitalallowances.tailoring.routes._
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.CapitalAllowancesTailoring
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -27,14 +29,16 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.tailoring.{ClaimCapitalAllowancesSummary, SelectCapitalAllowancesSummary}
 
-// TODO Implement CYAOnSubmitControllerBaseSpec in SASS-6724
-class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec {
+class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String =
     CapitalAllowancesCYAPage.pageName.value
 
+  override val submissionData: JsObject =
+    Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar"))
+
   override val testDataCases: List[JsObject] =
-    List(Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar")))
+    List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = CapitalAllowanceCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = CapitalAllowanceCYAController.onSubmit
@@ -48,4 +52,6 @@ class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec {
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  override val journey: Journey = CapitalAllowancesTailoring
 }

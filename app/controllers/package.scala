@@ -17,10 +17,11 @@
 import cats.data.EitherT
 import cats.implicits.catsStdInstancesForFuture
 import models.NormalMode
-import models.common.{BusinessId, JourneyContext, TaxYear}
+import models.common.{AccountingType, BusinessId, JourneyContext, TaxYear}
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.journeys.Journey
+import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -36,6 +37,9 @@ package object controllers {
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
     journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode)
   )
+
+  def returnAccountingType(businessId: BusinessId)(implicit request: DataRequest[_]): AccountingType =
+    request.userAnswers.getAccountingType(businessId)
 
   def handleResult(result: Future[Either[ServiceError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     handleResultT(EitherT(result))

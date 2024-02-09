@@ -18,7 +18,7 @@ package controllers.journeys.income
 
 import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.income.AnyOtherIncomeFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
@@ -60,14 +60,6 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(accountingType: AccountingType): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-            anyOtherIncomeValue => handleSuccess(anyOtherIncomeValue, accountingType)
-          )
-
       def handleSuccess(anyOtherIncomeValue: Boolean, accountingType: AccountingType): Future[Result] = {
         val adjustedAnswers =
           if (anyOtherIncomeValue) request.userAnswers.pure[Try] else request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId))
@@ -77,11 +69,12 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
         } yield Redirect(navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear, businessId, Some(accountingType)))
       }
 
-      for {
-        accountingType <- handleApiResult(service.getAccountingType(request.nino, businessId, request.mtditid))
-        result         <- handleForm(accountingType)
-      } yield result
-
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          anyOtherIncomeValue => handleSuccess(anyOtherIncomeValue, returnAccountingType(businessId))
+        )
   }
 
 }
