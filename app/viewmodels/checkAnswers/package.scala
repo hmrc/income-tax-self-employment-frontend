@@ -27,23 +27,36 @@ import viewmodels.implicits._
 
 package object checkAnswers {
 
-  def buildRowBoolean(answer: Boolean, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
-      messages: Messages): SummaryListRow = {
+  def buildRowBoolean(answer: Boolean,
+                      callLink: Call,
+                      keyMessage: String,
+                      changeMessage: String,
+                      rightTextAlign: Boolean = false,
+                      flipKeyToValueWidthRatio: Boolean = false)(implicit messages: Messages): SummaryListRow = {
     val messageKey = if (answer) "site.yes" else "site.no"
-    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage, rightTextAlign)
+    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
 
-  def buildRowString(answer: String, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
-      messages: Messages): SummaryListRow =
+  def buildRowString(answer: String,
+                     callLink: Call,
+                     keyMessage: String,
+                     changeMessage: String,
+                     rightTextAlign: Boolean = false,
+                     flipKeyToValueWidthRatio: Boolean = false)(implicit messages: Messages): SummaryListRow = {
+    val oneThirdWidth  = "govuk-!-width-one-third"
+    val twoThirdsWidth = "govuk-!-width-two-thirds"
+    val keyClasses     = if (flipKeyToValueWidthRatio) oneThirdWidth else twoThirdsWidth
+    val valueClasses = s"${if (flipKeyToValueWidthRatio) twoThirdsWidth else oneThirdWidth}${if (rightTextAlign) " govuk-!-text-align-right" else ""}"
     SummaryListRowViewModel(
-      key = Key(content = keyMessage, classes = "govuk-!-width-two-thirds"),
-      value = Value(content = HtmlContent(answer), classes = s"govuk-!-width-one-third${if (rightTextAlign) " govuk-!-text-align-right" else ""}"),
+      key = Key(content = keyMessage, classes = keyClasses),
+      value = Value(content = HtmlContent(answer), classes = valueClasses),
       actions = Seq(
         ActionItemViewModel("site.change", callLink.url)
           .withVisuallyHiddenText(messages(changeMessage))
       )
     )
+  }
 }

@@ -16,6 +16,8 @@
 
 package viewsupport.journeys.capitalallowances.tailoring
 
+import models.common.AccountingType
+import models.journeys.capitalallowances.tailoring.CapitalAllowances.{BalancingCharge, ZeroEmissionCar}
 import models.journeys.capitalallowances.tailoring.Group.{AssetAndAllowances, BuildingsAndStructures, ZeroEmissions}
 import models.journeys.capitalallowances.tailoring._
 import play.api.data.Form
@@ -48,14 +50,19 @@ object SelectCapitalAllowancesViewSupport {
     SortedMap(unsortedWithIndex.toList: _*)(ordering)
   }
 
-  def buildCheckboxItems(allowances: List[(CapitalAllowances, Int)])(implicit messages: Messages): List[CheckboxItem] =
+  def buildCheckboxItems(allowances: List[(CapitalAllowances, Int)], accountingType: AccountingType)(implicit
+      messages: Messages): List[CheckboxItem] =
     allowances.map { case (value, i) =>
+      val optAccountingType = value match {
+        case ZeroEmissionCar | BalancingCharge => s".$accountingType"
+        case _                                 => ""
+      }
       CheckboxItemViewModel(
         content = Text(messages(s"selectCapitalAllowances.$value")),
         fieldId = "value",
         index = i,
         value = value.toString
-      ).withHint(Hint(content = Text(messages(s"selectCapitalAllowances.subText.$value"))))
+      ).withHint(Hint(content = Text(messages(s"selectCapitalAllowances.subText.$value$optAccountingType"))))
     }
 
   def buildCheckboxes(items: List[CheckboxItem], content: Html, form: Form[_])(implicit messages: Messages): Checkboxes =
