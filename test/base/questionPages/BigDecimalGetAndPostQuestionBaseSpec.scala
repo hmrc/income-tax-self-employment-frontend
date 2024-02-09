@@ -44,7 +44,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
 
   /** Implementers can provide prerequisite answers the controller requires.
     */
-  def baseAnswers: UserAnswers = emptyUserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswersAccrual
 
   def pageAnswers: UserAnswers = baseAnswers.set(page, amount, businessId.some).success.value
 

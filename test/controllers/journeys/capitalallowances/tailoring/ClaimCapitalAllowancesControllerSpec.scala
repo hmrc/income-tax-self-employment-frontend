@@ -17,12 +17,11 @@
 package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import cats.implicits.catsSyntaxOptionId
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -36,8 +35,6 @@ import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesVie
 
 class ClaimCapitalAllowancesControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
-
-  private def accountingType = Accrual
 
   override def onPageLoadCall: Call = routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, NormalMode)
@@ -53,12 +50,11 @@ class ClaimCapitalAllowancesControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ClaimCapitalAllowancesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, accountingType, scenario.businessId).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, Accrual, scenario.businessId).toString()
   }
 
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(accountingType)
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(

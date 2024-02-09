@@ -17,14 +17,12 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.UserType
 import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.Application
 import play.api.data.Form
@@ -44,7 +42,7 @@ class GoodsToSellOrUseAmountControllerSpec
 
   override val onwardRoute: Call = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def baseAnswers = emptyUserAnswers
+  override def baseAnswers = emptyUserAnswersAccrual
     .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId))
     .success
     .value
@@ -52,8 +50,6 @@ class GoodsToSellOrUseAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new GoodsToSellOrUseAmountFormProvider()(userType)
 
