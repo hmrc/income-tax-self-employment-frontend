@@ -1268,5 +1268,5 @@ zecUsedForWork.subHeading.individual = Did you buy any new or unused zero-emissi
 zecUsedForWork.subHeading.agent = Did your client buy any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
 zecUsedForWork.hint.individual = This includes cars bought through a hire purchase scheme. You cannot claim for cars that are on lease.
 zecUsedForWork.hint.agent = This includes cars bought through a hire purchase scheme. Your client cannot claim for cars that are on lease.
-zecUsedForWork.error.required.individual = Select yes if you bought any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
-zecUsedForWork.error.required.agent = Select yes if your client bought any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
+zecUsedForWork.error.required.individual = ---- Add error message SASS-7215 ----
+zecUsedForWork.error.required.agent = ---- Add error message SASS-7215 ----
