@@ -1250,3 +1250,23 @@ capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to c
 capitalAllowancesCYA.title.individual = Check your answers
 capitalAllowancesCYA.title.agent = Check your client’s answers
 
+########## Capital Allowances - Zero Emission Cars ##########
+
+zecUsedForWork.title = Zero-emission cars used for work
+zecUsedForWork.p1.individual = For a zero-emission car, you can claim:
+zecUsedForWork.p1.agent = For a zero-emission car, your client can claim:
+zecUsedForWork.l1.individual = all the 100% first year allowance if you only used the car for your self-employment
+zecUsedForWork.l1.agent = all the 100% first year allowance if they only used the car for their self-employment
+zecUsedForWork.l2.individual = part of the cost of the car if you also used it outside your self-employment
+zecUsedForWork.l2.agent = part of the cost of the car if they also used it outside their self-employment
+zecUsedForWork.details.heading = Understanding zero-emission cars
+zecUsedForWork.details.p1.individual = Your vehicle is classed as a car if it:
+zecUsedForWork.details.p1.agent = Your client’s vehicle is classed as a car if it:
+zecUsedForWork.details.l1 = was not built mainly for transporting goods
+zecUsedForWork.details.l2 = is frequently used privately, or is suitable for private use - this includes motorhomes
+zecUsedForWork.subHeading.individual = Did you buy any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
+zecUsedForWork.subHeading.agent = Did your client buy any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
+zecUsedForWork.hint.individual = This includes cars bought through a hire purchase scheme. You cannot claim for cars that are on lease.
+zecUsedForWork.hint.agent = This includes cars bought through a hire purchase scheme. Your client cannot claim for cars that are on lease.
+zecUsedForWork.error.required.individual = ---- Add error messages SASS-7215 ----
+zecUsedForWork.error.required.agent = ---- Add error message SASS-7215 ----
