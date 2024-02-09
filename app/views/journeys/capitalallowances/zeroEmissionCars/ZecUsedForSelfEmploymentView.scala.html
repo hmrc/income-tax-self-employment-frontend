@@ -17,6 +17,8 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+@import viewmodels.LegendSize.Large
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -27,19 +29,20 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("zecUsedForSelfEmployment.title"))) {
+@layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
     @formHelper(action = routes.ZecUsedForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(Messages(s"zecUsedForSelfEmployment.title.$userType"))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"zecUsedForSelfEmployment.title.$userType"))
+                .asPageHeading(size = Large),
+                items  = ZecUsedForSelfEmployment.options(userType)
             )
         )
         @govukButton(
