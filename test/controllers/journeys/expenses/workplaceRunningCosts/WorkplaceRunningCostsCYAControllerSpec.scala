@@ -28,22 +28,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Request}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{
-  BusinessPremisesAmountSummary,
-  BusinessPremisesDisallowableAmountSummary,
-  LiveAtBusinessPremisesSummary,
-  LivingAtBusinessPremisesOnePersonSummary,
-  LivingAtBusinessPremisesThreePlusPeopleSummary,
-  LivingAtBusinessPremisesTwoPeopleSummary,
-  MoreThan25HoursSummary,
-  WfbpClaimingAmountSummary,
-  WfbpFlatRateOrActualCostsSummary,
-  WfhClaimingAmountSummary,
-  WfhFlatRateOrActualCostsSummary,
-  WorkingFromHome101PlusHoursSummary,
-  WorkingFromHome25To50HoursSummary,
-  WorkingFromHome51To100HoursSummary
-}
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts._
 import views.html.standard.CheckYourAnswersView
 
 class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
@@ -62,15 +47,15 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
         WorkingFromHome25To50HoursSummary.row(userAnswers, taxYear, businessId, userType).value,
         WorkingFromHome51To100HoursSummary.row(userAnswers, taxYear, businessId, userType).value,
         WorkingFromHome101PlusHoursSummary.row(userAnswers, taxYear, businessId, userType).value,
-        WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "12.00").value,
+        WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "54.00").value,
         WfhClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
         LiveAtBusinessPremisesSummary.row(userAnswers, taxYear, businessId, userType).value,
         BusinessPremisesAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
-        BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType, 700).value,
+        BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType, 100).value,
         LivingAtBusinessPremisesOnePersonSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesTwoPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesThreePlusPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,
-        WfbpFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "12.00").value,
+        WfbpFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "3,300.00").value,
         WfbpClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
@@ -86,14 +71,14 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
   }
 
   override val submissionData: JsObject = Json.obj(
-    "moreThan25Hours"                          -> false,
+    "moreThan25Hours"                          -> "yes",
     "wfhHours-25To50"                          -> 1.00,
     "wfhHours-51To100"                         -> 1.00,
     "wfhHours-101Plus"                         -> 1.00,
-    "wfhFlatRateOrActualCosts"                 -> "£12.00",
+    "wfhFlatRateOrActualCosts"                 -> "flatRate",
     "wfhClaimingAmount"                        -> 100.00,
-    "liveAtBusinessPremises"                   -> 100.00,
-    "businessPremisesAmount"                   -> "yes",
+    "liveAtBusinessPremises"                   -> "yes",
+    "businessPremisesAmount"                   -> 100.00,
     "businessPremisesDisallowableAmount"       -> 100.00,
     "livingAtBusinessPremises-onePerson"       -> 1.00,
     "livingAtBusinessPremises-twoPeople"       -> 2.00,

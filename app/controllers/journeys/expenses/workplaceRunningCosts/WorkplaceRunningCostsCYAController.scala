@@ -23,35 +23,15 @@ import models.journeys.Journey.ExpensesWorkplaceRunningCosts
 import models.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsJourneyAnswers
 import models.requests.DataRequest
 import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAPage
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{
-  BusinessPremisesAmountPage,
-  LivingAtBusinessPremisesOnePerson,
-  LivingAtBusinessPremisesThreePlusPeople,
-  LivingAtBusinessPremisesTwoPeople
-}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, LivingAtBusinessPremisesOnePerson, LivingAtBusinessPremisesThreePlusPeople, LivingAtBusinessPremisesTwoPeople}
 import pages.expenses.workplaceRunningCosts.workingFromHome.{WorkingFromHomeHours101Plus, WorkingFromHomeHours25To50, WorkingFromHomeHours51To100}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{
-  BusinessPremisesAmountSummary,
-  BusinessPremisesDisallowableAmountSummary,
-  LiveAtBusinessPremisesSummary,
-  LivingAtBusinessPremisesOnePersonSummary,
-  LivingAtBusinessPremisesThreePlusPeopleSummary,
-  LivingAtBusinessPremisesTwoPeopleSummary,
-  MoreThan25HoursSummary,
-  WfbpClaimingAmountSummary,
-  WfbpFlatRateOrActualCostsSummary,
-  WfhClaimingAmountSummary,
-  WfhFlatRateOrActualCostsSummary,
-  WorkingFromHome101PlusHoursSummary,
-  WorkingFromHome25To50HoursSummary,
-  WorkingFromHome51To100HoursSummary
-}
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{BusinessPremisesAmountSummary, BusinessPremisesDisallowableAmountSummary, LiveAtBusinessPremisesSummary, LivingAtBusinessPremisesOnePersonSummary, LivingAtBusinessPremisesThreePlusPeopleSummary, LivingAtBusinessPremisesTwoPeopleSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfbpFlatRateOrActualCostsSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -75,6 +55,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
     (identify andThen getUserAnswers andThen getJourneyAnswers[WorkplaceRunningCostsJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesWorkplaceRunningCosts)) andThen requireData) { implicit request =>
       val user = request.userType
+
 
       getFlatRates(request, businessId) match {
         case Left(_) => redirectJourneyRecovery()
@@ -124,7 +105,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
       handleSubmitAnswersResult(context, result)
   }
 
-  def getFlatRates(request: DataRequest[_], businessId: BusinessId): Either[Result, (Option[String], Option[String])] = {
+  def getFlatRates(request: DataRequest[_], businessId: BusinessId): Either[Unit, (Option[String], Option[String])] = {
 
     val months25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
     val months51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
@@ -147,7 +128,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
         val flatRate      = amount1Person + amount2People + amount3People
         Right((Some(formatMoney(wfhFlatRate)), Some(formatMoney(flatRate))))
 
-      case _ => Left(redirectJourneyRecovery())
+      case _ => Left((): Unit)
     }
   }
 
