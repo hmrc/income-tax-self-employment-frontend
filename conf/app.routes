@@ -469,3 +469,8 @@ POST        /:taxYear/:businessId/change-capital-allowances/claim-list          
 
 GET         /:taxYear/:businessId/capital-allowances/check                                                                             controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/check                                                                             controllers.journeys.capitalallowances.tailoring.CapitalAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances - Zero Emissions Cars ##########
+
+GET         /:taxYear/:businessId/capital-allowances/goods-vehicles/only-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST         /:taxYear/:businessId/capital-allowances/goods-vehicles/only-self-employment                                                controllers.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

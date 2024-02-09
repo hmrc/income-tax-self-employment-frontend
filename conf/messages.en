@@ -1250,3 +1250,10 @@ capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to c
 capitalAllowancesCYA.title.individual = Check your answers
 capitalAllowancesCYA.title.agent = Check your client’s answers
 
+########## Capital Allowances - Zero Emission Cars ##########
+
+########## Capital Allowances - ZEC for self employment ##########
+
+zecUsedForSelfEmployment.title.individual = Did you only use the car for your self-employment?
+zecUsedForSelfEmployment.title.agent = Did your client only use the car for their self-employment?
+zecUsedForSelfEmployment.error.required.individual =
