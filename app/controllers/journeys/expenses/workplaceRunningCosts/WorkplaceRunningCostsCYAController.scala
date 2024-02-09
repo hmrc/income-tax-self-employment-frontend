@@ -23,15 +23,15 @@ import models.journeys.Journey.ExpensesWorkplaceRunningCosts
 import models.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsJourneyAnswers
 import models.requests.DataRequest
 import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAPage
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, LivingAtBusinessPremisesOnePerson, LivingAtBusinessPremisesThreePlusPeople, LivingAtBusinessPremisesTwoPeople}
-import pages.expenses.workplaceRunningCosts.workingFromHome.{WorkingFromHomeHours101Plus, WorkingFromHomeHours25To50, WorkingFromHomeHours51To100}
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
+import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.{BusinessPremisesAmountSummary, BusinessPremisesDisallowableAmountSummary, LiveAtBusinessPremisesSummary, LivingAtBusinessPremisesOnePersonSummary, LivingAtBusinessPremisesThreePlusPeopleSummary, LivingAtBusinessPremisesTwoPeopleSummary, MoreThan25HoursSummary, WfbpClaimingAmountSummary, WfbpFlatRateOrActualCostsSummary, WfhClaimingAmountSummary, WfhFlatRateOrActualCostsSummary, WorkingFromHome101PlusHoursSummary, WorkingFromHome25To50HoursSummary, WorkingFromHome51To100HoursSummary}
+import viewmodels.checkAnswers.expenses.workplaceRunningCosts._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -54,22 +54,18 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[WorkplaceRunningCostsJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesWorkplaceRunningCosts)) andThen requireData) { implicit request =>
+      println("CHECK YOUR ANSWERS CHECK YOUR ANSWERS")
       val user = request.userType
 
-
       getFlatRates(request, businessId) match {
-        case Left(_) => redirectJourneyRecovery()
-        case Right(value) =>
-          val wfhRate  = value._1.getOrElse("")
-          val wfbpRate = value._2.getOrElse("")
-
+        case (wfhRate, wfbpRate) =>
           val summaryList = SummaryListCYA.summaryListOpt(
             List(
               MoreThan25HoursSummary.row(request.userAnswers, taxYear, businessId, user),
               WorkingFromHome25To50HoursSummary.row(request.userAnswers, taxYear, businessId, user),
               WorkingFromHome51To100HoursSummary.row(request.userAnswers, taxYear, businessId, user),
               WorkingFromHome101PlusHoursSummary.row(request.userAnswers, taxYear, businessId, user),
-              WfhFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfhRate),
+              WfhFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfhRate.getOrElse("")),
               WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
               LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
               BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
@@ -82,7 +78,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
               LivingAtBusinessPremisesOnePersonSummary.row(request.userAnswers, taxYear, businessId, user),
               LivingAtBusinessPremisesTwoPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
               LivingAtBusinessPremisesThreePlusPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
-              WfbpFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfbpRate),
+              WfbpFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfbpRate.getOrElse("")),
               WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user)
             )
           )
@@ -94,6 +90,8 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
               request.userType,
               summaryList,
               routes.WorkplaceRunningCostsCYAController.onSubmit(taxYear, businessId)))
+
+        case _ => redirectJourneyRecovery()
       }
     }
 
@@ -105,7 +103,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
       handleSubmitAnswersResult(context, result)
   }
 
-  def getFlatRates(request: DataRequest[_], businessId: BusinessId): Either[Unit, (Option[String], Option[String])] = {
+  def getFlatRates(request: DataRequest[_], businessId: BusinessId): (Option[String], Option[String]) = {
 
     val months25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
     val months51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
@@ -126,9 +124,9 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
         val amount2People = months2People * 500
         val amount3People = months3People * 650
         val flatRate      = amount1Person + amount2People + amount3People
-        Right((Some(formatMoney(wfhFlatRate)), Some(formatMoney(flatRate))))
+        (Some(formatMoney(wfhFlatRate)), Some(formatMoney(flatRate)))
 
-      case _ => Left((): Unit)
+      case _ => (None, None)
     }
   }
 
