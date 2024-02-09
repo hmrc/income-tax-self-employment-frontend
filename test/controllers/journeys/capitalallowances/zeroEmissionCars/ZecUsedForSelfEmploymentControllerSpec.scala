@@ -32,7 +32,8 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentView
 
-class ZecUsedForSelfEmploymentControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForSelfEmploymentController", ZecUsedForSelfEmploymentPage) {
+class ZecUsedForSelfEmploymentControllerSpec
+    extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForSelfEmploymentController", ZecUsedForSelfEmploymentPage) {
 
   override def onPageLoadCall: Call = routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.ZecUsedForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode)
@@ -44,9 +45,9 @@ class ZecUsedForSelfEmploymentControllerSpec extends RadioButtonGetAndPostQuesti
   override def createForm(user: UserType): Form[Boolean] = new ZecUsedForSelfEmploymentFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[ZecUsedForSelfEmploymentView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
