@@ -16,8 +16,9 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
-import controllers.handleApiResult
+import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -45,32 +46,27 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      for {
-        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
-        userType       = request.userType
-        userAnswers    = request.userAnswers
-        existingAnswer = userAnswers.get(OfficeSuppliesPage, Some(businessId))
-        form           = formProvider(userType)
-        preparedForm   = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, userType, taxYear, businessId, accountingType))
+      val form = request.userAnswers
+        .get(OfficeSuppliesPage, businessId.some)
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+
+      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid)) flatMap { accountingType =>
-        val form = formProvider(request.userType)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, accountingType))),
-            value =>
-              selfEmploymentService
-                .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesPage)
-                .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId)))
-          )
-      }
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+          value =>
+            selfEmploymentService
+              .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId)))
+        )
   }
 
 }

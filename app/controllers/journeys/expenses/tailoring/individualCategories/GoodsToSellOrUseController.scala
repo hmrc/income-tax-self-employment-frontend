@@ -16,18 +16,14 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.data.EitherT
 import controllers.actions._
-import controllers.{handleApiResult, handleResultT}
+import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.errors.ServiceError
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -52,42 +48,29 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      for {
-        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
-        userType       = request.userType
-        existingAnswer = request.userAnswers.get(GoodsToSellOrUsePage, Some(businessId))
-        form           = formProvider(userType)
-        preparedForm   = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, accountingType))
+      val form = request.userAnswers
+        .get(GoodsToSellOrUsePage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+
+      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, value: GoodsToSellOrUse): Future[Result] =
+      def handleSuccess(value: GoodsToSellOrUse): Future[Result] =
         selfEmploymentService
-          .persistAnswer(businessId, userAnswers, value, GoodsToSellOrUsePage)
+          .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUsePage)
           .map(updated => Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updated, taxYear, businessId)))
 
-      def handleForm(form: Form[GoodsToSellOrUse],
-                     userType: UserType,
-                     accountingType: AccountingType,
-                     userAnswers: UserAnswers): Either[Future[Result], Future[Result]] =
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Left(Future.successful(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, accountingType)))),
-            value => Right(handleSuccess(userAnswers, value))
-          )
-
-      for {
-        accountingType <- handleApiResult(selfEmploymentService.getAccountingType(request.nino, businessId, request.mtditid))
-        userType    = request.userType
-        userAnswers = request.userAnswers
-        form        = formProvider(userType)
-        finalResult <- handleResultT(EitherT.right[ServiceError](handleForm(form, userType, accountingType, userAnswers).merge))
-      } yield finalResult
+      formProvider(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+          value => handleSuccess(value)
+        )
   }
 
 }

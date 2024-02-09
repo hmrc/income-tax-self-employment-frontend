@@ -16,12 +16,11 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import cats.data.EitherT
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleServiceCall
+import controllers.returnAccountingType
 import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.ExpensesNavigator
 import pages.expenses.otherExpenses.OtherExpensesAmountPage
@@ -51,35 +50,35 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      (for {
-        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid).value)
-        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId))
-        form = request.userAnswers
-          .get(OtherExpensesAmountPage, Some(businessId))
-          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      } yield Ok(view(form, mode, request.userType, accountingType, tailoringAnswer, taxYear, businessId))).merge
+    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+      request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId) match {
+        case Left(redirect) => redirect
+        case Right(tailoringAnswer) =>
+          val form = request.userAnswers
+            .get(OtherExpensesAmountPage, Some(businessId))
+            .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+          Ok(view(form, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))
+      }
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      def handleForm(accountingType: AccountingType, answer: OtherExpenses): Future[Result] =
-        formProvider(request.userType)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, accountingType, answer, taxYear, businessId))),
-            value => handleSuccess(value)
-          )
-
       def handleSuccess(value: BigDecimal): Future[Result] =
         service
           .persistAnswer(businessId, request.userAnswers, value, OtherExpensesAmountPage)
           .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId)))
 
-      (for {
-        accountingType  <- handleServiceCall(service.getAccountingType(request.nino, businessId, request.mtditid).value)
-        tailoringAnswer <- EitherT.fromEither[Future](request.valueOrRedirectDefault(OtherExpensesPage, businessId))
-        result          <- EitherT.right[Result](handleForm(accountingType, tailoringAnswer))
-      } yield result).merge
+      request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId) match {
+        case Left(redirect) => Future(redirect)
+        case Right(tailoringAnswer) =>
+          formProvider(request.userType)
+            .bindFromRequest()
+            .fold(
+              formErrors =>
+                Future.successful(
+                  BadRequest(view(formErrors, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))),
+              value => handleSuccess(value)
+            )
+      }
     }
 }

@@ -17,8 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import cats.data.EitherT
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.RepairsAndMaintenanceFormProvider
 import models.NormalMode
 import models.common.UserType.{Agent, Individual}
@@ -26,7 +25,6 @@ import models.common._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.RepairsAndMaintenance
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -51,11 +49,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: AccountingType)
+  case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: AccountingType, baseUserAnswers: UserAnswers)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual),
-    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash)
+    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual, baseUserAnswers = emptyUserAnswersAccrual),
+    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash, baseUserAnswers = emptyUserAnswersCash)
   )
 
   "RepairsAndMaintenance Controller" - {
@@ -66,12 +64,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(userScenario.baseUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
@@ -92,14 +89,13 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(RepairsAndMaintenancePage, RepairsAndMaintenance.values.head, Some(businessId)).success.value
+              userScenario.baseUserAnswers.set(RepairsAndMaintenancePage, RepairsAndMaintenance.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
@@ -134,7 +130,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -144,7 +140,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
       "must redirect to the next page when valid data is submitted" in {
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(emptyUserAnswersAccrual))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
               bind[SelfEmploymentService].toInstance(mockService)
@@ -152,7 +148,6 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
             .build()
 
         running(application) {
-          mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -170,12 +165,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(userScenario.baseUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request =
                 FakeRequest(POST, repairsAndMaintenanceRoute)
@@ -199,12 +193,11 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(userScenario.baseUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request =
                 FakeRequest(POST, repairsAndMaintenanceRoute)
@@ -241,7 +234,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

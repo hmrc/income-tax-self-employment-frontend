@@ -44,7 +44,7 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
 
   /** Implementers can provide prerequisite answers the controller requires.
     */
-  def baseAnswers: UserAnswers = emptyUserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswersAccrual
 
   def pageAnswers: UserAnswers
 
