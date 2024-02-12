@@ -29,10 +29,6 @@ object BusinessPremisesDisallowableAmountSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] = {
-    val a  = userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
-    println(a)
-    val b = userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
-    println(b)
     for {
       allowableAmount <- userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
       disallowable    <- userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
