@@ -25,13 +25,15 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class WfhFlatRateOrActualCostsSummarySpec extends SummaryBaseSpec("WfhFlatRateOrActualCostsSummary") {
 
-  override val validData: JsObject   = Json.obj("wfhFlatRateOrActualCosts" -> "flatRate")
+  private val amount: BigDecimal     = 12
+  private val answer: String         = "flatRate"
+  override val validData: JsObject   = Json.obj("wfhFlatRateOrActualCosts" -> answer, "wfhClaimingAmount" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"wfhFlatRateOrActualCosts.subHeading.$userType")
-  override val testValue: HtmlContent    = HtmlContent("£12")
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", amount))
+  override val testValue: HtmlContent    = HtmlContent(s"expenses.$answer.cya")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "12")(messages)
+    WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }

@@ -62,7 +62,7 @@ class WfhFlatRateOrActualCostsControllerSpec
     formatMoney(amount51To100),
     validMonthsText,
     formatMoney(amount101Plus),
-    formatMoney(flatRate)
+    flatRate
   )
 
   private def submissionCall(mode: Mode): Call       = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode)

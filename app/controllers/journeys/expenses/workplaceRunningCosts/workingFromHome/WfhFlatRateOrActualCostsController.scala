@@ -77,7 +77,7 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
-              answer => handleSuccess(answer, BigDecimal(flatRateViewModel.flatRate))
+              answer => handleSuccess(answer, flatRateViewModel.flatRate)
             )
       }
   }

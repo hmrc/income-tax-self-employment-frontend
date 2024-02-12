@@ -29,7 +29,7 @@ case class WfhFlatRateViewModel(months25To50: String,
                                 amount51To100: String,
                                 months101Plus: String,
                                 amount101Plus: String,
-                                flatRate: String)
+                                flatRate: BigDecimal)
 
 object WfhFlatRateViewModel {
 
@@ -53,7 +53,7 @@ object WfhFlatRateViewModel {
             formatMoney(amount51To100),
             formatMonths(months101Plus),
             formatMoney(amount101Plus),
-            formatMoney(flatRate)
+            flatRate
           ))
       case _ => Left(redirectJourneyRecovery())
     }

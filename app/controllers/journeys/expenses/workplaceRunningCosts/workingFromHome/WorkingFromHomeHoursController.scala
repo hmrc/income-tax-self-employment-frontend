@@ -95,18 +95,17 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
       messages: Messages): Either[Result, (Form[WorkingFromHomeHoursFormModel], Int)] =
-    getMaxMonthsWithinTaxYearOrRedirect(business) map {
-      maxMonths =>
-        val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
-        val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
-        val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
-        val value101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
-        val filledForm: Form[WorkingFromHomeHoursFormModel] = (value25To50, value51To100, value101Plus) match {
-          case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
-            formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
-          case _ => formProvider
-        }
-        (filledForm, maxMonths)
+    getMaxMonthsWithinTaxYearOrRedirect(business) map { maxMonths =>
+      val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
+      val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
+      val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
+      val value101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
+      val filledForm: Form[WorkingFromHomeHoursFormModel] = (value25To50, value51To100, value101Plus) match {
+        case (Some(value25To50), Some(value51To100), Some(value101Plus)) =>
+          formProvider.fill(WorkingFromHomeHoursFormModel(value25To50, value51To100, value101Plus))
+        case _ => formProvider
+      }
+      (filledForm, maxMonths)
     }
 
 }
