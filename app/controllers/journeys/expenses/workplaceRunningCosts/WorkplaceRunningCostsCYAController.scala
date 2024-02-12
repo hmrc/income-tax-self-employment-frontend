@@ -21,16 +21,12 @@ import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.ExpensesWorkplaceRunningCosts
 import models.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsJourneyAnswers
-import models.requests.DataRequest
 import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAPage
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
-import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.expenses.workplaceRunningCosts._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
@@ -91,33 +87,6 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
       val result  = service.submitAnswers[WorkplaceRunningCostsJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)
-  }
-
-  def getFlatRates(request: DataRequest[_], businessId: BusinessId): (Option[String], Option[String]) = {
-
-    val months25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
-    val months51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
-    val months101Plus = request.getValue(WorkingFromHomeHours101Plus, businessId)
-
-    val months1Person = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
-    val months2People = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
-    val months3People = request.getValue(LivingAtBusinessPremisesThreePlusPeople, businessId)
-
-    (months1Person, months2People, months3People, months25To50, months51To100, months101Plus) match {
-      case (Some(months1Person), Some(months2People), Some(months3People), Some(months25To50), Some(months51To100), Some(months101Plus)) =>
-        val amount25To50  = months25To50 * 10
-        val amount51To100 = months51To100 * 18
-        val amount101Plus = months101Plus * 26
-        val wfhFlatRate   = amount25To50 + amount51To100 + amount101Plus
-
-        val amount1Person = months1Person * 350
-        val amount2People = months2People * 500
-        val amount3People = months3People * 650
-        val flatRate      = amount1Person + amount2People + amount3People
-        (Some(formatMoney(wfhFlatRate)), Some(formatMoney(flatRate)))
-
-      case _ => (None, None)
-    }
   }
 
 }

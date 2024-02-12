@@ -27,7 +27,7 @@ class LivingAtBusinessPremisesTwoPeopleSummarySpec extends SummaryBaseSpec("Livi
 
   private val amount: Int = 1
 
-  override val validData: JsObject   = Json.obj("livingAtBusinessPremises-twoPeople" -> amount)
+  override val validData: JsObject   = Json.obj("livingAtBusinessPremisesTwoPeople" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"wfbpTwoPeople.subHeading.$userType")

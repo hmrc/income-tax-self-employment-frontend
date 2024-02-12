@@ -76,7 +76,7 @@ class WfbpFlatRateOrActualCostsController @Inject() (override val messagesApi: M
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
-              value => handleSuccess(value, BigDecimal(flatRateViewModel.flatRate))
+              value => handleSuccess(value, flatRateViewModel.flatRate)
             )
       }
   }
