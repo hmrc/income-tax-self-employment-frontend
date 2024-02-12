@@ -23,33 +23,58 @@ import models.common.AccountingType.Cash
 import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring}
+import models.journeys.Journey
+import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring, CapitalAllowancesZeroEmissionCars}
+import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
+import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.journeys._
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
-import viewmodels.journeys.{checkIfCannotStartYet, determineJourneyStartOrCyaUrl}
 
 object CapitalAllowancesTasklist {
 
-  def buildCapitalAllowances(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, businessId: BusinessId)(implicit
+  def buildCapitalAllowances(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit
       messages: Messages,
+      businessId: BusinessId,
       userAnswers: Option[UserAnswers]): List[SummaryListRow] = {
+
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
-    val tailoringStatus   = checkIfCannotStartYet(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
-    val tailoringHref     = getCapitalAllowanceUrl(tailoringStatus, businessId, taxYear)
+    val tailoringStatus   = getJourneyStatus(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
+    val tailoringHref     = getCapitalAllowanceUrl(CapitalAllowancesTailoring, tailoringStatus, businessId, taxYear)
     val isCashHeading: String = userAnswers.map(_.getAccountingType(businessId)) match {
       case Some(Cash) => s".$Cash"
       case _          => ""
     }
     val tailoringRow = buildSummaryRow(tailoringHref, messages(s"journeys.$CapitalAllowancesTailoring$isCashHeading"), tailoringStatus).some
 
-    List(tailoringRow).flatten
+    val capAllowancesTailoringCompleted = tailoringStatus.isCompleted
+
+    val zeroEmissionCarsStatus = getJourneyStatus(CapitalAllowancesZeroEmissionCars)(tradesJourneyStatuses)
+    val zecIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionCar) && capAllowancesTailoringCompleted
+    val zeroEmissionCarsHref = getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)
+    val zeroEmissionCarsRow = returnRowIfConditionPassed(
+      buildSummaryRow(zeroEmissionCarsHref, messages(s"journeys.$CapitalAllowancesZeroEmissionCars"), zeroEmissionCarsStatus),
+      zecIsTailored
+    )
+
+    List(tailoringRow, zeroEmissionCarsRow).flatten
   }
 
-  private def getCapitalAllowanceUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineJourneyStartOrCyaUrl(
-      capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url,
-      capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
-    )(journeyStatus)
+  private def getCapitalAllowanceUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
+    journey match {
+      case CapitalAllowancesTailoring =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesZeroEmissionCars =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.zeroEmissionCars.routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case _ => ???
+    }
 }

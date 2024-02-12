@@ -29,13 +29,44 @@ class BusinessPremisesDisallowableAmountSummarySpec extends SummaryBaseSpec("Bus
   private val disallowableAmount: BigDecimal = 500
   private val allowableAmount: BigDecimal    = 700
 
-  override val validData: JsObject   = Json.obj("businessPremisesDisallowableAmount" -> disallowableAmount)
+  override val validData: JsObject = Json.obj(
+    "businessPremisesDisallowableAmount" -> disallowableAmount,
+    "businessPremisesAmount"             -> allowableAmount
+  )
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"businessPremisesDisallowableAmount.title.$userType")
   override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType, allowableAmount)(messages)
+    BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+
+  "row" - {
+
+    "return None if no allowable amount" in {
+      val answers = buildUserAnswers(
+        Json.obj(
+          "businessPremisesDisallowableAmount" -> disallowableAmount
+        ))
+      val actual = BusinessPremisesDisallowableAmountSummary.row(answers, taxYear, businessId, UserType.Individual)
+      assert(actual === None)
+    }
+
+    "return None if no disallowable amount" in {
+      val answers = buildUserAnswers(
+        Json.obj(
+          "businessPremisesAmount" -> allowableAmount
+        ))
+      val actual = BusinessPremisesDisallowableAmountSummary.row(answers, taxYear, businessId, UserType.Individual)
+      assert(actual === None)
+    }
+
+    "return non empty row if allowable and disallowable amount" in {
+      val answers = buildUserAnswers(validData)
+      val actual  = BusinessPremisesDisallowableAmountSummary.row(answers, taxYear, businessId, UserType.Individual)
+      assert(actual.map(_.value.content) === Some(HtmlContent(s"£$disallowableAmount.00")))
+    }
+
+  }
 
 }

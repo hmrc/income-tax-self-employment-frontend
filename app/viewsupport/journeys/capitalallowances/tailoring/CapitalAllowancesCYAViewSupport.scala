@@ -24,7 +24,7 @@ object CapitalAllowancesCYAViewSupport {
 
   def renderCyaValue(allowances: Set[CapitalAllowances])(implicit messages: Messages): String =
     allowances
-      .map(value => messages(s"selectCapitalAllowances.${value.toString}"))
+      .map(value => messages(s"selectCapitalAllowances.${value.toString}.cya"))
       .map(HtmlFormat.escape)
       .mkString("<br>")
 }

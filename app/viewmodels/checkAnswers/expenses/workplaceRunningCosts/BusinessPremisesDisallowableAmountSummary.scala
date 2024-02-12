@@ -30,10 +30,10 @@ object BusinessPremisesDisallowableAmountSummary {
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
     for {
-      disallowableAmount <- userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
-      allowableAmount    <- userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
+      allowableAmount <- userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
+      disallowable    <- userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
     } yield buildRowBigDecimal(
-      disallowableAmount,
+      disallowable,
       routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
       messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
       "businessPremisesDisallowableAmount.title.hidden"
