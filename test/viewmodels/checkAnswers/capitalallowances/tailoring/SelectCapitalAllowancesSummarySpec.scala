@@ -55,7 +55,7 @@ class SelectCapitalAllowancesSummarySpec extends SpecBase {
           val data = Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar"))
 
           expectedResult(buildUserAnswers(data)).get shouldBe a[SummaryListRow]
-          expectedResult(buildUserAnswers(data)).get.value.content shouldBe HtmlContent("selectCapitalAllowances.zeroEmissionCar")
+          expectedResult(buildUserAnswers(data)).get.value.content shouldBe HtmlContent("selectCapitalAllowances.zeroEmissionCar.cya")
         }
       }
     }
