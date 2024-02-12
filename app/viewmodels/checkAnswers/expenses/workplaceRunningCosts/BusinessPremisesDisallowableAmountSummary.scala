@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.buildRowBigDecimal
 object BusinessPremisesDisallowableAmountSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-      messages: Messages): Option[SummaryListRow] = {
+      messages: Messages): Option[SummaryListRow] =
     for {
       allowableAmount <- userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
       disallowable    <- userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
@@ -38,6 +38,5 @@ object BusinessPremisesDisallowableAmountSummary {
       messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
       "businessPremisesDisallowableAmount.title.hidden"
     )
-  }
 
 }
