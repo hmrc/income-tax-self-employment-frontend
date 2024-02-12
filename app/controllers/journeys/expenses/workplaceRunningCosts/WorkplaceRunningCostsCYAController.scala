@@ -54,7 +54,6 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[WorkplaceRunningCostsJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesWorkplaceRunningCosts)) andThen requireData) { implicit request =>
-      println("CHECK YOUR ANSWERS CHECK YOUR ANSWERS")
       val user = request.userType
 
       getFlatRates(request, businessId) match {
@@ -69,12 +68,7 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
               WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
               LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
               BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-              BusinessPremisesDisallowableAmountSummary.row(
-                request.userAnswers,
-                taxYear,
-                businessId,
-                user,
-                request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)).get),
+              BusinessPremisesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user),
               LivingAtBusinessPremisesOnePersonSummary.row(request.userAnswers, taxYear, businessId, user),
               LivingAtBusinessPremisesTwoPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
               LivingAtBusinessPremisesThreePlusPeopleSummary.row(request.userAnswers, taxYear, businessId, user),

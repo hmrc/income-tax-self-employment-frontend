@@ -51,7 +51,7 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
         WfhClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
         LiveAtBusinessPremisesSummary.row(userAnswers, taxYear, businessId, userType).value,
         BusinessPremisesAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
-        BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType, 100).value,
+        BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesOnePersonSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesTwoPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesThreePlusPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,

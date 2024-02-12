@@ -159,7 +159,6 @@ class WorkplaceRunningCostsNavigator @Inject() {
               case Some(MoreThan25Hours.Yes) =>
                 workplaceRunningCosts.workingFromHome.routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, CheckMode)
               case Some(MoreThan25Hours.No) =>
-                println("irehgiuerhgiuerhgiuheriugheiruhgiuerhgiuhergiuheriughweiurg")
                 workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
               case _ =>
                 standard.routes.JourneyRecoveryController.onPageLoad()
