@@ -16,7 +16,7 @@
 
 package controllers.journeys.capitalallowances.tailoring
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.CapitalAllowancesTailoring
@@ -37,7 +37,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CapitalAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
                                                identify: IdentifierAction,
-                                               getAnswers: DataRetrievalAction,
+                                               getUserAnswers: DataRetrievalAction,
+                                               getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireAnswers: DataRequiredAction,
                                                service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
@@ -47,7 +48,8 @@ class CapitalAllowanceCYAController @Inject() (override val messagesApi: Message
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getUserAnswers andThen getJourneyAnswers[CapitalAllowancesTailoringAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesTailoring)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
@@ -64,7 +66,7 @@ class CapitalAllowanceCYAController @Inject() (override val messagesApi: Message
           routes.CapitalAllowanceCYAController.onSubmit(taxYear, businessId)))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireAnswers) async {
     implicit request =>
       val context = JourneyAnswersContext(taxYear, businessId, request.mtditid, CapitalAllowancesTailoring)
       val result  = service.submitAnswers[CapitalAllowancesTailoringAnswers](context, request.userAnswers)
