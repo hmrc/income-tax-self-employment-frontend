@@ -16,26 +16,25 @@
 
 package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
-import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
+import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object MoreThan25HoursSummary {
+object BusinessPremisesDisallowableAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MoreThan25HoursPage, Some(businessId)).map { answer =>
-      buildRowString(
-        formatAnswer(answer.toString),
-        workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
-        s"moreThan25Hours.title.$userType",
-        "moreThan25Hours.change.hidden",
-        rightTextAlign = true
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, allowableAmount: BigDecimal)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId)).map { answer =>
+      buildRowBigDecimal(
+        answer,
+        routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+        messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
+        "businessPremisesDisallowableAmount.title.hidden"
       )
     }
 

@@ -731,6 +731,24 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 
 common.workplaceRunning.heating = heating
 
+## CYA
+worklpaceRunningCostsCya.title.individual =  Check your workplace running costs
+worklpaceRunningCostsCya.title.agent =  Check your client’s workplace running costs
+wfh25To50Hours.subHeading.individual = How many months did you work 25 to 50 hours from home?
+wfh25To50Hours.subHeading.agent = How many months did your client work 25 to 50 hours from home?
+wfh51To100Hours.subHeading.individual = How many months did you work 51 to 100 hours from home?
+wfh51To100Hours.subHeading.agent = How many months did your client work 51 to 100 hours from home?
+wfh101PlusHours.subHeading.individual = How many months did you work 101 or more hours from home?
+wfh101PlusHours.subHeading.agent = How many months did your client work 101 or more hours from home?
+wfhFlatRateOrActualCosts.subHeading.individual = Do you want to report your working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Does your client want to report their working-from-home expenses as a flat rate of £{0} or actual costs?
+wfbpOnePerson.subHeading.individual = How many months did 1 person live at your business premises?
+wfbpOnePerson.subHeading.agent = How many months did 1 person live at your client’s business premises?
+wfbpTwoPeople.subHeading.individual = How many months did 2 people live at your business premises?
+wfbpTwoPeople.subHeading.agent = How many months did 2 people live at your client’s business premises?
+wfbpThreePlusPeople.subHeading.individual = How many months did 3 or more people live at your business premises?
+wfbpThreePlusPeople.subHeading.agent = How many months did 3 or more people live at your client’s business premises?
+
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
@@ -824,8 +842,10 @@ liveAtBusinessPremises.hint.individual = Select no if you only lived at your hom
 liveAtBusinessPremises.hint.agent = Select no if your client only lived at their home address.
 liveAtBusinessPremises.error.required.individual = Select yes if you lived at your business premises
 liveAtBusinessPremises.error.required.agent = Select yes if your client lived at their business premises
-liveAtBusinessPremises.change.hidden = // TODO replace when CYA page is made
+liveAtBusinessPremises.change.hidden.individual = Change if you live at your business premises
+liveAtBusinessPremises.change.hidden.agent = Change if your client lived at their business premises
 
+## Business Premises Amount
 businessPremisesAmount.title = Business premises expenses
 businessPremisesAmount.amount.individual = How much were your business premises expenses?
 businessPremisesAmount.amount.agent = How much were your client’s business premises expenses?
@@ -846,6 +866,7 @@ businessPremisesAmount.error.lessThanZero.agent = The amount your client spent o
 businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
 businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
 
+## Business Premises Disallowable Amount
 businessPremisesDisallowableAmount.title.individual = How much of the £{0} you spent on business premises expenses is disallowable?
 businessPremisesDisallowableAmount.title.agent = How much of the £{0} your client spent on business premises expenses is disallowable?
 businessPremisesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on business premises expenses that is disallowable

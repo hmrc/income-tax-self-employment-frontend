@@ -259,6 +259,11 @@ POST        /:taxYear/:businessId/expenses/change-repairs-maintenance/disallowab
 GET         /:taxYear/:businessId/expenses/repairs-maintenance/check                                                                   controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/repairs-maintenance/check                                                                   controllers.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
+########## Expenses - Workplace Running Costs ##########
+
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/workplace-running-costs/check                                       controllers.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/workplace-running-costs/workplace-running-costs/check                                       controllers.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Working From Home ##########
 
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/more-than-25-hours                                controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -276,7 +281,8 @@ POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/flat-rate                                  controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/flat-rate                                  controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/private-use                                       controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/private-use                                       controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/workplace-running-costs/change-working-from-home/private-use                                controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/amount                                            controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/workplace-running-costs/working-from-home/amount                                            controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

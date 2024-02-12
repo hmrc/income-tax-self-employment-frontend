@@ -47,7 +47,7 @@ class WfhFlatRateOrActualCostsControllerSpec
 
   override def onPageLoadCall: Call                  = routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call                    = submissionCall(NormalMode)
-  override def onwardRoute: Call                     = expectedRedirectCall()
+  override def onwardRoute: Call                     = expectedRedirectCall(NormalMode)
   override def validAnswer: WfhFlatRateOrActualCosts = FlatRate
   private lazy val validMonths                       = 3
   private lazy val validMonthsText                   = s"$validMonths months"
@@ -65,8 +65,8 @@ class WfhFlatRateOrActualCostsControllerSpec
     formatMoney(flatRate)
   )
 
-  private def submissionCall(mode: Mode): Call = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode)
-  private def expectedRedirectCall(): Call     = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+  private def submissionCall(mode: Mode): Call       = routes.WfhFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode)
+  private def expectedRedirectCall(mode: Mode): Call = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId, mode)
 
   override def baseAnswers: UserAnswers = emptyUserAnswers
     .set(WorkingFromHomeHours25To50, validMonths, Some(businessId))

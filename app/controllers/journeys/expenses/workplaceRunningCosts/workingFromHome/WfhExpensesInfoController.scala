@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.NormalMode
+import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromHome.WfhExpensesInfoPage
@@ -39,8 +39,9 @@ class WfhExpensesInfoController @Inject() (override val messagesApi: MessagesApi
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val redirectRoute: Call = navigator.nextPage(WfhExpensesInfoPage, NormalMode, request.userAnswers, taxYear, businessId)
-    Ok(view(request.userType, redirectRoute.url))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val redirectRoute: Call = navigator.nextPage(WfhExpensesInfoPage, mode, request.userAnswers, taxYear, businessId)
+      Ok(view(request.userType, redirectRoute.url))
   }
 }

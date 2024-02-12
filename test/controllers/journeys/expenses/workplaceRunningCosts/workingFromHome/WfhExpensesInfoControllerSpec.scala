@@ -29,7 +29,7 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhExp
 
 class WfhExpensesInfoControllerSpec extends ControllerSpec {
 
-  private lazy val onPageLoadCall = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId)
+  private lazy val onPageLoadCall = routes.WfhExpensesInfoController.onPageLoad(taxYear, businessId, NormalMode)
   private lazy val redirectCall   = routes.WfhClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
   private lazy val getRequest     = FakeRequest(GET, onPageLoadCall.url)
 

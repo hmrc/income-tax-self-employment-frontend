@@ -40,6 +40,9 @@ package object checkAnswers {
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
 
+  def buildRowInt(answer: Int, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
+    buildRowString(answer.toString, callLink, keyMessage, changeMessage, rightTextAlign = true)
+
   def buildRowString(answer: String,
                      callLink: Call,
                      keyMessage: String,

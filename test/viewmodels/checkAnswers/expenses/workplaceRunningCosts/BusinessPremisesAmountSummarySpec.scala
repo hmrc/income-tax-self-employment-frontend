@@ -22,16 +22,19 @@ import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 
-class MoreThan25HoursSummarySpec extends SummaryBaseSpec("MoreThan25HoursSummary") {
+class BusinessPremisesAmountSummarySpec extends SummaryBaseSpec("BusinessPremisesAmountSummary") {
 
-  override val validData: JsObject   = Json.obj("moreThan25Hours" -> "yes")
-  override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
+  private val amount: BigDecimal = 500
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(s"moreThan25Hours.title.$userType")
-  override val testValue: HtmlContent    = HtmlContent("site.yes")
+  override val validData: JsObject   = Json.obj("businessPremisesAmount" -> amount)
+  override val invalidData: JsObject = Json.obj("otherPage" -> amount)
+
+  override val testKey: UserType => Text = (userType: UserType) => Text(s"businessPremisesAmount.amount.$userType")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(amount)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    MoreThan25HoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    BusinessPremisesAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }
