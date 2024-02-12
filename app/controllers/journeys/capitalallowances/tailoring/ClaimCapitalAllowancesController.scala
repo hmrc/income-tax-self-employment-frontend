@@ -22,6 +22,7 @@ import controllers.returnAccountingType
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -29,7 +30,6 @@ import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapi
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
@@ -84,7 +84,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
     val clearUserAnswerDataIfNeeded =
       if (currentAnswer) Future(request.userAnswers)
       else {
-        Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(SelectCapitalAllowancesPage), Some(businessId)))
+        Future.fromTry(request.userAnswers.set(SelectCapitalAllowancesPage, Set.empty[CapitalAllowances], Some(businessId)))
       }
     val redirectMode = request.getValue(ClaimCapitalAllowancesPage, businessId) match {
       case Some(false) if currentAnswer => NormalMode
