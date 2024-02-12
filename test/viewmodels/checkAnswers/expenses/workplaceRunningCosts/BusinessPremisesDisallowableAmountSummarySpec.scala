@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
