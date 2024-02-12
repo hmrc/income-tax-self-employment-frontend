@@ -56,6 +56,7 @@ journeys.expenses-depreciation = Depreciation costs
 journeys.expenses-other-expenses = Other Expenses
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
+journeys.capital-allowances-zero-emission-cars = Zero-emission cars
 
 date.day = Day
 date.month = Month

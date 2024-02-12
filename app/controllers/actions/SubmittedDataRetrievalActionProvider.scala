@@ -21,11 +21,12 @@ import connectors.SelfEmploymentConnector
 import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.{Journey, TaskListWithRequest}
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.{Journey, TaskListWithRequest}
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
 import play.api.mvc.AnyContent
@@ -68,7 +69,12 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
       incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, abroadUpdated, Journey.Income)
       expensesUpdated <- loadAnswers[ExpensesTailoringAnswers](taxYear, businesses, incomeUpdated, Journey.ExpensesTailoring)
       gtsouUpdated    <- loadAnswers[GoodsToSellOrUseJourneyAnswers](taxYear, businesses, expensesUpdated, Journey.ExpensesGoodsToSellOrUse)
-    } yield TaskListWithRequest(taskList, gtsouUpdated)
+      capitalAllowancesUpdated <- loadAnswers[CapitalAllowancesTailoringAnswers](
+        taxYear,
+        businesses,
+        gtsouUpdated,
+        Journey.CapitalAllowancesTailoring)
+    } yield TaskListWithRequest(taskList, capitalAllowancesUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
