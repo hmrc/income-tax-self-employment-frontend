@@ -95,9 +95,8 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
       messages: Messages): Either[Result, (Form[PeopleLivingAtBusinessPremisesFormModel], Int)] =
-    getMaxMonthsWithinTaxYearOrRedirect(business) match {
-      case Left(redirect) => Left(redirect)
-      case Right(maxMonths) =>
+    getMaxMonthsWithinTaxYearOrRedirect(business) map {
+      maxMonths =>
         val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
         val onePerson    = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
         val twoPeople    = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
@@ -107,7 +106,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
             formProvider.fill(PeopleLivingAtBusinessPremisesFormModel(onePerson, twoPeople, threePeople))
           case _ => formProvider
         }
-        Right((filledForm, maxMonths))
+        (filledForm, maxMonths)
     }
 
 }

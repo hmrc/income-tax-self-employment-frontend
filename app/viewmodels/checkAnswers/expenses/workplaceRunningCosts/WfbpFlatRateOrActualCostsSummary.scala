@@ -16,40 +16,35 @@
 
 package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{WfbpClaimingAmountPage, WfbpFlatRateOrActualCostsPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.buildRowString
 
 object WfbpFlatRateOrActualCostsSummary {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, flatRate: String)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(WfbpFlatRateOrActualCostsPage, Some(businessId)) match {
-      case Some(WfbpFlatRateOrActualCosts.FlatRate) =>
-        Some(
-          buildRowString(
-            s"£$flatRate",
-            routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-            messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRate),
-            "wfbpFlatRateOrActualCosts.change.hidden",
-            rightTextAlign = true
-          ))
-      case Some(WfbpFlatRateOrActualCosts.ActualCosts) =>
-        Some(
-          buildRowString(
-            Messages("expenses.actualCosts"),
-            routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-            messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRate),
-            "wfbpFlatRateOrActualCosts.change.hidden",
-            rightTextAlign = true
-          ))
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] = {
+
+    val answer   = userAnswers.get(WfbpFlatRateOrActualCostsPage, Some(businessId))
+    val flatRate = userAnswers.get(WfbpClaimingAmountPage, Some(businessId))
+    (answer, flatRate) match {
+      case (Some(answer), Some(flatRate)) =>
+        buildRowString(
+          Messages(s"expenses.$answer.cya"),
+          routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", formatMoney(flatRate)),
+          "wfbpFlatRateOrActualCosts.change.hidden",
+          rightTextAlign = true
+        ).some
       case _ => None
     }
+  }
 
 }

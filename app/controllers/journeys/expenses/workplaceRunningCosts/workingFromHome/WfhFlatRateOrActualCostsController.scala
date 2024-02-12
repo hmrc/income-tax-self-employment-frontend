@@ -29,7 +29,6 @@ import pages.expenses.workplaceRunningCosts.workingFromHome.{WfhClaimingAmountPa
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel.calculateFlatRate
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsView
@@ -65,9 +64,9 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(answer: WfhFlatRateOrActualCosts): Future[Result] =
+      def handleSuccess(answer: WfhFlatRateOrActualCosts, flatRate: BigDecimal): Future[Result] =
         for {
-          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, flatRate, request, mode, businessId)
           updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, WfhFlatRateOrActualCostsPage)
         } yield Redirect(navigator.nextPage(WfhFlatRateOrActualCostsPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
@@ -78,17 +77,18 @@ class WfhFlatRateOrActualCostsController @Inject() (override val messagesApi: Me
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, flatRateViewModel))),
-              value => handleSuccess(value)
+              answer => handleSuccess(answer, BigDecimal(flatRateViewModel.flatRate))
             )
       }
   }
 
   private def handleGatewayQuestion(currentAnswer: WfhFlatRateOrActualCosts,
+                                    flatRate: BigDecimal,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case FlatRate    => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(WfhClaimingAmountPage), Some(businessId)))
+      case FlatRate    => Future.fromTry(request.userAnswers.set(WfhClaimingAmountPage, flatRate, Some(businessId)))
       case ActualCosts => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(WfhFlatRateOrActualCostsPage, businessId) match {

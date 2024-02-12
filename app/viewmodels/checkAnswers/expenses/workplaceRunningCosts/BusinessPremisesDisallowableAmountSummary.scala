@@ -20,22 +20,23 @@ import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPr
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
 object BusinessPremisesDisallowableAmountSummary {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, allowableAmount: BigDecimal)(implicit
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId)).map { answer =>
-      buildRowBigDecimal(
-        answer,
-        routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
-        messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
-        "businessPremisesDisallowableAmount.title.hidden"
-      )
-    }
+    for {
+      disallowableAmount <- userAnswers.get(BusinessPremisesDisallowableAmountPage, Some(businessId))
+      allowableAmount    <- userAnswers.get(BusinessPremisesAmountPage, Some(businessId))
+    } yield buildRowBigDecimal(
+      disallowableAmount,
+      routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, CheckMode),
+      messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount),
+      "businessPremisesDisallowableAmount.title.hidden"
+    )
 
 }

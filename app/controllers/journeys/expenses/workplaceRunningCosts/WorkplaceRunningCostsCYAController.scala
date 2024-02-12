@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.workplaceRunningCosts
 
 import controllers.actions._
-import controllers.{handleSubmitAnswersResult, redirectJourneyRecovery}
+import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.ExpensesWorkplaceRunningCosts
 import models.journeys.expenses.workplaceRunningCosts.WorkplaceRunningCostsJourneyAnswers
@@ -54,45 +54,35 @@ class WorkplaceRunningCostsCYAController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[WorkplaceRunningCostsJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesWorkplaceRunningCosts)) andThen requireData) { implicit request =>
-      println("CHECK YOUR ANSWERS CHECK YOUR ANSWERS")
       val user = request.userType
 
-      getFlatRates(request, businessId) match {
-        case (wfhRate, wfbpRate) =>
-          val summaryList = SummaryListCYA.summaryListOpt(
-            List(
-              MoreThan25HoursSummary.row(request.userAnswers, taxYear, businessId, user),
-              WorkingFromHome25To50HoursSummary.row(request.userAnswers, taxYear, businessId, user),
-              WorkingFromHome51To100HoursSummary.row(request.userAnswers, taxYear, businessId, user),
-              WorkingFromHome101PlusHoursSummary.row(request.userAnswers, taxYear, businessId, user),
-              WfhFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfhRate.getOrElse("")),
-              WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-              LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
-              BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
-              BusinessPremisesDisallowableAmountSummary.row(
-                request.userAnswers,
-                taxYear,
-                businessId,
-                user,
-                request.userAnswers.get(BusinessPremisesAmountPage, Some(businessId)).get),
-              LivingAtBusinessPremisesOnePersonSummary.row(request.userAnswers, taxYear, businessId, user),
-              LivingAtBusinessPremisesTwoPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
-              LivingAtBusinessPremisesThreePlusPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
-              WfbpFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user, wfbpRate.getOrElse("")),
-              WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user)
-            )
-          )
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          MoreThan25HoursSummary.row(request.userAnswers, taxYear, businessId, user),
+          WorkingFromHome25To50HoursSummary.row(request.userAnswers, taxYear, businessId, user),
+          WorkingFromHome51To100HoursSummary.row(request.userAnswers, taxYear, businessId, user),
+          WorkingFromHome101PlusHoursSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfhFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfhClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          LiveAtBusinessPremisesSummary.row(request.userAnswers, taxYear, businessId, user),
+          BusinessPremisesAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          BusinessPremisesDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesOnePersonSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesTwoPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
+          LivingAtBusinessPremisesThreePlusPeopleSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfbpFlatRateOrActualCostsSummary.row(request.userAnswers, taxYear, businessId, user),
+          WfbpClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, user)
+        )
+      )
 
-          Ok(
-            view(
-              WorkplaceRunningCostsCYAPage.toString,
-              taxYear,
-              request.userType,
-              summaryList,
-              routes.WorkplaceRunningCostsCYAController.onSubmit(taxYear, businessId)))
+      Ok(
+        view(
+          WorkplaceRunningCostsCYAPage.toString,
+          taxYear,
+          request.userType,
+          summaryList,
+          routes.WorkplaceRunningCostsCYAController.onSubmit(taxYear, businessId)))
 
-        case _ => redirectJourneyRecovery()
-      }
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
