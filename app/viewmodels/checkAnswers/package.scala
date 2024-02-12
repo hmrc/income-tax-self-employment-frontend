@@ -33,8 +33,8 @@ package object checkAnswers {
                       changeMessage: String,
                       rightTextAlign: Boolean = false,
                       flipKeyToValueWidthRatio: Boolean = false)(implicit messages: Messages): SummaryListRow = {
-    val messageKey = if (answer) "site.yes" else "site.no"
-    buildRowString(messages(messageKey), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
+    val messageAnswer = if (answer) "site.yes" else "site.no"
+    buildRowString(messages(messageAnswer), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =

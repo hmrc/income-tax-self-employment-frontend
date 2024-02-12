@@ -31,7 +31,7 @@ class ZecUsedForWorkSummarySpec extends SummaryBaseSpec("ZecUsedForWorkSummary")
   override val invalidData: JsObject = Json.obj("otherPage" -> false)
 
   override val testKey: UserType => Text =
-    (userType: UserType) => Text(s"zecUsedForWork.subHeading.$userType")
+    (userType: UserType) => Text(messages(s"zecUsedForWork.subHeading.$userType", (taxYear.value - 1).toString, taxYear.value.toString))
 
   override val testValue: HtmlContent = HtmlContent("site.no")
 
