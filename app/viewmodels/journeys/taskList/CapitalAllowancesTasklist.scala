@@ -41,7 +41,7 @@ object CapitalAllowancesTasklist {
       userAnswers: Option[UserAnswers]): List[SummaryListRow] = {
 
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
-    val tailoringStatus   = getStatusAndCheckIfCannotStartYet(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
+    val tailoringStatus   = getJourneyStatus(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
     val tailoringHref     = getCapitalAllowanceUrl(CapitalAllowancesTailoring, tailoringStatus, businessId, taxYear)
     val isCashHeading: String = userAnswers.map(_.getAccountingType(businessId)) match {
       case Some(Cash) => s".$Cash"
@@ -49,7 +49,7 @@ object CapitalAllowancesTasklist {
     }
     val tailoringRow = buildSummaryRow(tailoringHref, messages(s"journeys.$CapitalAllowancesTailoring$isCashHeading"), tailoringStatus).some
 
-    val zeroEmissionCarsStatus = getStatusAndCheckIfCannotStartYet(CapitalAllowancesZeroEmissionCars)(tradesJourneyStatuses)
+    val zeroEmissionCarsStatus = getJourneyStatus(CapitalAllowancesZeroEmissionCars)(tradesJourneyStatuses)
     val zecIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionCar)
     val zeroEmissionCarsHref = getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)

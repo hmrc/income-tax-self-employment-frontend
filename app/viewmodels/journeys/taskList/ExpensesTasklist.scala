@@ -139,7 +139,7 @@ object ExpensesTasklist {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
-    val status: JourneyStatus = getStatusAndCheckIfCannotStartYet(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val href                  = getExpensesUrl(journey, status, businessId, taxYear)
     val row                   = buildSummaryRow(href, keyString, status)
@@ -155,7 +155,7 @@ object ExpensesTasklist {
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): Option[SummaryListRow] = {
     val optWfh    = optWfhMsg.getOrElse("")
-    val status    = getStatusAndCheckIfCannotStartYet(journey)
+    val status    = getJourneyStatus(journey)
     val keyString = messages(s"journeys.$journey$optWfh")
     val href      = getWorkplaceRunningCostsUrl(status, userAnswers, taxYear)
     val row       = buildSummaryRow(href, keyString, status)

@@ -28,12 +28,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 package object journeys {
 
   def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
-    getStatusAndCheckIfCannotStartYet(dependentJourney)(tradesJourneyStatuses) match {
+    getJourneyStatus(dependentJourney)(tradesJourneyStatuses) match {
       case Completed | InProgress                        => true
       case CheckOurRecords | CannotStartYet | NotStarted => false
     }
 
-  def getStatusAndCheckIfCannotStartYet(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
+  def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
       journeyStatuses: TradesJourneyStatuses): JourneyStatus =
     JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
       case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
