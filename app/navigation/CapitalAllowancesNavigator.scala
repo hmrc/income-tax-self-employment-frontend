@@ -21,6 +21,7 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
@@ -48,7 +49,24 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case ZecUsedForWorkPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(ZecUsedForWorkPage, Some(businessId)) match {
+              case Some(true)  => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case ZecAllowancePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(ZecAllowancePage, Some(businessId)) match { // TODO 7271 replace YES with 'Total cost of car' page
+              case Some(ZeroEmissionCarsAllowance.Yes) => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(ZeroEmissionCarsAllowance.No)  => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+              case _                                   => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -58,7 +76,7 @@ class CapitalAllowancesNavigator @Inject() {
     case ClaimCapitalAllowancesPage | SelectCapitalAllowancesPage =>
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case ZecUsedForWorkPage =>
+    case ZecUsedForWorkPage | ZecAllowancePage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
