@@ -16,7 +16,6 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProvider
 import models.Mode
@@ -50,7 +49,7 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(ZecUsedForSelfEmploymentPage, businessId.some)
+        .get(ZecUsedForSelfEmploymentPage, Some(businessId))
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
