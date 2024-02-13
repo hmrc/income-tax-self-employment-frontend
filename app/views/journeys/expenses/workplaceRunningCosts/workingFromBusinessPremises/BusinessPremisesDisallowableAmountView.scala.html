@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
 @import viewmodels.LabelSize.Medium
@@ -39,7 +39,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @formHelper(action = routes.WfhClaimingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BusinessPremisesDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(

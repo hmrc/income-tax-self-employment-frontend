@@ -44,7 +44,8 @@ object SelectCapitalAllowancesSummary {
         content,
         SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, CheckMode),
         "capitalAllowances.CYA.key2",
-        "capitalAllowances.CYA.key2.change.hidden"
+        "capitalAllowances.CYA.key2.change.hidden",
+        flipKeyToValueWidthRatio = true
       )
     }
   }

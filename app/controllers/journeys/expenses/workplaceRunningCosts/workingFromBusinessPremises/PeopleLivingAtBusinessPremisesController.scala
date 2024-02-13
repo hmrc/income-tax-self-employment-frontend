@@ -95,19 +95,17 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
   private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
       messages: Messages): Either[Result, (Form[PeopleLivingAtBusinessPremisesFormModel], Int)] =
-    getMaxMonthsWithinTaxYearOrRedirect(business) match {
-      case Left(redirect) => Left(redirect)
-      case Right(maxMonths) =>
-        val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
-        val onePerson    = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
-        val twoPeople    = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
-        val threePeople  = request.getValue(LivingAtBusinessPremisesThreePlusPeople, businessId)
-        val filledForm: Form[PeopleLivingAtBusinessPremisesFormModel] = (onePerson, twoPeople, threePeople) match {
-          case (Some(onePerson), Some(twoPeople), Some(threePeople)) =>
-            formProvider.fill(PeopleLivingAtBusinessPremisesFormModel(onePerson, twoPeople, threePeople))
-          case _ => formProvider
-        }
-        Right((filledForm, maxMonths))
+    getMaxMonthsWithinTaxYearOrRedirect(business) map { maxMonths =>
+      val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
+      val onePerson    = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
+      val twoPeople    = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
+      val threePeople  = request.getValue(LivingAtBusinessPremisesThreePlusPeople, businessId)
+      val filledForm: Form[PeopleLivingAtBusinessPremisesFormModel] = (onePerson, twoPeople, threePeople) match {
+        case (Some(onePerson), Some(twoPeople), Some(threePeople)) =>
+          formProvider.fill(PeopleLivingAtBusinessPremisesFormModel(onePerson, twoPeople, threePeople))
+        case _ => formProvider
+      }
+      (filledForm, maxMonths)
     }
 
 }

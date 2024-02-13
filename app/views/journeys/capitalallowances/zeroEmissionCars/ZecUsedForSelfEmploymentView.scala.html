@@ -32,7 +32,7 @@
 @layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
     @formHelper(action = routes.ZecUsedForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

@@ -22,6 +22,7 @@ import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProv
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
@@ -40,9 +41,9 @@ class ZecUsedForSelfEmploymentControllerSpec
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer: Boolean = true
+  override val validAnswer: ZecUsedForSelfEmployment = ZecUsedForSelfEmployment.Yes
 
-  override def createForm(user: UserType): Form[Boolean] = new ZecUsedForSelfEmploymentFormProvider()(user)
+  override def createForm(user: UserType): Form[ZecUsedForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

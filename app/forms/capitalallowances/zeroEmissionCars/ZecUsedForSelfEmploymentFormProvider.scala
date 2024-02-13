@@ -18,14 +18,15 @@ package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
 import models.common.UserType
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
 import play.api.data.Form
 
 import javax.inject.Inject
 class ZecUsedForSelfEmploymentFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Boolean] =
+  def apply(userType: UserType): Form[ZecUsedForSelfEmployment] =
     Form(
-      "value" -> boolean(s"zecUsedForSelfEmployment.error.required.$userType")
+      "value" -> enumerable[ZecUsedForSelfEmployment](s"zecUsedForSelfEmployment.error.required.$userType")
     )
 
 }

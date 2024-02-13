@@ -39,7 +39,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
   def onSubmitCall: Call
   def onwardRoute: Call
 
-  def baseAnswers: UserAnswers = emptyUserAnswers
+  def baseAnswers: UserAnswers = emptyUserAnswersAccrual
   def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
   def createForm(userType: UserType): Form[Boolean]

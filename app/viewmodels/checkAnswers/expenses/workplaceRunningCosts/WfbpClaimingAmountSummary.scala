@@ -33,7 +33,7 @@ object WfbpClaimingAmountSummary {
       buildRowBigDecimal(
         answer,
         routes.WfbpClaimingAmountController.onPageLoad(taxYear, businessId, CheckMode),
-        s"wfbpClaimingAmount.subHeading.$userType",
+        s"wfbpClaimingAmount.title.$userType",
         "wfbpClaimingAmount.change.hidden"
       )
     }

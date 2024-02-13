@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import controllers.journeys.expenses.workplaceRunningCosts
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.WfbpFlatRateOrActualCostsFormProvider
 import models.common.UserType
 import models.database.UserAnswers
@@ -57,12 +58,12 @@ class WfbpFlatRateOrActualCostsControllerSpec
     formatMoney(amount2People),
     validMonthsText,
     formatMoney(amount3People),
-    formatMoney(flatRate)
+    flatRate
   )
 
   private def submissionCall(mode: Mode): Call = routes.WfbpFlatRateOrActualCostsController.onSubmit(taxYear, businessId, mode)
   private def expectedRedirectCall(): Call =
-    routes.WfbpFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, NormalMode) // TODO 6997 replace with CYA page
+    workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId)
 
   override def baseAnswers: UserAnswers = emptyUserAnswers
     .set(LivingAtBusinessPremisesOnePerson, validMonths, Some(businessId))

@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
 import models.common.UserType.{Agent, Individual}
@@ -25,7 +24,6 @@ import models.common._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -53,11 +51,14 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  case class UserScenario(userType: UserType, form: Form[Set[ProfessionalServiceExpenses]], accountingType: AccountingType)
+  case class UserScenario(userType: UserType,
+                          form: Form[Set[ProfessionalServiceExpenses]],
+                          accountingType: AccountingType,
+                          baseUserAnswers: UserAnswers)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual),
-    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash)
+    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual, baseUserAnswers = emptyUserAnswersAccrual),
+    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash, baseUserAnswers = emptyUserAnswersCash)
   )
 
   "ProfessionalServiceExpenses Controller" - {
@@ -68,12 +69,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
         s"when user is an ${userScenario.userType} and using ${userScenario.accountingType} accounting type" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(userScenario.baseUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -94,7 +94,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId)
+              userScenario.baseUserAnswers
                 .set(ProfessionalServiceExpensesPage, ProfessionalServiceExpenses.values.toSet, Some(businessId))
                 .success
                 .value
@@ -104,7 +104,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
@@ -148,7 +147,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
       "must redirect to the next page when valid data is submitted" in {
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(emptyUserAnswersAccrual))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
               bind[SelfEmploymentService].toInstance(mockService)
@@ -156,7 +155,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             .build()
 
         running(application) {
-          mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(AccountingType.Accrual)
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
           val request =
@@ -175,12 +173,11 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
+            val application = applicationBuilder(userAnswers = Some(userScenario.baseUserAnswers), userScenario.userType)
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
             running(application) {
-              mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(userScenario.accountingType)
 
               val request =
                 FakeRequest(POST, professionalServiceExpensesRoute)

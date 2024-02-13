@@ -25,15 +25,18 @@ import models.common.JourneyStatus._
 import models.common.{JourneyStatus, TradingName}
 import models.database.UserAnswers
 import models.journeys.Journey._
+import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
 import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.TryValues._
 import org.scalatest.prop.TableDrivenPropertyChecks
+import pages.capitalallowances.tailoring._
 import pages.expenses.tailoring.individualCategories._
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.TradeJourneyStatusesViewModelSpec._
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
@@ -51,13 +54,19 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     _.set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, businessId.some),
     _.set(OtherExpensesPage, OtherExpenses.YesDisallowable, businessId.some)
   )
+  private val capitalAllowances = List[UserAnswers => Try[UserAnswers]](
+    _.set(ClaimCapitalAllowancesPage, true, businessId.some),
+    _.set(SelectCapitalAllowancesPage, Set[CapitalAllowances](CapitalAllowances.ZeroEmissionCar), businessId.some)
+  )
 
   private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   private val abroadCyaUrl = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
   private val incomeUrl    = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
   private val incomeCyaUrl = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
-  private val capitalAllowancesUrl =
+  private val capitalAllowancesTailoringUrl =
     capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val capitalAllowancesTailoringCyaUrl = capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
+  private val zeroEmissionCarsCyaUrl  = capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
   private val expensesTailoringCyaUrl = expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
   private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
@@ -96,7 +105,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
-        expectedRow(capitalAllowancesUrl, CapitalAllowancesTailoring, NotStarted)
+        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted)
       )),
     // Expense Tailoring there, with some sub journeys
     (
@@ -117,9 +126,24 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(goodsToSellCyaUrl, ExpensesGoodsToSellOrUse, InProgress),
         expectedRow(irrecoverableUrl, ExpensesIrrecoverableDebts, NotStarted),
         expectedRow(otherExpensesUrl, ExpensesOtherExpenses, NotStarted),
-        expectedRow(capitalAllowancesUrl, CapitalAllowancesTailoring, NotStarted)
+        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted)
       )
-    )
+    ),
+    // Capital Allowances Tailoring completed, with some sub journeys
+    (
+      List(
+        JourneyNameAndStatus(Abroad, Completed),
+        JourneyNameAndStatus(Income, NotStarted),
+        JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
+        JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress)
+      ),
+      capitalAllowances,
+      List(
+        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(incomeUrl, Income, NotStarted),
+        expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),
+        expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress)
+      ))
   )
 
   "buildSummaryList" - {
@@ -152,7 +176,7 @@ object TradeJourneyStatusesViewModelSpec {
       .success
       .value
 
-  def expectedRow(href: String, journey: Journey, status: JourneyStatus)(implicit messages: Messages) =
+  def expectedRow(href: String, journey: Journey, status: JourneyStatus)(implicit messages: Messages): SummaryListRow =
     buildSummaryRow(href, s"journeys.$journey", status)
 
 }

@@ -48,9 +48,10 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ZecUsedForSelfEmploymentPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      val form = request.userAnswers.get(ZecUsedForSelfEmploymentPage, Some(businessId)) match {
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
+      }
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }

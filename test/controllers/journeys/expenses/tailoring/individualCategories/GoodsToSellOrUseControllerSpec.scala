@@ -17,16 +17,14 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.Application
@@ -54,7 +52,6 @@ class GoodsToSellOrUseControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   def createForm(userType: UserType): Form[GoodsToSellOrUse] = new GoodsToSellOrUseFormProvider()(userType)

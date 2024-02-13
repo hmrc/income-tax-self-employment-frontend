@@ -17,13 +17,11 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import cats.data.EitherT
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, Mtditid, Nino, UserType}
+import models.common.UserType
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import play.api.Application
 import play.api.data.Form
@@ -45,8 +43,6 @@ class BusinessPremisesAmountControllerSpec
 
   override val bindings: List[Binding[_]] =
     List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
-
-  mockService.getAccountingType(*[Nino], *[BusinessId], *[Mtditid])(*) returns EitherT.rightT(Accrual)
 
   def createForm(userType: UserType): Form[BigDecimal] = new BusinessPremisesAmountFormProvider()(userType)
 

@@ -33,6 +33,8 @@ abstract class BooleanFormProviderBaseSpec(formProvider: String) extends Boolean
 
   def formProvider(user: UserType): Form[Boolean]
 
+  def invalidKeyArgs: Seq[String] = Seq.empty
+
   userTypes.foreach { user =>
     s"For user = $user, $formProvider should " - {
       val form = formProvider(user)
@@ -40,13 +42,13 @@ abstract class BooleanFormProviderBaseSpec(formProvider: String) extends Boolean
       behave like booleanField(
         form,
         fieldName,
-        invalidError = FormError(fieldName, invalidErrorKey)
+        invalidError = FormError(fieldName, invalidErrorKey, args = invalidKeyArgs)
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, s"$requiredErrorKey.$user")
+        requiredError = FormError(fieldName, s"$requiredErrorKey.$user", args = invalidKeyArgs)
       )
     }
   }

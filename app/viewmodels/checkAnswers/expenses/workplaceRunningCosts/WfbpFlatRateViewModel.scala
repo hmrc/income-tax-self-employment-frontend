@@ -29,7 +29,7 @@ case class WfbpFlatRateViewModel(months1Person: String,
                                  amount2People: String,
                                  months3People: String,
                                  amount3People: String,
-                                 flatRate: String)
+                                 flatRate: BigDecimal)
 
 object WfbpFlatRateViewModel {
 
@@ -53,7 +53,7 @@ object WfbpFlatRateViewModel {
             formatMoney(amount2People),
             formatMonths(months3People),
             formatMoney(amount3People),
-            formatMoney(flatRate)
+            flatRate
           ))
       case _ => Left(redirectJourneyRecovery())
     }

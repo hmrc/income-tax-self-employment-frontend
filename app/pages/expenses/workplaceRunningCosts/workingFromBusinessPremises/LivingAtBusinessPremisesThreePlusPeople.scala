@@ -19,5 +19,5 @@ package pages.expenses.workplaceRunningCosts.workingFromBusinessPremises
 import pages.OneQuestionPage
 
 case object LivingAtBusinessPremisesThreePlusPeople extends OneQuestionPage[Int] {
-  override def toString: String = "livingAtBusinessPremises-threePlusPeople"
+  override def toString: String = "livingAtBusinessPremisesThreePlusPeople"
 }
