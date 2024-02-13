@@ -20,14 +20,15 @@ import forms.mappings.Mappings
 import models.common.UserType
 import models.journeys.expenses.workplaceRunningCosts.WfbpFlatRateOrActualCosts
 import play.api.data.Form
+import utils.MoneyUtils.formatMoney
 
 import javax.inject.Inject
 
 class WfbpFlatRateOrActualCostsFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType, flatRateAmount: String): Form[WfbpFlatRateOrActualCosts] =
+  def apply(userType: UserType, flatRateAmount: BigDecimal): Form[WfbpFlatRateOrActualCosts] =
     Form(
-      "value" -> enumerable[WfbpFlatRateOrActualCosts](s"wfbpFlatRateOrActualCosts.error.required.$userType", args = Seq(flatRateAmount))
+      "value" -> enumerable[WfbpFlatRateOrActualCosts](s"wfbpFlatRateOrActualCosts.error.required.$userType", args = Seq(formatMoney(flatRateAmount)))
     )
 
 }

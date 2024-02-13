@@ -16,22 +16,23 @@
 
 package models.journeys.expenses.workplaceRunningCosts
 
+import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import play.api.libs.json.{Json, OFormat}
 
-case class WorkplaceRunningCostsJourneyAnswers(moreThan25Hours: Boolean,
-                                               monthsWfh25to50Hours: Option[BigDecimal],
-                                               monthsWfh51to100Hours: Option[BigDecimal],
-                                               monthsWfh101orMoreHours: Option[BigDecimal],
-                                               wfhFlatRateOrActual: Boolean,
-                                               wfhAmount: Option[BigDecimal],
-                                               liveAtBusinessPremises: LiveAtBusinessPremises,
+case class WorkplaceRunningCostsJourneyAnswers(moreThan25Hours: Option[MoreThan25Hours],
+                                               wfhHours25To50: Option[Int],
+                                               wfhHours51To100: Option[Int],
+                                               wfhHours101Plus: Option[Int],
+                                               wfhFlatRateOrActualCosts: Option[WfhFlatRateOrActualCosts],
+                                               wfhClaimingAmount: Option[BigDecimal],
+                                               liveAtBusinessPremises: Option[LiveAtBusinessPremises],
                                                businessPremisesAmount: Option[BigDecimal],
-                                               disallowableBusinessPremisesAmount: Option[BigDecimal],
-                                               monthsOnePersonAtBP: Option[BigDecimal],
-                                               monthsTwoPeopleAtBP: Option[BigDecimal],
-                                               monthsThreeOrMorePeopleAtBP: Option[BigDecimal],
-                                               businessPremisesFlatRateOrActual: Option[Boolean],
-                                               personalUseAmount: Option[BigDecimal])
+                                               businessPremisesDisallowableAmount: Option[BigDecimal],
+                                               livingAtBusinessPremisesOnePerson: Option[Int],
+                                               livingAtBusinessPremisesTwoPeople: Option[Int],
+                                               livingAtBusinessPremisesThreePlusPeople: Option[Int],
+                                               wfbpFlatRateOrActualCosts: Option[WfbpFlatRateOrActualCosts],
+                                               wfbpClaimingAmount: Option[BigDecimal])
 
 object WorkplaceRunningCostsJourneyAnswers {
   implicit val formats: OFormat[WorkplaceRunningCostsJourneyAnswers] = Json.format[WorkplaceRunningCostsJourneyAnswers]

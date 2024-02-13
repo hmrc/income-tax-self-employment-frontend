@@ -16,39 +16,33 @@
 
 package viewmodels.checkAnswers.expenses.workplaceRunningCosts
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
-import pages.expenses.workplaceRunningCosts.workingFromHome.WfhFlatRateOrActualCostsPage
+import pages.expenses.workplaceRunningCosts.workingFromHome.{WfhClaimingAmountPage, WfhFlatRateOrActualCostsPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.buildRowString
 
 object WfhFlatRateOrActualCostsSummary {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, flatRate: String)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId)) match {
-      case Some(WfhFlatRateOrActualCosts.FlatRate) =>
-        Some(
-          buildRowString(
-            s"£$flatRate",
-            routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-            messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRate),
-            "wfhFlatRateOrActualCosts.change.hidden",
-            rightTextAlign = true
-          ))
-      case Some(WfhFlatRateOrActualCosts.ActualCosts) =>
-        Some(
-          buildRowString(
-            Messages("expenses.actualCosts"),
-            routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
-            messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRate),
-            "wfhFlatRateOrActualCosts.change.hidden",
-            rightTextAlign = true
-          ))
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] = {
+    val answer   = userAnswers.get(WfhFlatRateOrActualCostsPage, Some(businessId))
+    val flatRate = userAnswers.get(WfhClaimingAmountPage, Some(businessId))
+    (answer, flatRate) match {
+      case (Some(answer), Some(flatRate)) =>
+        buildRowString(
+          Messages(s"expenses.$answer.cya"),
+          routes.WfhFlatRateOrActualCostsController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", formatMoney(flatRate)),
+          "wfhFlatRateOrActualCosts.change.hidden",
+          rightTextAlign = true
+        ).some
       case _ => None
     }
+  }
 }

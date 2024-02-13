@@ -258,10 +258,7 @@ object ExpensesTasklist {
     val wfhTailoring: Option[WorkFromHome] = getPageAnswer[WorkFromHome](WorkFromHomePage)(businessId, userAnswers, wfhReads)
     val wfbpTailoring: Option[WorkFromBusinessPremises] =
       getPageAnswer[WorkFromBusinessPremises](WorkFromBusinessPremisesPage)(businessId, userAnswers, wfbpReads)
-    val cyaUrl = // TODO 6997 replace with CYA page
-      expenses.workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController
-        .onPageLoad(taxYear, businessId, NormalMode)
-        .url
+    val cyaUrl = expenses.workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId).url
     val wfhUrl = expenses.workplaceRunningCosts.workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode).url
     val wfbpUrl = expenses.workplaceRunningCosts.workingFromBusinessPremises.routes.LiveAtBusinessPremisesController
       .onPageLoad(taxYear, businessId, NormalMode)

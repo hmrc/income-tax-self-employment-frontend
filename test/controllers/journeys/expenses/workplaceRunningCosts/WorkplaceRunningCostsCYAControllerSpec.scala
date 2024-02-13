@@ -47,7 +47,7 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
         WorkingFromHome25To50HoursSummary.row(userAnswers, taxYear, businessId, userType).value,
         WorkingFromHome51To100HoursSummary.row(userAnswers, taxYear, businessId, userType).value,
         WorkingFromHome101PlusHoursSummary.row(userAnswers, taxYear, businessId, userType).value,
-        WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "54.00").value,
+        WfhFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType).value,
         WfhClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
         LiveAtBusinessPremisesSummary.row(userAnswers, taxYear, businessId, userType).value,
         BusinessPremisesAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
@@ -55,7 +55,7 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
         LivingAtBusinessPremisesOnePersonSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesTwoPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,
         LivingAtBusinessPremisesThreePlusPeopleSummary.row(userAnswers, taxYear, businessId, userType).value,
-        WfbpFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType, "3,300.00").value,
+        WfbpFlatRateOrActualCostsSummary.row(userAnswers, taxYear, businessId, userType).value,
         WfbpClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
@@ -71,20 +71,20 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
   }
 
   override val submissionData: JsObject = Json.obj(
-    "moreThan25Hours"                          -> "yes",
-    "wfhHours-25To50"                          -> 1.00,
-    "wfhHours-51To100"                         -> 1.00,
-    "wfhHours-101Plus"                         -> 1.00,
-    "wfhFlatRateOrActualCosts"                 -> "flatRate",
-    "wfhClaimingAmount"                        -> 100.00,
-    "liveAtBusinessPremises"                   -> "yes",
-    "businessPremisesAmount"                   -> 100.00,
-    "businessPremisesDisallowableAmount"       -> 100.00,
-    "livingAtBusinessPremises-onePerson"       -> 1.00,
-    "livingAtBusinessPremises-twoPeople"       -> 2.00,
-    "livingAtBusinessPremises-threePlusPeople" -> 3.00,
-    "wfbpFlatRateOrActualCosts"                -> "flatRate",
-    "wfbpClaimingAmount"                       -> 100.00
+    "moreThan25Hours"                         -> "yes",
+    "wfhHours25To50"                          -> 1,
+    "wfhHours51To100"                         -> 1,
+    "wfhHours101Plus"                         -> 1,
+    "wfhFlatRateOrActualCosts"                -> "flatRate",
+    "wfhClaimingAmount"                       -> 100,
+    "liveAtBusinessPremises"                  -> "yes",
+    "businessPremisesAmount"                  -> 100,
+    "businessPremisesDisallowableAmount"      -> 100,
+    "livingAtBusinessPremisesOnePerson"       -> 1,
+    "livingAtBusinessPremisesTwoPeople"       -> 2,
+    "livingAtBusinessPremisesThreePlusPeople" -> 3.00,
+    "wfbpFlatRateOrActualCosts"               -> "flatRate",
+    "wfbpClaimingAmount"                      -> 100.00
   )
 
   override val testDataCases: List[JsObject] = List(submissionData)

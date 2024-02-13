@@ -178,9 +178,9 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
       val result = clearDataFromUserAnswers(userAnswers, emptyList, None)
 
       result.success.value.data shouldBe Json.obj(
-        "livingAtBusinessPremises-onePerson"       -> 2,
-        "livingAtBusinessPremises-twoPeople"       -> 1,
-        "livingAtBusinessPremises-threePlusPeople" -> 5)
+        "livingAtBusinessPremisesOnePerson"       -> 2,
+        "livingAtBusinessPremisesTwoPeople"       -> 1,
+        "livingAtBusinessPremisesThreePlusPeople" -> 5)
     }
     "should handle trying to clear data when there is none saved" in {
       val result = clearDataFromUserAnswers(emptyUserAnswers, fullPageList, None)

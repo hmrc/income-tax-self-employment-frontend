@@ -27,7 +27,7 @@ class WorkingFromHome101PlusHoursSummarySpec extends SummaryBaseSpec("WorkingFro
 
   private val amount: Int = 1
 
-  override val validData: JsObject   = Json.obj("wfhHours-101Plus" -> amount)
+  override val validData: JsObject   = Json.obj("wfhHours101Plus" -> amount)
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"wfh101PlusHours.subHeading.$userType")
