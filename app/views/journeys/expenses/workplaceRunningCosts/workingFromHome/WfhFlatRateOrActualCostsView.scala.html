@@ -20,6 +20,7 @@
 @import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel
 @import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 @import views.html.templates.helpers.Heading
+@import utils.MoneyUtils.formatMoney
 
 @this(
         layout: templates.Layout,
@@ -71,7 +72,7 @@
                 field = form("value"),
                 legend = LegendViewModel(messages(s"wfhFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
                             .asPageHeading(size = Medium),
-                items = WfhFlatRateOrActualCosts.options(flatRateViewModel.flatRate)
+                items = WfhFlatRateOrActualCosts.options(formatMoney(flatRateViewModel.flatRate))
             )
         )
 

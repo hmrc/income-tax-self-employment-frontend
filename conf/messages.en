@@ -56,6 +56,7 @@ journeys.expenses-depreciation = Depreciation costs
 journeys.expenses-other-expenses = Other Expenses
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
+journeys.capital-allowances-zero-emission-cars = Zero-emission cars
 
 date.day = Day
 date.month = Month
@@ -360,7 +361,9 @@ expenses.hirePurchase = hire purchase (do not include any repayments made agains
 expenses.overdraftOrFinancialArrangements = overdraft or finance arrangements.
 expenses.hint.disallowableExpenses = These are disallowable expenses, but you still need to tell us about them.
 expenses.flatRate = A flat rate of £{0}
+expenses.flatRate.cya = Flat rate
 expenses.actualCosts = Actual costs
+expenses.actualCosts.cya = Actual costs
 expenses.error.lessThanZero = The amount must be 0 or more
 expenses.error.nonNumeric = The amount must be a number
 expenses.error.noDecimals = The number cannot have decimal places
@@ -731,6 +734,24 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 
 common.workplaceRunning.heating = heating
 
+## CYA
+worklpaceRunningCostsCya.title.individual =  Check your workplace running costs
+worklpaceRunningCostsCya.title.agent =  Check your client’s workplace running costs
+wfh25To50Hours.subHeading.individual = How many months did you work 25 to 50 hours from home?
+wfh25To50Hours.subHeading.agent = How many months did your client work 25 to 50 hours from home?
+wfh51To100Hours.subHeading.individual = How many months did you work 51 to 100 hours from home?
+wfh51To100Hours.subHeading.agent = How many months did your client work 51 to 100 hours from home?
+wfh101PlusHours.subHeading.individual = How many months did you work 101 or more hours from home?
+wfh101PlusHours.subHeading.agent = How many months did your client work 101 or more hours from home?
+wfhFlatRateOrActualCosts.subHeading.individual = Do you want to report your working-from-home expenses as a flat rate of £{0} or actual costs?
+wfhFlatRateOrActualCosts.subHeading.agent = Does your client want to report their working-from-home expenses as a flat rate of £{0} or actual costs?
+wfbpOnePerson.subHeading.individual = How many months did 1 person live at your business premises?
+wfbpOnePerson.subHeading.agent = How many months did 1 person live at your client’s business premises?
+wfbpTwoPeople.subHeading.individual = How many months did 2 people live at your business premises?
+wfbpTwoPeople.subHeading.agent = How many months did 2 people live at your client’s business premises?
+wfbpThreePlusPeople.subHeading.individual = How many months did 3 or more people live at your business premises?
+wfbpThreePlusPeople.subHeading.agent = How many months did 3 or more people live at your client’s business premises?
+
 ## More Than 25 Hours
 moreThan25Hours.title.individual = Did you work from home for more than 25 hours a month?
 moreThan25Hours.title.agent = Did your client work from home for more than 25 hours a month?
@@ -824,8 +845,10 @@ liveAtBusinessPremises.hint.individual = Select no if you only lived at your hom
 liveAtBusinessPremises.hint.agent = Select no if your client only lived at their home address.
 liveAtBusinessPremises.error.required.individual = Select yes if you lived at your business premises
 liveAtBusinessPremises.error.required.agent = Select yes if your client lived at their business premises
-liveAtBusinessPremises.change.hidden = // TODO replace when CYA page is made
+liveAtBusinessPremises.change.hidden.individual = Change if you live at your business premises
+liveAtBusinessPremises.change.hidden.agent = Change if your client lived at their business premises
 
+## Business Premises Amount
 businessPremisesAmount.title = Business premises expenses
 businessPremisesAmount.amount.individual = How much were your business premises expenses?
 businessPremisesAmount.amount.agent = How much were your client’s business premises expenses?
@@ -846,6 +869,7 @@ businessPremisesAmount.error.lessThanZero.agent = The amount your client spent o
 businessPremisesAmount.error.overMax.individual = The amount you spent on business premises expenses must be less than £100,000,000,000
 businessPremisesAmount.error.overMax.agent = The amount your client spent on business premises expenses must be less than £100,000,000,000
 
+## Business Premises Disallowable Amount
 businessPremisesDisallowableAmount.title.individual = How much of the £{0} you spent on business premises expenses is disallowable?
 businessPremisesDisallowableAmount.title.agent = How much of the £{0} your client spent on business premises expenses is disallowable?
 businessPremisesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on business premises expenses that is disallowable
@@ -1203,8 +1227,8 @@ claimCapitalAllowances.error.required.individual = Select yes if you want to cla
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
 claimCapitalAllowances.title.ACCRUAL = Allowances for vehicles, equipment and buildings
 claimCapitalAllowances.title.CASH = Cars and asset-based allowances
-claimCapitalAllowances.p1.individual.CASH = You can claim ’capital’ allowances for cars and certain items or assets used in your business
-claimCapitalAllowances.p1.agent.CASH = Your client can claim ’capital’ allowances for cars and certain items or assets used in their business
+claimCapitalAllowances.p1.individual.CASH = You can claim ‘capital’ allowances for cars and certain items or assets used in your business
+claimCapitalAllowances.p1.agent.CASH = Your client can claim ‘capital’ allowances for cars and certain items or assets used in their business
 claimCapitalAllowances.p1.individual.ACCRUAL = You can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in your business.
 claimCapitalAllowances.p1.agent.ACCRUAL = Your client can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in their business.
 claimCapitalAllowances.p2.individual = The type of allowance and the amount you can claim depends on your assets and other circumstances. For example, there are special rules for cars.
@@ -1218,29 +1242,40 @@ claimCapitalAllowances.p4.agent = If your client has sold any assets they may ha
 claimCapitalAllowances.subHeading.individual = Do you want to claim any capital allowances or declare a charge?
 claimCapitalAllowances.subHeading.agent = Does your client want to claim any capital allowances or declare a charge?
 
-selectCapitalAllowances.title.individual = Select the allowances you want to claim
-selectCapitalAllowances.title.agent = Select the allowances your client wants to claim
-selectCapitalAllowances.subHeading.zeroEmissions = 100% zero-emission cars and vehicles
-selectCapitalAllowances.subHeading.buildingsAndStructures = Structures and buildings
-selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances and charges
+selectCapitalAllowances.title.individual = Choose which allowances you want to claim
+selectCapitalAllowances.title.agent = Choose which allowances your client wants to claim
+selectCapitalAllowances.subHeading.zeroEmissions = Zero-emission cars and vehicles
+selectCapitalAllowances.subHeading.buildingsAndStructures = Structures, buildings and Freeports
+selectCapitalAllowances.subHeading.assetAndAllowances = Asset-based allowances
 selectCapitalAllowances.zeroEmissionCar = Zero-emission car allowance
+selectCapitalAllowances.zeroEmissionCar.cya = Zero emission cars
 selectCapitalAllowances.zeroEmissionGoodsVehicle = Zero-emission goods vehicle allowance
+selectCapitalAllowances.zeroEmissionGoodsVehicle.cya = Zero emission vehicles
 selectCapitalAllowances.electricVehicleChargepoint = Electric vehicle charge-point allowance
+selectCapitalAllowances.electricVehicleChargepoint.cya = Electric vehicle charge points
 selectCapitalAllowances.structuresAndBuildings = Structures and buildings allowance
-selectCapitalAllowances.specialTaxSitesStructuresAndBuildings = Special tax sites structures and buildings allowance
-selectCapitalAllowances.annualInvestment = Annual investment allowance
-selectCapitalAllowances.writingDown = Writing down allowance
+selectCapitalAllowances.structuresAndBuildings.cya = Buildings and structures
+selectCapitalAllowances.specialTaxSitesStructuresAndBuildings = Freeport structures and buildings allowance
+selectCapitalAllowances.specialTaxSitesStructuresAndBuildings.cya = Freeport structures and buildings allowance
+selectCapitalAllowances.annualInvestment = Annual investment allowance (business equipment)
+selectCapitalAllowances.annualInvestment.cya = Annual Investment Allowance
+selectCapitalAllowances.writingDown = ‘Writing down’ allowance
+selectCapitalAllowances.writingDown.cya = ‘Writing down’ allowance
 selectCapitalAllowances.balancing = Balancing allowance (allowance on sales)
+selectCapitalAllowances.balancing.cya = Balancing allowance
 selectCapitalAllowances.balancingCharge = Balancing charge
-selectCapitalAllowances.subText.zeroEmissionCar = Claim the full cost of new and unused cars used for your self-employment.
-selectCapitalAllowances.subText.zeroEmissionGoodsVehicle = Claim the full cost of new and unused vehicles used for your self-employment.
+selectCapitalAllowances.balancingCharge.cya = Balancing charge
+selectCapitalAllowances.subText.zeroEmissionCar.ACCRUAL = Claim part of the cost of a new or unused car if you also used it outside your self-employment.
+selectCapitalAllowances.subText.zeroEmissionCar.CASH = You can claim part of the cost of a new and unused car if you also used it outside your self-employment.
+selectCapitalAllowances.subText.zeroEmissionGoodsVehicle = Claim part of the cost of a new and unused vehicle if you also used it outside your self-employment.
 selectCapitalAllowances.subText.electricVehicleChargepoint = Claim 100% first year allowances if you buy and install new and unused electric charge-points for electric vehicles.
-selectCapitalAllowances.subText.structuresAndBuildings = If you built, bought or leased a structure or building, signed contracts and began construction on or after 29 October 2018, you may be able to claim tax relief.
+selectCapitalAllowances.subText.structuresAndBuildings = If you build, buy or lease a structure and all contracts were signed on or after 29 October 2018, you may be able to claim tax relief.
 selectCapitalAllowances.subText.specialTaxSitesStructuresAndBuildings = Claim tax relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
-selectCapitalAllowances.subText.annualInvestment = Claim the full cost, up to the annual limit of £1million, if you bought equipment (but not cars) during the year.
-selectCapitalAllowances.subText.writingDown = Claim 18% or 6% of the balance of the value of items in your main rate and special rate capital allowance pools respectively. Items can include non zero-emission vehicles and business equipment.
+selectCapitalAllowances.subText.annualInvestment = Claim if you bought business equipment (not cars) during the year. If for business and private use, you can only claim the business proportion.
+selectCapitalAllowances.subText.writingDown = Claim 18% or 6% of the value of certain items from your profits if you have not claimed the annual investment allowance or have already claimed the maximum amount. Items include non zero-emission vehicles and business equipment.
 selectCapitalAllowances.subText.balancing = Claim if you sold or stopped using an asset in your business (for less than its tax value).
-selectCapitalAllowances.subText.balancingCharge = If you sold, gave away or stopped using an item in your business that you claimed capital allowances for, you may have to include a balancing charge.
+selectCapitalAllowances.subText.balancingCharge.ACCRUAL = If you sold, gave away or stopped using an item in your business that you claimed capital allowances for, you may have to include a balancing charge.
+selectCapitalAllowances.subText.balancingCharge.CASH = Report a balancing charge if you sold, gave away or stopped using an item in your business that you claimed capital allowances for.
 
 capitalAllowancesCYA.key1.individual = Do you want to claim any capital allowances?
 capitalAllowancesCYA.key1.agent = Does your client want to claim any capital allowances?
@@ -1250,9 +1285,32 @@ capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to c
 capitalAllowancesCYA.title.individual = Check your answers
 capitalAllowancesCYA.title.agent = Check your client’s answers
 
-########## Capital Allowances - Zero Emissions Cars Outside SE ##########
+########## Capital Allowances - Zero Emission Cars ##########
+
+zecUsedForWork.title = Zero-emission cars used for work
+zecUsedForWork.p1.individual = For a zero-emission car, you can claim:
+zecUsedForWork.p1.agent = For a zero-emission car, your client can claim:
+zecUsedForWork.l1.individual = all the 100% first year allowance if you only used the car for your self-employment
+zecUsedForWork.l1.agent = all the 100% first year allowance if they only used the car for their self-employment
+zecUsedForWork.l2.individual = part of the cost of the car if you also used it outside your self-employment
+zecUsedForWork.l2.agent = part of the cost of the car if they also used it outside their self-employment
+zecUsedForWork.details.heading = Understanding zero-emission cars
+zecUsedForWork.details.p1.individual = Your vehicle is classed as a car if it:
+zecUsedForWork.details.p1.agent = Your client’s vehicle is classed as a car if it:
+zecUsedForWork.details.l1 = was not built mainly for transporting goods
+zecUsedForWork.details.l2 = is frequently used privately, or is suitable for private use - this includes motorhomes
+zecUsedForWork.subHeading.individual = Did you buy any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
+zecUsedForWork.subHeading.agent = Did your client buy any new or unused zero-emission cars between 6 April {0} and 5 April {1}?
+zecUsedForWork.hint.individual = This includes cars bought through a hire purchase scheme. You cannot claim for cars that are on lease.
+zecUsedForWork.hint.agent = This includes cars bought through a hire purchase scheme. Your client cannot claim for cars that are on lease.
+zecUsedForWork.error.required.individual = ---- Add error messages SASS-7215 ----
+zecUsedForWork.error.required.agent = ---- Add error message SASS-7215 ----
 
 zecUseOutsideSE.title.individual = How much did you use the car outside your self-employment?
 zecUseOutsideSE.title.agent = How much did your client use the car outside their self-employment?
-zecUseOutsideSE.error.required.individual = error
-zecUseOutsideSE.error.required.agent = error
+zecUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the car outside self-employment
+zecUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the car outside self-employment
+zecUseOutsideSE.error.overmax = The amount cannot be more than 99
+zecUseOutsideSE.error.lessThanZero = The amount must be more than 0
+zecUseOutsideSE.error.nonNumeric = The amount must be a number
+zecUseOutsideSE.error.nonDecimal = The amount cannot have decimal places

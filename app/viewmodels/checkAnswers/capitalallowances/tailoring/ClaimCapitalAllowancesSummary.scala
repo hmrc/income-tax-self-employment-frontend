@@ -36,7 +36,8 @@ object ClaimCapitalAllowancesSummary {
           answer,
           ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, CheckMode),
           s"capitalAllowancesCYA.key1.$userType",
-          "capitalAllowancesCYA.key1.change.hidden"
+          "capitalAllowancesCYA.key1.change.hidden",
+          flipKeyToValueWidthRatio = true
         )
       }
 }

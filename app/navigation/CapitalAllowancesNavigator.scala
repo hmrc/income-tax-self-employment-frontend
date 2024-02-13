@@ -17,21 +17,20 @@
 package navigation
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.tailoring.routes._
-import controllers.journeys.routes._
-import controllers.standard.routes._
+import controllers.journeys.capitalallowances._
+import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.CapitalAllowancesTailoring
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
-import pages.capitalallowances.tailoring.{CapitalAllowancesCYAPage, ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
+import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
+import pages.capitalallowances.zeroEmissionCars._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CapitalAllowancesNavigator @Inject() () {
+class CapitalAllowancesNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
 
@@ -40,31 +39,36 @@ class CapitalAllowancesNavigator @Inject() () {
         taxYear =>
           businessId =>
             userAnswers.get(ClaimCapitalAllowancesPage, businessId.some) match {
-              case Some(true)  => SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(false) => CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
-              case _           => JourneyRecoveryController.onPageLoad()
+              case Some(true)  => tailoring.routes.SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case SelectCapitalAllowancesPage =>
-      _ => taxYear => businessId => CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case _ => _ => _ => _ => JourneyRecoveryController.onPageLoad()
+    case ZecUsedForWorkPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+    case ZecUseOutsideSEPage =>
+      _=> taxYear => businessId => zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
 
     case ClaimCapitalAllowancesPage | SelectCapitalAllowancesPage =>
-      _ =>
-        taxYear =>
-          businessId =>
-            CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+      _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-        // TODO: Remove during SASS-6724
-    case CapitalAllowancesCYAPage =>
-      _ => taxYear => businessId => SectionCompletedStateController.onPageLoad(taxYear, businessId, CapitalAllowancesTailoring.toString, NormalMode)
+    case ZecUsedForWorkPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+    case ZecUseOutsideSEPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, CheckMode)
 
     case _ =>
-      _ => _ => _ => JourneyRecoveryController.onPageLoad()
+      _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =

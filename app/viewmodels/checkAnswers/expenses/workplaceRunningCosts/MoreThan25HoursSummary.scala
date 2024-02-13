@@ -28,13 +28,14 @@ import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
 object MoreThan25HoursSummary {
 
-  def row()(implicit messages: Messages, answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MoreThan25HoursPage, Some(businessId)).map { answer =>
       buildRowString(
         formatAnswer(answer.toString),
         workingFromHome.routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, CheckMode),
         s"moreThan25Hours.title.$userType",
-        "moreThan25Hours.change.hidden"
+        "moreThan25Hours.change.hidden",
+        rightTextAlign = true
       )
     }
 

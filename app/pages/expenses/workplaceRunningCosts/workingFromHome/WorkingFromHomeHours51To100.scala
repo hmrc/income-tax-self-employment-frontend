@@ -19,5 +19,5 @@ package pages.expenses.workplaceRunningCosts.workingFromHome
 import pages.OneQuestionPage
 
 case object WorkingFromHomeHours51To100 extends OneQuestionPage[Int] {
-  override def toString: String = "wfhHours-51To100"
+  override def toString: String = "wfhHours51To100"
 }

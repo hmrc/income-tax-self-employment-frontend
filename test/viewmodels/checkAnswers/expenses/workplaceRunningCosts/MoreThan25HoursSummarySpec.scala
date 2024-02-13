@@ -32,6 +32,6 @@ class MoreThan25HoursSummarySpec extends SummaryBaseSpec("MoreThan25HoursSummary
   override val testValue: HtmlContent    = HtmlContent("site.yes")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    MoreThan25HoursSummary.row()(messages, userAnswers, taxYear, businessId, userType)
+    MoreThan25HoursSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }

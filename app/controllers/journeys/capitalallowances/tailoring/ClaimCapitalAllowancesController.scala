@@ -20,12 +20,15 @@ import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.returnAccountingType
 import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.capitalallowances.tailoring.CapitalAllowances
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.tailoring.ClaimCapitalAllowancesPage
+import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -59,16 +62,35 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      def handleSuccess(answer: Boolean): Future[Result] =
+        for {
+          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+          updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ClaimCapitalAllowancesPage)
+        } yield Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, redirectMode, updatedUserAnswers, taxYear, businessId))
+
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors =>
             Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, ClaimCapitalAllowancesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, mode, updatedAnswers, taxYear, businessId)))
+          value => handleSuccess(value)
         )
+  }
+
+  private def handleGatewayQuestion(currentAnswer: Boolean,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val clearUserAnswerDataIfNeeded =
+      if (currentAnswer) Future(request.userAnswers)
+      else {
+        Future.fromTry(request.userAnswers.set(SelectCapitalAllowancesPage, Set.empty[CapitalAllowances], Some(businessId)))
+      }
+    val redirectMode = request.getValue(ClaimCapitalAllowancesPage, businessId) match {
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }
