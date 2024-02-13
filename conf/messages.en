@@ -1308,7 +1308,7 @@ zecUsedForWork.error.required.agent = ---- Add error message SASS-7215 ----
 
 zecUsedForSelfEmployment.title.individual = Did you only use the car for your self-employment?
 zecUsedForSelfEmployment.title.agent = Did your client only use the car for their self-employment?
-zecUsedForSelfEmployment.error.required.individual = Select yes if you only used your car for self-employment
-zecUsedForSelfEmployment.error.required.agent =Select yes if your client only used their car for self-employment
+zecUsedForSelfEmployment.error.required.individual = Select yes if you only used the car for your self-employment
+zecUsedForSelfEmployment.error.required.agent =Select yes if your client only used the car for their self-employment
 zecUsedForSelfEmployment.no.individual = No, I used it for other things as well
 zecUsedForSelfEmployment.no.agent = No, my client used it for other things as well
