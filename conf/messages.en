@@ -1314,3 +1314,6 @@ zecUseOutsideSE.error.overmax = The amount cannot be more than 99
 zecUseOutsideSE.error.lessThanZero = The amount must be more than 0
 zecUseOutsideSE.error.nonNumeric = The amount must be a number
 zecUseOutsideSE.error.nonDecimal = The amount cannot have decimal places
+zecUseOutsideSE.tenPercent = 10%
+zecUseOutsideSE.twentyFivePercent = 25%
+zecUseOutsideSE.fiftyPercent = 50%
