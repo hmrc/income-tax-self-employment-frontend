@@ -38,10 +38,10 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey, args))
 
-  protected def optBigDecimal(requiredKey: String = "error.required",
+  protected def optInt(requiredKey: String = "error.required",
                            nonNumericKey: String = "error.nonNumeric",
-                           args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
-    of(bigDecimalFormatter(requiredKey, nonNumericKey, args))
+                           args: Seq[String] = Seq.empty): FieldMapping[Option[Int]] =
+    of(optIntFormatter(requiredKey, nonNumericKey, args))
 
   protected def currency(requiredKey: String = "error.required",
                          nonNumericKey: String = "error.nonNumeric",

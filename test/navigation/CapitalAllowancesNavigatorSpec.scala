@@ -17,33 +17,40 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.capitalallowances.tailoring.routes._
-import controllers.standard.routes._
+import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars}
+import controllers.standard
 import models.database.UserAnswers
+import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
+import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForSelfEmploymentPage, ZecUsedForWorkPage}
 import play.api.libs.json.Json
+import play.api.mvc.Call
 
 class CapitalAllowancesNavigatorSpec extends SpecBase {
 
   val navigator = new CapitalAllowancesNavigator
 
-  def nextPage(currentPage: Page, answers: UserAnswers) =
+  def nextPage(currentPage: Page, answers: UserAnswers): Call =
     navigator.nextPage(currentPage, NormalMode, answers, taxYear, businessId)
 
-  def nextPageViaCheckMode(currentPage: Page, answers: UserAnswers) =
+  def nextPageViaCheckMode(currentPage: Page, answers: UserAnswers): Call =
     navigator.nextPage(currentPage, CheckMode, answers, taxYear, businessId)
 
   case object UnknownPage extends Page
 
+  private val errorRedirect = standard.routes.JourneyRecoveryController.onPageLoad()
+
   "NormalMode" - {
+
     "page is ClaimCapitalAllowancesPage" - {
       "answer is true" - {
         "navigate to SelectCapitalAllowancesController" in {
           val data           = Json.obj("claimCapitalAllowances" -> true)
-          val expectedResult = SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = tailoring.routes.SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ClaimCapitalAllowancesPage, buildUserAnswers(data)) shouldBe expectedResult
         }
@@ -51,21 +58,107 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "answer is false" - {
         "navigate to CapitalAllowanceCYAController" in {
           val data           = Json.obj("claimCapitalAllowances" -> false)
-          val expectedResult = CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+          val expectedResult = tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
           nextPage(ClaimCapitalAllowancesPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ClaimCapitalAllowancesPage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
     }
+
+    "page is ZecUsedForWorkPage" - {
+      "answer is true" - {
+        "navigate to ZecAllowanceController" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForWork" -> true)
+          val expectedResult = zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(ZecUsedForWorkPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is false" - {
+        "navigate to ZeroEmissionCarsCYAController" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForWork" -> false)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecUsedForWorkPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZecUsedForWorkPage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
+    "page is ZecAllowancePage" - {
+      "answer is 'Yes'" - {
+        "navigate to TotalCostOfCarController" in {
+          val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
+          val expectedResult = zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to ZeroEmissionCarsCYAController" in {
+          val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.No.toString)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZecAllowancePage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
+    "page is ZecTotalCostOfCarPage" - {
+      "navigate to ZecUsedForSelfEmploymentController" in {
+        val expectedResult = zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(ZecTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is ZecUsedForSelfEmploymentPage" - {
+      "answer is 'Yes'" - {
+        "navigate to ZecHowMuchDoYouWantToClaimPage" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.Yes.toString)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to ZecUseOutsideSEPage" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.No.toString)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZecUsedForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
     "navigate to journey recovery on no page match" in {
-      nextPage(UnknownPage, emptyUserAnswers) shouldBe JourneyRecoveryController.onPageLoad()
+      nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
   }
   "CheckMode" - {
     "page is ClaimCapitalAllowancesPage or SelectCapitalAllowancesPage" - {
       "navigate to CapitalAllowanceCYAController" in {
         List(ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage).foreach {
-          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
         }
       }
     }

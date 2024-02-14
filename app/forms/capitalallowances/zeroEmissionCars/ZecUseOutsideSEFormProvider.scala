@@ -18,32 +18,37 @@ package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
-import play.api.data.Forms.mapping
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.DifferentAmount
+import play.api.data.Forms.{ignored, mapping}
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 
 object ZecUseOutsideSEFormProvider extends Mappings {
 
-  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: BigDecimal = 1)
+  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Option[Int] = None)
 
   private val radioPercentage    = "radioPercentage"
   private val optDifferentAmount = "optDifferentAmount"
 
   def apply()(implicit messages: Messages): Form[ZecUseOutsideSEFormModel] = {
-    val requiredRadioError   = "---- add error for no radio input ----"
-    val requiredNumberError   = "---- add error for no number input ----"
-    val nonNumericError = "---- add error for non numeric input ----"
+    val requiredRadioError  = "---- add error for no radio input ----"
+    val requiredNumberError = "---- add error for no number input ----"
+    val nonNumericError     = "---- add error for non numeric input ----"
 
     def validateRadio(): Mapping[ZecUseOutsideSE] =
       enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
 
-    def validateBigDecimal(valueKey: String): Mapping[BigDecimal] =
-      bigDecimal(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError))
+    def validateOptionalInt(valueKey: String, conditionalValue: String): Mapping[Option[Int]] =
+      if (conditionalValue == DifferentAmount.toString) {
+        int(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError)).transform(Some.apply, _.getOrElse(0))
+      } else {
+        ignored(None: Option[Int])
+      }
 
     Form[ZecUseOutsideSEFormModel](
       mapping(
         radioPercentage    -> validateRadio(),
-        optDifferentAmount -> validateBigDecimal(optDifferentAmount)
+        optDifferentAmount -> validateOptionalInt(optDifferentAmount, radioPercentage)
       )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
   }

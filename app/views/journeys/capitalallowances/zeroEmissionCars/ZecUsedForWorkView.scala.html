@@ -27,13 +27,13 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("zecUsedForWork.title"))) {
+@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-cars"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("zecUsedForWork.title"), None, extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("journeys.capital-allowances-zero-emission-cars"), None, extraClasses = "govuk-!-margin-bottom-3")
 
     <div class="govuk-body">
         <p>@messages(s"zecUsedForWork.p1.$userType")<p>
