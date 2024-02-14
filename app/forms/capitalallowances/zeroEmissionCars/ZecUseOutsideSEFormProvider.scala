@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,35 @@
 package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
-import models.common.UserType
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
-import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.{Form, Mapping}
+import play.api.i18n.Messages
 
-import javax.inject.Inject
+object ZecUseOutsideSEFormProvider extends Mappings {
 
-class ZecUseOutsideSEFormProvider @Inject() extends Mappings {
+  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: BigDecimal = 1)
 
-  def apply(userType: UserType): Form[ZecUseOutsideSE] =
-    Form(
-      "value" -> enumerable[ZecUseOutsideSE](s"zecUseOutsideSE.error.required.$userType")
+  private val radioPercentage    = "radioPercentage"
+  private val optDifferentAmount = "optDifferentAmount"
+
+  def apply()(implicit messages: Messages): Form[ZecUseOutsideSEFormModel] = {
+    val requiredRadioError   = "---- add error for no radio input ----"
+    val requiredNumberError   = "---- add error for no number input ----"
+    val nonNumericError = "---- add error for non numeric input ----"
+
+    def validateRadio(): Mapping[ZecUseOutsideSE] =
+      enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
+
+    def validateBigDecimal(valueKey: String): Mapping[BigDecimal] =
+      bigDecimal(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError))
+
+    Form[ZecUseOutsideSEFormModel](
+      mapping(
+        radioPercentage    -> validateRadio(),
+        optDifferentAmount -> validateBigDecimal(optDifferentAmount)
+      )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
+  }
 
 }

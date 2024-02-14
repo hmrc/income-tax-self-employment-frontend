@@ -35,8 +35,6 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import viewmodels.LegendSize.Large
-@import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 
 @this(layout: templates.Layout,
   formHelper: FormWithCSRF,
@@ -65,25 +63,25 @@
                 </legend>
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="contact" type="radio" value="text" data-aria-controls="conditional-contact-3">
+                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="10%" data-aria-controls="conditional-contact-3">
                         <label class="govuk-label govuk-radios__label" for="contact-3">
                             @messages("zecUseOutsideSE.tenPercent")
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="contact" type="radio" value="text" data-aria-controls="conditional-contact-3">
+                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="25%" data-aria-controls="conditional-contact-3">
                         <label class="govuk-label govuk-radios__label" for="contact-3">
                         @messages("zecUseOutsideSE.twentyFivePercent")
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="contact" type="radio" value="text" data-aria-controls="conditional-contact-3">
+                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="50%" data-aria-controls="conditional-contact-3">
                         <label class="govuk-label govuk-radios__label" for="contact-3">
                         @messages("zecUseOutsideSE.fiftyPercent")
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="contact" type="radio" value="text" data-aria-controls="conditional-contact-3">
+                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="aDifferentAmount" data-aria-controls="conditional-contact-3">
                         <label class="govuk-label govuk-radios__label" for="contact-3">
                             A different Amount
                         </label>
@@ -93,7 +91,7 @@
                             <label class="govuk-label" for="contact-by-text">
                                 %
                             </label>
-                            <input class="govuk-input govuk-!-width-one-third" id="contact-by-text" name="contactByText" type="tel" autocomplete="tel">
+                            <input class="govuk-input govuk-!-width-one-third" id="contact-by-text" name="optDifferentAmount" type="tel" autocomplete="tel">
                         </div>
                     </div>
                 </div>
