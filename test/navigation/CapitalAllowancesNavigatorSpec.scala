@@ -25,7 +25,7 @@ import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
-import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecUsedForWorkPage}
+import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForWorkPage}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 
@@ -97,8 +97,8 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "answer is 'Yes'" - {
         "navigate to TotalCostOfCarController" in {
           val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
-          val expectedResult = zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-          // TODO 7271 replace with 'Total cost of car' page
+          val expectedResult = zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
+
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
@@ -114,6 +114,14 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         "navigate to the ErrorRecoveryPage" in {
           nextPage(ZecAllowancePage, emptyUserAnswers) shouldBe errorRedirect
         }
+      }
+    }
+
+    "page is ZecTotalCostOfCarPage" - {
+      "navigate to ZecUsedForSelfEmploymentController" in {
+        val expectedResult = zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(ZecTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 

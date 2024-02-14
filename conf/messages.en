@@ -367,6 +367,7 @@ expenses.actualCosts.cya = Actual costs
 expenses.error.lessThanZero = The amount must be 0 or more
 expenses.error.nonNumeric = The amount must be a number
 expenses.error.noDecimals = The number cannot have decimal places
+expenses.error.overMax = The amount must be less than £100,000,000,000
 expenses.howWeCalculatedThis = How we calculated this:
 expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
 expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
@@ -1324,6 +1325,14 @@ zecAllowance.subHeading.agent = Does your client want to use their 100% first ye
 zecAllowance.error.required.individual = Select yes if you want to use all your 100% first year allowance
 zecAllowance.error.required.agent = Select yes if your client wants to use all your 100% first year allowance
 zecAllowance.change.hidden = Change whether to use the 100% first year allowances
+
+zecTotalCostOfCar.title = What was the total cost of the car, in pounds?
+zecTotalCostOfCar.title.cya = What was the total cost of the car?
+zecTotalCostOfCar.hint.individual = This is the price you paid at the time you purchased the car. If you bought more than one car, enter the total for all of them.
+zecTotalCostOfCar.hint.agent = This is the price your client paid at the time they purchased the car. If they bought more than one car, enter the total for all of them.
+zecTotalCostOfCar.error.required.individual = Enter the cost of the car in pounds
+zecTotalCostOfCar.error.required.agent = Enter the cost of your client’s car in pounds
+zecTotalCostOfCar.change.hidden = Change the total cost of the car
 
 zecUsedForSelfEmployment.title.individual = Did you only use the car for your self-employment?
 zecUsedForSelfEmployment.title.agent = Did your client only use the car for their self-employment?

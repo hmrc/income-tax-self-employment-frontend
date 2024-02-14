@@ -62,11 +62,15 @@ class CapitalAllowancesNavigator @Inject() {
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(ZecAllowancePage, Some(businessId)) match { // TODO 7271 replace YES with 'Total cost of car' page
-              case Some(ZeroEmissionCarsAllowance.Yes) => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(ZeroEmissionCarsAllowance.No)  => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case _                                   => standard.routes.JourneyRecoveryController.onPageLoad()
+            userAnswers.get(ZecAllowancePage, Some(businessId)) match {
+              case Some(ZeroEmissionCarsAllowance.Yes) =>
+                zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(ZeroEmissionCarsAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+              case _                                  => standard.routes.JourneyRecoveryController.onPageLoad()
             }
+
+    case ZecTotalCostOfCarPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ZecUsedForSelfEmploymentPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
@@ -79,11 +83,8 @@ class CapitalAllowancesNavigator @Inject() {
     case ClaimCapitalAllowancesPage | SelectCapitalAllowancesPage =>
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case ZecUsedForWorkPage | ZecAllowancePage =>
+    case ZecUsedForWorkPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecUsedForSelfEmploymentPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-
-    case ZecUsedForSelfEmploymentPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
