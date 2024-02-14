@@ -21,11 +21,12 @@ import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars}
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
-import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForWorkPage}
+import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForSelfEmploymentPage, ZecUsedForWorkPage}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 
@@ -122,6 +123,30 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         val expectedResult = zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
         nextPage(ZecTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is ZecUsedForSelfEmploymentPage" - {
+      "answer is 'Yes'" - {
+        "navigate to ZecHowMuchDoYouWantToClaimPage" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.Yes.toString)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to ZecUseOutsideSEPage" in {
+          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.No.toString)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZecUsedForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
+        }
       }
     }
 

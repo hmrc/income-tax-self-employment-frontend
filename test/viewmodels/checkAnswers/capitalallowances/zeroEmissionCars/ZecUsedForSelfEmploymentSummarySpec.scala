@@ -19,20 +19,21 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class ZecTotalCostOfCarSummarySpec extends SummaryBaseSpec("ZecTotalCostOfCarSummary") {
+class ZecUsedForSelfEmploymentSummarySpec extends SummaryBaseSpec("ZecUsedForSelfEmploymentSummary") {
 
-  override val validData: JsObject = Json.obj("zeroEmissionCarsTotalCostOfCar" -> 20.00)
+  override val validData: JsObject = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.Yes.toString)
 
-  override val testKey: UserType => Text = (_: UserType) => Text(messages("zecTotalCostOfCar.title.cya"))
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecUsedForSelfEmployment.title.$userType"))
 
-  override val testValue: HtmlContent = HtmlContent("£20.00")
+  override val testValue: HtmlContent = HtmlContent("site.yes")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ZecTotalCostOfCarSummary.row(userAnswers, taxYear, businessId)(messages)
+    ZecUsedForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }

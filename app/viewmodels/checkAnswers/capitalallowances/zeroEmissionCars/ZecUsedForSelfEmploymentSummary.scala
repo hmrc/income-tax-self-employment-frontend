@@ -19,24 +19,26 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecTotalCostOfCarPage
+import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBigDecimal
+import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object ZecTotalCostOfCarSummary {
+object ZecUsedForSelfEmploymentSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZecTotalCostOfCarPage, businessId.some)
+      .get(ZecUsedForSelfEmploymentPage, businessId.some)
       .map { answer =>
-        buildRowBigDecimal(
-          answer,
-          routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecTotalCostOfCar.title.cya"),
-          "zecTotalCostOfCar.change.hidden"
+        buildRowString(
+          formatAnswer(answer.toString),
+          routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"zecUsedForSelfEmployment.title.$userType"),
+          "zecUsedForSelfEmployment.change.hidden",
+          rightTextAlign = true
         )
       }
 }
