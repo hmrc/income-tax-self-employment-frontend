@@ -17,16 +17,13 @@
 package services
 
 import base.SpecBase
-import builders.BusinessDataBuilder.{aBusinessData, aBusinessDataCashAccounting}
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import controllers.actions.SubmittedDataRetrievalActionProvider
 import models.common._
 import models.database.UserAnswers
-import models.domain.BusinessData
-import models.errors.ServiceError.{ConnectorResponseError, NotFoundError}
-import models.errors.{HttpError, HttpErrorBody, ServiceError}
+import models.errors.ServiceError
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.mockito.ArgumentMatchersSugar
@@ -36,7 +33,6 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
-import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
@@ -81,39 +77,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         .value
         .futureValue
       result shouldBe ().asRight
-    }
-  }
-
-  "getAccountingType" - {
-    "should return a BusinessID's accounting type in a Right when this is returned from the backend" in {
-      mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessData))
-      mockConnector.getBusiness(nino, businessIdCash, mtditid) returns EitherT.rightT[Future, ServiceError](Seq(aBusinessDataCashAccounting))
-
-      val resultAccrual = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
-      val resultCash    = await(service.getAccountingType(nino, businessIdCash, mtditid).value)
-
-      resultAccrual shouldBe Right(AccountingType.Accrual)
-      resultCash shouldBe Right(AccountingType.Cash)
-    }
-
-    "should return an error when" - {
-
-      "an empty sequence is returned from the backend" in {
-        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.rightT[Future, ServiceError](Seq.empty)
-
-        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
-
-        result shouldBe Left(NotFoundError(s"Unable to find business with ID: $businessIdAccrual"))
-      }
-
-      "an error is returned from the backend" in {
-        mockConnector.getBusiness(nino, businessIdAccrual, mtditid) returns EitherT.leftT[Future, Seq[BusinessData]](
-          ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
-
-        val result = await(service.getAccountingType(nino, businessIdAccrual, mtditid).value)
-
-        result shouldBe Left(ConnectorResponseError("method", "url", HttpError(INTERNAL_SERVER_ERROR, HttpErrorBody.parsingError)))
-      }
     }
   }
 

@@ -48,9 +48,6 @@ case class SelfEmploymentServiceStub(
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData] =
     EitherT.fromEither[Future](getBusinessResult)
 
-  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType] =
-    EitherT.fromEither[Future](accountingType)
-
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
 
