@@ -18,15 +18,16 @@ package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
 import models.common.UserType
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ZecUseOutsideSEFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Boolean] =
+  def apply(userType: UserType): Form[ZecUseOutsideSE] =
     Form(
-      "value" -> boolean(s"zecUseOutsideSE.error.required.$userType")
+      "value" -> enumerable[ZecUseOutsideSE](s"zecUseOutsideSE.error.required.$userType")
     )
 
 }

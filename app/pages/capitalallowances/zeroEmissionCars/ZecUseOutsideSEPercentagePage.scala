@@ -15,10 +15,8 @@
  */
 
 package pages.capitalallowances.zeroEmissionCars
-
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import pages.OneQuestionPage
 
-object ZecUseOutsideSEPage extends OneQuestionPage[ZecUseOutsideSE] {
-  override def toString: String = "zeroEmissionCarsUsedOutsideSE"
+object ZecUseOutsideSEPercentagePage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "zeroEmissionCarsUsedOutsideSEPercentage"
 }

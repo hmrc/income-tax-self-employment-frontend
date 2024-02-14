@@ -24,10 +24,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 sealed trait ZecUseOutsideSE
 object ZecUseOutsideSE extends Enumerable.Implicits {
 
-  case object Ten extends WithName("10%") with ZecUseOutsideSE
-  case object TwentyFive  extends WithName("25%") with ZecUseOutsideSE
-  case object Fifty  extends WithName("50%") with ZecUseOutsideSE
-  case object DifferentAmount  extends WithName("A different amount") with ZecUseOutsideSE
+  case object Ten             extends WithName("10%") with ZecUseOutsideSE
+  case object TwentyFive      extends WithName("25%") with ZecUseOutsideSE
+  case object Fifty           extends WithName("50%") with ZecUseOutsideSE
+  case object DifferentAmount extends WithName("A different amount") with ZecUseOutsideSE
 
   val values: Seq[ZecUseOutsideSE] = Seq(
     Ten,

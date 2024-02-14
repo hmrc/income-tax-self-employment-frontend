@@ -16,13 +16,15 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.{DifferentAmount, Fifty, Ten, TwentyFive}
+import models.requests.DataRequest
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.ZecUseOutsideSEPage
+import pages.capitalallowances.zeroEmissionCars.{ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -33,24 +35,25 @@ import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEVie
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
-class ZecUseOutsideSEController @Inject()(override val messagesApi: MessagesApi,
-                                          navigator: CapitalAllowancesNavigator,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          service: SelfEmploymentService,
-                                          formProvider: ZecUseOutsideSEFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: ZecUseOutsideSEView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi,
+                                           navigator: CapitalAllowancesNavigator,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           service: SelfEmploymentService,
+                                           formProvider: ZecUseOutsideSEFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: ZecUseOutsideSEView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ZecUseOutsideSEPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      val form = request.userAnswers.get(ZecUseOutsideSEPage, Some(businessId)) match {
+        case None        => formProvider(request.userType)
+        case Some(value) => formProvider(request.userType).fill(value)
+      }
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
@@ -62,10 +65,21 @@ class ZecUseOutsideSEController @Inject()(override val messagesApi: MessagesApi,
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, ZecUseOutsideSEPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, updatedAnswers, taxYear, businessId)))
+            handleAnswer(value, request, businessId).flatMap(updatedAnswers =>
+              service
+                .persistAnswer(businessId, updatedAnswers, value, ZecUseOutsideSEPage)
+                .map(updatedAnswers => Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, updatedAnswers, taxYear, businessId))))
         )
+  }
+
+  private def handleAnswer(answer: ZecUseOutsideSE, request: DataRequest[AnyContent], businessId: BusinessId) = {
+    val percentage: BigDecimal = answer match {
+      case Ten             => 0.1
+      case TwentyFive      => 0.25
+      case Fifty           => 0.5
+      case DifferentAmount => 1
+    }
+    Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPercentagePage, percentage, Some(businessId)))
   }
 
 }
