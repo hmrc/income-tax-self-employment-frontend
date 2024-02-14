@@ -19,13 +19,17 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionCars.ZecUsedForWorkFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForWorkPage
+import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecUsedForSelfEmploymentPage, ZecUsedForWorkPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.Settable
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForWorkView
@@ -62,11 +66,28 @@ class ZecUsedForWorkController @Inject() (override val messagesApi: MessagesApi,
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, ZecUsedForWorkPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ZecUsedForWorkPage, mode, updatedAnswers, taxYear, businessId)))
+          answer =>
+            for {
+              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecUsedForWorkPage)
+            } yield Redirect(navigator.nextPage(ZecUsedForWorkPage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
+  }
+
+  private def handleGatewayQuestion(currentAnswer: Boolean,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val pagesToBeCleared: List[Settable[_]] = List(ZecAllowancePage, ZecUsedForSelfEmploymentPage)
+    val clearUserAnswerDataIfNeeded = currentAnswer match {
+      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true  => Future(request.userAnswers)
+    }
+    val redirectMode = request.getValue(ZecUsedForWorkPage, businessId) match {
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }

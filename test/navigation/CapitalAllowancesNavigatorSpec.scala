@@ -97,7 +97,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "answer is 'Yes'" - {
         "navigate to TotalCostOfCarController" in {
           val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
-          val expectedResult = zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
           // TODO 7271 replace with 'Total cost of car' page
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
         }

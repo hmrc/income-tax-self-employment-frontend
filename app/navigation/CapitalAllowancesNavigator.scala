@@ -63,7 +63,7 @@ class CapitalAllowancesNavigator @Inject() {
         taxYear =>
           businessId =>
             userAnswers.get(ZecAllowancePage, Some(businessId)) match { // TODO 7271 replace YES with 'Total cost of car' page
-              case Some(ZeroEmissionCarsAllowance.Yes) => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(ZeroEmissionCarsAllowance.Yes) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
               case Some(ZeroEmissionCarsAllowance.No)  => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
               case _                                   => standard.routes.JourneyRecoveryController.onPageLoad()
             }
