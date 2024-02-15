@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import cats.implicits.catsSyntaxOptionId
 import models.common.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
@@ -102,34 +101,6 @@ trait Formatters {
 
       override def unbind(key: String, value: BigDecimal) =
         baseFormatter.unbind(key, value.toString)
-    }
-
-  private[mappings] def optIntFormatter(requiredKey: String,
-                                        wholeNumberKey: String,
-                                        nonNumericKey: String,
-                                        args: Seq[String] = Seq.empty): Formatter[Option[Int]] =
-    new Formatter[Option[Int]] {
-
-        val decimalRegexp = """^-?(\d*\.\d*)$"""
-
-        private val baseFormatter = stringFormatter(requiredKey, args)
-
-        override def bind(key: String, data: Map[String, String]) =
-          baseFormatter
-            .bind(key, data)
-            .map(_.replace(",", ""))
-            .flatMap {
-              case s if s.matches(decimalRegexp) =>
-                Left(Seq(FormError(key, wholeNumberKey, args)))
-              case s =>
-                nonFatalCatch
-                  .either(s.toInt.some)
-                  .left
-                  .map(_ => Seq(FormError(key, nonNumericKey, args)))
-            }
-
-        override def unbind(key: String, value: Option[Int]) =
-          baseFormatter.unbind(key, value.toString)
     }
 
   private[mappings] def currencyFormatter(requiredKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[BigDecimal] =

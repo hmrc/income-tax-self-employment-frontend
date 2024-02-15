@@ -53,8 +53,10 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
       val radioValue      = request.getValue(ZecUseOutsideSEPage, businessId)
       val percentageValue = request.getValue(ZecUseOutsideSEPercentagePage, businessId)
       val filledForm = (radioValue, percentageValue) match {
-        case (Some(radioValue), Some(percentageValue)) =>
-          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, percentageValue))
+        case (Some(radioValue), Some(percentageValue)) if radioValue == DifferentAmount =>
+          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, Some(percentageValue)))
+        case (Some(radioValue), _) =>
+          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, None))
         case _ => formProvider
       }
 
@@ -70,11 +72,11 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
             .map(updatedAnswers => Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, updatedAnswers, taxYear, businessId))))
 
       def handleAnswer(answer: ZecUseOutsideSEFormModel): Future[UserAnswers] = {
-        val percentage: BigDecimal = answer.radioPercentage match {
-          case Ten             => 0.1
-          case TwentyFive      => 0.25
-          case Fifty           => 0.5
-          case DifferentAmount => answer.optDifferentAmount
+        val percentage: Int = answer.radioPercentage match {
+          case Ten             => 10
+          case TwentyFive      => 25
+          case Fifty           => 50
+          case DifferentAmount => answer.optDifferentAmount.getOrElse(0)
         }
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
@@ -86,7 +88,10 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value => handleSuccess(value)
+          value => {
+            println("------ form " + value)
+            handleSuccess(value)
+          }
         )
   }
 

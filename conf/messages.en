@@ -1353,3 +1353,4 @@ zecUseOutsideSE.error.nonDecimal = The amount cannot have decimal places
 zecUseOutsideSE.tenPercent = 10%
 zecUseOutsideSE.twentyFivePercent = 25%
 zecUseOutsideSE.fiftyPercent = 50%
+zecUseOutsideSE.change.hidden = Change how much the car was used outside of self-employment

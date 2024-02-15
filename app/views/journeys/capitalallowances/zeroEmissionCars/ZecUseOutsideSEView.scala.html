@@ -53,9 +53,8 @@
 
     @formHelper(action = routes.ZecUseOutsideSEController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-
         <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+            <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
                         @messages(s"zecUseOutsideSE.title.$userType")
@@ -63,35 +62,41 @@
                 </legend>
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="10%" data-aria-controls="conditional-contact-3">
-                        <label class="govuk-label govuk-radios__label" for="contact-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="10%" type="radio" value="10%">
+                        <label class="govuk-label govuk-radios__label" for="10%">
                             @messages("zecUseOutsideSE.tenPercent")
                         </label>
+                        @if(form("radioPercentage").value.contains("10%")) {
+                            <input type="hidden" name="optDifferentAmount" value="10">
+                            }
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="25%" data-aria-controls="conditional-contact-3">
-                        <label class="govuk-label govuk-radios__label" for="contact-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="25%"  type="radio" value="25%">
+                        <label class="govuk-label govuk-radios__label" for="25%">
                         @messages("zecUseOutsideSE.twentyFivePercent")
                         </label>
+                        @if(form("radioPercentage").value.contains("25")) {
+                            <input type="hidden" name="optDifferentAmount" value="25">
+                            }
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="50%" data-aria-controls="conditional-contact-3">
-                        <label class="govuk-label govuk-radios__label" for="contact-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="50%"  type="radio" value="50%">
+                        <label class="govuk-label govuk-radios__label" for="50%">
                         @messages("zecUseOutsideSE.fiftyPercent")
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="contact-3" name="radioPercentage" type="radio" value="aDifferentAmount" data-aria-controls="conditional-contact-3">
-                        <label class="govuk-label govuk-radios__label" for="contact-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="aDifferentAmount"  type="radio" value="aDifferentAmount" data-aria-controls="conditional-different-amount">
+                        <label class="govuk-label govuk-radios__label" for="aDifferentAmount">
                             A different Amount
                         </label>
                     </div>
-                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact-3">
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-different-amount">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="contact-by-text">
+                            <label class="govuk-label" for="different-amount-input">
                                 %
                             </label>
-                            <input class="govuk-input govuk-!-width-one-third" id="contact-by-text" name="optDifferentAmount" type="tel" autocomplete="tel">
+                            <input class="govuk-input govuk-!-width-one-third" id="different-amount-input" name="optDifferentAmount" value="@form("optDifferentAmount").value">
                         </div>
                     </div>
                 </div>

@@ -18,7 +18,6 @@ package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.DifferentAmount
 import play.api.data.Forms.{ignored, mapping}
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
@@ -48,7 +47,7 @@ object ZecUseOutsideSEFormProvider extends Mappings {
     Form[ZecUseOutsideSEFormModel](
       mapping(
         radioPercentage    -> validateRadio(),
-        optDifferentAmount -> validateOptionalInt(optDifferentAmount, radioPercentage)
+        optDifferentAmount -> validateOptionalInt(optDifferentAmount, ZecUseOutsideSEFormModel().radioPercentage)
       )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
   }
