@@ -80,7 +80,7 @@
                                 %
                             </label>
                             <input class="govuk-input govuk-!-width-one-third" id="optDifferentAmount" name="optDifferentAmount" value="@{
-                                if(form("optDifferentAmount").value != Some("0")) form("optDifferentAmount").value else ""
+                                if(form("radioPercentage").value.contains("aDifferentAmount")) form("optDifferentAmount").value else ""
                             }">
                         </div>
                     </div>

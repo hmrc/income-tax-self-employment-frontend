@@ -22,7 +22,7 @@ import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.ZecU
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.{DifferentAmount, Fifty, Ten, TwentyFive}
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.DifferentAmount
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionCars.{ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -54,7 +54,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
       val percentageValue = request.getValue(ZecUseOutsideSEPercentagePage, businessId)
       val filledForm = (radioValue, percentageValue) match {
         case (Some(radioValue), Some(percentageValue)) if radioValue == DifferentAmount =>
-          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, Some(percentageValue)))
+          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, percentageValue))
         case (Some(radioValue), _) =>
           formProvider.fill(ZecUseOutsideSEFormModel(radioValue))
         case _ => formProvider
@@ -71,18 +71,11 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
             .persistAnswer(businessId, updatedAnswers, answer.radioPercentage, ZecUseOutsideSEPage)
             .map(updatedAnswers => Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, updatedAnswers, taxYear, businessId))))
 
-      def handleAnswer(answer: ZecUseOutsideSEFormModel): Future[UserAnswers] = {
-        val percentage: Int = answer.radioPercentage match {
-          case Ten             => 10
-          case TwentyFive      => 25
-          case Fifty           => 50
-          case DifferentAmount => answer.optDifferentAmount.getOrElse(0)
-        }
+      def handleAnswer(answer: ZecUseOutsideSEFormModel): Future[UserAnswers] =
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          resultAnswers  <- Future.fromTry(updatedAnswers.set(ZecUseOutsideSEPercentagePage, percentage, Some(businessId)))
+          resultAnswers  <- Future.fromTry(updatedAnswers.set(ZecUseOutsideSEPercentagePage, answer.optDifferentAmount, Some(businessId)))
         } yield resultAnswers
-      }
 
       ZecUseOutsideSEFormProvider()
         .bindFromRequest()

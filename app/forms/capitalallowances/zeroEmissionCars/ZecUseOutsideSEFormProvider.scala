@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 
 object ZecUseOutsideSEFormProvider extends Mappings {
 
-  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Option[Int] = None)
+  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Int = 0)
 
   private val radioPercentage    = "radioPercentage"
   private val optDifferentAmount = "optDifferentAmount"
@@ -34,11 +34,9 @@ object ZecUseOutsideSEFormProvider extends Mappings {
     val requiredNumberError = "---- add error for no number input ----"
     val nonNumericError     = "---- add error for non numeric input ----"
 
-    def validateRadio(): Mapping[ZecUseOutsideSE] =
-      enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
+    def validateRadio(): Mapping[ZecUseOutsideSE] = enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
 
-    def validateOptionalInt(valueKey: String): Mapping[Option[Int]] =
-      int(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError)).transform(Some.apply, _.getOrElse(0))
+    def validateOptionalInt(valueKey: String): Mapping[Int] = int(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError))
 
     Form[ZecUseOutsideSEFormModel](
       mapping(
