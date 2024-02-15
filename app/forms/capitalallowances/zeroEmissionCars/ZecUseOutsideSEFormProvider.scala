@@ -18,7 +18,7 @@ package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
-import play.api.data.Forms.{ignored, mapping}
+import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 
@@ -37,17 +37,13 @@ object ZecUseOutsideSEFormProvider extends Mappings {
     def validateRadio(): Mapping[ZecUseOutsideSE] =
       enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
 
-    def validateOptionalInt(valueKey: String, conditionalValue: String): Mapping[Option[Int]] =
-      if (conditionalValue == DifferentAmount.toString) {
-        int(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError)).transform(Some.apply, _.getOrElse(0))
-      } else {
-        ignored(None: Option[Int])
-      }
+    def validateOptionalInt(valueKey: String): Mapping[Option[Int]] =
+      int(messages(s"$requiredNumberError$valueKey"), messages(nonNumericError)).transform(Some.apply, _.getOrElse(0))
 
     Form[ZecUseOutsideSEFormModel](
       mapping(
         radioPercentage    -> validateRadio(),
-        optDifferentAmount -> validateOptionalInt(optDifferentAmount, ZecUseOutsideSEFormModel().radioPercentage)
+        optDifferentAmount -> validateOptionalInt(optDifferentAmount)
       )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
   }

@@ -56,7 +56,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
         case (Some(radioValue), Some(percentageValue)) if radioValue == DifferentAmount =>
           formProvider.fill(ZecUseOutsideSEFormModel(radioValue, Some(percentageValue)))
         case (Some(radioValue), _) =>
-          formProvider.fill(ZecUseOutsideSEFormModel(radioValue, None))
+          formProvider.fill(ZecUseOutsideSEFormModel(radioValue))
         case _ => formProvider
       }
 
@@ -88,10 +88,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value => {
-            println("------ form " + value)
-            handleSuccess(value)
-          }
+          value => handleSuccess(value)
         )
   }
 
