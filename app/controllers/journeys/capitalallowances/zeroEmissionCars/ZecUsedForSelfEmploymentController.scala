@@ -18,13 +18,19 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment._
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.Settable
 import services.SelfEmploymentService
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentView
@@ -48,10 +54,9 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers.get(ZecUsedForSelfEmploymentPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val form = request.userAnswers
+        .get(ZecUsedForSelfEmploymentPage, Some(businessId))
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
@@ -62,11 +67,28 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, ZecUsedForSelfEmploymentPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ZecUsedForSelfEmploymentPage, mode, updatedAnswers, taxYear, businessId)))
+          answer =>
+            for {
+              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecUsedForSelfEmploymentPage)
+            } yield Redirect(navigator.nextPage(ZecUsedForSelfEmploymentPage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
+  }
+
+  private def handleGatewayQuestion(currentAnswer: ZecUsedForSelfEmployment,
+                                    request: DataRequest[_],
+                                    mode: Mode,
+                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
+    val pagesToBeCleared: List[Settable[_]] = List() // TODO 7205 / 7261 clear page
+    val clearUserAnswerDataIfNeeded = currentAnswer match {
+      case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case No  => Future(request.userAnswers)
+    }
+    val redirectMode = request.getValue(ZecUsedForSelfEmploymentPage, businessId) match {
+      case Some(Yes) if currentAnswer == No => NormalMode
+      case _                                => mode
+    }
+    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }

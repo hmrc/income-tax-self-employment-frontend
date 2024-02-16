@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,33 @@
  * limitations under the License.
  */
 
-package models.journeys.capitalallowances.zeroEmissionCars
+package models.journeys.capitalallowances
 
 import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait ZecUseOutsideSE
-object ZecUseOutsideSE extends Enumerable.Implicits {
+sealed trait ZeroEmissionCarsAllowance
 
-  case object Ten             extends WithName("10%") with ZecUseOutsideSE
-  case object TwentyFive      extends WithName("25%") with ZecUseOutsideSE
-  case object Fifty           extends WithName("50%") with ZecUseOutsideSE
-  case object DifferentAmount extends WithName("aDifferentAmount") with ZecUseOutsideSE
+object ZeroEmissionCarsAllowance extends Enumerable.Implicits {
 
-  val values: Seq[ZecUseOutsideSE] = Seq(
-    Ten,
-    TwentyFive,
-    Fifty,
-    DifferentAmount
+  case object Yes extends WithName("yes") with ZeroEmissionCarsAllowance
+  case object No  extends WithName("no") with ZeroEmissionCarsAllowance
+
+  val values: Seq[ZeroEmissionCarsAllowance] = Seq(
+    Yes,
+    No
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(s"${value.toString}")),
+      content = Text(messages(s"site.${value.toString}")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
   }
 
-  implicit val enumerable: Enumerable[ZecUseOutsideSE] =
+  implicit val enumerable: Enumerable[ZeroEmissionCarsAllowance] =
     Enumerable(values.map(v => v.toString -> v): _*)
-
 }

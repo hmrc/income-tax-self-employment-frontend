@@ -42,7 +42,6 @@ trait SelfEmploymentService {
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData]
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
@@ -69,14 +68,6 @@ class SelfEmploymentServiceImpl @Inject() (
 
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     connector.saveJourneyState(ctx, status)
-
-  def getAccountingType(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[AccountingType] =
-    getBusiness(nino, businessId, mtditid).map(business => business.accountingType).subflatMap {
-      case Some("ACCRUAL")     => AccountingType.Accrual.asRight
-      case Some("CASH")        => AccountingType.Cash.asRight
-      case Some(invalidString) => NotFoundError(s"Accounting type of business with ID: $businessId has invalid value: $invalidString").asLeft
-      case None                => NotFoundError(s"Unable to find accounting type of business with ID: $businessId").asLeft
-    }
 
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
                                              userAnswers: UserAnswers,
