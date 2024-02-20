@@ -20,13 +20,13 @@ import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
 import play.api.libs.json.{Format, Json}
 
 case class ZeroEmissionCarsAnswers(zeroEmissionCarsUsedForWork: Boolean,
-                                   zeroEmissionCarsAllowance: ZeroEmissionCarsAllowance,
-                                   zeroEmissionCarsTotalCostOfCar: BigDecimal,
-                                   zeroEmissionCarsOnlyForSelfEmployment: ZecOnlyForSelfEmployment,
-                                   zeroEmissionCarsUsedOutsideSE: ZecUseOutsideSE,
-                                   zeroEmissionCarsUsedOutsideSEPercentage: Int,
-                                   zecHowMuchDoYouWantToClaim: ZecHowMuchDoYouWantToClaim,
-                                   zeroEmissionCarsClaimAmount: BigDecimal)
+                                   zeroEmissionCarsAllowance: Option[ZeroEmissionCarsAllowance],
+                                   zeroEmissionCarsTotalCostOfCar: Option[BigDecimal],
+                                   zeroEmissionCarsOnlyForSelfEmployment: Option[ZecOnlyForSelfEmployment],
+                                   zeroEmissionCarsUsedOutsideSE: Option[ZecUseOutsideSE],
+                                   zeroEmissionCarsUsedOutsideSEPercentage: Option[Int],
+                                   zecHowMuchDoYouWantToClaim: Option[ZecHowMuchDoYouWantToClaim],
+                                   zeroEmissionCarsClaimAmount: Option[BigDecimal])
 
 object ZeroEmissionCarsAnswers {
   implicit val formats: Format[ZeroEmissionCarsAnswers] = Json.format[ZeroEmissionCarsAnswers]

@@ -17,9 +17,8 @@
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.{handleSubmitAnswersResult, journeys}
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.zeroEmissionCars
-import models.NormalMode
 import models.common._
 import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
 import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
