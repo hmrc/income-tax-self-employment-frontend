@@ -21,23 +21,23 @@ import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
+import pages.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmploymentPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object ZecUsedForSelfEmploymentSummary {
+object ZecOnlyForSelfEmploymentSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZecUsedForSelfEmploymentPage, businessId.some)
+      .get(ZecOnlyForSelfEmploymentPage, businessId.some)
       .map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
           routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecUsedForSelfEmployment.title.$userType"),
-          "zecUsedForSelfEmployment.change.hidden",
+          messages(s"zecOnlyForSelfEmployment.title.$userType"),
+          "zecOnlyForSelfEmployment.change.hidden",
           rightTextAlign = true
         )
       }

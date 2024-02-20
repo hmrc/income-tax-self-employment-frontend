@@ -24,7 +24,7 @@ import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForSelfEmploymentPage, ZecUsedForWorkPage}
+import pages.capitalallowances.zeroEmissionCars._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -79,7 +79,15 @@ class ZecUsedForWorkController @Inject() (override val messagesApi: MessagesApi,
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
-      List(ZecAllowancePage, ZecUsedForSelfEmploymentPage, ZecTotalCostOfCarPage) // TODO 7205 / 7261 clear page
+      List(
+        ZecAllowancePage,
+        ZecTotalCostOfCarPage,
+        ZecHowMuchDoYouWantToClaimPage,
+        ZecClaimAmount,
+        ZecOnlyForSelfEmploymentPage,
+        ZecUseOutsideSEPage,
+        ZecUseOutsideSEPercentagePage
+      )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case true  => Future(request.userAnswers)

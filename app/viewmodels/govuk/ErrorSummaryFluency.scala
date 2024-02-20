@@ -29,7 +29,8 @@ trait ErrorSummaryFluency {
 
     def apply(
         form: Form[_],
-        errorLinkOverrides: Map[String, String] = Map.empty
+        errorLinkOverrides: Map[String, String] = Map.empty,
+        onlyShowFirstError: Boolean = false
     )(implicit messages: Messages): ErrorSummary = {
 
       val errors = form.errors.map { error =>
@@ -38,9 +39,10 @@ trait ErrorSummaryFluency {
           content = Text(messages(error.message, error.args: _*))
         )
       }
+      val errorList = if (onlyShowFirstError && errors.nonEmpty) Seq(errors.head) else errors
 
       ErrorSummary(
-        errorList = errors,
+        errorList = errorList,
         title = Text(messages("error.summary.title"))
       )
     }

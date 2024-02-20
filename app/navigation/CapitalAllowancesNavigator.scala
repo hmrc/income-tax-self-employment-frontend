@@ -22,7 +22,7 @@ import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
@@ -73,17 +73,23 @@ class CapitalAllowancesNavigator @Inject() {
     case ZecTotalCostOfCarPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case ZecUsedForSelfEmploymentPage =>
+    case ZecOnlyForSelfEmploymentPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(ZecUsedForSelfEmploymentPage, Some(businessId)) match {
-              case Some(ZecUsedForSelfEmployment.No) => // TODO 7205 replace with ZecUseOutsideSEPage
-                zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case Some(ZecUsedForSelfEmployment.Yes) => // TODO 7261 replace with ZecHowMuchDoYouWantToClaimPage
-                zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+            userAnswers.get(ZecOnlyForSelfEmploymentPage, Some(businessId)) match {
+              case Some(ZecOnlyForSelfEmployment.No) =>
+                zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(ZecOnlyForSelfEmployment.Yes) =>
+                zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
+
+    case ZecUseOutsideSEPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case ZecHowMuchDoYouWantToClaimPage =>
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -93,7 +99,8 @@ class CapitalAllowancesNavigator @Inject() {
     case ClaimCapitalAllowancesPage | SelectCapitalAllowancesPage =>
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case ZecUsedForWorkPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecUsedForSelfEmploymentPage =>
+    case ZecUsedForWorkPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecOnlyForSelfEmploymentPage | ZecUseOutsideSEPage |
+        ZecHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>

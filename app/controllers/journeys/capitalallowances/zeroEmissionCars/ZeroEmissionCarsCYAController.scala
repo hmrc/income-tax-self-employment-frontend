@@ -52,7 +52,9 @@ class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: Message
             ZecUsedForWorkSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecTotalCostOfCarSummary.row(request.userAnswers, taxYear, businessId),
-            ZecUsedForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            ZecOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            ZecUseOutsideSESummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            ZecHowMuchDoYouWantToClaimSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

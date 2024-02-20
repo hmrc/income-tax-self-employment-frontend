@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package models.common
+package pages.capitalallowances.zeroEmissionCars
+import pages.OneQuestionPage
 
-trait MoneyBounds {
-  final val minimumValue: BigDecimal = BigDecimal(0)
-  final val maximumValue: BigDecimal = BigDecimal(100000000000.00)
-  final val noDecimalRegexp: String  = """\d+$"""
-
+object ZecUseOutsideSEPercentagePage extends OneQuestionPage[Int] {
+  override def toString: String = "zeroEmissionCarsUsedOutsideSEPercentage"
 }

@@ -15,8 +15,10 @@
  */
 
 package pages.capitalallowances.zeroEmissionCars
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import pages.OneQuestionPage
-object ZecUsedForSelfEmploymentPage extends OneQuestionPage[ZecUsedForSelfEmployment] {
-  override def toString: String = "zeroEmissionCarsUsedForSelfEmployment"
+
+object ZecUseOutsideSEPage extends OneQuestionPage[ZecUseOutsideSE] {
+  override def toString: String = "zeroEmissionCarsUsedOutsideSE"
 }
