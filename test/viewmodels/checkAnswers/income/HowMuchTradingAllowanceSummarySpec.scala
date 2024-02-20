@@ -82,7 +82,7 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
 
           resultT.map { row =>
             row.key.content shouldBe Text("howMuchTradingAllowance.checkYourAnswersLabel.individual")
-            row.value.content shouldBe HtmlContent("howMuchTradingAllowance.lowerAmount")
+            row.value.content shouldBe HtmlContent("common.lowerAmount")
           }
         }
       }

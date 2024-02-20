@@ -26,7 +26,7 @@ import models.journeys.capitalallowances.ZeroEmissionCarsAllowance.{No, Yes}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForSelfEmploymentPage}
+import pages.capitalallowances.zeroEmissionCars._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -80,7 +80,15 @@ class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZecUsedForSelfEmploymentPage, ZecTotalCostOfCarPage) // TODO 7205 / 7261 clear page
+    val pagesToBeCleared: List[Settable[_]] =
+      List(
+        ZecTotalCostOfCarPage,
+        ZecHowMuchDoYouWantToClaimPage,
+        ZecClaimAmount,
+        ZecOnlyForSelfEmploymentPage,
+        ZecUseOutsideSEPage,
+        ZecUseOutsideSEPercentagePage
+      )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case Yes => Future(request.userAnswers)

@@ -21,14 +21,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait ZecUsedForSelfEmployment
-object ZecUsedForSelfEmployment extends Enumerable.Implicits {
+sealed trait ZecOnlyForSelfEmployment
+object ZecOnlyForSelfEmployment extends Enumerable.Implicits {
 
-  case object Yes extends WithName("yes") with ZecUsedForSelfEmployment
+  case object Yes extends WithName("yes") with ZecOnlyForSelfEmployment
 
-  case object No extends WithName("no") with ZecUsedForSelfEmployment
+  case object No extends WithName("no") with ZecOnlyForSelfEmployment
 
-  val values: Seq[ZecUsedForSelfEmployment] = Seq(
+  val values: Seq[ZecOnlyForSelfEmployment] = Seq(
     Yes,
     No
   )
@@ -36,12 +36,12 @@ object ZecUsedForSelfEmployment extends Enumerable.Implicits {
   def options(userType: UserType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     val optUserType = if (value.equals(Yes)) "" else s".$userType"
     RadioItem(
-      content = Text(messages(if (value == Yes) "site.yes" else s"zecUsedForSelfEmployment.${value.toString}$optUserType")),
+      content = Text(messages(if (value == Yes) "site.yes" else s"zecOnlyForSelfEmployment.${value.toString}$optUserType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
   }
 
-  implicit val enumerable: Enumerable[ZecUsedForSelfEmployment] =
+  implicit val enumerable: Enumerable[ZecOnlyForSelfEmployment] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

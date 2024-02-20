@@ -22,10 +22,10 @@ import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProv
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
+import pages.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmploymentPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -33,17 +33,17 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentView
 
-class ZecUsedForSelfEmploymentControllerSpec
-    extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForSelfEmploymentController", ZecUsedForSelfEmploymentPage) {
+class ZecOnlyForSelfEmploymentControllerSpec
+    extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForSelfEmploymentController", ZecOnlyForSelfEmploymentPage) {
 
   override def onPageLoadCall: Call = routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.ZecUsedForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode)
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer: ZecUsedForSelfEmployment = ZecUsedForSelfEmployment.Yes
+  override val validAnswer: ZecOnlyForSelfEmployment = ZecOnlyForSelfEmployment.Yes
 
-  override def createForm(user: UserType): Form[ZecUsedForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(user)
+  override def createForm(user: UserType): Form[ZecOnlyForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

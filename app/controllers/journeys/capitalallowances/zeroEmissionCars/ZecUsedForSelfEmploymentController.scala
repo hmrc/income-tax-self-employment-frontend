@@ -20,12 +20,12 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment._
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment._
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentPage
+import pages.capitalallowances.zeroEmissionCars.{ZecOnlyForSelfEmploymentPage, ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -55,7 +55,7 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(ZecUsedForSelfEmploymentPage, Some(businessId))
+        .get(ZecOnlyForSelfEmploymentPage, Some(businessId))
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
@@ -70,21 +70,21 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecUsedForSelfEmploymentPage)
-            } yield Redirect(navigator.nextPage(ZecUsedForSelfEmploymentPage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecOnlyForSelfEmploymentPage)
+            } yield Redirect(navigator.nextPage(ZecOnlyForSelfEmploymentPage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: ZecUsedForSelfEmployment,
+  private def handleGatewayQuestion(currentAnswer: ZecOnlyForSelfEmployment,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List() // TODO 7205 / 7261 clear page
+    val pagesToBeCleared: List[Settable[_]] = List(ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case No  => Future(request.userAnswers)
     }
-    val redirectMode = request.getValue(ZecUsedForSelfEmploymentPage, businessId) match {
+    val redirectMode = request.getValue(ZecOnlyForSelfEmploymentPage, businessId) match {
       case Some(Yes) if currentAnswer == No => NormalMode
       case _                                => mode
     }

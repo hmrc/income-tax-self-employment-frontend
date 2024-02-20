@@ -98,6 +98,9 @@ trait Generators extends ModelGenerators {
     genBDIntersperseString(numberGen, ",")
   }
 
+  def bigDecimalsInRangeWithNoDecimals(min: BigDecimal, max: BigDecimal): Gen[String] =
+    choose[BigDecimal](min, max).map(_.setScale(0, RoundingMode.HALF_UP).toString)
+
   def bigDecimalsBelowValue(value: BigDecimal): Gen[BigDecimal] =
     arbitrary[BigDecimal] suchThat (_ < value)
 

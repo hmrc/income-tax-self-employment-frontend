@@ -28,7 +28,7 @@ class WorkingFromBusinessPremisesProviderSpec extends IntFieldBehaviours {
 
   private val fieldNames: Seq[String] = Seq("onePerson", "twoPeople", "threePeople")
   private val form                    = PeopleLivingAtBusinessPremisesFormProvider(Individual, maxMonths)
-  private val nonNumericError         = "error.nonNumeric"
+  private val nonNumericError         = "common.error.nonNumeric"
   private val noDecimalsError         = "expenses.error.noDecimals"
   private val lessThanZeroError       = "expenses.error.lessThanZero"
   private val totalOverMaxError       = "peopleLivingAtBusinessPremises.error.overMax.total.individual"

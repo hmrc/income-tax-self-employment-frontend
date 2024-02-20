@@ -27,6 +27,8 @@ site.theyInclude = They include:
 site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
 site.months = months
+site.enterTheAmount = Enter the amount
+site.pound = £
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -78,12 +80,10 @@ error.date.year_blank = Enter a year
 error.date.year_invalid = Give a correct year
 error.integer = Give an answer in whole numbers
 error.non_numeric = Give a value using only numbers
-error.nonNumeric = The amount must be a number
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 error.noTradingName = Trading name not found
-error.wholeNumber = The amount cannot have decimal places
 
 capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
 capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
@@ -96,8 +96,12 @@ capitalAllowances.l2 = machinery
 capitalAllowances.l3 = business vehicles
 
 common.insert = {0}
+common.lowerAmount = A lower amount
 common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourDetails.title.individual = Check your details
+common.error.lessThanZero = The amount must be more than 0
+common.error.nonNumeric = The amount must be a number
+common.error.nonDecimal = The amount cannot have decimal places
 
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
@@ -275,7 +279,6 @@ howMuchTradingAllowance.subHeading.individual = How much of your trading allowan
 howMuchTradingAllowance.subHeading.agent = How much of your client’s trading allowance do you want to use?
 howMuchTradingAllowance.maximum = The maximum £{0}
 howMuchTradingAllowance.lessThan = Less than £{0}
-howMuchTradingAllowance.lowerAmount = A lower amount
 howMuchTradingAllowance.error.required.individual = Select if you want to use the full trading allowance of £{0} or less than £{0}
 howMuchTradingAllowance.error.required.agent = Select if your client wants to use the full trading allowance of £{0} or less than £{0}
 howMuchTradingAllowance.checkYourAnswersLabel.individual = How much of your trading allowance do you want to use?
@@ -1225,6 +1228,7 @@ otherExpensesCYA.title.individual = Check your other expenses
 otherExpensesCYA.title.agent = Check your client’s other expenses
 
 ########## Capital Allowances - Tailoring ##########
+
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
 claimCapitalAllowances.title.ACCRUAL = Allowances for vehicles, equipment and buildings
@@ -1335,23 +1339,37 @@ zecTotalCostOfCar.error.required.individual = Enter the cost of the car in pound
 zecTotalCostOfCar.error.required.agent = Enter the cost of your client’s car in pounds
 zecTotalCostOfCar.change.hidden = Change the total cost of the car
 
-zecUsedForSelfEmployment.title.individual = Did you only use the car for your self-employment?
-zecUsedForSelfEmployment.title.agent = Did your client only use the car for their self-employment?
-zecUsedForSelfEmployment.error.required.individual = Select yes if you only used the car for your self-employment
-zecUsedForSelfEmployment.error.required.agent =Select yes if your client only used the car for their self-employment
-zecUsedForSelfEmployment.no.individual = No, I used it for other things as well
-zecUsedForSelfEmployment.no.agent = No, my client used it for other things as well
-zecUsedForSelfEmployment.change.hidden = Change if the car was only used for self-employment purposes
+zecOnlyForSelfEmployment.title.individual = Did you only use the car for your self-employment?
+zecOnlyForSelfEmployment.title.agent = Did your client only use the car for their self-employment?
+zecOnlyForSelfEmployment.error.required.individual = Select yes if you only used the car for your self-employment
+zecOnlyForSelfEmployment.error.required.agent =Select yes if your client only used the car for their self-employment
+zecOnlyForSelfEmployment.no.individual = No, I used it for other things as well
+zecOnlyForSelfEmployment.no.agent = No, my client used it for other things as well
+zecOnlyForSelfEmployment.change.hidden = Change if the car was only used for self-employment purposes
 
 zecUseOutsideSE.title.individual = How much did you use the car outside your self-employment?
 zecUseOutsideSE.title.agent = How much did your client use the car outside their self-employment?
 zecUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the car outside self-employment
 zecUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the car outside self-employment
 zecUseOutsideSE.error.overMax = The amount cannot be more than 99
-zecUseOutsideSE.error.lessThanZero = The amount must be more than 0
 zecUseOutsideSE.tenPercent = 10%
 zecUseOutsideSE.twentyFivePercent = 25%
 zecUseOutsideSE.fiftyPercent = 50%
 zecUseOutsideSE.differentAmount = A different amount
-zecUseOutsideSE.enterAmount = Enter the amount
 zecUseOutsideSE.change.hidden = Change how much the car was used outside of self-employment
+
+zecHowMuchDoYouWantToClaim.title = Claiming the allowance
+zecHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
+zecHowMuchDoYouWantToClaim.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
+zecHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
+zecHowMuchDoYouWantToClaim.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
+zecHowMuchDoYouWantToClaim.subHeading.individual = How much of your car’s cost do you want to claim under the 100% allowance?
+zecHowMuchDoYouWantToClaim.subHeading.agent = How much of your client’s car’s cost do they want to claim under the 100% allowance?
+zecHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
+zecHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
+zecHowMuchDoYouWantToClaim.error.required.agent = Select either the full cost or a lower amount from your client’s first year allowance that they want to claim
+zecHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
+zecHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
+zecHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
+zecHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
+zecHowMuchDoYouWantToClaim.change.hidden = 

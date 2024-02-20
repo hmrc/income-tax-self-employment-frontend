@@ -21,12 +21,12 @@ import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars}
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
-import pages.capitalallowances.zeroEmissionCars.{ZecAllowancePage, ZecTotalCostOfCarPage, ZecUsedForSelfEmploymentPage, ZecUsedForWorkPage}
+import pages.capitalallowances.zeroEmissionCars._
 import play.api.libs.json.Json
 import play.api.mvc.Call
 
@@ -126,27 +126,43 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is ZecUsedForSelfEmploymentPage" - {
+    "page is ZecOnlyForSelfEmploymentPage" - {
       "answer is 'Yes'" - {
         "navigate to ZecHowMuchDoYouWantToClaimPage" in {
-          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.Yes.toString)
-          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+          val data           = Json.obj("zeroEmissionCarsOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
+          val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
-          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+          nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
       "answer is 'No'" - {
         "navigate to ZecUseOutsideSEPage" in {
-          val data           = Json.obj("zeroEmissionCarsUsedForSelfEmployment" -> ZecUsedForSelfEmployment.No.toString)
-          val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+          val data           = Json.obj("zeroEmissionCarsOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.No.toString)
+          val expectedResult = zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
-          nextPage(ZecUsedForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+          nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
       "answer is None or invalid" - {
         "navigate to the ErrorRecoveryPage" in {
-          nextPage(ZecUsedForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
+          nextPage(ZecOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
         }
+      }
+    }
+
+    "page is ZecUseOutsideSEPage" - {
+      "navigate to ZecUsedForSelfEmploymentController" in {
+        val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(ZecUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is ZecHowMuchDoYouWantToClaimPage" - {
+      "navigate to ZecUsedForSelfEmploymentController" in {
+        val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(ZecHowMuchDoYouWantToClaimPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -161,6 +177,24 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
         }
       }
+    }
+
+    "page is ZecUsedForWorkPage, ZecAllowancePage, ZecTotalCostOfCarPage, ZecOnlyForSelfEmploymentPage, ZecUseOutsideSEPage or ZecHowMuchDoYouWantToClaimPage" - {
+      "navigate to ZeroEmissionCarsCYAController" in {
+        List(
+          ZecUsedForWorkPage,
+          ZecAllowancePage,
+          ZecTotalCostOfCarPage,
+          ZecOnlyForSelfEmploymentPage,
+          ZecUseOutsideSEPage,
+          ZecHowMuchDoYouWantToClaimPage).foreach {
+          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+        }
+      }
+    }
+
+    "navigate to journey recovery when there is no page match" in {
+      nextPageViaCheckMode(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
   }
 }

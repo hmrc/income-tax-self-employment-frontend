@@ -21,7 +21,6 @@ import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider
 import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.ZecUseOutsideSEFormModel
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.DifferentAmount
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionCars.{ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
@@ -66,16 +65,10 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleSuccess(answer: ZecUseOutsideSEFormModel): Future[Result] =
-        handleAnswer(answer).flatMap(updatedAnswers =>
-          service
-            .persistAnswer(businessId, updatedAnswers, answer.radioPercentage, ZecUseOutsideSEPage)
-            .map(updatedAnswers => Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, updatedAnswers, taxYear, businessId))))
-
-      def handleAnswer(answer: ZecUseOutsideSEFormModel): Future[UserAnswers] =
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          resultAnswers  <- Future.fromTry(updatedAnswers.set(ZecUseOutsideSEPercentagePage, answer.optDifferentAmount, Some(businessId)))
-        } yield resultAnswers
+          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.differentAmount, ZecUseOutsideSEPercentagePage)
+        } yield Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, finalAnswers, taxYear, businessId))
 
       ZecUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()

@@ -17,7 +17,7 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+@import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 @import viewmodels.LegendSize.Large
 
 @this(layout: templates.Layout,
@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zecOnlyForSelfEmployment.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -40,9 +40,9 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"zecUsedForSelfEmployment.title.$userType"))
+                legend = LegendViewModel(messages(s"zecOnlyForSelfEmployment.title.$userType"))
                 .asPageHeading(size = Large),
-                items  = ZecUsedForSelfEmployment.options(userType)
+                items  = ZecOnlyForSelfEmployment.options(userType)
             )
         )
         @govukButton(

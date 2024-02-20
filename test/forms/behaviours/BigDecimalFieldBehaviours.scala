@@ -54,4 +54,18 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def bigDecimalFieldWithRegex(form: Form[_],
+                               fieldName: String,
+                               regex: String,
+                               validValue: BigDecimal,
+                               invalidValue: BigDecimal,
+                               expectedError: FormError): Unit =
+    s"not bind big decimals that don't match regex: $regex" in {
+
+      val validResult   = form.bind(Map(fieldName -> validValue.toString)).apply(fieldName)
+      val invalidResult = form.bind(Map(fieldName -> invalidValue.toString)).apply(fieldName)
+      validResult.errors must not contain expectedError
+      invalidResult.errors must contain only expectedError
+    }
+
 }

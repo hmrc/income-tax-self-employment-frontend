@@ -25,10 +25,10 @@ import play.api.i18n.Messages
 
 object ZecUseOutsideSEFormProvider extends Mappings {
 
-  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Int = 0)
+  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, differentAmount: Int = 0)
 
-  private val radioPercentage    = "radioPercentage"
-  private val optDifferentAmount = "optDifferentAmount"
+  private val radioPercentage = "radioPercentage"
+  private val differentAmount = "differentAmount"
 
   def apply(userType: UserType)(implicit messages: Messages): Form[ZecUseOutsideSEFormModel] = {
     val requiredRadioError = s"zecUseOutsideSE.error.required.$userType"
@@ -43,8 +43,8 @@ object ZecUseOutsideSEFormProvider extends Mappings {
 
     Form[ZecUseOutsideSEFormModel](
       mapping(
-        radioPercentage    -> validateRadio(),
-        optDifferentAmount -> validateInt()
+        radioPercentage -> validateRadio(),
+        differentAmount -> validateInt()
       )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
   }

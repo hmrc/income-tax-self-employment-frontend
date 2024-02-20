@@ -29,7 +29,7 @@ class ZecTotalCostOfCarFormProviderSpec extends CurrencyFormProviderBaseSpec("Ze
   override def nonNumericError: String     = ""
   override def lessThanZeroError: String   = ""
   override def overMaxError: String        = ""
-  override def nonNumericErrorNoUserType   = "error.nonNumeric".some
+  override def nonNumericErrorNoUserType   = "common.error.nonNumeric".some
   override def lessThanZeroErrorNoUserType = "expenses.error.lessThanZero".some
   override def overMaxErrorNoUserType      = "expenses.error.overMax".some
 
