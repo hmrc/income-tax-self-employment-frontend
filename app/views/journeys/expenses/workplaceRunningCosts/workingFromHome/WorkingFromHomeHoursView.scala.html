@@ -45,7 +45,7 @@
 @wholeFormErrorMsg = @{
     if (wholeFormError) {
         <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span>
+            <span class="govuk-visually-hidden">message("error.browser.title.prefix")</span>
             {messages(s"workingFromHomeHours.error.overMax.total.$userType", maxMonths)}
         </p>
     }

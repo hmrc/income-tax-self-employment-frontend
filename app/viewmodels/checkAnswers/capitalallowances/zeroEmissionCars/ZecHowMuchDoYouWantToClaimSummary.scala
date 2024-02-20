@@ -16,35 +16,26 @@
 
 package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimPage
+import pages.capitalallowances.zeroEmissionCars.ZecClaimAmount
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.buildRowBigDecimal
 
 object ZecHowMuchDoYouWantToClaimSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
-      messages: Messages): Option[SummaryListRow] = {
-
-    val answer   = userAnswers.get(ZecHowMuchDoYouWantToClaimPage, Some(businessId))
-    val fullCost = userAnswers.get(???, Some(businessId))
-    (answer, fullCost) match {
-      case (Some(answer), Some(fullCost)) =>
-        buildRowString(
-          Messages(s"expenses.$answer.cya"),
-          routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType", formatMoney(fullCost)),
-          "zecHowMuchDoYouWantToClaim.change.hidden",
-          rightTextAlign = true
-        ).some
-      case _ => None
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(ZecClaimAmount, Some(businessId)) map { totalCost =>
+      buildRowBigDecimal(
+        totalCost,
+        routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, CheckMode),
+        messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType"),
+        "zecHowMuchDoYouWantToClaim.change.hidden"
+      )
     }
-  }
 
 }

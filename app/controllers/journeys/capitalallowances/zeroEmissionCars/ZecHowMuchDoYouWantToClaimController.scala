@@ -16,66 +16,71 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import cats.implicits.catsSyntaxEitherId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.redirectJourneyRecovery
 import forms.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimFormProvider
+import forms.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimFormProvider.ZecHowMuchDoYouWantToClaimModel
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.{DifferentAmount, Fifty, Ten, TwentyFive}
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment.{No, Yes}
-import models.journeys.capitalallowances.zeroEmissionCars.{ZecHowMuchDoYouWantToClaim, ZecUseOutsideSE, ZecUsedForSelfEmployment}
+import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaim.{FullCost, LowerAmount}
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import navigation.WorkplaceRunningCostsNavigator
-import pages.capitalallowances.zeroEmissionCars.{ZecHowMuchDoYouWantToClaimPage, ZecUseOutsideSEPage, ZecUsedForSelfEmploymentPage}
+import navigation.CapitalAllowancesNavigator
+import pages.capitalallowances.zeroEmissionCars.{ZecClaimAmount, ZecHowMuchDoYouWantToClaimPage, ZecTotalCostOfCarPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfbpFlatRateViewModel.calculateFlatRate
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ZecHowMuchDoYouWantToClaimController @Inject()(override val messagesApi: MessagesApi,
-                                                     service: SelfEmploymentService,
-                                                     navigator: WorkplaceRunningCostsNavigator,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: ZecHowMuchDoYouWantToClaimFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     view: ZecHowMuchDoYouWantToClaimView)(implicit ec: ExecutionContext)
+class ZecHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: MessagesApi,
+                                                      service: SelfEmploymentService,
+                                                      navigator: CapitalAllowancesNavigator,
+                                                      identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      view: ZecHowMuchDoYouWantToClaimView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      calculateFullCost(request, businessId) match {
-        case Left(redirect) => redirect
-        case Right(fullCost) =>
-          val form       = formProvider(request.userType, fullCost)
-          val filledForm = request.getValue(ZecHowMuchDoYouWantToClaimPage, businessId).fold(form)(form.fill)
+      (calculateFullCost(request, businessId) map { fullCost =>
+        val formProvider            = ZecHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
+        val howMuchDoYouWantToClaim = request.getValue(ZecHowMuchDoYouWantToClaimPage, businessId)
+        val totalCost               = request.getValue(ZecClaimAmount, businessId)
+        val filledForm = (howMuchDoYouWantToClaim, totalCost) match {
+          case (Some(claim), Some(totalCost)) if claim == LowerAmount =>
+            formProvider.fill(ZecHowMuchDoYouWantToClaimModel(claim, totalCost))
+          case (Some(claim), _) =>
+            formProvider.fill(ZecHowMuchDoYouWantToClaimModel(claim))
+          case _ => formProvider
+        }
 
-          Ok(view(filledForm, mode, request.userType, taxYear, businessId, fullCost))
-      }
+        Ok(view(filledForm, mode, request.userType, taxYear, businessId, fullCost))
+      }).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(answer: ZecHowMuchDoYouWantToClaim, flatRate: BigDecimal): Future[Result] =
+      def handleSuccess(answer: ZecHowMuchDoYouWantToClaimModel, fullCost: BigDecimal): Future[Result] = {
+        val totalCostOfCar: BigDecimal = answer.howMuchDoYouWantToClaim match {
+          case FullCost    => fullCost
+          case LowerAmount => answer.totalCost
+        }
         for {
-          (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, flatRate, request, mode, businessId)
-          updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecHowMuchDoYouWantToClaimPage)
-        } yield Redirect(navigator.nextPage(ZecHowMuchDoYouWantToClaimPage, redirectMode, updatedUserAnswers, taxYear, businessId))
+          updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecHowMuchDoYouWantToClaimPage, answer.howMuchDoYouWantToClaim, Some(businessId)))
+          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, totalCostOfCar, ZecClaimAmount)
+        } yield Redirect(navigator.nextPage(ZecHowMuchDoYouWantToClaimPage, mode, finalAnswers, taxYear, businessId))
+      }
 
       calculateFullCost(request, businessId) match {
         case Left(redirect) => Future(redirect)
         case Right(fullCost) =>
-          formProvider(request.userType, fullCost)
+          ZecHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, fullCost))),
@@ -85,22 +90,9 @@ class ZecHowMuchDoYouWantToClaimController @Inject()(override val messagesApi: M
   }
 
   private def calculateFullCost(request: DataRequest[AnyContent], businessId: BusinessId): Either[Result, BigDecimal] = {
-    def calculate(totalCost: BigDecimal, percentage: ZecUseOutsideSE): Either[Result, BigDecimal] =
-      percentage match {
-        case Ten => (0.1 * totalCost).asRight
-        case TwentyFive => (0.25 * totalCost).asRight
-        case Fifty => (0.5 * totalCost).asRight
-        case DifferentAmount =>
-          request.valueOrRedirectDefault(ZecUseOutsideSEDifferentAmountPage, businessId) map (_ * totalCost)
-      }
-    val totalCost: Option[BigDecimal] = request.getValue(ZecTotalCostOfCarPage, businessId)
-    val onlyForSelfEmployment: Option[ZecUsedForSelfEmployment] = request.getValue(ZecUsedForSelfEmploymentPage, businessId)
-    val percentage: Option[ZecUseOutsideSE] = request.getValue(ZecUseOutsideSEPage, businessId)
-    (totalCost, onlyForSelfEmployment, percentage) match {
-      case (Some(totalCost), Some(Yes), _) => totalCost.asRight
-      case (Some(totalCost), Some(No), Some(percentage)) => calculate(totalCost, percentage)
-      case _ => redirectJourneyRecovery().asLeft
-    }
+//    val percentageUsedForSE = (100 - request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0)) / 100
+    val percentageUsedForSE = 1 // TODO 7205 delete <this line>, uncomment ^this line^
+    request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (costOfCar => costOfCar * percentageUsedForSE)
   }
 
 }

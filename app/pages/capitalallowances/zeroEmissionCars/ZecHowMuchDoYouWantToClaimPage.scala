@@ -20,5 +20,5 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToC
 import pages.OneQuestionPage
 
 object ZecHowMuchDoYouWantToClaimPage extends OneQuestionPage[ZecHowMuchDoYouWantToClaim] {
-  override def toString: String = "zeroEmissionCarsUsedForSelfEmployment"
+  override def toString: String = "zecHowMuchDoYouWantToClaim"
 }

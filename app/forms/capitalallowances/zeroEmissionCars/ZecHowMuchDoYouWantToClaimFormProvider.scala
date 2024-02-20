@@ -17,20 +17,40 @@
 package forms.capitalallowances.zeroEmissionCars
 
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaim
-import play.api.data.Form
-import utils.MoneyUtils.formatMoney
+import play.api.data.Forms.mapping
+import play.api.data.{Form, Mapping}
+import play.api.i18n.Messages
 
-import javax.inject.Inject
+object ZecHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds {
 
-class ZecHowMuchDoYouWantToClaimFormProvider @Inject() extends Mappings {
+  case class ZecHowMuchDoYouWantToClaimModel(howMuchDoYouWantToClaim: ZecHowMuchDoYouWantToClaim, totalCost: BigDecimal = 0)
 
-  def apply(userType: UserType, fullCostAmount: BigDecimal): Form[ZecHowMuchDoYouWantToClaim] =
-    Form(
-      "value" -> enumerable[ZecHowMuchDoYouWantToClaim](
-        s"zecHowMuchDoYouWantToClaim.error.required.$userType",
-        args = Seq(formatMoney(fullCostAmount)))
+  private val howMuchDoYouWantToClaim = "howMuchDoYouWantToClaim"
+  private val totalCost               = "totalCost"
+
+  def apply(userType: UserType, fullAmount: BigDecimal)(implicit messages: Messages): Form[ZecHowMuchDoYouWantToClaimModel] = {
+    val requiredError       = s"zecHowMuchDoYouWantToClaim.error.required.$userType"
+    val amountRequiredError = "zecHowMuchDoYouWantToClaim.error.required.amount"
+    val lessThanZeroError   = "common.error.lessThanZero"
+    val nonNumericError     = "common.error.nonNumeric"
+    val noDecimalsError     = "common.error.nonDecimal"
+    val overMaxError        = "zecHowMuchDoYouWantToClaim.error.overMax"
+
+    def validateRadio(): Mapping[ZecHowMuchDoYouWantToClaim] = enumerable[ZecHowMuchDoYouWantToClaim](messages(requiredError))
+
+    def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, nonNumericError)
+      .verifying(greaterThan(minimumValue, lessThanZeroError))
+      .verifying(lessThan(fullAmount, overMaxError))
+      .verifying(regexpBigDecimal(noDecimalRegexp, noDecimalsError))
+
+    Form[ZecHowMuchDoYouWantToClaimModel](
+      mapping(
+        howMuchDoYouWantToClaim -> validateRadio(),
+        totalCost               -> validateAmount(fullAmount)
+      )(ZecHowMuchDoYouWantToClaimModel.apply)(ZecHowMuchDoYouWantToClaimModel.unapply)
     )
+  }
 
 }

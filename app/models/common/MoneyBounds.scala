@@ -19,5 +19,6 @@ package models.common
 trait MoneyBounds {
   final val minimumValue: BigDecimal = BigDecimal(0)
   final val maximumValue: BigDecimal = BigDecimal(100000000000.00)
+  final val noDecimalRegexp: String  = """\d+$"""
 
 }

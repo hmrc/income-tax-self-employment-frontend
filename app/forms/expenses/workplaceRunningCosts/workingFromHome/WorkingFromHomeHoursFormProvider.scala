@@ -32,7 +32,7 @@ object WorkingFromHomeHoursFormProvider extends Mappings {
 
   def apply(userType: UserType, maxMonths: Int)(implicit messages: Messages): Form[WorkingFromHomeHoursFormModel] = {
     val requiredError     = "workingFromHomeHours.error.required."
-    val nonNumericError   = "expenses.error.nonNumeric"
+    val nonNumericError   = "common.error.nonNumeric"
     val noDecimalsError   = "expenses.error.noDecimals"
     val lessThanZeroError = "expenses.error.lessThanZero"
     val overMaxError      = "workingFromHomeHours.error.overMax."

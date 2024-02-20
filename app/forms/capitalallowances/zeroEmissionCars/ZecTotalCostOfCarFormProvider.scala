@@ -26,7 +26,7 @@ class ZecTotalCostOfCarFormProvider @Inject() extends Mappings with MoneyBounds 
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> currency(s"zecTotalCostOfCar.error.required.$userType", "expenses.error.nonNumeric")
+      "value" -> currency(s"zecTotalCostOfCar.error.required.$userType", "common.error.nonNumeric")
         .verifying(greaterThan(minimumValue, "expenses.error.lessThanZero"))
         .verifying(lessThan(maximumValue, "expenses.error.overMax"))
     )

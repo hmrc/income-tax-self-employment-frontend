@@ -1,0 +1,139 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.templates.helpers.Heading
+@import utils.MoneyUtils.formatMoney
+
+@this(layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        heading: Heading)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, fullCostAmount: BigDecimal)(implicit request: Request[_], messages: Messages)
+
+@formHasErrors = @{form.errors.nonEmpty}
+@amountInputErrorMsg = @{
+    if (formHasErrors && !missingRadioError) {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+            {messages(form.errors.head.messages.headOption.getOrElse(""))}
+        </p>
+    }
+}
+@missingRadioError = @{
+    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"zecHowMuchDoYouWantToClaim.error.required.$userType")),List()))
+}
+@missingRadioErrorMsg = @{
+    if (missingRadioError) {
+        <p class="govuk-error-message">
+        <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+        {messages(s"zecHowMuchDoYouWantToClaim.error.required.$userType")}
+        </p>
+    }
+}
+@amountInputErrors = @{ formHasErrors && !missingRadioError }
+@amountInputErrorsMsg = @{
+    if (amountInputErrors) {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+            {messages(form.errors.head.messages.headOption.getOrElse(""))}
+        </p>
+    }
+}
+
+@layout(pageTitle = title(form, messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType"))) {
+
+    @if(formHasErrors) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
+    }
+
+    @heading(messages("zecHowMuchDoYouWantToClaim.title"), extraClasses = "govuk-!-margin-bottom-3")
+
+    <div class="govuk-body">
+        <p>@messages(s"zecHowMuchDoYouWantToClaim.p1.$userType")</p>
+        <p>@messages(s"zecHowMuchDoYouWantToClaim.p2.$userType")</p>
+    </div>
+
+    @formHelper(action = routes.ZecHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+            <div class="govuk-form-group @{ if (missingRadioError) "govuk-form-group--error" else "" }">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h3 class="govuk-fieldset__heading">@messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
+                    </legend>
+                    <div class="govuk-hint">@{messages("zecHowMuchDoYouWantToClaim.hint")}</div>
+
+                    @missingRadioErrorMsg
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" name="howMuchDoYouWantToClaim" id="fullCost" type="radio" value="fullCost" @{
+                                if(form("howMuchDoYouWantToClaim").value.contains("fullCost")) "checked" else ""
+                            }>
+                            <label class="govuk-label govuk-radios__label" for="fullCost">
+                            @messages("zecHowMuchDoYouWantToClaim.fullCost", formatMoney(fullCostAmount, false))
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" name="howMuchDoYouWantToClaim" id="lowerAmount" type="radio"
+                            value="lowerAmount" data-aria-controls="conditional-lower-amount" @{
+                                if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) "checked" else ""
+                            }>
+                            <label class="govuk-label govuk-radios__label" for="lowerAmount">
+                            @messages("common.lowerAmount")
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-lower-amount">
+                            <div class="govuk-form-group@{ if (amountInputErrors) "--error" else "" }">
+                                <label class="govuk-label" for="totalCost">@messages("site.enterTheAmount")</label>
+                                @amountInputErrorMsg
+                                <input class="govuk-input@{ if (amountInputErrors) " govuk-input--error" else "" } govuk-!-width-one-third" id="totalCost" name="totalCost"
+                                    value="@{if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) form("totalCost").value else ""}">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var fullCost = document.getElementById("fullCost");
+        var lowerAmount = document.getElementById("lowerAmount");
+        var lowerAmountInput = document.getElementById("totalCost");
+
+        fullCost.addEventListener("change", function () {
+            if (fullCost.checked) {
+                document.getElementById("totalCost").value = fullCostAmount;
+            }
+        });
+
+        lowerAmount.addEventListener("change", function () {
+            if (lowerAmount.checked) {
+                document.getElementById("totalCost").value = lowerAmountInput.value;
+            }
+        });
+    });
+</script>

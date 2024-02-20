@@ -18,14 +18,14 @@ package forms.capitalallowances.zeroEmissionCars
 
 import base.forms.RadioButtonFormProviderBaseSpec
 import models.common.UserType
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import play.api.data.Form
 
-class ZecUsedForSelfEmploymentFormProviderSpec extends RadioButtonFormProviderBaseSpec[ZecUsedForSelfEmployment]("ZecUsedForSelfEmploymentForm") {
+class ZecOnlyForSelfEmploymentFormProviderSpec extends RadioButtonFormProviderBaseSpec[ZecOnlyForSelfEmployment]("ZecUsedForSelfEmploymentForm") {
 
-  override def getFormProvider(userType: UserType): Form[ZecUsedForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(userType)
+  override def getFormProvider(userType: UserType): Form[ZecOnlyForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(userType)
 
-  override lazy val validValues: Seq[ZecUsedForSelfEmployment] = ZecUsedForSelfEmployment.values
+  override lazy val validValues: Seq[ZecOnlyForSelfEmployment] = ZecOnlyForSelfEmployment.values
   override lazy val requiredError: String                      = "zecUsedForSelfEmployment.error.required"
 
 }

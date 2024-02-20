@@ -38,7 +38,7 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
             .map(amount => s"The maximum £$amount")
 
         case HowMuchTradingAllowance.LessThan =>
-          Right(messages("howMuchTradingAllowance.lowerAmount"))
+          Right(messages("common.lowerAmount"))
       }
 
       for {

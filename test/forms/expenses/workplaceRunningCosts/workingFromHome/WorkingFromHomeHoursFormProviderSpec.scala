@@ -28,7 +28,7 @@ class WorkingFromHomeHoursFormProviderSpec extends IntFieldBehaviours {
 
   private val fieldNames: Seq[String] = Seq("value25To50", "value51To100", "value101Plus")
   private val form                    = WorkingFromHomeHoursFormProvider(Individual, maxMonths)
-  private val nonNumericError         = "expenses.error.nonNumeric"
+  private val nonNumericError         = "common.error.nonNumeric"
   private val noDecimalsError         = "expenses.error.noDecimals"
   private val lessThanZeroError       = "expenses.error.lessThanZero"
   private val totalOverMaxError       = "workingFromHomeHours.error.overMax.total.individual"

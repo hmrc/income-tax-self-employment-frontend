@@ -104,6 +104,14 @@ trait Constraints {
         Invalid(errorKey, regex)
     }
 
+  protected def regexpBigDecimal(regex: String, errorKey: String): Constraint[BigDecimal] =
+    Constraint {
+      case bd if bd.toString.stripSuffix(".00").matches(regex) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, regex)
+    }
+
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>
