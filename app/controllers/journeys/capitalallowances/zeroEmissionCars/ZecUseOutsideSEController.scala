@@ -49,7 +49,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val formProvider    = ZecUseOutsideSEFormProvider()
+      val formProvider    = ZecUseOutsideSEFormProvider(request.userType)
       val radioValue      = request.getValue(ZecUseOutsideSEPage, businessId)
       val percentageValue = request.getValue(ZecUseOutsideSEPercentagePage, businessId)
       val filledForm = (radioValue, percentageValue) match {
@@ -77,7 +77,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
           resultAnswers  <- Future.fromTry(updatedAnswers.set(ZecUseOutsideSEPercentagePage, answer.optDifferentAmount, Some(businessId)))
         } yield resultAnswers
 
-      ZecUseOutsideSEFormProvider()
+      ZecUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

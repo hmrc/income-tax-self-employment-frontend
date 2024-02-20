@@ -71,17 +71,20 @@
                             if(form("radioPercentage").value.contains("aDifferentAmount")) "checked" else ""
                         }>
                         <label class="govuk-label govuk-radios__label" for="aDifferentAmount">
-                            A different Amount
+                            @messages("zecUseOutsideSE.differentAmount")
                         </label>
                     </div>
                     <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-different-amount">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="optDifferentAmount">
-                                %
+                            <label class = "govuk-label" for="optDifferentAmount" >
+                                @messages("zecUseOutsideSE.enterAmount")
                             </label>
-                            <input class="govuk-input govuk-!-width-one-third" id="optDifferentAmount" name="optDifferentAmount" value="@{
+                            <div class="govuk-input__wrapper" >
+                            <input class="govuk-input govuk-input--width-2" id="optDifferentAmount" name="optDifferentAmount" value="@{
                                 if(form("radioPercentage").value.contains("aDifferentAmount")) form("optDifferentAmount").value else ""
                             }">
+                                <div class="govuk-input__suffix">%</div>
+                            </div>
                         </div>
                     </div>
                 </div>
