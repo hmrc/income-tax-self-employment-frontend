@@ -34,7 +34,7 @@ class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
     CapitalAllowancesCYAPage.pageName.value
 
   override val submissionData: JsObject =
-    Json.obj("zeroEmissionCarsUsedForWork" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar"))
+    Json.obj("zeroEmissionCarsUsedForWork" -> false)
 
   override val testDataCases: List[JsObject] = List(submissionData)
 
@@ -44,14 +44,7 @@ class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(
-        ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType).value,
-        ZecAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
-        ZecTotalCostOfCarSummary.row(userAnswers, taxYear, businessId).value,
-        ZecOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value,
-        ZecUseOutsideSESummary.row(userAnswers, taxYear, businessId, userType).value,
-        ZecHowMuchDoYouWantToClaimSummary.row(userAnswers, taxYear, businessId, userType).value
-      ),
+      rows = List(ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType).value),
       classes = "govuk-!-margin-bottom-7"
     )
 
