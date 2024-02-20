@@ -28,6 +28,7 @@ site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
 site.months = months
 site.enterTheAmount = Enter the amount
+site.pound = £
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS

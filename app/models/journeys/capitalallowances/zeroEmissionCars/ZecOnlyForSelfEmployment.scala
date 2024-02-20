@@ -36,7 +36,7 @@ object ZecOnlyForSelfEmployment extends Enumerable.Implicits {
   def options(userType: UserType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     val optUserType = if (value.equals(Yes)) "" else s".$userType"
     RadioItem(
-      content = Text(messages(if (value == Yes) "site.yes" else s"zecUsedForSelfEmployment.${value.toString}$optUserType")),
+      content = Text(messages(if (value == Yes) "site.yes" else s"zecOnlyForSelfEmployment.${value.toString}$optUserType")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )

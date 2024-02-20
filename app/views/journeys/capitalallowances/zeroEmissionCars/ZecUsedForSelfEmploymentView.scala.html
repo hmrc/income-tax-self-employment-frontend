@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zecOnlyForSelfEmployment.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -40,7 +40,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"zecUsedForSelfEmployment.title.$userType"))
+                legend = LegendViewModel(messages(s"zecOnlyForSelfEmployment.title.$userType"))
                 .asPageHeading(size = Large),
                 items  = ZecOnlyForSelfEmployment.options(userType)
             )
