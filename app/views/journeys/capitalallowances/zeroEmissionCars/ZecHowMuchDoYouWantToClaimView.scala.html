@@ -119,24 +119,18 @@
                 ButtonViewModel(messages("site.continue"))
             )
         }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const submitButton = document.getElementsByClassName("govuk-button")[0];
+            const fullCost = document.getElementById("fullCost");
+            var lowerAmountInput = document.getElementById("totalCost");
+
+            submitButton.addEventListener("click", function () {
+                if (fullCost.checked) {
+                    lowerAmountInput.value = @fullCostAmount.toString();
+                }
+            });
+        });
+    </script>
 }
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var fullCost = document.getElementById("fullCost");
-        var lowerAmount = document.getElementById("lowerAmount");
-        var lowerAmountInput = document.getElementById("totalCost");
-
-        fullCost.addEventListener("change", function () {
-            if (fullCost.checked) {
-                document.getElementById("totalCost").value = fullCostAmount;
-            }
-        });
-
-        lowerAmount.addEventListener("change", function () {
-            if (lowerAmount.checked) {
-                document.getElementById("totalCost").value = lowerAmountInput.value;
-            }
-        });
-    });
-</script>

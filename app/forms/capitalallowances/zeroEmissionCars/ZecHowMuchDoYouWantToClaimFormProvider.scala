@@ -42,7 +42,7 @@ object ZecHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds 
 
     def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, nonNumericError)
       .verifying(greaterThan(minimumValue, lessThanZeroError))
-      .verifying(lessThan(fullAmount, overMaxError))
+      .verifying(maximumValue(fullAmount, overMaxError))
       .verifying(regexpBigDecimal(noDecimalRegexp, noDecimalsError))
 
     Form[ZecHowMuchDoYouWantToClaimModel](
