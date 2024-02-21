@@ -16,23 +16,27 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.capitalallowances.zeroEmissionCars.ZecUsedForWorkSummary
+import viewmodels.checkAnswers.capitalallowances.zeroEmissionCars._
 
-class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String =
     CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] =
-    List(Json.obj("zeroEmissionCarsUsedForWork" -> true))
+  override val submissionData: JsObject =
+    Json.obj("zeroEmissionCarsUsedForWork" -> false)
+
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ZeroEmissionCarsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ZeroEmissionCarsCYAController.onSubmit
@@ -40,9 +44,9 @@ class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(
-        ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType).value
-      ),
+      rows = List(ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType).value),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  override val journey: Journey = CapitalAllowancesZeroEmissionCars
 }
