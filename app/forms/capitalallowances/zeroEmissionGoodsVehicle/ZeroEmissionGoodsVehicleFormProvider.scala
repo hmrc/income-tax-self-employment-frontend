@@ -26,7 +26,9 @@ class ZeroEmissionGoodsVehicleFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
     Form(
-      "value" -> boolean(s"zeroEmissionGoodsVehicle.error.required.$userType", args = Seq((taxYear.value - 1).toString, taxYear.value.toString))
+      "value" -> boolean(
+        s"zeroEmissionGoodsVehicle.error.required.$userType",
+        args = Seq(TaxYear.startYear(taxYear).toString, taxYear.value.toString))
     )
 
 }

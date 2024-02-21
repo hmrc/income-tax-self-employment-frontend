@@ -23,6 +23,7 @@ final case class TaxYear(value: Int) extends AnyVal {
 }
 
 object TaxYear {
+  def startYear(taxYear: TaxYear): Int = taxYear.value - 1
 
   implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
 

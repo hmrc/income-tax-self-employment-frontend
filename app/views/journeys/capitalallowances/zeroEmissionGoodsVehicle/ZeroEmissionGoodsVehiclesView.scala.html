@@ -69,7 +69,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", (taxYear.value - 1).toString, taxYear.value.toString))
+                legend = LegendViewModel(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", (TaxYear.startYear(taxYear)).toString, taxYear.value.toString))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
         )
     )

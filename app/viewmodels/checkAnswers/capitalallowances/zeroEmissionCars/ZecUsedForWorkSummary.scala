@@ -35,7 +35,7 @@ object ZecUsedForWorkSummary {
         buildRowBoolean(
           answer,
           routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecUsedForWork.subHeading.$userType", (taxYear.value - 1).toString, taxYear.value.toString),
+          messages(s"zecUsedForWork.subHeading.$userType", TaxYear.startYear(taxYear).toString, taxYear.value.toString),
           "zecUsedForWork.change.hidden",
           rightTextAlign = true
         )

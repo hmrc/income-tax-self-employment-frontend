@@ -17,12 +17,12 @@
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import models.common.{TaxYear, UserType}
 
 class ZeroEmissionGoodsVehicleFormProviderSpec extends BooleanFormProviderBaseSpec("ZeroEmissionGoodsVehicleFormProvider") {
 
   override def requiredErrorKey = "zeroEmissionGoodsVehicle.error.required"
-  override def invalidKeyArgs   = Seq((taxYear.value - 1).toString, taxYear.value.toString)
+  override def invalidKeyArgs   = Seq(TaxYear.startYear(taxYear).toString, taxYear.value.toString)
 
   override def formProvider(user: UserType) = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
 }
