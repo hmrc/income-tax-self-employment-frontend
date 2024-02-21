@@ -59,6 +59,7 @@ journeys.expenses-other-expenses = Other Expenses
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
 journeys.capital-allowances-zero-emission-cars = Zero-emission cars
+journeys.capital-allowances-zero-emission-goods-vehicles = Zero-emission goods vehicles
 
 date.day = Day
 date.month = Month
@@ -1310,7 +1311,7 @@ zecUsedForWork.hint.individual = This includes most cars bought on hire purchase
 zecUsedForWork.hint.agent = This includes most cars bought on hire purchase. Your client cannot claim for cars that are on lease.
 zecUsedForWork.error.required.individual = Select yes if you bought a new and unused zero-emission car between the specified dates
 zecUsedForWork.error.required.agent = Select yes if your client bought a new and unused zero-emission car between the specified dates
-zecUsedForWork.change.hidden = Change whether you bought any new or unused zero-emission cars
+zecUsedForWork.change.hidden = Change whether you bought any new and unused zero-emission cars
 
 zecAllowance.p1.individual = You can use the cost of your car to reduce your taxable income.
 zecAllowance.p1.agent = Your client can use the cost of their car to reduce their taxable income.
@@ -1371,3 +1372,28 @@ zecHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the ful
 zecHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
 zecHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zecHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
+
+########## Capital Allowances - Zero Emission Goods Vehicles ##########
+
+zeroEmissionGoodsVehicle.p1.individual = For a zero-emission goods vehicle, you can claim:
+zeroEmissionGoodsVehicle.p1.agent = For a zero-emission goods vehicle, your client can claim:
+zeroEmissionGoodsVehicle.l1.individual = all the 100% first year allowance if you only used the vehicle for your self-employment
+zeroEmissionGoodsVehicle.l1.agent = all the 100% first year allowance if they only used the vehicle for their self-employment
+zeroEmissionGoodsVehicle.l2.individual = part of the cost of the vehicle if you also used it outside your self-employment
+zeroEmissionGoodsVehicle.l2.agent = part of the cost of the vehicle if they also used it outside their self-employment
+zeroEmissionGoodsVehicle.details.heading = Understanding zero-emission goods vehicles
+zeroEmissionGoodsVehicle.details.p1.individual = Your vehicle is a zero-emission goods vehicle if it:
+zeroEmissionGoodsVehicle.details.p1.agent = Your client’s vehicle is a zero-emission goods vehicle if it:
+zeroEmissionGoodsVehicle.details.l1 = is designed primarily for transporting goods
+zeroEmissionGoodsVehicle.details.l2 = cannot emit CO2 by being driven
+zeroEmissionGoodsVehicle.details.l3 = is registered for use on the road
+zeroEmissionGoodsVehicle.details.p2 = It can include vans and HGVs.
+zeroEmissionGoodsVehicle.details.p3 = Zero-emission vehicles that are designed for:
+zeroEmissionGoodsVehicle.details.l4 = carrying passengers, or
+zeroEmissionGoodsVehicle.details.l5 = specialist works like mobile cranes or hoists
+zeroEmissionGoodsVehicle.details.p4 = are not goods vehicles.
+zeroEmissionGoodsVehicle.subHeading.individual = Did you buy any new and unused zero-emission goods vehicles between 6 April {0} and 5 April {1}?
+zeroEmissionGoodsVehicle.subHeading.agent = Did your client buy any new and unused zero-emission goods vehicles between 6 April {0} and 5 April {1}?
+zeroEmissionGoodsVehicle.error.required.individual = Select yes if you bought a new and unused zero-emission goods vehicle between the specified dates
+zeroEmissionGoodsVehicle.error.required.agent = Select yes if your client bought a new and unused zero-emission goods vehicle between the specified dates
+zeroEmissionGoodsVehicle.change.hidden = Change whether you bought any new and unused zero-emission goods vehicles
