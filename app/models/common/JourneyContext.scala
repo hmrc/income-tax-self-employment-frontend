@@ -36,7 +36,7 @@ case class JourneyContextWithNino(taxYear: TaxYear,
     extends JourneyContext {
   val answersUrl: String = {
     val optExtraContext: String = if (extraContext.isEmpty) "" else s"/${extraContext.getOrElse("")}"
-    s"${taxYear.value}/${businessId.value}/${journey.toString}$optExtraContext/${nino.value}/answers"
+    s"${taxYear.endYear}/${businessId.value}/${journey.toString}$optExtraContext/${nino.value}/answers"
   }
 }
 
@@ -44,6 +44,6 @@ case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtdit
     extends JourneyContext {
   val answersUrl: String = {
     val optExtraContext: String = if (extraContext.isEmpty) "" else s"/${extraContext.getOrElse("")}"
-    s"${taxYear.value}/${businessId.value}/${journey.toString}$optExtraContext/answers"
+    s"${taxYear.endYear}/${businessId.value}/${journey.toString}$optExtraContext/answers"
   }
 }

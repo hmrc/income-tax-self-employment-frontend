@@ -18,12 +18,13 @@ package models.common
 
 import play.api.mvc.PathBindable
 
-final case class TaxYear(value: Int) extends AnyVal {
-  override def toString: String = value.toString
+final case class TaxYear(endYear: Int) extends AnyVal {
+  override def toString: String = endYear.toString
+
+  def startYear: Int = endYear - 1
 }
 
 object TaxYear {
-  def startYear(taxYear: TaxYear): Int = taxYear.value - 1
 
   implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
 
@@ -31,7 +32,7 @@ object TaxYear {
       intBinder.bind(key, value).map(TaxYear.apply)
 
     override def unbind(key: String, taxYear: TaxYear): String =
-      intBinder.unbind(key, taxYear.value)
+      intBinder.unbind(key, taxYear.endYear)
 
   }
 

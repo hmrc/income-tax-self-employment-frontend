@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.summaries.SummaryBaseSpec
-import models.common.{TaxYear, UserType}
+import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -31,8 +31,7 @@ class ZeroEmissionGoodsVehicleSummarySpec extends SummaryBaseSpec("ZeroEmissionG
   override val invalidData: JsObject = Json.obj("otherPage" -> false)
 
   override val testKey: UserType => Text =
-    (userType: UserType) =>
-      Text(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", TaxYear.startYear(taxYear).toString, taxYear.value.toString))
+    (userType: UserType) => Text(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
 
   override val testValue: HtmlContent = HtmlContent("site.no")
 

@@ -34,7 +34,7 @@
 
     @heading(
         heading = messages(s"$pageName.title.$userType"),
-        subheading = Some(messages("site.taxYearCaption", (TaxYear.startYear(taxYear)).toString, taxYear.value.toString)),
+        subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
         extraClasses = "govuk-!-margin-bottom-3"
     )
 

@@ -35,7 +35,7 @@ object ZeroEmissionGoodsVehicleSummary {
         buildRowBoolean(
           answer,
           routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", TaxYear.startYear(taxYear).toString, taxYear.value.toString),
+          messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
           "zeroEmissionGoodsVehicle.change.hidden",
           rightTextAlign = true
         )
