@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -27,53 +27,49 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-cars"))) {
+@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-goods-vehicles"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("journeys.capital-allowances-zero-emission-cars"), None, extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("journeys.capital-allowances-zero-emission-goods-vehicles"), None, extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
 
     <div class="govuk-body">
-        <p>@messages(s"zecUsedForWork.p1.$userType")<p>
+        <p>@messages(s"zeroEmissionGoodsVehicle.p1.$userType")<p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages(s"zecUsedForWork.l1.$userType")</li>
-            <li>@messages(s"zecUsedForWork.l2.$userType")</li>
+            <li>@messages(s"zeroEmissionGoodsVehicle.l1.$userType")</li>
+            <li>@messages(s"zeroEmissionGoodsVehicle.l2.$userType")</li>
         </ul>
-        <details class="govuk-details" data-module="govuk-details">
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                @{messages("zecUsedForWork.details.heading")}
+                @{messages("zeroEmissionGoodsVehicle.details.heading")}
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <p>@{messages(s"zecUsedForWork.details.p1.$userType")}</p>
+                <p>@{messages(s"zeroEmissionGoodsVehicle.details.p1.$userType")}</p>
                 <ul class="govuk-body govuk-list--bullet">
-                    <li>@{messages("zecUsedForWork.details.l1")}</li>
-                    <li>@{messages("zecUsedForWork.details.l2")}</li>
+                    <li>@{messages("zeroEmissionGoodsVehicle.details.l1")}</li>
+                    <li>@{messages("zeroEmissionGoodsVehicle.details.l2")}</li>
+                    <li>@{messages("zeroEmissionGoodsVehicle.details.l3")}</li>
                 </ul>
+                <p>@{messages("zeroEmissionGoodsVehicle.details.p2")}</p>
+                <p>@{messages("zeroEmissionGoodsVehicle.details.p3")}</p>
+                <ul class="govuk-body govuk-list--bullet">
+                    <li>@{messages("zeroEmissionGoodsVehicle.details.l4")}</li>
+                    <li>@{messages("zeroEmissionGoodsVehicle.details.l5")}</li>
+                </ul>
+                <p>@{messages("zeroEmissionGoodsVehicle.details.p4")}</p>
             </div>
         </details>
-    </div>
 
-    @formHelper(action = routes.ZecUsedForWorkController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                        s"""
-                        <div>
-                            <label class="govuk-label govuk-label--m">
-                                ${messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString)}
-                            </label>
-                            <div class="govuk-hint govuk-!-margin-bottom-0">
-                                ${messages(s"zecUsedForWork.hint.$userType")}
-                            </div>
-                        </div>
-                        """
-                ))
+                legend = LegendViewModel(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
         )
     )
@@ -81,5 +77,6 @@
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
+    </div>
     }
 }

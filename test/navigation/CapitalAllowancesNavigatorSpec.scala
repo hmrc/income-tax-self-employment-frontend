@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars}
+import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars, zeroEmissionGoodsVehicle}
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
@@ -27,6 +27,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
 import play.api.libs.json.Json
 import play.api.mvc.Call
 
@@ -166,10 +167,19 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
+    "page is ZeroEmissionGoodsVehiclePage" - {
+      "navigate to ZeroEmissionGoodsVehicleController" in {
+        val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(ZeroEmissionGoodsVehiclePage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
     "navigate to journey recovery on no page match" in {
       nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
   }
+
   "CheckMode" - {
     "page is ClaimCapitalAllowancesPage or SelectCapitalAllowancesPage" - {
       "navigate to CapitalAllowanceCYAController" in {

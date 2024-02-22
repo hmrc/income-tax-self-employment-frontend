@@ -32,7 +32,7 @@
 
         @heading(
             heading = messages(s"checkYourIncome.title.$userType"),
-            subheading = Some(messages("site.taxYearCaption", (taxYear.value - 1).toString, taxYear.value.toString)),
+            subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
             extraClasses = "govuk-!-margin-bottom-3"
         )
 
