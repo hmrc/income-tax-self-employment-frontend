@@ -90,7 +90,7 @@ class ZecHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: 
   }
 
   private def calculateFullCost(request: DataRequest[AnyContent], businessId: BusinessId): Either[Result, BigDecimal] = {
-    val percentageUsedForSE: BigDecimal = (100 - request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0)) / 100.00
+    val percentageUsedForSE: BigDecimal = 1 - (request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0) / 100.00)
     request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (_ * percentageUsedForSE)
   }
 
