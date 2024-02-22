@@ -33,8 +33,8 @@ class ZecHowMuchDoYouWantToClaimFormProviderSpec extends OptionFieldBehaviours w
   private val form                = ZecHowMuchDoYouWantToClaimFormProvider(Individual, fullAmount)
   private val requiredError       = s"zecHowMuchDoYouWantToClaim.error.required.$Individual"
   private val amountRequiredError = "zecHowMuchDoYouWantToClaim.error.required.amount"
-  private val nonNumericError     = "common.error.nonNumeric"
-  private val noDecimalsError     = "common.error.nonDecimal"
+  private val nonNumericError     = "error.nonNumeric"
+  private val noDecimalsError     = "error.nonDecimal"
   private val overMaxError        = "zecHowMuchDoYouWantToClaim.error.overMax"
   private val validRadioValues    = ZecHowMuchDoYouWantToClaim.values
 

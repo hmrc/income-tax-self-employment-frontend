@@ -19,12 +19,12 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import forms.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimFormProvider
-import forms.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimFormProvider.ZecHowMuchDoYouWantToClaimModel
+import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider
+import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.ZecUseOutsideSEFormModel
 import models.NormalMode
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaim
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.capitalallowances.zeroEmissionCars._
@@ -36,32 +36,23 @@ import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.services.SelfEmploymentServiceStub
-import views.html.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaimView
+import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSEView
 
-class ZecHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
+class ZecUseOutsideSEControllerSpec extends ControllerSpec {
 
-  private def onPageLoadRoute: String = routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode).url
-  private def onSubmitRoute: String   = routes.ZecHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, NormalMode).url
-  private def onwardRoute: Call       = routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+  private def onPageLoadRoute: String = routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode).url
+  private def onSubmitRoute: String   = routes.ZecUseOutsideSEController.onSubmit(taxYear, businessId, NormalMode).url
+  private def onwardRoute: Call       = routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val fullCost: BigDecimal                         = 5000.00
-  private val validRadioAnswer: ZecHowMuchDoYouWantToClaim = ZecHowMuchDoYouWantToClaim.LowerAmount
-  private val validCurrencyAmount: BigDecimal              = 4000
-  private val percentage: Int                              = 10
-  private val expectedFullCost: BigDecimal                 = BigDecimal(4500.00).setScale(2)
+  private val validRadioAnswer: ZecUseOutsideSE = ZecUseOutsideSE.DifferentAmount
+  private val validAmount: Int                  = 20
 
   private def baseAnswers: UserAnswers = emptyUserAnswersAccrual
-    .set(ZecTotalCostOfCarPage, fullCost, businessId.some)
-    .success
-    .value
-    .set(ZecUseOutsideSEPercentagePage, percentage, businessId.some)
-    .success
-    .value
   private def pageAnswers: UserAnswers = baseAnswers
-    .set(ZecHowMuchDoYouWantToClaimPage, validRadioAnswer, businessId.some)
+    .set(ZecUseOutsideSEPage, validRadioAnswer, businessId.some)
     .success
     .value
-    .set(ZecClaimAmount, validCurrencyAmount, businessId.some)
+    .set(ZecUseOutsideSEPercentagePage, validAmount, businessId.some)
     .success
     .value
 
@@ -71,18 +62,18 @@ class ZecHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
-  private def form: Form[ZecHowMuchDoYouWantToClaimModel]     = ZecHowMuchDoYouWantToClaimFormProvider(Individual, fullCost)
-  private def validFormModel: ZecHowMuchDoYouWantToClaimModel = ZecHowMuchDoYouWantToClaimModel(validRadioAnswer, validCurrencyAmount)
+  private def form: Form[ZecUseOutsideSEFormModel]     = ZecUseOutsideSEFormProvider(Individual)
+  private def validFormModel: ZecUseOutsideSEFormModel = ZecUseOutsideSEFormModel(validRadioAnswer, validAmount)
 
   private def stubbedService: SelfEmploymentServiceStub       = SelfEmploymentServiceStub(saveAnswerResult = pageAnswers)
   private def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadRoute)
 
-  private def expectedView(expectedForm: Form[ZecHowMuchDoYouWantToClaimModel], scenario: TestScenario)(implicit
+  private def expectedView(expectedForm: Form[ZecUseOutsideSEFormModel], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ZecHowMuchDoYouWantToClaimView]
-    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, expectedFullCost).toString()
+    val view = application.injector.instanceOf[ZecUseOutsideSEView]
+    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
   "onPageLoad" - {
@@ -123,8 +114,8 @@ class ZecHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
       "redirect to the next page" in new TestScenario(Individual, answers = pageAnswers.some, service = stubbedService) {
         running(application) {
           val request = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(
-            ("howMuchDoYouWantToClaim", validRadioAnswer.toString),
-            ("totalCost", validCurrencyAmount.toString)
+            ("radioPercentage", validRadioAnswer.toString),
+            ("optDifferentAmount", validAmount.toString)
           )
           val result = route(application, request).value
 
@@ -137,11 +128,11 @@ class ZecHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
       "return a 400 and pass the errors to the view" in new TestScenario(Individual, answers = baseAnswers.some, service = stubbedService) {
         running(application) {
           val request = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(
-            ("howMuchDoYouWantToClaim", "invalid value"),
-            ("totalCost", "invalid value")
+            ("radioPercentage", "invalid value"),
+            ("optDifferentAmount", "invalid value")
           )
           val result    = route(application, request).value
-          val boundForm = form.bind(Map("howMuchDoYouWantToClaim" -> "invalid value", "totalCost" -> "invalid value"))
+          val boundForm = form.bind(Map("radioPercentage" -> "invalid value", "optDifferentAmount" -> "invalid value"))
 
           status(result) shouldBe BAD_REQUEST
           contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)

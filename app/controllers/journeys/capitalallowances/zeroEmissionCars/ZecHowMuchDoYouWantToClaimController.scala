@@ -24,7 +24,7 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaim.{FullCost, LowerAmount}
 import models.requests.DataRequest
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.{ZecClaimAmount, ZecHowMuchDoYouWantToClaimPage, ZecTotalCostOfCarPage}
+import pages.capitalallowances.zeroEmissionCars.{ZecClaimAmount, ZecHowMuchDoYouWantToClaimPage, ZecTotalCostOfCarPage, ZecUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -90,9 +90,8 @@ class ZecHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: 
   }
 
   private def calculateFullCost(request: DataRequest[AnyContent], businessId: BusinessId): Either[Result, BigDecimal] = {
-//    val percentageUsedForSE = (100 - request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0)) / 100
-    val percentageUsedForSE = 1 // TODO 7205 delete <this line>, uncomment ^this line^
-    request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (costOfCar => costOfCar * percentageUsedForSE)
+    val percentageUsedForSE: BigDecimal = (100 - request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0)) / 100.00
+    request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (_ * percentageUsedForSE)
   }
 
 }

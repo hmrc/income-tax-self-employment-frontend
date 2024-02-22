@@ -27,29 +27,22 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-    @formHasErrors = @{form.errors.nonEmpty}
-    @amountInputErrorMsg = @{
-        if (formHasErrors && !missingRadioError) {
-                <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-                {messages(form.errors.head.messages.headOption.getOrElse(""))}
-                </p>
-        }
-    }
+@formHasErrors = @{form.errors.nonEmpty}
 
-    @missingRadioError = @{
-        form.errors.contains(FormError("radioPercentage", List(messages(s"zecUseOutsideSE.error.required.$userType")),List()))
+@missingRadioError = @{
+    form.errors.contains(FormError("radioPercentage", List(messages(s"zecUseOutsideSE.error.required.$userType")),List()))
+}
+@missingRadioErrorMsg = @{
+    if (missingRadioError) {
+            <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+            {messages(s"zecUseOutsideSE.error.required.$userType")}
+            </p>
     }
-    @missingRadioErrorMsg = @{
-        if (missingRadioError) {
-                <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-                {messages(s"zecUseOutsideSE.error.required.$userType")}
-                </p>
-        }
-    }
-    @amountInputErrors = @{ formHasErrors && !missingRadioError }
-    @amountInputErrorsMsg = @{
+}
+
+@amountInputErrors = @{ formHasErrors && !missingRadioError }
+@amountInputErrorMsg = @{
         if (amountInputErrors) {
                 <p class="govuk-error-message">
                 <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
@@ -58,7 +51,7 @@
         }
     }
 
-@layout(pageTitle = title(form, messages("zecUsedForSelfEmployment.title"))) {
+@layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
 
     @if(formHasErrors) {
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
@@ -75,7 +68,7 @@
                 @missingRadioErrorMsg
 
                 <div class="govuk-radios" data-module="govuk-radios">
-                    <div class="govuk-radios__item">
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
                         <input class="govuk-radios__input" name="radioPercentage" id="10%" type="radio" value="10%" @{
                             if(form("radioPercentage").value.contains("10%")) "checked" else ""
                         }>
@@ -83,7 +76,7 @@
                         @messages("zecUseOutsideSE.tenPercent")
                         </label>
                     </div>
-                    <div class="govuk-radios__item">
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
                         <input class="govuk-radios__input" name="radioPercentage" id="25%" type="radio" value="25%" @{
                             if(form("radioPercentage").value.contains("25%")) "checked" else ""
                         }>
@@ -91,7 +84,7 @@
                         @messages("zecUseOutsideSE.twentyFivePercent")
                         </label>
                     </div>
-                    <div class="govuk-radios__item">
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
                         <input class="govuk-radios__input" name="radioPercentage" id="50%" type="radio" value="50%" @{
                             if(form("radioPercentage").value.contains("50%")) "checked" else ""
                         }>
@@ -112,12 +105,12 @@
                         <div class="govuk-form-group @{ if (amountInputErrors) "--error" else ""}">
                             <label class = "govuk-label" for="optDifferentAmount" >
                                 @messages("site.enterTheAmount")
+                                @amountInputErrorMsg
                             </label>
                             <div class="govuk-input__wrapper" >
-                            <input class="govuk-input@{ if (amountInputErrors) " govuk-input--error" else "" } govuk-input--width-2 " id="optDifferentAmount" name="optDifferentAmount" value="@{
-                                if(form("radioPercentage").value.contains("aDifferentAmount")) form("optDifferentAmount").value else ""
-                            }">
-                                <div class="govuk-input__suffix">%</div>
+                                <input class="govuk-input@{ if (amountInputErrors) " govuk-input--error" else "" } govuk-input--width-2 " id="optDifferentAmount" name="optDifferentAmount"
+                                    value="@{if(form("radioPercentage").value.contains("aDifferentAmount")) form("optDifferentAmount").value else ""}">
+                                <div class="govuk-input__suffix">@messages("site.percentage")</div>
                             </div>
                         </div>
                     </div>
@@ -134,33 +127,20 @@
 
 <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const submitButton = document.getElementsByClassName("govuk-button")[0];
             var radio10 = document.getElementById("10%");
             var radio25 = document.getElementById("25%");
             var radio50 = document.getElementById("50%");
             var radioDifferentAmount = document.getElementById("aDifferentAmount");
             var differentAmountInput = document.getElementById("optDifferentAmount");
 
-            radio10.addEventListener("change", function () {
+            submitButton.addEventListener("click", function () {
                 if (radio10.checked) {
-                    document.getElementById("optDifferentAmount").value = "10";
-                }
-            });
-
-            radio25.addEventListener("change", function () {
-                if (radio25.checked) {
-                    document.getElementById("optDifferentAmount").value = "25";
-                }
-            });
-
-            radio50.addEventListener("change", function () {
-                if (radio50.checked) {
-                    document.getElementById("optDifferentAmount").value = "50";
-                }
-            });
-
-            radioDifferentAmount.addEventListener("change", function () {
-                if (radioDifferentAmount.checked) {
-                    document.getElementById("optDifferentAmount").value = differentAmountInput.value;
+                    differentAmountInput.value = "10";
+                } else if (radio25.checked) {
+                    differentAmountInput.value = "25";
+                } else if (radio50.checked) {
+                    differentAmountInput.value = "50";
                 }
             });
         });

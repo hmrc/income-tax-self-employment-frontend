@@ -67,7 +67,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
       def handleSuccess(answer: ZecUseOutsideSEFormModel): Future[Result] =
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.differentAmount, ZecUseOutsideSEPercentagePage)
+          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZecUseOutsideSEPercentagePage)
         } yield Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, finalAnswers, taxYear, businessId))
 
       ZecUseOutsideSEFormProvider(request.userType)

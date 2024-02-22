@@ -25,26 +25,31 @@ import play.api.i18n.Messages
 
 object ZecUseOutsideSEFormProvider extends Mappings {
 
-  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, differentAmount: Int = 0)
+  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Int = 0)
 
-  private val radioPercentage = "radioPercentage"
-  private val differentAmount = "differentAmount"
+  private val radioPercentage    = "radioPercentage"
+  private val optDifferentAmount = "optDifferentAmount"
+  private val maxPercentage      = 100
+  private val minPercentage      = 0
 
   def apply(userType: UserType)(implicit messages: Messages): Form[ZecUseOutsideSEFormModel] = {
-    val requiredRadioError = s"zecUseOutsideSE.error.required.$userType"
-    val overMaxError       = "zecUseOutsideSE.error.overMax"
-    val lessThanZeroError  = "zecUseOutsideSE.error.lessThanZero"
+    val requiredRadioError  = s"zecUseOutsideSE.error.required.$userType"
+    val requiredAmountError = "error.required"
+    val overMaxError        = "zecUseOutsideSE.error.overMax"
+    val lessThanZeroError   = "error.lessThanZero"
+    val nonNumericError     = "error.nonNumeric"
+    val noDecimalsError     = "error.nonDecimal"
 
     def validateRadio(): Mapping[ZecUseOutsideSE] = enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
 
-    def validateInt(): Mapping[Int] = int()
-      .verifying(minimumValue(0, lessThanZeroError))
-      .verifying(lessThan(100, overMaxError))
+    def validateInt(): Mapping[Int] = int(requiredAmountError, noDecimalsError, nonNumericError)
+      .verifying(greaterThan(minPercentage, lessThanZeroError))
+      .verifying(lessThan(maxPercentage, overMaxError))
 
     Form[ZecUseOutsideSEFormModel](
       mapping(
-        radioPercentage -> validateRadio(),
-        differentAmount -> validateInt()
+        radioPercentage    -> validateRadio(),
+        optDifferentAmount -> validateInt()
       )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
     )
   }

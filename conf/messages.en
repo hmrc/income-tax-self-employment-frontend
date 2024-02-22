@@ -29,6 +29,7 @@ site.selectAllThatApply = Select all that apply.
 site.months = months
 site.enterTheAmount = Enter the amount
 site.pound = £
+site.percentage = %
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -85,6 +86,9 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 error.noTradingName = Trading name not found
+error.lessThanZero = The amount must be more than 0
+error.nonNumeric = The amount must be a number
+error.nonDecimal = The amount cannot have decimal places
 
 capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
 capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
@@ -100,9 +104,6 @@ common.insert = {0}
 common.lowerAmount = A lower amount
 common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourDetails.title.individual = Check your details
-common.error.lessThanZero = The amount must be more than 0
-common.error.nonNumeric = The amount must be a number
-common.error.nonDecimal = The amount cannot have decimal places
 
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
