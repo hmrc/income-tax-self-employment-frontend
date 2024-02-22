@@ -18,36 +18,36 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionCars.ZecUsedForWorkFormProvider
+import forms.capitalallowances.zeroEmissionCars.ZeroEmissionCarsFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForWorkPage
+import pages.capitalallowances.zeroEmissionCars.ZeroEmissionCarsPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForWorkView
+import views.html.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsView
 
-class ZecUsedForWorkControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForWorkController", ZecUsedForWorkPage) {
+class ZeroEmissionCarsControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZeroEmissionCarsController", ZeroEmissionCarsPage) {
 
-  override def onPageLoadCall: Call = routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.ZecUsedForWorkController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.ZeroEmissionCarsController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = routes.ZeroEmissionCarsController.onSubmit(taxYear, businessId, NormalMode)
 
   override def onwardRoute: Call = models.common.onwardRoute
 
   override val validAnswer: Boolean = true
 
-  override def createForm(user: UserType): Form[Boolean] = new ZecUsedForWorkFormProvider()(user, taxYear)
+  override def createForm(user: UserType): Form[Boolean] = new ZeroEmissionCarsFormProvider()(user, taxYear)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ZecUsedForWorkView]
+    val view = application.injector.instanceOf[ZeroEmissionCarsView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 

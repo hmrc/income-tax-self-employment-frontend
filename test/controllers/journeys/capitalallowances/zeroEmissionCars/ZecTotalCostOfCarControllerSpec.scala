@@ -38,7 +38,7 @@ class ZecTotalCostOfCarControllerSpec
   lazy val onPageLoadRoute = routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.ZecTotalCostOfCarController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+  override val onwardRoute: Call = routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 

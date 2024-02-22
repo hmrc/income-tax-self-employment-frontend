@@ -54,7 +54,7 @@ class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: Message
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            ZecUsedForWorkSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            ZeroEmissionCarsSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecTotalCostOfCarSummary.row(request.userAnswers, taxYear, businessId),
             ZecOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),

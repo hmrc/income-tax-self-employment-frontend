@@ -20,7 +20,7 @@ import enumeratum._
 import models.common.PageName
 import pages.abroad.SelfEmploymentAbroadPage
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForWorkPage
+import pages.capitalallowances.zeroEmissionCars.ZeroEmissionCarsPage
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
@@ -152,7 +152,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesZeroEmissionCars extends Journey("capital-allowances-zero-emission-cars") {
-    override val pageKeys: List[PageName] = List(ZecUsedForWorkPage.pageName)
+    override val pageKeys: List[PageName] = List(ZeroEmissionCarsPage.pageName)
   }
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {

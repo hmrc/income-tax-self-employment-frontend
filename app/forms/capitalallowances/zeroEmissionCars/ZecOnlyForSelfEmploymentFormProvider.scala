@@ -22,7 +22,7 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployme
 import play.api.data.Form
 
 import javax.inject.Inject
-class ZecUsedForSelfEmploymentFormProvider @Inject() extends Mappings {
+class ZecOnlyForSelfEmploymentFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType): Form[ZecOnlyForSelfEmployment] =
     Form(

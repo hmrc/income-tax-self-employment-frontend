@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class ZecOnlyForSelfEmploymentFormProviderSpec extends RadioButtonFormProviderBaseSpec[ZecOnlyForSelfEmployment]("ZecUsedForSelfEmploymentForm") {
 
-  override def getFormProvider(userType: UserType): Form[ZecOnlyForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(userType)
+  override def getFormProvider(userType: UserType): Form[ZecOnlyForSelfEmployment] = new ZecOnlyForSelfEmploymentFormProvider()(userType)
 
   override lazy val validValues: Seq[ZecOnlyForSelfEmployment] = ZecOnlyForSelfEmployment.values
   override lazy val requiredError: String                      = "zecUsedForSelfEmployment.error.required"

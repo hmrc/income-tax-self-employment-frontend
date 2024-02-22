@@ -57,7 +57,7 @@
         </details>
     </div>
 
-    @formHelper(action = routes.ZecUsedForWorkController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ZeroEmissionCarsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
