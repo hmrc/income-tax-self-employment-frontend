@@ -34,14 +34,14 @@ abstract case class SummaryBaseSpec(summaryName: String) extends SpecBase {
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  val validData: JsObject
+  def validData: JsObject
   val invalidData: JsObject = Json.obj("otherPage" -> 123.45)
 
   val testKey: UserType => Text
   val testValue: HtmlContent
 
-  private lazy val validAnswers: UserAnswers   = buildUserAnswers(validData)
-  private lazy val invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
+  private def validAnswers: UserAnswers   = buildUserAnswers(validData)
+  private def invalidAnswers: UserAnswers = buildUserAnswers(invalidData)
 
   /** method under test */
   def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow]

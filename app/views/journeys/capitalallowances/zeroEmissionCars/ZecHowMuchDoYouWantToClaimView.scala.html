@@ -29,14 +29,6 @@
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, fullCostAmount: BigDecimal)(implicit request: Request[_], messages: Messages)
 
 @formHasErrors = @{form.errors.nonEmpty}
-@amountInputErrorMsg = @{
-    if (formHasErrors && !missingRadioError) {
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-            {messages(form.errors.head.messages.headOption.getOrElse(""))}
-        </p>
-    }
-}
 @missingRadioError = @{
     form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"zecHowMuchDoYouWantToClaim.error.required.$userType")),List()))
 }
@@ -49,14 +41,14 @@
     }
 }
 @amountInputErrors = @{ formHasErrors && !missingRadioError }
-@amountInputErrorsMsg = @{
-    if (amountInputErrors) {
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-            {messages(form.errors.head.messages.headOption.getOrElse(""))}
-        </p>
+@amountInputErrorMsg = @{
+        if (amountInputErrors) {
+                <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+                {messages(form.errors.head.messages.headOption.getOrElse(""))}
+                </p>
+        }
     }
-}
 
 @layout(pageTitle = title(form, messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType"))) {
 

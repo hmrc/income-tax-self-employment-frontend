@@ -48,7 +48,7 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val formProvider    = ZecUseOutsideSEFormProvider()
+      val formProvider    = ZecUseOutsideSEFormProvider(request.userType)
       val radioValue      = request.getValue(ZecUseOutsideSEPage, businessId)
       val percentageValue = request.getValue(ZecUseOutsideSEPercentagePage, businessId)
       val filledForm = (radioValue, percentageValue) match {
@@ -67,10 +67,10 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
       def handleSuccess(answer: ZecUseOutsideSEFormModel): Future[Result] =
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.differentAmount, ZecUseOutsideSEPercentagePage)
+          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZecUseOutsideSEPercentagePage)
         } yield Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, finalAnswers, taxYear, businessId))
 
-      ZecUseOutsideSEFormProvider()
+      ZecUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

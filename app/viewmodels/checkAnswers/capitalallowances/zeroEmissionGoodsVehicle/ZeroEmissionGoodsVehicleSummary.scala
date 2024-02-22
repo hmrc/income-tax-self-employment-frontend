@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
+package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForWorkPage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
 
-object ZecUsedForWorkSummary {
+object ZeroEmissionGoodsVehicleSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZecUsedForWorkPage, businessId.some)
+      .get(ZeroEmissionGoodsVehiclePage, businessId.some)
       .map { answer =>
         buildRowBoolean(
           answer,
-          routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
-          "zecUsedForWork.change.hidden",
+          routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
+          "zeroEmissionGoodsVehicle.change.hidden",
           rightTextAlign = true
         )
       }

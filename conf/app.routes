@@ -510,3 +510,10 @@ POST        /:taxYear/:businessId/change-capital-allowances/claim-amount        
 
 GET         /:taxYear/:businessId/capital-allowances/cars/check                                                                        controllers.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/cars/check                                                                        controllers.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances - Zero Emission Goods Vehicles ##########
+
+GET         /:taxYear/:businessId/capital-allowances/goods-vehicles                                                                    controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/goods-vehicles                                                                    controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/goods-vehicles                                                             controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances/goods-vehicles                                                             controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)

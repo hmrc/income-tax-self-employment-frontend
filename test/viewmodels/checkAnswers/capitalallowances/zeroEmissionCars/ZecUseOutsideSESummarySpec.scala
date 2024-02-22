@@ -19,23 +19,22 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class ZecUsedForWorkSummarySpec extends SummaryBaseSpec("ZecUsedForWorkSummary") {
+class ZecUseOutsideSESummarySpec extends SummaryBaseSpec("ZecUseOutsideSESummary") {
 
-  override val validData: JsObject = Json.obj("zeroEmissionCarsUsedForWork" -> false)
+  override def validData: JsObject =
+    Json.obj("zeroEmissionCarsUsedOutsideSE" -> ZecUseOutsideSE.DifferentAmount.toString, "zeroEmissionCarsUsedOutsideSEPercentage" -> 40)
 
-  override val invalidData: JsObject = Json.obj("otherPage" -> false)
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecUseOutsideSE.title.$userType"))
 
-  override val testKey: UserType => Text =
-    (userType: UserType) => Text(messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
-
-  override val testValue: HtmlContent = HtmlContent("site.no")
+  override val testValue: HtmlContent = HtmlContent("40%")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    ZecUseOutsideSESummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }
