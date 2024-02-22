@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package forms.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
 
-class ZecUsedForWorkFormProviderSpec extends BooleanFormProviderBaseSpec("ZecUsedForWorkForm") {
+class ZeroEmissionGoodsVehicleFormProviderSpec extends BooleanFormProviderBaseSpec("ZeroEmissionGoodsVehicleFormProvider") {
 
-  override def requiredErrorKey = "zecUsedForWork.error.required"
+  override def requiredErrorKey = "zeroEmissionGoodsVehicle.error.required"
   override def invalidKeyArgs   = Seq(taxYear.startYear.toString, taxYear.endYear.toString)
 
-  override def formProvider(user: UserType) = new ZecUsedForWorkFormProvider()(user, taxYear)
+  override def formProvider(user: UserType) = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
 }

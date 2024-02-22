@@ -56,19 +56,19 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[JourneyNameAndStatus] = {
-    val url      = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.value}")
+    val url      = buildUrl(s"completed-section/${businessId.value}/$journey/${taxYear.endYear}")
     val response = get[JourneyNameAndStatus](http, url, mtditid)
     EitherT(response)
   }
 
   def saveJourneyState(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"completed-section/${ctx.businessId.value}/${ctx.journey}/${ctx.taxYear.value}")
+    val url      = buildUrl(s"completed-section/${ctx.businessId.value}/${ctx.journey}/${ctx.taxYear.endYear}")
     val response = put(http, url, ctx.mtditid, JourneyStatusData(status))
     EitherT(response)
   }
 
   def getTaskList(nino: Nino, taxYear: TaxYear, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[TaskList] = {
-    val url      = buildUrl(s"${taxYear.value}/${nino.value}/task-list")
+    val url      = buildUrl(s"${taxYear.endYear}/${nino.value}/task-list")
     val response = get[TaskList](http, url, mtditid)
     EitherT(response)
   }

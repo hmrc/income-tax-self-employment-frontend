@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import pages.OneQuestionPage
 
-class ZecUsedForWorkFormProviderSpec extends BooleanFormProviderBaseSpec("ZecUsedForWorkForm") {
-
-  override def requiredErrorKey = "zecUsedForWork.error.required"
-  override def invalidKeyArgs   = Seq(taxYear.startYear.toString, taxYear.endYear.toString)
-
-  override def formProvider(user: UserType) = new ZecUsedForWorkFormProvider()(user, taxYear)
+object ZeroEmissionGoodsVehiclePage extends OneQuestionPage[Boolean] {
+  override def toString: String = "zeroEmissionGoodsVehicle"
 }

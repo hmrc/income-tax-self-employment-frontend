@@ -26,7 +26,7 @@ class ZecUsedForWorkFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
     Form(
-      "value" -> boolean(s"zecUsedForWork.error.required.$userType", args = Seq((taxYear.value - 1).toString, taxYear.value.toString))
+      "value" -> boolean(s"zecUsedForWork.error.required.$userType", args = Seq(taxYear.startYear.toString, taxYear.endYear.toString))
     )
 
 }
