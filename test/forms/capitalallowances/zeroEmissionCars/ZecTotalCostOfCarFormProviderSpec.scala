@@ -16,21 +16,21 @@
 
 package forms.capitalallowances.zeroEmissionCars
 
-import forms.behaviours.{BigDecimalFieldBehaviours, IntFieldBehaviours}
+import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType.Individual
 import models.common.{MoneyBounds, UserType}
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
-class ZecTotalCostOfCarFormProviderSpec extends BigDecimalFieldBehaviours with IntFieldBehaviours with MoneyBounds {
+class ZecTotalCostOfCarFormProviderSpec extends BigDecimalFieldBehaviours with MoneyBounds {
 
-  val minimumVal: BigDecimal                = minimumOneValue
-  val maximumVal: BigDecimal                = maxAmountValue
-  val requiredError: String              = "zecTotalCostOfCar.error.required"
-  val nonNumericError: String            = "error.nonNumeric"
-  val noDecimalsError: String            = "error.nonDecimal"
-  val lessThanMinError: String          = "error.minimumOne"
-  val overMaxError: String               = "expenses.error.overMax"
+  val minimumVal: BigDecimal   = minimumOneValue
+  val maximumVal: BigDecimal   = maxAmountValue
+  val requiredError: String    = "zecTotalCostOfCar.error.required"
+  val nonNumericError: String  = "error.nonNumeric"
+  val noDecimalsError: String  = "error.nonDecimal"
+  val lessThanMinError: String = "error.minimumOne"
+  val overMaxError: String     = "expenses.error.overMax"
 
   val userType: UserType = Individual
   val fieldName          = "value"
@@ -44,34 +44,35 @@ class ZecTotalCostOfCarFormProviderSpec extends BigDecimalFieldBehaviours with I
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validDataGenerator
+      bigDecimalsInRangeWithNoDecimals(minimumVal, maximumValue)
     )
 
-    behave like intField(
+    behave like bigDecimalField(
       form,
       fieldName,
-      FormError(fieldName, nonNumericError),
-      FormError(fieldName, noDecimalsError)
+      FormError(fieldName, nonNumericError)
     )
 
-    behave like intFieldWithMinimum(
+    behave like bigDecimalFieldWithMaximum(
       form,
       fieldName,
-      minimumVal.toInt,
-      FormError(fieldName, lessThanMinError)
-    )
-
-    behave like intFieldWithMaximum(
-      form,
-      fieldName,
-      maximumVal.toInt,
-      FormError(fieldName, overMaxError)
+      maximumValue,
+      FormError(fieldName, overMaxError, Seq(maximumValue))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       FormError(fieldName, s"$requiredError.$userType")
+    )
+
+    behave like bigDecimalFieldWithRegex(
+      form,
+      fieldName,
+      noDecimalRegexp,
+      BigDecimal(400),
+      BigDecimal(400.20),
+      FormError(fieldName, noDecimalsError, Seq(noDecimalRegexp))
     )
   }
 }
