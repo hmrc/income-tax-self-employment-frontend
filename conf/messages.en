@@ -89,6 +89,7 @@ error.noTradingName = Trading name not found
 error.lessThanZero = The amount must be more than 0
 error.nonNumeric = The amount must be a number
 error.nonDecimal = The amount cannot have decimal places
+error.minimumOne = The amount must be more than 1
 
 capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
 capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.

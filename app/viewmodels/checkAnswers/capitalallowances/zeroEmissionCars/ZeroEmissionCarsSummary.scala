@@ -21,20 +21,20 @@ import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecUsedForWorkPage
+import pages.capitalallowances.zeroEmissionCars.ZeroEmissionCarsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
 
-object ZecUsedForWorkSummary {
+object ZeroEmissionCarsSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZecUsedForWorkPage, businessId.some)
+      .get(ZeroEmissionCarsPage, businessId.some)
       .map { answer =>
         buildRowBoolean(
           answer,
-          routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, CheckMode),
+          routes.ZeroEmissionCarsController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
           "zecUsedForWork.change.hidden",
           rightTextAlign = true

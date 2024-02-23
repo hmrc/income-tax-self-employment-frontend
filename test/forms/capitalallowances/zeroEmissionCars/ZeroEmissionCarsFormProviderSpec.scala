@@ -16,17 +16,13 @@
 
 package forms.capitalallowances.zeroEmissionCars
 
-import forms.mappings.Mappings
-import models.common.{TaxYear, UserType}
-import play.api.data.Form
+import base.forms.BooleanFormProviderBaseSpec
+import models.common.UserType
 
-import javax.inject.Inject
+class ZeroEmissionCarsFormProviderSpec extends BooleanFormProviderBaseSpec("ZecUsedForWorkForm") {
 
-class ZecUsedForWorkFormProvider @Inject() extends Mappings {
+  override def requiredErrorKey = "zecUsedForWork.error.required"
+  override def invalidKeyArgs   = Seq(taxYear.startYear.toString, taxYear.endYear.toString)
 
-  def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"zecUsedForWork.error.required.$userType", args = Seq(taxYear.startYear.toString, taxYear.endYear.toString))
-    )
-
+  override def formProvider(user: UserType) = new ZeroEmissionCarsFormProvider()(user, taxYear)
 }

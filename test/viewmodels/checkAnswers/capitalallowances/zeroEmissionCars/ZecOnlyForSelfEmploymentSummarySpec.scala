@@ -27,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ZecOnlyForSelfEmploymentSummarySpec extends SummaryBaseSpec("ZecOnlyForSelfEmploymentSummary") {
 
-  override val validData: JsObject = Json.obj("zeroEmissionCarsOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
+  override val validData: JsObject = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecOnlyForSelfEmployment.title.$userType"))
 

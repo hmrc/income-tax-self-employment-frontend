@@ -16,13 +16,17 @@
 
 package forms.capitalallowances.zeroEmissionCars
 
-import base.forms.BooleanFormProviderBaseSpec
+import forms.mappings.Mappings
 import models.common.UserType
+import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
+import play.api.data.Form
 
-class ZecUsedForWorkFormProviderSpec extends BooleanFormProviderBaseSpec("ZecUsedForWorkForm") {
+import javax.inject.Inject
+class ZecOnlyForSelfEmploymentFormProvider @Inject() extends Mappings {
 
-  override def requiredErrorKey = "zecUsedForWork.error.required"
-  override def invalidKeyArgs   = Seq(taxYear.startYear.toString, taxYear.endYear.toString)
+  def apply(userType: UserType): Form[ZecOnlyForSelfEmployment] =
+    Form(
+      "value" -> enumerable[ZecOnlyForSelfEmployment](s"zecOnlyForSelfEmployment.error.required.$userType")
+    )
 
-  override def formProvider(user: UserType) = new ZecUsedForWorkFormProvider()(user, taxYear)
 }

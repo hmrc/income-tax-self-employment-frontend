@@ -50,11 +50,11 @@ class CapitalAllowancesNavigator @Inject() {
     case SelectCapitalAllowancesPage =>
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case ZecUsedForWorkPage =>
+    case ZeroEmissionCarsPage =>
       userAnswers =>
         taxYear =>
           businessId =>
-            userAnswers.get(ZecUsedForWorkPage, Some(businessId)) match {
+            userAnswers.get(ZeroEmissionCarsPage, Some(businessId)) match {
               case Some(true)  => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(false) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
               case _           => standard.routes.JourneyRecoveryController.onPageLoad()
@@ -72,7 +72,7 @@ class CapitalAllowancesNavigator @Inject() {
             }
 
     case ZecTotalCostOfCarPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => taxYear => businessId => zeroEmissionCars.routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ZecOnlyForSelfEmploymentPage =>
       userAnswers =>
@@ -103,7 +103,7 @@ class CapitalAllowancesNavigator @Inject() {
     case ClaimCapitalAllowancesPage | SelectCapitalAllowancesPage =>
       _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-    case ZecUsedForWorkPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecOnlyForSelfEmploymentPage | ZecUseOutsideSEPage |
+    case ZeroEmissionCarsPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecOnlyForSelfEmploymentPage | ZecUseOutsideSEPage |
         ZecHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 

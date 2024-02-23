@@ -35,7 +35,7 @@ object ZecOnlyForSelfEmploymentSummary {
       .map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
-          routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
+          routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"zecOnlyForSelfEmployment.title.$userType"),
           "zecOnlyForSelfEmployment.change.hidden",
           rightTextAlign = true

@@ -18,5 +18,5 @@ package pages.capitalallowances.zeroEmissionCars
 import pages.OneQuestionPage
 
 object ZecUseOutsideSEPercentagePage extends OneQuestionPage[Int] {
-  override def toString: String = "zeroEmissionCarsUsedOutsideSEPercentage"
+  override def toString: String = "zecUsedOutsideSEPercentage"
 }
