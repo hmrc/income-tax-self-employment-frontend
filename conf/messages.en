@@ -60,7 +60,7 @@ journeys.expenses-other-expenses = Other Expenses
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
 journeys.capital-allowances-zero-emission-cars = Zero-emission cars
-journeys.capital-allowances-zero-emission-goods-vehicles = Zero-emission goods vehicles
+journeys.capital-allowances-zero-emission-goods-vehicle = Zero-emission goods vehicles
 
 date.day = Day
 date.month = Month
