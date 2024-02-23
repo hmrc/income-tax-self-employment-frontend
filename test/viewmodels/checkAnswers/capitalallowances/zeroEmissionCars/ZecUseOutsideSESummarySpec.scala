@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class ZecUseOutsideSESummarySpec extends SummaryBaseSpec("ZecUseOutsideSESummary") {
 
   override def validData: JsObject =
-    Json.obj("zeroEmissionCarsUsedOutsideSE" -> ZecUseOutsideSE.DifferentAmount.toString, "zeroEmissionCarsUsedOutsideSEPercentage" -> 40)
+    Json.obj("zecUsedOutsideSE" -> ZecUseOutsideSE.DifferentAmount.toString, "zecUsedOutsideSEPercentage" -> 40)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecUseOutsideSE.title.$userType"))
 

@@ -98,7 +98,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is ZecAllowancePage" - {
       "answer is 'Yes'" - {
         "navigate to TotalCostOfCarController" in {
-          val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
+          val data           = Json.obj("zecAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
           val expectedResult = zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
@@ -106,7 +106,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to ZeroEmissionCarsCYAController" in {
-          val data           = Json.obj("zeroEmissionCarsAllowance" -> ZeroEmissionCarsAllowance.No.toString)
+          val data           = Json.obj("zecAllowance" -> ZeroEmissionCarsAllowance.No.toString)
           val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
@@ -130,7 +130,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is ZecOnlyForSelfEmploymentPage" - {
       "answer is 'Yes'" - {
         "navigate to ZecHowMuchDoYouWantToClaimPage" in {
-          val data           = Json.obj("zeroEmissionCarsOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
+          val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
           val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
@@ -138,7 +138,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to ZecUseOutsideSEPage" in {
-          val data           = Json.obj("zeroEmissionCarsOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.No.toString)
+          val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.No.toString)
           val expectedResult = zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult

@@ -16,21 +16,62 @@
 
 package forms.capitalallowances.zeroEmissionCars
 
-import base.forms.CurrencyFormProviderBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import models.common.UserType
-import play.api.data.Form
+import forms.behaviours.{BigDecimalFieldBehaviours, IntFieldBehaviours}
+import models.common.UserType.Individual
+import models.common.{MoneyBounds, UserType}
+import org.scalacheck.Gen
+import play.api.data.{Form, FormError}
 
-class ZecTotalCostOfCarFormProviderSpec extends CurrencyFormProviderBaseSpec("ZecTotalCostOfCarFormProvider") {
+class ZecTotalCostOfCarFormProviderSpec extends BigDecimalFieldBehaviours with IntFieldBehaviours with MoneyBounds {
 
-  override def getFormProvider(userType: UserType): Form[BigDecimal] = new ZecTotalCostOfCarFormProvider()(userType)
+  val minimumVal: BigDecimal                = minimumOneValue
+  val maximumVal: BigDecimal                = maxAmountValue
+  val requiredError: String              = "zecTotalCostOfCar.error.required"
+  val nonNumericError: String            = "error.nonNumeric"
+  val noDecimalsError: String            = "error.nonDecimal"
+  val lessThanMinError: String          = "error.minimumOne"
+  val overMaxError: String               = "expenses.error.overMax"
 
-  override def requiredError: String       = "zecTotalCostOfCar.error.required"
-  override def nonNumericError: String     = ""
-  override def lessThanZeroError: String   = ""
-  override def overMaxError: String        = ""
-  override def nonNumericErrorNoUserType   = "common.error.nonNumeric".some
-  override def lessThanZeroErrorNoUserType = "expenses.error.lessThanZero".some
-  override def overMaxErrorNoUserType      = "expenses.error.overMax".some
+  val userType: UserType = Individual
+  val fieldName          = "value"
 
+  val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
+  val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
+
+  "ZecTotalCostOfCarFormProvider should" - {
+    val form: Form[BigDecimal] = new ZecTotalCostOfCarFormProvider()(userType)
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      validDataGenerator
+    )
+
+    behave like intField(
+      form,
+      fieldName,
+      FormError(fieldName, nonNumericError),
+      FormError(fieldName, noDecimalsError)
+    )
+
+    behave like intFieldWithMinimum(
+      form,
+      fieldName,
+      minimumVal.toInt,
+      FormError(fieldName, lessThanMinError)
+    )
+
+    behave like intFieldWithMaximum(
+      form,
+      fieldName,
+      maximumVal.toInt,
+      FormError(fieldName, overMaxError)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      FormError(fieldName, s"$requiredError.$userType")
+    )
+  }
 }

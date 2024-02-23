@@ -26,7 +26,7 @@ class ZecOnlyForSelfEmploymentFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType): Form[ZecOnlyForSelfEmployment] =
     Form(
-      "value" -> enumerable[ZecOnlyForSelfEmployment](s"zecUsedForSelfEmployment.error.required.$userType")
+      "value" -> enumerable[ZecOnlyForSelfEmployment](s"zecOnlyForSelfEmployment.error.required.$userType")
     )
 
 }
