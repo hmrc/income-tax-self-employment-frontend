@@ -33,9 +33,9 @@ object ZecHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds 
   def apply(userType: UserType, fullAmount: BigDecimal)(implicit messages: Messages): Form[ZecHowMuchDoYouWantToClaimModel] = {
     val requiredError       = s"zecHowMuchDoYouWantToClaim.error.required.$userType"
     val amountRequiredError = "zecHowMuchDoYouWantToClaim.error.required.amount"
-    val lessThanZeroError   = "common.error.lessThanZero"
-    val nonNumericError     = "common.error.nonNumeric"
-    val noDecimalsError     = "common.error.nonDecimal"
+    val lessThanZeroError   = "error.lessThanZero"
+    val nonNumericError     = "error.nonNumeric"
+    val noDecimalsError     = "error.nonDecimal"
     val overMaxError        = "zecHowMuchDoYouWantToClaim.error.overMax"
 
     def validateRadio(): Mapping[ZecHowMuchDoYouWantToClaim] = enumerable[ZecHowMuchDoYouWantToClaim](messages(requiredError))
