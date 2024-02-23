@@ -168,8 +168,8 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     }
 
     "page is ZeroEmissionGoodsVehiclePage" - {
-      "navigate to ZeroEmissionGoodsVehicleController" in {
-        val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+      "navigate to ZeroEmissionGoodsVehicleCYAController" in {
+        val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
         nextPage(ZeroEmissionGoodsVehiclePage, emptyUserAnswers) shouldBe expectedResult
       }
@@ -199,6 +199,15 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
           ZecUseOutsideSEPage,
           ZecHowMuchDoYouWantToClaimPage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+        }
+      }
+    }
+
+    "page is ZeroEmissionGoodsVehiclePage" - {
+      "navigate to ZeroEmissionCarsCYAController" in {
+        List(ZeroEmissionGoodsVehiclePage).foreach {
+          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController
+            .onPageLoad(taxYear, businessId)
         }
       }
     }
