@@ -22,12 +22,13 @@ import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.libs.json.Json
 import play.api.mvc.Call
 
@@ -168,10 +169,58 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     }
 
     "page is ZeroEmissionGoodsVehiclePage" - {
+      "answer is 'true'" - {
+        "navigate to ZegvAllowancePage" in {
+          val data           = Json.obj("zeroEmissionGoodsVehicle" -> true)
+          val expectedResult = zeroEmissionGoodsVehicle.routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(ZeroEmissionGoodsVehiclePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'false'" - {
+        "navigate to ZegvAllowancePage" in {
+          val data           = Json.obj("zeroEmissionGoodsVehicle" -> false)
+          val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZeroEmissionGoodsVehiclePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZeroEmissionGoodsVehiclePage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
+    "page is ZegvAllowancePage" - {
+      "answer is 'Yes'" - {
+        "navigate to ZegvAllowancePage" in {
+          val data           = Json.obj("zegvAllowance" -> ZegvAllowance.Yes.toString)
+          val expectedResult = zeroEmissionGoodsVehicle.routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(ZegvAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to ZegvAllowancePage" in {
+          val data           = Json.obj("zegvAllowance" -> ZegvAllowance.No.toString)
+          val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(ZegvAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(ZegvAllowancePage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
+    "page is ZegvTotalCostOfVehiclePage" - {
       "navigate to ZeroEmissionGoodsVehicleCYAController" in {
         val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
-        nextPage(ZeroEmissionGoodsVehiclePage, emptyUserAnswers) shouldBe expectedResult
+        nextPage(ZegvTotalCostOfVehiclePage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -203,9 +252,9 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is ZeroEmissionGoodsVehiclePage" - {
+    "page is ZeroEmissionGoodsVehiclePage, ZegvTotalCostOfVehiclePage, ZegvAllowancePage" - {
       "navigate to ZeroEmissionCarsCYAController" in {
-        List(ZeroEmissionGoodsVehiclePage).foreach {
+        List(ZeroEmissionGoodsVehiclePage, ZegvAllowancePage, ZegvTotalCostOfVehiclePage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController
             .onPageLoad(taxYear, businessId)
         }

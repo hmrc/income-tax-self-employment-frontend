@@ -78,7 +78,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZegvAllowancePage)
+    val pagesToBeCleared: List[Settable[_]] = List(ZegvAllowancePage, ZegvTotalCostOfVehiclePage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case true  => Future(request.userAnswers)
