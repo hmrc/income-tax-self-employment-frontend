@@ -36,7 +36,7 @@ object ZecAllowanceSummary {
         buildRowString(
           formatAnswer(answer.toString),
           routes.ZecAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecAllowance.subHeading.$userType"),
+          messages(s"zeroEmission.subHeading.$userType"),
           "zeroEmission.change.hidden",
           rightTextAlign = true
         )

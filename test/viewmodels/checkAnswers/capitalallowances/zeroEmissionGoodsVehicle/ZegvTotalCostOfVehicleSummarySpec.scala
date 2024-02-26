@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
+package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class ZecAllowanceSummarySpec extends SummaryBaseSpec("ZecAllowanceSummary") {
+class ZegvTotalCostOfVehicleSummarySpec extends SummaryBaseSpec("ZegvTotalCostOfVehicleSummary") {
 
-  override val validData: JsObject = Json.obj("zecAllowance" -> ZecAllowance.Yes.toString)
+  override val validData: JsObject = Json.obj("zegvTotalCostOfVehicle" -> 20.00)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zeroEmission.subHeading.$userType"))
+  override val testKey: UserType => Text = (_: UserType) => Text(messages("zegvTotalCostOfVehicle.title"))
 
-  override val testValue: HtmlContent = HtmlContent("site.yes")
+  override val testValue: HtmlContent = HtmlContent("£20.00")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ZecAllowanceSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    ZegvTotalCostOfVehicleSummary.row(userAnswers, taxYear, businessId)(messages)
 
 }

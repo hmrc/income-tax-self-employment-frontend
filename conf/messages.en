@@ -1410,3 +1410,9 @@ zegvAllowance.p3.individual = Reduce your taxable income by the full cost of the
 zegvAllowance.p3.agent = Reduce your client’s taxable income by the full cost of the vehicle.
 zegvAllowance.p4.individual = Claim part of the cost of your vehicle by using the allowances for this tax year. You can then use
 zegvAllowance.p4.agent = Claim part of the cost of your client’s vehicle by using the allowances for this tax year. Your client can then use
+
+zegvTotalCostOfVehicle.title = What was the total cost of the vehicle, in pounds?
+zegvTotalCostOfVehicle.hint.individual = This is the price you paid at the time you purchased the vehicle. If you bought more than one vehicle, enter the total for all of them.
+zegvTotalCostOfVehicle.hint.agent = This is the price your client paid at the time they purchased their vehicle. If your client bought more than one vehicle, enter the total for all of them.
+zegvTotalCostOfVehicle.error.required = Enter the total cost of the vehicle in pounds
+zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle

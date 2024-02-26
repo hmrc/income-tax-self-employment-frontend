@@ -23,11 +23,12 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage, ZeroEmissionGoodsVehiclePage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -93,6 +94,30 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
     case ZeroEmissionGoodsVehiclePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(ZeroEmissionGoodsVehiclePage, Some(businessId)) match {
+              case Some(true) =>
+                zeroEmissionGoodsVehicle.routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) =>
+                zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case ZegvAllowancePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(ZegvAllowancePage, Some(businessId)) match {
+              case Some(ZegvAllowance.Yes) =>
+                zeroEmissionGoodsVehicle.routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(ZegvAllowance.No) =>
+                zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
@@ -107,7 +132,7 @@ class CapitalAllowancesNavigator @Inject() {
         ZecHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
-    case ZeroEmissionGoodsVehiclePage =>
+    case ZeroEmissionGoodsVehiclePage | ZegvAllowancePage | ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>

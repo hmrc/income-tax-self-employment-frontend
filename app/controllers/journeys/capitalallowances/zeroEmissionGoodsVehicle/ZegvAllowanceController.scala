@@ -26,7 +26,7 @@ import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance.
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -80,7 +80,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List()
+    val pagesToBeCleared: List[Settable[_]] = List(ZegvTotalCostOfVehiclePage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case Yes => Future(request.userAnswers)

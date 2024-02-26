@@ -19,26 +19,24 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object ZegvAllowanceSummary {
+object ZegvTotalCostOfVehicleSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZegvAllowancePage, businessId.some)
+      .get(ZegvTotalCostOfVehiclePage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
-          routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zeroEmission.subHeading.$userType"),
-          "zeroEmission.change.hidden",
-          rightTextAlign = true
+        buildRowBigDecimal(
+          answer,
+          routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, CheckMode),
+          messages("zegvTotalCostOfVehicle.title"),
+          "zegvTotalCostOfVehicle.change.hidden"
         )
       }
 }
