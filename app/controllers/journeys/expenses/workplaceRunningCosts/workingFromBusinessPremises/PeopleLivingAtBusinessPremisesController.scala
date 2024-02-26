@@ -55,7 +55,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business =>
-        getFilledFormAndMaxMonths(request, business, businessId) match {
+        getFilledFormAndMaxMonths(request, business, businessId, taxYear) match {
           case Left(redirectError) => redirectError
           case Right((filledForm: Form[PeopleLivingAtBusinessPremisesFormModel], maxMonths: Int)) =>
             Ok(view(filledForm, mode, request.userType, taxYear, businessId, maxMonths.toString))
@@ -85,7 +85,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
       val result: EitherT[Future, ServiceError, Result] =
         service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
-          getMaxMonthsWithinTaxYearOrRedirect(business) match {
+          getMaxMonthsWithinTaxYearOrRedirect(business, taxYear) match {
             case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
             case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))
           })
@@ -93,9 +93,9 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
       handleResultT(result)
   }
 
-  private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
+  private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId, taxYear: TaxYear)(implicit
       messages: Messages): Either[Result, (Form[PeopleLivingAtBusinessPremisesFormModel], Int)] =
-    getMaxMonthsWithinTaxYearOrRedirect(business) map { maxMonths =>
+    getMaxMonthsWithinTaxYearOrRedirect(business, taxYear) map { maxMonths =>
       val formProvider = PeopleLivingAtBusinessPremisesFormProvider(request.userType, maxMonths)
       val onePerson    = request.getValue(LivingAtBusinessPremisesOnePerson, businessId)
       val twoPeople    = request.getValue(LivingAtBusinessPremisesTwoPeople, businessId)
