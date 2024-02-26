@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars, zeroEmissionGoodsVehicle}
 import controllers.standard
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -98,7 +98,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is ZecAllowancePage" - {
       "answer is 'Yes'" - {
         "navigate to TotalCostOfCarController" in {
-          val data           = Json.obj("zecAllowance" -> ZeroEmissionCarsAllowance.Yes.toString)
+          val data           = Json.obj("zecAllowance" -> ZecAllowance.Yes.toString)
           val expectedResult = zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
@@ -106,7 +106,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to ZeroEmissionCarsCYAController" in {
-          val data           = Json.obj("zecAllowance" -> ZeroEmissionCarsAllowance.No.toString)
+          val data           = Json.obj("zecAllowance" -> ZecAllowance.No.toString)
           val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult

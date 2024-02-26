@@ -18,17 +18,17 @@ package forms.capitalallowances.zeroEmissionCars
 
 import base.forms.RadioButtonFormProviderBaseSpec
 import models.common.UserType
-import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.ZecAllowance
 import play.api.data.Form
 
 class ZecAllowanceFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[ZeroEmissionCarsAllowance](
+    extends RadioButtonFormProviderBaseSpec[ZecAllowance](
       "ZecAllowanceFormProvider"
     ) {
 
-  override def getFormProvider(userType: UserType): Form[ZeroEmissionCarsAllowance] = new ZecAllowanceFormProvider()(userType)
+  override def getFormProvider(userType: UserType): Form[ZecAllowance] = new ZecAllowanceFormProvider()(userType)
 
-  override lazy val validValues: Seq[ZeroEmissionCarsAllowance] = ZeroEmissionCarsAllowance.values
-  override lazy val requiredError: String                       = "zecAllowance.error.required"
+  override lazy val validValues: Seq[ZecAllowance] = ZecAllowance.values
+  override lazy val requiredError: String          = "zeroEmission.error.required"
 
 }

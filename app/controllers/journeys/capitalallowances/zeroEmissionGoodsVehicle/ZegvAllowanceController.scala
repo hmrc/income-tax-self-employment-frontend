@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.zeroEmissionCars
+package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.zeroEmissionCars.ZecAllowanceFormProvider
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
-import models.journeys.capitalallowances.ZecAllowance.{No, Yes}
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance.{No, Yes}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars._
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -34,21 +34,21 @@ import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.zeroEmissionCars.ZecAllowanceView
+import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                        navigator: CapitalAllowancesNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        service: SelfEmploymentService,
-                                        formProvider: ZecAllowanceFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ZecAllowanceView)(implicit ec: ExecutionContext)
+class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
+                                         navigator: CapitalAllowancesNavigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         service: SelfEmploymentService,
+                                         formProvider: ZegvAllowanceFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: ZegvAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -56,7 +56,7 @@ class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(ZecAllowancePage, businessId.some)
+        .get(ZegvAllowancePage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
@@ -71,29 +71,21 @@ class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecAllowancePage)
-            } yield Redirect(navigator.nextPage(ZecAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvAllowancePage)
+            } yield Redirect(navigator.nextPage(ZegvAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: ZecAllowance,
+  private def handleGatewayQuestion(currentAnswer: ZegvAllowance,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] =
-      List(
-        ZecTotalCostOfCarPage,
-        ZecHowMuchDoYouWantToClaimPage,
-        ZecClaimAmount,
-        ZecOnlyForSelfEmploymentPage,
-        ZecUseOutsideSEPage,
-        ZecUseOutsideSEPercentagePage
-      )
+    val pagesToBeCleared: List[Settable[_]] = List()
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case Yes => Future(request.userAnswers)
     }
-    val redirectMode = request.getValue(ZecAllowancePage, businessId) match {
+    val redirectMode = request.getValue(ZegvAllowancePage, businessId) match {
       case Some(No) if currentAnswer == Yes => NormalMode
       case _                                => mode
     }

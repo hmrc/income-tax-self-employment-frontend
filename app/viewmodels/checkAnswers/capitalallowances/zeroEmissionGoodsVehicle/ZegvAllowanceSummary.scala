@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
+package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionCars.ZecAllowancePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object ZecAllowanceSummary {
+object ZegvAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZecAllowancePage, businessId.some)
+      .get(ZegvAllowancePage, businessId.some)
       .map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
-          routes.ZecAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"zecAllowance.subHeading.$userType"),
+          routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"zegvAllowance.subHeading.$userType"),
           "zeroEmission.change.hidden",
           rightTextAlign = true
         )

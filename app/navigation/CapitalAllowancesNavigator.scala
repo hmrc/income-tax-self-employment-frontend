@@ -21,7 +21,7 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
@@ -65,10 +65,10 @@ class CapitalAllowancesNavigator @Inject() {
         taxYear =>
           businessId =>
             userAnswers.get(ZecAllowancePage, Some(businessId)) match {
-              case Some(ZeroEmissionCarsAllowance.Yes) =>
+              case Some(ZecAllowance.Yes) =>
                 zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(ZeroEmissionCarsAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case _                                  => standard.routes.JourneyRecoveryController.onPageLoad()
+              case Some(ZecAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+              case _                     => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case ZecTotalCostOfCarPage =>
