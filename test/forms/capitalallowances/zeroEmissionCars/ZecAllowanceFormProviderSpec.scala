@@ -29,6 +29,6 @@ class ZecAllowanceFormProviderSpec
   override def getFormProvider(userType: UserType): Form[ZecAllowance] = new ZecAllowanceFormProvider()(userType)
 
   override lazy val validValues: Seq[ZecAllowance] = ZecAllowance.values
-  override lazy val requiredError: String                       = "zeroEmission.error.required"
+  override lazy val requiredError: String          = "zeroEmission.error.required"
 
 }

@@ -68,7 +68,7 @@ class CapitalAllowancesNavigator @Inject() {
               case Some(ZecAllowance.Yes) =>
                 zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(ZecAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case _                                  => standard.routes.JourneyRecoveryController.onPageLoad()
+              case _                     => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case ZecTotalCostOfCarPage =>
