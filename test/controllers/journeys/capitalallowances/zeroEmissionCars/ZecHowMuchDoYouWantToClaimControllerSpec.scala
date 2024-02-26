@@ -48,7 +48,7 @@ class ZecHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
   private val validRadioAnswer: ZecHowMuchDoYouWantToClaim = ZecHowMuchDoYouWantToClaim.LowerAmount
   private val validCurrencyAmount: BigDecimal              = 4000
   private val percentage: Int                              = 10
-  private val expectedFullCost: BigDecimal                 = BigDecimal(4500.00).setScale(2)
+  private val expectedFullCost: BigDecimal                 = BigDecimal(4500.00).setScale(0)
 
   private def baseAnswers: UserAnswers = emptyUserAnswersAccrual
     .set(ZecTotalCostOfCarPage, fullCost, businessId.some)

@@ -17,7 +17,6 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import utils.MoneyUtils.formatMoney
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -80,7 +79,7 @@
                                 if(form("howMuchDoYouWantToClaim").value.contains("fullCost")) "checked" else ""
                             }>
                             <label class="govuk-label govuk-radios__label" for="fullCost">
-                            @messages("zecHowMuchDoYouWantToClaim.fullCost", formatMoney(fullCostAmount, false))
+                            @messages("zecHowMuchDoYouWantToClaim.fullCost", fullCostAmount)
                             </label>
                         </div>
                         <div class="govuk-radios__item">
