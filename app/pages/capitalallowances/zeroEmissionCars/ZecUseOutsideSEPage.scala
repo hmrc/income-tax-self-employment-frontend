@@ -20,5 +20,5 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import pages.OneQuestionPage
 
 object ZecUseOutsideSEPage extends OneQuestionPage[ZecUseOutsideSE] {
-  override def toString: String = "zeroEmissionCarsUsedOutsideSE"
+  override def toString: String = "zecUsedOutsideSE"
 }

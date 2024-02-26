@@ -24,9 +24,9 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class ZecUsedForWorkSummarySpec extends SummaryBaseSpec("ZecUsedForWorkSummary") {
+class ZeroEmissionCarsSummarySpec extends SummaryBaseSpec("ZecUsedForWorkSummary") {
 
-  override val validData: JsObject = Json.obj("zeroEmissionCarsUsedForWork" -> false)
+  override val validData: JsObject = Json.obj("zeroEmissionCars" -> false)
 
   override val invalidData: JsObject = Json.obj("otherPage" -> false)
 
@@ -36,6 +36,6 @@ class ZecUsedForWorkSummarySpec extends SummaryBaseSpec("ZecUsedForWorkSummary")
   override val testValue: HtmlContent = HtmlContent("site.no")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ZecUsedForWorkSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    ZeroEmissionCarsSummary.row(userAnswers, taxYear, businessId, userType)(messages)
 
 }

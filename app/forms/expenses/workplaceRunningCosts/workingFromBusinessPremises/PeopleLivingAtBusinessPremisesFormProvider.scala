@@ -32,7 +32,7 @@ object PeopleLivingAtBusinessPremisesFormProvider extends Mappings {
 
   def apply(userType: UserType, maxMonths: Int)(implicit messages: Messages): Form[PeopleLivingAtBusinessPremisesFormModel] = {
     val requiredError     = "peopleLivingAtBusinessPremises.error.required."
-    val nonNumericError   = "common.error.nonNumeric"
+    val nonNumericError   = "error.nonNumeric"
     val noDecimalsError   = "expenses.error.noDecimals"
     val lessThanZeroError = "expenses.error.lessThanZero"
     val overMaxError      = "peopleLivingAtBusinessPremises.error.overMax."

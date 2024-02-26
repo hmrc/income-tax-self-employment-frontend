@@ -33,6 +33,7 @@ import views.html.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWan
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.RoundingMode
 
 @Singleton
 class ZecHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: MessagesApi,
@@ -91,7 +92,7 @@ class ZecHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: 
 
   private def calculateFullCost(request: DataRequest[AnyContent], businessId: BusinessId): Either[Result, BigDecimal] = {
     val percentageUsedForSE: BigDecimal = 1 - (request.getValue(ZecUseOutsideSEPercentagePage, businessId).getOrElse(0) / 100.00)
-    request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (_ * percentageUsedForSE)
+    request.valueOrRedirectDefault(ZecTotalCostOfCarPage, businessId) map (s => (s * percentageUsedForSE).setScale(0, RoundingMode.HALF_UP))
   }
 
 }

@@ -16,21 +16,63 @@
 
 package forms.capitalallowances.zeroEmissionCars
 
-import base.forms.CurrencyFormProviderBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import models.common.UserType
-import play.api.data.Form
+import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.UserType.Individual
+import models.common.{MoneyBounds, UserType}
+import org.scalacheck.Gen
+import play.api.data.{Form, FormError}
 
-class ZecTotalCostOfCarFormProviderSpec extends CurrencyFormProviderBaseSpec("ZecTotalCostOfCarFormProvider") {
+class ZecTotalCostOfCarFormProviderSpec extends BigDecimalFieldBehaviours with MoneyBounds {
 
-  override def getFormProvider(userType: UserType): Form[BigDecimal] = new ZecTotalCostOfCarFormProvider()(userType)
+  val minimumVal: BigDecimal   = minimumOneValue
+  val maximumVal: BigDecimal   = maxAmountValue
+  val requiredError: String    = "zecTotalCostOfCar.error.required"
+  val nonNumericError: String  = "error.nonNumeric"
+  val noDecimalsError: String  = "error.nonDecimal"
+  val lessThanMinError: String = "error.minimumOne"
+  val overMaxError: String     = "expenses.error.overMax"
 
-  override def requiredError: String       = "zecTotalCostOfCar.error.required"
-  override def nonNumericError: String     = ""
-  override def lessThanZeroError: String   = ""
-  override def overMaxError: String        = ""
-  override def nonNumericErrorNoUserType   = "common.error.nonNumeric".some
-  override def lessThanZeroErrorNoUserType = "expenses.error.lessThanZero".some
-  override def overMaxErrorNoUserType      = "expenses.error.overMax".some
+  val userType: UserType = Individual
+  val fieldName          = "value"
 
+  val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
+  val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
+
+  "ZecTotalCostOfCarFormProvider should" - {
+    val form: Form[BigDecimal] = new ZecTotalCostOfCarFormProvider()(userType)
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      bigDecimalsInRangeWithNoDecimals(minimumVal, maximumValue)
+    )
+
+    behave like bigDecimalField(
+      form,
+      fieldName,
+      FormError(fieldName, nonNumericError)
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      maximumValue,
+      FormError(fieldName, overMaxError, Seq(maximumValue))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      FormError(fieldName, s"$requiredError.$userType")
+    )
+
+    behave like bigDecimalFieldWithRegex(
+      form,
+      fieldName,
+      noDecimalRegexp,
+      BigDecimal(400),
+      BigDecimal(400.20),
+      FormError(fieldName, noDecimalsError, Seq(noDecimalRegexp))
+    )
+  }
 }

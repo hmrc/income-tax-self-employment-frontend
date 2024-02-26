@@ -18,6 +18,6 @@ package pages.capitalallowances.zeroEmissionCars
 
 import pages.OneQuestionPage
 
-object ZecUsedForWorkPage extends OneQuestionPage[Boolean] {
-  override def toString: String = "zeroEmissionCarsUsedForWork"
+object ZeroEmissionCarsPage extends OneQuestionPage[Boolean] {
+  override def toString: String = "zeroEmissionCars"
 }

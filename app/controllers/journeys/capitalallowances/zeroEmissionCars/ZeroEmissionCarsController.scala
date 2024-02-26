@@ -16,16 +16,15 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProvider
+import forms.capitalallowances.zeroEmissionCars.ZeroEmissionCarsFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
-import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment._
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionCars.{ZecOnlyForSelfEmploymentPage, ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
+import pages.capitalallowances.zeroEmissionCars._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -33,21 +32,21 @@ import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentView
+import views.html.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: MessagesApi,
-                                                    navigator: CapitalAllowancesNavigator,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    service: SelfEmploymentService,
-                                                    formProvider: ZecUsedForSelfEmploymentFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: ZecUsedForSelfEmploymentView)(implicit ec: ExecutionContext)
+class ZeroEmissionCarsController @Inject() (override val messagesApi: MessagesApi,
+                                            navigator: CapitalAllowancesNavigator,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            service: SelfEmploymentService,
+                                            formProvider: ZeroEmissionCarsFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: ZeroEmissionCarsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -55,38 +54,47 @@ class ZecUsedForSelfEmploymentController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(ZecOnlyForSelfEmploymentPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+        .get(ZeroEmissionCarsPage, businessId.some)
+        .fold(formProvider(request.userType, taxYear))(formProvider(request.userType, taxYear).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(request.userType, taxYear)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecOnlyForSelfEmploymentPage)
-            } yield Redirect(navigator.nextPage(ZecOnlyForSelfEmploymentPage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZeroEmissionCarsPage)
+            } yield Redirect(navigator.nextPage(ZeroEmissionCarsPage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: ZecOnlyForSelfEmployment,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage)
+    val pagesToBeCleared: List[Settable[_]] =
+      List(
+        ZecAllowancePage,
+        ZecTotalCostOfCarPage,
+        ZecHowMuchDoYouWantToClaimPage,
+        ZecClaimAmount,
+        ZecOnlyForSelfEmploymentPage,
+        ZecUseOutsideSEPage,
+        ZecUseOutsideSEPercentagePage
+      )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case No  => Future(request.userAnswers)
+      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true  => Future(request.userAnswers)
     }
-    val redirectMode = request.getValue(ZecOnlyForSelfEmploymentPage, businessId) match {
-      case Some(Yes) if currentAnswer == No => NormalMode
-      case _                                => mode
+    val redirectMode = request.getValue(ZeroEmissionCarsPage, businessId) match {
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

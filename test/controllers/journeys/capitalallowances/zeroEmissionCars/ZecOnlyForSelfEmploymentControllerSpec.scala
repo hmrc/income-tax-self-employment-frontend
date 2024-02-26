@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentFormProvider
+import forms.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmploymentFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
@@ -31,25 +31,25 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.zeroEmissionCars.ZecUsedForSelfEmploymentView
+import views.html.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmploymentView
 
 class ZecOnlyForSelfEmploymentControllerSpec
-    extends RadioButtonGetAndPostQuestionBaseSpec("ZecUsedForSelfEmploymentController", ZecOnlyForSelfEmploymentPage) {
+    extends RadioButtonGetAndPostQuestionBaseSpec("ZecOnlyForSelfEmploymentController", ZecOnlyForSelfEmploymentPage) {
 
-  override def onPageLoadCall: Call = routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.ZecUsedForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = routes.ZecOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode)
 
   override def onwardRoute: Call = models.common.onwardRoute
 
   override val validAnswer: ZecOnlyForSelfEmployment = ZecOnlyForSelfEmployment.Yes
 
-  override def createForm(user: UserType): Form[ZecOnlyForSelfEmployment] = new ZecUsedForSelfEmploymentFormProvider()(user)
+  override def createForm(user: UserType): Form[ZecOnlyForSelfEmployment] = new ZecOnlyForSelfEmploymentFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ZecUsedForSelfEmploymentView]
+    val view = application.injector.instanceOf[ZecOnlyForSelfEmploymentView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 

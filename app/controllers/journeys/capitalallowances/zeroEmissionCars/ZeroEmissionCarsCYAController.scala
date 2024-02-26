@@ -16,7 +16,7 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.zeroEmissionCars
 import models.common._
@@ -39,6 +39,7 @@ import scala.concurrent.ExecutionContext
 class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: MessagesApi,
                                                identify: IdentifierAction,
                                                getAnswers: DataRetrievalAction,
+                                               getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                requireAnswers: DataRequiredAction,
                                                service: SelfEmploymentService,
                                                val controllerComponents: MessagesControllerComponents,
@@ -48,11 +49,12 @@ class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: Message
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen getJourneyAnswers[ZeroEmissionCarsAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesZeroEmissionCars)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            ZecUsedForWorkSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            ZeroEmissionCarsSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ZecTotalCostOfCarSummary.row(request.userAnswers, taxYear, businessId),
             ZecOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),

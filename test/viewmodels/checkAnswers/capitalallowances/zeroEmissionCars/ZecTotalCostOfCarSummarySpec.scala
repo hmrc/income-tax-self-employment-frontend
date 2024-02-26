@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ZecTotalCostOfCarSummarySpec extends SummaryBaseSpec("ZecTotalCostOfCarSummary") {
 
-  override val validData: JsObject = Json.obj("zeroEmissionCarsTotalCostOfCar" -> 20.00)
+  override val validData: JsObject = Json.obj("zecTotalCostOfCar" -> 20.00)
 
   override val testKey: UserType => Text = (_: UserType) => Text(messages("zecTotalCostOfCar.title.cya"))
 

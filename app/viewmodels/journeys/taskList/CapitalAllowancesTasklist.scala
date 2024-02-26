@@ -82,7 +82,7 @@ object CapitalAllowancesTasklist {
         )(journeyStatus)
       case CapitalAllowancesZeroEmissionCars =>
         determineJourneyStartOrCyaUrl(
-          capitalallowances.zeroEmissionCars.routes.ZecUsedForWorkController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case CapitalAllowancesZeroEmissionGoodsVehicle =>
