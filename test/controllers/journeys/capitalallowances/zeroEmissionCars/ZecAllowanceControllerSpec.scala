@@ -22,7 +22,7 @@ import forms.capitalallowances.zeroEmissionCars.ZecAllowanceFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZeroEmissionCarsAllowance
+import models.journeys.capitalallowances.ZecAllowance
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.zeroEmissionCars.ZecAllowancePage
@@ -40,9 +40,9 @@ class ZecAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer = ZeroEmissionCarsAllowance.Yes
+  override val validAnswer = ZecAllowance.Yes
 
-  override def createForm(user: UserType): Form[ZeroEmissionCarsAllowance] = new ZecAllowanceFormProvider()(user)
+  override def createForm(user: UserType): Form[ZecAllowance] = new ZecAllowanceFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

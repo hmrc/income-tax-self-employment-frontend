@@ -21,14 +21,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait ZeroEmissionCarsAllowance
+sealed trait ZecAllowance
 
-object ZeroEmissionCarsAllowance extends Enumerable.Implicits {
+object ZecAllowance extends Enumerable.Implicits {
 
-  case object Yes extends WithName("yes") with ZeroEmissionCarsAllowance
-  case object No  extends WithName("no") with ZeroEmissionCarsAllowance
+  case object Yes extends WithName("yes") with ZecAllowance
+  case object No  extends WithName("no") with ZecAllowance
 
-  val values: Seq[ZeroEmissionCarsAllowance] = Seq(
+  val values: Seq[ZecAllowance] = Seq(
     Yes,
     No
   )
@@ -41,6 +41,6 @@ object ZeroEmissionCarsAllowance extends Enumerable.Implicits {
     )
   }
 
-  implicit val enumerable: Enumerable[ZeroEmissionCarsAllowance] =
+  implicit val enumerable: Enumerable[ZecAllowance] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

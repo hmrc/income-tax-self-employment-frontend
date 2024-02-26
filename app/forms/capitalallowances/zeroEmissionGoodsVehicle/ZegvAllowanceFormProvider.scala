@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package forms.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.capitalallowances.ZecAllowance
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import play.api.data.Form
 
-class ZecAllowanceFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[ZecAllowance](
-      "ZecAllowanceFormProvider"
-    ) {
+import javax.inject.Inject
 
-  override def getFormProvider(userType: UserType): Form[ZecAllowance] = new ZecAllowanceFormProvider()(userType)
+class ZegvAllowanceFormProvider @Inject() extends Mappings {
 
-  override lazy val validValues: Seq[ZecAllowance] = ZecAllowance.values
-  override lazy val requiredError: String                       = "zeroEmission.error.required"
+  def apply(userType: UserType): Form[ZegvAllowance] =
+    Form(
+      "value" -> enumerable[ZegvAllowance](s"zeroEmission.error.required.$userType")
+    )
 
 }

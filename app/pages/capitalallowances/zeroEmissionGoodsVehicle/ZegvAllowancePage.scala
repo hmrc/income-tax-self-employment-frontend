@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import forms.mappings.Mappings
-import models.common.UserType
-import models.journeys.capitalallowances.ZecAllowance
-import play.api.data.Form
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class ZecAllowanceFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[ZecAllowance] =
-    Form(
-      "value" -> enumerable[ZecAllowance](s"zeroEmission.error.required.$userType")
-    )
-
+object ZegvAllowancePage extends OneQuestionPage[ZegvAllowance] {
+  override def toString: String = "zegvAllowance"
 }
