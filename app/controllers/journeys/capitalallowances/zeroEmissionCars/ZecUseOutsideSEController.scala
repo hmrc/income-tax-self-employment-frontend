@@ -19,9 +19,9 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider
 import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.ZecUseOutsideSEFormModel
-import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE.DifferentAmount
+import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionCars.{ZecUseOutsideSEPage, ZecUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -67,8 +67,9 @@ class ZecUseOutsideSEController @Inject() (override val messagesApi: MessagesApi
       def handleSuccess(answer: ZecUseOutsideSEFormModel): Future[Result] =
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZecUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZecUseOutsideSEPercentagePage)
-        } yield Redirect(navigator.nextPage(ZecUseOutsideSEPage, mode, finalAnswers, taxYear, businessId))
+          redirectMode = if (request.getValue(ZecUseOutsideSEPercentagePage, businessId) contains answer.optDifferentAmount) mode else NormalMode
+          finalAnswers <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZecUseOutsideSEPercentagePage)
+        } yield Redirect(navigator.nextPage(ZecUseOutsideSEPage, redirectMode, finalAnswers, taxYear, businessId))
 
       ZecUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()

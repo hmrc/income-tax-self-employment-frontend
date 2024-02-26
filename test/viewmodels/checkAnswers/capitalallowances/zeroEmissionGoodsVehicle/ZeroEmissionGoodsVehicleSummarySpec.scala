@@ -31,7 +31,7 @@ class ZeroEmissionGoodsVehicleSummarySpec extends SummaryBaseSpec("ZeroEmissionG
   override val invalidData: JsObject = Json.obj("otherPage" -> false)
 
   override val testKey: UserType => Text =
-    (userType: UserType) => Text(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
+    (userType: UserType) => Text(messages(s"zeroEmissionGoodsVehicle.subHeading.cya.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
 
   override val testValue: HtmlContent = HtmlContent("site.no")
 

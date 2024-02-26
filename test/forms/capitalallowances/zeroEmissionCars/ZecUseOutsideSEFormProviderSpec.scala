@@ -22,7 +22,7 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
 import play.api.data.FormError
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
-class ZecZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFieldBehaviours {
+class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFieldBehaviours {
 
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
   private val maxPercentage           = 100

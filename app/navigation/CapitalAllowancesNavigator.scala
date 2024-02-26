@@ -93,7 +93,7 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
     case ZeroEmissionGoodsVehiclePage =>
-      _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+      _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -106,6 +106,9 @@ class CapitalAllowancesNavigator @Inject() {
     case ZeroEmissionCarsPage | ZecAllowancePage | ZecTotalCostOfCarPage | ZecOnlyForSelfEmploymentPage | ZecUseOutsideSEPage |
         ZecHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+    case ZeroEmissionGoodsVehiclePage =>
+      _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
