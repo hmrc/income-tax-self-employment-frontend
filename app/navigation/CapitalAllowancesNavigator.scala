@@ -27,7 +27,6 @@ import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -35,67 +34,53 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CapitalAllowancesNavigator @Inject() {
 
-  private val normalRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
+  private def normalRoutes(page: Page)(implicit userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call = page match {
 
     case ClaimCapitalAllowancesPage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(ClaimCapitalAllowancesPage, businessId.some) match {
-              case Some(true)  => tailoring.routes.SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(false) => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
-              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+      userAnswers.get(ClaimCapitalAllowancesPage, businessId.some) match {
+        case Some(true)  => tailoring.routes.SelectCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
+        case Some(false) => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+        case _           => standard.routes.JourneyRecoveryController.onPageLoad()
+      }
 
     case SelectCapitalAllowancesPage =>
-      _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+      tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case ZecUsedForWorkPage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(ZecUsedForWorkPage, Some(businessId)) match {
-              case Some(true)  => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(false) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case _           => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+      userAnswers.get(ZecUsedForWorkPage, Some(businessId)) match {
+        case Some(true)  => zeroEmissionCars.routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+        case Some(false) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+        case _           => standard.routes.JourneyRecoveryController.onPageLoad()
+      }
 
     case ZecAllowancePage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(ZecAllowancePage, Some(businessId)) match {
-              case Some(ZeroEmissionCarsAllowance.Yes) =>
-                zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(ZeroEmissionCarsAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-              case _                                  => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+      userAnswers.get(ZecAllowancePage, Some(businessId)) match {
+        case Some(ZeroEmissionCarsAllowance.Yes) =>
+          zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
+        case Some(ZeroEmissionCarsAllowance.No) => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+        case _                                  => standard.routes.JourneyRecoveryController.onPageLoad()
+      }
 
     case ZecTotalCostOfCarPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+      zeroEmissionCars.routes.ZecUsedForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ZecOnlyForSelfEmploymentPage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(ZecOnlyForSelfEmploymentPage, Some(businessId)) match {
-              case Some(ZecOnlyForSelfEmployment.No) =>
-                zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(ZecOnlyForSelfEmployment.Yes) =>
-                zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+      userAnswers.get(ZecOnlyForSelfEmploymentPage, Some(businessId)) match {
+        case Some(ZecOnlyForSelfEmployment.No) =>
+          zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+        case Some(ZecOnlyForSelfEmployment.Yes) =>
+          zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+        case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+      }
 
     case ZecUseOutsideSEPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+      zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ZecHowMuchDoYouWantToClaimPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+      zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
-    case ZeroEmissionGoodsVehiclePage =>
-      _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
-
-    case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
+    case _ =>
+      standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
@@ -111,9 +96,9 @@ class CapitalAllowancesNavigator @Inject() {
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
+  def nextPage(implicit page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
     mode match {
-      case NormalMode => normalRoutes(page)(userAnswers)(taxYear)(businessId)
+      case NormalMode => normalRoutes(page)
       case CheckMode  => checkRoutes(page)(userAnswers)(taxYear)(businessId)
     }
 }

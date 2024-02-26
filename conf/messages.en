@@ -1399,3 +1399,83 @@ zeroEmissionGoodsVehicle.subHeading.agent = Did your client buy a new and unused
 zeroEmissionGoodsVehicle.error.required.individual = Select yes if you bought a new and unused zero-emission goods vehicle between the specified dates
 zeroEmissionGoodsVehicle.error.required.agent = Select yes if your client bought a new and unused zero-emission goods vehicle between the specified dates
 zeroEmissionGoodsVehicle.change.hidden = Change whether you bought any new and unused zero-emission goods vehicles
+
+claimingTheAllowance.title = Claiming the allowance
+claimingTheAllowance.heading = Claiming the allowance
+claimingTheAllowance.full = The full amount
+claimingTheAllowance.lower = A lower amount
+claimingTheAllowance.checkYourAnswersLabel = Claiming the allowance
+claimingTheAllowance.error.required = Select claimingTheAllowance
+claimingTheAllowance.change.hidden = ClaimingTheAllowance
+
+totalCostOfTheVehicle.title = TotalCostOfTheVehicle
+totalCostOfTheVehicle.heading = TotalCostOfTheVehicle
+totalCostOfTheVehicle.checkYourAnswersLabel = TotalCostOfTheVehicle
+totalCostOfTheVehicle.error.nonNumeric = Enter your totalCostOfTheVehicle using numbers
+totalCostOfTheVehicle.error.required = Enter your totalCostOfTheVehicle
+totalCostOfTheVehicle.error.wholeNumber = Enter your totalCostOfTheVehicle using whole numbers
+totalCostOfTheVehicle.error.outOfRange = TotalCostOfTheVehicle must be between {0} and {1}
+totalCostOfTheVehicle.change.hidden = TotalCostOfTheVehicle
+
+useTheVehicleForYourSelfEmployment.title = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.heading = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.yes = Yes
+useTheVehicleForYourSelfEmployment.no = No, I used it for other things as well
+useTheVehicleForYourSelfEmployment.checkYourAnswersLabel = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.error.required = Select useTheVehicleForYourSelfEmployment
+useTheVehicleForYourSelfEmployment.change.hidden = UseTheVehicleForYourSelfEmployment
+
+zeroEmissionCarsCYA.title = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.heading = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.checkYourAnswersLabel = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.error.required = Enter zeroEmissionCarsCYA
+zeroEmissionCarsCYA.error.length = ZeroEmissionCarsCYA must be 100 characters or less
+zeroEmissionCarsCYA.change.hidden = ZeroEmissionCarsCYA
+
+zeroEmissionGoodsVehicleAllowance.title = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.heading = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.yes = Yes
+zeroEmissionGoodsVehicleAllowance.no = No
+zeroEmissionGoodsVehicleAllowance.checkYourAnswersLabel = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.error.required = Select zeroEmissionGoodsVehicleAllowance
+zeroEmissionGoodsVehicleAllowance.change.hidden = ZeroEmissionGoodsVehicleAllowance
+
+claimingTheAllowance.title = Claiming the allowance
+claimingTheAllowance.heading = Claiming the allowance
+claimingTheAllowance.full = The full amount
+claimingTheAllowance.lower = A lower amount
+claimingTheAllowance.checkYourAnswersLabel = Claiming the allowance
+claimingTheAllowance.error.required = Select claimingTheAllowance
+claimingTheAllowance.change.hidden = ClaimingTheAllowance
+
+totalCostOfTheVehicle.title = TotalCostOfTheVehicle
+totalCostOfTheVehicle.heading = TotalCostOfTheVehicle
+totalCostOfTheVehicle.checkYourAnswersLabel = TotalCostOfTheVehicle
+totalCostOfTheVehicle.error.nonNumeric = Enter your totalCostOfTheVehicle using numbers
+totalCostOfTheVehicle.error.required = Enter your totalCostOfTheVehicle
+totalCostOfTheVehicle.error.wholeNumber = Enter your totalCostOfTheVehicle using whole numbers
+totalCostOfTheVehicle.error.outOfRange = TotalCostOfTheVehicle must be between {0} and {1}
+totalCostOfTheVehicle.change.hidden = TotalCostOfTheVehicle
+
+useTheVehicleForYourSelfEmployment.title = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.heading = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.yes = Yes
+useTheVehicleForYourSelfEmployment.no = No, I used it for other things as well
+useTheVehicleForYourSelfEmployment.checkYourAnswersLabel = Did you only use the vehicle for your self-employment?
+useTheVehicleForYourSelfEmployment.error.required = Select useTheVehicleForYourSelfEmployment
+useTheVehicleForYourSelfEmployment.change.hidden = UseTheVehicleForYourSelfEmployment
+
+zeroEmissionCarsCYA.title = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.heading = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.checkYourAnswersLabel = zeroEmissionCarsCYA
+zeroEmissionCarsCYA.error.required = Enter zeroEmissionCarsCYA
+zeroEmissionCarsCYA.error.length = ZeroEmissionCarsCYA must be 100 characters or less
+zeroEmissionCarsCYA.change.hidden = ZeroEmissionCarsCYA
+
+zeroEmissionGoodsVehicleAllowance.title = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.heading = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.yes = Yes
+zeroEmissionGoodsVehicleAllowance.no = No
+zeroEmissionGoodsVehicleAllowance.checkYourAnswersLabel = Zero-emission goods vehicle allowance
+zeroEmissionGoodsVehicleAllowance.error.required = Select zeroEmissionGoodsVehicleAllowance
+zeroEmissionGoodsVehicleAllowance.change.hidden = ZeroEmissionGoodsVehicleAllowance

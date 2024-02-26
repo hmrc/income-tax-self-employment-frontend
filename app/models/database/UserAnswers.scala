@@ -20,6 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import models.RichJsObject
 import models.common.{AccountingType, BusinessId, UserId}
 import pages.TradeAccountingType
+import play.api.data.Form
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -32,6 +33,9 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
   def get[A](page: Gettable[A], businessId: Option[BusinessId] = None)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path(businessId))).reads(data).getOrElse(None)
+
+  def fillForm[A: Reads](page: Gettable[A], businessId: BusinessId, form: Form[A]): Form[A] =
+    get(page, Some(businessId)).fold(form)(form.fill)
 
   def getAccountingType(businessId: BusinessId): AccountingType = get(TradeAccountingType, businessId.some).head
 

@@ -22,6 +22,7 @@ import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey
 import pages.TradeAccountingType
+import play.api.data.Form
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
@@ -51,5 +52,8 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
     getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
+
+  def fillForm[A: Reads](page: Gettable[A], businessId: BusinessId, form: Form[A]): Form[A] =
+    userAnswers.fillForm(page, businessId, form)
 
 }

@@ -25,6 +25,7 @@ import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -53,9 +54,11 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ZeroEmissionGoodsVehiclePage, businessId.some)
-        .fold(formProvider(request.userType, taxYear))(formProvider(request.userType, taxYear).fill)
+      val form: Form[Boolean] = request.fillForm(
+        ZeroEmissionGoodsVehiclePage,
+        businessId,
+        formProvider(request.userType, taxYear)
+      )
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
@@ -70,7 +73,8 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
               updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZeroEmissionGoodsVehiclePage)
-            } yield Redirect(navigator.nextPage(ZeroEmissionGoodsVehiclePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              nextPage <- ZeroEmissionGoodsVehiclePage.redirectNextPage(redirectMode)(updatedUserAnswers, businessId, taxYear)
+            } yield nextPage
         )
   }
 

@@ -71,12 +71,12 @@
                 field = form("value"),
                 legend = LegendViewModel(messages(s"zeroEmissionGoodsVehicle.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            )
         )
-    )
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
-    </div>
     }
+    </div>
 }

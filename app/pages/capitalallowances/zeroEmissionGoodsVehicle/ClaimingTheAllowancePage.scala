@@ -20,12 +20,14 @@ import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.Mode
 import models.common._
 import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ClaimingTheAllowance
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
-object ZeroEmissionGoodsVehiclePage extends OneQuestionPage[Boolean] {
-  override def toString: String = "zeroEmissionGoodsVehicle"
+case object ClaimingTheAllowancePage extends OneQuestionPage[ClaimingTheAllowance] {
+  override def toString: String = "claimingTheAllowance"
 
   override def nextPage(mode: Mode)(implicit userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.ZeroEmissionGoodsVehicleAllowanceController.onPageLoad(taxYear, businessId, mode)
+    routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+
 }

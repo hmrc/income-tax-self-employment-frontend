@@ -16,8 +16,14 @@
 
 package pages
 
-import models.common.BusinessId
+import models.Mode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import play.api.libs.json.JsPath
+import play.api.mvc.{Call, Result}
+import play.api.mvc.Results.Redirect
+
+import scala.concurrent.Future
 
 trait OneQuestionPage[A] extends QuestionPage[A] {
 
@@ -26,5 +32,10 @@ trait OneQuestionPage[A] extends QuestionPage[A] {
       case Some(id) => JsPath \ id.value \ toString
       case None     => JsPath \ toString
     }
+
+  protected def nextPage(mode: Mode)(implicit userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
+
+  def redirectNextPage(mode: Mode)(implicit userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Future[Result] =
+    Future.successful(Redirect(nextPage(mode)))
 
 }
