@@ -24,7 +24,7 @@ import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
-import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring, CapitalAllowancesZeroEmissionCars}
+import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring, CapitalAllowancesZeroEmissionCars, CapitalAllowancesZeroEmissionGoodsVehicle}
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
@@ -52,15 +52,25 @@ object CapitalAllowancesTasklist {
     val capAllowancesTailoringCompleted = tailoringStatus.isCompleted
 
     val zeroEmissionCarsStatus = getJourneyStatus(CapitalAllowancesZeroEmissionCars)(tradesJourneyStatuses)
+    val zeroEmissionCarsHref   = getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)
     val zecIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionCar) && capAllowancesTailoringCompleted
-    val zeroEmissionCarsHref = getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)
     val zeroEmissionCarsRow = returnRowIfConditionPassed(
       buildSummaryRow(zeroEmissionCarsHref, messages(s"journeys.$CapitalAllowancesZeroEmissionCars"), zeroEmissionCarsStatus),
       zecIsTailored
     )
 
-    List(tailoringRow, zeroEmissionCarsRow).flatten
+    val zeroEmissionGoodsVehicleStatus = getJourneyStatus(CapitalAllowancesZeroEmissionGoodsVehicle)(tradesJourneyStatuses)
+    val zeroEmissionGoodsVehicleHref =
+      getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionGoodsVehicle, zeroEmissionGoodsVehicleStatus, businessId, taxYear)
+    val zegvIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionGoodsVehicle) && capAllowancesTailoringCompleted
+    val zeroEmissionGoodsVehicleRow = returnRowIfConditionPassed(
+      buildSummaryRow(zeroEmissionGoodsVehicleHref, messages(s"journeys.$CapitalAllowancesZeroEmissionGoodsVehicle"), zeroEmissionGoodsVehicleStatus),
+      zegvIsTailored
+    )
+
+    List(tailoringRow, zeroEmissionCarsRow, zeroEmissionGoodsVehicleRow).flatten
   }
 
   private def getCapitalAllowanceUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
@@ -74,6 +84,11 @@ object CapitalAllowancesTasklist {
         determineJourneyStartOrCyaUrl(
           capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesZeroEmissionGoodsVehicle =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }

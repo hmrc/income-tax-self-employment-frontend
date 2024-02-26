@@ -56,7 +56,10 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   )
   private val capitalAllowances = List[UserAnswers => Try[UserAnswers]](
     _.set(ClaimCapitalAllowancesPage, true, businessId.some),
-    _.set(SelectCapitalAllowancesPage, Set[CapitalAllowances](CapitalAllowances.ZeroEmissionCar), businessId.some)
+    _.set(
+      SelectCapitalAllowancesPage,
+      Set[CapitalAllowances](CapitalAllowances.ZeroEmissionCar, CapitalAllowances.ZeroEmissionGoodsVehicle),
+      businessId.some)
   )
 
   private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -66,7 +69,9 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   private val capitalAllowancesTailoringUrl =
     capitalallowances.tailoring.routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode).url
   private val capitalAllowancesTailoringCyaUrl = capitalallowances.tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId).url
-  private val zeroEmissionCarsCyaUrl  = capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
+  private val zeroEmissionCarsCyaUrl = capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
+  private val zeroEmissionGoodsVehicleStartUrl =
+    capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
   private val expensesTailoringCyaUrl = expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
   private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
@@ -135,14 +140,16 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(Income, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
-        JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress)
+        JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
+        JourneyNameAndStatus(CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted)
       ),
       capitalAllowances,
       List(
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
         expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),
-        expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress)
+        expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress),
+        expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted)
       ))
   )
 
