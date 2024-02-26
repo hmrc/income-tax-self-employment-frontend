@@ -17,8 +17,10 @@
 package controllers.actions
 
 import base.SpecBase
+import base.SpecBase.taxYear
 import config.FrontendAppConfig
 import controllers.actions.AuthenticatedIdentifierAction.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues, User}
+import models.common.TaxYear
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +37,6 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~ => rtr}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TaxYearHelper._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -172,6 +173,11 @@ object AuthenticatedIdentifierActionSpec {
 
   val sessionId: String                                         = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("mtditid" -> "1234567890")
+
+  private val validTaxYearList: Seq[TaxYear] = {
+    val year = taxYear.endYear
+    Seq(TaxYear(year - 2), TaxYear(year - 1), taxYear)
+  }
 
   val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
     .withSession(

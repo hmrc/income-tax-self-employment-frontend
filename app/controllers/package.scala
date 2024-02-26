@@ -25,7 +25,6 @@ import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import utils.TaxYearHelper.taxYearCutoffDate
 
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -69,8 +68,9 @@ package object controllers {
     handleResultT(resultT)
   }
 
-  def getMaxMonthsWithinTaxYearOrRedirect(business: BusinessData): Either[Result, Int] = {
-    val defaultMaxMonths = 12
+  def getMaxMonthsWithinTaxYearOrRedirect(business: BusinessData, taxYear: TaxYear): Either[Result, Int] = {
+    val taxYearCutoffDate = LocalDate.parse(s"${taxYear.endYear}-04-05")
+    val defaultMaxMonths  = 12
     business.commencementDate.fold[Either[Result, Int]] {
       Left(redirectJourneyRecovery())
     } { date =>

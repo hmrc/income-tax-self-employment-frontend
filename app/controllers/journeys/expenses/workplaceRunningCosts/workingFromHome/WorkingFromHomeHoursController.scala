@@ -55,7 +55,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business =>
-        getFilledFormAndMaxMonths(request, business, businessId) match {
+        getFilledFormAndMaxMonths(request, business, businessId, taxYear) match {
           case Left(redirectError) => redirectError
           case Right((filledForm: Form[WorkingFromHomeHoursFormModel], maxMonths: Int)) =>
             Ok(view(filledForm, mode, request.userType, taxYear, businessId, maxMonths.toString))
@@ -85,7 +85,7 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
 
       val result: EitherT[Future, ServiceError, Result] =
         service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
-          getMaxMonthsWithinTaxYearOrRedirect(business) match {
+          getMaxMonthsWithinTaxYearOrRedirect(business, taxYear) match {
             case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
             case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))
           })
@@ -93,9 +93,9 @@ class WorkingFromHomeHoursController @Inject() (override val messagesApi: Messag
       handleResultT(result)
   }
 
-  private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId)(implicit
+  private def getFilledFormAndMaxMonths(request: DataRequest[_], business: BusinessData, businessId: BusinessId, taxYear: TaxYear)(implicit
       messages: Messages): Either[Result, (Form[WorkingFromHomeHoursFormModel], Int)] =
-    getMaxMonthsWithinTaxYearOrRedirect(business) map { maxMonths =>
+    getMaxMonthsWithinTaxYearOrRedirect(business, taxYear) map { maxMonths =>
       val formProvider = WorkingFromHomeHoursFormProvider(request.userType, maxMonths)
       val value25To50  = request.getValue(WorkingFromHomeHours25To50, businessId)
       val value51To100 = request.getValue(WorkingFromHomeHours51To100, businessId)
