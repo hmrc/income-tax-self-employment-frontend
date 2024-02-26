@@ -1296,12 +1296,12 @@ capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 
-zeroEmission.useFirstYearAllowance.individual = You can do this by using the 100% first year allowances in one of two ways:
-zeroEmission.useFirstYearAllowance.agent = They can do this by using the 100% first year allowances in one of two ways:
+zeroEmission.useFirstYearAllowance.individual = You can do this by using the 100% first year allowance in one of two ways:
+zeroEmission.useFirstYearAllowance.agent = They can do this by using the 100% first year allowance in one of two ways:
 zeroEmission.inThisTaxYear = All in this tax year
 zeroEmission.multipleTaxYears = Across multiple tax years
 zeroEmission.linkHref = https://www.gov.uk/work-out-capital-allowances
-zeroEmission.linkText = ‘writing down allowances’
+zeroEmission.linkText = ‘writing down’ allowances
 zeroEmission.postLinkText =  (opens in new tab) on the balance for this and future tax years.
 zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
 zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
