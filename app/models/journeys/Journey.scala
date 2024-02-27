@@ -169,6 +169,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(ZeroEmissionGoodsVehiclePage.pageName, ZegvAllowancePage.pageName)
   }
 
+  case object CapitalAllowancesElectricVehicleChargePoints extends Journey("capital-allowances-electric-vehicle-charge-points") {
+    override val pageKeys: List[PageName] = List(ZeroEmissionGoodsVehiclePage.pageName, ZegvAllowancePage.pageName)
+  }
+
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
 
     override def bind(key: String, value: String): Either[String, Journey] =

@@ -28,6 +28,7 @@ site.thisIncludes = This includes:
 site.selectAllThatApply = Select all that apply.
 site.months = months
 site.enterTheAmount = Enter the amount
+site.includesTheCostOf = This includes the cost of:
 site.pound = £
 site.percentage = %
 
@@ -1431,3 +1432,13 @@ evcpAllowance.subHeading.individual = Did you buy and install any new and unused
 evcpAllowance.subHeading.agent = Did your client buy and install any new and unused electric vehicle charge-points?
 evcpAllowance.error.required.individual = Select yes if you bought and installed new and unused electric vehicle charge-point for work vehicles
 evcpAllowance.error.required.agent = Select yes if your client bought and installed new and unused electric vehicle charge-point for work vehicles
+
+amountSpentOnEvcp.title.individual = How much did you spend on electric vehicle charge-points, in pounds?
+amountSpentOnEvcp.title.agent = How much did your client spend on electric vehicle charge-points, in pounds?
+amountSpentOnEvcp.title.cya = How much did you spend on charge-points, in pounds?
+amountSpentOnEvcp.l1 = all new and unused electric vehicle charge-points
+amountSpentOnEvcp.l2 = alteration of land for the sole purpose of installing the charge-points
+amountSpentOnEvcp.l3 = equipment installed for the sole purpose of providing the charge-points with electricity
+amountSpentOnEvcp.error.required.individual = Enter the amount you spent on charge-points in pounds
+amountSpentOnEvcp.error.required.agent = Enter the amount your client spent on charge-points in pounds
+amountSpentOnEvcp.change.hidden = Change how much was spent on electric vehicle charge-points

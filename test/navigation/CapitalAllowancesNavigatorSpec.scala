@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars, zeroEmissionGoodsVehicle}
+import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
@@ -26,6 +26,7 @@ import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
+import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
@@ -224,6 +225,14 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
+    "page is AmountSpentOnEvcpPage" - {
+      "navigate to ElectricVehicleChargePointsCYAController" in {
+        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(AmountSpentOnEvcpPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
     "navigate to journey recovery on no page match" in {
       nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
@@ -256,6 +265,15 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZeroEmissionCarsCYAController" in {
         List(ZeroEmissionGoodsVehiclePage, ZegvAllowancePage, ZegvTotalCostOfVehiclePage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController
+            .onPageLoad(taxYear, businessId)
+        }
+      }
+    }
+
+    "page is AmountSpentOnEvcpPage" - {
+      "navigate to ElectricVehicleChargePointsCYAController" in {
+        List(AmountSpentOnEvcpPage).foreach {
+          nextPage(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
             .onPageLoad(taxYear, businessId)
         }
       }
