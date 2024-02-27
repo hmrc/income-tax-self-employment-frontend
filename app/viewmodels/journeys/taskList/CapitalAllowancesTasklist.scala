@@ -24,7 +24,7 @@ import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
-import models.journeys.Journey.{Abroad, CapitalAllowancesTailoring, CapitalAllowancesZeroEmissionCars, CapitalAllowancesZeroEmissionGoodsVehicle}
+import models.journeys.Journey._
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
@@ -70,7 +70,25 @@ object CapitalAllowancesTasklist {
       zegvIsTailored
     )
 
-    List(tailoringRow, zeroEmissionCarsRow, zeroEmissionGoodsVehicleRow).flatten
+    val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(tradesJourneyStatuses)
+    val electricVehicleChargePointsHref =
+      getCapitalAllowanceUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
+    val evcpIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
+    val electricVehicleChargePointsRow = returnRowIfConditionPassed(
+      buildSummaryRow(
+        electricVehicleChargePointsHref,
+        messages(s"journeys.$CapitalAllowancesElectricVehicleChargePoints"),
+        electricVehicleChargePointsStatus),
+      evcpIsTailored
+    )
+
+    List(
+      tailoringRow,
+      zeroEmissionCarsRow,
+      zeroEmissionGoodsVehicleRow,
+      electricVehicleChargePointsRow
+    ).flatten
   }
 
   private def getCapitalAllowanceUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
@@ -89,6 +107,11 @@ object CapitalAllowancesTasklist {
         determineJourneyStartOrCyaUrl(
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesElectricVehicleChargePoints =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }
