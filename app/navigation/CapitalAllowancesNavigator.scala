@@ -26,9 +26,10 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployme
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
+import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
-import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage, ZeroEmissionGoodsVehiclePage}
+import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -119,6 +120,9 @@ class CapitalAllowancesNavigator @Inject() {
 
     case ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+
+    case AmountSpentOnEvcpPage =>
+      _ => taxYear => businessId => electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }

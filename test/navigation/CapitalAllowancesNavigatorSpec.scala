@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.capitalallowances.{tailoring, zeroEmissionCars, zeroEmissionGoodsVehicle}
+import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
@@ -26,6 +26,7 @@ import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
+import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
@@ -221,6 +222,14 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
         nextPage(ZegvTotalCostOfVehiclePage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is AmountSpentOnEvcpPage" - {
+      "navigate to ZeroEmissionGoodsVehicleCYAController" in {
+        val expectedResult = electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(AmountSpentOnEvcpPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 

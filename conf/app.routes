@@ -530,3 +530,10 @@ POST        /:taxYear/:businessId/change-capital-allowances/goods-vehicles/cost 
 
 GET         /:taxYear/:businessId/capital-allowances/goods-vehicles/check                                                              controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/goods-vehicles/check                                                              controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances - Electric Vehicle Charge Points ##########
+
+GET         /:taxYear/:businessId/capital-allowances/electric-vehicle-charge-points/cost                                               controllers.journeys.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/electric-vehicle-charge-points/cost                                               controllers.journeys.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/electric-vehicle-charge-points/cost                                        controllers.journeys.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances/electric-vehicle-charge-points/cost                                        controllers.journeys.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
