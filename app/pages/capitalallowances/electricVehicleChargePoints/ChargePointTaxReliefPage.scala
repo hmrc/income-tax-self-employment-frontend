@@ -16,9 +16,8 @@
 
 package pages.capitalallowances.electricVehicleChargePoints
 
-import models.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxRelief
 import pages.OneQuestionPage
 
-object ChargePointTaxReliefPage extends OneQuestionPage[ChargePointTaxRelief] {
+object ChargePointTaxReliefPage extends OneQuestionPage[Boolean] {
   override def toString: String = "chargePointTaxRelief"
 }

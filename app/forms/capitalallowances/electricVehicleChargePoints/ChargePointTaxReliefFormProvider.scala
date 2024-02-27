@@ -18,16 +18,15 @@ package forms.capitalallowances.electricVehicleChargePoints
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxRelief
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ChargePointTaxReliefFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[ChargePointTaxRelief] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> enumerable[ChargePointTaxRelief](s"zeroEmission.error.required.$userType")
+      "value" -> boolean(s"zeroEmission.error.required.$userType")
     )
 
 }

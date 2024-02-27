@@ -121,6 +121,18 @@ class CapitalAllowancesNavigator @Inject() {
     case ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
+    case ChargePointTaxReliefPage =>
+        userAnswers =>
+          taxYear =>
+            businessId =>
+              userAnswers.get(ChargePointTaxReliefPage, Some(businessId)) match {
+                case Some(true) =>
+                  electricVehicleChargePoints.routes.ChargePointTaxReliefController.onPageLoad (taxYear, businessId, NormalMode) //TODO: SASS-7434 change to electric vehicle charge points amount page
+                case Some(false) =>
+                  electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+                case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+              }
+
     case AmountSpentOnEvcpPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 

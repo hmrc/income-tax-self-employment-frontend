@@ -21,8 +21,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxRelief.{No, Yes}
-import models.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxRelief
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -76,7 +74,7 @@ class ChargePointTaxReliefController @Inject()(override val messagesApi: Message
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: ChargePointTaxRelief,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
@@ -85,11 +83,11 @@ class ChargePointTaxReliefController @Inject()(override val messagesApi: Message
         // TODO: add pages to clear
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case Yes => Future(request.userAnswers)
+      case false  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(ChargePointTaxReliefPage, businessId) match {
-      case Some(No) if currentAnswer == Yes => NormalMode
+      case Some(false) if currentAnswer => NormalMode
       case _                                => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))

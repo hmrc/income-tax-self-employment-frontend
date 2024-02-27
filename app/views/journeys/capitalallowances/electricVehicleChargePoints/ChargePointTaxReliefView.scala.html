@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.journeys.capitalallowances.ZecAllowance
-@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import models.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxRelief
 
 @this(
     layout: templates.Layout,
@@ -30,40 +30,41 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selectCapitalAllowances.zeroEmissionCar"))) {
+@layout(pageTitle = title(form, messages("taxReliefChargePoints.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("selectCapitalAllowances.zeroEmissionCar"), None, extraClasses = "no-padding-top")
+    @heading(messages("taxReliefChargePoints.title"), None, extraClasses = "no-padding-top")
 
 
     <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"zecAllowance.p1.$userType")</p>
-        <p>@messages(s"zeroEmission.useFirstYearAllowance.$userType")</p>
-        <p>
-            <span class="govuk-!-font-weight-bold">@messages("zeroEmission.inThisTaxYear")</span><br>
-            @messages(s"zecAllowance.p3.$userType")
-        </p>
-        <p>
-            <span class="govuk-!-font-weight-bold">@messages("zeroEmission.multipleTaxYears")</span><br>
-            @messages(s"zecAllowance.p4.$userType")
-            <a href="@messages("zeroEmission.linkHref")" class="govuk-link">@messages("zeroEmission.linkText")</a>
-            @messages("zeroEmission.postLinkText")
-        </p>
+        <p>@messages(s"taxReliefChargePoints.p1.$userType")</p>
+        <p>@messages(s"taxReliefChargePoints.p2.$userType")</p>
     </div>
 
-    @formHelper(action = routes.ZecAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ChargePointTaxReliefController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"zeroEmission.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZecAllowance.options
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <label class="govuk-label govuk-label--m">
+                                ${messages(s"taxReliefChargePoints.subHeading.$userType")}
+                            </label>
+                            <div class="govuk-hint govuk-!-margin-bottom-0">
+                                ${messages(s"taxReliefChargePoints.hint.$userType")}
+                            </div>
+                        </div>
+                        """
+                ))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
+
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
