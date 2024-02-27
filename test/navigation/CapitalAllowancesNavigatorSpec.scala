@@ -21,6 +21,7 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
+import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
@@ -31,6 +32,7 @@ import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapi
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.libs.json.Json
+import play.api.mvc.BodyParsers.utils.ignore
 import play.api.mvc.Call
 
 class CapitalAllowancesNavigatorSpec extends SpecBase {
@@ -236,6 +238,31 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "navigate to journey recovery on no page match" in {
       nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
+
+    "page is EvcpAllowancePage" - {
+      "answer is 'Yes'" - {
+        "navigate to TaxReliefOnChargePoints" in ignore { // TODO: SASS-7432 Change to tax relief page
+          val data = Json.obj("evcpAllowance" -> EVCPAllowance.Yes.toString)
+          val expectedResult = electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(EVCPAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to ElectricVehicleChargePointsCYAController" in {
+          val data = Json.obj("evcpAllowance" -> EVCPAllowance.No.toString)
+          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(EVCPAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(EVCPAllowancePage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
   }
 
   "CheckMode" - {

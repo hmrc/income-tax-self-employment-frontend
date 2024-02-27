@@ -30,13 +30,13 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("evcpAllowance.title"))) {
+@layout(pageTitle = title(form, messages("selectCapitalAllowances.electricVehicleChargepoint"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("evcpAllowance.title"), None, extraClasses = "no-padding-top")
+    @heading(messages("selectCapitalAllowances.electricVehicleChargepoint"), None, extraClasses = "no-padding-top")
 
 
     <div class="govuk-body govuk-!-margin-top-6">
