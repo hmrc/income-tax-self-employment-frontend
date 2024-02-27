@@ -26,7 +26,7 @@ class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFiel
 
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
   private val maxPercentage           = 100
-  private val minValidPercentage      = 0
+  private val minPercentage           = 0
   private val form                    = ZecUseOutsideSEFormProvider(Individual)
   private val radioFieldName          = "radioPercentage"
   private val amountFieldName         = "optDifferentAmount"
@@ -59,7 +59,7 @@ class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFiel
     behave like fieldThatBindsValidData(
       form,
       amountFieldName,
-      intsInRangeWithCommas(minValidPercentage, maxPercentage)
+      intsInRangeWithCommas(minPercentage, maxPercentage)
     )
 
     behave like intField(
@@ -85,8 +85,8 @@ class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFiel
     behave like intFieldWithMinimum(
       form,
       amountFieldName,
-      minValidPercentage,
-      FormError(amountFieldName, lessThanZeroError, Seq(0))
+      minPercentage,
+      FormError(amountFieldName, lessThanZeroError, Seq(minPercentage))
     )
   }
 
