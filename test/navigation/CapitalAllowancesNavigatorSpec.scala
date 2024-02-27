@@ -226,8 +226,8 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     }
 
     "page is AmountSpentOnEvcpPage" - {
-      "navigate to ZeroEmissionGoodsVehicleCYAController" in {
-        val expectedResult = electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode)
+      "navigate to ElectricVehicleChargePointsCYAController" in {
+        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
         nextPage(AmountSpentOnEvcpPage, emptyUserAnswers) shouldBe expectedResult
       }
@@ -265,6 +265,15 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZeroEmissionCarsCYAController" in {
         List(ZeroEmissionGoodsVehiclePage, ZegvAllowancePage, ZegvTotalCostOfVehiclePage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController
+            .onPageLoad(taxYear, businessId)
+        }
+      }
+    }
+
+    "page is AmountSpentOnEvcpPage" - {
+      "navigate to ElectricVehicleChargePointsCYAController" in {
+        List(AmountSpentOnEvcpPage).foreach {
+          nextPage(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
             .onPageLoad(taxYear, businessId)
         }
       }
