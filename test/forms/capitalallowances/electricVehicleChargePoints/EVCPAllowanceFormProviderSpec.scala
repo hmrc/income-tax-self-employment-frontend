@@ -29,6 +29,6 @@ class EVCPAllowanceFormProviderSpec
   override def getFormProvider(userType: UserType): Form[EVCPAllowance] = new EVCPAllowanceFormProvider()(userType)
 
   override lazy val validValues: Seq[EVCPAllowance] = EVCPAllowance.values
-  override lazy val requiredError: String          = "evcpAllowance.error.required"
+  override lazy val requiredError: String           = "evcpAllowance.error.required"
 
 }

@@ -40,15 +40,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EVCPAllowanceController @Inject()(override val messagesApi: MessagesApi,
-                                        navigator: CapitalAllowancesNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        service: SelfEmploymentService,
-                                        formProvider: EVCPAllowanceFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: EVCPAllowanceView)(implicit ec: ExecutionContext)
+class EVCPAllowanceController @Inject() (override val messagesApi: MessagesApi,
+                                         navigator: CapitalAllowancesNavigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         service: SelfEmploymentService,
+                                         formProvider: EVCPAllowanceFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: EVCPAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -82,7 +82,7 @@ class EVCPAllowanceController @Inject()(override val messagesApi: MessagesApi,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
       List(
-       // TODO: clear claiming allowance, useOutsideSE, selfEmploymentUSe, chargePointAmount and tax relief pages
+        // TODO: clear claiming allowance, useOutsideSE, selfEmploymentUSe, chargePointAmount and tax relief pages
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
