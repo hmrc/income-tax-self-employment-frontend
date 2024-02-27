@@ -58,8 +58,12 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     _.set(ClaimCapitalAllowancesPage, true, businessId.some),
     _.set(
       SelectCapitalAllowancesPage,
-      Set[CapitalAllowances](CapitalAllowances.ZeroEmissionCar, CapitalAllowances.ZeroEmissionGoodsVehicle),
-      businessId.some)
+      Set[CapitalAllowances](
+        CapitalAllowances.ZeroEmissionCar,
+        CapitalAllowances.ZeroEmissionGoodsVehicle,
+        CapitalAllowances.ElectricVehicleChargepoint),
+      businessId.some
+    )
   )
 
   private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -72,6 +76,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   private val zeroEmissionCarsCyaUrl = capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
   private val zeroEmissionGoodsVehicleStartUrl =
     capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val electricVehicleChargePointsCyaUrl =
+    capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
   private val expensesTailoringCyaUrl = expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
   private val officeSuppliesUrl       = expenses.officeSupplies.routes.OfficeSuppliesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   private val goodsToSellCyaUrl       = expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
@@ -141,7 +147,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Income, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
-        JourneyNameAndStatus(CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted)
+        JourneyNameAndStatus(CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
+        JourneyNameAndStatus(CapitalAllowancesElectricVehicleChargePoints, Completed)
       ),
       capitalAllowances,
       List(
@@ -149,7 +156,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(incomeUrl, Income, NotStarted),
         expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),
         expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress),
-        expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted)
+        expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
+        expectedRow(electricVehicleChargePointsCyaUrl, CapitalAllowancesElectricVehicleChargePoints, Completed)
       ))
   )
 
