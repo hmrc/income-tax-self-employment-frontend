@@ -1232,6 +1232,14 @@ otherExpensesCYA.title.agent = Check your client’s other expenses
 
 ########## Capital Allowances - Tailoring ##########
 
+common.capitalAllowances.useFirstYearAllowance.individual = You can do this by using the 100% first year allowance in one of two ways:
+common.capitalAllowances.useFirstYearAllowance.agent = They can do this by using the 100% first year allowance in one of two ways:
+common.capitalAllowances.inThisTaxYear = All in this tax year
+common.capitalAllowances.multipleTaxYears = Across multiple tax years
+common.capitalAllowances.linkHref = https://www.gov.uk/work-out-capital-allowances
+common.capitalAllowances.linkText = ‘writing down’ allowances
+common.capitalAllowances.postLinkText =  (opens in new tab) on the balance for this and future tax years.
+
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
 claimCapitalAllowances.title.ACCRUAL = Allowances for vehicles, equipment and buildings
@@ -1296,13 +1304,6 @@ capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 
-zeroEmission.useFirstYearAllowance.individual = You can do this by using the 100% first year allowance in one of two ways:
-zeroEmission.useFirstYearAllowance.agent = They can do this by using the 100% first year allowance in one of two ways:
-zeroEmission.inThisTaxYear = All in this tax year
-zeroEmission.multipleTaxYears = Across multiple tax years
-zeroEmission.linkHref = https://www.gov.uk/work-out-capital-allowances
-zeroEmission.linkText = ‘writing down’ allowances
-zeroEmission.postLinkText =  (opens in new tab) on the balance for this and future tax years.
 zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
 zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
@@ -1416,3 +1417,17 @@ zegvTotalCostOfVehicle.hint.individual = This is the price you paid at the time 
 zegvTotalCostOfVehicle.hint.agent = This is the price your client paid at the time they purchased their vehicle. If your client bought more than one vehicle, enter the total for all of them.
 zegvTotalCostOfVehicle.error.required = Enter the total cost of the vehicle in pounds
 zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle
+
+########## Capital Allowances - Electric Vehicle Charge Points ##########
+
+evcpAllowance.title =  Electric vehicle charge-point allowance
+evcpAllowance.p1.individual =  You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
+evcpAllowance.p1.agent =  Your client can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
+evcpAllowance.p2.individual =  Reduce your taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p2.agent =  Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p3.individual = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
+evcpAllowance.p3.agent = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
+evcpAllowance.subHeading.individual = Did you buy and install any new and unused electric vehicle charge-points?
+evcpAllowance.subHeading.agent = Did your client buy and install any new and unused electric vehicle charge-points?
+evcpAllowance.error.required.individual = Select yes if you bought and installed new and unused electric vehicle charge-point for work vehicles
+evcpAllowance.error.required.agent = Select yes if your client bought and installed new and unused electric vehicle charge-point for work vehicles

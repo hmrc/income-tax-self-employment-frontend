@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
-@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import models.journeys.capitalallowances.ZecAllowance
+@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -30,38 +30,38 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selectCapitalAllowances.zeroEmissionGoodsVehicle"))) {
+@layout(pageTitle = title(form, messages("evcpAllowance.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("selectCapitalAllowances.zeroEmissionGoodsVehicle"), None, extraClasses = "no-padding-top")
+    @heading(messages("evcpAllowance.title"), None, extraClasses = "no-padding-top")
 
 
     <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"zegvAllowance.p1.$userType")</p>
+        <p>@messages(s"evcpAllowance.p1.$userType")</p>
         <p>@messages(s"common.capitalAllowances.useFirstYearAllowance.$userType")</p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("zeroEmission.inThisTaxYear")</span><br>
-            @messages(s"zegvAllowance.p3.$userType")
+            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</span><br>
+            @messages(s"evcpAllowance.p2.$userType")
         </p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("zeroEmission.multipleTaxYears")</span><br>
-            @messages(s"zegvAllowance.p4.$userType")
-            <a href="@messages("zeroEmission.linkHref")" class="govuk-link">@messages("zeroEmission.linkText")</a>
-            @messages("zeroEmission.postLinkText")
+            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</span><br>
+            @messages(s"evcpAllowance.p3.$userType")
+            <a href="@messages("common.capitalAllowances.linkHref")" class="govuk-link">@messages("common.capitalAllowances.linkText")</a>
+            @messages("common.capitalAllowances.postLinkText")
         </p>
     </div>
 
-    @formHelper(action = routes.ZegvAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"zeroEmission.subHeading.$userType"))
+                legend = LegendViewModel(messages(s"evcpAllowance.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZegvAllowance.options
+                items  = ZecAllowance.options
             )
         )
 
