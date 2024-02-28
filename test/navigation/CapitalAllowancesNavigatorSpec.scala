@@ -21,6 +21,7 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
+import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
@@ -226,10 +227,42 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     }
 
     "page is AmountSpentOnEvcpPage" - {
-      "navigate to ElectricVehicleChargePointsCYAController" in {
-        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+      "navigate to EvcpOnlyForSelfEmploymentPage" in {
+        val expectedResult = electricVehicleChargePoints.routes.EvcpOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
         nextPage(AmountSpentOnEvcpPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is EvcpOnlyForSelfEmploymentPage" - {
+      "answer is 'Yes'" - {
+        "navigate to ElectricVehicleChargePointsCYAController" in {
+          val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString)
+          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+          nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is 'No'" - {
+        "navigate to EvcpUseOutsideSEController" in {
+          val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.No.toString)
+          val expectedResult = electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+
+          nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+        }
+      }
+      "answer is None or invalid" - {
+        "navigate to the ErrorRecoveryPage" in {
+          nextPage(EvcpOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
+        }
+      }
+    }
+
+    "page is EvcpUseOutsideSEPage" - {
+      "navigate to EvcpOnlyForSelfEmploymentPage" in {
+        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(EvcpUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -270,10 +303,10 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is AmountSpentOnEvcpPage" - {
+    "page is AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage" - {
       "navigate to ElectricVehicleChargePointsCYAController" in {
-        List(AmountSpentOnEvcpPage).foreach {
-          nextPage(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
+        List(AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage).foreach {
+          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
             .onPageLoad(taxYear, businessId)
         }
       }

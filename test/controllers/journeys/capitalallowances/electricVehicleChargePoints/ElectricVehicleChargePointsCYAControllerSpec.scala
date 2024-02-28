@@ -19,18 +19,24 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints.{AmountSpentOnEvcpSummary, ChargePointTaxReliefSummary}
+import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints._
 
 class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] = List(Json.obj("chargePointTaxRelief" -> false, "amountSpentOnEvcp" -> 400.00))
+  override val testDataCases: List[JsObject] = List(
+    Json.obj(
+      "chargePointTaxRelief"      -> false,
+      "amountSpentOnEvcp"         -> 400.00,
+      "evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString
+    ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ElectricVehicleChargePointsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ElectricVehicleChargePointsCYAController.onSubmit
@@ -40,7 +46,9 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
     SummaryList(
       rows = List(
         ChargePointTaxReliefSummary.row(userAnswers, taxYear, businessId, userType).value,
-        AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value),
+        AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value,
+        EvcpOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value
+      ),
       classes = "govuk-!-margin-bottom-7"
     )
 }
