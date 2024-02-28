@@ -1,0 +1,147 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.templates.helpers.Heading
+
+@this(layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        heading: Heading)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@formHasErrors = @{form.errors.nonEmpty}
+
+@missingRadioError = @{
+    form.errors.contains(FormError("radioPercentage", List(messages(s"zecUseOutsideSE.error.required.$userType")),List()))
+}
+@missingRadioErrorMsg = @{
+    if (missingRadioError) {
+            <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+            {messages(s"zecUseOutsideSE.error.required.$userType")}
+            </p>
+    }
+}
+
+@amountInputErrors = @{ formHasErrors && !missingRadioError }
+@amountInputErrorMsg = @{
+        if (amountInputErrors) {
+                <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
+                {messages(form.errors.head.messages.headOption.getOrElse(""))}
+                </p>
+        }
+    }
+
+@layout(pageTitle = title(form, messages(s"zecUsedForSelfEmployment.title.$userType"))) {
+
+    @if(formHasErrors) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
+    }
+
+    @formHelper(action = routes.ZegvUseOutsideSEController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        <div class="govuk-form-group @{ if (missingRadioError) "govuk-form-group--error" else "" }">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">@messages(s"zecUseOutsideSE.title.$userType")</h1>
+                </legend>
+
+                @missingRadioErrorMsg
+
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="10%" type="radio" value="10%" @{
+                            if(form("radioPercentage").value.contains("10%")) "checked" else ""
+                        }>
+                        <label class="govuk-label govuk-radios__label" for="10%">
+                        @messages("zecUseOutsideSE.tenPercent")
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="25%" type="radio" value="25%" @{
+                            if(form("radioPercentage").value.contains("25%")) "checked" else ""
+                        }>
+                        <label class="govuk-label govuk-radios__label" for="25%">
+                        @messages("zecUseOutsideSE.twentyFivePercent")
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item govuk-!-margin-bottom-3">
+                        <input class="govuk-radios__input" name="radioPercentage" id="50%" type="radio" value="50%" @{
+                            if(form("radioPercentage").value.contains("50%")) "checked" else ""
+                        }>
+                        <label class="govuk-label govuk-radios__label" for="50%">
+                        @messages("zecUseOutsideSE.fiftyPercent")
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" name="radioPercentage" id="aDifferentAmount" type="radio"
+                        value="aDifferentAmount" data-aria-controls="conditional-different-amount" @{
+                            if(form("radioPercentage").value.contains("aDifferentAmount")) "checked" else ""
+                        }>
+                        <label class="govuk-label govuk-radios__label" for="aDifferentAmount">
+                            @messages("zecUseOutsideSE.differentAmount")
+                        </label>
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-different-amount">
+                        <div class="govuk-form-group @{ if (amountInputErrors) "--error" else ""}">
+                            <label class = "govuk-label" for="optDifferentAmount" >
+                                @messages("site.enterTheAmount")
+                                @amountInputErrorMsg
+                            </label>
+                            <div class="govuk-input__wrapper" >
+                                <input class="govuk-input@{ if (amountInputErrors) " govuk-input--error" else "" } govuk-input--width-2 " id="optDifferentAmount" name="optDifferentAmount"
+                                    value="@{if(form("radioPercentage").value.contains("aDifferentAmount")) form("optDifferentAmount").value else ""}">
+                                <div class="govuk-input__suffix">@messages("site.percentage")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const submitButton = document.getElementsByClassName("govuk-button")[0];
+            var radio10 = document.getElementById("10%");
+            var radio25 = document.getElementById("25%");
+            var radio50 = document.getElementById("50%");
+            var radioDifferentAmount = document.getElementById("aDifferentAmount");
+            var differentAmountInput = document.getElementById("optDifferentAmount");
+
+            submitButton.addEventListener("click", function () {
+                if (radio10.checked) {
+                    differentAmountInput.value = "10";
+                } else if (radio25.checked) {
+                    differentAmountInput.value = "25";
+                } else if (radio50.checked) {
+                    differentAmountInput.value = "50";
+                }
+            });
+        });
+</script>

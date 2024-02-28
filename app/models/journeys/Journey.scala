@@ -157,12 +157,12 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       ZeroEmissionCarsPage.pageName,
       ZecAllowancePage.pageName,
-      ZecTotalCostOfCarPage.pageName,
-      ZecOnlyForSelfEmploymentPage.pageName,
-      ZecUseOutsideSEPage.pageName,
-      ZecUseOutsideSEPercentagePage.pageName,
-      ZecHowMuchDoYouWantToClaimPage.pageName,
-      ZecClaimAmount.pageName
+      ZegvTotalCostOfVehiclePage.pageName,
+      ZegvOnlyForSelfEmploymentPage.pageName,
+      ZegvUseOutsideSEPage.pageName,
+      ZegvUseOutsideSEPercentagePage.pageName,
+      ZegvHowMuchDoYouWantToClaimPage.pageName,
+      ZegvClaimAmount.pageName
     )
   }
 

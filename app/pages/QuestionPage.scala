@@ -16,6 +16,39 @@
 
 package pages
 
+import controllers.standard
+import models._
+import models.common._
+import models.database.UserAnswers
+import play.api.libs.json.Reads
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Result}
 import queries.{Gettable, Settable}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+
+  def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
+
+  def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
+
+  def standardPage: Call =
+    standard.routes.JourneyRecoveryController.onPageLoad()
+
+  def redirectNext(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
+    val newPage: Call = mode match {
+      case NormalMode => nextPageInNormalMode(userAnswers, businessId, taxYear)
+      case CheckMode  => cyaPage(taxYear, businessId)
+    }
+
+    Redirect(newPage)
+  }
+
+  def redirectOnBoolean(userAnswers: UserAnswers, businessId: BusinessId, onTrue: => Call, onFalse: => Call)(implicit reads: Reads[A]): Call =
+    userAnswers
+      .get(this, businessId)
+      .fold(standardPage) {
+        case true  => onTrue
+        case false => onFalse
+      }
+
+}

@@ -70,7 +70,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
               updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZeroEmissionGoodsVehiclePage)
-            } yield Redirect(navigator.nextPage(ZeroEmissionGoodsVehiclePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+            } yield ZeroEmissionGoodsVehiclePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
         )
   }
 

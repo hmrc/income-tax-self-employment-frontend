@@ -16,20 +16,21 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
+import pages.OneQuestionPage
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.NormalMode
 import models.common._
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-object ZeroEmissionGoodsVehiclePage extends ZegvBasePage[Boolean] {
-  override def toString: String = "zeroEmissionGoodsVehicle"
+object ZegvOnlyForSelfEmploymentPage extends OneQuestionPage[Boolean] {
+  override def toString: String = "zegvOnlyForSelfEmployment"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       userAnswers,
       businessId,
-      onTrue = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode),
+      onTrue = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
 }

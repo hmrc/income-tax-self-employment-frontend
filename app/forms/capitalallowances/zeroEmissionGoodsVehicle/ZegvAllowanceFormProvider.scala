@@ -17,17 +17,16 @@
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
 import forms.mappings.Mappings
-import models.common.UserType
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
+import models.common.{TaxYear, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ZegvAllowanceFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[ZegvAllowance] =
+  def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
     Form(
-      "value" -> enumerable[ZegvAllowance](s"zeroEmission.error.required.$userType")
+      "value" -> boolean(s"zeroEmissionGoodsVehicle.error.required.$userType", args = Seq(taxYear.startYear.toString, taxYear.endYear.toString))
     )
 
 }

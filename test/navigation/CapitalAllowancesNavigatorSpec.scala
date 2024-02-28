@@ -126,7 +126,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZecUsedForSelfEmploymentController" in {
         val expectedResult = zeroEmissionCars.routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
-        nextPage(ZecTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
+        nextPage(ZegvTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -136,7 +136,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
           val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
           val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
-          nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+          nextPage(ZegvOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
       "answer is 'No'" - {
@@ -144,12 +144,12 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
           val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.No.toString)
           val expectedResult = zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
-          nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
+          nextPage(ZegvOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
       "answer is None or invalid" - {
         "navigate to the ErrorRecoveryPage" in {
-          nextPage(ZecOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
+          nextPage(ZegvOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
         }
       }
     }
@@ -158,7 +158,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZecUsedForSelfEmploymentController" in {
         val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
-        nextPage(ZecUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
+        nextPage(ZegvUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -166,7 +166,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZecUsedForSelfEmploymentController" in {
         val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
-        nextPage(ZecHowMuchDoYouWantToClaimPage, emptyUserAnswers) shouldBe expectedResult
+        nextPage(ZegvHowMuchDoYouWantToClaimPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -342,10 +342,10 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         List(
           ZeroEmissionCarsPage,
           ZecAllowancePage,
-          ZecTotalCostOfCarPage,
-          ZecOnlyForSelfEmploymentPage,
-          ZecUseOutsideSEPage,
-          ZecHowMuchDoYouWantToClaimPage).foreach {
+          ZegvTotalCostOfCarPage,
+          ZegvOnlyForSelfEmploymentPage,
+          ZegvUseOutsideSEPage,
+          ZegvHowMuchDoYouWantToClaimPage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
         }
       }

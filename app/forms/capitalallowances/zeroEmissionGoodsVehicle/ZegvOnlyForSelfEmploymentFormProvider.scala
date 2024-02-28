@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+package forms.capitalallowances.zeroEmissionGoodsVehicle
 
-import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
-import models.NormalMode
-import models.common._
-import models.database.UserAnswers
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import models.common.{TaxYear, UserType}
+import play.api.data.Form
 
-object ZegvTotalCostOfVehiclePage extends ZegvBasePage[BigDecimal] {
-  override def toString: String = "zegvTotalCostOfVehicle"
+import javax.inject.Inject
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+class ZegvOnlyForSelfEmploymentFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"zeroEmissionGoodsVehicle.error.required.$userType", args = Seq(taxYear.startYear.toString, taxYear.endYear.toString))
+    )
+
 }

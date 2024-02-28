@@ -33,6 +33,9 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
   def get[A](page: Gettable[A], businessId: Option[BusinessId] = None)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path(businessId))).reads(data).getOrElse(None)
 
+  def get[A](page: Gettable[A], businessId: BusinessId)(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(page.path(Some(businessId)))).reads(data).getOrElse(None)
+
   def getAccountingType(businessId: BusinessId): AccountingType = get(TradeAccountingType, businessId.some).head
 
   def set[A](page: Settable[A], value: A, businessId: Option[BusinessId] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {

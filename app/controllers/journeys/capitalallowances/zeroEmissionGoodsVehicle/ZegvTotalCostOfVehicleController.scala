@@ -65,7 +65,7 @@ class ZegvTotalCostOfVehicleController @Inject() (override val messagesApi: Mess
           value =>
             service
               .persistAnswer(businessId, request.userAnswers, value, ZegvTotalCostOfVehiclePage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ZegvTotalCostOfVehiclePage, mode, updatedAnswers, taxYear, businessId)))
+              .map(updatedAnswers => ZegvTotalCostOfVehiclePage.redirectNext(mode, updatedAnswers, businessId, taxYear))
         )
   }
 

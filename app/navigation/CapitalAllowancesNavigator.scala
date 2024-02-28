@@ -24,7 +24,6 @@ import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
@@ -116,18 +115,6 @@ class CapitalAllowancesNavigator @Inject() {
               case Some(true) =>
                 zeroEmissionGoodsVehicle.routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(false) =>
-                zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
-
-    case ZegvAllowancePage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(ZegvAllowancePage, Some(businessId)) match {
-              case Some(ZegvAllowance.Yes) =>
-                zeroEmissionGoodsVehicle.routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(ZegvAllowance.No) =>
                 zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }

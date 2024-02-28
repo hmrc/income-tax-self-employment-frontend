@@ -17,19 +17,11 @@
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
-import models.NormalMode
-import models.common._
-import models.database.UserAnswers
+import models.common.{BusinessId, TaxYear}
+import pages.OneQuestionPage
 import play.api.mvc.Call
 
-object ZeroEmissionGoodsVehiclePage extends ZegvBasePage[Boolean] {
-  override def toString: String = "zeroEmissionGoodsVehicle"
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    redirectOnBoolean(
-      userAnswers,
-      businessId,
-      onTrue = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = cyaPage(taxYear, businessId)
-    )
+trait ZegvBasePage[A] extends OneQuestionPage[A] {
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 }

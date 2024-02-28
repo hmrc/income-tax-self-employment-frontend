@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 @import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
@@ -57,11 +56,10 @@
     @formHelper(action = routes.ZegvAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"zeroEmission.subHeading.$userType"))
                             .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZegvAllowance.options
             )
         )
 
