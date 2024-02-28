@@ -24,13 +24,13 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpSummary
+import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints.{AmountSpentOnEvcpSummary, ChargePointTaxReliefSummary}
 
 class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] = List(Json.obj("amountSpentOnEvcp" -> 400.00))
+  override val testDataCases: List[JsObject] = List(Json.obj("chargePointTaxRelief" -> false, "amountSpentOnEvcp" -> 400.00))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ElectricVehicleChargePointsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ElectricVehicleChargePointsCYAController.onSubmit
@@ -38,7 +38,9 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value),
+      rows = List(
+        ChargePointTaxReliefSummary.row(userAnswers, taxYear, businessId, userType).value,
+        AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value),
       classes = "govuk-!-margin-bottom-7"
     )
 }

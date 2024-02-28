@@ -38,15 +38,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChargePointTaxReliefController @Inject()(override val messagesApi: MessagesApi,
-                                               navigator: CapitalAllowancesNavigator,
-                                               identify: IdentifierAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               service: SelfEmploymentService,
-                                               formProvider: ChargePointTaxReliefFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               view: ChargePointTaxReliefView)(implicit ec: ExecutionContext)
+class ChargePointTaxReliefController @Inject() (override val messagesApi: MessagesApi,
+                                                navigator: CapitalAllowancesNavigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                service: SelfEmploymentService,
+                                                formProvider: ChargePointTaxReliefFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: ChargePointTaxReliefView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -83,12 +83,12 @@ class ChargePointTaxReliefController @Inject()(override val messagesApi: Message
         // TODO: add pages to clear
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case false  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case true => Future(request.userAnswers)
+      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true  => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(ChargePointTaxReliefPage, businessId) match {
       case Some(false) if currentAnswer => NormalMode
-      case _                                => mode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

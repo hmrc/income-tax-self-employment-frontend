@@ -380,6 +380,8 @@ expenses.error.overMax = The amount must be less than £100,000,000,000
 expenses.howWeCalculatedThis = How we calculated this:
 expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
 expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+expenses.false.cya = No
+expenses.true.cya = Yes
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -1440,3 +1442,4 @@ taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first 
 taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
 taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
 taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+
