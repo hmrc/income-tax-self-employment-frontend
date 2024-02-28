@@ -244,9 +244,9 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         }
       }
       "answer is 'No'" - {
-        "navigate to ElectricVehicleChargePointsCYAController" in {
+        "navigate to EvcpUseOutsideSEController" in {
           val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.No.toString)
-          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+          val expectedResult = electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
@@ -255,6 +255,14 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         "navigate to the ErrorRecoveryPage" in {
           nextPage(EvcpOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
         }
+      }
+    }
+
+    "page is EvcpUseOutsideSEPage" - {
+      "navigate to EvcpOnlyForSelfEmploymentPage" in {
+        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(EvcpUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -295,9 +303,9 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage" - {
+    "page is AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage" - {
       "navigate to ElectricVehicleChargePointsCYAController" in {
-        List(AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage).foreach {
+        List(AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
             .onPageLoad(taxYear, businessId)
         }
