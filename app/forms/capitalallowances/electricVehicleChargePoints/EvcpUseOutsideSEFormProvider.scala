@@ -14,43 +14,43 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package forms.capitalallowances.electricVehicleChargePoints
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
+import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSE
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 
-object ZecUseOutsideSEFormProvider extends Mappings {
+object EvcpUseOutsideSEFormProvider extends Mappings {
 
-  case class ZecUseOutsideSEFormModel(radioPercentage: ZecUseOutsideSE, optDifferentAmount: Int = 0)
+  case class EvcpUseOutsideSEFormModel(radioPercentage: EvcpUseOutsideSE, optDifferentAmount: Int = 0)
 
   private val radioPercentage    = "radioPercentage"
   private val optDifferentAmount = "optDifferentAmount"
   private val maxPercentage      = 100
   private val minPercentage      = 0
 
-  def apply(userType: UserType)(implicit messages: Messages): Form[ZecUseOutsideSEFormModel] = {
-    val requiredRadioError  = s"zecUseOutsideSE.error.required.$userType"
+  def apply(userType: UserType)(implicit messages: Messages): Form[EvcpUseOutsideSEFormModel] = {
+    val requiredRadioError  = s"evcpUseOutsideSE.error.required.$userType"
     val requiredAmountError = "error.required"
     val overMaxError        = "error.maxNinetyNine"
     val lessThanZeroError   = "error.lessThanZero"
     val nonNumericError     = "error.nonNumeric"
     val noDecimalsError     = "error.nonDecimal"
 
-    def validateRadio(): Mapping[ZecUseOutsideSE] = enumerable[ZecUseOutsideSE](messages(s"$requiredRadioError"))
+    def validateRadio(): Mapping[EvcpUseOutsideSE] = enumerable[EvcpUseOutsideSE](messages(s"$requiredRadioError"))
 
     def validateInt(): Mapping[Int] = int(requiredAmountError, noDecimalsError, nonNumericError)
       .verifying(greaterThan(minPercentage, lessThanZeroError))
       .verifying(lessThan(maxPercentage, overMaxError))
 
-    Form[ZecUseOutsideSEFormModel](
+    Form[EvcpUseOutsideSEFormModel](
       mapping(
         radioPercentage    -> validateRadio(),
         optDifferentAmount -> validateInt()
-      )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
+      )(EvcpUseOutsideSEFormModel.apply)(EvcpUseOutsideSEFormModel.unapply)
     )
   }
 

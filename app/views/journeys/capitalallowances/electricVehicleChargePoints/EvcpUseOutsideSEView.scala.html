@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -30,13 +30,13 @@
 @formHasErrors = @{form.errors.nonEmpty}
 
 @missingRadioError = @{
-    form.errors.contains(FormError("radioPercentage", List(messages(s"zecUseOutsideSE.error.required.$userType")),List()))
+    form.errors.contains(FormError("radioPercentage", List(messages(s"evcpUseOutsideSE.error.required.$userType")),List()))
 }
 @missingRadioErrorMsg = @{
     if (missingRadioError) {
             <p class="govuk-error-message">
             <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-            {messages(s"zecUseOutsideSE.error.required.$userType")}
+            {messages(s"evcpUseOutsideSE.error.required.$userType")}
             </p>
     }
 }
@@ -51,18 +51,18 @@
         }
     }
 
-@layout(pageTitle = title(form, messages(s"zecUseOutsideSE.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"evcpUseOutsideSE.title.$userType"))) {
 
     @if(formHasErrors) {
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
     }
 
-    @formHelper(action = routes.ZecUseOutsideSEController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.EvcpUseOutsideSEController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         <div class="govuk-form-group @{ if (missingRadioError) "govuk-form-group--error" else "" }">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">@messages(s"zecUseOutsideSE.title.$userType")</h1>
+                    <h1 class="govuk-fieldset__heading">@messages(s"evcpUseOutsideSE.title.$userType")</h1>
                 </legend>
 
                 @missingRadioErrorMsg

@@ -31,6 +31,10 @@ site.enterTheAmount = Enter the amount
 site.includesTheCostOf = This includes the cost of:
 site.pound = £
 site.percentage = %
+site.tenPercent = 10%
+site.twentyFivePercent = 25%
+site.fiftyPercent = 50%
+site.differentAmount = A different amount
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -92,6 +96,7 @@ error.lessThanZero = The amount must be more than 0
 error.nonNumeric = The amount must be a number
 error.nonDecimal = The amount cannot have decimal places
 error.minimumOne = The amount must be more than 1
+error.maxNinetyNine = The amount cannot be more than 99
 
 capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
 capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
@@ -1357,11 +1362,6 @@ zecUseOutsideSE.title.individual = How much did you use the car outside your sel
 zecUseOutsideSE.title.agent = How much did your client use the car outside their self-employment?
 zecUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the car outside self-employment
 zecUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the car outside self-employment
-zecUseOutsideSE.error.overMax = The amount cannot be more than 99
-zecUseOutsideSE.tenPercent = 10%
-zecUseOutsideSE.twentyFivePercent = 25%
-zecUseOutsideSE.fiftyPercent = 50%
-zecUseOutsideSE.differentAmount = A different amount
 zecUseOutsideSE.change.hidden = Change how much the car was used outside of self-employment
 
 zecHowMuchDoYouWantToClaim.title = Claiming the allowance
@@ -1438,3 +1438,9 @@ evcpOnlyForSelfEmployment.error.required.agent = Select yes if your client only 
 evcpOnlyForSelfEmployment.no.individual = No, I used them for other things as well
 evcpOnlyForSelfEmployment.no.agent = No, my client used them for other things as well
 evcpOnlyForSelfEmployment.change.hidden = Change whether electric vehicle charge-points were used only for self-employment purposes
+
+evcpUseOutsideSE.title.individual = How much did you use the charge-points outside your self-employment?
+evcpUseOutsideSE.title.agent = How much did your client use the charge-points outside their self-employment?
+evcpUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the charge-points outside your self-employment
+evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
+evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment

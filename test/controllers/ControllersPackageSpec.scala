@@ -21,9 +21,6 @@ import builders.BusinessDataBuilder.aBusinessData
 import cats.implicits.catsSyntaxEitherId
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-
 class ControllersPackageSpec extends SpecBase {
 
   private val defaultMaxMonths: Int = 12
@@ -36,11 +33,8 @@ class ControllersPackageSpec extends SpecBase {
         result shouldBe defaultMaxMonths.asRight
       }
       "should return the number of months between the Commencement date and TaxYear.endYear as Right" in {
-        val taxYearCutoffDate = LocalDate.parse(s"${taxYear.endYear}-04-05")
-        val commencementDate  = s"${taxYear.endYear}-01-05"
-        val expectedResult    = ChronoUnit.MONTHS.between(LocalDate.parse(commencementDate), taxYearCutoffDate).toInt
-        val result            = getMaxMonthsWithinTaxYearOrRedirect(aBusinessData.copy(commencementDate = Some(commencementDate)), taxYear)
-        result shouldBe expectedResult.asRight
+        val commencementDate = s"${taxYear.endYear}-01-05"
+        val result           = getMaxMonthsWithinTaxYearOrRedirect(aBusinessData.copy(commencementDate = Some(commencementDate)), taxYear)
         result shouldBe 3.asRight
       }
     }
