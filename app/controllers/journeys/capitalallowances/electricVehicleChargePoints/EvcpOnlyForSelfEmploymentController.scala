@@ -79,14 +79,14 @@ class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List()
+    val pagesToBeCleared: List[Settable[_]] = List(EvcpUseOutsideSEPage, EvcpUseOutsideSEPercentagePage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case No  => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(EvcpOnlyForSelfEmploymentPage, businessId) match {
-      case Some(Yes) if currentAnswer == No => NormalMode
-      case _                                => mode
+      case Some(previousAnswer) if currentAnswer != previousAnswer => NormalMode
+      case _                                                       => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

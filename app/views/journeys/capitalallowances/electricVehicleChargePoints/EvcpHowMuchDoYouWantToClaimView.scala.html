@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -29,13 +29,13 @@
 
 @formHasErrors = @{form.errors.nonEmpty}
 @missingRadioError = @{
-    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"zecHowMuchDoYouWantToClaim.error.required.$userType")),List()))
+    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"evcpHowMuchDoYouWantToClaim.error.required.$userType")),List()))
 }
 @missingRadioErrorMsg = @{
     if (missingRadioError) {
         <p class="govuk-error-message">
         <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-        {messages(s"zecHowMuchDoYouWantToClaim.error.required.$userType")}
+        {messages(s"evcpHowMuchDoYouWantToClaim.error.required.$userType")}
         </p>
     }
 }
@@ -49,7 +49,7 @@
         }
     }
 
-@layout(pageTitle = title(form, messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"evcpHowMuchDoYouWantToClaim.subHeading.$userType"))) {
 
     @if(formHasErrors) {
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
@@ -60,16 +60,17 @@
     <div class="govuk-body">
         <p>@messages(s"capitalAllowance.p1.$userType")</p>
         <p>@messages(s"capitalAllowance.p2.$userType")</p>
+        <p>@messages("capitalAllowance.p3")</p>
     </div>
 
-    @formHelper(action = routes.ZecHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.EvcpHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
             <div class="govuk-form-group @{ if (missingRadioError) "govuk-form-group--error" else "" }">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">@messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
+                        <h3 class="govuk-fieldset__heading">@messages(s"evcpHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
                     </legend>
-                    <div class="govuk-hint">@{messages("capitalAllowance.p3")}</div>
+                    <div class="govuk-hint">@{messages("evcpHowMuchDoYouWantToClaim.hint")}</div>
 
                     @missingRadioErrorMsg
 

@@ -1239,6 +1239,14 @@ otherExpensesCYA.title.agent = Check your client’s other expenses
 
 ########## Capital Allowances - Tailoring ##########
 
+capitalAllowance.claimingTheAllowance = Claiming the allowance
+capitalAllowance.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
+capitalAllowance.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
+capitalAllowance.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
+capitalAllowance.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
+capitalAllowance.p3 = You should enter any remaining amounts in the writing down allowances section.
+capitalAllowance.fullCost = The full cost (£{0})
+
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
 claimCapitalAllowances.title.ACCRUAL = Allowances for vehicles, equipment and buildings
@@ -1364,19 +1372,12 @@ zecUseOutsideSE.error.required.individual = Select or enter a percentage for how
 zecUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the car outside self-employment
 zecUseOutsideSE.change.hidden = Change how much the car was used outside of self-employment
 
-zecHowMuchDoYouWantToClaim.title = Claiming the allowance
-zecHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
-zecHowMuchDoYouWantToClaim.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
-zecHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
-zecHowMuchDoYouWantToClaim.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
 zecHowMuchDoYouWantToClaim.subHeading.individual = How much of your car’s cost do you want to claim under the 100% allowance?
 zecHowMuchDoYouWantToClaim.subHeading.agent = How much of your client’s car’s cost do they want to claim under the 100% allowance?
-zecHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
 zecHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
 zecHowMuchDoYouWantToClaim.error.required.agent = Select either the full cost or a lower amount from your client’s first year allowance that they want to claim
 zecHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
 zecHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
-zecHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zecHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
 
 ########## Capital Allowances - Zero Emission Goods Vehicles ##########
@@ -1444,3 +1445,12 @@ evcpUseOutsideSE.title.agent = How much did your client use the charge-points ou
 evcpUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the charge-points outside your self-employment
 evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
 evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
+
+evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
+evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
+evcpHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
+evcpHowMuchDoYouWantToClaim.error.required.individual = Select if you want to claim the full amount or a lower amount for the charge-points’ costs
+evcpHowMuchDoYouWantToClaim.error.required.agent = Select if your client wants to claim the full amount or a lower amount for the charge-points’ costs
+evcpHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost spent on electric vehicle charge-points
+evcpHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost spent on electric vehicle charge-points
+evcpHowMuchDoYouWantToClaim.change.hidden = Change how much of the cost of electric vehicle charge-points should be claimed under the 100% allowance

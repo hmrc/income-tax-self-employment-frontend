@@ -51,7 +51,8 @@ class ElectricVehicleChargePointsCYAController @Inject() (override val messagesA
           List(
             AmountSpentOnEvcpSummary.row(request.userAnswers, taxYear, businessId),
             EvcpOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            EvcpUseOutsideSESummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            EvcpUseOutsideSESummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            EvcpHowMuchDoYouWantToClaimSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

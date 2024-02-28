@@ -236,15 +236,15 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
 
     "page is EvcpOnlyForSelfEmploymentPage" - {
       "answer is 'Yes'" - {
-        "navigate to ElectricVehicleChargePointsCYAController" in {
+        "navigate to EvcpHowMuchDoYouWantToClaimPage" in {
           val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString)
-          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+          val expectedResult = electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
         }
       }
       "answer is 'No'" - {
-        "navigate to EvcpUseOutsideSEController" in {
+        "navigate to EvcpUseOutsideSEPage" in {
           val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.No.toString)
           val expectedResult = electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -259,10 +259,18 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     }
 
     "page is EvcpUseOutsideSEPage" - {
-      "navigate to EvcpOnlyForSelfEmploymentPage" in {
-        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+      "navigate to EvcpHowMuchDoYouWantToClaimPage" in {
+        val expectedResult = electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
         nextPage(EvcpUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
+      }
+    }
+
+    "page is EvcpHowMuchDoYouWantToClaimPage" - {
+      "navigate to ElectricVehicleChargePointsCYAController" in {
+        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(EvcpHowMuchDoYouWantToClaimPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -303,7 +311,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage" - {
+    "page is AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage, EvcpHowMuchDoYouWantToClaimPage" - {
       "navigate to ElectricVehicleChargePointsCYAController" in {
         List(AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
