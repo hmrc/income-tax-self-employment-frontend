@@ -22,7 +22,6 @@ import forms.capitalallowances.electricVehicleChargePoints.EVCPAllowanceFormProv
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
@@ -40,9 +39,9 @@ class EVCPAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec(
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer = EVCPAllowance.Yes
+  override val validAnswer = true
 
-  override def createForm(user: UserType): Form[EVCPAllowance] = new EVCPAllowanceFormProvider()(user)
+  override def createForm(user: UserType): Form[Boolean] = new EVCPAllowanceFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

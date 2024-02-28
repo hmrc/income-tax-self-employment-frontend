@@ -21,8 +21,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.electricVehicleChargePoints.EVCPAllowanceFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance.{No, Yes}
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -76,7 +74,7 @@ class EVCPAllowanceController @Inject() (override val messagesApi: MessagesApi,
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: EVCPAllowance,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
@@ -85,12 +83,12 @@ class EVCPAllowanceController @Inject() (override val messagesApi: MessagesApi,
         // TODO: clear claiming allowance, useOutsideSE, selfEmploymentUSe, chargePointAmount and tax relief pages
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case Yes => Future(request.userAnswers)
+      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true  => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(EVCPAllowancePage, businessId) match {
-      case Some(No) if currentAnswer == Yes => NormalMode
-      case _                                => mode
+      case Some(false) if currentAnswer == true => NormalMode
+      case _                                    => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

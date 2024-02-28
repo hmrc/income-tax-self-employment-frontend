@@ -33,7 +33,7 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
-      "evcpAllowance"             -> EVCPAllowance.Yes.toString,
+      "evcpAllowance"             -> true,
       "amountSpentOnEvcp"         -> 400.00,
       "evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString
     ))

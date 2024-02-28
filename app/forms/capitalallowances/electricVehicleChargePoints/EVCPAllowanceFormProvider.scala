@@ -18,16 +18,15 @@ package forms.capitalallowances.electricVehicleChargePoints
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class EVCPAllowanceFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[EVCPAllowance] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> enumerable[EVCPAllowance](s"evcpAllowance.error.required.$userType")
+      "value" -> boolean(s"evcpAllowance.error.required.$userType")
     )
 
 }

@@ -43,11 +43,13 @@
         <p>@messages(s"evcpAllowance.p1.$userType")</p>
         <p>@messages(s"common.capitalAllowances.useFirstYearAllowance")</p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</span><br>
+            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</div>
+            <br>
             @messages(s"evcpAllowance.p2.$userType")
         </p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</span><br>
+            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</div>
+            <br>
             @messages(s"evcpAllowance.p3.$userType")
             <a href="@messages("common.capitalAllowances.linkHref")" class="govuk-link">@messages("common.capitalAllowances.linkText")</a>
             @messages("common.capitalAllowances.postLinkText")
@@ -57,11 +59,18 @@
     @formHelper(action = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"evcpAllowance.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZecAllowance.options
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <label class="govuk-label govuk-label--m">
+                                ${messages(s"evcpAllowance.subHeading.$userType")}
+                            </label>
+                        </div>
+                        """
+                ))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

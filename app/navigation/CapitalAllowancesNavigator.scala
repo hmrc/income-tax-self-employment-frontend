@@ -145,9 +145,9 @@ class CapitalAllowancesNavigator @Inject() {
         taxYear =>
           businessId =>
             userAnswers.get(EVCPAllowancePage, Some(businessId)) match {
-              case Some(EVCPAllowance.Yes) =>
+              case Some(true) =>
                 electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(EVCPAllowance.No) =>
+              case Some(false) =>
                 electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }

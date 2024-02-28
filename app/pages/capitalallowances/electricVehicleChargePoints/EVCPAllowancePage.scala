@@ -16,9 +16,8 @@
 
 package pages.capitalallowances.electricVehicleChargePoints
 
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import pages.OneQuestionPage
 
-object EVCPAllowancePage extends OneQuestionPage[EVCPAllowance] {
+object EVCPAllowancePage extends OneQuestionPage[Boolean] {
   override def toString: String = "evcpAllowance"
 }

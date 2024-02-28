@@ -16,19 +16,17 @@
 
 package forms.capitalallowances.electricVehicleChargePoints
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
 import play.api.data.Form
 
 class EVCPAllowanceFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[EVCPAllowance](
+    extends BooleanFormProviderBaseSpec(
       "ZecAllowanceFormProvider"
     ) {
 
-  override def getFormProvider(userType: UserType): Form[EVCPAllowance] = new EVCPAllowanceFormProvider()(userType)
+  override def formProvider(userType: UserType): Form[Boolean] = new EVCPAllowanceFormProvider()(userType)
 
-  override lazy val validValues: Seq[EVCPAllowance] = EVCPAllowance.values
-  override lazy val requiredError: String           = "evcpAllowance.error.required"
+  override def requiredErrorKey: String     = "evcpAllowance.error.required"
 
 }
