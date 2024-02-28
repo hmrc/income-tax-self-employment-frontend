@@ -1310,7 +1310,7 @@ zeroEmission.postLinkText =  (opens in new tab) on the balance for this and futu
 zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
 zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
-zeroEmission.error.required.agent = Select yes if your client wants to use all your 100% first year allowance
+zeroEmission.error.required.agent = Select yes if your client wants to use all their 100% first year allowance
 zeroEmission.change.hidden = Change whether to use the 100% first year allowances
 
 zecUsedForWork.p1.individual = For a zero-emission car, you can claim:
