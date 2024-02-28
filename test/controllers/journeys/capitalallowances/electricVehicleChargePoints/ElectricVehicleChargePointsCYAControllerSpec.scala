@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
+import models.journeys.capitalallowances.electricVehicleChargePoints.{EvcpHowMuchDoYouWantToClaim, EvcpOnlyForSelfEmployment, EvcpUseOutsideSE}
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -33,8 +33,12 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
-      "amountSpentOnEvcp"         -> 400.00,
-      "evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString
+      "amountSpentOnEvcp"           -> 400.00,
+      "evcpOnlyForSelfEmployment"   -> EvcpOnlyForSelfEmployment.No.toString,
+      "evcpUsedOutsideSE"           -> EvcpUseOutsideSE.Fifty.toString,
+      "evcpUsedOutsideSEPercentage" -> 50,
+      "evcpHowMuchDoYouWantToClaim" -> EvcpHowMuchDoYouWantToClaim.FullCost.toString,
+      "evcpClaimAmount"             -> 200.00
     ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ElectricVehicleChargePointsCYAController.onPageLoad
@@ -45,7 +49,9 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
     SummaryList(
       rows = List(
         AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value,
-        EvcpOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value
+        EvcpOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value,
+        EvcpUseOutsideSESummary.row(userAnswers, taxYear, businessId, userType).value,
+        EvcpHowMuchDoYouWantToClaimSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )
