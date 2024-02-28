@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.zeroEmissionCars
+package forms.capitalallowances.electricVehicleChargePoints
 
 import forms.behaviours.{IntFieldBehaviours, OptionFieldBehaviours}
 import models.common.UserType.Individual
-import models.journeys.capitalallowances.zeroEmissionCars.ZecUseOutsideSE
+import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSE
 import play.api.data.FormError
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 
-class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFieldBehaviours {
+class EvcpUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFieldBehaviours {
 
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
   private val maxPercentage           = 100
   private val minPercentage           = 0
-  private val form                    = ZecUseOutsideSEFormProvider(Individual)
+  private val form                    = EvcpUseOutsideSEFormProvider(Individual)
   private val radioFieldName          = "radioPercentage"
   private val amountFieldName         = "optDifferentAmount"
-  private val requiredError           = s"zecUseOutsideSE.error.required.$Individual"
+  private val requiredError           = s"evcpUseOutsideSE.error.required.$Individual"
   private val amountRequiredError     = "error.required"
   private val nonNumericError         = "error.nonNumeric"
   private val noDecimalsError         = "error.nonDecimal"
   private val lessThanZeroError       = "error.lessThanZero"
   private val overMaxError            = "error.maxNinetyNine"
-  private val validRadioValues        = ZecUseOutsideSE.values
+  private val validRadioValues        = EvcpUseOutsideSE.values
 
   s"for RadioButton input field: $radioFieldName, form should" - {
 

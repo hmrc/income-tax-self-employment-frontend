@@ -74,12 +74,12 @@ package object controllers {
     business.commencementDate.fold[Either[Result, Int]] {
       Left(redirectJourneyRecovery())
     } { date =>
-      val startDate: LocalDate          = LocalDate.parse(date)
-      val startDateIsInTaxYear: Boolean = ChronoUnit.YEARS.between(startDate, taxYearCutoffDate) < 1
-      if (startDateIsInTaxYear) {
-        Right(ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt)
-      } else {
-        Right(defaultMaxMonths)
+      val startDate: LocalDate                 = LocalDate.parse(date)
+      val monthsBetweenStartDateAndCutOff: Int = ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt
+      monthsBetweenStartDateAndCutOff match {
+        case m if m < 0                => Left(redirectJourneyRecovery())
+        case m if m > defaultMaxMonths => Right(defaultMaxMonths)
+        case m                         => Right(m)
       }
     }
   }

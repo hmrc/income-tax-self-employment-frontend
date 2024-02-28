@@ -22,7 +22,7 @@ import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
-import models.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowance
+import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, Mode, NormalMode}
@@ -123,6 +123,21 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
     case AmountSpentOnEvcpPage =>
+      _ => taxYear => businessId => electricVehicleChargePoints.routes.EvcpOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case EvcpOnlyForSelfEmploymentPage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(EvcpOnlyForSelfEmploymentPage, Some(businessId)) match {
+              case Some(EvcpOnlyForSelfEmployment.Yes) =>
+                electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+              case Some(EvcpOnlyForSelfEmployment.No) =>
+                electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case EvcpUseOutsideSEPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
     case EVCPAllowancePage =>
@@ -152,7 +167,7 @@ class CapitalAllowancesNavigator @Inject() {
     case ZeroEmissionGoodsVehiclePage | ZegvAllowancePage | ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
-    case AmountSpentOnEvcpPage =>
+    case AmountSpentOnEvcpPage | EvcpOnlyForSelfEmploymentPage | EvcpUseOutsideSEPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>

@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints.{AmountSpentOnEvcpSummary, evcpAllowanceSummary}
+import viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -50,7 +50,9 @@ class ElectricVehicleChargePointsCYAController @Inject() (override val messagesA
         SummaryListCYA.summaryListOpt(
           List(
             evcpAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            AmountSpentOnEvcpSummary.row(request.userAnswers, taxYear, businessId)
+            AmountSpentOnEvcpSummary.row(request.userAnswers, taxYear, businessId),
+            EvcpOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            EvcpUseOutsideSESummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(
