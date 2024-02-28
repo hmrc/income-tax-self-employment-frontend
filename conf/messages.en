@@ -1430,3 +1430,11 @@ amountSpentOnEvcp.l3 = equipment installed for the sole purpose of providing the
 amountSpentOnEvcp.error.required.individual = Enter the amount you spent on charge-points in pounds
 amountSpentOnEvcp.error.required.agent = Enter the amount your client spent on charge-points in pounds
 amountSpentOnEvcp.change.hidden = Change how much was spent on electric vehicle charge-points
+
+evcpOnlyForSelfEmployment.title.individual = Did you only use these charge-points for your self-employment?
+evcpOnlyForSelfEmployment.title.agent = Did your client only use these charge-points for their self-employment?
+evcpOnlyForSelfEmployment.error.required.individual = Select yes if you only used the charge-points for your self-employment
+evcpOnlyForSelfEmployment.error.required.agent = Select yes if your client only used the charge-points for their self-employment
+evcpOnlyForSelfEmployment.no.individual = No, I used them for other things as well
+evcpOnlyForSelfEmployment.no.agent = No, my client used them for other things as well
+evcpOnlyForSelfEmployment.change.hidden = Change whether electric vehicle charge-points were used only for self-employment purposes
