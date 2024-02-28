@@ -1233,8 +1233,7 @@ otherExpensesCYA.title.agent = Check your client’s other expenses
 
 ########## Capital Allowances - Tailoring ##########
 
-common.capitalAllowances.useFirstYearAllowance.individual = You can do this by using the 100% first year allowance in one of two ways:
-common.capitalAllowances.useFirstYearAllowance.agent = They can do this by using the 100% first year allowance in one of two ways:
+common.capitalAllowances.useFirstYearAllowance = You can do this by using the 100% first year allowance in one of two ways:
 common.capitalAllowances.inThisTaxYear = All in this tax year
 common.capitalAllowances.multipleTaxYears = Across multiple tax years
 common.capitalAllowances.linkHref = https://www.gov.uk/work-out-capital-allowances
@@ -1422,7 +1421,7 @@ zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle
 ########## Capital Allowances - Electric Vehicle Charge Points ##########
 
 evcpAllowance.p1.individual =  You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
-evcpAllowance.p1.agent =  Your client can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
+evcpAllowance.p1.agent =  Your client can use the cost of any new and unused electric vehicle charge-points to reduce their taxable income.
 evcpAllowance.p2.individual =  Reduce your taxable income by the full cost of the electric vehicle charge-points.
 evcpAllowance.p2.agent =  Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
 evcpAllowance.p3.individual = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
