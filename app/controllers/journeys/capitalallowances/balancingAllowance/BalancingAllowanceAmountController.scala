@@ -34,15 +34,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BalancingAllowanceAmountController @Inject()(override val messagesApi: MessagesApi,
-                                                   navigator: CapitalAllowancesNavigator,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   service: SelfEmploymentService,
-                                                   formProvider: BalancingAllowanceAmountFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: BalancingAllowanceAmountView)(implicit ec: ExecutionContext)
+class BalancingAllowanceAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                    navigator: CapitalAllowancesNavigator,
+                                                    identify: IdentifierAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    service: SelfEmploymentService,
+                                                    formProvider: BalancingAllowanceAmountFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    view: BalancingAllowanceAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
