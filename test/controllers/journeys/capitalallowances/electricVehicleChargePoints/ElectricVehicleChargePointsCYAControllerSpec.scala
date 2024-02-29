@@ -46,7 +46,7 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
-        evcpAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
+        EvcpAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
         ChargePointTaxReliefSummary.row(userAnswers, taxYear, businessId, userType).value,
         AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value,
         EvcpOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value

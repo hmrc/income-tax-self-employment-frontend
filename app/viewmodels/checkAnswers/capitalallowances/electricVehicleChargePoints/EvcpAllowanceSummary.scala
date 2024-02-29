@@ -27,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object evcpAllowanceSummary {
+object EvcpAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers

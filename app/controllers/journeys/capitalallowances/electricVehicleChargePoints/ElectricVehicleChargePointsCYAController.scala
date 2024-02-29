@@ -49,7 +49,7 @@ class ElectricVehicleChargePointsCYAController @Inject() (override val messagesA
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            evcpAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            EvcpAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ChargePointTaxReliefSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             AmountSpentOnEvcpSummary.row(request.userAnswers, taxYear, businessId),
             EvcpOnlyForSelfEmploymentSummary.row(request.userAnswers, taxYear, businessId, request.userType),
