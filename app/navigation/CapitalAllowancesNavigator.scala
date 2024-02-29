@@ -27,6 +27,7 @@ import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployme
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
+import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
@@ -168,6 +169,18 @@ class CapitalAllowancesNavigator @Inject() {
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
+    case BalancingAllowancePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(BalancingAllowancePage, Some(businessId)) match {
+              case Some(true) =>
+                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode) //TODO: change to balancing allowance amount page
+              case Some(false) =>
+                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode) //TODO: change to balancing allowance CYA
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
@@ -185,6 +198,9 @@ class CapitalAllowancesNavigator @Inject() {
 
     case AmountSpentOnEvcpPage | EvcpOnlyForSelfEmploymentPage | EvcpUseOutsideSEPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+
+    case BalancingAllowancePage =>
+      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()

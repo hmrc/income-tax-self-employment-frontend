@@ -1469,3 +1469,26 @@ taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% f
 taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
 taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
 
+########## Capital Allowances - Balancing Allowance ##########
+
+balancingAllowance.title = Balancing Allowance
+balancingAllowance.p1.individual = You take balancing allowances off your net profits.
+balancingAllowance.p1.agent = You take balancing allowances off your client’s net profits.
+balancingAllowance.p2.individual = If you sell or give away business items, before you work out your allowances, in your writing down allowances you need to deduct from the relevant pool:
+balancingAllowance.p2.agent = If you sell or give away business items, before you work out your allowances, in your writing down allowances you need to deduct from the relevant pool:
+balancingAllowance.p3.individual = the amount you received for the sale
+balancingAllowance.p3.agent = the amount your client received for the sale
+balancingAllowance.p4.individual = the market value of the goods that you keep or give away
+balancingAllowance.p4.agent = the market value of the goods that your client keep or give away
+balancingAllowance.p5.individual = You can get a balancing allowance in a single asset pool at any time, when you sell or dispose of the item that is in it.
+balancingAllowance.p5.agent = Your client can get a balancing allowance in a single asset pool at any time, when they sell or dispose of the item that is in it.
+balancingAllowance.p6.individual = You only get a balancing allowance in the main rate (18%) or special rate (6%) pool when your business ceases.
+balancingAllowance.p6.agent = Your client only gets a balancing allowance in the main rate (18%) or special rate (6%) pool when their business ceases.
+balancingAllowance.p7.read = Read more about
+balancingAllowance.p7.link = short and long-life assets and balancing charges
+balancingAllowance.p7.href = https://www.gov.uk/government/publications/capital-allowances-and-balancing-charges-hs252-self-assessment-helpsheet/hs252-capital-allowances-and-balancing-charges-2023#short-and-long-life-assets
+balancingAllowance.p7.tab = (opens in a new tab)
+balancingAllowance.subHeading.individual = Do you have a balancing allowance to report?
+balancingAllowance.subHeading.agent = Does your client have a balancing allowance to report?
+balancingAllowance.error.required.individual = Select yes if you have a balancing allowance to report
+balancingAllowance.error.required.agent = Select yes if your client has a balancing allowance to report
