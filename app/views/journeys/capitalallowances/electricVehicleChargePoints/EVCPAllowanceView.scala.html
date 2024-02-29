@@ -39,21 +39,15 @@
     @heading(messages("selectCapitalAllowances.electricVehicleChargepoint"), None, extraClasses = "no-padding-top")
 
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"evcpAllowance.p1.$userType")</p>
-        <p>@messages(s"common.capitalAllowances.useFirstYearAllowance")</p>
-        <p>
-            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</div>
-            <br>
-            @messages(s"evcpAllowance.p2.$userType")
-        </p>
-        <p>
-            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</div>
-            <br>
-            @messages(s"evcpAllowance.p3.$userType")
-            <a href="@messages("common.capitalAllowances.linkHref")" class="govuk-link">@messages("common.capitalAllowances.linkText")</a>
-            @messages("common.capitalAllowances.postLinkText")
-        </p>
+    <div class="govuk-!-margin-top-6">
+        <p class="govuk-body">@messages(s"evcpAllowance.p1.$userType")</p>
+        <p class="govuk-body">@messages(s"capitalAllowance.useFirstYearAllowance")</p>
+        <h1 class="govuk-heading-m">@messages("capitalAllowance.inThisTaxYear")</h1>
+        <p class="govuk-body">@messages(s"evcpAllowance.p2.$userType")</p>
+        <h1 class="govuk-heading-m">@messages("capitalAllowance.multipleTaxYears")</h1>
+        <p class="govuk-body">@messages(s"evcpAllowance.p3.$userType")
+        <a href="@messages("capitalAllowance.linkHref")" class="govuk-link">@messages("capitalAllowance.linkText")</a>
+        @messages("capitalAllowance.postLinkText")</p>
     </div>
 
     @formHelper(action = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

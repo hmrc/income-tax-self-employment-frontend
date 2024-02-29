@@ -16,29 +16,26 @@
 
 package viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
+import pages.capitalallowances.electricVehicleChargePoints.EvcpClaimAmount
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object EvcpAllowanceSummary {
+object EvcpHowMuchDoYouWantToClaimSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(EVCPAllowancePage, businessId.some)
-      .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
-          routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"evcpAllowance.subHeading.cya.$userType"),
-          "amountSpentOnEvcp.change.hidden",
-          rightTextAlign = true
-        )
-      }
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(EvcpClaimAmount, Some(businessId)) map { totalCost =>
+      buildRowBigDecimal(
+        totalCost,
+        routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, CheckMode),
+        messages(s"evcpHowMuchDoYouWantToClaim.subHeading.$userType"),
+        "evcpHowMuchDoYouWantToClaim.change.hidden"
+      )
+    }
+
 }

@@ -24,7 +24,7 @@ import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
+import pages.capitalallowances.electricVehicleChargePoints._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -80,7 +80,13 @@ class EVCPAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
       List(
-        // TODO: clear claiming allowance, useOutsideSE, selfEmploymentUSe, chargePointAmount and tax relief pages
+        ChargePointTaxReliefPage,
+        AmountSpentOnEvcpPage,
+        EvcpOnlyForSelfEmploymentPage,
+        EvcpUseOutsideSEPage,
+        EvcpUseOutsideSEPercentagePage,
+        EvcpHowMuchDoYouWantToClaimPage,
+        EvcpClaimAmount
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))

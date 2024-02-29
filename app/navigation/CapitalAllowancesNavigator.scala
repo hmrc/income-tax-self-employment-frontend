@@ -40,6 +40,8 @@ class CapitalAllowancesNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => TaxYear => BusinessId => Call = {
 
+    // *** Tailoring ***
+
     case ClaimCapitalAllowancesPage =>
       userAnswers =>
         taxYear =>
@@ -51,7 +53,12 @@ class CapitalAllowancesNavigator @Inject() {
             }
 
     case SelectCapitalAllowancesPage =>
-      _ => taxYear => businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+      _ =>
+        taxYear =>
+          businessId =>
+            tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+
+        // *** Zero Emission Cars ***
 
     case ZeroEmissionCarsPage =>
       userAnswers =>
@@ -93,7 +100,12 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
     case ZecHowMuchDoYouWantToClaimPage =>
-      _ => taxYear => businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+      _ =>
+        taxYear =>
+          businessId =>
+            zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+
+        // *** Zero Emission Goods Vehicles ***
 
     case ZeroEmissionGoodsVehiclePage =>
       userAnswers =>
@@ -120,7 +132,24 @@ class CapitalAllowancesNavigator @Inject() {
             }
 
     case ZegvTotalCostOfVehiclePage =>
-      _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+      _ =>
+        taxYear =>
+          businessId =>
+            zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+
+        // *** Electric Vehicle Charge Points ***
+
+    case EVCPAllowancePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(EVCPAllowancePage, Some(businessId)) match {
+              case Some(true) =>
+                electricVehicleChargePoints.routes.ChargePointTaxReliefController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) =>
+                electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case ChargePointTaxReliefPage =>
       userAnswers =>
@@ -128,11 +157,7 @@ class CapitalAllowancesNavigator @Inject() {
           businessId =>
             userAnswers.get(ChargePointTaxReliefPage, Some(businessId)) match {
               case Some(true) =>
-                electricVehicleChargePoints.routes.ChargePointTaxReliefController.onPageLoad(
-                  taxYear,
-                  businessId,
-                  NormalMode
-                ) // TODO: SASS-7434 change to electric vehicle charge points amount page
+                electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(false) =>
                 electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
@@ -147,26 +172,18 @@ class CapitalAllowancesNavigator @Inject() {
           businessId =>
             userAnswers.get(EvcpOnlyForSelfEmploymentPage, Some(businessId)) match {
               case Some(EvcpOnlyForSelfEmployment.Yes) =>
-                electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+                electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(EvcpOnlyForSelfEmployment.No) =>
                 electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
     case EvcpUseOutsideSEPage =>
-      _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
+      _ =>
+        taxYear => businessId => electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
-    case EVCPAllowancePage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(EVCPAllowancePage, Some(businessId)) match {
-              case Some(true) =>
-                electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(false) =>
-                electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
+    case EvcpHowMuchDoYouWantToClaimPage =>
+      _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -183,7 +200,8 @@ class CapitalAllowancesNavigator @Inject() {
     case ZeroEmissionGoodsVehiclePage | ZegvAllowancePage | ZegvTotalCostOfVehiclePage =>
       _ => taxYear => businessId => zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
 
-    case AmountSpentOnEvcpPage | EvcpOnlyForSelfEmploymentPage | EvcpUseOutsideSEPage =>
+    case EVCPAllowancePage | ChargePointTaxReliefPage | AmountSpentOnEvcpPage | EvcpOnlyForSelfEmploymentPage | EvcpUseOutsideSEPage |
+        EvcpHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
