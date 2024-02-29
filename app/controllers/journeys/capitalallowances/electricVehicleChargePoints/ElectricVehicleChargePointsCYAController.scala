@@ -16,12 +16,13 @@
 
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.journeys
 import controllers.journeys.capitalallowances.electricVehicleChargePoints
 import models.NormalMode
 import models.common._
 import models.journeys.Journey.CapitalAllowancesElectricVehicleChargePoints
+import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,20 +33,23 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ElectricVehicleChargePointsCYAController @Inject() (override val messagesApi: MessagesApi,
                                                           identify: IdentifierAction,
                                                           getAnswers: DataRetrievalAction,
+                                                          getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                           requireAnswers: DataRequiredAction,
                                                           val controllerComponents: MessagesControllerComponents,
-                                                          view: CheckYourAnswersView)
+                                                          view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen getJourneyAnswers[ElectricVehicleChargePointsAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesElectricVehicleChargePoints)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(

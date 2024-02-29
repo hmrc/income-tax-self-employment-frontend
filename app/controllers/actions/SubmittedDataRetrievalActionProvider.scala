@@ -22,6 +22,7 @@ import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
@@ -75,8 +76,9 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-      zecUpdated <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-    } yield TaskListWithRequest(taskList, zecUpdated)
+      zecUpdated  <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](taxYear, businesses, zecUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+    } yield TaskListWithRequest(taskList, evcpUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
