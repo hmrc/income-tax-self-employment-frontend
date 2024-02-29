@@ -15,7 +15,7 @@
  *@
 
 @import models.journeys.capitalallowances.ZecAllowance
-@import controllers.journeys.capitalallowances.zeroEmissionCars.routes
+@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -30,38 +30,47 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selectCapitalAllowances.zeroEmissionCar"))) {
+@layout(pageTitle = title(form, messages("selectCapitalAllowances.electricVehicleChargepoint"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("selectCapitalAllowances.zeroEmissionCar"), None, extraClasses = "no-padding-top")
+    @heading(messages("selectCapitalAllowances.electricVehicleChargepoint"), None, extraClasses = "no-padding-top")
 
 
     <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"zecAllowance.p1.$userType")</p>
+        <p>@messages(s"evcpAllowance.p1.$userType")</p>
         <p>@messages(s"common.capitalAllowances.useFirstYearAllowance")</p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</span><br>
-            @messages(s"zecAllowance.p3.$userType")
+            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.inThisTaxYear")</div>
+            <br>
+            @messages(s"evcpAllowance.p2.$userType")
         </p>
         <p>
-            <span class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</span><br>
-            @messages(s"zecAllowance.p4.$userType")
+            <div class="govuk-!-font-weight-bold">@messages("common.capitalAllowances.multipleTaxYears")</div>
+            <br>
+            @messages(s"evcpAllowance.p3.$userType")
             <a href="@messages("common.capitalAllowances.linkHref")" class="govuk-link">@messages("common.capitalAllowances.linkText")</a>
             @messages("common.capitalAllowances.postLinkText")
         </p>
     </div>
 
-    @formHelper(action = routes.ZecAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"zeroEmission.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZecAllowance.options
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <label class="govuk-label govuk-label--m">
+                                ${messages(s"evcpAllowance.subHeading.$userType")}
+                            </label>
+                        </div>
+                        """
+                ))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 
