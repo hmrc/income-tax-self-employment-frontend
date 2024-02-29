@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.{EvcpHowMuchDoYouWantToClaim, EvcpOnlyForSelfEmployment, EvcpUseOutsideSE}
+import models.journeys.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -33,6 +33,8 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
+      "evcpAllowance"               -> true,
+      "chargePointTaxRelief"        -> true,
       "amountSpentOnEvcp"           -> 400.00,
       "evcpOnlyForSelfEmployment"   -> EvcpOnlyForSelfEmployment.No.toString,
       "evcpUsedOutsideSE"           -> EvcpUseOutsideSE.Fifty.toString,
@@ -48,6 +50,8 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
+        EvcpAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
+        ChargePointTaxReliefSummary.row(userAnswers, taxYear, businessId, userType).value,
         AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId).value,
         EvcpOnlyForSelfEmploymentSummary.row(userAnswers, taxYear, businessId, userType).value,
         EvcpUseOutsideSESummary.row(userAnswers, taxYear, businessId, userType).value,

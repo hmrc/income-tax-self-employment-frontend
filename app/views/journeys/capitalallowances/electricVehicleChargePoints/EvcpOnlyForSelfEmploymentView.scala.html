@@ -41,7 +41,8 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"evcpOnlyForSelfEmployment.title.$userType"))
-                .asPageHeading(size = Large),
+                .asPageHeading(size = Large)
+                .withCssClass("govuk-!-margin-bottom-6"),
                 items  = EvcpOnlyForSelfEmployment.options(userType)
             )
         )

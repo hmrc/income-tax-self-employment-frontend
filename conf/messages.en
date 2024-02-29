@@ -385,6 +385,8 @@ expenses.error.overMax = The amount must be less than £100,000,000,000
 expenses.howWeCalculatedThis = How we calculated this:
 expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
 expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+expenses.false.cya = No
+expenses.true.cya = Yes
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -1246,6 +1248,12 @@ capitalAllowance.p2.individual = You might want to use a lower amount if you’r
 capitalAllowance.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
 capitalAllowance.p3 = You should enter any remaining amounts in the writing down allowances section.
 capitalAllowance.fullCost = The full cost (£{0})
+capitalAllowance.useFirstYearAllowance = You can do this by using the 100% first year allowance in one of two ways:
+capitalAllowance.inThisTaxYear = All in this tax year
+capitalAllowance.multipleTaxYears = Across multiple tax years
+capitalAllowance.linkHref = https://www.gov.uk/work-out-capital-allowances
+capitalAllowance.linkText = ‘writing down’ allowances
+capitalAllowance.postLinkText =  (opens in new tab) on the balance for this and future tax years.
 
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
@@ -1311,17 +1319,10 @@ capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 
-zeroEmission.useFirstYearAllowance.individual = You can do this by using the 100% first year allowance in one of two ways:
-zeroEmission.useFirstYearAllowance.agent = They can do this by using the 100% first year allowance in one of two ways:
-zeroEmission.inThisTaxYear = All in this tax year
-zeroEmission.multipleTaxYears = Across multiple tax years
-zeroEmission.linkHref = https://www.gov.uk/work-out-capital-allowances
-zeroEmission.linkText = ‘writing down’ allowances
-zeroEmission.postLinkText =  (opens in new tab) on the balance for this and future tax years.
 zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
 zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
-zeroEmission.error.required.agent = Select yes if your client wants to use all your 100% first year allowance
+zeroEmission.error.required.agent = Select yes if your client wants to use all their 100% first year allowance
 zeroEmission.change.hidden = Change whether to use the 100% first year allowances
 
 zecUsedForWork.p1.individual = For a zero-emission car, you can claim:
@@ -1421,6 +1422,31 @@ zegvTotalCostOfVehicle.error.required = Enter the total cost of the vehicle in p
 zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle
 
 ########## Capital Allowances - Electric Vehicle Charge Points ##########
+
+evcpAllowance.p1.individual =  You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
+evcpAllowance.p1.agent =  Your client can use the cost of any new and unused electric vehicle charge-points to reduce their taxable income.
+evcpAllowance.p2.individual =  Reduce your taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p2.agent =  Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p3.individual = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
+evcpAllowance.p3.agent = Claim part of the cost of the charge-points by using this allowance for this tax year. They can then use
+evcpAllowance.subHeading.individual = Did you buy and install any new and unused electric vehicle charge-points?
+evcpAllowance.subHeading.agent = Did your client buy and install any new and unused electric vehicle charge-points?
+evcpAllowance.subHeading.cya.individual = Did you buy and install new and unused electric vehicle charge-points for work vehicles?
+evcpAllowance.subHeading.cya.agent = Did your client buy and install new and unused electric vehicle charge-points for work vehicles?
+evcpAllowance.error.required.individual = Select yes if you bought and installed new and unused electric vehicle charge-point for work vehicles
+evcpAllowance.error.required.agent = Select yes if your client bought and installed new and unused electric vehicle charge-point for work vehicles
+evcpAllowance.change.hidden = Change whether any new and unused electric vehicle charge-points were bought and installed
+
+taxReliefChargePoints.title = Tax relief on charge-points
+taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
+taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
+taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
+taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
+taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.change.hidden = Change whether to use the 100% first year allowance
 
 amountSpentOnEvcp.title.individual = How much did you spend on electric vehicle charge-points, in pounds?
 amountSpentOnEvcp.title.agent = How much did your client spend on electric vehicle charge-points, in pounds?
