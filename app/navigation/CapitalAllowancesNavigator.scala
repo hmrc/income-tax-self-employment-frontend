@@ -175,9 +175,17 @@ class CapitalAllowancesNavigator @Inject() {
           businessId =>
             userAnswers.get(BalancingAllowancePage, Some(businessId)) match {
               case Some(true) =>
-                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode) //TODO: change to balancing allowance amount page
+                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(
+                  taxYear,
+                  businessId,
+                  NormalMode
+                ) // TODO: change to balancing allowance amount page
               case Some(false) =>
-                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode) //TODO: change to balancing allowance CYA
+                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(
+                  taxYear,
+                  businessId,
+                  NormalMode
+                ) // TODO: change to balancing allowance CYA
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 

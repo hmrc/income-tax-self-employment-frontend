@@ -17,11 +17,11 @@
 package viewmodels.checkAnswers.capitalallowances.balancingAllowance
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
+import controllers.journeys.capitalallowances.balancingAllowance.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
+import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
@@ -31,13 +31,13 @@ object BalancingAllowanceSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(EVCPAllowancePage, businessId.some)
+      .get(BalancingAllowancePage, businessId.some)
       .map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
-          routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"evcpAllowance.subHeading.$userType"),
-          "amountSpentOnEvcp.change.hidden",
+          routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"balancingAllowance.subHeading.$userType"),
+          "balancingAllowance.change.hidden",
           rightTextAlign = true
         )
       }

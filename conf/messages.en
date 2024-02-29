@@ -1492,3 +1492,4 @@ balancingAllowance.subHeading.individual = Do you have a balancing allowance to 
 balancingAllowance.subHeading.agent = Does your client have a balancing allowance to report?
 balancingAllowance.error.required.individual = Select yes if you have a balancing allowance to report
 balancingAllowance.error.required.agent = Select yes if your client has a balancing allowance to report
+balancingAllowance.change.hidden = Change if any balancing allowance need to be reported
