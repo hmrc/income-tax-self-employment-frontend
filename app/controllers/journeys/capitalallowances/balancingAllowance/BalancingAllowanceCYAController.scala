@@ -33,12 +33,12 @@ import views.html.standard.CheckYourAnswersView
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BalancingAllowanceCYAController @Inject()(override val messagesApi: MessagesApi,
-                                                identify: IdentifierAction,
-                                                getAnswers: DataRetrievalAction,
-                                                requireAnswers: DataRequiredAction,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: CheckYourAnswersView)
+class BalancingAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                 identify: IdentifierAction,
+                                                 getAnswers: DataRetrievalAction,
+                                                 requireAnswers: DataRequiredAction,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: CheckYourAnswersView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

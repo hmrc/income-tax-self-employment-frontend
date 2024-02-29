@@ -174,7 +174,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesBalancingAllowance extends Journey("capital-allowances-balancing-allowance") {
-    override val pageKeys: List[PageName] = List() //TODO add balancing allowance and amount pages
+    override val pageKeys: List[PageName] = List() // TODO add balancing allowance and amount pages
   }
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
