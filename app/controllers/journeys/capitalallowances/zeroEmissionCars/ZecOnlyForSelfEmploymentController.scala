@@ -85,8 +85,8 @@ class ZecOnlyForSelfEmploymentController @Inject() (override val messagesApi: Me
       case No  => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(ZecOnlyForSelfEmploymentPage, businessId) match {
-      case Some(Yes) if currentAnswer == No => NormalMode
-      case _                                => mode
+      case Some(previousAnswer) if currentAnswer != previousAnswer => NormalMode
+      case _                                                       => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

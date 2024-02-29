@@ -19,12 +19,12 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import forms.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSEFormProvider
-import forms.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSEFormProvider.EvcpUseOutsideSEFormModel
+import forms.capitalallowances.electricVehicleChargePoints.EvcpHowMuchDoYouWantToClaimFormProvider
+import forms.capitalallowances.electricVehicleChargePoints.EvcpHowMuchDoYouWantToClaimFormProvider.EvcpHowMuchDoYouWantToClaimModel
 import models.NormalMode
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSE
+import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpHowMuchDoYouWantToClaim
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.capitalallowances.electricVehicleChargePoints._
@@ -36,23 +36,32 @@ import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.services.SelfEmploymentServiceStub
-import views.html.journeys.capitalallowances.electricVehicleChargePoints.EvcpUseOutsideSEView
+import views.html.journeys.capitalallowances.electricVehicleChargePoints.EvcpHowMuchDoYouWantToClaimView
 
-class EvcpUseOutsideSEControllerSpec extends ControllerSpec {
+class EvcpHowMuchDoYouWantToClaimControllerSpec extends ControllerSpec {
 
-  private def onPageLoadRoute: String = routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode).url
-  private def onSubmitRoute: String   = routes.EvcpUseOutsideSEController.onSubmit(taxYear, businessId, NormalMode).url
-  private def onwardRoute: Call       = routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+  private def onPageLoadRoute: String = routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode).url
+  private def onSubmitRoute: String   = routes.EvcpHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, NormalMode).url
+  private def onwardRoute: Call       = routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
-  private val validRadioAnswer: EvcpUseOutsideSE = EvcpUseOutsideSE.DifferentAmount
-  private val validAmount: Int                   = 20
+  private val fullCost: BigDecimal                          = 5000.00
+  private val validRadioAnswer: EvcpHowMuchDoYouWantToClaim = EvcpHowMuchDoYouWantToClaim.LowerAmount
+  private val validCurrencyAmount: BigDecimal               = 4000
+  private val percentage: Int                               = 10
+  private val expectedFullCost: BigDecimal                  = BigDecimal(4500.00).setScale(0)
 
   private def baseAnswers: UserAnswers = emptyUserAnswersAccrual
-  private def pageAnswers: UserAnswers = baseAnswers
-    .set(EvcpUseOutsideSEPage, validRadioAnswer, businessId.some)
+    .set(AmountSpentOnEvcpPage, fullCost, businessId.some)
     .success
     .value
-    .set(EvcpUseOutsideSEPercentagePage, validAmount, businessId.some)
+    .set(EvcpUseOutsideSEPercentagePage, percentage, businessId.some)
+    .success
+    .value
+  private def pageAnswers: UserAnswers = baseAnswers
+    .set(EvcpHowMuchDoYouWantToClaimPage, validRadioAnswer, businessId.some)
+    .success
+    .value
+    .set(EvcpClaimAmount, validCurrencyAmount, businessId.some)
     .success
     .value
 
@@ -62,18 +71,18 @@ class EvcpUseOutsideSEControllerSpec extends ControllerSpec {
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
-  private def form: Form[EvcpUseOutsideSEFormModel]     = EvcpUseOutsideSEFormProvider(Individual)
-  private def validFormModel: EvcpUseOutsideSEFormModel = EvcpUseOutsideSEFormModel(validRadioAnswer, validAmount)
+  private def form: Form[EvcpHowMuchDoYouWantToClaimModel]     = EvcpHowMuchDoYouWantToClaimFormProvider(Individual, fullCost)
+  private def validFormModel: EvcpHowMuchDoYouWantToClaimModel = EvcpHowMuchDoYouWantToClaimModel(validRadioAnswer, validCurrencyAmount)
 
   private def stubbedService: SelfEmploymentServiceStub       = SelfEmploymentServiceStub(saveAnswerResult = pageAnswers)
   private def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadRoute)
 
-  private def expectedView(expectedForm: Form[EvcpUseOutsideSEFormModel], scenario: TestScenario)(implicit
+  private def expectedView(expectedForm: Form[EvcpHowMuchDoYouWantToClaimModel], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[EvcpUseOutsideSEView]
-    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+    val view = application.injector.instanceOf[EvcpHowMuchDoYouWantToClaimView]
+    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, expectedFullCost).toString()
   }
 
   "onPageLoad" - {
@@ -114,8 +123,8 @@ class EvcpUseOutsideSEControllerSpec extends ControllerSpec {
       "redirect to the next page" in new TestScenario(Individual, answers = pageAnswers.some, service = stubbedService) {
         running(application) {
           val request = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(
-            ("radioPercentage", validRadioAnswer.toString),
-            ("optDifferentAmount", validAmount.toString)
+            ("howMuchDoYouWantToClaim", validRadioAnswer.toString),
+            ("totalCost", validCurrencyAmount.toString)
           )
           val result = route(application, request).value
 
@@ -128,11 +137,11 @@ class EvcpUseOutsideSEControllerSpec extends ControllerSpec {
       "return a 400 and pass the errors to the view" in new TestScenario(Individual, answers = baseAnswers.some, service = stubbedService) {
         running(application) {
           val request = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(
-            ("radioPercentage", "invalid value"),
-            ("optDifferentAmount", "invalid value")
+            ("howMuchDoYouWantToClaim", "invalid value"),
+            ("totalCost", "invalid value")
           )
           val result    = route(application, request).value
-          val boundForm = form.bind(Map("radioPercentage" -> "invalid value", "optDifferentAmount" -> "invalid value"))
+          val boundForm = form.bind(Map("howMuchDoYouWantToClaim" -> "invalid value", "totalCost" -> "invalid value"))
 
           status(result) shouldBe BAD_REQUEST
           contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)

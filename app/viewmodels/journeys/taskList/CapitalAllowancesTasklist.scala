@@ -110,7 +110,7 @@ object CapitalAllowancesTasklist {
         )(journeyStatus)
       case CapitalAllowancesElectricVehicleChargePoints =>
         determineJourneyStartOrCyaUrl(
-          capitalallowances.electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???

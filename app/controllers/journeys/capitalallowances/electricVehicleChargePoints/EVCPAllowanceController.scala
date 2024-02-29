@@ -16,12 +16,11 @@
 
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmploymentFormProvider
+import forms.capitalallowances.electricVehicleChargePoints.EVCPAllowanceFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment._
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -33,21 +32,21 @@ import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmploymentView
+import views.html.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowanceView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: MessagesApi,
-                                                     navigator: CapitalAllowancesNavigator,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     service: SelfEmploymentService,
-                                                     formProvider: EvcpOnlyForSelfEmploymentFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     view: EvcpOnlyForSelfEmploymentView)(implicit ec: ExecutionContext)
+class EVCPAllowanceController @Inject() (override val messagesApi: MessagesApi,
+                                         navigator: CapitalAllowancesNavigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         service: SelfEmploymentService,
+                                         formProvider: EVCPAllowanceFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: EVCPAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -55,7 +54,7 @@ class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(EvcpOnlyForSelfEmploymentPage, Some(businessId))
+        .get(EVCPAllowancePage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
@@ -70,23 +69,32 @@ class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, EvcpOnlyForSelfEmploymentPage)
-            } yield Redirect(navigator.nextPage(EvcpOnlyForSelfEmploymentPage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, EVCPAllowancePage)
+            } yield Redirect(navigator.nextPage(EVCPAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: EvcpOnlyForSelfEmployment,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(EvcpUseOutsideSEPage, EvcpUseOutsideSEPercentagePage)
+    val pagesToBeCleared: List[Settable[_]] =
+      List(
+        ChargePointTaxReliefPage,
+        AmountSpentOnEvcpPage,
+        EvcpOnlyForSelfEmploymentPage,
+        EvcpUseOutsideSEPage,
+        EvcpUseOutsideSEPercentagePage,
+        EvcpHowMuchDoYouWantToClaimPage,
+        EvcpClaimAmount
+      )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case No  => Future(request.userAnswers)
+      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case true  => Future(request.userAnswers)
     }
-    val redirectMode = request.getValue(EvcpOnlyForSelfEmploymentPage, businessId) match {
-      case Some(previousAnswer) if currentAnswer != previousAnswer => NormalMode
-      case _                                                       => mode
+    val redirectMode = request.getValue(EVCPAllowancePage, businessId) match {
+      case Some(false) if currentAnswer == true => NormalMode
+      case _                                    => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
