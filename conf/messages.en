@@ -385,6 +385,8 @@ expenses.error.overMax = The amount must be less than £100,000,000,000
 expenses.howWeCalculatedThis = How we calculated this:
 expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
 expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
+expenses.false.cya = No
+expenses.true.cya = Yes
 
 ## Expenses Categories
 expensesCategories.subheading = Allowable and disallowable expenses
@@ -1313,7 +1315,7 @@ zeroEmission.postLinkText =  (opens in new tab) on the balance for this and futu
 zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
 zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
-zeroEmission.error.required.agent = Select yes if your client wants to use all your 100% first year allowance
+zeroEmission.error.required.agent = Select yes if your client wants to use all their 100% first year allowance
 zeroEmission.change.hidden = Change whether to use the 100% first year allowances
 
 zecUsedForWork.p1.individual = For a zero-emission car, you can claim:
@@ -1444,3 +1446,15 @@ evcpUseOutsideSE.title.agent = How much did your client use the charge-points ou
 evcpUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the charge-points outside your self-employment
 evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
 evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
+
+
+taxReliefChargePoints.title = Tax relief on charge-points
+taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
+taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
+taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
+taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
+taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+
