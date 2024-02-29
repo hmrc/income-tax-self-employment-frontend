@@ -27,6 +27,6 @@ class EVCPAllowanceFormProviderSpec
 
   override def formProvider(userType: UserType): Form[Boolean] = new EVCPAllowanceFormProvider()(userType)
 
-  override def requiredErrorKey: String     = "evcpAllowance.error.required"
+  override def requiredErrorKey: String = "evcpAllowance.error.required"
 
 }
