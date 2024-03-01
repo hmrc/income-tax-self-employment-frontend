@@ -17,9 +17,16 @@
 @import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import play.twirl.api.HtmlFormat
+
+@import views.html.components.ConditionalRadio
+@import viewmodels.components.ConditionalRadioWithOptions
+@import viewmodels.components.RadioIdWithLabel
+@import play.twirl.api.Html
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
+        conditionalRadio: ConditionalRadio,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
@@ -27,27 +34,33 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, fullCostAmount: BigDecimal)(implicit request: Request[_], messages: Messages)
 
-@formHasErrors = @{form.errors.nonEmpty}
+@formHasErrors = @{
+    form.errors.nonEmpty
+}
 @missingRadioError = @{
-    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")),List()))
+    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")), List()))
 }
 @missingRadioErrorMsg = @{
-    if (missingRadioError) {
-        <p class="govuk-error-message">
-        <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-        {messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")}
-        </p>
+    if(missingRadioError) {
+            <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")}
+            </p>
     }
 }
-@amountInputErrors = @{ formHasErrors && !missingRadioError }
+@amountInputErrors = @{
+    formHasErrors && !missingRadioError
+}
+
 @amountInputErrorMsg = @{
-        if (amountInputErrors) {
-                <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>
-                {messages(form.errors.head.messages.headOption.getOrElse(""))}
-                </p>
-        }
+    if(amountInputErrors) {
+        val errorMessage: String = <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(form.errors.head.messages.headOption.getOrElse(""))}
+            </p>.toString()
+        Html(errorMessage)
+    } else {
+        HtmlFormat.empty
     }
+}
 
 @layout(pageTitle = title(form, messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
 
@@ -60,68 +73,79 @@
     <div class="govuk-body">
         <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p1.$userType")</p>
         <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p2.$userType")</p>
+        <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p3.$userType")</p>
     </div>
 
     @formHelper(action = routes.ZegvHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-            <div class="govuk-form-group @{ if (missingRadioError) "govuk-form-group--error" else "" }">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">@messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
-                    </legend>
-                    <div class="govuk-hint">@{messages("ZegvHowMuchDoYouWantToClaim.hint")}</div>
+        <div class="govuk-form-group @{
+            if(missingRadioError) "govuk-form-group--error" else ""
+        }">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h3 class="govuk-fieldset__heading">@messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
+                </legend>
 
-                    @missingRadioErrorMsg
+                @missingRadioErrorMsg
 
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" name="howMuchDoYouWantToClaim" id="fullCost" type="radio" value="fullCost" @{
-                                if(form("howMuchDoYouWantToClaim").value.contains("fullCost")) "checked" else ""
-                            }>
-                            <label class="govuk-label govuk-radios__label" for="fullCost">
-                            @messages("ZegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount)
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" name="howMuchDoYouWantToClaim" id="lowerAmount" type="radio"
-                            value="lowerAmount" data-aria-controls="conditional-lower-amount" @{
-                                if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) "checked" else ""
-                            }>
-                            <label class="govuk-label govuk-radios__label" for="lowerAmount">
-                            @messages("common.lowerAmount")
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-lower-amount">
-                            <div class="govuk-form-group@{ if (amountInputErrors) "--error" else "" }">
-                                <label class="govuk-label" for="totalCost">@messages("site.enterTheAmount")</label>
-                                @amountInputErrorMsg
-                                <div class="govuk-input__wrapper">
-                                    <div class="govuk-input__prefix" aria-hidden="true">@messages("site.pound")</div>
-                                    <input class="govuk-input@{ if (amountInputErrors) " govuk-input--error" else "" } govuk-input--width-10" id="totalCost" name="totalCost"
-                                    value="@{if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) form("totalCost").value else ""}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+                @conditionalRadio("howMuchDoYouWantToClaim", form, List(
+                    ConditionalRadioWithOptions("fullCost", messages("zegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount), None),
+                    ConditionalRadioWithOptions("lowerAmount", messages("common.lowerAmount"), Some(
+                        RadioIdWithLabel("totalCost", messages("site.enterTheAmount"), hasPound = true, amountInputErrorMsg)
+                    ))
+                ))
 
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+                @* <div class="govuk-radios" data-module="govuk-radios">*@
+                @* <div class="govuk-radios__item">*@
+                @* <input class="govuk-radios__input" id="fullCost" name="howMuchDoYouWantToClaim" type="radio" value="fullCost" data-aria-controls="conditional-contact"*@
+                @* @{*@
+                @* if(form("howMuchDoYouWantToClaim").value.contains("fullCost")) "checked" else ""*@
+                @* }*@
+                @* >*@
+                @* <label class="govuk-label govuk-radios__label" for="fullCost">*@
+                @* @messages("zegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount)*@
+                @* </label>*@
+                @* </div>*@
+                @* *@@* <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact">*@
+                @* *@@* <div class="govuk-form-group">*@
+                @* *@@* <label class="govuk-label" for="contact-by-email">*@
+                @* *@@* tbd*@
+                @* *@@* </label>*@
+                @* *@@* </div>*@
+                @* *@@* </div>*@
+                @* <div class="govuk-radios__item">*@
+                @* <input class="govuk-radios__input" id="lowerAmount" name="howMuchDoYouWantToClaim" type="radio" value="lowerAmount" data-aria-controls="conditional-contact-2"*@
+                @* @{*@
+                @* if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) "checked" else ""*@
+                @* }*@
+                @* >*@
+                @* <label class="govuk-label govuk-radios__label" for="lowerAmount">*@
+                @* A lower amount*@
+                @* </label>*@
+                @* </div>*@
+                @* <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact-2">*@
+                @* <div class="govuk-form-group">*@
+                @* <label class="govuk-label" for="contact-by-phone">*@
+                @* Enter the amount*@
+                @* </label>*@
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const submitButton = document.getElementsByClassName("govuk-button")[0];
-            const fullCost = document.getElementById("fullCost");
-            var lowerAmountInput = document.getElementById("totalCost");
+                @* @amountInputErrorMsg*@
+                @* <div class="govuk-input__wrapper">*@
+                @* <div class="govuk-input__prefix" aria-hidden="true">@messages("site.pound")</div>*@
+                @* <input class="govuk-input govuk-input--width-10" id="totalCost" name="totalCost"*@
+                @* value="@{*@
+                @* if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) form("totalCost").value else ""*@
+                @* }">*@
+                @* </div>*@
+                @* </div>*@
+                @* </div>*@
+                @* </div>*@
 
-            submitButton.addEventListener("click", function () {
-                if (fullCost.checked) {
-                    lowerAmountInput.value = @fullCostAmount.toString();
-                }
-            });
-        });
-    </script>
+            </fieldset>
+        </div>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }

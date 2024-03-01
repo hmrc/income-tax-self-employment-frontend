@@ -21,22 +21,24 @@ import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
+import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.{AnswerSummary, buildRowString}
 
-object ZegvTotalCostOfVehicleSummary extends AnswerSummary {
+object ZegvOnlyForSelfEmploymentSummary extends AnswerSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ZegvTotalCostOfVehiclePage, businessId.some)
+      .get(ZegvOnlyForSelfEmploymentPage, businessId.some)
       .map { answer =>
-        buildRowBigDecimal(
-          answer,
-          routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("zegvTotalCostOfVehicle.title"),
-          "zegvTotalCostOfVehicle.change.hidden"
+        buildRowString(
+          formatAnswer(answer.toString),
+          routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"zecOnlyForSelfEmployment.title.$userType"),
+          "zegvOnlyForSelfEmployment.change.hidden",
+          rightTextAlign = true
         )
       }
 }

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+package viewmodels.components
 
-import pages.OneQuestionPage
-
-object ZegvUseOutsideSEPercentagePage extends ZegvBasePage[Int] {
-  override def toString: String = "zegvUsedOutsideSEPercentage"
-}
+final case class ConditionalRadioWithOptions(id: String, label: String, conditional: Option[RadioIdWithLabel])

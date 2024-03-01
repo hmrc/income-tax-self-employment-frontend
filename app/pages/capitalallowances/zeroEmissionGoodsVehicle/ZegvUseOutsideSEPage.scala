@@ -19,6 +19,6 @@ package pages.capitalallowances.zeroEmissionGoodsVehicle
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE
 import pages.OneQuestionPage
 
-object ZegvUseOutsideSEPage extends OneQuestionPage[ZegvUseOutsideSE] {
+object ZegvUseOutsideSEPage extends ZegvBasePage[ZegvUseOutsideSE] {
   override def toString: String = "zegvUsedOutsideSE"
 }

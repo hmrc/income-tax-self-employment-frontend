@@ -24,10 +24,10 @@ import models.database.UserAnswers
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.{AnswerSummary, buildRowString}
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object ZegvAllowanceSummary {
+object ZegvAllowanceSummary extends AnswerSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers

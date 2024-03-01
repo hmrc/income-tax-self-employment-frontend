@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+package viewmodels.checkAnswers
 
-import pages.OneQuestionPage
+import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object ZegvUseOutsideSEPercentagePage extends ZegvBasePage[Int] {
-  override def toString: String = "zegvUsedOutsideSEPercentage"
+trait AnswerSummary {
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow]
 }

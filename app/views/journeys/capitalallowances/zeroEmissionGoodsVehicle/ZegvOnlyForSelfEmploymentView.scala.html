@@ -28,7 +28,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"zecOnlyForSelfEmployment.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zegvOnlyForSelfEmployment.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,10 +37,11 @@
     @formHelper(action = routes.ZegvOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoWithLabel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"zecOnlyForSelfEmployment.title.$userType"))
-                .asPageHeading(size = Large)
+                legend = LegendViewModel(messages(s"zegvOnlyForSelfEmployment.title.$userType")).asPageHeading(size = Large),
+                inline = false,
+                noLabel = s"zegvOnlyForSelfEmployment.no.$userType"
             )
         )
         @govukButton(

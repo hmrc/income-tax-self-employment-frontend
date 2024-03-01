@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+package viewmodels.components
 
-import pages.OneQuestionPage
+import play.twirl.api.Html
 
-object ZegvUseOutsideSEPercentagePage extends ZegvBasePage[Int] {
-  override def toString: String = "zegvUsedOutsideSEPercentage"
-}
+case class RadioIdWithLabel(id: String, label: String, hasPound: Boolean, inputErrorMsg: Html)

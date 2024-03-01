@@ -16,8 +16,18 @@
 
 package viewmodels.journeys
 
+import models.common._
+import models.database.UserAnswers
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.AnswerSummary
+import viewmodels.journeys.SummaryListCYA.summaryListOpt
+
+case class SummaryListCYA(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages) {
+  def mkSummaryList(rows: List[AnswerSummary]): SummaryList =
+    summaryListOpt(rows.map(_.row(userAnswers, taxYear, businessId, userType)))
+}
 
 object SummaryListCYA {
 

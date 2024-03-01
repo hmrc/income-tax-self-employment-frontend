@@ -1422,6 +1422,23 @@ zegvTotalCostOfVehicle.hint.agent = This is the price your client paid at the ti
 zegvTotalCostOfVehicle.error.required = Enter the total cost of the vehicle in pounds
 zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle
 
+zegvOnlyForSelfEmployment.title.individual = Did you only use the vehicle for your self-employment?
+zegvOnlyForSelfEmployment.title.agent = Did you only use the vehicle for your self-employment?
+zegvOnlyForSelfEmployment.no.individual = No, I used it for other things as well
+zegvOnlyForSelfEmployment.no.agent = No, my client used it for other things as well
+
+ZegvHowMuchDoYouWantToClaim.title = Claiming the allowance
+ZegvHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
+ZegvHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you're spreading the rest of the cost over future years.
+ZegvHowMuchDoYouWantToClaim.p3.individual = You should enter any remaining amounts in the ?writing down? allowances section.
+ZegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle?s cost do you want to claim under this 100% allowance?
+ZegvHowMuchDoYouWantToClaim.fullCost = The full amount
+zegvHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
+zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
+zegvHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
+zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
+
+
 ########## Capital Allowances - Electric Vehicle Charge Points ##########
 
 evcpAllowance.p1.individual =  You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.

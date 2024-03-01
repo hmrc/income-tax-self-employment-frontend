@@ -16,27 +16,26 @@
 
 package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvClaimAmount
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
 
-object ZegvTotalCostOfVehicleSummary extends AnswerSummary {
+object ZegvHowMuchDoYouWantToClaimSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(ZegvTotalCostOfVehiclePage, businessId.some)
-      .map { answer =>
-        buildRowBigDecimal(
-          answer,
-          routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("zegvTotalCostOfVehicle.title"),
-          "zegvTotalCostOfVehicle.change.hidden"
-        )
-      }
+  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(ZegvClaimAmount, Some(businessId)) map { totalCost =>
+      buildRowBigDecimal(
+        totalCost,
+        routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, CheckMode),
+        messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType"),
+        "zegvHowMuchDoYouWantToClaim.change.hidden"
+      )
+    }
+
 }

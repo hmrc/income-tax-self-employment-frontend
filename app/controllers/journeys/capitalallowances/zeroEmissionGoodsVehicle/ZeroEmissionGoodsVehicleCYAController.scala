@@ -47,12 +47,16 @@ class ZeroEmissionGoodsVehicleCYAController @Inject() (override val messagesApi:
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) { implicit request =>
       val summaryList =
-        SummaryListCYA.summaryListOpt(
+        SummaryListCYA(request.userAnswers, taxYear, businessId, request.userType).mkSummaryList(
           List(
-            ZeroEmissionGoodsVehicleSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            ZegvAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            ZegvTotalCostOfVehicleSummary.row(request.userAnswers, taxYear, businessId)
-          ))
+            ZeroEmissionGoodsVehicleSummary,
+            ZegvAllowanceSummary,
+            ZegvTotalCostOfVehicleSummary,
+            ZegvOnlyForSelfEmploymentSummary,
+            ZegvUseOutsideSESummary,
+            ZegvHowMuchDoYouWantToClaimSummary
+          )
+        )
 
       Ok(
         view(

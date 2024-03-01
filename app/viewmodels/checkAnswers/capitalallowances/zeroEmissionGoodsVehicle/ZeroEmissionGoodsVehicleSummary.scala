@@ -24,9 +24,9 @@ import models.database.UserAnswers
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBoolean
+import viewmodels.checkAnswers.{AnswerSummary, buildRowBoolean}
 
-object ZeroEmissionGoodsVehicleSummary {
+object ZeroEmissionGoodsVehicleSummary extends AnswerSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers

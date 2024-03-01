@@ -60,9 +60,9 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
         val totalCost               = request.getValue(ZegvClaimAmount, businessId)
         val filledForm = (howMuchDoYouWantToClaim, totalCost) match {
           case (Some(claim), Some(totalCost)) if claim == LowerAmount =>
-            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, totalCost))
+            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, Some(totalCost)))
           case (Some(claim), _) =>
-            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim))
+            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, None))
           case _ => formProvider
         }
 
@@ -75,7 +75,7 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
       def handleSuccess(answer: ZegvHowMuchDoYouWantToClaimModel, fullCost: BigDecimal): Future[Result] = {
         val totalCostOfCar: BigDecimal = answer.howMuchDoYouWantToClaim match {
           case FullCost    => fullCost
-          case LowerAmount => answer.totalCost
+          case LowerAmount => answer.totalCost.getOrElse(0)
         }
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZegvHowMuchDoYouWantToClaimPage, answer.howMuchDoYouWantToClaim, Some(businessId)))

@@ -19,13 +19,15 @@ package forms.capitalallowances.zeroEmissionGoodsVehicle
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim._
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
+import uk.gov.voa.play.form.ConditionalMappings._
 
 object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds {
 
-  case class ZegvHowMuchDoYouWantToClaimModel(howMuchDoYouWantToClaim: ZegvHowMuchDoYouWantToClaim, totalCost: BigDecimal = 0)
+  case class ZegvHowMuchDoYouWantToClaimModel(howMuchDoYouWantToClaim: ZegvHowMuchDoYouWantToClaim, totalCost: Option[BigDecimal])
 
   private val howMuchDoYouWantToClaim = "howMuchDoYouWantToClaim"
   private val totalCost               = "totalCost"
@@ -38,17 +40,17 @@ object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds
     val noDecimalsError     = "error.nonDecimal"
     val overMaxError        = "zegvHowMuchDoYouWantToClaim.error.overMax"
 
-    def validateRadio(): Mapping[ZegvHowMuchDoYouWantToClaim] = enumerable[ZegvHowMuchDoYouWantToClaim](messages(requiredError))
+    val validatedRadio = enumerable[ZegvHowMuchDoYouWantToClaim](messages(requiredError))
 
     def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, nonNumericError)
       .verifying(greaterThan(minimumValue, lessThanZeroError))
       .verifying(maximumValue(fullAmount, overMaxError))
       .verifying(regexpBigDecimal(noDecimalRegexp, noDecimalsError))
 
-    Form[ZegvHowMuchDoYouWantToClaimModel](
+    Form(
       mapping(
-        howMuchDoYouWantToClaim -> validateRadio(),
-        totalCost               -> validateAmount(fullAmount)
+        howMuchDoYouWantToClaim -> validatedRadio,
+        totalCost               -> mandatoryIf(isEqual(howMuchDoYouWantToClaim, "lowerAmount"), validateAmount(fullAmount))
       )(ZegvHowMuchDoYouWantToClaimModel.apply)(ZegvHowMuchDoYouWantToClaimModel.unapply)
     )
   }

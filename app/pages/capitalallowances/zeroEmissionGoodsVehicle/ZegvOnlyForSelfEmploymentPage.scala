@@ -23,7 +23,7 @@ import models.common._
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-object ZegvOnlyForSelfEmploymentPage extends OneQuestionPage[Boolean] {
+object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
   override def toString: String = "zegvOnlyForSelfEmployment"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
