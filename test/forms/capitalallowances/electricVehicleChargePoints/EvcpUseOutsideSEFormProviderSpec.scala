@@ -25,8 +25,8 @@ import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 class EvcpUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFieldBehaviours {
 
   implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), new DefaultMessagesApi())
-  private val maxPercentage           = 100
-  private val minPercentage           = 0
+  private val maxPercentage           = 99
+  private val minPercentage           = 1
   private val form                    = EvcpUseOutsideSEFormProvider(Individual)
   private val radioFieldName          = "radioPercentage"
   private val amountFieldName         = "optDifferentAmount"
