@@ -26,7 +26,7 @@ import queries.Settable
 object ZeroEmissionGoodsVehiclePage extends ZegvBasePage[Boolean] {
   override def toString: String = "zeroEmissionGoodsVehicle"
 
-  override val pagesToBeCleared: List[Settable[_]] =
+  override val dependentPagesWhenNo: List[Settable[_]] =
     List(
       ZegvAllowancePage,
       ZegvTotalCostOfVehiclePage,

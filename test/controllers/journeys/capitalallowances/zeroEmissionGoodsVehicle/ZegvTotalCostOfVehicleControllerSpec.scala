@@ -20,12 +20,10 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleView
 
@@ -37,17 +35,11 @@ class ZegvTotalCostOfVehicleControllerSpec
 
   lazy val onPageLoadRoute = routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.ZegvTotalCostOfVehicleController.onSubmit(taxYear, businessId, NormalMode).url
-
-  override val onwardRoute: Call = routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
-
-  override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
+  val onwardRoute: Call    = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
 
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
+  def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[ZegvTotalCostOfVehicleView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }

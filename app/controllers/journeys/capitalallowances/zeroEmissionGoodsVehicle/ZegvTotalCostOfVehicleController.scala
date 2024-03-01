@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvTotalCostOfVehicleController @Inject() (override val messagesApi: MessagesApi,
-                                                  navigator: CapitalAllowancesNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,

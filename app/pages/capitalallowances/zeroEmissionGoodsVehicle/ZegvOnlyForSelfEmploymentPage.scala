@@ -16,15 +16,20 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import pages.OneQuestionPage
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.NormalMode
 import models.common._
 import models.database.UserAnswers
 import play.api.mvc.Call
+import queries.Settable
 
 object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
   override def toString: String = "zegvOnlyForSelfEmployment"
+
+  override val dependentPagesWhenYes: List[Settable[_]] =
+    List(
+      ZegvUseOutsideSEPercentagePage
+    )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

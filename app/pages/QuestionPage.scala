@@ -32,7 +32,11 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
 
   def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
 
-  val pagesToBeCleared: List[Settable[_]] = Nil
+  /** Pages which needs to be cleared when No is selected in the main page */
+  val dependentPagesWhenNo: List[Settable[_]] = Nil
+
+  /** Pages which needs to be cleared when Yes is selected in the main page */
+  val dependentPagesWhenYes: List[Settable[_]] = Nil
 
   def standardPage: Call =
     standard.routes.JourneyRecoveryController.onPageLoad()
