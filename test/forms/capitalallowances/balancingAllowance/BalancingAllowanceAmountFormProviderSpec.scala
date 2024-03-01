@@ -22,13 +22,13 @@ import play.api.data.Form
 
 class BalancingAllowanceAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("BalancingAllowanceAmountFormProvider") {
 
-  private lazy val amount = 5623.50
+  private lazy val amount                                            = 5623.50
   override def getFormProvider(userType: UserType): Form[BigDecimal] = new BalancingAllowanceAmountFormProvider()(userType)
 
-  override lazy val requiredError: String = "balancingAllowanceAmount.error.required"
-  override lazy val nonNumericError: String = "error.nonNumeric"
+  override lazy val requiredError: String     = "balancingAllowanceAmount.error.required"
+  override lazy val nonNumericError: String   = "error.nonNumeric"
   override lazy val lessThanZeroError: String = "error.lessThanZero"
-  override lazy val overMaxError: String = "error.overMax"
-  override lazy val maximum: BigDecimal = amount
+  override lazy val overMaxError: String      = "error.overMax"
+  override lazy val maximum: BigDecimal       = amount
 
 }
