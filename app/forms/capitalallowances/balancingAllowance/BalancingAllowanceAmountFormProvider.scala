@@ -29,7 +29,6 @@ class BalancingAllowanceAmountFormProvider @Inject() extends Mappings with Money
       "value" -> currency(s"balancingAllowanceAmount.error.required.$userType", "error.nonNumeric")
         .verifying(greaterThan(minimumValue, "error.lessThanZero"))
         .verifying(lessThan(maximumValue, "expenses.error.overMax"))
-        .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
     )
 
 }

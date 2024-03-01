@@ -1485,5 +1485,5 @@ evcpHowMuchDoYouWantToClaim.change.hidden = Change how much of the cost of elect
 
 balancingAllowanceAmount.title.individual = How much is the total of your balancing allowances?
 balancingAllowanceAmount.title.agent = How much is the total of your client’s balancing allowances?
-balancingAllowanceAmount.error.required.individual = Enter the amount you spent on balancing allowance
-balancingAllowanceAmount.error.required.agent =  Enter the amount your client spent on balancing allowance
+balancingAllowanceAmount.error.required.individual = Enter the amount of the balancing allowance you want to report
+balancingAllowanceAmount.error.required.agent =  Enter the amount of the balancing allowance your client wants to report
