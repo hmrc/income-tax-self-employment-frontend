@@ -21,9 +21,21 @@ import models.NormalMode
 import models.common._
 import models.database.UserAnswers
 import play.api.mvc.Call
+import queries.Settable
 
 object ZeroEmissionGoodsVehiclePage extends ZegvBasePage[Boolean] {
   override def toString: String = "zeroEmissionGoodsVehicle"
+
+  override val pagesToBeCleared: List[Settable[_]] =
+    List(
+      ZegvAllowancePage,
+      ZegvTotalCostOfVehiclePage,
+      ZegvOnlyForSelfEmploymentPage,
+      ZegvUseOutsideSEPage,
+      ZegvUseOutsideSEPercentagePage,
+      ZegvClaimAmountPage,
+      ZegvHowMuchDoYouWantToClaimPage
+    )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

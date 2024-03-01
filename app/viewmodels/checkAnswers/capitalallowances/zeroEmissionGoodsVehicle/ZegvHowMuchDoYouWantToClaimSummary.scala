@@ -20,7 +20,7 @@ import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvClaimAmount
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvClaimAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
@@ -29,7 +29,7 @@ object ZegvHowMuchDoYouWantToClaimSummary extends AnswerSummary {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(ZegvClaimAmount, Some(businessId)) map { totalCost =>
+    userAnswers.get(ZegvClaimAmountPage, Some(businessId)) map { totalCost =>
       buildRowBigDecimal(
         totalCost,
         routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, CheckMode),

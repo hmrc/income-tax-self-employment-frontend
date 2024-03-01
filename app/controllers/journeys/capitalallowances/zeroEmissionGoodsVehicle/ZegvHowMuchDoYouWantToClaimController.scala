@@ -25,7 +25,7 @@ import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoY
 import models.requests.DataRequest
 import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle.{
-  ZegvClaimAmount,
+  ZegvClaimAmountPage,
   ZegvHowMuchDoYouWantToClaimPage,
   ZegvTotalCostOfVehiclePage,
   ZegvUseOutsideSEPercentagePage
@@ -57,7 +57,7 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
       (calculateFullCost(request, businessId) map { fullCost =>
         val formProvider            = ZegvHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
         val howMuchDoYouWantToClaim = request.getValue(ZegvHowMuchDoYouWantToClaimPage, businessId)
-        val totalCost               = request.getValue(ZegvClaimAmount, businessId)
+        val totalCost               = request.getValue(ZegvClaimAmountPage, businessId)
         val filledForm = (howMuchDoYouWantToClaim, totalCost) match {
           case (Some(claim), Some(totalCost)) if claim == LowerAmount =>
             formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, Some(totalCost)))
@@ -79,7 +79,7 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
         }
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZegvHowMuchDoYouWantToClaimPage, answer.howMuchDoYouWantToClaim, Some(businessId)))
-          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, totalCostOfCar, ZegvClaimAmount)
+          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, totalCostOfCar, ZegvClaimAmountPage)
         } yield ZegvHowMuchDoYouWantToClaimPage.redirectNext(mode, finalAnswers, businessId, taxYear)
       }
 

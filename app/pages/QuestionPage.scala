@@ -20,6 +20,7 @@ import controllers.standard
 import models._
 import models.common._
 import models.database.UserAnswers
+import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage}
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
@@ -30,6 +31,8 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
   def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
 
   def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
+
+  val pagesToBeCleared: List[Settable[_]] = Nil
 
   def standardPage: Call =
     standard.routes.JourneyRecoveryController.onPageLoad()

@@ -16,6 +16,6 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-object ZegvClaimAmount extends ZegvBasePage[BigDecimal] {
+object ZegvClaimAmountPage extends ZegvBasePage[BigDecimal] {
   override def toString: String = "zegvClaimAmount"
 }

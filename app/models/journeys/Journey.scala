@@ -162,7 +162,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       ZegvUseOutsideSEPage.pageName,
       ZegvUseOutsideSEPercentagePage.pageName,
       ZegvHowMuchDoYouWantToClaimPage.pageName,
-      ZegvClaimAmount.pageName
+      ZegvClaimAmountPage.pageName
     )
   }
 

@@ -1429,9 +1429,10 @@ zegvOnlyForSelfEmployment.no.agent = No, my client used it for other things as w
 
 ZegvHowMuchDoYouWantToClaim.title = Claiming the allowance
 ZegvHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
-ZegvHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you're spreading the rest of the cost over future years.
-ZegvHowMuchDoYouWantToClaim.p3.individual = You should enter any remaining amounts in the ?writing down? allowances section.
-ZegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle?s cost do you want to claim under this 100% allowance?
+ZegvHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
+ZegvHowMuchDoYouWantToClaim.p3.individual = You should enter any remaining amounts in the ’writing down’ allowances section.
+ZegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle’s cost do you want to claim under this 100% allowance?
+zegvHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
 ZegvHowMuchDoYouWantToClaim.fullCost = The full amount
 zegvHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
 zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
