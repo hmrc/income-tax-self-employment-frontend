@@ -1522,3 +1522,4 @@ balancingAllowanceAmount.title.individual = How much is the total of your balanc
 balancingAllowanceAmount.title.agent = How much is the total of your client’s balancing allowances?
 balancingAllowanceAmount.error.required.individual = Enter the amount of the balancing allowance you want to report
 balancingAllowanceAmount.error.required.agent =  Enter the amount of the balancing allowance your client wants to report
+balancingAllowanceAmount.change.hidden = Change how much balancing allowance is reported

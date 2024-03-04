@@ -16,22 +16,29 @@
 
 package controllers.journeys.capitalallowances.balancingAllowance
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.CapitalAllowancesBalancingAllowance
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAllowanceAmountSummary, BalancingAllowanceSummary}
 
-class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] = List(
+  override val submissionData: JsObject =
     Json.obj(
-    ))
+      "balancingAllowance" -> "yes",
+      "balancingAllowanceAmount" -> 123.00,
+    )
+
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.BalancingAllowanceCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.BalancingAllowanceCYAController.onSubmit
@@ -40,7 +47,12 @@ class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
+        BalancingAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
+        BalancingAllowanceAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  override val journey: Journey = CapitalAllowancesBalancingAllowance
+
 }
