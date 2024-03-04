@@ -21,10 +21,8 @@ import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import pages.QuestionPage
-import play.api.libs.json.Reads
 import queries.Gettable
 import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -22,7 +22,6 @@ import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEFormProv
 import models.common.{BusinessId, TaxYear}
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE.DifferentAmount
 import models.{Mode, NormalMode}
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvUseOutsideSEPage, ZegvUseOutsideSEPercentagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvUseOutsideSEController @Inject() (override val messagesApi: MessagesApi,
-                                            navigator: CapitalAllowancesNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,

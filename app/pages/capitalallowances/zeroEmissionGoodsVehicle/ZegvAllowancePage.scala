@@ -20,6 +20,7 @@ import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.NormalMode
 import models.common._
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
 
@@ -38,6 +39,7 @@ object ZegvAllowancePage extends ZegvBasePage[Boolean] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
+      this,
       userAnswers,
       businessId,
       onTrue = routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode),

@@ -16,12 +16,9 @@
 
 package pages
 
-import controllers.standard
 import models._
 import models.common._
 import models.database.UserAnswers
-import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage}
-import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
 import queries.{Gettable, Settable}
@@ -38,9 +35,6 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
   /** Pages which needs to be cleared when Yes is selected in the main page */
   val dependentPagesWhenYes: List[Settable[_]] = Nil
 
-  def standardPage: Call =
-    standard.routes.JourneyRecoveryController.onPageLoad()
-
   def redirectNext(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
     val newPage: Call = mode match {
       case NormalMode => nextPageInNormalMode(userAnswers, businessId, taxYear)
@@ -49,13 +43,4 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
 
     Redirect(newPage)
   }
-
-  def redirectOnBoolean(userAnswers: UserAnswers, businessId: BusinessId, onTrue: => Call, onFalse: => Call)(implicit reads: Reads[A]): Call =
-    userAnswers
-      .get(this, businessId)
-      .fold(standardPage) {
-        case true  => onTrue
-        case false => onFalse
-      }
-
 }

@@ -23,7 +23,6 @@ import models.database.UserAnswers
 import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
@@ -126,7 +125,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       "navigate to ZecUsedForSelfEmploymentController" in {
         val expectedResult = zeroEmissionCars.routes.ZecOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
-        nextPage(ZegvTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
+        nextPage(ZecTotalCostOfCarPage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -191,38 +190,6 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         "navigate to the ErrorRecoveryPage" in {
           nextPage(ZeroEmissionGoodsVehiclePage, emptyUserAnswers) shouldBe errorRedirect
         }
-      }
-    }
-
-    "page is ZegvAllowancePage" - {
-      "answer is 'Yes'" - {
-        "navigate to ZegvAllowancePage" in {
-          val data           = Json.obj("zegvAllowance" -> ZegvAllowance.Yes.toString)
-          val expectedResult = zeroEmissionGoodsVehicle.routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode)
-
-          nextPage(ZegvAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is 'No'" - {
-        "navigate to ZegvAllowancePage" in {
-          val data           = Json.obj("zegvAllowance" -> ZegvAllowance.No.toString)
-          val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
-
-          nextPage(ZegvAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is None or invalid" - {
-        "navigate to the ErrorRecoveryPage" in {
-          nextPage(ZegvAllowancePage, emptyUserAnswers) shouldBe errorRedirect
-        }
-      }
-    }
-
-    "page is ZegvTotalCostOfVehiclePage" - {
-      "navigate to ZeroEmissionGoodsVehicleCYAController" in {
-        val expectedResult = zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
-
-        nextPage(ZegvTotalCostOfVehiclePage, emptyUserAnswers) shouldBe expectedResult
       }
     }
 
@@ -342,7 +309,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         List(
           ZeroEmissionCarsPage,
           ZecAllowancePage,
-          ZegvTotalCostOfCarPage,
+          ZecTotalCostOfCarPage,
           ZegvOnlyForSelfEmploymentPage,
           ZegvUseOutsideSEPage,
           ZegvHowMuchDoYouWantToClaimPage).foreach {

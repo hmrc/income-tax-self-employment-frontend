@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: MessagesApi,
-                                                     navigator: CapitalAllowancesNavigator,
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

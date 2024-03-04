@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+import models.common.BusinessId
+import models.database.UserAnswers
+import play.api.libs.json.Reads
+import play.api.mvc.Call
+import queries.Gettable
+import controllers.standard
 
-object ZegvUseOutsideSEPercentagePage extends ZegvBasePage[Int] {
-  override def toString: String = "zegvUsedOutsideSEPercentage"
+package object pages {
+  def standardPage: Call =
+    standard.routes.JourneyRecoveryController.onPageLoad()
+
+  def redirectOnBoolean(page: Gettable[Boolean], userAnswers: UserAnswers, businessId: BusinessId, onTrue: => Call, onFalse: => Call)(implicit
+      reads: Reads[Boolean]): Call =
+    userAnswers
+      .get(page, businessId)
+      .fold(standardPage) {
+        case true  => onTrue
+        case false => onFalse
+      }
 }

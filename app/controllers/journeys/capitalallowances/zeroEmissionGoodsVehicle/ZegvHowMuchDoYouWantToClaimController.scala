@@ -23,7 +23,6 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim._
 import models.requests.DataRequest
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle.{
   ZegvClaimAmountPage,
   ZegvHowMuchDoYouWantToClaimPage,
@@ -43,7 +42,6 @@ import scala.math.BigDecimal.RoundingMode
 @Singleton
 class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: MessagesApi,
                                                        service: SelfEmploymentService,
-                                                       navigator: CapitalAllowancesNavigator,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,

@@ -21,7 +21,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
