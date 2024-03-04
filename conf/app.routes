@@ -568,6 +568,12 @@ POST        /:taxYear/:businessId/capital-allowances/electric-vehicle-charge-poi
 
 ########## Capital Allowances - Balancing Allowance ##########
 
+GET         /:taxYear/:businessId/self-employment/capital-allowances/balancing-allowance                            controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST         /:taxYear/:businessId/self-employment/capital-allowances/balancing-allowance                           controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/self-employment/change-capital-allowances/balancing-allowance                             controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST         /:taxYear/:businessId/self-employment/change-capital-allowances/balancing-allowance                            controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+
 GET         /:taxYear/:businessId/capital-allowances/balancing-allowance/check                                              controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/balancing-allowance/check                                              controllers.journeys.capitalallowances.balancingAllowance.BalancingAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
