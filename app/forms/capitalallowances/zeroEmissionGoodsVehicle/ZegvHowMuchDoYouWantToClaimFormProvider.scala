@@ -19,7 +19,6 @@ package forms.capitalallowances.zeroEmissionGoodsVehicle
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim._
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
