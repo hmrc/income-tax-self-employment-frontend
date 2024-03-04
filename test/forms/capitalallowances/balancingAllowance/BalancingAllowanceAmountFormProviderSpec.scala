@@ -16,19 +16,54 @@
 
 package forms.capitalallowances.balancingAllowance
 
-import base.forms.CurrencyFormProviderBaseSpec
-import models.common.UserType
-import play.api.data.Form
+import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.{MoneyBounds, UserType}
+import models.common.UserType.Individual
+import org.scalacheck.Gen
+import play.api.data.{Form, FormError}
 
-class BalancingAllowanceAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("BalancingAllowanceAmountFormProvider") {
+class BalancingAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours with MoneyBounds {
 
-  private lazy val amount                                            = 5623.50
-  override def getFormProvider(userType: UserType): Form[BigDecimal] = new BalancingAllowanceAmountFormProvider()(userType)
+  val minimumVal: BigDecimal   = minimumValue
+  val maximumVal: BigDecimal   = maxAmountValue
+  val requiredError: String    = "balancingAllowanceAmount.error.required"
+  val nonNumericError: String  = "error.nonNumeric"
+  val lessThanMinError: String = "error.lessThanZero"
+  val overMaxError: String     = "expenses.error.overMax"
 
-  override lazy val requiredError: String     = "balancingAllowanceAmount.error.required"
-  override lazy val nonNumericError: String   = "error.nonNumeric"
-  override lazy val lessThanZeroError: String = "error.lessThanZero"
-  override lazy val overMaxError: String      = "error.overMax"
-  override lazy val maximum: BigDecimal       = amount
+  val userType: UserType = Individual
+  val fieldName          = "value"
 
+  val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
+  val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
+
+  "BalancingAllowanceAmountFormProvider should" - {
+    val form: Form[BigDecimal] = new BalancingAllowanceAmountFormProvider()(userType)
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      bigDecimalsInRangeWithNoDecimals(minimumVal, maximumValue)
+    )
+
+    behave like bigDecimalField(
+      form,
+      fieldName,
+      FormError(fieldName, nonNumericError)
+    )
+
+    behave like bigDecimalFieldWithMaximum(
+      form,
+      fieldName,
+      maximumValue,
+      FormError(fieldName, overMaxError, Seq(maximumValue))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      FormError(fieldName, s"$requiredError.$userType")
+    )
+
+  }
 }

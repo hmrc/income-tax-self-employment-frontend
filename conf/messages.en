@@ -67,6 +67,7 @@ journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
 journeys.capital-allowances-zero-emission-cars = Zero-emission cars
 journeys.capital-allowances-zero-emission-goods-vehicle = Zero-emission goods vehicles
 journeys.capital-allowances-electric-vehicle-charge-points = Electric vehicle charge-points
+journeys.capital-allowances-balancing-allowance = Balancing allowance
 
 date.day = Day
 date.month = Month
@@ -1472,6 +1473,17 @@ evcpUseOutsideSE.error.required.individual = Select or enter a percentage for ho
 evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
 evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
 
+
+taxReliefChargePoints.title = Tax relief on charge-points
+taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
+taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
+taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
+taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
+taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+
 evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
 evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
 evcpHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
@@ -1481,7 +1493,30 @@ evcpHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the fu
 evcpHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost spent on electric vehicle charge-points
 evcpHowMuchDoYouWantToClaim.change.hidden = Change how much of the cost of electric vehicle charge-points should be claimed under the 100% allowance
 
-########## Capital Allowances - Balancing Allowance Amount ##########
+########## Capital Allowances - Balancing Allowance ##########
+
+balancingAllowance.title = Balancing Allowance
+balancingAllowance.p1.individual = You will get a balancing allowance in the:
+balancingAllowance.p1.agent = Your client will get a balancing allowance in the:
+balancingAllowance.p2.individual = main rate or special rate pool when your business ceases
+balancingAllowance.p2.agent = main rate or special rate pool when their business ceases
+balancingAllowance.p3.individual = single asset pool if the item is no longer used in your business
+balancingAllowance.p3.agent = single asset pool if the item is no longer used in their  business
+balancingAllowance.p4.individual = Your balancing allowance is the balance left in the pool after you’ve deducted:
+balancingAllowance.p4.agent = Their balancing allowance is the balance left in the pool after they’ve deducted:
+balancingAllowance.p5.individual = the amount you received for the sale
+balancingAllowance.p5.agent = the amount they received for the sale
+balancingAllowance.p6.individual = the market value of the goods that you keep or give away
+balancingAllowance.p6.agent = the market value of the goods that they keep or give away
+balancingAllowance.p7.read = Read more about
+balancingAllowance.p7.link = balancing charges
+balancingAllowance.p7.href = https://www.gov.uk/government/publications/capital-allowances-and-balancing-charges-hs252-self-assessment-helpsheet/hs252-capital-allowances-and-balancing-charges-2023#short-and-long-life-assets
+balancingAllowance.p7.tab = (opens in a new tab)
+balancingAllowance.subHeading.individual = Do you have a balancing allowance to report?
+balancingAllowance.subHeading.agent = Does your client have a balancing allowance to report?
+balancingAllowance.error.required.individual = Select yes if you have a balancing allowance to report
+balancingAllowance.error.required.agent = Select yes if your client has a balancing allowance to report
+balancingAllowance.change.hidden = Change if any balancing allowance need to be reported
 
 balancingAllowanceAmount.title.individual = How much is the total of your balancing allowances?
 balancingAllowanceAmount.title.agent = How much is the total of your client’s balancing allowances?

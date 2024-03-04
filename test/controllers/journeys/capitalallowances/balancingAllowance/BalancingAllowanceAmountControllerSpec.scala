@@ -38,7 +38,7 @@ class BalancingAllowanceAmountControllerSpec
   lazy val onPageLoadRoute = routes.BalancingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.BalancingAllowanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.BalancingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override val onwardRoute: Call = routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
