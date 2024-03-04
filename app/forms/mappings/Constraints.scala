@@ -36,6 +36,9 @@ trait Constraints {
   def maximumValue[A: Ordering](maximum: A, errorKey: String): Constraint[A] =
     check((a: A) => a <= maximum, Invalid(errorKey, maximum))
 
+  def lessThanOrEqualTo[A: Ordering](value: A, errorKey: String, errorArgument: Option[String] = None): Constraint[A] =
+    check((a: A) => a <= value, Invalid(errorKey, errorArgument.getOrElse(value)))
+
   def greaterThan[A: Ordering](value: A, errorKey: String, errorArgument: Option[String] = None): Constraint[A] =
     check((a: A) => a > value, Invalid(errorKey, errorArgument.getOrElse(value)))
 

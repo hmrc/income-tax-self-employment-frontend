@@ -47,6 +47,11 @@ class ConstraintsSpec extends AnyWordSpecLike {
       assert(lessThan(0, "error.lessThan").apply(1) === Invalid("error.lessThan", 0))
     }
 
+    "validate lessThanOrEqualTo correctly" in {
+      assert(lessThanOrEqualTo(0, "error.lessThanOrEqualTo").apply(0) === Valid)
+      assert(lessThanOrEqualTo(0, "error.lessThanOrEqualTo").apply(1) === Invalid("error.lessThanOrEqualTo", 0))
+    }
+
     "validate inRange correctly" in {
       assert(inRange(1, 3, "error.inRange").apply(2) === Valid)
       assert(inRange(1, 3, "error.inRange").apply(4) === Invalid("error.inRange", 1, 3))
