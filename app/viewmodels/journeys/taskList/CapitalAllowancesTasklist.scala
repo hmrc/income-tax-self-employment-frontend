@@ -89,10 +89,7 @@ object CapitalAllowancesTasklist {
     val balancingAllowanceIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.Balancing) && capAllowancesTailoringCompleted
     val balancingAllowanceRow = returnRowIfConditionPassed(
-      buildSummaryRow(
-        balancingAllowanceHref,
-        messages(s"journeys.$CapitalAllowancesBalancingAllowance"),
-        balancingAllowanceStatus),
+      buildSummaryRow(balancingAllowanceHref, messages(s"journeys.$CapitalAllowancesBalancingAllowance"), balancingAllowanceStatus),
       balancingAllowanceIsTailored
     )
 
@@ -129,8 +126,10 @@ object CapitalAllowancesTasklist {
         )(journeyStatus)
       case CapitalAllowancesBalancingAllowance =>
         determineJourneyStartOrCyaUrl(
-          "capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url",
-          "capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url"
+          capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController
+            .onPageLoad(taxYear, businessId)
+            .url, // TODO 7471 change to first page in journey
+          capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }
