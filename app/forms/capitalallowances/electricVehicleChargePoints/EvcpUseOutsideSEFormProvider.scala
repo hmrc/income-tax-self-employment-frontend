@@ -29,8 +29,8 @@ object EvcpUseOutsideSEFormProvider extends Mappings {
 
   private val radioPercentage    = "radioPercentage"
   private val optDifferentAmount = "optDifferentAmount"
-  private val maxPercentage      = 100
-  private val minPercentage      = 0
+  private val maxPercentage      = 99
+  private val minPercentage      = 1
 
   def apply(userType: UserType)(implicit messages: Messages): Form[EvcpUseOutsideSEFormModel] = {
     val requiredRadioError  = s"evcpUseOutsideSE.error.required.$userType"
@@ -43,8 +43,8 @@ object EvcpUseOutsideSEFormProvider extends Mappings {
     def validateRadio(): Mapping[EvcpUseOutsideSE] = enumerable[EvcpUseOutsideSE](messages(s"$requiredRadioError"))
 
     def validateInt(): Mapping[Int] = int(requiredAmountError, noDecimalsError, nonNumericError)
-      .verifying(greaterThan(minPercentage, lessThanZeroError))
-      .verifying(lessThan(maxPercentage, overMaxError))
+      .verifying(minimumValue(minPercentage, lessThanZeroError))
+      .verifying(maximumValue(maxPercentage, overMaxError))
 
     Form[EvcpUseOutsideSEFormModel](
       mapping(
