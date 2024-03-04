@@ -68,12 +68,12 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
     }
 
-    @heading(messages("ZegvHowMuchDoYouWantToClaim.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("zegvHowMuchDoYouWantToClaim.title"), extraClasses = "govuk-!-margin-bottom-3")
 
     <div class="govuk-body">
-        <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p1.$userType")</p>
-        <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p2.$userType")</p>
-        <p>@messages(s"ZegvHowMuchDoYouWantToClaim.p3.$userType")</p>
+        <p>@messages(s"zegvHowMuchDoYouWantToClaim.p1.$userType")</p>
+        <p>@messages(s"zegvHowMuchDoYouWantToClaim.p2.$userType")</p>
+        <p>@messages(s"zegvHowMuchDoYouWantToClaim.p3.$userType")</p>
     </div>
 
     @formHelper(action = routes.ZegvHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
@@ -83,7 +83,7 @@
         }">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">@messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
+                    <h3 class="govuk-fieldset__heading">@messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
                 </legend>
 
                 @missingRadioErrorMsg

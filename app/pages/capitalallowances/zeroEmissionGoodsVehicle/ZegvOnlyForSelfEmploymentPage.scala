@@ -22,6 +22,7 @@ import models.common._
 import models.database.UserAnswers
 import play.api.mvc.Call
 import queries.Settable
+import controllers.standard
 
 object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
   override def toString: String = "zegvOnlyForSelfEmployment"
@@ -32,10 +33,13 @@ object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    redirectOnBoolean(
-      userAnswers,
-      businessId,
-      onTrue = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = cyaPage(taxYear, businessId)
-    )
+    userAnswers.get(ZegvOnlyForSelfEmploymentPage, Some(businessId)).fold(standard.routes.JourneyRecoveryController.onPageLoad()) { _ =>
+      redirectOnBoolean(
+        userAnswers,
+        businessId,
+        onTrue = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode),
+        onFalse = routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+      )
+    }
+
 }

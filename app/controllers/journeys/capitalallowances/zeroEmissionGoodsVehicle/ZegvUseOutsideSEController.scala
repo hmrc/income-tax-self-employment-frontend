@@ -69,8 +69,8 @@ class ZegvUseOutsideSEController @Inject() (override val messagesApi: MessagesAp
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(ZegvUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
           redirectMode = if (request.getValue(ZegvUseOutsideSEPercentagePage, businessId) contains answer.optDifferentAmount) mode else NormalMode
-          finalAnswers <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZegvUseOutsideSEPercentagePage)
-        } yield Redirect(navigator.nextPage(ZegvUseOutsideSEPage, redirectMode, finalAnswers, taxYear, businessId))
+          updatedUserAnswers <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZegvUseOutsideSEPercentagePage)
+        } yield ZegvUseOutsideSEPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
 
       ZegvUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()

@@ -16,9 +16,16 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+import models.NormalMode
+import models.common._
+import models.database.UserAnswers
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE
-import pages.OneQuestionPage
+import play.api.mvc.Call
 
 object ZegvUseOutsideSEPage extends ZegvBasePage[ZegvUseOutsideSE] {
   override def toString: String = "zegvUsedOutsideSE"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 }
