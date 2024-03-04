@@ -236,6 +236,9 @@ class CapitalAllowancesNavigator @Inject() {
     case BalancingAllowancePage =>
       _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
+    case BalancingAllowanceAmountPage =>
+      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
+
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }

@@ -59,17 +59,8 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <label class="govuk-label govuk-label--m">
-                                ${messages(s"balancingAllowance.subHeading.$userType")}
-                            </label>
-                        </div>
-                        """
-                ))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
-            )
+                legend = LegendViewModel(messages(s"balancingAllowance.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"))
         )
 
         @govukButton(

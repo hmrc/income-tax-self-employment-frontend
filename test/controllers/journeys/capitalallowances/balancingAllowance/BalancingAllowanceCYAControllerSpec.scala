@@ -16,11 +16,9 @@
 
 package controllers.journeys.capitalallowances.balancingAllowance
 
-import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
+import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.CapitalAllowancesBalancingAllowance
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -28,17 +26,15 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAllowanceAmountSummary, BalancingAllowanceSummary}
 
-class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
+class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val submissionData: JsObject =
+  override val testDataCases: List[JsObject] = List(
     Json.obj(
-      "balancingAllowance" -> "yes",
-      "balancingAllowanceAmount" -> 123.00,
-    )
-
-  override val testDataCases: List[JsObject] = List(submissionData)
+      "balancingAllowance"       -> true,
+      "balancingAllowanceAmount" -> 123.00
+    ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.BalancingAllowanceCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.BalancingAllowanceCYAController.onSubmit
@@ -52,7 +48,5 @@ class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
       ),
       classes = "govuk-!-margin-bottom-7"
     )
-
-  override val journey: Journey = CapitalAllowancesBalancingAllowance
 
 }
