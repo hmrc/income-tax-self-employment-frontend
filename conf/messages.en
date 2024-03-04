@@ -1496,17 +1496,6 @@ evcpUseOutsideSE.error.required.individual = Select or enter a percentage for ho
 evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
 evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
 
-
-taxReliefChargePoints.title = Tax relief on charge-points
-taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
-taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
-taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
-taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
-taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
-taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
-
 evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
 evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
 evcpHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
