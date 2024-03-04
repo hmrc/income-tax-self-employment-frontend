@@ -95,52 +95,6 @@
                     ))
                 ))
 
-                @* <div class="govuk-radios" data-module="govuk-radios">*@
-                @* <div class="govuk-radios__item">*@
-                @* <input class="govuk-radios__input" id="fullCost" name="howMuchDoYouWantToClaim" type="radio" value="fullCost" data-aria-controls="conditional-contact"*@
-                @* @{*@
-                @* if(form("howMuchDoYouWantToClaim").value.contains("fullCost")) "checked" else ""*@
-                @* }*@
-                @* >*@
-                @* <label class="govuk-label govuk-radios__label" for="fullCost">*@
-                @* @messages("zegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount)*@
-                @* </label>*@
-                @* </div>*@
-                @* *@@* <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact">*@
-                @* *@@* <div class="govuk-form-group">*@
-                @* *@@* <label class="govuk-label" for="contact-by-email">*@
-                @* *@@* tbd*@
-                @* *@@* </label>*@
-                @* *@@* </div>*@
-                @* *@@* </div>*@
-                @* <div class="govuk-radios__item">*@
-                @* <input class="govuk-radios__input" id="lowerAmount" name="howMuchDoYouWantToClaim" type="radio" value="lowerAmount" data-aria-controls="conditional-contact-2"*@
-                @* @{*@
-                @* if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) "checked" else ""*@
-                @* }*@
-                @* >*@
-                @* <label class="govuk-label govuk-radios__label" for="lowerAmount">*@
-                @* A lower amount*@
-                @* </label>*@
-                @* </div>*@
-                @* <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact-2">*@
-                @* <div class="govuk-form-group">*@
-                @* <label class="govuk-label" for="contact-by-phone">*@
-                @* Enter the amount*@
-                @* </label>*@
-
-                @* @amountInputErrorMsg*@
-                @* <div class="govuk-input__wrapper">*@
-                @* <div class="govuk-input__prefix" aria-hidden="true">@messages("site.pound")</div>*@
-                @* <input class="govuk-input govuk-input--width-10" id="totalCost" name="totalCost"*@
-                @* value="@{*@
-                @* if(form("howMuchDoYouWantToClaim").value.contains("lowerAmount")) form("totalCost").value else ""*@
-                @* }">*@
-                @* </div>*@
-                @* </div>*@
-                @* </div>*@
-                @* </div>*@
-
             </fieldset>
         </div>
 
