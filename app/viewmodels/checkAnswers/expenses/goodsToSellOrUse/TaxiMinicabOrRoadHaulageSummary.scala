@@ -23,15 +23,14 @@ import models.database.UserAnswers
 import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object TaxiMinicabOrRoadHaulageSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)).map { answer =>
-      buildRowString(
-        formatAnswer(answer.toString),
+      buildRowBoolean(
+        answer,
         routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, CheckMode),
         s"taxiMinicabOrRoadHaulage.title.$userType",
         "taxiMinicabOrRoadHaulage.change.hidden",

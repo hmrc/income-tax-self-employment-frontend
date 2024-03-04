@@ -18,16 +18,12 @@ package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class LiveAtBusinessPremisesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[LiveAtBusinessPremises] =
-    Form(
-      "value" -> enumerable[LiveAtBusinessPremises](s"liveAtBusinessPremises.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"liveAtBusinessPremises.error.required.$userType"))
 
 }

@@ -18,16 +18,15 @@ package forms.expenses.goodsToSellOrUse
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class TaxiMinicabOrRoadHaulageFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[TaxiMinicabOrRoadHaulage] =
+  def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> enumerable[TaxiMinicabOrRoadHaulage](s"taxiMinicabOrRoadHaulage.error.required.$userType")
+      "value" -> boolean(s"taxiMinicabOrRoadHaulage.error.required.$userType")
     )
 
 }

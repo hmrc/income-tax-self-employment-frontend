@@ -17,27 +17,7 @@
 package generators
 
 import models.journeys._
-import models.journeys.expenses.individualCategories.{
-  AdvertisingOrMarketing,
-  Depreciation,
-  DisallowableInterest,
-  DisallowableIrrecoverableDebts,
-  DisallowableOtherFinancialCharges,
-  DisallowableProfessionalFees,
-  DisallowableStaffCosts,
-  DisallowableSubcontractorCosts,
-  EntertainmentCosts,
-  FinancialExpenses,
-  GoodsToSellOrUse,
-  OfficeSupplies,
-  OtherExpenses,
-  ProfessionalServiceExpenses,
-  RepairsAndMaintenance,
-  TaxiMinicabOrRoadHaulage,
-  TravelForWork,
-  WorkFromBusinessPremises,
-  WorkFromHome
-}
+import models.journeys.expenses.individualCategories._
 import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -116,11 +96,6 @@ trait ModelGenerators {
   implicit lazy val arbitraryWorkFromBusinessPremises: Arbitrary[WorkFromBusinessPremises] =
     Arbitrary {
       Gen.oneOf(WorkFromBusinessPremises.values.toSeq)
-    }
-
-  implicit lazy val arbitraryTaxiMinicabOrRoadHaulage: Arbitrary[TaxiMinicabOrRoadHaulage] =
-    Arbitrary {
-      Gen.oneOf(TaxiMinicabOrRoadHaulage.values.toSeq)
     }
 
   implicit lazy val arbitraryRepairsAndMaintenance: Arbitrary[RepairsAndMaintenance] =

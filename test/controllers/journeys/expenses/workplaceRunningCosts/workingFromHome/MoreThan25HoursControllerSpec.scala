@@ -16,14 +16,12 @@
 
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursFormProvider
 import models.common.UserType
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
-import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours.{No, Yes}
 import models.{CheckMode, Mode, NormalMode}
 import navigation.{FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.Mockito.when
@@ -41,28 +39,27 @@ import views.html.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreTh
 
 import scala.concurrent.Future
 
-class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec[MoreThan25Hours]("MoreThan25HoursController", MoreThan25HoursPage) {
+class MoreThan25HoursControllerSpec extends BooleanGetAndPostQuestionBaseSpec("MoreThan25HoursController", MoreThan25HoursPage) {
 
-  override def onPageLoadCall: Call         = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call           = submissionCall(NormalMode)
-  override def onwardRoute: Call            = expectedRedirectCall(NormalMode)
-  override def validAnswer: MoreThan25Hours = Yes
+  override def onPageLoadCall: Call = routes.MoreThan25HoursController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = submissionCall(NormalMode)
+  override def onwardRoute: Call    = expectedRedirectCall(NormalMode)
 
   private def submissionCall(mode: Mode): Call       = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode)
   private def expectedRedirectCall(mode: Mode): Call = routes.WorkingFromHomeHoursController.onPageLoad(taxYear, businessId, mode)
 
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[WorkplaceRunningCostsNavigator].toInstance(
       new FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator(onwardRoute, expectedRedirectCall(CheckMode)))
   )
 
-  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
 
-  override def createForm(userType: UserType): Form[MoreThan25Hours] = new MoreThan25HoursFormProvider()(userType)
+  override def createForm(userType: UserType) = new MoreThan25HoursFormProvider()(userType)
 
-  override def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(expectedForm: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
@@ -70,18 +67,18 @@ class MoreThan25HoursControllerSpec extends RadioButtonGetAndPostQuestionBaseSpe
     view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  private lazy val cases: TableFor4[Option[MoreThan25Hours], MoreThan25Hours, Mode, Mode] = Table(
+  private lazy val cases: TableFor4[Option[Boolean], Boolean, Mode, Mode] = Table(
     ("prevAnswer", "currAnswer", "submissionMode", "expectedRedirectMode"),
-    (None, Yes, NormalMode, NormalMode),
-    (None, No, NormalMode, NormalMode),
-    (Some(Yes), Yes, NormalMode, NormalMode),
-    (Some(Yes), No, NormalMode, NormalMode),
-    (Some(No), Yes, NormalMode, NormalMode),
-    (Some(No), No, NormalMode, NormalMode),
-    (Some(Yes), Yes, CheckMode, CheckMode),
-    (Some(Yes), No, CheckMode, CheckMode),
-    (Some(No), Yes, CheckMode, NormalMode),
-    (Some(No), No, CheckMode, CheckMode)
+    (None, true, NormalMode, NormalMode),
+    (None, false, NormalMode, NormalMode),
+    (Some(true), true, NormalMode, NormalMode),
+    (Some(true), false, NormalMode, NormalMode),
+    (Some(false), true, NormalMode, NormalMode),
+    (Some(false), false, NormalMode, NormalMode),
+    (Some(true), true, CheckMode, CheckMode),
+    (Some(true), false, CheckMode, CheckMode),
+    (Some(false), true, CheckMode, NormalMode),
+    (Some(false), false, CheckMode, CheckMode)
   )
 
   "On successful submission, redirect should have the correct Mode type" - {

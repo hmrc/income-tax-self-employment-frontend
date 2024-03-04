@@ -16,18 +16,13 @@
 
 package forms.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
-import play.api.data.Form
-class LiveAtBusinessPremisesFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[LiveAtBusinessPremises](
-      "LiveAtBusinessPremisesFormProvider"
-    ) {
 
-  override def getFormProvider(userType: UserType): Form[LiveAtBusinessPremises] = new LiveAtBusinessPremisesFormProvider()(userType)
+class LiveAtBusinessPremisesFormProviderSpec extends BooleanFormProviderBaseSpec("LiveAtBusinessPremisesFormProvider") {
 
-  override lazy val validValues: Seq[LiveAtBusinessPremises] = LiveAtBusinessPremises.values
-  override lazy val requiredError: String                    = "liveAtBusinessPremises.error.required"
+  override def formProvider(userType: UserType) = new LiveAtBusinessPremisesFormProvider()(userType)
+
+  override def requiredErrorKey: String = "liveAtBusinessPremises.error.required"
 
 }

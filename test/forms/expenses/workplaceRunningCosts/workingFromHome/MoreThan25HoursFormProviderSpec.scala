@@ -16,19 +16,13 @@
 
 package forms.expenses.workplaceRunningCosts.workingFromHome
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
-import play.api.data.Form
 
-class MoreThan25HoursFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[MoreThan25Hours](
-      "MoreThan25HoursFormProvider"
-    ) {
+class MoreThan25HoursFormProviderSpec extends BooleanFormProviderBaseSpec("MoreThan25HoursFormProvider") {
 
-  override def getFormProvider(userType: UserType): Form[MoreThan25Hours] = new MoreThan25HoursFormProvider()(userType)
+  override def formProvider(userType: UserType) = new MoreThan25HoursFormProvider()(userType)
 
-  override lazy val validValues: Seq[MoreThan25Hours] = MoreThan25Hours.values
-  override lazy val requiredError: String             = "moreThan25Hours.error.required"
+  override def requiredErrorKey: String = "moreThan25Hours.error.required"
 
 }

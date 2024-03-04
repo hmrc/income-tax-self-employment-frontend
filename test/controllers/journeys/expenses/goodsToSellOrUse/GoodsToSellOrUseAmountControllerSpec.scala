@@ -21,7 +21,6 @@ import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.Application
@@ -42,10 +41,7 @@ class GoodsToSellOrUseAmountControllerSpec
 
   override val onwardRoute: Call = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def baseAnswers = emptyUserAnswersAccrual
-    .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.Yes, Some(businessId))
-    .success
-    .value
+  override def baseAnswers = emptyUserAnswersAccrual.set(TaxiMinicabOrRoadHaulagePage, true, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

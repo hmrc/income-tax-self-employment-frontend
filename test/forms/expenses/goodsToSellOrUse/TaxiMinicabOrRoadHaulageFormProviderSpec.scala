@@ -16,40 +16,13 @@
 
 package forms.expenses.goodsToSellOrUse
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
-import play.api.data.FormError
+import play.api.data.Form
 
-class TaxiMinicabOrRoadHaulageFormProviderSpec extends OptionFieldBehaviours {
+class TaxiMinicabOrRoadHaulageFormProviderSpec extends BooleanFormProviderBaseSpec("TaxiMinicabOrRoadHaulageFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new TaxiMinicabOrRoadHaulageFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new TaxiMinicabOrRoadHaulageFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[TaxiMinicabOrRoadHaulage](
-          form,
-          fieldName,
-          validValues = TaxiMinicabOrRoadHaulage.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"taxiMinicabOrRoadHaulage.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override def requiredErrorKey: String = "taxiMinicabOrRoadHaulage.error.required"
 }

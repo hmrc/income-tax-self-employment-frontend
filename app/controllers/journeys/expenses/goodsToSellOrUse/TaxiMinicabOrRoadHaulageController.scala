@@ -19,7 +19,6 @@ package controllers.journeys.expenses.goodsToSellOrUse
 import controllers.actions._
 import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import models.{Mode, NormalMode}
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
@@ -47,17 +46,15 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TaxiMinicabOrRoadHaulagePage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val preparedForm =
+        request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def normalModeIfAnswerChanged(currentAnswer: TaxiMinicabOrRoadHaulage): Mode =
+      def normalModeIfAnswerChanged(currentAnswer: Boolean): Mode =
         request.getValue(TaxiMinicabOrRoadHaulagePage, businessId) match {
           case Some(answer) if currentAnswer != answer => NormalMode
           case _                                       => mode

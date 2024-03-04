@@ -16,9 +16,8 @@
 
 package pages.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
-import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 import pages.OneQuestionPage
 
-case object LiveAtBusinessPremisesPage extends OneQuestionPage[LiveAtBusinessPremises] {
+case object LiveAtBusinessPremisesPage extends OneQuestionPage[Boolean] {
   override def toString: String = "liveAtBusinessPremises"
 }

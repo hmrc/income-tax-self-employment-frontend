@@ -25,8 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class MoreThan25HoursSummarySpec extends SummaryBaseSpec("MoreThan25HoursSummary") {
 
-  override val validData: JsObject   = Json.obj("moreThan25Hours" -> "yes")
-  override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
+  override val validData: JsObject   = Json.obj("moreThan25Hours" -> true)
+  override val invalidData: JsObject = Json.obj("otherPage" -> true)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"moreThan25Hours.title.$userType")
   override val testValue: HtmlContent    = HtmlContent("site.yes")

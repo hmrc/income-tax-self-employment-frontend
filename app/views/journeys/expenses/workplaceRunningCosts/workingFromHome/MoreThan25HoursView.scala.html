@@ -16,7 +16,6 @@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 @import viewmodels.LegendSize.Large
 
 @this(
@@ -38,10 +37,9 @@
     @formHelper(action = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"moreThan25Hours.title.$userType")).asPageHeading(size = Large),
-                items = MoreThan25Hours.options
+                legend = LegendViewModel(messages(s"moreThan25Hours.title.$userType")).asPageHeading(size = Large)
             )
         )
 
