@@ -1241,12 +1241,19 @@ otherExpensesCYA.title.agent = Check your client’s other expenses
 
 ########## Capital Allowances - Tailoring ##########
 
-common.capitalAllowances.useFirstYearAllowance = You can do this by using the 100% first year allowance in one of two ways:
-common.capitalAllowances.inThisTaxYear = All in this tax year
-common.capitalAllowances.multipleTaxYears = Across multiple tax years
-common.capitalAllowances.linkHref = https://www.gov.uk/work-out-capital-allowances
-common.capitalAllowances.linkText = ‘writing down’ allowances
-common.capitalAllowances.postLinkText =  (opens in new tab) on the balance for this and future tax years.
+capitalAllowance.claimingTheAllowance = Claiming the allowance
+capitalAllowance.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
+capitalAllowance.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
+capitalAllowance.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
+capitalAllowance.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
+capitalAllowance.p3 = You should enter any remaining amounts in the writing down allowances section.
+capitalAllowance.fullCost = The full cost (£{0})
+capitalAllowance.useFirstYearAllowance = You can do this by using the 100% first year allowance in one of two ways:
+capitalAllowance.inThisTaxYear = All in this tax year
+capitalAllowance.multipleTaxYears = Across multiple tax years
+capitalAllowance.linkHref = https://www.gov.uk/work-out-capital-allowances
+capitalAllowance.linkText = ‘writing down’ allowances
+capitalAllowance.postLinkText =  (opens in new tab) on the balance for this and future tax years.
 
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
@@ -1366,19 +1373,12 @@ zecUseOutsideSE.error.required.individual = Select or enter a percentage for how
 zecUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the car outside self-employment
 zecUseOutsideSE.change.hidden = Change how much the car was used outside of self-employment
 
-zecHowMuchDoYouWantToClaim.title = Claiming the allowance
-zecHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
-zecHowMuchDoYouWantToClaim.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
-zecHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
-zecHowMuchDoYouWantToClaim.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
 zecHowMuchDoYouWantToClaim.subHeading.individual = How much of your car’s cost do you want to claim under the 100% allowance?
 zecHowMuchDoYouWantToClaim.subHeading.agent = How much of your client’s car’s cost do they want to claim under the 100% allowance?
-zecHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
 zecHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
 zecHowMuchDoYouWantToClaim.error.required.agent = Select either the full cost or a lower amount from your client’s first year allowance that they want to claim
 zecHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
 zecHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
-zecHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zecHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
 
 ########## Capital Allowances - Zero Emission Goods Vehicles ##########
@@ -1431,8 +1431,22 @@ evcpAllowance.p3.individual = Claim part of the cost of the charge-points by usi
 evcpAllowance.p3.agent = Claim part of the cost of the charge-points by using this allowance for this tax year. They can then use
 evcpAllowance.subHeading.individual = Did you buy and install any new and unused electric vehicle charge-points?
 evcpAllowance.subHeading.agent = Did your client buy and install any new and unused electric vehicle charge-points?
+evcpAllowance.subHeading.cya.individual = Did you buy and install new and unused electric vehicle charge-points for work vehicles?
+evcpAllowance.subHeading.cya.agent = Did your client buy and install new and unused electric vehicle charge-points for work vehicles?
 evcpAllowance.error.required.individual = Select yes if you bought and installed new and unused electric vehicle charge-point for work vehicles
 evcpAllowance.error.required.agent = Select yes if your client bought and installed new and unused electric vehicle charge-point for work vehicles
+evcpAllowance.change.hidden = Change whether any new and unused electric vehicle charge-points were bought and installed
+
+taxReliefChargePoints.title = Tax relief on charge-points
+taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
+taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
+taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
+taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
+taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
+taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+taxReliefChargePoints.change.hidden = Change whether to use the 100% first year allowance
 
 amountSpentOnEvcp.title.individual = How much did you spend on electric vehicle charge-points, in pounds?
 amountSpentOnEvcp.title.agent = How much did your client spend on electric vehicle charge-points, in pounds?
@@ -1468,6 +1482,15 @@ taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first 
 taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
 taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
 taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
+
+evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
+evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
+evcpHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
+evcpHowMuchDoYouWantToClaim.error.required.individual = Select if you want to claim the full amount or a lower amount for the charge-points’ costs
+evcpHowMuchDoYouWantToClaim.error.required.agent = Select if your client wants to claim the full amount or a lower amount for the charge-points’ costs
+evcpHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost spent on electric vehicle charge-points
+evcpHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost spent on electric vehicle charge-points
+evcpHowMuchDoYouWantToClaim.change.hidden = Change how much of the cost of electric vehicle charge-points should be claimed under the 100% allowance
 
 ########## Capital Allowances - Balancing Allowance ##########
 
