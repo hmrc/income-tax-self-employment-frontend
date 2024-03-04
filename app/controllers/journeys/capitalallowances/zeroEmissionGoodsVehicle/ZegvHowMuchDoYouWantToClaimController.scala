@@ -93,6 +93,7 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
       }
   }
 
+  // TODO LT it shouldn't be in controller
   private def calculateFullCost(request: DataRequest[AnyContent], businessId: BusinessId): Either[Result, BigDecimal] = {
     val percentageUsedForSE: BigDecimal = 1 - (request.getValue(ZegvUseOutsideSEPercentagePage, businessId).getOrElse(0) / 100.00)
     request.valueOrRedirectDefault(ZegvTotalCostOfVehiclePage, businessId) map (s => (s * percentageUsedForSE).setScale(0, RoundingMode.HALF_UP))

@@ -18,130 +18,50 @@ package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
-import java.time.LocalDate
+import scala.math.Ordered.orderingToOrdered
 
 trait Constraints {
 
-  protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
+  private def check[A](predicate: A => Boolean, onError: => Invalid): Constraint[A] =
     Constraint { input =>
-      constraints
-        .map(_.apply(input))
-        .find(_ != Valid)
-        .getOrElse(Valid)
+      if (predicate(input))
+        Valid
+      else
+        onError
     }
 
-  protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
+  def minimumValue[A: Ordering](minimum: A, errorKey: String): Constraint[A] =
+    check((a: A) => a >= minimum, Invalid(errorKey, minimum))
 
-      if (input >= minimum) {
+  def maximumValue[A: Ordering](maximum: A, errorKey: String): Constraint[A] =
+    check((a: A) => a <= maximum, Invalid(errorKey, maximum))
+
+  def greaterThan[A: Ordering](value: A, errorKey: String, errorArgument: Option[String] = None): Constraint[A] =
+    check((a: A) => a > value, Invalid(errorKey, errorArgument.getOrElse(value)))
+
+  def lessThan[A: Ordering](value: A, errorKey: String, errorArgument: Option[String] = None): Constraint[A] =
+    check((a: A) => a < value, Invalid(errorKey, errorArgument.getOrElse(value)))
+
+  def inRange[A: Ordering](minimum: A, maximum: A, errorKey: String): Constraint[A] =
+    check((a: A) => a >= minimum && a <= maximum, Invalid(errorKey, minimum, maximum))
+
+  def regexp(regexp: String, errorKey: String): Constraint[String] =
+    check((a: String) => a.matches(regexp), Invalid(errorKey, regexp))
+
+  def regexpBigDecimal(regex: String, errorKey: String): Constraint[BigDecimal] =
+    check((a: BigDecimal) => a.toString.stripSuffix(".00").matches(regex), Invalid(errorKey, regex))
+
+  def maxLength(maximum: Int, errorKey: String): Constraint[String] =
+    check((a: String) => a.length <= maximum, Invalid(errorKey, maximum))
+
+  def nonEmptySet(errorKey: String): Constraint[Set[_]] =
+    Constraint { set =>
+      if (set.nonEmpty)
         Valid
-      } else {
-        Invalid(errorKey, minimum)
-      }
-    }
-
-  protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
-
-      if (input <= maximum) {
-        Valid
-      } else {
-        Invalid(errorKey, maximum)
-      }
-    }
-
-  protected def greaterThan[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
-
-      if (input > value) {
-        Valid
-      } else {
-        Invalid(errorKey, errorArgument.getOrElse(value))
-      }
-    }
-
-  protected def lessThan[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
-
-      if (input < value) {
-        Valid
-      } else {
-        Invalid(errorKey, errorArgument.getOrElse(value))
-      }
-    }
-
-  protected def lessThanOrEqualTo[A](value: A, errorKey: String, errorArgument: Option[String] = None)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
-
-      if (input <= value) {
-        Valid
-      } else {
-        Invalid(errorKey, errorArgument.getOrElse(value))
-      }
-    }
-
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint { input =>
-      import ev._
-
-      if (input >= minimum && input <= maximum) {
-        Valid
-      } else {
-        Invalid(errorKey, minimum, maximum)
-      }
-    }
-
-  protected def regexp(regex: String, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.matches(regex) =>
-        Valid
-      case _ =>
-        Invalid(errorKey, regex)
-    }
-
-  protected def regexpBigDecimal(regex: String, errorKey: String): Constraint[BigDecimal] =
-    Constraint {
-      case bd if bd.toString.stripSuffix(".00").matches(regex) =>
-        Valid
-      case _ =>
-        Invalid(errorKey, regex)
-    }
-
-  protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length <= maximum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, maximum)
-    }
-
-  protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
-    Constraint {
-      case date if date.isAfter(maximum) =>
-        Invalid(errorKey, args: _*)
-      case _ =>
-        Valid
-    }
-
-  protected def minDate(minimum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
-    Constraint {
-      case date if date.isBefore(minimum) =>
-        Invalid(errorKey, args: _*)
-      case _ =>
-        Valid
-    }
-
-  protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
-    Constraint {
-      case set if set.nonEmpty =>
-        Valid
-      case _ =>
+      else
         Invalid(errorKey)
     }
 
 }
+
+object Constraints extends Constraints

@@ -35,7 +35,7 @@ object ZegvUseOutsideSEFormProvider extends Mappings {
   def apply(userType: UserType)(implicit messages: Messages): Form[ZegvUseOutsideSEFormModel] = {
     val requiredRadioError  = s"zegvUseOutsideSE.error.required.$userType"
     val requiredAmountError = "error.required"
-    val overMaxError        = "zegvUseOutsideSE.error.overMax"
+    val overMaxError        = "error.maxNinetyNine"
     val lessThanZeroError   = "error.lessThanZero"
     val nonNumericError     = "error.nonNumeric"
     val noDecimalsError     = "error.nonDecimal"

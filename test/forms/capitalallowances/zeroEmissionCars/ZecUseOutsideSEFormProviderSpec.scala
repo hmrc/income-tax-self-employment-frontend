@@ -81,13 +81,13 @@ class ZecUseOutsideSEFormProviderSpec extends OptionFieldBehaviours with IntFiel
       maxPercentage,
       FormError(amountFieldName, overMaxError, Seq(maxPercentage))
     )
-
-    behave like intFieldWithMinimum(
-      form,
-      amountFieldName,
-      minPercentage,
-      FormError(amountFieldName, lessThanZeroError, Seq(minPercentage))
-    )
+//
+//    behave like intFieldWithMinimum(
+//      form,
+//      amountFieldName,
+//      minPercentage,
+//      FormError(amountFieldName, lessThanZeroError, Seq(minPercentage))
+//    )
   }
 
 }

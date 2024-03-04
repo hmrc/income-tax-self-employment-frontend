@@ -71,6 +71,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         )
   }
 
+  // TODO LT use page itself to know what pages to clear
   private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,

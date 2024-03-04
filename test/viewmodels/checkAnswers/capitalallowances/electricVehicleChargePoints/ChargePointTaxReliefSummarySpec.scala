@@ -30,7 +30,7 @@ class ChargePointTaxReliefSummarySpec extends SummaryBaseSpec("ChargePointTaxRel
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"taxReliefChargePoints.subHeading.$userType"))
 
-  override val testValue: HtmlContent = HtmlContent("expenses.true.cya")
+  override val testValue: HtmlContent = HtmlContent("site.yes")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ChargePointTaxReliefSummary.row(userAnswers, taxYear, businessId, userType)(messages)

@@ -16,203 +16,64 @@
 
 package forms.mappings
 
-import generators.Generators
-import org.scalacheck.Gen
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import forms.mappings.Constraints._
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.validation.{Invalid, Valid}
 
-import java.time.LocalDate
+class ConstraintsSpec extends AnyWordSpecLike {
 
-class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
-
-  "firstError" - {
-
-    "must return Valid when all constraints pass" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("foo")
-      result mustEqual Valid
+  "Constraints" should {
+    "validate minimumValue correctly" in {
+      assert(minimumValue(1, "error.min").apply(2) === Valid)
+      assert(minimumValue(1, "error.min").apply(1) === Valid)
+      assert(minimumValue(1, "error.min").apply(0) === Invalid("error.min", 1))
     }
 
-    "must return Invalid when the first constraint fails" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("a" * 11)
-      result mustEqual Invalid("error.length", 10)
+    "validate maximumValue correctly" in {
+      assert(maximumValue(1, "error.max").apply(0) === Valid)
+      assert(maximumValue(1, "error.max").apply(1) === Valid)
+      assert(maximumValue(1, "error.max").apply(2) === Invalid("error.max", 1))
     }
 
-    "must return Invalid when the second constraint fails" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
-      result mustEqual Invalid("error.regexp", """^\w+$""")
+    "validate greaterThan correctly" in {
+      assert(greaterThan(0, "error.greaterThan").apply(1) === Valid)
+      assert(greaterThan(0, "error.greaterThan").apply(0) === Invalid("error.greaterThan", 0))
+      assert(greaterThan(0, "error.greaterThan").apply(-1) === Invalid("error.greaterThan", 0))
     }
 
-    "must return Invalid for the first error when both constraints fail" in {
-      val result = firstError(maxLength(-1, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
-      result mustEqual Invalid("error.length", -1)
-    }
-  }
-
-  "minimumValue" - {
-
-    "must return Valid for a number greater than the threshold" in {
-      val result = minimumValue(1, "error.min").apply(2)
-      result mustEqual Valid
+    "validate lessThan correctly" in {
+      assert(lessThan(0, "error.lessThan").apply(-1) === Valid)
+      assert(lessThan(0, "error.lessThan").apply(0) === Invalid("error.lessThan", 0))
+      assert(lessThan(0, "error.lessThan").apply(1) === Invalid("error.lessThan", 0))
     }
 
-    "must return Valid for a number equal to the threshold" in {
-      val result = minimumValue(1, "error.min").apply(1)
-      result mustEqual Valid
+    "validate inRange correctly" in {
+      assert(inRange(1, 3, "error.inRange").apply(2) === Valid)
+      assert(inRange(1, 3, "error.inRange").apply(4) === Invalid("error.inRange", 1, 3))
     }
 
-    "must return Invalid for a number below the threshold" in {
-      val result = minimumValue(1, "error.min").apply(0)
-      result mustEqual Invalid("error.min", 1)
-    }
-  }
-
-  "maximumValue" - {
-
-    "must return Valid for a number less than the threshold" in {
-      val result = maximumValue(1, "error.max").apply(0)
-      result mustEqual Valid
+    "validate regexp correctly" in {
+      assert(regexp("""^\w+$""", "error.invalid").apply("foo") === Valid)
+      assert(regexp("""^\d+$""", "error.invalid").apply("foo") === Invalid("error.invalid", """^\d+$"""))
     }
 
-    "must return Valid for a number equal to the threshold" in {
-      val result = maximumValue(1, "error.max").apply(1)
-      result mustEqual Valid
+    "validate regexpBigDecimal correctly" in {
+      assert(regexpBigDecimal("""^\d+\.\d{2}$""", "error.regexpBigDecimal").apply(BigDecimal("123.45")) === Valid)
+      assert(
+        regexpBigDecimal("""^\d+\.\d{2}$""", "error.regexpBigDecimal")
+          .apply(BigDecimal("123")) === Invalid("error.regexpBigDecimal", """^\d+\.\d{2}$"""))
     }
 
-    "must return Invalid for a number above the threshold" in {
-      val result = maximumValue(1, "error.max").apply(2)
-      result mustEqual Invalid("error.max", 1)
-    }
-  }
-
-  "greaterThan" - {
-
-    "must return Valid for a number greater than the threshold" in {
-      val result = greaterThan(0, "error.greaterThan").apply(1)
-      result mustEqual Valid
+    "validate maxLength correctly" in {
+      assert(maxLength(10, "error.length").apply("a" * 9) === Valid)
+      assert(maxLength(10, "error.length").apply("") === Valid)
+      assert(maxLength(10, "error.length").apply("a" * 10) === Valid)
+      assert(maxLength(10, "error.length").apply("a" * 11) === Invalid("error.length", 10))
     }
 
-    "must return Invalid for a number equal to the threshold" in {
-      val result = greaterThan(0, "error.greaterThan").apply(0)
-      result mustEqual Invalid("error.greaterThan", 0)
-    }
-
-    "must return Invalid for a number below the threshold" in {
-      val result = greaterThan(0, "error.greaterThan").apply(-1)
-      result mustEqual Invalid("error.greaterThan", 0)
-    }
-  }
-
-  "lessThan" - {
-
-    "must return Valid for a number less than the threshold" in {
-      val result = lessThan(0, "error.lessThan").apply(-1)
-      result mustEqual Valid
-    }
-
-    "must return Invalid for a number equal to the threshold" in {
-      val result = lessThan(0, "error.lessThan").apply(0)
-      result mustEqual Invalid("error.lessThan", 0)
-    }
-
-    "must return Invalid for a number above the threshold" in {
-      val result = lessThan(0, "error.lessThan").apply(1)
-      result mustEqual Invalid("error.lessThan", 0)
-    }
-  }
-
-  "regexp" - {
-
-    "must return Valid for an input that matches the expression" in {
-      val result = regexp("""^\w+$""", "error.invalid")("foo")
-      result mustEqual Valid
-    }
-
-    "must return Invalid for an input that does not match the expression" in {
-      val result = regexp("""^\d+$""", "error.invalid")("foo")
-      result mustEqual Invalid("error.invalid", """^\d+$""")
-    }
-  }
-
-  "maxLength" - {
-
-    "must return Valid for a string shorter than the allowed length" in {
-      val result = maxLength(10, "error.length")("a" * 9)
-      result mustEqual Valid
-    }
-
-    "must return Valid for an empty string" in {
-      val result = maxLength(10, "error.length")("")
-      result mustEqual Valid
-    }
-
-    "must return Valid for a string equal to the allowed length" in {
-      val result = maxLength(10, "error.length")("a" * 10)
-      result mustEqual Valid
-    }
-
-    "must return Invalid for a string longer than the allowed length" in {
-      val result = maxLength(10, "error.length")("a" * 11)
-      result mustEqual Invalid("error.length", 10)
-    }
-  }
-
-  "maxDate" - {
-
-    "must return Valid for a date before or equal to the maximum" in {
-
-      val gen: Gen[(LocalDate, LocalDate)] = for {
-        max  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
-        date <- datesBetween(LocalDate.of(2000, 1, 1), max)
-      } yield (max, date)
-
-      forAll(gen) { case (max, date) =>
-        val result = maxDate(max, "error.future")(date)
-        result mustEqual Valid
-      }
-    }
-
-    "must return Invalid for a date after the maximum" in {
-
-      val gen: Gen[(LocalDate, LocalDate)] = for {
-        max  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
-        date <- datesBetween(max.plusDays(1), LocalDate.of(3000, 1, 2))
-      } yield (max, date)
-
-      forAll(gen) { case (max, date) =>
-        val result = maxDate(max, "error.future", "foo")(date)
-        result mustEqual Invalid("error.future", "foo")
-      }
-    }
-  }
-
-  "minDate" - {
-
-    "must return Valid for a date after or equal to the minimum" in {
-
-      val gen: Gen[(LocalDate, LocalDate)] = for {
-        min  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
-        date <- datesBetween(min, LocalDate.of(3000, 1, 1))
-      } yield (min, date)
-
-      forAll(gen) { case (min, date) =>
-        val result = minDate(min, "error.past", "foo")(date)
-        result mustEqual Valid
-      }
-    }
-
-    "must return Invalid for a date before the minimum" in {
-
-      val gen: Gen[(LocalDate, LocalDate)] = for {
-        min  <- datesBetween(LocalDate.of(2000, 1, 2), LocalDate.of(3000, 1, 1))
-        date <- datesBetween(LocalDate.of(2000, 1, 1), min.minusDays(1))
-      } yield (min, date)
-
-      forAll(gen) { case (min, date) =>
-        val result = minDate(min, "error.past", "foo")(date)
-        result mustEqual Invalid("error.past", "foo")
-      }
+    "validate nonEmptySet correctly" in {
+      assert(nonEmptySet("error.nonEmptySet").apply(Set(1, 2, 3)) === Valid)
+      assert(nonEmptySet("error.nonEmptySet").apply(Set.empty) === Invalid("error.nonEmptySet"))
     }
   }
 

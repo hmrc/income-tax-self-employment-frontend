@@ -181,3 +181,5 @@ trait Generators extends ModelGenerators {
     }
   }
 }
+
+object Generators extends Generators

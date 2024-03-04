@@ -1435,11 +1435,6 @@ zegvUseOutsideSE.error.required.individual = Select or enter a percentage for ho
 zegvUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the vehicle outside self-employment
 zegvUseOutsideSE.change.hidden = Change how much the vehicle was used outside of self-employment
 
-zegvHowMuchDoYouWantToClaim.title = Claiming the allowance
-zegvHowMuchDoYouWantToClaim.p1.individual = Claiming the full amount will reduce your taxable income for this year only.
-zegvHowMuchDoYouWantToClaim.p1.agent = Claiming the full amount will reduce your client’s taxable income for this year only.
-zegvHowMuchDoYouWantToClaim.p2.individual = You might want to use a lower amount if you’re spreading the rest of the cost over future years.
-zegvHowMuchDoYouWantToClaim.p2.agent = Your client might want to use a lower amount if they’re spreading the rest of the cost over future years.
 zegvHowMuchDoYouWantToClaim.p3.individual = You should enter any remaining amounts in the ’writing down’ allowances section.
 zegvHowMuchDoYouWantToClaim.p3.agent = Your client should enter any remaining amounts in the ’writing down’ allowances section.
 zegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle’s cost do you want to claim under this 100% allowance?

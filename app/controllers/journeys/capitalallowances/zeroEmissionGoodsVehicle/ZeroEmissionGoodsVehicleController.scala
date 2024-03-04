@@ -35,12 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: MessagesApi,
+                                                    val controllerComponents: MessagesControllerComponents,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    service: SelfEmploymentService,
                                                     formProvider: ZeroEmissionGoodsVehicleFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
+                                                    service: SelfEmploymentService,
                                                     view: ZeroEmissionGoodsVehiclesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
