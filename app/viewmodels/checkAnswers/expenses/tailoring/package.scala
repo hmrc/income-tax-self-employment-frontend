@@ -67,9 +67,9 @@ package object tailoring {
 
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {
-      case "no"  => messages("site.no")
-      case "yes" => messages("site.yes")
-      case value => messages(s"expenses.$value.cya")
+      case "no" | "false" => messages("site.no")
+      case "yes" | "true" => messages("site.yes")
+      case value          => messages(s"expenses.$value.cya")
     }
 
   def formatProfessionalServiceExpensesAnswers(answers: Set[ProfessionalServiceExpenses], userType: UserType)(implicit messages: Messages): String =

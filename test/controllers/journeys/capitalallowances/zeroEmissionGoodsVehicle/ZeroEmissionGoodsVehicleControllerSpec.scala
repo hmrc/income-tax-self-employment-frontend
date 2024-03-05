@@ -22,41 +22,31 @@ import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicle
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
 
 class ZeroEmissionGoodsVehicleControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec("ZeroEmissionGoodsVehicleController", ZeroEmissionGoodsVehiclePage) {
 
-  override def onPageLoadCall: Call = routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode)
+  def onPageLoadCall: Call = routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+  def onSubmitCall: Call   = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode)
+  def onwardRoute: Call    = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = models.common.onwardRoute
+  val validAnswer: Boolean = true
 
-  override val validAnswer: Boolean = true
+  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
 
-  override def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
-
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
+  def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[ZeroEmissionGoodsVehiclesView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
+  def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
-
-  override val bindings: List[Binding[_]] = List(
-    bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))
-  )
 }

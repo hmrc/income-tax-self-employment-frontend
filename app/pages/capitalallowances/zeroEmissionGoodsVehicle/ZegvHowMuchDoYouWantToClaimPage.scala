@@ -16,8 +16,14 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import pages.Page
+import models.common._
+import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim
+import play.api.mvc.Call
 
-object ZeroEmissionGoodsVehicleCYAPage extends Page {
-  override def toString: String = "zeroEmissionGoodsVehicleCYA"
+object ZegvHowMuchDoYouWantToClaimPage extends ZegvBasePage[ZegvHowMuchDoYouWantToClaim] {
+  override def toString: String = "zegvHowMuchDoYouWantToClaim"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    cyaPage(taxYear, businessId)
 }

@@ -21,26 +21,25 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait ZegvAllowance
+sealed trait ZegvHowMuchDoYouWantToClaim
+object ZegvHowMuchDoYouWantToClaim extends Enumerable.Implicits {
 
-object ZegvAllowance extends Enumerable.Implicits {
+  case object FullCost    extends WithName("fullCost") with ZegvHowMuchDoYouWantToClaim
+  case object LowerAmount extends WithName("lowerAmount") with ZegvHowMuchDoYouWantToClaim
 
-  case object Yes extends WithName("yes") with ZegvAllowance
-  case object No  extends WithName("no") with ZegvAllowance
-
-  val values: Seq[ZegvAllowance] = Seq(
-    Yes,
-    No
+  val values: Seq[ZegvHowMuchDoYouWantToClaim] = Seq(
+    FullCost,
+    LowerAmount
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+  def options(fullCostAmount: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(s"site.${value.toString}")),
+      content = Text(messages(s"expenses.${value.toString}", fullCostAmount)),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
   }
 
-  implicit val enumerable: Enumerable[ZegvAllowance] =
+  implicit val enumerable: Enumerable[ZegvHowMuchDoYouWantToClaim] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

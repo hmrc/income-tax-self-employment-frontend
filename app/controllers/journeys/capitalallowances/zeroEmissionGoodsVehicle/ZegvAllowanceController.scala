@@ -18,20 +18,14 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.clearPagesWhenNo
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance.{No, Yes}
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvAllowancePage, ZegvTotalCostOfVehiclePage}
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.Settable
 import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceView
@@ -41,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                         navigator: CapitalAllowancesNavigator,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
@@ -57,39 +50,22 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
     implicit request =>
       val form = request.userAnswers
         .get(ZegvAllowancePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+        .fold(formProvider(request.userType, taxYear))(formProvider(request.userType, taxYear).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(request.userType, taxYear)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
-              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(ZegvAllowancePage, answer, request, mode, businessId)
               updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvAllowancePage)
-            } yield Redirect(navigator.nextPage(ZegvAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+            } yield ZegvAllowancePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
         )
   }
-
-  private def handleGatewayQuestion(currentAnswer: ZegvAllowance,
-                                    request: DataRequest[_],
-                                    mode: Mode,
-                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZegvTotalCostOfVehiclePage)
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case Yes => Future(request.userAnswers)
-    }
-    val redirectMode = request.getValue(ZegvAllowancePage, businessId) match {
-      case Some(No) if currentAnswer == Yes => NormalMode
-      case _                                => mode
-    }
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
-  }
-
 }

@@ -1411,6 +1411,8 @@ zeroEmissionGoodsVehicle.change.hidden = Change whether you bought any new and u
 
 zegvAllowance.p1.individual = You can use the cost of your vehicle to reduce your taxable income.
 zegvAllowance.p1.agent = Your client can use the cost of their vehicle to reduce their taxable income.
+zegvAllowance.p2.individual = You can do this by using the 100% first year allowance in one of two ways:
+zegvAllowance.p2.agent = Your client can do this by using the 100% first year allowance in one of two ways:
 zegvAllowance.p3.individual = Reduce your taxable income by the full cost of the vehicle.
 zegvAllowance.p3.agent = Reduce your client’s taxable income by the full cost of the vehicle.
 zegvAllowance.p4.individual = Claim part of the cost of your vehicle by using the allowances for this tax year. You can then use
@@ -1421,6 +1423,27 @@ zegvTotalCostOfVehicle.hint.individual = This is the price you paid at the time 
 zegvTotalCostOfVehicle.hint.agent = This is the price your client paid at the time they purchased their vehicle. If your client bought more than one vehicle, enter the total for all of them.
 zegvTotalCostOfVehicle.error.required = Enter the total cost of the vehicle in pounds
 zegvTotalCostOfVehicle.change.hidden = Change the total cost of the vehicle
+
+zegvOnlyForSelfEmployment.title.individual = Did you only use the vehicle for your self-employment?
+zegvOnlyForSelfEmployment.title.agent = Did your client only use the vehicle for their self-employment? 
+zegvOnlyForSelfEmployment.no.individual = No, I used it for other things as well
+zegvOnlyForSelfEmployment.no.agent = No, my client used it for other things as well
+
+zegvUseOutsideSE.title.individual = How much did you use the vehicle outside your self-employment?
+zegvUseOutsideSE.title.agent = How much did your client use the vehicle outside their self-employment?
+zegvUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the vehicle outside self-employment
+zegvUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the vehicle outside self-employment
+zegvUseOutsideSE.change.hidden = Change how much the vehicle was used outside of self-employment
+
+zegvHowMuchDoYouWantToClaim.p3.individual = You should enter any remaining amounts in the ’writing down’ allowances section.
+zegvHowMuchDoYouWantToClaim.p3.agent = Your client should enter any remaining amounts in the ’writing down’ allowances section.
+zegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle’s cost do you want to claim under this 100% allowance?
+zegvHowMuchDoYouWantToClaim.subHeading.agent = How much of the vehicle’s cost do they want to claim under this 100% allowance?
+zegvHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
+zegvHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
+zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
+zegvHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
+zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
 
 ########## Capital Allowances - Electric Vehicle Charge Points ##########
 
@@ -1472,17 +1495,6 @@ evcpUseOutsideSE.title.agent = How much did your client use the charge-points ou
 evcpUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the charge-points outside your self-employment
 evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
 evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
-
-
-taxReliefChargePoints.title = Tax relief on charge-points
-taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
-taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
-taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
-taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
-taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
-taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
 
 evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
 evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
