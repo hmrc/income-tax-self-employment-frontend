@@ -21,7 +21,6 @@ import controllers.returnAccountingType
 import forms.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,20 +47,15 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(GoodsToSellOrUseAmountPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-      val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-        .contains(TaxiMinicabOrRoadHaulage.Yes)
+      val preparedForm =
+        request.getValue(GoodsToSellOrUseAmountPage, businessId).fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), taxiDriver))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val taxiDriver = request.userAnswers
-        .get(TaxiMinicabOrRoadHaulagePage, Some(businessId))
-        .contains(TaxiMinicabOrRoadHaulage.Yes)
+      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
       formProvider(request.userType)
         .bindFromRequest()
         .fold(

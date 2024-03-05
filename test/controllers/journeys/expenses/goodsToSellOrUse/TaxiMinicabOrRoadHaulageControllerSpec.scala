@@ -23,7 +23,6 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new TaxiMinicabOrRoadHaulageFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[TaxiMinicabOrRoadHaulage])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -82,10 +81,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId)
-              .set(TaxiMinicabOrRoadHaulagePage, TaxiMinicabOrRoadHaulage.values.head, Some(businessId))
-              .success
-              .value
+            val userAnswers = UserAnswers(userAnswersId).set(TaxiMinicabOrRoadHaulagePage, true, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
@@ -97,9 +93,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
               val view = application.injector.instanceOf[TaxiMinicabOrRoadHaulageView]
 
               val expectedResult =
-                view(userScenario.form.fill(TaxiMinicabOrRoadHaulage.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -142,7 +136,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
         running(application) {
           val request =
             FakeRequest(POST, taxiMinicabOrRoadHaulageRoute)
-              .withFormUrlEncodedBody(("value", TaxiMinicabOrRoadHaulage.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -206,7 +200,7 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
             running(application) {
               val request =
                 FakeRequest(POST, taxiMinicabOrRoadHaulageRoute)
-                  .withFormUrlEncodedBody(("value", TaxiMinicabOrRoadHaulage.values.head.toString))
+                  .withFormUrlEncodedBody(("value", true.toString))
 
               val result = route(application, request).value
 

@@ -25,8 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class LiveAtBusinessPremisesSummarySpec extends SummaryBaseSpec("LiveAtBusinessPremisesSummary") {
 
-  override val validData: JsObject   = Json.obj("liveAtBusinessPremises" -> "yes")
-  override val invalidData: JsObject = Json.obj("otherPage" -> "yes")
+  override val validData: JsObject   = Json.obj("liveAtBusinessPremises" -> true)
+  override val invalidData: JsObject = Json.obj("otherPage" -> true)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"liveAtBusinessPremises.title.$userType")
   override val testValue: HtmlContent    = HtmlContent("site.yes")

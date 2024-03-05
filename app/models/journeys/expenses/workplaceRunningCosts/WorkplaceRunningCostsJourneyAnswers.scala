@@ -16,16 +16,15 @@
 
 package models.journeys.expenses.workplaceRunningCosts
 
-import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import play.api.libs.json.{Json, OFormat}
 
-case class WorkplaceRunningCostsJourneyAnswers(moreThan25Hours: Option[MoreThan25Hours],
+case class WorkplaceRunningCostsJourneyAnswers(moreThan25Hours: Option[Boolean],
                                                wfhHours25To50: Option[Int],
                                                wfhHours51To100: Option[Int],
                                                wfhHours101Plus: Option[Int],
                                                wfhFlatRateOrActualCosts: Option[WfhFlatRateOrActualCosts],
                                                wfhClaimingAmount: Option[BigDecimal],
-                                               liveAtBusinessPremises: Option[LiveAtBusinessPremises],
+                                               liveAtBusinessPremises: Option[Boolean],
                                                businessPremisesAmount: Option[BigDecimal],
                                                businessPremisesDisallowableAmount: Option[BigDecimal],
                                                livingAtBusinessPremisesOnePerson: Option[Int],

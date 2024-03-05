@@ -16,9 +16,8 @@
 
 package pages.expenses.goodsToSellOrUse
 
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import pages.OneQuestionPage
 
-case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[TaxiMinicabOrRoadHaulage] {
+case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[Boolean] {
   override def toString: String = "taxiMinicabOrRoadHaulage"
 }

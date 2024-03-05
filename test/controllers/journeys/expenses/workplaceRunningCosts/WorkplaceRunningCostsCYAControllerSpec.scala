@@ -71,13 +71,13 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
   }
 
   override val submissionData: JsObject = Json.obj(
-    "moreThan25Hours"                         -> "yes",
+    "moreThan25Hours"                         -> true,
     "wfhHours25To50"                          -> 1,
     "wfhHours51To100"                         -> 1,
     "wfhHours101Plus"                         -> 1,
     "wfhFlatRateOrActualCosts"                -> "flatRate",
     "wfhClaimingAmount"                       -> 100,
-    "liveAtBusinessPremises"                  -> "yes",
+    "liveAtBusinessPremises"                  -> true,
     "businessPremisesAmount"                  -> 100,
     "businessPremisesDisallowableAmount"      -> 100,
     "livingAtBusinessPremisesOnePerson"       -> 1,

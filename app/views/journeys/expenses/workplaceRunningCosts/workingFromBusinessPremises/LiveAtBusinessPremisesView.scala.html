@@ -16,7 +16,6 @@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -45,7 +44,7 @@
     @formHelper(action = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
       @govukRadios(
-        RadiosViewModel(
+        RadiosViewModel.yesNo(
           field = form("value"),
           legend = LegendViewModel(HtmlContent(
               s"""
@@ -58,8 +57,7 @@
                             </div>
                         </div>
                         """))
-          .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-          items = LiveAtBusinessPremises.options
+          .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
         )
       )
 

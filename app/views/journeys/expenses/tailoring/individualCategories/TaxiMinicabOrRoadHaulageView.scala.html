@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 @import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.goodsToSellOrUse.routes
 
@@ -37,11 +36,10 @@
     @formHelper(action = routes.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.title.$userType"))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
-                items  = TaxiMinicabOrRoadHaulage.options
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l")
             )
         )
 

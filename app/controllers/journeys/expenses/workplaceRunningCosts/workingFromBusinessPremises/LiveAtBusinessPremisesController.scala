@@ -20,8 +20,6 @@ import controllers.actions._
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises
-import models.journeys.expenses.workplaceRunningCosts.LiveAtBusinessPremises.{No, Yes}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.WorkplaceRunningCostsNavigator
@@ -52,17 +50,15 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(LiveAtBusinessPremisesPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
+      val preparedForm =
+        request.getValue(LiveAtBusinessPremisesPage, businessId).fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(answer: LiveAtBusinessPremises): Future[Result] =
+      def handleSuccess(answer: Boolean): Future[Result] =
         for {
           (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
           updatedUserAnswers                <- selfEmploymentService.persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
@@ -76,7 +72,7 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: LiveAtBusinessPremises,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
@@ -88,13 +84,14 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
         WfbpFlatRateOrActualCostsPage,
         WfbpClaimingAmountPage
       )
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case Yes => Future(request.userAnswers)
+    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
+      Future(request.userAnswers)
+    } else {
+      Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
     }
     val redirectMode = request.getValue(LiveAtBusinessPremisesPage, businessId) match {
-      case Some(No) if currentAnswer == Yes => NormalMode
-      case _                                => mode
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

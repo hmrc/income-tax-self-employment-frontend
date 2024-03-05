@@ -16,9 +16,8 @@
 
 package pages.expenses.workplaceRunningCosts.workingFromHome
 
-import models.journeys.expenses.workplaceRunningCosts.workingFromHome.MoreThan25Hours
 import pages.OneQuestionPage
 
-case object MoreThan25HoursPage extends OneQuestionPage[MoreThan25Hours] {
+case object MoreThan25HoursPage extends OneQuestionPage[Boolean] {
   override def toString: String = "moreThan25Hours"
 }

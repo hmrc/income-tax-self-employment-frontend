@@ -16,10 +16,9 @@
 
 package models.journeys.expenses.goodsToSellOrUse
 
-import models.journeys.expenses.individualCategories.TaxiMinicabOrRoadHaulage
 import play.api.libs.json._
 
-case class GoodsToSellOrUseJourneyAnswers(taxiMinicabOrRoadHaulage: TaxiMinicabOrRoadHaulage,
+case class GoodsToSellOrUseJourneyAnswers(taxiMinicabOrRoadHaulage: Boolean,
                                           goodsToSellOrUseAmount: BigDecimal,
                                           disallowableGoodsToSellOrUseAmount: Option[BigDecimal])
 

@@ -53,7 +53,7 @@ class GoodsToSellOrUseCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   )
 
   override lazy val submissionData = Json.obj(
-    "taxiMinicabOrRoadHaulage"           -> "yes",
+    "taxiMinicabOrRoadHaulage"           -> true,
     "goodsToSellOrUse"                   -> "yesDisallowable",
     "goodsToSellOrUseAmount"             -> 100.00,
     "disallowableGoodsToSellOrUseAmount" -> 100.00
