@@ -1,0 +1,105 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.templates.helpers.Heading
+@import play.twirl.api.HtmlFormat
+
+@import views.html.components.ConditionalRadio
+@import viewmodels.components.ConditionalRadioWithOptions
+@import viewmodels.components.RadioIdWithLabel
+@import play.twirl.api.Html
+
+@this(layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        conditionalRadio: ConditionalRadio,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        heading: Heading)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, fullCostAmount: BigDecimal)(implicit request: Request[_], messages: Messages)
+
+@formHasErrors = @{
+    form.errors.nonEmpty
+}
+@missingRadioError = @{
+    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")), List()))
+}
+@missingRadioErrorMsg = @{
+    if(missingRadioError) {
+            <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")}
+            </p>
+    }
+}
+@amountInputErrors = @{
+    formHasErrors && !missingRadioError
+}
+
+@amountInputErrorMsg = @{
+    if(amountInputErrors) {
+        val errorMessage: String = <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(form.errors.head.messages.headOption.getOrElse(""))}
+            </p>.toString()
+        Html(errorMessage)
+    } else {
+        HtmlFormat.empty
+    }
+}
+
+@layout(pageTitle = title(form, messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
+
+    @if(formHasErrors) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
+    }
+
+    @heading(messages("capitalAllowance.claimingTheAllowance"), extraClasses = "govuk-!-margin-bottom-3")
+
+    <div class="govuk-body">
+        <p>@messages(s"capitalAllowance.p1.$userType")</p>
+        <p>@messages(s"capitalAllowance.p2.$userType")</p>
+        <p>@messages(s"zegvHowMuchDoYouWantToClaim.p3.$userType")</p>
+    </div>
+
+    @formHelper(action = routes.ZegvHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        <div class="govuk-form-group @{
+            if(missingRadioError) "govuk-form-group--error" else ""
+        }">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h3 class="govuk-fieldset__heading">@messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType")</h3>
+                </legend>
+
+                @missingRadioErrorMsg
+
+                @conditionalRadio("howMuchDoYouWantToClaim", form, List(
+                    ConditionalRadioWithOptions("fullCost", messages("zegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount), None),
+                    ConditionalRadioWithOptions("lowerAmount", messages("common.lowerAmount"), Some(
+                        RadioIdWithLabel("totalCost", messages("site.enterTheAmount"), hasPound = true, amountInputErrorMsg)
+                    ))
+                ))
+
+            </fieldset>
+        </div>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}

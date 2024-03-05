@@ -18,15 +18,13 @@ package forms.capitalallowances.balancingAllowance
 
 import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.Form
 
 class BalancingAllowanceFormProviderSpec
     extends BooleanFormProviderBaseSpec(
       "BalancingAllowanceFormProvider"
     ) {
 
-  override def formProvider(userType: UserType): Form[Boolean] = new BalancingAllowanceFormProvider()(userType)
-
-  override def requiredErrorKey: String = "balancingAllowance.error.required"
+  override def requiredErrorKey: String         = "balancingAllowance.error.required"
+  override def formProvider(userType: UserType) = new BalancingAllowanceFormProvider()(userType)
 
 }

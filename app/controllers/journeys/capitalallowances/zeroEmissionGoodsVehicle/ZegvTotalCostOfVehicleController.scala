@@ -21,7 +21,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvTotalCostOfVehicleController @Inject() (override val messagesApi: MessagesApi,
-                                                  navigator: CapitalAllowancesNavigator,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
@@ -65,7 +63,7 @@ class ZegvTotalCostOfVehicleController @Inject() (override val messagesApi: Mess
           value =>
             service
               .persistAnswer(businessId, request.userAnswers, value, ZegvTotalCostOfVehiclePage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(ZegvTotalCostOfVehiclePage, mode, updatedAnswers, taxYear, businessId)))
+              .map(updatedAnswers => ZegvTotalCostOfVehiclePage.redirectNext(mode, updatedAnswers, businessId, taxYear))
         )
   }
 

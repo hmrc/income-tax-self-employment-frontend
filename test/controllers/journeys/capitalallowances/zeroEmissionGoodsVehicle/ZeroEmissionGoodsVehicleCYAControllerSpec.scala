@@ -28,15 +28,14 @@ import viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle._
 
 class ZeroEmissionGoodsVehicleCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
-  override val pageHeading: String =
-    CapitalAllowancesCYAPage.pageName.value
+  val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] = List(Json.obj("zeroEmissionGoodsVehicle" -> false))
+  val testDataCases: List[JsObject] = List(Json.obj("zeroEmissionGoodsVehicle" -> false))
 
-  override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad
-  override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ZeroEmissionGoodsVehicleCYAController.onSubmit
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ZeroEmissionGoodsVehicleCYAController.onSubmit
 
-  override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+  def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(ZeroEmissionGoodsVehicleSummary.row(userAnswers, taxYear, businessId, userType).value),

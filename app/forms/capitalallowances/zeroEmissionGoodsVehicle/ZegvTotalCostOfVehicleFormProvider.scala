@@ -27,7 +27,7 @@ class ZegvTotalCostOfVehicleFormProvider @Inject() extends Mappings with MoneyBo
   def apply(): Form[BigDecimal] =
     Form(
       "value" -> currency("zegvTotalCostOfVehicle.error.required", "error.nonNumeric")
-        .verifying(greaterThan(minimumOneValue, "error.minimumOne"))
+        .verifying(greaterThan(minimumValue, "error.minimumOne"))
         .verifying(lessThan(maximumValue, "expenses.error.overMax"))
         .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
     )

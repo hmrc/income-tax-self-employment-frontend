@@ -19,16 +19,16 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBigDecimal
+import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
 
-object ZegvTotalCostOfVehicleSummary {
+object ZegvTotalCostOfVehicleSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZegvTotalCostOfVehiclePage, businessId.some)
       .map { answer =>

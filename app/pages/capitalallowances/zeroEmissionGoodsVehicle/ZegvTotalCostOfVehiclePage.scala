@@ -16,8 +16,15 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import pages.OneQuestionPage
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+import models.NormalMode
+import models.common._
+import models.database.UserAnswers
+import play.api.mvc.Call
 
-object ZegvTotalCostOfVehiclePage extends OneQuestionPage[BigDecimal] {
+object ZegvTotalCostOfVehiclePage extends ZegvBasePage[BigDecimal] {
   override def toString: String = "zegvTotalCostOfVehicle"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 }

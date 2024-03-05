@@ -16,9 +16,34 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowance
-import pages.OneQuestionPage
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+import models.NormalMode
+import models.common._
+import models.database.UserAnswers
+import pages.redirectOnBoolean
+import play.api.mvc.Call
+import queries.Settable
 
-object ZegvAllowancePage extends OneQuestionPage[ZegvAllowance] {
+object ZegvAllowancePage extends ZegvBasePage[Boolean] {
   override def toString: String = "zegvAllowance"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(
+      ZegvTotalCostOfVehiclePage,
+      ZegvOnlyForSelfEmploymentPage,
+      ZegvUseOutsideSEPage,
+      ZegvUseOutsideSEPercentagePage,
+      ZegvClaimAmountPage,
+      ZegvHowMuchDoYouWantToClaimPage
+    )
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    redirectOnBoolean(
+      this,
+      userAnswers,
+      businessId,
+      onTrue = routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode),
+      onFalse = cyaPage(taxYear, businessId)
+    )
+
 }

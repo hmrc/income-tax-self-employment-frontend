@@ -19,6 +19,7 @@ package models.journeys
 import enumeratum._
 import models.common.PageName
 import pages.abroad.SelfEmploymentAbroadPage
+import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
@@ -167,7 +168,16 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesZeroEmissionGoodsVehicle extends Journey("capital-allowances-zero-emission-goods-vehicle") {
-    override val pageKeys: List[PageName] = List(ZeroEmissionGoodsVehiclePage.pageName, ZegvAllowancePage.pageName)
+    override val pageKeys: List[PageName] = List(
+      ZeroEmissionGoodsVehiclePage.pageName,
+      ZegvAllowancePage.pageName,
+      ZegvTotalCostOfVehiclePage.pageName,
+      ZegvOnlyForSelfEmploymentPage.pageName,
+      ZegvUseOutsideSEPage.pageName,
+      ZegvUseOutsideSEPercentagePage.pageName,
+      ZegvHowMuchDoYouWantToClaimPage.pageName,
+      ZegvClaimAmountPage.pageName
+    )
   }
 
   case object CapitalAllowancesElectricVehicleChargePoints extends Journey("capital-allowances-electric-vehicle-charge-points") {
@@ -184,7 +194,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesBalancingAllowance extends Journey("capital-allowances-balancing-allowance") {
-    override val pageKeys: List[PageName] = List() // TODO add balancing allowance and amount pages
+    override val pageKeys: List[PageName] = List(
+      BalancingAllowancePage.pageName,
+      BalancingAllowanceAmountPage.pageName
+    )
   }
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {

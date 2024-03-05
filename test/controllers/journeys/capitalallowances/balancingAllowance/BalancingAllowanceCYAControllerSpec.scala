@@ -24,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAllowanceAmountSummary, BalancingAllowanceSummary}
 
 class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
@@ -31,6 +32,8 @@ class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
+      "balancingAllowance"       -> true,
+      "balancingAllowanceAmount" -> 123.00
     ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.BalancingAllowanceCYAController.onPageLoad
@@ -40,7 +43,10 @@ class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
+        BalancingAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
+        BalancingAllowanceAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
 }

@@ -16,7 +16,7 @@
 
 package pages
 
-import models.common.BusinessId
+import models.common._
 import play.api.libs.json.JsPath
 
 trait OneQuestionPage[A] extends QuestionPage[A] {
@@ -26,5 +26,4 @@ trait OneQuestionPage[A] extends QuestionPage[A] {
       case Some(id) => JsPath \ id.value \ toString
       case None     => JsPath \ toString
     }
-
 }

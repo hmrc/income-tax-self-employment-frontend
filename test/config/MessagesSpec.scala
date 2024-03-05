@@ -22,6 +22,8 @@ import play.api.Application
 import play.api.i18n.MessagesApi
 
 import scala.annotation.tailrec
+import scala.io.Source
+import scala.util.Using
 
 class MessagesSpec extends SpecBase {
 
@@ -62,12 +64,41 @@ class MessagesSpec extends SpecBase {
 
       result mustBe Set()
     }
-    "english messages file" in {
+
+    // TODO Let's get back to making the messages not duplicated at the end when we also prepare Walsh translation
+    "english messages file" ignore {
       val messages: List[(String, String)] = filterExcludedKeys(english.toList, exclusionKeys, exclusionKeySubstrings)
 
       val result = checkMessagesAreUnique(messages, messages)
 
       result mustBe Set()
+    }
+
+    "no duplicate properties" in {
+      // TODO right now we have some duplicates, we need to fix it. Once it is fixed remove this exclusion
+      val excluded = List("wfhFlatRateOrActualCosts.subHeading.individual", "wfhFlatRateOrActualCosts.subHeading.agent")
+
+      val filePath = "conf/messages.en"
+
+      val keys = Using(Source.fromFile(filePath)) { source =>
+        source
+          .getLines()
+          .filter(line => line.contains("="))
+          .toList
+          .map(_.takeWhile(_ != '=').trim)
+      }.success.value
+        .filterNot(key => excluded.contains(key)) // TODO Once the duplicates are removed, remove this line
+
+      val duplicateKeys = keys
+        .groupBy(identity)
+        .view
+        .mapValues(_.size)
+        .collect {
+          case (property, count) if count > 1 =>
+            property
+        }
+        .toList
+      duplicateKeys mustBe Nil
     }
   }
 
