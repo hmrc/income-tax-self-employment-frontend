@@ -37,7 +37,7 @@ class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerBaseSpec with
   override val pageHeading: String = StaffCostsCYAPage.toString
 
   override val submissionData = Json.obj(
-    "disallowableStaffCosts"       -> "yes",
+    "disallowableStaffCosts"       -> true,
     "staffCostsAmount"             -> 200.00,
     "staffCostsDisallowableAmount" -> 200.00
   )

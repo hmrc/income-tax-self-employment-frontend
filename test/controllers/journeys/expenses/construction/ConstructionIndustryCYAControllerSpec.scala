@@ -52,7 +52,7 @@ class ConstructionIndustryCYAControllerSpec extends CYAOnPageLoadControllerBaseS
     )
 
   override val submissionData: JsObject = Json.obj(
-    "disallowableSubcontractorCosts"         -> "yes",
+    "disallowableSubcontractorCosts"         -> true,
     "constructionIndustryAmount"             -> allowableAmount,
     "constructionIndustryDisallowableAmount" -> disallowableAmount
   )

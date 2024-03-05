@@ -20,8 +20,6 @@ import controllers.journeys.expenses
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableSubcontractorCosts
-import models.journeys.expenses.individualCategories.DisallowableSubcontractorCosts.{No, Yes}
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.DisallowableSubcontractorCostsPage
 import play.api.i18n.Messages
@@ -34,7 +32,6 @@ object ConstructionIndustryDisallowableAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableSubcontractorCostsPage, Some(businessId))
-      .filter(areAnySubcontractorCostsDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
@@ -48,11 +45,5 @@ object ConstructionIndustryDisallowableAmountSummary extends MoneyUtils {
       messages(s"constructionIndustryDisallowableAmount.title.$userType", allowableAmount),
       "constructionIndustryDisallowableAmount.change.hidden"
     )
-
-  private def areAnySubcontractorCostsDisallowable(answer: DisallowableSubcontractorCosts): Boolean =
-    answer match {
-      case Yes => true
-      case No  => false
-    }
 
 }

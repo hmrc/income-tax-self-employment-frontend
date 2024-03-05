@@ -34,7 +34,7 @@ class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
   override lazy val testDataCases: List[JsObject] =
     List(
       Json.obj(
-        "disallowableIrrecoverableDebts"       -> "yes",
+        "disallowableIrrecoverableDebts"       -> true,
         "irrecoverableDebtsAmount"             -> 123.00,
         "irrecoverableDebtsDisallowableAmount" -> 123.00
       ))

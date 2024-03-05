@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.EntertainmentCosts
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -54,11 +53,10 @@
 
 
             @govukRadios(
-                RadiosViewModel(
+                RadiosViewModel.yesNo(
                     field = form("value"),
                     legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
-                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                    items = EntertainmentCosts.options
+                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
                 )
             )
 

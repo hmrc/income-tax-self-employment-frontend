@@ -24,7 +24,6 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableInterest
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -48,7 +47,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DisallowableInterestFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[DisallowableInterest])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -83,7 +82,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(DisallowableInterestPage, DisallowableInterest.values.head, Some(businessId)).success.value
+              UserAnswers(userAnswersId).set(DisallowableInterestPage, true, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
@@ -95,9 +94,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableInterest.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -140,7 +137,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, disallowableInterestRoute)
-              .withFormUrlEncodedBody(("value", DisallowableInterest.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -206,7 +203,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, disallowableInterestRoute)
-              .withFormUrlEncodedBody(("value", DisallowableInterest.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 

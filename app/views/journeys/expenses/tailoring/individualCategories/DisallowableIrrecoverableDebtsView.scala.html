@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
-@import controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableIrrecoverableDebtsController
+@import controllers.journeys.expenses.tailoring.individualCategories.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -49,14 +48,13 @@
         </ul>
     </div>
 
-    @formHelper(action = DisallowableIrrecoverableDebtsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DisallowableIrrecoverableDebtsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"disallowableIrrecoverableDebts.title.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items  = DisallowableIrrecoverableDebts.options
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

@@ -20,8 +20,6 @@ import controllers.journeys.expenses.financialCharges.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
-import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges._
 import pages.expenses.financialCharges._
 import pages.expenses.tailoring.individualCategories.DisallowableOtherFinancialChargesPage
 import play.api.i18n.Messages
@@ -35,7 +33,6 @@ object FinancialChargesDisallowableAmountSummary extends ImplicitConversions {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableOtherFinancialChargesPage, Some(businessId))
-      .filter(areFinancialChargesDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
@@ -49,11 +46,5 @@ object FinancialChargesDisallowableAmountSummary extends ImplicitConversions {
       messages(s"financialChargesDisallowableAmount.title.$userType", formatMoney(amount)),
       "financialChargesDisallowableAmount.change.hidden"
     )
-
-  private def areFinancialChargesDisallowable(otherExpenses: DisallowableOtherFinancialCharges): Boolean =
-    otherExpenses match {
-      case Yes => true
-      case No  => false
-    }
 
 }

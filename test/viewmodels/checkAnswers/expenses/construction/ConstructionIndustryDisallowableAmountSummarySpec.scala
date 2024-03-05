@@ -30,7 +30,7 @@ class ConstructionIndustryDisallowableAmountSummarySpec extends SummaryBaseSpec(
   private val disallowableAmount: BigDecimal = 20
 
   override val validData: JsObject = Json.obj(
-    "disallowableSubcontractorCosts"         -> "yes",
+    "disallowableSubcontractorCosts"         -> true,
     "constructionIndustryAmount"             -> amount,
     "constructionIndustryDisallowableAmount" -> disallowableAmount
   )

@@ -20,8 +20,6 @@ import controllers.journeys.expenses.irrecoverableDebts.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts.{No, Yes}
 import pages.expenses.irrecoverableDebts._
 import pages.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsPage
 import play.api.i18n.Messages
@@ -34,7 +32,6 @@ object IrrecoverableDebtsDisallowableAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableIrrecoverableDebtsPage, Some(businessId))
-      .filter(areAnyIrrecoverableDebtsDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
@@ -48,11 +45,5 @@ object IrrecoverableDebtsDisallowableAmountSummary extends MoneyUtils {
       messages(s"irrecoverableDebtsDisallowableAmount.title.$userType", allowableAmount),
       "irrecoverableDebtsDisallowableAmount.change.hidden"
     )
-
-  private def areAnyIrrecoverableDebtsDisallowable(irrecoverableDebtsAnswer: DisallowableIrrecoverableDebts): Boolean =
-    irrecoverableDebtsAnswer match {
-      case Yes => true
-      case No  => false
-    }
 
 }

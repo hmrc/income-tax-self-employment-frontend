@@ -35,7 +35,7 @@ class FinancialChargesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
     FinancialChargesCYAPage.pageName.value
 
   override val submissionData: JsObject =
-    Json.obj("disallowableOtherFinancialCharges" -> "yes", "financialChargesAmount" -> 123.00, "financialChargesDisallowableAmount" -> 123.00)
+    Json.obj("disallowableOtherFinancialCharges" -> true, "financialChargesAmount" -> 123.00, "financialChargesDisallowableAmount" -> 123.00)
 
   override val testDataCases: List[JsObject] =
     List(submissionData)

@@ -37,30 +37,30 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   val cases: TableFor3[JsObject, Int, Option[String]] = Table(
     ("json", "expected", "expectedDisallowableStaffCosts"),
     (Json.obj(
-      "disallowableStaffCosts" -> "no"
+      "disallowableStaffCosts" -> false
     ), 0, None),
     (Json.obj(
-      "disallowableStaffCosts" -> "yes",
+      "disallowableStaffCosts" -> true,
     ), 0, None),
     (Json.obj(
-      "disallowableStaffCosts" -> "no",
+      "disallowableStaffCosts" -> false,
       "staffCostsAmount" -> BigDecimal(123.45)
     ), 0, None),
     (Json.obj(
-      "disallowableStaffCosts" -> "yes",
+      "disallowableStaffCosts" -> true,
       "staffCostsAmount" -> BigDecimal(123.45)
     ), 0, None),
     (Json.obj(
-      "disallowableStaffCosts" -> "yes",
+      "disallowableStaffCosts" -> true,
       "staffCostsDisallowableAmount" -> BigDecimal(200.45)
     ), 0, None),
     (Json.obj(
-      "disallowableStaffCosts" -> "yes",
+      "disallowableStaffCosts" -> true,
       "staffCostsAmount" -> BigDecimal(100.456),
       "staffCostsDisallowableAmount" -> BigDecimal(200.0)
     ), 1, Some("100.46")),
     (Json.obj(
-      "disallowableStaffCosts" -> "yes",
+      "disallowableStaffCosts" -> true,
       "staffCostsAmount" -> BigDecimal(50.454),
       "staffCostsDisallowableAmount" -> BigDecimal(200.0)
     ), 1, Some("50.45"))
@@ -70,7 +70,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   "row" should {
     "return correct number of rows for different combination of data" in {
       forAll(cases) { case (json, expected, expectedDisallowableStaffCosts) =>
-        val request    = createRequest(json)
+        val request = createRequest(json)
         val actualList = StaffCostsDisallowableAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
         actualList.size shouldBe expected
         actualList.map(_.key).foreach { definedKey =>
@@ -81,7 +81,7 @@ class StaffCostsDisallowableAmountSummarySpec extends AnyWordSpecLike with Match
   }
 
   def createRequest(json: JsObject): DataRequest[AnyContentAsEmpty.type] = {
-    val data        = Json.obj(businessId.value -> json)
+    val data = Json.obj(businessId.value -> json)
     val userAnswers = UserAnswers(userAnswersId, data)
     DataRequest(FakeRequest(), userAnswersId, aNoddyUser, userAnswers)
   }

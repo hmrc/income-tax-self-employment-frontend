@@ -16,42 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.Depreciation
-import play.api.data.FormError
+import play.api.data.Form
 
-class DepreciationFormProviderSpec extends OptionFieldBehaviours {
+class DepreciationFormProviderSpec extends BooleanFormProviderBaseSpec("DepreciationFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new DepreciationFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new DepreciationFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[Depreciation](
-          form,
-          fieldName,
-          validValues = Depreciation.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"depreciation.error.required.${userScenario.user}")
-        )
-      }
-    }
-
-  }
+  override def requiredErrorKey: String = "depreciation.error.required"
 
 }

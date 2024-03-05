@@ -16,9 +16,8 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
 import pages.OneQuestionPage
 
-case object DisallowableIrrecoverableDebtsPage extends OneQuestionPage[DisallowableIrrecoverableDebts] {
+case object DisallowableIrrecoverableDebtsPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableIrrecoverableDebts"
 }

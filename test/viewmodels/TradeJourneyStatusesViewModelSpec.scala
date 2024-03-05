@@ -48,7 +48,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
 
   private val categoriesExpenses = List[UserAnswers => Try[UserAnswers]](
     _.set(FinancialExpensesPage, Set[FinancialExpenses](FinancialExpenses.IrrecoverableDebts), businessId.some),
-    _.set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.Yes, businessId.some),
+    _.set(DisallowableIrrecoverableDebtsPage, true, businessId.some),
     _.set(TradingAllowancePage, TradingAllowance.DeclareExpenses, businessId.some),
     _.set(OfficeSuppliesPage, OfficeSupplies.YesAllowable, businessId.some),
     _.set(GoodsToSellOrUsePage, GoodsToSellOrUse.YesDisallowable, businessId.some),

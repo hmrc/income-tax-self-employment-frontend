@@ -30,7 +30,7 @@ class IrrecoverableDebtsDisallowableAmountSummarySpec extends SummaryBaseSpec("I
   private val disallowableAmount: BigDecimal = 20
 
   override val validData: JsObject = Json.obj(
-    "disallowableIrrecoverableDebts"       -> "yes",
+    "disallowableIrrecoverableDebts"       -> true,
     "irrecoverableDebtsAmount"             -> amount,
     "irrecoverableDebtsDisallowableAmount" -> disallowableAmount
   )

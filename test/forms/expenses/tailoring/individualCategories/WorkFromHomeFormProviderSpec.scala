@@ -16,41 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.WorkFromHome
-import play.api.data.FormError
+import play.api.data.Form
 
-class WorkFromHomeFormProviderSpec extends OptionFieldBehaviours {
+class WorkFromHomeFormProviderSpec extends BooleanFormProviderBaseSpec("WorkFromHomeFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new WorkFromHomeFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new WorkFromHomeFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[WorkFromHome](
-          form,
-          fieldName,
-          validValues = WorkFromHome.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"workFromHome.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override def requiredErrorKey: String = "workFromHome.error.required"
 
 }

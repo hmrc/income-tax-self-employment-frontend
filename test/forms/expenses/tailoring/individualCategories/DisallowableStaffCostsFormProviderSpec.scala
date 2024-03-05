@@ -16,40 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts
-import play.api.data.FormError
+import play.api.data.Form
 
-class DisallowableStaffCostsFormProviderSpec extends OptionFieldBehaviours {
+class DisallowableStaffCostsFormProviderSpec extends BooleanFormProviderBaseSpec("DisallowableStaffCostsFormProvider") {
 
-  ".value" - {
-    case class UserScenario(user: UserType)
+  override def formProvider(userType: UserType): Form[Boolean] = new DisallowableStaffCostsFormProvider()(userType)
 
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new DisallowableStaffCostsFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        val fieldName = "value"
-
-        behave like optionsField[DisallowableStaffCosts](
-          form,
-          fieldName,
-          validValues = DisallowableStaffCosts.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"disallowableStaffCosts.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override def requiredErrorKey: String = "disallowableStaffCosts.error.required"
 
 }

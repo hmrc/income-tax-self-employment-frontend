@@ -18,16 +18,12 @@ package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.EntertainmentCosts
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class EntertainmentCostsFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[EntertainmentCosts] =
-    Form(
-      "value" -> enumerable[EntertainmentCosts](s"entertainmentCosts.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"entertainmentCosts.error.required.$userType"))
 
 }

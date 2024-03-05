@@ -24,12 +24,7 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
-import models.journeys.expenses.individualCategories.{
-  DisallowableProfessionalFees,
-  DisallowableStaffCosts,
-  DisallowableSubcontractorCosts,
-  ProfessionalServiceExpenses
-}
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableProfessionalFeesPage,
@@ -96,9 +91,9 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                                         pageAnswers: Set[ProfessionalServiceExpenses]): Try[UserAnswers] = {
     @nowarn("msg=match may not be exhaustive")
     def getPageFromAnswer(value: ProfessionalServiceExpenses): Settable[_] = value match {
-      case Staff            => DisallowableStaffCostsPage: Settable[DisallowableStaffCosts]
-      case Construction     => DisallowableSubcontractorCostsPage: Settable[DisallowableSubcontractorCosts]
-      case ProfessionalFees => DisallowableProfessionalFeesPage: Settable[DisallowableProfessionalFees]
+      case Staff            => DisallowableStaffCostsPage: Settable[Boolean]
+      case Construction     => DisallowableSubcontractorCostsPage: Settable[Boolean]
+      case ProfessionalFees => DisallowableProfessionalFeesPage: Settable[Boolean]
     }
     val uncheckedAnswers: List[ProfessionalServiceExpenses] = List(Staff, Construction, ProfessionalFees).filterNot(pageAnswers.contains(_))
     val pagesToBeRemoved: List[Settable[_]]                 = uncheckedAnswers.map(getPageFromAnswer)
