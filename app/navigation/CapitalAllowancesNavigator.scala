@@ -234,10 +234,26 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
     case BalancingAllowancePage =>
-      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(BalancingAllowancePage, Some(businessId)) match {
+              case Some(true) =>
+                balancingAllowance.routes.BalancingAllowanceAmountController.onPageLoad(
+                  taxYear,
+                  businessId,
+                  NormalMode
+                )
+              case Some(false) =>
+                balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(
+                  taxYear,
+                  businessId
+                )
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case BalancingAllowanceAmountPage =>
-      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode)
+      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
