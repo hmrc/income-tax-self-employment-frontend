@@ -26,4 +26,5 @@ object ZegvHowMuchDoYouWantToClaimPage extends ZegvBasePage[ZegvHowMuchDoYouWant
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     cyaPage(taxYear, businessId)
+
 }

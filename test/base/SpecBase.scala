@@ -24,7 +24,7 @@ import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey
-import models.requests.OptionalDataRequest
+import models.requests.{DataRequest, OptionalDataRequest}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -61,6 +61,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
   val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)
+
+  def fakeDataRequest(userAnswers: UserAnswers): DataRequest[AnyContent] = DataRequest[AnyContent](FakeRequest(), "userId", fakeUser, userAnswers)
 
   def anyNino: Nino               = Nino(any)
   def anyMtditid: Mtditid         = Mtditid(any)
