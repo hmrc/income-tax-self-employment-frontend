@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,19 @@
 
 package forms.capitalallowances.balancingAllowance
 
-import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import forms.mappings.Mappings
+import models.common.{MoneyBounds, UserType}
+import play.api.data.Form
 
-class BalancingAllowanceFormProviderSpec
-    extends BooleanFormProviderBaseSpec(
-      "BalancingAllowanceFormProvider"
-    ) {
+import javax.inject.Inject
 
-  override def requiredErrorKey: String         = "balancingAllowance.error.required"
-  override def formProvider(userType: UserType) = new BalancingAllowanceFormProvider()(userType)
+class BalancingAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
+
+  def apply(userType: UserType): Form[BigDecimal] =
+    Form(
+      "value" -> currency(s"balancingAllowanceAmount.error.required.$userType", "error.nonNumeric")
+        .verifying(greaterThan(minimumValue, "error.lessThanZero"))
+        .verifying(lessThan(maximumValue, "expenses.error.overMax"))
+    )
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.balancingAllowance
+package pages.capitalallowances.balancingAllowance
 
-import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import pages.OneQuestionPage
 
-class BalancingAllowanceFormProviderSpec
-    extends BooleanFormProviderBaseSpec(
-      "BalancingAllowanceFormProvider"
-    ) {
-
-  override def requiredErrorKey: String         = "balancingAllowance.error.required"
-  override def formProvider(userType: UserType) = new BalancingAllowanceFormProvider()(userType)
-
+object BalancingAllowanceAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "balancingAllowanceAmount"
 }

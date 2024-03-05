@@ -126,9 +126,9 @@ object CapitalAllowancesTasklist {
         )(journeyStatus)
       case CapitalAllowancesBalancingAllowance =>
         determineJourneyStartOrCyaUrl(
-          capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController
-            .onPageLoad(taxYear, businessId)
-            .url, // TODO 7471 change to first page in journey
+          capitalallowances.balancingAllowance.routes.BalancingAllowanceController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
           capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???

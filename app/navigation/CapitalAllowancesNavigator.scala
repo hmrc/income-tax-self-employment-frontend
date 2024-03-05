@@ -26,7 +26,7 @@ import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
-import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
+import pages.capitalallowances.balancingAllowance._
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
@@ -179,19 +179,27 @@ class CapitalAllowancesNavigator @Inject() {
           businessId =>
             userAnswers.get(BalancingAllowancePage, Some(businessId)) match {
               case Some(true) =>
-                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(
+                balancingAllowance.routes.BalancingAllowanceAmountController.onPageLoad(
                   taxYear,
                   businessId,
                   NormalMode
-                ) // TODO: change to balancing allowance amount page
+                )
               case Some(false) =>
-                balancingAllowance.routes.BalancingAllowanceController.onPageLoad(
+                balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(
                   taxYear,
-                  businessId,
-                  NormalMode
-                ) // TODO: change to balancing allowance CYA
+                  businessId
+                )
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
+
+    case BalancingAllowanceAmountPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(
+              taxYear,
+              businessId
+            )
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -212,8 +220,8 @@ class CapitalAllowancesNavigator @Inject() {
         EvcpHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
-    case BalancingAllowancePage =>
-      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+    case BalancingAllowancePage | BalancingAllowanceAmountPage =>
+      _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()

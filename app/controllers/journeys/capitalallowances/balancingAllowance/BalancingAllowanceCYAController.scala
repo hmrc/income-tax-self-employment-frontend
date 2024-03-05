@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAllowanceAmountSummary, BalancingAllowanceSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -48,6 +49,8 @@ class BalancingAllowanceCYAController @Inject() (override val messagesApi: Messa
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
+            BalancingAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            BalancingAllowanceAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

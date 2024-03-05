@@ -1529,3 +1529,9 @@ balancingAllowance.subHeading.agent = Does your client have a balancing allowanc
 balancingAllowance.error.required.individual = Select yes if you have a balancing allowance to report
 balancingAllowance.error.required.agent = Select yes if your client has a balancing allowance to report
 balancingAllowance.change.hidden = Change if any balancing allowance need to be reported
+
+balancingAllowanceAmount.title.individual = How much is the total of your balancing allowances?
+balancingAllowanceAmount.title.agent = How much is the total of your client’s balancing allowances?
+balancingAllowanceAmount.error.required.individual = Enter the amount of the balancing allowance you want to report
+balancingAllowanceAmount.error.required.agent =  Enter the amount of the balancing allowance your client wants to report
+balancingAllowanceAmount.change.hidden = Change how much balancing allowance is reported
