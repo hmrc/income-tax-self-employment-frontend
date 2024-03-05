@@ -233,7 +233,7 @@ class CapitalAllowancesNavigator @Inject() {
         EvcpHowMuchDoYouWantToClaimPage =>
       _ => taxYear => businessId => electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
 
-    case  BalancingAllowancePage | BalancingAllowanceAmountPage =>
+    case BalancingAllowancePage | BalancingAllowanceAmountPage =>
       _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>
