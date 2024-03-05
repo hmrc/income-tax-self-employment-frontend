@@ -30,6 +30,7 @@ object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
 
   override val dependentPagesWhenYes: List[Settable[_]] =
     List(
+      ZegvUseOutsideSEPage,
       ZegvUseOutsideSEPercentagePage
     )
 

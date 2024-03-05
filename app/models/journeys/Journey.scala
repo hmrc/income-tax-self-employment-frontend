@@ -157,17 +157,27 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       ZeroEmissionCarsPage.pageName,
       ZecAllowancePage.pageName,
+      ZecTotalCostOfCarPage.pageName,
+      ZecOnlyForSelfEmploymentPage.pageName,
+      ZecUseOutsideSEPage.pageName,
+      ZecUseOutsideSEPercentagePage.pageName,
+      ZecHowMuchDoYouWantToClaimPage.pageName,
+      ZecClaimAmount.pageName
+    )
+  }
+
+  case object CapitalAllowancesZeroEmissionGoodsVehicle extends Journey("capital-allowances-zero-emission-goods-vehicle") {
+    override val pageKeys: List[PageName] = List(
+      ZeroEmissionGoodsVehiclePage.pageName,
+      ZegvAllowancePage.pageName,
       ZegvTotalCostOfVehiclePage.pageName,
       ZegvOnlyForSelfEmploymentPage.pageName,
       ZegvUseOutsideSEPage.pageName,
       ZegvUseOutsideSEPercentagePage.pageName,
       ZegvHowMuchDoYouWantToClaimPage.pageName,
       ZegvClaimAmountPage.pageName
-    )
-  }
 
-  case object CapitalAllowancesZeroEmissionGoodsVehicle extends Journey("capital-allowances-zero-emission-goods-vehicle") {
-    override val pageKeys: List[PageName] = List(ZeroEmissionGoodsVehiclePage.pageName, ZegvAllowancePage.pageName)
+    )
   }
 
   case object CapitalAllowancesElectricVehicleChargePoints extends Journey("capital-allowances-electric-vehicle-charge-points") {
