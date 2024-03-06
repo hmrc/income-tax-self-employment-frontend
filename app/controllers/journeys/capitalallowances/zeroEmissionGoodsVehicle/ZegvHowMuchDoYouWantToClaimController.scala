@@ -58,8 +58,8 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, fullCost))),
-            value =>
-              service.submitAnswer(request.userAnswers, value, fullCost, businessId).map { updatedAnswer =>
+            answers =>
+              service.submitAnswer(request.userAnswers, answers, fullCost, businessId).map { updatedAnswer =>
                 ZegvHowMuchDoYouWantToClaimPage.redirectNext(mode, updatedAnswer, businessId, taxYear)
               }
           )

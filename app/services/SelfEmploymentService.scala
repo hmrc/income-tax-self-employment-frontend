@@ -29,7 +29,7 @@ import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
 import queries.Settable
-import repositories.SessionRepository
+import repositories.{SessionRepository, SessionRepositoryBase}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -49,7 +49,7 @@ trait SelfEmploymentService {
 
 class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepositoryBase
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {

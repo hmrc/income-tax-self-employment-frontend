@@ -26,6 +26,7 @@ import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
@@ -40,7 +41,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: ZeroEmissionGoodsVehicleFormProvider,
-                                                    service: SelfEmploymentService,
+                                                    service: ZeroEmissionGoodsVehicleService,
                                                     view: ZeroEmissionGoodsVehiclesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -62,10 +63,9 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
-            for {
-              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(ZeroEmissionGoodsVehiclePage, answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZeroEmissionGoodsVehiclePage)
-            } yield ZeroEmissionGoodsVehiclePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+            service.submitAnswer(businessId, request, answer, mode).map { case (updatedAnswers, updatedMode) =>
+              ZeroEmissionGoodsVehiclePage.redirectNext(updatedMode, updatedAnswers, businessId, taxYear)
+            }
         )
   }
 

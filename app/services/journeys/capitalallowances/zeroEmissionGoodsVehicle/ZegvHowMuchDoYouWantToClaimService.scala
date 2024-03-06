@@ -14,16 +14,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class ZegvHowMuchDoYouWantToClaimService @Inject() (service: SelfEmploymentService)(implicit ec: ExecutionContext) {
 
   def submitAnswer(userAnswers: UserAnswers,
-                   answer: ZegvHowMuchDoYouWantToClaimModel,
+                   newAnswers: ZegvHowMuchDoYouWantToClaimModel,
                    fullCost: BigDecimal,
                    businessId: BusinessId): Future[UserAnswers] = {
-    val totalCostOfCar: BigDecimal = answer.howMuchDoYouWantToClaim match {
+    val totalCostOfCar: BigDecimal = newAnswers.howMuchDoYouWantToClaim match {
       case FullCost    => fullCost
-      case LowerAmount => answer.totalCost.getOrElse(0)
+      case LowerAmount => newAnswers.totalCost.getOrElse(0)
     }
 
     for {
-      updatedAnswers <- Future.fromTry(userAnswers.set(ZegvHowMuchDoYouWantToClaimPage, answer.howMuchDoYouWantToClaim, Some(businessId)))
+      updatedAnswers <- Future.fromTry(userAnswers.set(ZegvHowMuchDoYouWantToClaimPage, newAnswers.howMuchDoYouWantToClaim, Some(businessId)))
       finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, totalCostOfCar, ZegvClaimAmountPage)
     } yield finalAnswers
   }
