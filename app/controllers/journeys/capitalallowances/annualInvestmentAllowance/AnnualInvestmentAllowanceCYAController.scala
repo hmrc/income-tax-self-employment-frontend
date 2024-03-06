@@ -16,14 +16,15 @@
 
 package controllers.journeys.capitalallowances.annualInvestmentAllowance
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys
-import models.NormalMode
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.CapitalAllowancesAnnualInvestmentAllowance
+import models.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountSummary, AnnualInvestmentAllowanceSummary}
@@ -31,20 +32,24 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AnnualInvestmentAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
                                                         identify: IdentifierAction,
                                                         getAnswers: DataRetrievalAction,
+                                                        getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                         requireAnswers: DataRequiredAction,
+                                                        service: SelfEmploymentService,
                                                         val controllerComponents: MessagesControllerComponents,
-                                                        view: CheckYourAnswersView)
+                                                        view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen getJourneyAnswers[AnnualInvestmentAllowanceAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesAnnualInvestmentAllowance)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
@@ -62,10 +67,11 @@ class AnnualInvestmentAllowanceCYAController @Inject() (override val messagesApi
         ))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, businessId, CapitalAllowancesAnnualInvestmentAllowance.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, CapitalAllowancesAnnualInvestmentAllowance)
+      val result  = service.submitAnswers[AnnualInvestmentAllowanceAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 
 }

@@ -17,13 +17,15 @@
 package forms.capitalallowances.annualInvestmentAllowance
 
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{TaxYear, UserType}
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import javax.inject.Inject
 
 class AnnualInvestmentAllowanceFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"annualInvestmentAllowance.error.required.$userType"))
+  def apply(userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Form[Boolean] = Form(
+    "value" -> boolean(messages(s"annualInvestmentAllowance.error.required.$userType", taxYear.startYear.toString, taxYear.endYear.toString)))
 
 }

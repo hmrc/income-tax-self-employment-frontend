@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.annualInvestmentAllowance
+package models.journeys.capitalallowances.annualInvestmentAllowance
 
-import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import play.api.libs.json.{Format, Json}
 
-class AnnualInvestmentAllowanceFormProviderSpec extends BooleanFormProviderBaseSpec("AnnualInvestmentAllowanceFormProvider") {
+case class AnnualInvestmentAllowanceAnswers(annualInvestmentAllowance: Boolean, annualInvestmentAllowanceAmount: Option[BigDecimal])
 
-  override def requiredErrorKey: String         = "annualInvestmentAllowance.error.required"
-  override def formProvider(userType: UserType) = new AnnualInvestmentAllowanceFormProvider()(userType, taxYear)
-
+object AnnualInvestmentAllowanceAnswers {
+  implicit val formats: Format[AnnualInvestmentAllowanceAnswers] = Json.format[AnnualInvestmentAllowanceAnswers]
 }
