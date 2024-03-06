@@ -30,7 +30,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                          service: ZegvService,
                                          formProvider: ZegvAllowanceFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: ZegvAllowanceView)(implicit ec: ExecutionContext)
+                                         view: ZegvAllowanceView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

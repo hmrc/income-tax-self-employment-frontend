@@ -22,10 +22,4 @@ package object forms {
   val nonNumericError: String   = "error.nonNumeric"
   val noDecimalsError: String   = "error.nonDecimal"
 
-  final case class FormStandardErrors(prefix: String) {
-    def requiredError(userType: UserType) = s"$prefix.error.required.$userType"
-    val amountRequiredError               = s"$prefix.error.required.amount"
-    val overMaxError                      = s"$prefix.error.overMax"
-  }
-
 }

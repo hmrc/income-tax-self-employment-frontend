@@ -19,9 +19,7 @@ package controllers
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import pages.QuestionPage
-import queries.Gettable
 import services.SelfEmploymentService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,25 +36,4 @@ package object journeys {
       Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
     }
   }
-
-  private def determineRedirectModeForNo(page: Gettable[Boolean],
-                                         businessId: BusinessId,
-                                         mode: Mode,
-                                         request: DataRequest[_],
-                                         currentAnswer: Boolean) =
-    request.getValue(page, businessId) match {
-      case Some(false) if currentAnswer => NormalMode
-      case _                            => mode
-    }
-
-  private def determineRedirectModeForYes(page: Gettable[Boolean],
-                                          businessId: BusinessId,
-                                          mode: Mode,
-                                          request: DataRequest[_],
-                                          currentAnswer: Boolean) =
-    request.getValue(page, businessId) match {
-      case Some(true) if !currentAnswer => NormalMode
-      case _                            => mode
-    }
-
 }

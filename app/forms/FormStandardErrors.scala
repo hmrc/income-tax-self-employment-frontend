@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.zeroEmissionGoodsVehicle
+package forms
 
-import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
-import models.common.{BusinessId, TaxYear}
-import pages.OneQuestionPage
-import play.api.mvc.Call
+import models.common.UserType
 
-trait ZegvBasePage[A] extends OneQuestionPage[A] {
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId)
+final case class FormStandardErrors(prefix: String) {
+  def requiredError(userType: UserType) = s"$prefix.error.required.$userType"
+  val amountRequiredError               = s"$prefix.error.required.amount"
+  val overMaxError                      = s"$prefix.error.overMax"
 }
