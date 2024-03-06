@@ -26,7 +26,7 @@ import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
-import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleService
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
@@ -41,7 +41,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: ZeroEmissionGoodsVehicleFormProvider,
-                                                    service: ZeroEmissionGoodsVehicleService,
+                                                    service: ZegvService,
                                                     view: ZeroEmissionGoodsVehiclesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -62,10 +62,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.submitAnswer(businessId, request, answer, mode).map { case (updatedAnswers, updatedMode) =>
-              ZeroEmissionGoodsVehiclePage.redirectNext(updatedMode, updatedAnswers, businessId, taxYear)
-            }
+          answer => service.submitAnswerAndRedirect(ZeroEmissionGoodsVehiclePage, businessId, request, answer, mode, taxYear)
         )
   }
 

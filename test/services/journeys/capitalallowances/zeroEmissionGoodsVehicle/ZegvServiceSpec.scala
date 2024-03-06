@@ -13,7 +13,7 @@ import stubs.repositories.StubSessionRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ZeroEmissionGoodsVehicleServiceSpec extends AnyWordSpecLike {
+class ZegvServiceSpec extends AnyWordSpecLike {
   val existingAllAnswers = SetAnswer
     .setMany(businessId, emptyUserAnswers)(
       SetAnswer(ZegvAllowancePage, true),
@@ -30,7 +30,7 @@ class ZeroEmissionGoodsVehicleServiceSpec extends AnyWordSpecLike {
   val fakeRequest                       = fakeDataRequest(existingAllAnswers)
   val repository: StubSessionRepository = StubSessionRepository()
   val serviceStub                       = new SelfEmploymentServiceImpl(SelfEmploymentConnectorStub(), repository)
-  val underTest                         = new ZeroEmissionGoodsVehicleService(serviceStub)
+  val underTest                         = new ZegvService(serviceStub)
 
   "submitAnswer" should {
     "return UserAnswers with cleared dependent pages when selected No" in {

@@ -26,6 +26,7 @@ import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceView
@@ -38,7 +39,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         service: SelfEmploymentService,
+                                         service: ZegvService,
                                          formProvider: ZegvAllowanceFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: ZegvAllowanceView)(implicit ec: ExecutionContext)
@@ -61,11 +62,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            for {
-              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(ZegvAllowancePage, answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvAllowancePage)
-            } yield ZegvAllowancePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+          answer => service.submitAnswerAndRedirect(ZegvAllowancePage, businessId, request, answer, mode, taxYear)
         )
   }
 }
