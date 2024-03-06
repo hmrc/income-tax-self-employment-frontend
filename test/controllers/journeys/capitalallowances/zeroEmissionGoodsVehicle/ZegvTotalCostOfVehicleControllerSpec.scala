@@ -33,9 +33,9 @@ class ZegvTotalCostOfVehicleControllerSpec
       ZegvTotalCostOfVehiclePage
     ) {
 
-  lazy val onPageLoadRoute = routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.ZegvTotalCostOfVehicleController.onSubmit(taxYear, businessId, NormalMode).url
-  val onwardRoute: Call    = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+  def onPageLoadRoute = routes.ZegvTotalCostOfVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  def onSubmitRoute   = routes.ZegvTotalCostOfVehicleController.onSubmit(taxYear, businessId, NormalMode).url
+  def onwardRoute     = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
   def createForm(userType: UserType): Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
 
