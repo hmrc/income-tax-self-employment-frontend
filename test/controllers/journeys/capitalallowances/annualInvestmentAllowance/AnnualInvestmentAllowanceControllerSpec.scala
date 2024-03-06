@@ -38,7 +38,7 @@ class AnnualInvestmentAllowanceControllerSpec
   override def onPageLoadCall: Call = routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.AnnualInvestmentAllowanceController.onSubmit(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = models.common.onwardRoute
+  override def onwardRoute: Call = routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def createForm(user: UserType): Form[Boolean] = new AnnualInvestmentAllowanceFormProvider()(user)
 

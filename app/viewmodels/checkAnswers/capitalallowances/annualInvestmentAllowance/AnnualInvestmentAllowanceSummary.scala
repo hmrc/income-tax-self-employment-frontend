@@ -36,7 +36,7 @@ object AnnualInvestmentAllowanceSummary {
         buildRowString(
           formatAnswer(answer.toString),
           routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"annualInvestmentAllowance.subHeading.$userType"),
+          messages(s"annualInvestmentAllowance.subHeading.cya.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
           "annualInvestmentAllowance.change.hidden",
           rightTextAlign = true
         )

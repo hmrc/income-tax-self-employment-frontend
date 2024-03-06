@@ -17,12 +17,11 @@
 package pages.capitalallowances.annualInvestmentAllowance
 
 import controllers.journeys.capitalallowances.annualInvestmentAllowance.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
 trait AnnualInvestmentAllowanceBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId)
 }
