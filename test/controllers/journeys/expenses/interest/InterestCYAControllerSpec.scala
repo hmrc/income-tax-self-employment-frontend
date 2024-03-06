@@ -52,7 +52,7 @@ class InterestCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYA
     )
 
   override val submissionData: JsObject = Json.obj(
-    "disallowableInterest"       -> "yes",
+    "disallowableInterest"       -> true,
     "interestAmount"             -> allowableAmount,
     "interestDisallowableAmount" -> disallowableAmount
   )

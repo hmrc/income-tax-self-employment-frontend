@@ -16,40 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
-import play.api.data.FormError
+import play.api.data.Form
 
-class DisallowableProfessionalFeesFormProviderSpec extends OptionFieldBehaviours {
+class DisallowableProfessionalFeesFormProviderSpec extends BooleanFormProviderBaseSpec("DisallowableProfessionalFeesFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new DisallowableProfessionalFeesFormProvider()(userType)
 
-    val fieldName = "value"
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new DisallowableProfessionalFeesFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[DisallowableProfessionalFees](
-          form,
-          fieldName,
-          validValues = DisallowableProfessionalFees.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"disallowableProfessionalFees.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override def requiredErrorKey: String = "disallowableProfessionalFees.error.required"
 
 }

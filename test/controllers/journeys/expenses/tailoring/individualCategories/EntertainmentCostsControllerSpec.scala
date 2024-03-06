@@ -22,7 +22,6 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.EntertainmentCosts
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new EntertainmentCostsFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[EntertainmentCosts])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -81,7 +80,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(EntertainmentCostsPage, EntertainmentCosts.values.head).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(EntertainmentCostsPage, true).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
@@ -135,7 +134,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, entertainmentCostsRoute)
-              .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -203,7 +202,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, entertainmentCostsRoute)
-              .withFormUrlEncodedBody(("value", EntertainmentCosts.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 

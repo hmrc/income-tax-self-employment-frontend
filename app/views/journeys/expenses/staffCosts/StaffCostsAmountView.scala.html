@@ -16,9 +16,7 @@
 
 @import viewmodels.InputWidth._
 @import controllers.journeys.expenses.staffCosts.routes
-@import models.journeys.expenses.individualCategories.DisallowableStaffCosts
-@import models.journeys.expenses.individualCategories.DisallowableStaffCosts.Yes
-@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.common.{BusinessId, TaxYear, UserType}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 @this(
@@ -29,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, disallowable: DisallowableStaffCosts
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, isDisallowable: Boolean
     )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"staffCostsAmount.title.$userType"))) {
@@ -64,7 +62,7 @@
                                 <li>${messages("expenses.subcontractLabourCosts")}</li>
                                 <li>${messages("expenses.nationalInsuranceContributions")}</li>
                             </ul>
-                            ${if (disallowable == Yes) {
+                            ${if (isDisallowable) {
                                 s"""
                                 <p>${messages(s"site.cannotInclude.$userType")}</p>
                                 <ul class="govuk-body govuk-list--bullet">

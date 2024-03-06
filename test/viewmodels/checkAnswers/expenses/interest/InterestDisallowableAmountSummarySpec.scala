@@ -30,7 +30,7 @@ class InterestDisallowableAmountSummarySpec extends SummaryBaseSpec("InterestDis
   private val disallowableAmount: BigDecimal = 20
 
   override val validData: JsObject = Json.obj(
-    "disallowableInterest"       -> "yes",
+    "disallowableInterest"       -> true,
     "interestAmount"             -> amount,
     "interestDisallowableAmount" -> disallowableAmount
   )

@@ -16,40 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.EntertainmentCosts
-import play.api.data.FormError
+import play.api.data.Form
 
-class EntertainmentCostsFormProviderSpec extends OptionFieldBehaviours {
+class EntertainmentCostsFormProviderSpec extends BooleanFormProviderBaseSpec("EntertainmentCostsFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new EntertainmentCostsFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new EntertainmentCostsFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-        behave like optionsField[EntertainmentCosts](
-          form,
-          fieldName,
-          validValues = EntertainmentCosts.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"entertainmentCosts.error.required.${userScenario.user}")
-        )
-      }
-    }
-  }
+  override def requiredErrorKey: String = "entertainmentCosts.error.required"
 
 }

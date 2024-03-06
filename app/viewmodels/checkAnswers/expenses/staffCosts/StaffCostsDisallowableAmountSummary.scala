@@ -20,8 +20,6 @@ import controllers.journeys.expenses.staffCosts.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts.{No, Yes}
 import pages.expenses.staffCosts._
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.i18n.Messages
@@ -34,7 +32,6 @@ object StaffCostsDisallowableAmountSummary {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableStaffCostsPage, Some(businessId))
-      .filter(isDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages) =
@@ -47,11 +44,5 @@ object StaffCostsDisallowableAmountSummary {
       messages(s"staffCostsDisallowableAmount.title.$userType", formatMoney(allowableAmount)),
       "staffCostsDisallowableAmount.change.hidden"
     )
-
-  private def isDisallowable(disallowableStaffCosts: DisallowableStaffCosts): Boolean =
-    disallowableStaffCosts match {
-      case Yes => true
-      case No  => false
-    }
 
 }

@@ -52,7 +52,7 @@ class ProfessionalFeesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
     )
 
   override val submissionData: JsObject = Json.obj(
-    "disallowableProfessionalFees"       -> "yes",
+    "disallowableProfessionalFees"       -> true,
     "professionalFeesAmount"             -> allowableAmount,
     "professionalFeesDisallowableAmount" -> disallowableAmount
   )

@@ -18,16 +18,12 @@ package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class DisallowableIrrecoverableDebtsFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[DisallowableIrrecoverableDebts] =
-    Form(
-      "value" -> enumerable[DisallowableIrrecoverableDebts](s"disallowableIrrecoverableDebts.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"disallowableIrrecoverableDebts.error.required.$userType"))
 
 }

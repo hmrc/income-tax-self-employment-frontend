@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
-@import controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableOtherFinancialChargesController
+@import controllers.journeys.expenses.tailoring.individualCategories.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -44,14 +43,13 @@
         </p>
     </div>
 
-    @formHelper(action = DisallowableOtherFinancialChargesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DisallowableOtherFinancialChargesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"disallowableOtherFinancialCharges.title.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items  = DisallowableOtherFinancialCharges.options
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

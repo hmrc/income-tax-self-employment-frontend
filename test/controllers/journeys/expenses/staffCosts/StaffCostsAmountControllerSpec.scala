@@ -20,7 +20,6 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts.Yes
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -45,7 +44,7 @@ class StaffCostsAmountControllerSpec
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
-  override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, Yes, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, true, Some(businessId)).success.value
 
   def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 
@@ -54,7 +53,7 @@ class StaffCostsAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[StaffCostsAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Yes).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, true).toString()
   }
 
 }

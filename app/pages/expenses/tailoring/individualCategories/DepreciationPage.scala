@@ -16,9 +16,8 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.Depreciation
 import pages.OneQuestionPage
 
-case object DepreciationPage extends OneQuestionPage[Depreciation] {
+case object DepreciationPage extends OneQuestionPage[Boolean] {
   override def toString: String = "depreciation"
 }

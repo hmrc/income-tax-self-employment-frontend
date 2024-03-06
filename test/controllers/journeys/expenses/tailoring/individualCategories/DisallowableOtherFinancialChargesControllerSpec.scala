@@ -17,13 +17,12 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.DisallowableOtherFinancialChargesFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
   val formProvider = new DisallowableOtherFinancialChargesFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[DisallowableOtherFinancialCharges])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -83,7 +82,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val userAnswers =
               UserAnswers(userAnswersId)
-                .set(DisallowableOtherFinancialChargesPage, DisallowableOtherFinancialCharges.values.head, Some(businessId))
+                .set(DisallowableOtherFinancialChargesPage, true, Some(businessId))
                 .success
                 .value
 
@@ -97,9 +96,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableOtherFinancialCharges.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -118,7 +115,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -142,7 +139,7 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
         running(application) {
           val request =
             FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-              .withFormUrlEncodedBody(("value", DisallowableOtherFinancialCharges.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -208,13 +205,13 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
         running(application) {
           val request =
             FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-              .withFormUrlEncodedBody(("value", DisallowableOtherFinancialCharges.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
