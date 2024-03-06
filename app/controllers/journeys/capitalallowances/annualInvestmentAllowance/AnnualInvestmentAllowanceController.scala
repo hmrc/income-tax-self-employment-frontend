@@ -18,17 +18,14 @@ package controllers.journeys.capitalallowances.annualInvestmentAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.clearPagesWhenNo
 import forms.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import navigation.CapitalAllowancesNavigator
 import pages.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceView
@@ -38,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AnnualInvestmentAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                                     navigator: CapitalAllowancesNavigator,
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
@@ -67,25 +63,10 @@ class AnnualInvestmentAllowanceController @Inject() (override val messagesApi: M
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
-              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(AnnualInvestmentAllowancePage, answer, request, mode, businessId)
               updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, AnnualInvestmentAllowancePage)
-            } yield Redirect(navigator.nextPage(AnnualInvestmentAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+            } yield AnnualInvestmentAllowancePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
         )
-  }
-
-  private def handleGatewayQuestion(currentAnswer: Boolean,
-                                    request: DataRequest[_],
-                                    mode: Mode,
-                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, List(), Some(businessId)))
-      case true  => Future(request.userAnswers)
-    }
-    val redirectMode = request.getValue(AnnualInvestmentAllowancePage, businessId) match {
-      case Some(false) if currentAnswer == true => NormalMode
-      case _                                    => mode
-    }
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
 }
