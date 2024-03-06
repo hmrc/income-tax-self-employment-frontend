@@ -9,13 +9,9 @@ import models.common.UserType.{Agent, Individual}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
+import ZegvHowMuchDoYouWantToClaimFormProviderSpec._
 
 class ZegvHowMuchDoYouWantToClaimFormProviderSpec extends AnyWordSpecLike with TableDrivenPropertyChecks {
-  val fullAmount             = BigDecimal(1000)
-  val emptyData              = Map[String, String]()
-  val individualFormProvider = ZegvHowMuchDoYouWantToClaimFormProvider.apply(UserType.Individual, fullAmount)
-  val agentFormProvider      = ZegvHowMuchDoYouWantToClaimFormProvider.apply(UserType.Agent, fullAmount)
-  val lowerAmountMap         = Map("howMuchDoYouWantToClaim" -> "lowerAmount")
 
   "form provider" should {
     val invalid            = List(FormError("howMuchDoYouWantToClaim", invalidError, List()))
@@ -60,4 +56,12 @@ class ZegvHowMuchDoYouWantToClaimFormProviderSpec extends AnyWordSpecLike with T
     }
   }
 
+}
+
+object ZegvHowMuchDoYouWantToClaimFormProviderSpec {
+  val fullAmount             = BigDecimal(1000)
+  val emptyData              = Map[String, String]()
+  val individualFormProvider = ZegvHowMuchDoYouWantToClaimFormProvider.apply(UserType.Individual, fullAmount)
+  val agentFormProvider      = ZegvHowMuchDoYouWantToClaimFormProvider.apply(UserType.Agent, fullAmount)
+  val lowerAmountMap = Map("howMuchDoYouWantToClaim" -> "lowerAmount")
 }
