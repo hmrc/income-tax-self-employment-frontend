@@ -17,24 +17,13 @@
 package pages.capitalallowances.annualInvestmentAllowance
 
 import controllers.journeys.capitalallowances.annualInvestmentAllowance.routes
-import models.NormalMode
 import models.common._
 import models.database.UserAnswers
-import pages.redirectOnBoolean
 import play.api.mvc.Call
-import queries.Settable
 
-object AnnualInvestmentAllowancePage extends AnnualInvestmentAllowanceBasePage[Boolean] {
-  override def toString: String = "annualInvestmentAllowance"
-
-  override val dependentPagesWhenNo: List[Settable[_]] = List()
+object AnnualInvestmentAllowanceAmountPage extends AnnualInvestmentAllowanceBasePage[BigDecimal] {
+  override def toString: String = "annualInvestmentAllowanceAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    redirectOnBoolean(
-      this,
-      userAnswers,
-      businessId,
-      onTrue = routes.AnnualInvestmentAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = cyaPage(taxYear, businessId)
-    )
+    routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId)
 }
