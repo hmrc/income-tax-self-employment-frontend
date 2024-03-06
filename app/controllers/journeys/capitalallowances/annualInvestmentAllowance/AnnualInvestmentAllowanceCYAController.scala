@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceSummary
+import viewmodels.checkAnswers.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountSummary, AnnualInvestmentAllowanceSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -48,7 +48,8 @@ class AnnualInvestmentAllowanceCYAController @Inject() (override val messagesApi
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            AnnualInvestmentAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            AnnualInvestmentAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            AnnualInvestmentAllowanceAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

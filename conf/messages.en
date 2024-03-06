@@ -1563,3 +1563,9 @@ annualInvestmentAllowance.subHeading.cya.agent = Do your client want to claim An
 annualInvestmentAllowance.error.required.individual = Select yes if you want to claim annual investment allowance on equipment you bought between 6 April {0} and 5 April {1}
 annualInvestmentAllowance.error.required.agent = Select yes if your client wants to claim annual investment allowance on equipment they bought between 6 April {0} and 5 April {1}
 annualInvestmentAllowance.change.hidden = Change if you want to claim annual investment allowance on plant and machinery you bought
+
+annualInvestmentAllowanceAmount.title.individual = How much annual investment allowance do you want to claim?
+annualInvestmentAllowanceAmount.title.agent = How much annual investment allowance does your client want to claim?
+annualInvestmentAllowanceAmount.error.required.individual = Enter the amount of annual investment allowance you want to claim
+annualInvestmentAllowanceAmount.error.required.agent = Enter the amount of annual investment allowance your client wants to claim
+annualInvestmentAllowanceAmount.change.hidden = Change how much annual investment allowance will be claimed
