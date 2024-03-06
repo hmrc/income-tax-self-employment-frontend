@@ -23,3 +23,5 @@ trait MoneyBounds {
   final val noDecimalRegexp: String     = """\d+$"""
 
 }
+
+object MoneyBounds extends MoneyBounds

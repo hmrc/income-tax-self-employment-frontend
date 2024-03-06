@@ -69,6 +69,10 @@ class SelfEmploymentServiceImpl @Inject() (
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     connector.saveJourneyState(ctx, status)
 
+  /** Notice this method does two things:
+    *   - setting (updating userAnswers under the passed page (make sure to use userAnswers returned by this method further in your program)
+    *   - persisting in the database via sessionRepository
+    */
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
                                              userAnswers: UserAnswers,
                                              value: SubsetOfAnswers,

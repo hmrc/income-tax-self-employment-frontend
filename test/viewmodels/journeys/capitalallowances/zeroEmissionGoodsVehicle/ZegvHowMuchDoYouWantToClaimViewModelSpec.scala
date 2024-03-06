@@ -2,7 +2,6 @@ package viewmodels.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.SpecBase._
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider._
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim.{FullCost, LowerAmount}
 import org.scalatest.wordspec.AnyWordSpecLike
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
