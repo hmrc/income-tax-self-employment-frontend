@@ -17,13 +17,13 @@
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+import controllers.standard
 import models.NormalMode
 import models.common._
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
-import controllers.standard
-import pages.redirectOnBoolean
 
 object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
   override def toString: String = "zegvOnlyForSelfEmployment"
@@ -44,5 +44,11 @@ object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
         onFalse = routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
       )
     }
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    (answer.contains(true) && ZegvClaimAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
+    (answer.contains(false) && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers))
+  }
 
 }

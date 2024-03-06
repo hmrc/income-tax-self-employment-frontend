@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
 import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle._
@@ -40,7 +41,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     service: SelfEmploymentService,
+                                                     service: ZegvService,
                                                      formProvider: ZegvOnlyForSelfEmploymentFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: ZegvOnlyForSelfEmploymentView)(implicit ec: ExecutionContext)
@@ -64,10 +65,12 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
-            for {
-              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvOnlyForSelfEmploymentPage)
-            } yield ZegvOnlyForSelfEmploymentPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+            service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, mode, taxYear)
+//
+//            for {
+//              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
+//              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvOnlyForSelfEmploymentPage)
+//            } yield ZegvOnlyForSelfEmploymentPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
         )
   }
 

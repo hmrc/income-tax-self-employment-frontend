@@ -28,26 +28,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 package object journeys {
 
-  def clearPagesWhenNo(page: QuestionPage[Boolean], currentAnswer: Boolean, request: DataRequest[_], mode: Mode, businessId: BusinessId)(implicit
-      ec: ExecutionContext): Future[(UserAnswers, Mode)] = {
-    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
-      Future(request.userAnswers)
-    } else {
-      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, page.dependentPagesWhenNo, Some(businessId)))
-    }
-    val redirectMode = determineRedirectModeForNo(page, businessId, mode, request, currentAnswer)
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
-  }
+  def clearDependentPages(page: QuestionPage[Boolean], request: DataRequest[_], businessId: BusinessId)(implicit
+      ec: ExecutionContext): Future[UserAnswers] = {
+    val pagesToClear = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo).distinct
 
-  def clearPagesWhenYes(page: QuestionPage[Boolean], currentAnswer: Boolean, request: DataRequest[_], mode: Mode, businessId: BusinessId)(implicit
-      ec: ExecutionContext): Future[(UserAnswers, Mode)] = {
-    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
-      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, page.dependentPagesWhenYes, Some(businessId)))
-    } else {
+    if (pagesToClear.isEmpty) {
       Future(request.userAnswers)
+    } else {
+      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
     }
-    val redirectMode = determineRedirectModeForYes(page, businessId, mode, request, currentAnswer)
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
 
   private def determineRedirectModeForNo(page: Gettable[Boolean],

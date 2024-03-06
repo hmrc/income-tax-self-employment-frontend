@@ -18,6 +18,7 @@ package pages.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
 import play.api.mvc.Call
 

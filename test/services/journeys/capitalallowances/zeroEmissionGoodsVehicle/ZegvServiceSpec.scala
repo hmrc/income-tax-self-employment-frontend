@@ -27,15 +27,15 @@ class ZegvServiceSpec extends AnyWordSpecLike {
     .success
     .value
 
-  val fakeRequest                       = fakeDataRequest(existingAllAnswers)
-  val repository: StubSessionRepository = StubSessionRepository()
-  val serviceStub                       = new SelfEmploymentServiceImpl(SelfEmploymentConnectorStub(), repository)
-  val underTest                         = new ZegvService(serviceStub)
+  val fakeRequest = fakeDataRequest(existingAllAnswers)
+  val repository  = StubSessionRepository()
+  val serviceStub = new SelfEmploymentServiceImpl(SelfEmploymentConnectorStub(), repository)
+  val underTest   = new ZegvService(serviceStub)
 
   "submitAnswer" should {
     "return UserAnswers with cleared dependent pages when selected No" in {
-      val (updatedAnswers, updatedMode) =
-        underTest.submitAnswer(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false, NormalMode).futureValue
+      val updatedAnswers =
+        underTest.submitAnswerAndClearWhenNo(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
 
       val expectedAnswers = emptyUserAnswers
         .set(
@@ -48,7 +48,6 @@ class ZegvServiceSpec extends AnyWordSpecLike {
         .data
 
       assert(updatedAnswers.data === expectedAnswers)
-      assert(updatedMode === NormalMode)
       val dbAnswers = repository.state(userAnswersId).data
       assert(dbAnswers === expectedAnswers)
     }

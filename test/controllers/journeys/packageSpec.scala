@@ -17,7 +17,6 @@
 package controllers.journeys
 
 import builders.UserBuilder.aNoddyUser
-import models.{CheckMode, NormalMode}
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -37,7 +36,7 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
   val businessId                                           = BusinessId("businessId")
 
   "clearPages" when {
-    "clearPagesWhenNo" should {
+    "clearDependentPages on No" should {
       object Page1 extends OneQuestionPage[Boolean] {
         override def toString: String = "page1"
 
@@ -55,62 +54,27 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
 
       val validData: JsObject = Json.obj(
         businessId.value -> Json.obj(
-          "page1" -> true,
-          "page2" -> 20.0,
-          "page3" -> 30.0
+          "page1" -> true
         ))
       val answers     = UserAnswers("id", validData)
       val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
 
-      "do not change answer if selected Yes (true)" in {
-        val (updatedAnswer, _) = clearPagesWhenNo(Page1, true, dataRequest, NormalMode, businessId).futureValue
+      "remove dependent pages if selected Yes (true)" in {
+        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected No (false)" in {
-        val (updatedAnswer, _) = clearPagesWhenNo(Page1, false, dataRequest, NormalMode, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true
           ))
         assert(updatedAnswer.data === UserAnswers("id", expectedData).data)
       }
-
-      "do not change mode if the previously persisted answer was Yes (true)" in {
-        val (_, mode) = clearPagesWhenNo(Page1, false, dataRequest, NormalMode, businessId).futureValue
-        assert(mode === NormalMode)
-      }
-
-      "stay in Normal mode if there was no previous answer" in {
-        val (_, mode) =
-          clearPagesWhenNo(Page1, false, dataRequest.copy(userAnswers = UserAnswers("id", JsObject.empty)), NormalMode, businessId).futureValue
-        assert(mode === NormalMode)
-      }
-
-      "stay in Check mode if there was no previous answer" in {
-        val (_, mode) =
-          clearPagesWhenNo(Page1, false, dataRequest.copy(userAnswers = UserAnswers("id", JsObject.empty)), CheckMode, businessId).futureValue
-        assert(mode === CheckMode)
-      }
-
-      "return NormalMode if changing answer from No -> Yes" in {
-        val (_, mode) = clearPagesWhenNo(
-          Page1,
-          true,
-          dataRequest.copy(
-            userAnswers = UserAnswers(
-              "id",
-              Json.obj(
-                businessId.value -> Json.obj(
-                  "page1" -> false
-                )))),
-          CheckMode,
-          businessId).futureValue
-        assert(mode === NormalMode)
-      }
     }
 
-    "clearPagesWhenYes" should {
+    "clearDependentPages on Yes" should {
       object Page1 extends OneQuestionPage[Boolean] {
         override def toString: String = "page1"
 
@@ -128,71 +92,23 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
 
       val validData: JsObject = Json.obj(
         businessId.value -> Json.obj(
-          "page1" -> true,
-          "page2" -> 20.0,
-          "page3" -> 30.0
+          "page1" -> true
         ))
       val answers     = UserAnswers("id", validData)
       val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
 
-      "do not change answer if selected No (false)" in {
-        val (updatedAnswer, _) = clearPagesWhenYes(Page1, false, dataRequest, NormalMode, businessId).futureValue
+      "remove dependent pages if selected No (false)" in {
+        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected Yes (true)" in {
-        val (updatedAnswer, _) = clearPagesWhenYes(Page1, true, dataRequest, NormalMode, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true
           ))
         assert(updatedAnswer.data === UserAnswers("id", expectedData).data)
-      }
-
-      "do not change mode if the previously persisted answer was No (false)" in {
-        val (_, mode) = clearPagesWhenYes(
-          Page1,
-          true,
-          dataRequest.copy(userAnswers = UserAnswers(
-            "id",
-            Json.obj(
-              businessId.value -> Json.obj(
-                "page1" -> false,
-                "page2" -> 20.0,
-                "page3" -> 30.0
-              )))),
-          NormalMode,
-          businessId
-        ).futureValue
-        assert(mode === NormalMode)
-      }
-
-      "stay in Normal mode if there was no previous answer" in {
-        val (_, mode) =
-          clearPagesWhenYes(Page1, false, dataRequest.copy(userAnswers = UserAnswers("id", JsObject.empty)), NormalMode, businessId).futureValue
-        assert(mode === NormalMode)
-      }
-
-      "stay in Check mode if there was no previous answer" in {
-        val (_, mode) =
-          clearPagesWhenYes(Page1, false, dataRequest.copy(userAnswers = UserAnswers("id", JsObject.empty)), CheckMode, businessId).futureValue
-        assert(mode === CheckMode)
-      }
-
-      "return NormalMode if changing answer from Yes -> No" in {
-        val (_, mode) = clearPagesWhenYes(
-          Page1,
-          false,
-          dataRequest.copy(
-            userAnswers = UserAnswers(
-              "id",
-              Json.obj(
-                businessId.value -> Json.obj(
-                  "page1" -> true
-                )))),
-          CheckMode,
-          businessId).futureValue
-        assert(mode === NormalMode)
       }
     }
 
