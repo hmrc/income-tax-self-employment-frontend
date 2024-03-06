@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package services.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.journeys.clearDependentPages
@@ -18,18 +34,24 @@ class ZegvService @Inject() (service: SelfEmploymentService)(implicit ec: Execut
   private[zeroEmissionGoodsVehicle] def submitAnswerAndClearDependentAnswers(pageUpdated: ZegvBasePage[Boolean],
                                                                              businessId: BusinessId,
                                                                              request: DataRequest[_],
-                                                                             newAnswer: Boolean): Future[UserAnswers] =
-    for {
-      editedUserAnswers  <- clearDependentPages(pageUpdated, request, businessId)
-      updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
-    } yield updatedUserAnswers
+                                                                             newAnswer: Boolean): Future[UserAnswers] = {
+    val previousAnswer = request.userAnswers.get(pageUpdated, Some(businessId))
+    if (previousAnswer != Option(newAnswer)) {
+      for {
+        editedUserAnswers  <- clearDependentPages(pageUpdated, request, businessId)
+        updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
+      } yield updatedUserAnswers
+    } else {
+      Future.successful(request.userAnswers)
+    }
+  }
 
   def submitAnswerAndRedirect(pageUpdated: ZegvBasePage[Boolean],
                               businessId: BusinessId,
                               request: DataRequest[_],
                               newAnswer: Boolean,
-                              mode: Mode,
-                              taxYear: TaxYear): Future[Result] =
+                              taxYear: TaxYear,
+                              mode: Mode): Future[Result] =
     submitAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
       .map { updatedAnswers =>
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)

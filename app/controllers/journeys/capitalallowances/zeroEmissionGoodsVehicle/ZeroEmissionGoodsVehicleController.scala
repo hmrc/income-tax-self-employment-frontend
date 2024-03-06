@@ -60,7 +60,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(ZeroEmissionGoodsVehiclePage, businessId, request, answer, mode, taxYear)
+          answer => service.submitAnswerAndRedirect(ZeroEmissionGoodsVehiclePage, businessId, request, answer, taxYear, mode)
         )
   }
 
