@@ -29,11 +29,18 @@ package object capitalallowances {
                         totalCostOfVehiclePage: Gettable[BigDecimal],
                         request: DataRequest[AnyContent],
                         businessId: BusinessId): Option[BigDecimal] = {
-    val maybeUseOutsideSEPercentage = request.getValue(useOutsideSEPercentagePage, businessId)
-    val percentageUsedForSE         = 1 - (maybeUseOutsideSEPercentage.getOrElse(0) / 100.00)
-    request
-      .getValue(totalCostOfVehiclePage, businessId)
-      .map(s => (s * percentageUsedForSE).setScale(0, RoundingMode.HALF_UP))
+    val maybeTotal             = request.getValue(totalCostOfVehiclePage, businessId)
+    val useOutsideSEPercentage = request.getValue(useOutsideSEPercentagePage, businessId).getOrElse(0)
+    val percentageUsedForSE    = outsidePercentage(useOutsideSEPercentage)
+    maybeTotal.map(calculatePart(_, percentageUsedForSE))
   }
+
+  private def outsidePercentage(unvalidatedPercentage: Int): Double = {
+    val percentage = Math.min(100, Math.abs(unvalidatedPercentage))
+    1 - (percentage / 100.00)
+  }
+
+  private def calculatePart(total: BigDecimal, percentage: Double): BigDecimal =
+    (total * percentage).setScale(0, RoundingMode.HALF_UP)
 
 }
