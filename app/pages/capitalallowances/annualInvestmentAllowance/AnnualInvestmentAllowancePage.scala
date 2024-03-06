@@ -27,7 +27,7 @@ import queries.Settable
 object AnnualInvestmentAllowancePage extends AnnualInvestmentAllowanceBasePage[Boolean] {
   override def toString: String = "annualInvestmentAllowance"
 
-  override val dependentPagesWhenNo: List[Settable[_]] = List()
+  override val dependentPagesWhenNo: List[Settable[_]] = List(AnnualInvestmentAllowanceAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

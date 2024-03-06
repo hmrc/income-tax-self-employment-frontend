@@ -20,12 +20,10 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-//import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-//import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAmountView
 
@@ -39,8 +37,6 @@ class AnnualInvestmentAllowanceAmountControllerSpec
   lazy val onSubmitRoute   = routes.AnnualInvestmentAllowanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId)
-
-//  override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
   def createForm(userType: UserType): Form[BigDecimal] = new AnnualInvestmentAllowanceAmountFormProvider()(userType)
 
