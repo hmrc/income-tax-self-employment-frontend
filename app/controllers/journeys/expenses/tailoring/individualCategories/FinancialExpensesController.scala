@@ -23,13 +23,8 @@ import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvid
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.FinancialExpenses
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
-import models.journeys.expenses.individualCategories.{
-  DisallowableInterest,
-  DisallowableIrrecoverableDebts,
-  DisallowableOtherFinancialCharges,
-  FinancialExpenses
-}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableInterestPage,
@@ -97,9 +92,9 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
                                         pageAnswers: Set[FinancialExpenses]): Try[UserAnswers] = {
     @nowarn("msg=match may not be exhaustive")
     def getPageFromAnswer(value: FinancialExpenses): Settable[_] = value match {
-      case Interest              => DisallowableInterestPage: Settable[DisallowableInterest]
-      case OtherFinancialCharges => DisallowableOtherFinancialChargesPage: Settable[DisallowableOtherFinancialCharges]
-      case IrrecoverableDebts    => DisallowableIrrecoverableDebtsPage: Settable[DisallowableIrrecoverableDebts]
+      case Interest              => DisallowableInterestPage
+      case OtherFinancialCharges => DisallowableOtherFinancialChargesPage
+      case IrrecoverableDebts    => DisallowableIrrecoverableDebtsPage
     }
     val uncheckedAnswers: List[FinancialExpenses] = List(Interest, OtherFinancialCharges, IrrecoverableDebts).filterNot(pageAnswers.contains(_))
     val pagesToBeRemoved: List[Settable[_]]       = uncheckedAnswers.map(getPageFromAnswer)

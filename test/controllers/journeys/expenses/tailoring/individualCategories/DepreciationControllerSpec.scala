@@ -17,14 +17,12 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.individualCategories.routes.DepreciationController
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.DepreciationFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.Depreciation
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -44,11 +42,11 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val depreciationRoute = DepreciationController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val depreciationRoute = routes.DepreciationController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new DepreciationFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[Depreciation])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -82,7 +80,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, Depreciation.values.head, Some(businessId)).success.value
+            val userAnswers = UserAnswers(userAnswersId).set(DepreciationPage, true, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
@@ -94,9 +92,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(Depreciation.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -115,7 +111,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -139,7 +135,7 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, depreciationRoute)
-              .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -205,13 +201,13 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
         running(application) {
           val request =
             FakeRequest(POST, depreciationRoute)
-              .withFormUrlEncodedBody(("value", Depreciation.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

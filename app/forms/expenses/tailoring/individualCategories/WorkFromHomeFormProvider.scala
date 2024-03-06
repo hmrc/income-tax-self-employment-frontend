@@ -18,16 +18,12 @@ package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.WorkFromHome
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class WorkFromHomeFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[WorkFromHome] =
-    Form(
-      "value" -> enumerable[WorkFromHome](s"workFromHome.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"workFromHome.error.required.$userType"))
 
 }

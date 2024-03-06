@@ -16,42 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.DisallowableInterest
-import play.api.data.FormError
+import play.api.data.Form
 
-class DisallowableInterestFormProviderSpec extends OptionFieldBehaviours {
+class DisallowableInterestFormProviderSpec extends BooleanFormProviderBaseSpec("DisallowableInterestFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new DisallowableInterestFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new DisallowableInterestFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[DisallowableInterest](
-          form,
-          fieldName,
-          validValues = DisallowableInterest.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"disallowableInterest.error.required.${userScenario.user}")
-        )
-      }
-    }
-
-  }
+  override def requiredErrorKey: String = "disallowableInterest.error.required"
 
 }

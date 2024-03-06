@@ -30,7 +30,7 @@ class ProfessionalFeesDisallowableAmountSummarySpec extends SummaryBaseSpec("Pro
   private val disallowableAmount: BigDecimal = 20
 
   override val validData: JsObject = Json.obj(
-    "disallowableProfessionalFees"       -> "yes",
+    "disallowableProfessionalFees"       -> true,
     "professionalFeesAmount"             -> amount,
     "professionalFeesDisallowableAmount" -> disallowableAmount
   )

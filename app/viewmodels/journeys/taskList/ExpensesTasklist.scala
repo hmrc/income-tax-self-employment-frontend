@@ -23,7 +23,6 @@ import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.expenses.individualCategories.WorkFromHome.Yes
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses
@@ -62,10 +61,10 @@ object ExpensesTasklist {
       buildRow(ExpensesRepairsAndMaintenance, isExpensesTailoringIsAnswered && hasRepairsAndMaintenance)
 
     val hasWorkplaceRunningCosts =
-      conditionPassedForViewableLink(WorkFromHomePage, Seq(Yes)) ||
+      conditionPassedForViewableLink(WorkFromHomePage, Seq(true)) ||
         conditionPassedForViewableLink(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.filterNot(_ == WorkFromBusinessPremises.No))
     val expensesWorkplaceRunningCostsRow = {
-      val optWfhMsg = getPageAnswer(WorkFromHomePage).collect { case Yes => ".wfh" }
+      val optWfhMsg = getPageAnswer(WorkFromHomePage).collect { case true => ".wfh" }
       buildWorkplaceRunningCostsRow(ExpensesWorkplaceRunningCosts, isExpensesTailoringIsAnswered && hasWorkplaceRunningCosts, userAnswers, optWfhMsg)
     }
 
@@ -74,8 +73,7 @@ object ExpensesTasklist {
     val expensesAdvertisingOrMarketingRow =
       buildRow(ExpensesAdvertisingOrMarketing, isExpensesTailoringIsAnswered && hasAdvertisingOrMarketing)
 
-    val hasEntertainmentCosts =
-      conditionPassedForViewableLink(EntertainmentCostsPage, EntertainmentCosts.values.filterNot(_ == EntertainmentCosts.No))
+    val hasEntertainmentCosts    = conditionPassedForViewableLink(EntertainmentCostsPage, Seq(true))
     val expensesEntertainmentRow = buildRow(ExpensesEntertainment, isExpensesTailoringIsAnswered && hasEntertainmentCosts)
 
     val hasProfessionalServiceExpenses =
@@ -102,7 +100,7 @@ object ExpensesTasklist {
     val expensesFinancialChargesRow =
       buildRow(ExpensesFinancialCharges, isExpensesTailoringIsAnswered && hasOtherFinancialCharges)
 
-    val hasDepreciation         = conditionPassedForViewableLink(DepreciationPage, Depreciation.values.filterNot(_ == Depreciation.No))
+    val hasDepreciation         = conditionPassedForViewableLink(DepreciationPage, Seq(true))
     val expensesDepreciationRow = buildRow(ExpensesDepreciation, isExpensesTailoringIsAnswered && hasDepreciation)
 
     val hasIrrecoverableDebts = conditionPassedForViewableLink[FinancialExpenses](
@@ -253,9 +251,9 @@ object ExpensesTasklist {
 
   private def getWorkplaceRunningCostsUrl(journeyStatus: JourneyStatus, userAnswers: Option[UserAnswers], taxYear: TaxYear)(implicit
       businessId: BusinessId,
-      wfhReads: Reads[WorkFromHome],
+      wfhReads: Reads[Boolean],
       wfbpReads: Reads[WorkFromBusinessPremises]): String = {
-    val wfhTailoring: Option[WorkFromHome] = getPageAnswer[WorkFromHome](WorkFromHomePage)(businessId, userAnswers, wfhReads)
+    val wfhTailoring: Option[Boolean] = getPageAnswer[Boolean](WorkFromHomePage)(businessId, userAnswers, wfhReads)
     val wfbpTailoring: Option[WorkFromBusinessPremises] =
       getPageAnswer[WorkFromBusinessPremises](WorkFromBusinessPremisesPage)(businessId, userAnswers, wfbpReads)
     val cyaUrl = expenses.workplaceRunningCosts.routes.WorkplaceRunningCostsCYAController.onPageLoad(taxYear, businessId).url
@@ -265,7 +263,7 @@ object ExpensesTasklist {
       .url
     journeyStatus match {
       case Completed | InProgress                                                                  => cyaUrl
-      case NotStarted | CheckOurRecords if wfhTailoring contains WorkFromHome.Yes                  => wfhUrl
+      case NotStarted | CheckOurRecords if wfhTailoring contains true                              => wfhUrl
       case NotStarted | CheckOurRecords if wfbpTailoring exists (_ != WorkFromBusinessPremises.No) => wfbpUrl
       case _                                                                                       => "#"
     }

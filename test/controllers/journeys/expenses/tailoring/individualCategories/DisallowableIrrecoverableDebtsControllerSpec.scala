@@ -23,7 +23,6 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
   val formProvider = new DisallowableIrrecoverableDebtsFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[DisallowableIrrecoverableDebts])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -82,7 +81,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(DisallowableIrrecoverableDebtsPage, DisallowableIrrecoverableDebts.values.head, Some(businessId))
+              .set(DisallowableIrrecoverableDebtsPage, true, Some(businessId))
               .success
               .value
 
@@ -96,9 +95,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableIrrecoverableDebts.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -141,7 +138,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
         running(application) {
           val request =
             FakeRequest(POST, disallowableIrrecoverableDebtsRoute)
-              .withFormUrlEncodedBody(("value", DisallowableIrrecoverableDebts.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -207,7 +204,7 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
         running(application) {
           val request =
             FakeRequest(POST, disallowableIrrecoverableDebtsRoute)
-              .withFormUrlEncodedBody(("value", DisallowableIrrecoverableDebts.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 

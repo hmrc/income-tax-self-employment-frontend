@@ -16,9 +16,8 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.DisallowableSubcontractorCosts
 import pages.OneQuestionPage
 
-case object DisallowableSubcontractorCostsPage extends OneQuestionPage[DisallowableSubcontractorCosts] {
+case object DisallowableSubcontractorCostsPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableSubcontractorCosts"
 }

@@ -16,42 +16,14 @@
 
 package forms.expenses.tailoring.individualCategories
 
-import forms.behaviours.OptionFieldBehaviours
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
-import models.journeys.expenses.individualCategories.DisallowableIrrecoverableDebts
-import play.api.data.FormError
+import play.api.data.Form
 
-class DisallowableIrrecoverableDebtsFormProviderSpec extends OptionFieldBehaviours {
+class DisallowableIrrecoverableDebtsFormProviderSpec extends BooleanFormProviderBaseSpec("DisallowableIrrecoverableDebtsFormProvider") {
 
-  ".value" - {
+  override def formProvider(userType: UserType): Form[Boolean] = new DisallowableIrrecoverableDebtsFormProvider()(userType)
 
-    val fieldName = "value"
-
-    case class UserScenario(user: UserType)
-
-    val userScenarios = Seq(UserScenario(Individual), UserScenario(Agent))
-
-    userScenarios.foreach { userScenario =>
-      val form = new DisallowableIrrecoverableDebtsFormProvider()(userScenario.user)
-
-      s"when user is an ${userScenario.user}, form should " - {
-
-        behave like optionsField[DisallowableIrrecoverableDebts](
-          form,
-          fieldName,
-          validValues = DisallowableIrrecoverableDebts.values,
-          invalidError = FormError(fieldName, "error.invalid")
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, s"disallowableIrrecoverableDebts.error.required.${userScenario.user}")
-        )
-      }
-    }
-
-  }
+  override def requiredErrorKey: String = "disallowableIrrecoverableDebts.error.required"
 
 }

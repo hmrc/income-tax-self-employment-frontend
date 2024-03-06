@@ -26,7 +26,6 @@ import controllers.journeys.expenses.otherExpenses.routes._
 import controllers.standard.routes._
 import models._
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
@@ -120,7 +119,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is FinancialChargesAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the FinancialChargesDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> "yes"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> true))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -130,7 +129,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "no disallowable expenses" - {
               "navigate to the FinancialChargesCYAController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> "no"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> false))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
@@ -226,7 +225,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is StaffCostsAmountPage" - {
             "should navigate to the StaffCostsDisallowableAmountController" - {
               "when expenses are disallowable" in {
-                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.Yes, Some(businessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, true, Some(businessId)).success.value
 
                 val expectedResult =
                   staffCosts.routes.StaffCostsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -236,7 +235,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "should navigate to the StaffCostsCYAController" - {
               "when expenses are not disallowable" in {
-                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, DisallowableStaffCosts.No, Some(businessId)).success.value
+                val userAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, false, Some(businessId)).success.value
 
                 val expectedResult = staffCosts.routes.StaffCostsCYAController.onPageLoad(taxYear, businessId)
 
@@ -257,7 +256,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is ConstructionIndustryAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the ConstructionIndustryDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "yes"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> true))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = construction.routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -267,7 +266,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "navigate to the ConstructionIndustryCYAPage" - {
               "if all expenses were claimed as allowable" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> "no"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableSubcontractorCosts" -> false))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = construction.routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
@@ -289,7 +288,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is ProfessionalFeesAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the ProfessionalFeesDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "yes"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> true))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = professionalFees.routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -299,7 +298,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "navigate to the ProfessionalFeesCYAPage" - {
               "if all expenses were claimed as allowable" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> "no"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableProfessionalFees" -> false))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
@@ -321,7 +320,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is InterestAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the InterestDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> "yes"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> true))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -331,7 +330,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "navigate to the InterestCYAPage" - {
               "if all expenses were claimed as allowable" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> "no"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> false))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
@@ -353,7 +352,7 @@ class ExpensesNavigatorSpec extends SpecBase {
           "the page is IrrecoverableDebtsAmountPage" - {
             "some expenses were claimed to be disallowable" - {
               "navigate to the IrrecoverableDebtsDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "yes"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> true))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
@@ -363,7 +362,7 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
             "no disallowable expenses" - {
               "navigate to the IrrecoverableDebtsCYAController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> "no"))
+                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> false))
                 val userAnswers = UserAnswers(userAnswersId, data)
 
                 val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)

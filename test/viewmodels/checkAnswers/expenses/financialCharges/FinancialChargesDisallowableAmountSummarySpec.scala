@@ -29,7 +29,7 @@ class FinancialChargesDisallowableAmountSummarySpec extends SummaryBaseSpec("Fin
   private val amount = BigDecimal(123.00)
 
   override val validData: JsObject =
-    Json.obj("disallowableOtherFinancialCharges" -> "yes", "financialChargesAmount" -> amount, "financialChargesDisallowableAmount" -> amount)
+    Json.obj("disallowableOtherFinancialCharges" -> true, "financialChargesAmount" -> amount, "financialChargesDisallowableAmount" -> amount)
 
   override val invalidData: JsObject =
     Json.obj("otherPage" -> amount)

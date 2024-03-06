@@ -18,16 +18,12 @@ package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.DisallowableOtherFinancialCharges
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class DisallowableOtherFinancialChargesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[DisallowableOtherFinancialCharges] =
-    Form(
-      "value" -> enumerable[DisallowableOtherFinancialCharges](s"disallowableOtherFinancialCharges.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"disallowableOtherFinancialCharges.error.required.$userType"))
 
 }

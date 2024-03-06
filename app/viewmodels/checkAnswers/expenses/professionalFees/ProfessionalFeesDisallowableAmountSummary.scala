@@ -20,8 +20,6 @@ import controllers.journeys.expenses.professionalFees.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
-import models.journeys.expenses.individualCategories.DisallowableProfessionalFees.{No, Yes}
 import pages.expenses.professionalFees._
 import pages.expenses.tailoring.individualCategories.DisallowableProfessionalFeesPage
 import play.api.i18n.Messages
@@ -34,7 +32,6 @@ object ProfessionalFeesDisallowableAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableProfessionalFeesPage, Some(businessId))
-      .filter(areAnyProfessionalFeesDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
@@ -48,11 +45,5 @@ object ProfessionalFeesDisallowableAmountSummary extends MoneyUtils {
       messages(s"professionalFeesDisallowableAmount.title.$userType", allowableAmount),
       "professionalFeesDisallowableAmount.change.hidden"
     )
-
-  private def areAnyProfessionalFeesDisallowable(professionalFeesAnswer: DisallowableProfessionalFees): Boolean =
-    professionalFeesAnswer match {
-      case Yes => true
-      case No  => false
-    }
 
 }

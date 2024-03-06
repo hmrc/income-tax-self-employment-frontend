@@ -16,9 +16,8 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.WorkFromHome
 import pages.OneQuestionPage
 
-case object WorkFromHomePage extends OneQuestionPage[WorkFromHome] {
+case object WorkFromHomePage extends OneQuestionPage[Boolean] {
   override def toString: String = "workFromHome"
 }

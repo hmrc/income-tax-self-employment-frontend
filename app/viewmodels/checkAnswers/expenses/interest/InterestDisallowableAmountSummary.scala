@@ -20,8 +20,6 @@ import controllers.journeys.expenses.interest.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableInterest
-import models.journeys.expenses.individualCategories.DisallowableInterest.{No, Yes}
 import pages.expenses.interest._
 import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
 import play.api.i18n.Messages
@@ -34,7 +32,6 @@ object InterestDisallowableAmountSummary extends MoneyUtils {
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(DisallowableInterestPage, Some(businessId))
-      .filter(areAnyInterestDisallowable)
       .flatMap(_ => createSummaryListRow(answers, taxYear, businessId, userType))
 
   private def createSummaryListRow(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
@@ -48,11 +45,5 @@ object InterestDisallowableAmountSummary extends MoneyUtils {
       messages(s"interestDisallowableAmount.title.$userType", allowableAmount),
       "interestDisallowableAmount.change.hidden"
     )
-
-  private def areAnyInterestDisallowable(interestAnswer: DisallowableInterest): Boolean =
-    interestAnswer match {
-      case Yes => true
-      case No  => false
-    }
 
 }

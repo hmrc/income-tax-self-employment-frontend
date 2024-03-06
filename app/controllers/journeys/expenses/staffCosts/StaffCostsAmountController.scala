@@ -21,7 +21,6 @@ import controllers.standard.routes
 import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.individualCategories.DisallowableStaffCosts
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -64,14 +63,14 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+      def handleForm(disallowableStaffCosts: Boolean): Future[Result] =
         formProvider(request.userType)
           .bindFromRequest()
           .fold(
             formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
             value => handleSuccess(value)
           )
-      def handleError(formWithErrors: Form[_], disallowableStaffCosts: DisallowableStaffCosts): Future[Result] =
+      def handleError(formWithErrors: Form[_], disallowableStaffCosts: Boolean): Future[Result] =
         Future.successful(
           BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
         )

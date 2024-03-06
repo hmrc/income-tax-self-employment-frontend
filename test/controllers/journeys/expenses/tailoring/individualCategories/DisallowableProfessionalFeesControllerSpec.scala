@@ -22,7 +22,6 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -49,7 +48,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
   val formProvider = new DisallowableProfessionalFeesFormProvider()
 
-  case class UserScenario(userType: UserType, form: Form[DisallowableProfessionalFees])
+  case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
     UserScenario(userType = Individual, formProvider(Individual)),
@@ -84,7 +83,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(DisallowableProfessionalFeesPage, DisallowableProfessionalFees.values.head, Some(businessId))
+              .set(DisallowableProfessionalFeesPage, true, Some(businessId))
               .success
               .value
 
@@ -98,9 +97,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
               val result = route(application, request).value
 
               val expectedResult =
-                view(userScenario.form.fill(DisallowableProfessionalFees.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual expectedResult
@@ -143,7 +140,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
         running(application) {
           val request =
             FakeRequest(POST, disallowableProfessionalFeesRoute)
-              .withFormUrlEncodedBody(("value", DisallowableProfessionalFees.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 
@@ -208,7 +205,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
         running(application) {
           val request =
             FakeRequest(POST, disallowableProfessionalFeesRoute)
-              .withFormUrlEncodedBody(("value", DisallowableProfessionalFees.values.head.toString))
+              .withFormUrlEncodedBody(("value", true.toString))
 
           val result = route(application, request).value
 

@@ -18,16 +18,12 @@ package forms.expenses.tailoring.individualCategories
 
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.expenses.individualCategories.DisallowableSubcontractorCosts
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class DisallowableSubcontractorCostsFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[DisallowableSubcontractorCosts] =
-    Form(
-      "value" -> enumerable[DisallowableSubcontractorCosts](s"disallowableSubcontractorCosts.error.required.$userType")
-    )
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"disallowableSubcontractorCosts.error.required.$userType"))
 
 }

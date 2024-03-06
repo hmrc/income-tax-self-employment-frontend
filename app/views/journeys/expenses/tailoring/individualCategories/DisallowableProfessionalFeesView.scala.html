@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.DisallowableProfessionalFees
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 
@@ -52,11 +51,10 @@
     @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableProfessionalFeesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel(
+            RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"disallowableProfessionalFees.subheading.$userType"))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items = DisallowableProfessionalFees.options
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 
