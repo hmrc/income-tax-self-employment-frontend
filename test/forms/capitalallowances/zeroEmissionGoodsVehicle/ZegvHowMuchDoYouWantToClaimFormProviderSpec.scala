@@ -25,6 +25,7 @@ import models.common.UserType.{Agent, Individual}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
+import common.Messages._
 
 class ZegvHowMuchDoYouWantToClaimFormProviderSpec extends AnyWordSpecLike with TableDrivenPropertyChecks {
 
