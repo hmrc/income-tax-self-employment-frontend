@@ -93,12 +93,26 @@ object CapitalAllowancesTasklist {
       balancingAllowanceIsTailored
     )
 
+    val annualInvestmentAllowanceStatus = getJourneyStatus(CapitalAllowancesAnnualInvestmentAllowance)(tradesJourneyStatuses)
+    val annualInvestmentAllowanceHref =
+      getCapitalAllowanceUrl(CapitalAllowancesAnnualInvestmentAllowance, annualInvestmentAllowanceStatus, businessId, taxYear)
+    val annualInvestmentAllowanceIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.AnnualInvestment) && capAllowancesTailoringCompleted
+    val annualInvestmentAllowanceRow = returnRowIfConditionPassed(
+      buildSummaryRow(
+        annualInvestmentAllowanceHref,
+        messages(s"journeys.$CapitalAllowancesAnnualInvestmentAllowance"),
+        annualInvestmentAllowanceStatus),
+      annualInvestmentAllowanceIsTailored
+    )
+
     List(
       tailoringRow,
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
       electricVehicleChargePointsRow,
-      balancingAllowanceRow
+      balancingAllowanceRow,
+      annualInvestmentAllowanceRow
     ).flatten
   }
 
@@ -126,10 +140,13 @@ object CapitalAllowancesTasklist {
         )(journeyStatus)
       case CapitalAllowancesBalancingAllowance =>
         determineJourneyStartOrCyaUrl(
-          capitalallowances.balancingAllowance.routes.BalancingAllowanceController
-            .onPageLoad(taxYear, businessId, NormalMode)
-            .url,
+          capitalallowances.balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesAnnualInvestmentAllowance =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }
