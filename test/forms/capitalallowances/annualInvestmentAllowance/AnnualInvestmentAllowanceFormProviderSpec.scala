@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms.capitalallowances.annualInvestmentAllowance
 
-@(heading: String, subheading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
+import base.forms.BooleanFormProviderBaseSpec
+import models.common.UserType
 
-<header class="hmrc-page-heading @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">
+class AnnualInvestmentAllowanceFormProviderSpec extends BooleanFormProviderBaseSpec("AnnualInvestmentAllowanceFormProvider") {
 
-    @subheading.map{ subheading =>
-    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subheading)</p>
-    }
-    <h1 class="govuk-heading-@{size} @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">@messages(heading)</h1>
+  override def requiredErrorKey: String         = "annualInvestmentAllowance.error.required"
+  override def formProvider(userType: UserType) = new AnnualInvestmentAllowanceFormProvider()(userType)
 
-</header>
+}

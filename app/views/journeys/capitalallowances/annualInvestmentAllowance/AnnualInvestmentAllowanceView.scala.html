@@ -1,0 +1,72 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.capitalallowances.annualInvestmentAllowance.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("selectCapitalAllowances.annualInvestment.cya"))) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+    }
+
+    <h1 class="govuk-heading-l">@messages("selectCapitalAllowances.annualInvestment.cya")</h1>
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>@messages(s"annualInvestmentAllowance.p1.$userType")</p>
+        <p>@messages(s"annualInvestmentAllowance.p2.$userType")</p>
+        <p>@messages(s"annualInvestmentAllowance.p3.$userType")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"annualInvestmentAllowance.l1.$userType")</li>
+            <li>@messages(s"annualInvestmentAllowance.l2.$userType")</li>
+        </ul>
+
+        <h1 class="govuk-heading-m">@messages("annualInvestmentAllowance.aiaLimit")</h1>
+
+        <p>
+            @messages(s"annualInvestmentAllowance.p4.$userType")
+            <a class="govuk-link" target="_blank" href=@messages("annualInvestmentAllowance.link1.href") >@messages(s"annualInvestmentAllowance.link1.$userType")</a>.
+        </p>
+        <p>
+            <a class="govuk-link" target="_blank" href=@messages("annualInvestmentAllowance.link2.href") >@messages("annualInvestmentAllowance.link2")</a>
+            @messages(s"balancingAllowance.p7.tab")
+        </p>
+    </div>
+
+    @formHelper(action = routes.AnnualInvestmentAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"annualInvestmentAllowance.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
+                .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-6"))
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
