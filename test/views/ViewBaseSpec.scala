@@ -44,6 +44,7 @@ trait ViewBaseSpec extends PlaySpec with BeforeAndAfterAll {
   override def afterAll(): Unit = {
     super.afterAll()
     application.stop()
+    ()
   }
 
   implicit def messages: Messages = SpecBase.messages(application)

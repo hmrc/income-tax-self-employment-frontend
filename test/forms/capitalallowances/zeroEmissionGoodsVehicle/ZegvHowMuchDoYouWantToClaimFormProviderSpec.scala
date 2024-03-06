@@ -16,8 +16,8 @@
 
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
-import common.Messages._
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider.standardErrors._
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProviderSpec._
 import forms.invalidError
 import models.common.MoneyBounds.noDecimalRegexp
 import models.common.UserType
@@ -25,7 +25,6 @@ import models.common.UserType.{Agent, Individual}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
-import ZegvHowMuchDoYouWantToClaimFormProviderSpec._
 
 class ZegvHowMuchDoYouWantToClaimFormProviderSpec extends AnyWordSpecLike with TableDrivenPropertyChecks {
 

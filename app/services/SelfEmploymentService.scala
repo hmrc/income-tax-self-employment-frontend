@@ -29,7 +29,7 @@ import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
 import queries.Settable
-import repositories.{SessionRepository, SessionRepositoryBase}
+import repositories.SessionRepositoryBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
