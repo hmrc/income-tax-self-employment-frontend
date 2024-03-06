@@ -54,6 +54,9 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
 
   /** You can use this method to determine if all answers are provided starting from a page. The value is overridden in each of the page
     */
-  def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = false
+  def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val _ = (businessId, userAnswers) // just to remove unused warning
+    false
+  }
 
 }
