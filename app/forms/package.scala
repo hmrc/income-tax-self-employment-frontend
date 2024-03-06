@@ -17,7 +17,7 @@
 import models.common.UserType
 
 package object forms {
-  val invalidError: String = "error.invalid"
+  val invalidError: String      = "error.invalid"
   val lessThanZeroError: String = "error.lessThanZero"
   val nonNumericError: String   = "error.nonNumeric"
   val noDecimalsError: String   = "error.nonDecimal"

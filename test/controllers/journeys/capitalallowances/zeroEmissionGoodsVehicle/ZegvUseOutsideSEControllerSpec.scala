@@ -17,9 +17,8 @@
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import base.ControllerTestScenarioSpec
-import base.SpecBase.{ToFutureOps, businessId, emptyUserAnswers, emptyUserAnswersAccrual, taxYear}
+import base.SpecBase.{ToFutureOps, businessId, emptyUserAnswers, taxYear}
 import cats.implicits.catsSyntaxOptionId
-import controllers.standard.{routes => genRoutes}
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
@@ -47,7 +46,7 @@ class ZegvUseOutsideSEControllerSpec extends AnyWordSpecLike with PlayRunners wi
       running(application) {
         val result = route(application, request).value
         assert(status(result) === OK)
-        assert(getTitle(result) === "zegvUsedForSelfEmployment.title.individual - income-tax-self-employment-frontend - GOV.UK")
+        assert(getTitle(result) === "How much did you use the vehicle outside your self-employment? - income-tax-self-employment-frontend - GOV.UK")
       }
     }
   }

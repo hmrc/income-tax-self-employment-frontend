@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimPage
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -24,7 +24,7 @@ import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePa
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Request
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleView
 
 class ZegvTotalCostOfVehicleControllerSpec

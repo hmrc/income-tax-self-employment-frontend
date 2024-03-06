@@ -18,23 +18,18 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.Settable
-import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
 import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: MessagesApi,
@@ -44,7 +39,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
                                                      service: ZegvService,
                                                      formProvider: ZegvOnlyForSelfEmploymentFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     view: ZegvOnlyForSelfEmploymentView)(implicit ec: ExecutionContext)
+                                                     view: ZegvOnlyForSelfEmploymentView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
