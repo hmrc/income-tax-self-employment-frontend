@@ -16,8 +16,36 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import org.scalatest.wordspec.AnyWordSpecLike
+import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxOptionId
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider
+import models.NormalMode
+import models.common.{BusinessId, UserType}
+import models.database.UserAnswers
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.{Call, Request}
+import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
 
-class ZegvUseOutsideSEControllerSpec extends AnyWordSpecLike {
-  // TODO Test enum
+class ZegvUseOutsideSEControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZegvUseOutsideSEController", ZeroEmissionGoodsVehiclePage) {
+
+  def onPageLoadCall: Call = routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
+  def onSubmitCall: Call   = routes.ZegvUseOutsideSEController.onSubmit(taxYear, businessId, NormalMode)
+  def onwardRoute: Call    = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+
+  val validAnswer: Boolean = true
+
+  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
+
+  def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
+    val view = application.injector.instanceOf[ZeroEmissionGoodsVehiclesView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+  }
+
+  def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
+
+  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 }

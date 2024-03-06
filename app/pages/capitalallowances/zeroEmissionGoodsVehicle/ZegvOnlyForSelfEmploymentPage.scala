@@ -47,8 +47,8 @@ object ZegvOnlyForSelfEmploymentPage extends ZegvBasePage[Boolean] {
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
     val answer = userAnswers.get(this, businessId)
-    (answer.contains(true) && ZegvClaimAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
-    (answer.contains(false) && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers))
+    (answer.contains(true) && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
+    (answer.contains(false) && ZegvUseOutsideSEPage.hasAllFurtherAnswers(businessId, userAnswers))
   }
 
 }

@@ -31,7 +31,6 @@ object ZegvUseOutsideSEPage extends ZegvBasePage[ZegvUseOutsideSE] {
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
     val answer = userAnswers.get(this, businessId)
-    (answer.contains(true) && ZegvClaimAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
-    (answer.contains(false) && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers))
+    answer.isDefined && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers)
   }
 }

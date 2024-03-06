@@ -15,10 +15,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ZegvService @Inject() (service: SelfEmploymentService)(implicit ec: ExecutionContext) {
 
-  private[zeroEmissionGoodsVehicle] def submitAnswerAndClearWhenNo(pageUpdated: ZegvBasePage[Boolean],
-                                                                   businessId: BusinessId,
-                                                                   request: DataRequest[_],
-                                                                   newAnswer: Boolean): Future[UserAnswers] =
+  private[zeroEmissionGoodsVehicle] def submitAnswerAndClearDependentAnswers(pageUpdated: ZegvBasePage[Boolean],
+                                                                             businessId: BusinessId,
+                                                                             request: DataRequest[_],
+                                                                             newAnswer: Boolean): Future[UserAnswers] =
     for {
       editedUserAnswers  <- clearDependentPages(pageUpdated, request, businessId)
       updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
@@ -30,7 +30,7 @@ class ZegvService @Inject() (service: SelfEmploymentService)(implicit ec: Execut
                               newAnswer: Boolean,
                               mode: Mode,
                               taxYear: TaxYear): Future[Result] =
-    submitAnswerAndClearWhenNo(pageUpdated, businessId, request, newAnswer)
+    submitAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
       .map { updatedAnswers =>
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
       }

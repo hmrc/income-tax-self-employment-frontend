@@ -35,7 +35,7 @@ class ZegvServiceSpec extends AnyWordSpecLike {
   "submitAnswer" should {
     "return UserAnswers with cleared dependent pages when selected No" in {
       val updatedAnswers =
-        underTest.submitAnswerAndClearWhenNo(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
+        underTest.submitAnswerAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
 
       val expectedAnswers = emptyUserAnswers
         .set(

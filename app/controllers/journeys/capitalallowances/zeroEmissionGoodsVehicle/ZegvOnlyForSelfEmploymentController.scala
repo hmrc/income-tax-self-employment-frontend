@@ -64,31 +64,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, mode, taxYear)
-//
-//            for {
-//              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-//              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvOnlyForSelfEmploymentPage)
-//            } yield ZegvOnlyForSelfEmploymentPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+          answer => service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, mode, taxYear)
         )
   }
-
-  // TODO Use the "page" pattern - will be changed in SASS-7510
-  private def handleGatewayQuestion(currentAnswer: Boolean,
-                                    request: DataRequest[_],
-                                    mode: Mode,
-                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZegvUseOutsideSEPage, ZegvUseOutsideSEPercentagePage)
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case true  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case false => Future(request.userAnswers)
-    }
-    val redirectMode = request.getValue(ZegvOnlyForSelfEmploymentPage, businessId) match {
-      case Some(true) if !currentAnswer => NormalMode
-      case _                            => mode
-    }
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
-  }
-
 }
