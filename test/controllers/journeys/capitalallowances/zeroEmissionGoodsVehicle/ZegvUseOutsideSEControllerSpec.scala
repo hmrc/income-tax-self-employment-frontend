@@ -16,36 +16,58 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import base.ControllerTestScenarioSpec
+import base.SpecBase.{ToFutureOps, businessId, emptyUserAnswers, emptyUserAnswersAccrual, taxYear}
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider
+import controllers.standard.{routes => genRoutes}
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
+import org.scalatest.OptionValues._
+import org.scalatest.TryValues._
+import org.scalatest.wordspec.AnyWordSpecLike
+import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvTotalCostOfVehiclePage, ZegvUseOutsideSEPage}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest, PlayRunners}
 
-class ZegvUseOutsideSEControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZegvUseOutsideSEController", ZeroEmissionGoodsVehiclePage) {
+class ZegvUseOutsideSEControllerSpec extends AnyWordSpecLike with PlayRunners with ControllerTestScenarioSpec {
+  lazy val getOnPageLoadNormal: String = routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val postOnSubmitNormal: String  = routes.ZegvUseOutsideSEController.onSubmit(taxYear, businessId, NormalMode).url
 
-  def onPageLoadCall: Call = routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
-  def onSubmitCall: Call   = routes.ZegvUseOutsideSEController.onSubmit(taxYear, businessId, NormalMode)
-  def onwardRoute: Call    = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+  "onPaGeLoad" should {
+    def request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, getOnPageLoadNormal)
 
-  val validAnswer: Boolean = true
-
-  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
-
-  def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
-    val view = application.injector.instanceOf[ZeroEmissionGoodsVehiclesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+    "render the correct view" in new TestScenario(
+      UserType.Individual,
+      emptyUserAnswers.set(ZegvTotalCostOfVehiclePage, BigDecimal(100.0), businessId.some).success.value.some
+    ) {
+      running(application) {
+        val result = route(application, request).value
+        assert(status(result) === OK)
+        assert(getTitle(result) === "zegvUsedForSelfEmployment.title.individual - income-tax-self-employment-frontend - GOV.UK")
+      }
+    }
   }
 
-  def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
+  "onSubmit" should {
+    def request: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, postOnSubmitNormal)
+      .withFormUrlEncodedBody(("radioPercentage", "25%"), ("optDifferentAmount", "25"))
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
+    mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns emptyUserAnswers.asFuture
+
+    "render the correct view" in new TestScenario(
+      UserType.Individual,
+      emptyUserAnswers.set(ZegvUseOutsideSEPage, ZegvUseOutsideSE.Fifty, businessId.some).success.value.some
+    ) {
+      running(application) {
+        val result = route(application, request).value
+        assert(status(result) === SEE_OTHER)
+        assert(redirectLocation(result).value === routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, mode).url)
+      }
+    }
+  }
+
 }

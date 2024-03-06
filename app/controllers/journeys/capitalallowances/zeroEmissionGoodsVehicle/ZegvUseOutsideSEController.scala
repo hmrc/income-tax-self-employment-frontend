@@ -18,16 +18,15 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEFormProvider
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEFormProvider.ZegvUseOutsideSEFormModel
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE.DifferentAmount
-import models.{Mode, NormalMode}
-import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvUseOutsideSEPage, ZegvUseOutsideSEPercentagePage}
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEViewModel
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEView
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +37,7 @@ class ZegvUseOutsideSEController @Inject() (override val messagesApi: MessagesAp
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            service: SelfEmploymentService,
+                                            service: ZegvUseOutsideSEService,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: ZegvUseOutsideSEView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -47,34 +46,20 @@ class ZegvUseOutsideSEController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val formProvider    = ZegvUseOutsideSEFormProvider(request.userType)
-      val radioValue      = request.getValue(ZegvUseOutsideSEPage, businessId)
-      val percentageValue = request.getValue(ZegvUseOutsideSEPercentagePage, businessId)
-      val filledForm = (radioValue, percentageValue) match {
-        case (Some(radioValue), Some(percentageValue)) if radioValue == DifferentAmount =>
-          formProvider.fill(ZegvUseOutsideSEFormModel(radioValue, percentageValue))
-        case (Some(radioValue), _) =>
-          formProvider.fill(ZegvUseOutsideSEFormModel(radioValue))
-        case _ => formProvider
-      }
-
+      val filledForm = ZegvUseOutsideSEViewModel.createFilledForm(request, businessId)
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(answer: ZegvUseOutsideSEFormModel): Future[Result] =
-        for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(ZegvUseOutsideSEPage, answer.radioPercentage, Some(businessId)))
-          redirectMode = if (request.getValue(ZegvUseOutsideSEPercentagePage, businessId) contains answer.optDifferentAmount) mode else NormalMode
-          updatedUserAnswers <- service.persistAnswer(businessId, updatedAnswers, answer.optDifferentAmount, ZegvUseOutsideSEPercentagePage)
-        } yield ZegvUseOutsideSEPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
-
       ZegvUseOutsideSEFormProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value => handleSuccess(value)
+          answer =>
+            service.submitAnswer(request, answer, businessId).map { updatedAnswers =>
+              ZegvUseOutsideSEPage.redirectNext(mode, updatedAnswers, businessId, taxYear)
+            }
         )
   }
 
