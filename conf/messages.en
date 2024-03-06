@@ -1535,3 +1535,29 @@ balancingAllowanceAmount.title.agent = How much is the total of your client’s 
 balancingAllowanceAmount.error.required.individual = Enter the amount of the balancing allowance you want to report
 balancingAllowanceAmount.error.required.agent =  Enter the amount of the balancing allowance your client wants to report
 balancingAllowanceAmount.change.hidden = Change how much balancing allowance is reported
+
+########## Capital Allowances - Annual Investment Allowance ##########
+
+annualInvestmentAllowance.p1.individual = You can claim Annual investment allowance if you bought equipment (but not cars) during the year.
+annualInvestmentAllowance.p1.agent = Your client can claim Annual investment allowance if they bought equipment (but not cars) during the year.
+annualInvestmentAllowance.p2.individual = If you use the equipment for both business and private use, you’ll need to reduce the annual investment allowance you claim by the private use proportion.
+annualInvestmentAllowance.p2.agent = If your client use the equipment for both business and private use, they’ll need to reduce the annual investment allowance they claim by the private use proportion.
+annualInvestmentAllowance.p3.individual = You cannot claim AIA on items:
+annualInvestmentAllowance.p3.agent = Your client cannot claim AIA on items:
+annualInvestmentAllowance.l1.individual = you owned for another reason before you started using them in your business
+annualInvestmentAllowance.l1.agent = they owned for another reason before they started using them in their business
+annualInvestmentAllowance.l2.individual = given to you or your business
+annualInvestmentAllowance.l2.agent = given to them or their business
+annualInvestmentAllowance.aiaLimit = AIA limit
+annualInvestmentAllowance.p4.individual = The annual AIA limit is £1million. If your accounting period is longer or shorter than 12 months you’ll need to
+annualInvestmentAllowance.p4.agent = The annual AIA limit is £1million. If your client’s accounting period is longer or shorter than 12 months they’ll need to
+annualInvestmentAllowance.link1.individual = adjust the amount you claim (opens in a new tab)
+annualInvestmentAllowance.link1.agent = adjust the amount they claim (opens in a new tab)
+annualInvestmentAllowance.link1.href = https://www.gov.uk/guidance/annual-investment-allowance-limit-changes-during-accounting-periods
+annualInvestmentAllowance.link2 = Read more about the annual investment allowance
+annualInvestmentAllowance.link2.href = https://www.gov.uk/capital-allowances/annual-investment-allowance
+annualInvestmentAllowance.subHeading.individual = Do you want to claim annual investment allowance on plant and machinery you bought between 6 April {0} and 5 April {1}?
+annualInvestmentAllowance.subHeading.agent = Do your client want to claim annual investment allowance on plant and machinery they bought between 6 April {0} and 5 April {1}?
+annualInvestmentAllowance.error.required.individual = Select yes if you want to claim annual investment allowance on equipment you bought between 6 April {0} and 5 April {1}
+annualInvestmentAllowance.error.required.agent = Select yes if your client wants to claim annual investment allowance on equipment they bought between 6 April {0} and 5 April {1}
+annualInvestmentAllowance.change.hidden = Change if you want to claim annual investment allowance on plant and machinery you bought

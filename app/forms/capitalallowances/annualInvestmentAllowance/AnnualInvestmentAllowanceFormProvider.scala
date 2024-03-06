@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms.capitalallowances.annualInvestmentAllowance
 
-@(heading: String, subheading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
-<header class="hmrc-page-heading @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">
+import javax.inject.Inject
 
-    @subheading.map{ subheading =>
-    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subheading)</p>
-    }
-    <h1 class="govuk-heading-@{size} @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">@messages(heading)</h1>
+class AnnualInvestmentAllowanceFormProvider @Inject() extends Mappings {
 
-</header>
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"annualInvestmentAllowance.error.required.$userType"))
+
+}
