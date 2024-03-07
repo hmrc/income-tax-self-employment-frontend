@@ -16,7 +16,7 @@
 
 package controllers.journeys.capitalallowances.balancingAllowance
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common._
 import controllers.journeys.capitalallowances.balancingAllowance
@@ -39,6 +39,7 @@ import scala.concurrent.ExecutionContext
 class BalancingAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getAnswers: DataRetrievalAction,
+                                                 getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                  requireAnswers: DataRequiredAction,
                                                  service: SelfEmploymentService,
                                                  val controllerComponents: MessagesControllerComponents,
@@ -48,7 +49,8 @@ class BalancingAllowanceCYAController @Inject() (override val messagesApi: Messa
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen getJourneyAnswers[BalancingAllowanceAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesBalancingAllowance)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
