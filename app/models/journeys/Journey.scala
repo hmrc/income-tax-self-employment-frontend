@@ -19,6 +19,7 @@ package models.journeys
 import enumeratum._
 import models.common.PageName
 import pages.abroad.SelfEmploymentAbroadPage
+import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
@@ -202,6 +203,8 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   case object CapitalAllowancesAnnualInvestmentAllowance extends Journey("capital-allowances-annual-investment-allowance") {
     override val pageKeys: List[PageName] = List(
+      AnnualInvestmentAllowancePage.pageName,
+      AnnualInvestmentAllowanceAmountPage.pageName
     )
   }
 

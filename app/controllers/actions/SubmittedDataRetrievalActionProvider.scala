@@ -77,8 +77,12 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-      zecUpdated  <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](taxYear, businesses, zecUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+      zecUpdated <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](
+        taxYear,
+        businesses,
+        zecUpdated,
+        Journey.CapitalAllowancesElectricVehicleChargePoints)
       aiaUpdated <- loadAnswers[AnnualInvestmentAllowanceAnswers](
         taxYear,
         businesses,
