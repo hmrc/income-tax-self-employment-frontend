@@ -77,10 +77,14 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-      zecUpdated  <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](taxYear, businesses, zecUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-      balancingAllowanceUpdated <- loadAnswers[BalancingAllowanceAnswers](taxYear, businesses, evcpUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-    } yield TaskListWithRequest(taskList, balancingAllowanceUpdated)
+      zecUpdated <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+      balancingAllowanceUpdated <- loadAnswers[BalancingAllowanceAnswers](taxYear, businesses, zecUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](
+        taxYear,
+        businesses,
+        balancingAllowanceUpdated,
+        Journey.CapitalAllowancesZeroEmissionCars)
+    } yield TaskListWithRequest(taskList, evcpUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
