@@ -60,12 +60,12 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
       val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
 
       "remove dependent pages if selected Yes (true)" in {
-        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, true, dataRequest, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected No (false)" in {
-        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, false, dataRequest, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true
@@ -98,12 +98,12 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
       val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
 
       "remove dependent pages if selected No (false)" in {
-        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, false, dataRequest, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected Yes (true)" in {
-        val updatedAnswer = clearDependentPages(Page1, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, true, dataRequest, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true

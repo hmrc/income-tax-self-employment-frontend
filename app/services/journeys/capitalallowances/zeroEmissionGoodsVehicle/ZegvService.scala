@@ -34,17 +34,11 @@ class ZegvService @Inject() (service: SelfEmploymentService)(implicit ec: Execut
   private[zeroEmissionGoodsVehicle] def submitAnswerAndClearDependentAnswers(pageUpdated: ZegvBasePage[Boolean],
                                                                              businessId: BusinessId,
                                                                              request: DataRequest[_],
-                                                                             newAnswer: Boolean): Future[UserAnswers] = {
-    val previousAnswer = request.userAnswers.get(pageUpdated, Some(businessId))
-    if (previousAnswer != Option(newAnswer)) {
-      for {
-        editedUserAnswers  <- clearDependentPages(pageUpdated, request, businessId)
-        updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
-      } yield updatedUserAnswers
-    } else {
-      Future.successful(request.userAnswers)
-    }
-  }
+                                                                             newAnswer: Boolean): Future[UserAnswers] =
+    for {
+      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request, businessId)
+      updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
+    } yield updatedUserAnswers
 
   def submitAnswerAndRedirect(pageUpdated: ZegvBasePage[Boolean],
                               businessId: BusinessId,

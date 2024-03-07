@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.annualInvestmentAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearPagesWhenNo
+import controllers.journeys.clearDependentPages
 import forms.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -63,9 +63,9 @@ class AnnualInvestmentAllowanceController @Inject() (override val messagesApi: M
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
-              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(AnnualInvestmentAllowancePage, answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, AnnualInvestmentAllowancePage)
-            } yield AnnualInvestmentAllowancePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+              editedUserAnswers  <- clearDependentPages(AnnualInvestmentAllowancePage, answer, request, businessId)
+              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, AnnualInvestmentAllowancePage)
+            } yield AnnualInvestmentAllowancePage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
         )
   }
 
