@@ -22,10 +22,7 @@ import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
-import models.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
@@ -77,18 +74,7 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-      zecUpdated <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](
-        taxYear,
-        businesses,
-        zecUpdated,
-        Journey.CapitalAllowancesElectricVehicleChargePoints)
-      aiaUpdated <- loadAnswers[AnnualInvestmentAllowanceAnswers](
-        taxYear,
-        businesses,
-        evcpUpdated,
-        Journey.CapitalAllowancesAnnualInvestmentAllowance)
-    } yield TaskListWithRequest(taskList, aiaUpdated)
+    } yield TaskListWithRequest(taskList, capitalAllowancesUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
