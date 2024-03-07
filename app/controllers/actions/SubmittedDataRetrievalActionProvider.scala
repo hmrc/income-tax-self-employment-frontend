@@ -22,6 +22,7 @@ import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.journeys.capitalallowances.balancingAllowance.BalancingAllowanceAnswers
 import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
@@ -56,7 +57,7 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](mkJourneyContext, connector, sessionRepository)
 
   // TODO PERFORMANCE: Refactor this to be one call to the backend
-  // We can consider for simplicity to downlad all answers we have in the database.
+  // We can consider for simplicity to download all answers we have in the database.
   // getJourneyAnswers in controllers will only fetch IFS answers in a lazy manner, on demand.
   def loadTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit
       hc: HeaderCarrier,
@@ -78,7 +79,8 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         Journey.CapitalAllowancesTailoring)
       zecUpdated  <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
       evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](taxYear, businesses, zecUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-    } yield TaskListWithRequest(taskList, evcpUpdated)
+      balancingAllowanceUpdated <- loadAnswers[BalancingAllowanceAnswers](taxYear, businesses, evcpUpdated, Journey.CapitalAllowancesZeroEmissionCars)
+    } yield TaskListWithRequest(taskList, balancingAllowanceUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
