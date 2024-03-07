@@ -18,32 +18,28 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.Settable
-import services.SelfEmploymentService
-import services.SelfEmploymentService.clearDataFromUserAnswers
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: MessagesApi,
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     service: SelfEmploymentService,
+                                                     service: ZegvService,
                                                      formProvider: ZegvOnlyForSelfEmploymentFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     view: ZegvOnlyForSelfEmploymentView)(implicit ec: ExecutionContext)
+                                                     view: ZegvOnlyForSelfEmploymentView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -63,29 +59,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            for {
-              (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZegvOnlyForSelfEmploymentPage)
-            } yield ZegvOnlyForSelfEmploymentPage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+          answer => service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, taxYear, mode)
         )
   }
-
-  // TODO Use the "page" pattern - will be changed in SASS-7510
-  private def handleGatewayQuestion(currentAnswer: Boolean,
-                                    request: DataRequest[_],
-                                    mode: Mode,
-                                    businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] = List(ZegvUseOutsideSEPage, ZegvUseOutsideSEPercentagePage)
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case true  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case false => Future(request.userAnswers)
-    }
-    val redirectMode = request.getValue(ZegvOnlyForSelfEmploymentPage, businessId) match {
-      case Some(true) if !currentAnswer => NormalMode
-      case _                            => mode
-    }
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
-  }
-
 }

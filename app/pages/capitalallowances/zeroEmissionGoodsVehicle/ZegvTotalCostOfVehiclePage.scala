@@ -27,4 +27,9 @@ object ZegvTotalCostOfVehiclePage extends ZegvBasePage[BigDecimal] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.isDefined && ZegvOnlyForSelfEmploymentPage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
 }

@@ -16,6 +16,7 @@
 
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
+import forms._
 import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim
@@ -28,18 +29,13 @@ object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds
 
   case class ZegvHowMuchDoYouWantToClaimModel(howMuchDoYouWantToClaim: ZegvHowMuchDoYouWantToClaim, totalCost: Option[BigDecimal])
 
-  private val howMuchDoYouWantToClaim = "howMuchDoYouWantToClaim"
-  private val totalCost               = "totalCost"
+  private[zeroEmissionGoodsVehicle] val standardErrors = FormStandardErrors("zegvHowMuchDoYouWantToClaim")
+  private val howMuchDoYouWantToClaim                  = "howMuchDoYouWantToClaim"
+  private val totalCost                                = "totalCost"
 
   def apply(userType: UserType, fullAmount: BigDecimal)(implicit messages: Messages): Form[ZegvHowMuchDoYouWantToClaimModel] = {
-    val requiredError       = s"zegvHowMuchDoYouWantToClaim.error.required.$userType"
-    val amountRequiredError = "zegvHowMuchDoYouWantToClaim.error.required.amount"
-    val lessThanZeroError   = "error.lessThanZero"
-    val nonNumericError     = "error.nonNumeric"
-    val noDecimalsError     = "error.nonDecimal"
-    val overMaxError        = "zegvHowMuchDoYouWantToClaim.error.overMax"
-
-    val validatedRadio = enumerable[ZegvHowMuchDoYouWantToClaim](messages(requiredError))
+    import standardErrors._
+    val validatedRadio = enumerable[ZegvHowMuchDoYouWantToClaim](messages(requiredError(userType)))
 
     def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, nonNumericError)
       .verifying(greaterThan(minimumValue, lessThanZeroError))
@@ -49,7 +45,7 @@ object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds
     Form(
       mapping(
         howMuchDoYouWantToClaim -> validatedRadio,
-        totalCost               -> mandatoryIf(isEqual(howMuchDoYouWantToClaim, "lowerAmount"), validateAmount(fullAmount))
+        totalCost -> mandatoryIf(isEqual(howMuchDoYouWantToClaim, ZegvHowMuchDoYouWantToClaim.LowerAmount.toString), validateAmount(fullAmount))
       )(ZegvHowMuchDoYouWantToClaimModel.apply)(ZegvHowMuchDoYouWantToClaimModel.unapply)
     )
   }

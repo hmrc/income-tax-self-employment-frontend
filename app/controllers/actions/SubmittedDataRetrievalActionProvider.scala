@@ -54,7 +54,7 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     new SubmittedDataRetrievalActionImpl[SubsetOfAnswers](mkJourneyContext, connector, sessionRepository)
 
   // TODO PERFORMANCE: Refactor this to be one call to the backend
-  // We can consider for simplicity to downlad all answers we have in the database.
+  // We can consider for simplicity to download all answers we have in the database.
   // getJourneyAnswers in controllers will only fetch IFS answers in a lazy manner, on demand.
   def loadTaskList(taxYear: TaxYear, request: OptionalDataRequest[AnyContent])(implicit
       hc: HeaderCarrier,

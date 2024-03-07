@@ -46,4 +46,9 @@ object ZegvAllowancePage extends ZegvBasePage[Boolean] {
       onFalse = cyaPage(taxYear, businessId)
     )
 
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.contains(false) || ZegvTotalCostOfVehiclePage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
+
 }

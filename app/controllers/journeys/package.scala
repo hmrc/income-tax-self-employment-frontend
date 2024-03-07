@@ -19,55 +19,25 @@ package controllers
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import pages.QuestionPage
-import queries.Gettable
 import services.SelfEmploymentService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object journeys {
 
-  def clearPagesWhenNo(page: QuestionPage[Boolean], currentAnswer: Boolean, request: DataRequest[_], mode: Mode, businessId: BusinessId)(implicit
-      ec: ExecutionContext): Future[(UserAnswers, Mode)] = {
-    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
-      Future(request.userAnswers)
+  def clearDependentPages(page: QuestionPage[Boolean], newAnswer: Boolean, request: DataRequest[_], businessId: BusinessId)(implicit
+      ec: ExecutionContext): Future[UserAnswers] = {
+    val previousAnswer = request.userAnswers.get(page, Some(businessId))
+    val pagesToClear   = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo).distinct
+
+    if (previousAnswer == Option(newAnswer)) {
+      Future.successful(request.userAnswers)
     } else {
-      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, page.dependentPagesWhenNo, Some(businessId)))
+      if (pagesToClear.isEmpty)
+        Future(request.userAnswers)
+      else
+        Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
     }
-    val redirectMode = determineRedirectModeForNo(page, businessId, mode, request, currentAnswer)
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
-
-  def clearPagesWhenYes(page: QuestionPage[Boolean], currentAnswer: Boolean, request: DataRequest[_], mode: Mode, businessId: BusinessId)(implicit
-      ec: ExecutionContext): Future[(UserAnswers, Mode)] = {
-    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
-      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, page.dependentPagesWhenYes, Some(businessId)))
-    } else {
-      Future(request.userAnswers)
-    }
-    val redirectMode = determineRedirectModeForYes(page, businessId, mode, request, currentAnswer)
-    clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
-  }
-
-  private def determineRedirectModeForNo(page: Gettable[Boolean],
-                                         businessId: BusinessId,
-                                         mode: Mode,
-                                         request: DataRequest[_],
-                                         currentAnswer: Boolean) =
-    request.getValue(page, businessId) match {
-      case Some(false) if currentAnswer => NormalMode
-      case _                            => mode
-    }
-
-  private def determineRedirectModeForYes(page: Gettable[Boolean],
-                                          businessId: BusinessId,
-                                          mode: Mode,
-                                          request: DataRequest[_],
-                                          currentAnswer: Boolean) =
-    request.getValue(page, businessId) match {
-      case Some(true) if !currentAnswer => NormalMode
-      case _                            => mode
-    }
-
 }

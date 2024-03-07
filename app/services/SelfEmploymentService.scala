@@ -29,7 +29,7 @@ import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
 import queries.Settable
-import repositories.SessionRepository
+import repositories.SessionRepositoryBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -49,7 +49,7 @@ trait SelfEmploymentService {
 
 class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepositoryBase
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {
@@ -69,6 +69,10 @@ class SelfEmploymentServiceImpl @Inject() (
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     connector.saveJourneyState(ctx, status)
 
+  /** Notice this method does two things:
+    *   - setting (updating userAnswers under the passed page (make sure to use userAnswers returned by this method further in your program)
+    *   - persisting in the database via sessionRepository
+    */
   def persistAnswer[SubsetOfAnswers: Writes](businessId: BusinessId,
                                              userAnswers: UserAnswers,
                                              value: SubsetOfAnswers,

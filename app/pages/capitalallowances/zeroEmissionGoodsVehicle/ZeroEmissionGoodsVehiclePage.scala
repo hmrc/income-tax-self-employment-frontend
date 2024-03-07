@@ -46,4 +46,9 @@ object ZeroEmissionGoodsVehiclePage extends ZegvBasePage[Boolean] {
       onTrue = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.contains(false) || ZegvAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
 }

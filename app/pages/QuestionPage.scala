@@ -42,13 +42,21 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
   /** Pages which needs to be cleared when Yes is selected in the main page */
   val dependentPagesWhenYes: List[Settable[_]] = Nil
 
-  def redirectNext(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
-    val newPage: Call = mode match {
+  def redirectNext(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
+    val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
+    val newPage: Call = updatedMode match {
       case NormalMode => nextPageInNormalMode(userAnswers, businessId, taxYear)
       case CheckMode  => cyaPage(taxYear, businessId)
     }
 
     Redirect(newPage)
+  }
+
+  /** You can use this method to determine if all answers are provided starting from a page. The value is overridden in each of the page
+    */
+  def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val _ = (businessId, userAnswers) // just to remove unused warning
+    false
   }
 
 }

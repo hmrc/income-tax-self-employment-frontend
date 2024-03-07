@@ -16,9 +16,10 @@
 
 package queries
 
+import cats.implicits.catsSyntaxOptionId
 import models.common.BusinessId
 import models.database.UserAnswers
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, Writes}
 
 import scala.util.{Success, Try}
 
@@ -33,4 +34,17 @@ trait Settable[A] extends Query {
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
     Success(userAnswers)
+}
+
+object Settable {
+  final case class SetAnswer[A: Writes](page: Settable[A], value: A) {
+    def set(userAnswers: UserAnswers, businessId: BusinessId): Try[UserAnswers] = userAnswers.set(page, value, businessId.some)
+  }
+
+  object SetAnswer {
+    def setMany(businessId: BusinessId, userAnswers: UserAnswers)(commands: SetAnswer[_]*): Try[UserAnswers] =
+      commands.foldLeft(Try(userAnswers)) { (acc, command) =>
+        acc.flatMap(command.set(_, businessId))
+      }
+  }
 }

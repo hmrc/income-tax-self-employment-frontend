@@ -28,4 +28,9 @@ object ZegvUseOutsideSEPage extends ZegvBasePage[ZegvUseOutsideSE] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.isDefined && ZegvHowMuchDoYouWantToClaimPage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
 }

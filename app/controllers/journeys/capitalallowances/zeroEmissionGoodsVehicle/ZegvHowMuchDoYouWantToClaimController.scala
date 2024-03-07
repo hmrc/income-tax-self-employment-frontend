@@ -18,22 +18,14 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider.ZegvHowMuchDoYouWantToClaimModel
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.capitalallowances.calculateFullCost
-import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaim._
-import models.requests.DataRequest
-import pages.capitalallowances.zeroEmissionGoodsVehicle.{
-  ZegvClaimAmountPage,
-  ZegvHowMuchDoYouWantToClaimPage,
-  ZegvTotalCostOfVehiclePage,
-  ZegvUseOutsideSEPercentagePage
-}
+import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimViewModel
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimView
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi: MessagesApi,
-                                                       service: SelfEmploymentService,
+                                                       service: ZegvHowMuchDoYouWantToClaimService,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
@@ -52,48 +44,26 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val calculatedCost = calcFullCost(request, businessId)
-      calculatedCost.fold(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage) { fullCost =>
-        val formProvider            = ZegvHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
-        val howMuchDoYouWantToClaim = request.getValue(ZegvHowMuchDoYouWantToClaimPage, businessId)
-        val totalCost               = request.getValue(ZegvClaimAmountPage, businessId)
-        val filledForm = (howMuchDoYouWantToClaim, totalCost) match {
-          case (Some(claim), Some(totalCost)) if claim == LowerAmount =>
-            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, Some(totalCost)))
-          case (Some(claim), _) =>
-            formProvider.fill(ZegvHowMuchDoYouWantToClaimModel(claim, None))
-          case _ => formProvider
-        }
-
+      val maybeFilledForm = ZegvHowMuchDoYouWantToClaimViewModel.createFillForm(request, businessId)
+      maybeFilledForm.fold(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage) { case (filledForm, fullCost) =>
         Ok(view(filledForm, mode, request.userType, taxYear, businessId, fullCost))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(answer: ZegvHowMuchDoYouWantToClaimModel, fullCost: BigDecimal): Future[Result] = {
-        val totalCostOfCar: BigDecimal = answer.howMuchDoYouWantToClaim match {
-          case FullCost    => fullCost
-          case LowerAmount => answer.totalCost.getOrElse(0)
-        }
-        for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(ZegvHowMuchDoYouWantToClaimPage, answer.howMuchDoYouWantToClaim, Some(businessId)))
-          finalAnswers   <- service.persistAnswer(businessId, updatedAnswers, totalCostOfCar, ZegvClaimAmountPage)
-        } yield ZegvHowMuchDoYouWantToClaimPage.redirectNext(mode, finalAnswers, businessId, taxYear)
-      }
-
-      val calculatedCost = calcFullCost(request, businessId)
+      val calculatedCost = ZegvHowMuchDoYouWantToClaimViewModel.calcFullCost(request, businessId)
       calculatedCost.fold(Future(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage)) { fullCost =>
         ZegvHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, fullCost))),
-            value => handleSuccess(value, fullCost)
+            answers =>
+              service.submitAnswer(request.userAnswers, answers, fullCost, businessId).map { updatedAnswer =>
+                ZegvHowMuchDoYouWantToClaimPage.redirectNext(mode, updatedAnswer, businessId, taxYear)
+              }
           )
       }
   }
-
-  private def calcFullCost(request: DataRequest[AnyContent], businessId: BusinessId) =
-    calculateFullCost(ZegvUseOutsideSEPercentagePage, ZegvTotalCostOfVehiclePage, request, businessId)
 
 }
