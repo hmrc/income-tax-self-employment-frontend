@@ -38,12 +38,12 @@
     form.errors.nonEmpty
 }
 @missingRadioError = @{
-    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")), List()))
+    form.errors.contains(FormError("howMuchDoYouWantToClaim", List(messages(s"zegvHowMuchDoYouWantToClaim.error.required.$userType")), List()))
 }
 @missingRadioErrorMsg = @{
     if(missingRadioError) {
             <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(s"ZegvHowMuchDoYouWantToClaim.error.required.$userType")}
+            <span class="govuk-visually-hidden">{messages("error.browser.title.prefix")}</span>{messages(s"zegvHowMuchDoYouWantToClaim.error.required.$userType")}
             </p>
     }
 }
@@ -62,7 +62,7 @@
     }
 }
 
-@layout(pageTitle = title(form, messages(s"ZegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
 
     @if(formHasErrors) {
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
