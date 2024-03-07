@@ -17,14 +17,15 @@
 package controllers.journeys.capitalallowances.balancingAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys
-import models.NormalMode
+import controllers.handleSubmitAnswersResult
 import models.common._
 import controllers.journeys.capitalallowances.balancingAllowance
 import models.journeys.Journey.CapitalAllowancesBalancingAllowance
+import models.journeys.capitalallowances.balancingAllowance.BalancingAllowanceAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAllowanceAmountSummary, BalancingAllowanceSummary}
@@ -32,14 +33,16 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class BalancingAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getAnswers: DataRetrievalAction,
                                                  requireAnswers: DataRequiredAction,
+                                                 service: SelfEmploymentService,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: CheckYourAnswersView)
+                                                 view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -63,10 +66,11 @@ class BalancingAllowanceCYAController @Inject() (override val messagesApi: Messa
         ))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, businessId, CapitalAllowancesBalancingAllowance.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, CapitalAllowancesBalancingAllowance)
+      val result  = service.submitAnswers[BalancingAllowanceAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 
 }
