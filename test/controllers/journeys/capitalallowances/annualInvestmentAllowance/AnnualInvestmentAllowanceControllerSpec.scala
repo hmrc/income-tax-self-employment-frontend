@@ -40,7 +40,7 @@ class AnnualInvestmentAllowanceControllerSpec
 
   override def onwardRoute: Call = routes.AnnualInvestmentAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def createForm(user: UserType): Form[Boolean] = new AnnualInvestmentAllowanceFormProvider()(user)
+  override def createForm(user: UserType): Form[Boolean] = new AnnualInvestmentAllowanceFormProvider()(user, taxYear)(messagesStubbed)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],

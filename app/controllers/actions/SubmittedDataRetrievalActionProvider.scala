@@ -22,10 +22,7 @@ import models.common.{JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
-import models.journeys.capitalallowances.balancingAllowance.BalancingAllowanceAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
@@ -77,24 +74,14 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-      zecUpdated <- loadAnswers[ZeroEmissionCarsAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.CapitalAllowancesZeroEmissionCars)
-      balancingAllowanceUpdated <- loadAnswers[BalancingAllowanceAnswers](
-        taxYear,
-        businesses,
-        zecUpdated,
-        Journey.CapitalAllowancesBalancingAllowance)
-      evcpUpdated <- loadAnswers[ElectricVehicleChargePointsAnswers](
-        taxYear,
-        businesses,
-        balancingAllowanceUpdated,
-        Journey.CapitalAllowancesZeroEmissionCars)
-    } yield TaskListWithRequest(taskList, evcpUpdated)
+    } yield TaskListWithRequest(taskList, capitalAllowancesUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
                                      businesses: List[TradesJourneyStatuses],
                                      request: OptionalDataRequest[AnyContent],
-                                     journey: Journey)(implicit ec: ExecutionContext) = {
+                                     journey: Journey)(implicit
+      ec: ExecutionContext): EitherT[Future, ServiceError, OptionalDataRequest[AnyContent]] = {
     val result = businesses.foldLeft(Future.successful(request)) { (futureRequest, business) =>
       futureRequest.flatMap { updatedRequest =>
         apply[A](req => req.mkJourneyNinoContext(taxYear, business.businessId, journey))
