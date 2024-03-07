@@ -26,4 +26,10 @@ object ZegvHowMuchDoYouWantToClaimPage extends ZegvBasePage[ZegvHowMuchDoYouWant
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     cyaPage(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.isDefined && ZegvClaimAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
+
 }

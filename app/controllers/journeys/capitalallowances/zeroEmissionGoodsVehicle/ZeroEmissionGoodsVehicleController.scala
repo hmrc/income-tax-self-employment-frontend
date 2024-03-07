@@ -18,20 +18,19 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearPagesWhenNo
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: MessagesApi,
@@ -40,8 +39,8 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: ZeroEmissionGoodsVehicleFormProvider,
-                                                    service: SelfEmploymentService,
-                                                    view: ZeroEmissionGoodsVehiclesView)(implicit ec: ExecutionContext)
+                                                    service: ZegvService,
+                                                    view: ZeroEmissionGoodsVehiclesView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -61,11 +60,7 @@ class ZeroEmissionGoodsVehicleController @Inject() (override val messagesApi: Me
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            for {
-              (editedUserAnswers, redirectMode) <- clearPagesWhenNo(ZeroEmissionGoodsVehiclePage, answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZeroEmissionGoodsVehiclePage)
-            } yield ZeroEmissionGoodsVehiclePage.redirectNext(redirectMode, updatedUserAnswers, businessId, taxYear)
+          answer => service.submitAnswerAndRedirect(ZeroEmissionGoodsVehiclePage, businessId, request, answer, taxYear, mode)
         )
   }
 

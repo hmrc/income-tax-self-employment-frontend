@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.journeys.capitalallowances.ZecAllowance
 @import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import views.html.components.Link
 
 @this(
     layout: templates.Layout,
@@ -25,7 +25,8 @@
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton,
-    heading: Heading
+    heading: Heading,
+    link: Link
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -46,7 +47,7 @@
         <p class="govuk-body">@messages(s"evcpAllowance.p2.$userType")</p>
         <h1 class="govuk-heading-m">@messages("capitalAllowance.multipleTaxYears")</h1>
         <p class="govuk-body">@messages(s"evcpAllowance.p3.$userType")
-        <a href="@messages("capitalAllowance.linkHref")" class="govuk-link">@messages("capitalAllowance.linkText")</a>
+        @link(linkHrefKey = "capitalAllowance.linkHref", linkTextKey = "capitalAllowance.linkText")
         @messages("capitalAllowance.postLinkText")</p>
     </div>
 

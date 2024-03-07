@@ -16,6 +16,14 @@
 
 package pages.capitalallowances.zeroEmissionGoodsVehicle
 
+import models.common._
+import models.database.UserAnswers
+
 object ZegvClaimAmountPage extends ZegvBasePage[BigDecimal] {
   override def toString: String = "zegvClaimAmount"
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val answer = userAnswers.get(this, businessId)
+    answer.isDefined
+  }
 }
