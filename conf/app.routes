@@ -610,3 +610,11 @@ POST        /:taxYear/:businessId/change-capital-allowances/annual-investment-al
 
 GET         /:taxYear/:businessId/capital-allowances/annual-investment-allowance/check                                                 controllers.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/annual-investment-allowance/check                                                 controllers.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Capital Allowances - Structures and building allowance ##########
+
+GET         /:taxYear/:businessId/capital-allowances/structures-buildings                                                   controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/structures-buildings                                                   controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/structures-buildings                                            controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances/structures-buildings                                            controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
