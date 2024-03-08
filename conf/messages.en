@@ -1571,3 +1571,11 @@ annualInvestmentAllowanceAmount.title.agent = How much annual investment allowan
 annualInvestmentAllowanceAmount.error.required.individual = Enter the amount of annual investment allowance you want to claim
 annualInvestmentAllowanceAmount.error.required.agent = Enter the amount of annual investment allowance your client wants to claim
 annualInvestmentAllowanceAmount.change.hidden = Change how much annual investment allowance will be claimed
+
+########## Capital Allowances - Structures and Buildings Allowance ##########
+
+structuresBuildingsClaimed.subHeading.individual = Have you claimed the structures and buildings allowance before?
+structuresBuildingsClaimed.subHeading.agent = Has your client claimed the structures and buildings allowance before?
+structuresBuildingsClaimed.error.required.individual = Select yes if you have claimed the structures and buildings allowance before
+structuresBuildingsClaimed.error.required.agent = Select yes if your client has claimed the structures and buildings allowance before
+
