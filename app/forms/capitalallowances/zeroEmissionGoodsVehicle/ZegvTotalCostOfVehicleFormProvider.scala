@@ -16,7 +16,9 @@
 
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleFormProvider.RequiredError
 import forms.mappings.Mappings
+import forms.{LessThanZeroError, NoDecimalsError, NonNumericError, OverMaxError}
 import models.common.MoneyBounds
 import play.api.data.Form
 
@@ -26,10 +28,14 @@ class ZegvTotalCostOfVehicleFormProvider @Inject() extends Mappings with MoneyBo
 
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> currency("zegvTotalCostOfVehicle.error.required", "error.nonNumeric")
-        .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "expenses.error.overMax"))
-        .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
+      "value" -> currency(RequiredError, NonNumericError)
+        .verifying(greaterThan(minimumValue, LessThanZeroError))
+        .verifying(lessThan(maximumValue, OverMaxError))
+        .verifying(regexpBigDecimal(noDecimalRegexp, NoDecimalsError))
     )
 
+}
+
+object ZegvTotalCostOfVehicleFormProvider {
+  val RequiredError: String = "zegvTotalCostOfVehicle.error.required"
 }

@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.annualInvestmentAllowance
+package forms.behaviours
 
-import forms.mappings.Mappings
-import forms.OverMaxError
-import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
-import javax.inject.Inject
-
-class AnnualInvestmentAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
-
-  def apply(userType: UserType): Form[BigDecimal] = Form(
-    "value" -> currency(s"annualInvestmentAllowanceAmount.error.required.$userType", "error.nonNumeric")
-      .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-      .verifying(lessThan(maximumValue, OverMaxError)))
+abstract class BooleanWithFormFieldBehaviours extends BooleanFieldBehaviours {
+  val form: Form[_]
 
 }

@@ -30,10 +30,9 @@ class AmountSpentOnEvcpFormProviderSpec extends BigDecimalFieldBehaviours with M
   val nonNumericError: String  = "error.nonNumeric"
   val noDecimalsError: String  = "error.nonDecimal"
   val lessThanMinError: String = "error.lessThanZero"
-  val overMaxError: String     = "expenses.error.overMax"
+  val overMaxError: String     = "error.overMax"
 
   val userType: UserType = Individual
-  val fieldName          = "value"
 
   val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
   val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)

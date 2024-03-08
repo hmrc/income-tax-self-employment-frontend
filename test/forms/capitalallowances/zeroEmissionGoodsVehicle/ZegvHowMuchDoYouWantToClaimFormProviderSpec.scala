@@ -18,7 +18,7 @@ package forms.capitalallowances.zeroEmissionGoodsVehicle
 
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProvider.standardErrors._
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProviderSpec._
-import forms.invalidError
+import forms.InvalidError
 import models.common.MoneyBounds.noDecimalRegexp
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -30,14 +30,14 @@ import common.MessagesHelper._
 class ZegvHowMuchDoYouWantToClaimFormProviderSpec extends AnyWordSpecLike with TableDrivenPropertyChecks {
 
   "form provider" should {
-    val invalid            = List(FormError("howMuchDoYouWantToClaim", invalidError, List()))
+    val invalid            = List(FormError("howMuchDoYouWantToClaim", InvalidError, List()))
     val individualRequired = List(FormError("howMuchDoYouWantToClaim", requiredError(Individual)))
     val agentRequired      = List(FormError("howMuchDoYouWantToClaim", requiredError(Agent)))
     val amountRequired     = List(FormError("totalCost", amountRequiredError, List()))
-    val lessThanZero       = List(FormError("totalCost", forms.lessThanZeroError, List(0)))
-    val nonNumeric         = List(FormError("totalCost", forms.nonNumericError, List()))
-    val noDecimals         = List(FormError("totalCost", forms.noDecimalsError, List(noDecimalRegexp)))
-    val overMax            = List(FormError("totalCost", overMaxError, List(1000)))
+    val lessThanZero       = List(FormError("totalCost", forms.LessThanZeroError, List(0)))
+    val nonNumeric         = List(FormError("totalCost", forms.NonNumericError, List()))
+    val noDecimals         = List(FormError("totalCost", forms.NoDecimalsError, List(noDecimalRegexp)))
+    val overMax            = List(FormError("totalCost", overMaxCustomMessageError, List(1000)))
 
     // @formatter:off
     val cases = Table(

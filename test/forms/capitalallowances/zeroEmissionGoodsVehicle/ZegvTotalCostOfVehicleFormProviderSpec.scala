@@ -16,60 +16,19 @@
 
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
-import forms.behaviours.BigDecimalFieldBehaviours
-import models.common.MoneyBounds
-import org.scalacheck.Gen
-import play.api.data.{Form, FormError}
+import forms.behaviours.SimpleFieldBehaviours
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehicleFormProvider._
+import play.api.data.Form
 
-class ZegvTotalCostOfVehicleFormProviderSpec extends BigDecimalFieldBehaviours with MoneyBounds {
+class ZegvTotalCostOfVehicleFormProviderSpec extends SimpleFieldBehaviours {
+  implicit val form: Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
 
-  val minimumVal: BigDecimal   = minimumOneValue
-  val maximumVal: BigDecimal   = maxAmountValue
-  val requiredError: String    = "zegvTotalCostOfVehicle.error.required"
-  val nonNumericError: String  = "error.nonNumeric"
-  val noDecimalsError: String  = "error.nonDecimal"
-  val lessThanMinError: String = "error.minimumOne"
-  val overMaxError: String     = "expenses.error.overMax"
-  val fieldName                = "value"
-
-  val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
-  val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
-
-  "ZegvTotalCostOfVehicleFormProvider should" - {
-    val form: Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      bigDecimalsInRangeWithNoDecimals(minimumVal, maximumValue)
-    )
-
-    behave like bigDecimalField(
-      form,
-      fieldName,
-      FormError(fieldName, nonNumericError)
-    )
-
-    behave like bigDecimalFieldWithMaximum(
-      form,
-      fieldName,
-      maximumValue,
-      FormError(fieldName, overMaxError, Seq(maximumValue))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      FormError(fieldName, requiredError)
-    )
-
-    behave like bigDecimalFieldWithRegex(
-      form,
-      fieldName,
-      noDecimalRegexp,
-      BigDecimal(400),
-      BigDecimal(400.20),
-      FormError(fieldName, noDecimalsError, Seq(noDecimalRegexp))
-    )
+  "ZegvTotalCostOfVehicleFormProvider" - {
+    checkValidValue(10.0)
+    checkMandatoryField(RequiredError)
+    checkLessThanField()
+    checkNonNumericField()
+    checkMaximumField()
+    checkRegexp()
   }
 }

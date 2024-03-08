@@ -30,7 +30,6 @@ class EvcpHowMuchDoYouWantToClaimFormProviderSpec extends OptionFieldBehaviours 
 
   private val radioFieldName      = "howMuchDoYouWantToClaim"
   private val amountFieldName     = "totalCost"
-  private val form                = EvcpHowMuchDoYouWantToClaimFormProvider(Individual, fullAmount)
   private val requiredError       = s"evcpHowMuchDoYouWantToClaim.error.required.$Individual"
   private val amountRequiredError = "evcpHowMuchDoYouWantToClaim.error.required.amount"
   private val nonNumericError     = "error.nonNumeric"

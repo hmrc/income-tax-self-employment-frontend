@@ -28,7 +28,7 @@ class ZecTotalCostOfCarFormProvider @Inject() extends Mappings with MoneyBounds 
     Form(
       "value" -> currency(s"zecTotalCostOfCar.error.required.$userType", "error.nonNumeric")
         .verifying(greaterThan(minimumOneValue, "error.minimumOne"))
-        .verifying(lessThan(maximumValue, "expenses.error.overMax"))
+        .verifying(lessThan(maximumValue, "error.overMax"))
         .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
     )
 

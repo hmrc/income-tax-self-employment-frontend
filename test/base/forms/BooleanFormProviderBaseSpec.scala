@@ -17,6 +17,7 @@
 package base.forms
 
 import base.SpecBase
+import forms.ErrorBoolean
 import forms.behaviours.BooleanFieldBehaviours
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -24,11 +25,9 @@ import play.api.data.{Form, FormError}
 
 abstract class BooleanFormProviderBaseSpec(formProvider: String) extends BooleanFieldBehaviours with SpecBase {
 
-  val fieldName = "value"
-
   val userTypes: List[UserType] = List(Individual, Agent)
 
-  val invalidErrorKey = "error.boolean"
+  val invalidErrorKey = ErrorBoolean
 
   implicit val messages = messagesStubbed
 
