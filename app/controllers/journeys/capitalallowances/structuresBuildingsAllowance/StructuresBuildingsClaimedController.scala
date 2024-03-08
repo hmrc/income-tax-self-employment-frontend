@@ -38,15 +38,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StructuresBuildingsClaimedController @Inject()(override val messagesApi: MessagesApi,
-                                                     navigator: CapitalAllowancesNavigator,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     service: SelfEmploymentService,
-                                                     formProvider: StructuresBuildingsClaimedFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     view: StructuresBuildingsClaimedView)(implicit ec: ExecutionContext)
+class StructuresBuildingsClaimedController @Inject() (override val messagesApi: MessagesApi,
+                                                      navigator: CapitalAllowancesNavigator,
+                                                      identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      service: SelfEmploymentService,
+                                                      formProvider: StructuresBuildingsClaimedFormProvider,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      view: StructuresBuildingsClaimedView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -87,7 +87,7 @@ class StructuresBuildingsClaimedController @Inject()(override val messagesApi: M
     }
     val redirectMode = request.getValue(StructuresBuildingsClaimedPage, businessId) match {
       case Some(false) if currentAnswer => NormalMode
-      case _                                    => mode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }

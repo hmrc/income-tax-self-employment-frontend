@@ -203,7 +203,8 @@ class CapitalAllowancesNavigator @Inject() {
             )
 
     case StructuresBuildingsClaimedPage =>
-      _ => taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -228,8 +229,8 @@ class CapitalAllowancesNavigator @Inject() {
       _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
 
     case StructuresBuildingsClaimedPage =>
-      _ => taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode)
-
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()

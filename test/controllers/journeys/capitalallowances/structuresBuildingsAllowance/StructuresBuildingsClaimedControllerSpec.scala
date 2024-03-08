@@ -18,14 +18,12 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.balancingAllowance.BalancingAllowanceFormProvider
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedPage
 import play.api.Application
 import play.api.data.Form
@@ -34,7 +32,8 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.balancingAllowance.BalancingAllowanceView
 
-class StructuresBuildingsClaimedControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("StructuresBuildingsClaimedController", StructuresBuildingsClaimedPage) {
+class StructuresBuildingsClaimedControllerSpec
+    extends RadioButtonGetAndPostQuestionBaseSpec("StructuresBuildingsClaimedController", StructuresBuildingsClaimedPage) {
 
   override def onPageLoadCall: Call = routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.StructuresBuildingsClaimedController.onSubmit(taxYear, businessId, NormalMode)
