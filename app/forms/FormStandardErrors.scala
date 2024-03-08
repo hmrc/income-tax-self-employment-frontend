@@ -22,5 +22,4 @@ final case class FormStandardErrors(prefix: String) {
   def requiredError(userType: UserType): String = s"$prefix.error.required.$userType"
   val amountRequiredError: String               = s"$prefix.error.required.amount"
   val overMaxCustomMessageError: String         = s"$prefix.error.overMax"
-
 }

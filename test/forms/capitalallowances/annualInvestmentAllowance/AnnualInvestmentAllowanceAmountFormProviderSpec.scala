@@ -23,7 +23,6 @@ import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 class AnnualInvestmentAllowanceAmountFormProviderSpec extends BigDecimalFieldBehaviours with MoneyBounds {
-  val form: Form[BigDecimal] = new AnnualInvestmentAllowanceAmountFormProvider()(userType)
 
   val minimumVal: BigDecimal   = minimumValue
   val maximumVal: BigDecimal   = maxAmountValue
@@ -32,11 +31,13 @@ class AnnualInvestmentAllowanceAmountFormProviderSpec extends BigDecimalFieldBeh
   val lessThanMinError: String = "error.lessThanZero"
   val overMaxError: String     = "error.overMax"
 
-  val userType: UserType                 = Individual
+  val userType: UserType = Individual
+
   val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
   val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
 
   "BalancingAllowanceAmountFormProvider should" - {
+    val form: Form[BigDecimal] = new AnnualInvestmentAllowanceAmountFormProvider()(userType)
 
     behave like fieldThatBindsValidData(
       form,

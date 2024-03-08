@@ -19,6 +19,6 @@ package object forms {
   val InvalidError: String      = "error.invalid"
   val NonNumericError: String   = "error.nonNumeric"
   val NoDecimalsError: String   = "error.nonDecimal"
-  val OverMaxError: String      = s"error.overMax"
+  val OverMaxError: String      = "error.overMax"
   val ErrorBoolean: String      = "error.boolean"
 }
