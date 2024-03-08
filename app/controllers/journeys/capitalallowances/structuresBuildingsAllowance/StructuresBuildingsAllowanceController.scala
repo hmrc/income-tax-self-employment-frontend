@@ -79,7 +79,7 @@ class StructuresBuildingsAllowanceController @Inject() (override val messagesApi
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
-      List( //TODO SASS-7231 add pages to be cleared
+      List( // TODO SASS-7231 add pages to be cleared
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))

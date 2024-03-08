@@ -32,8 +32,8 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceView
 
-class StructuresBuildingsAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec(
-  "StructuresBuildingsAllowanceController", StructuresBuildingsAllowancePage) {
+class StructuresBuildingsAllowanceControllerSpec
+    extends RadioButtonGetAndPostQuestionBaseSpec("StructuresBuildingsAllowanceController", StructuresBuildingsAllowancePage) {
 
   override def onPageLoadCall: Call = routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.StructuresBuildingsAllowanceController.onSubmit(taxYear, businessId, NormalMode)
