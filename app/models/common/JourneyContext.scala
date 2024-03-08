@@ -17,6 +17,8 @@
 package models.common
 
 import models.journeys.Journey
+import models.requests.DataRequest
+import play.api.mvc.AnyContent
 
 sealed trait JourneyContext {
   val taxYear: TaxYear
@@ -38,6 +40,11 @@ case class JourneyContextWithNino(taxYear: TaxYear,
     val optExtraContext: String = if (extraContext.isEmpty) "" else s"/${extraContext.getOrElse("")}"
     s"${taxYear.endYear}/${businessId.value}/${journey.toString}$optExtraContext/${nino.value}/answers"
   }
+}
+
+object JourneyContextWithNino {
+  def apply(taxYear: TaxYear, businessId: BusinessId, journey: Journey)(implicit request: DataRequest[AnyContent]) =
+    new JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, journey)
 }
 
 case class JourneyAnswersContext(taxYear: TaxYear, businessId: BusinessId, mtditid: Mtditid, journey: Journey, extraContext: Option[String] = None)

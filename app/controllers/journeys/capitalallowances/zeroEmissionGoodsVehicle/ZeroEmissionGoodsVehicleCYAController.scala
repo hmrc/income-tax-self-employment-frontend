@@ -16,15 +16,16 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
-import models.NormalMode
 import models.common._
 import models.journeys.Journey.CapitalAllowancesZeroEmissionGoodsVehicle
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.zeroEmissionGoodsVehicle._
@@ -32,20 +33,24 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ZeroEmissionGoodsVehicleCYAController @Inject() (override val messagesApi: MessagesApi,
                                                        identify: IdentifierAction,
                                                        getAnswers: DataRetrievalAction,
+                                                       getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                        requireAnswers: DataRequiredAction,
+                                                       service: SelfEmploymentService,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       view: CheckYourAnswersView)
+                                                       view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen getJourneyAnswers[ZeroEmissionGoodsVehicleAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesZeroEmissionGoodsVehicle)) andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA(request.userAnswers, taxYear, businessId, request.userType).mkSummaryList(
           List(
@@ -68,10 +73,11 @@ class ZeroEmissionGoodsVehicleCYAController @Inject() (override val messagesApi:
         ))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, businessId, CapitalAllowancesZeroEmissionGoodsVehicle.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesZeroEmissionGoodsVehicle)
+      val result  = service.submitAnswers[ZeroEmissionGoodsVehicleAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 
 }

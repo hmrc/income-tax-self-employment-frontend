@@ -18,7 +18,14 @@ package models.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
 import play.api.libs.json.{Format, Json}
 
-case class ZeroEmissionGoodsVehicleAnswers(zeroEmissionGoodsVehicle: Boolean)
+case class ZeroEmissionGoodsVehicleAnswers(zeroEmissionGoodsVehicle: Boolean,
+                                           zegvAllowance: Option[Boolean],
+                                           zegvTotalCostOfCar: Option[BigDecimal],
+                                           zegvOnlyForSelfEmployment: Option[Boolean],
+                                           zegvUsedOutsideSE: Option[ZegvUseOutsideSE],
+                                           zegvUsedOutsideSEPercentage: Option[Int],
+                                           zegvHowMuchDoYouWantToClaim: Option[ZegvHowMuchDoYouWantToClaim],
+                                           zegvClaimAmount: Option[BigDecimal])
 
 object ZeroEmissionGoodsVehicleAnswers {
   implicit val formats: Format[ZeroEmissionGoodsVehicleAnswers] = Json.format[ZeroEmissionGoodsVehicleAnswers]

@@ -54,7 +54,8 @@ class ZegvHowMuchDoYouWantToClaimControllerSpec extends AnyWordSpecLike with Pla
       running(application) {
         val result = route(application, request).value
         assert(status(result) === OK)
-        assert(getTitle(result) === "ZegvHowMuchDoYouWantToClaim.subHeading.individual - income-tax-self-employment-frontend - GOV.UK")
+        assert(getTitle(
+          result) === "How much of the vehicle’s cost do you want to claim under this 100% allowance? - income-tax-self-employment-frontend - GOV.UK")
       }
     }
   }
