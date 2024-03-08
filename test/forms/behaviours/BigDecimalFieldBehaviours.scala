@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 trait BigDecimalFieldBehaviours extends FieldBehaviours {
 
   def bigDecimalField(form: Form[_], fieldName: String, nonNumericError: FormError): Unit =
-    "not bind non-numeric numbers" in {
+    s"not bind non-numeric numbers, return ${formErrorToString(nonNumericError)}" in {
 
       forAll(nonNumerics -> "nonNumeric") { nonNumeric =>
         val result = form.bind(Map(fieldName -> nonNumeric)).apply(fieldName)
@@ -30,7 +30,7 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
     }
 
   def bigDecimalFieldWithMinimum(form: Form[_], fieldName: String, minimum: BigDecimal, expectedError: FormError): Unit =
-    s"not bind big decimals below $minimum" in {
+    s"not bind big decimals below $minimum, return ${formErrorToString(expectedError)}" in {
 
       forAll(currencyBelowValue(minimum) -> "bigDecimalBelowMin") { number: BigDecimal =>
         val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
@@ -39,19 +39,10 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
     }
 
   def bigDecimalFieldWithMaximum(form: Form[_], fieldName: String, maximum: BigDecimal, expectedError: FormError): Unit =
-    s"not bind big decimals above $maximum" in {
+    s"not bind big decimals above $maximum, return ${formErrorToString(expectedError)}" in {
 
       val result = form.bind(Map(fieldName -> (maximum + 1).toString)).apply(fieldName)
       result.errors must contain only expectedError
-    }
-
-  def bigDecimalFieldWithRange(form: Form[_], fieldName: String, minimum: BigDecimal, maximum: BigDecimal, expectedError: FormError): Unit =
-    s"not bind big decimals outside the range $minimum to $maximum" in {
-
-      forAll(currencyOutsideRange(minimum, maximum) -> "bigDecimalOutsideRange") { number =>
-        val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
-        result.errors must contain only expectedError
-      }
     }
 
   def bigDecimalFieldWithRegex(form: Form[_],
@@ -60,7 +51,7 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
                                validValue: BigDecimal,
                                invalidValue: BigDecimal,
                                expectedError: FormError): Unit =
-    s"not bind big decimals that don't match regex: $regex" in {
+    s"not bind big decimals that don't match regex: $regex, return ${formErrorToString(expectedError)}" in {
 
       val validResult   = form.bind(Map(fieldName -> validValue.toString)).apply(fieldName)
       val invalidResult = form.bind(Map(fieldName -> invalidValue.toString)).apply(fieldName)

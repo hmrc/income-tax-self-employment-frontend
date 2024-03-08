@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.common.Enumerable
+import models.common.{Enumerable, UserType}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 
@@ -59,4 +59,5 @@ trait Mappings extends Formatters with Constraints {
                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
+  def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
 }

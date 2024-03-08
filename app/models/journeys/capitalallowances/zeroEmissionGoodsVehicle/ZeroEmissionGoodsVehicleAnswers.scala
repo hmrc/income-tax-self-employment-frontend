@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 
 case class ZeroEmissionGoodsVehicleAnswers(zeroEmissionGoodsVehicle: Boolean,
                                            zegvAllowance: Option[Boolean],
-                                           zegvTotalCostOfCar: Option[BigDecimal],
+                                           zegvTotalCostOfVehicle: Option[BigDecimal],
                                            zegvOnlyForSelfEmployment: Option[Boolean],
                                            zegvUsedOutsideSE: Option[ZegvUseOutsideSE],
                                            zegvUsedOutsideSEPercentage: Option[Int],

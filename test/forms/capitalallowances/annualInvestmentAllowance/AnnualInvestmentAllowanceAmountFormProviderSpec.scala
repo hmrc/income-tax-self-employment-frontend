@@ -29,10 +29,9 @@ class AnnualInvestmentAllowanceAmountFormProviderSpec extends BigDecimalFieldBeh
   val requiredError: String    = "annualInvestmentAllowanceAmount.error.required"
   val nonNumericError: String  = "error.nonNumeric"
   val lessThanMinError: String = "error.lessThanZero"
-  val overMaxError: String     = "expenses.error.overMax"
+  val overMaxError: String     = "error.overMax"
 
   val userType: UserType = Individual
-  val fieldName          = "value"
 
   val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
   val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)

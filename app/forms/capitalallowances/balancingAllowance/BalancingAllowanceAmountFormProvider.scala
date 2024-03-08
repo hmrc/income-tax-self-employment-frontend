@@ -17,6 +17,7 @@
 package forms.capitalallowances.balancingAllowance
 
 import forms.mappings.Mappings
+import forms.OverMaxError
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
@@ -28,7 +29,7 @@ class BalancingAllowanceAmountFormProvider @Inject() extends Mappings with Money
     Form(
       "value" -> currency(s"balancingAllowanceAmount.error.required.$userType", "error.nonNumeric")
         .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "expenses.error.overMax"))
+        .verifying(lessThan(maximumValue, OverMaxError))
     )
 
 }

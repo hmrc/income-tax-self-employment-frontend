@@ -41,7 +41,7 @@ class ZegvOnlyForSelfEmploymentControllerSpec
 
   def validAnswer: Boolean = true
 
-  def createForm(userType: UserType): Form[Boolean] = new ZegvOnlyForSelfEmploymentFormProvider()(userType, taxYear)
+  def createForm(userType: UserType): Form[Boolean] = new ZegvOnlyForSelfEmploymentFormProvider()(userType)
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

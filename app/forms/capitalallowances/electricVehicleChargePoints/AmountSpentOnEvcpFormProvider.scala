@@ -17,6 +17,7 @@
 package forms.capitalallowances.electricVehicleChargePoints
 
 import forms.mappings.Mappings
+import forms.OverMaxError
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
@@ -28,7 +29,7 @@ class AmountSpentOnEvcpFormProvider @Inject() extends Mappings with MoneyBounds 
     Form(
       "value" -> currency(s"amountSpentOnEvcp.error.required.$userType", "error.nonNumeric")
         .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-        .verifying(lessThan(maximumValue, "expenses.error.overMax"))
+        .verifying(lessThan(maximumValue, OverMaxError))
         .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
     )
 

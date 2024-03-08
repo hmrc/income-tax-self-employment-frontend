@@ -45,15 +45,16 @@ class ZegvHowMuchDoYouWantToClaimController @Inject() (override val messagesApi:
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val maybeFilledForm = ZegvHowMuchDoYouWantToClaimViewModel.createFillForm(request, businessId)
-      maybeFilledForm.fold(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage) { case (filledForm, fullCost) =>
-        Ok(view(filledForm, mode, request.userType, taxYear, businessId, fullCost))
+      maybeFilledForm.fold(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage(s"There is ${ZegvHowMuchDoYouWantToClaimPage}")) {
+        case (filledForm, fullCost) =>
+          Ok(view(filledForm, mode, request.userType, taxYear, businessId, fullCost))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val calculatedCost = ZegvHowMuchDoYouWantToClaimViewModel.calcFullCost(request, businessId)
-      calculatedCost.fold(Future(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPage)) { fullCost =>
+      calculatedCost.fold(ZegvHowMuchDoYouWantToClaimPage.redirectToRecoveryPageF(s"There is no calculatedCost")) { fullCost =>
         ZegvHowMuchDoYouWantToClaimFormProvider(request.userType, fullCost)
           .bindFromRequest()
           .fold(

@@ -37,10 +37,10 @@ object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds
     import standardErrors._
     val validatedRadio = enumerable[ZegvHowMuchDoYouWantToClaim](messages(requiredError(userType)))
 
-    def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, nonNumericError)
-      .verifying(greaterThan(minimumValue, lessThanZeroError))
-      .verifying(maximumValue(fullAmount, overMaxError))
-      .verifying(regexpBigDecimal(noDecimalRegexp, noDecimalsError))
+    def validateAmount(fullAmount: BigDecimal): Mapping[BigDecimal] = currency(amountRequiredError, NonNumericError)
+      .verifying(greaterThan(minimumValue, LessThanZeroError))
+      .verifying(maximumValue(fullAmount, overMaxCustomMessageError))
+      .verifying(regexpBigDecimal(noDecimalRegexp, NoDecimalsError))
 
     Form(
       mapping(

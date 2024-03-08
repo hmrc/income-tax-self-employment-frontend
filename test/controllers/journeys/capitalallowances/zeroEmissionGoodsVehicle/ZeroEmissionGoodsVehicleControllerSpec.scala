@@ -39,7 +39,7 @@ class ZeroEmissionGoodsVehicleControllerSpec
 
   val validAnswer: Boolean = true
 
-  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user, taxYear)
+  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user)
 
   def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[ZeroEmissionGoodsVehiclesView]

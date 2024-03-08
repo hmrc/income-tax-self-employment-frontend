@@ -23,8 +23,11 @@ import models.database.UserAnswers
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
 import queries.{Gettable, Settable}
+import utils.Logging
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+import scala.concurrent.Future
+
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Logging {
 
   // TODO Remove ??? once all pages use this pattern
   def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
@@ -34,7 +37,15 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
 
   private def recoveryPage: Call = standard.routes.JourneyRecoveryController.onPageLoad()
 
-  def redirectToRecoveryPage: Result = Redirect(recoveryPage)
+  def redirectToRecoveryPage(reason: String): Result = {
+    logger.warn(s"Redirect to recovery page. Reason: $reason")
+    Redirect(recoveryPage)
+  }
+
+  def redirectToRecoveryPageF(reason: String): Future[Result] = {
+    logger.warn(s"Redirect to recovery page. Reason: $reason")
+    Future.successful(Redirect(recoveryPage))
+  }
 
   /** Pages which needs to be cleared when No is selected in the main page */
   val dependentPagesWhenNo: List[Settable[_]] = Nil

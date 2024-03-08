@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.annualInvestmentAllowance
+package forms.capitalallowances.zeroEmissionGoodsVehicle
 
-import forms.mappings.Mappings
-import forms.OverMaxError
-import models.common.{MoneyBounds, UserType}
-import play.api.data.Form
+import forms.behaviours.SimpleFieldBehaviours
+import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider.RequiredError
 
-import javax.inject.Inject
+class ZegvAllowanceFormProviderSpec extends SimpleFieldBehaviours {
 
-class AnnualInvestmentAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
-
-  def apply(userType: UserType): Form[BigDecimal] = Form(
-    "value" -> currency(s"annualInvestmentAllowanceAmount.error.required.$userType", "error.nonNumeric")
-      .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-      .verifying(lessThan(maximumValue, OverMaxError)))
-
+  "ZegvAllowanceFormProvider" - forAllUserTypes { userType =>
+    implicit val form = new ZegvAllowanceFormProvider()(userType)
+    checkValidBoolean()
+    checkMandatoryField(userTypeAware(userType, RequiredError))
+  }
 }
