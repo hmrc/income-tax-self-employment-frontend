@@ -39,3 +39,4 @@ bin
 .bloop/
 metals.sbt
 .jvmopts
+test-output/
