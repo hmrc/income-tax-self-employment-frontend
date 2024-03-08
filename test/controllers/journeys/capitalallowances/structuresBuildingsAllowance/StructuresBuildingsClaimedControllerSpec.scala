@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.balancingAllowance.BalancingAllowanceView
+import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedView
 
 class StructuresBuildingsClaimedControllerSpec
     extends RadioButtonGetAndPostQuestionBaseSpec("StructuresBuildingsClaimedController", StructuresBuildingsClaimedPage) {
@@ -48,7 +48,7 @@ class StructuresBuildingsClaimedControllerSpec
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[BalancingAllowanceView]
+    val view = application.injector.instanceOf[StructuresBuildingsClaimedView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
