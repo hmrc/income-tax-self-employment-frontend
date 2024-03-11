@@ -22,6 +22,7 @@ import pages.abroad.SelfEmploymentAbroadPage
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.electricVehicleChargePoints._
+import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
@@ -205,6 +206,13 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       AnnualInvestmentAllowancePage.pageName,
       AnnualInvestmentAllowanceAmountPage.pageName
+    )
+  }
+
+  case object CapitalAllowancesStructuresBuildings extends Journey("capital-allowances-structures-buildings") {
+    override val pageKeys: List[PageName] = List(
+      StructuresBuildingsAllowancePage.pageName,
+      StructuresBuildingsClaimedPage.pageName
     )
   }
 
