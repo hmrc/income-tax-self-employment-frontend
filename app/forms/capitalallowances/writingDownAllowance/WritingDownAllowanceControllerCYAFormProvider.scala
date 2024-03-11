@@ -14,3 +14,19 @@
  * limitations under the License.
  */
 
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class WritingDownAllowanceControllerCYAFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[Boolean] =
+    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
+}
+
+object WritingDownAllowanceControllerCYAFormProvider {
+  val RequiredError: String = "WritingDownAllowance.error.required"
+}

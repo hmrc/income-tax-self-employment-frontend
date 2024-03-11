@@ -14,3 +14,19 @@
  * limitations under the License.
  */
 
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class WdaSpecialRateFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[Boolean] =
+    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
+}
+
+object WdaSpecialRateFormProvider {
+  val RequiredError: String = "WdaSpecialRate.error.required"
+}
