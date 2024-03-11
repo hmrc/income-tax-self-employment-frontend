@@ -1576,3 +1576,19 @@ annualInvestmentAllowanceAmount.title.agent = How much annual investment allowan
 annualInvestmentAllowanceAmount.error.required.individual = Enter the amount of annual investment allowance you want to claim
 annualInvestmentAllowanceAmount.error.required.agent = Enter the amount of annual investment allowance your client wants to claim
 annualInvestmentAllowanceAmount.change.hidden = Change how much annual investment allowance will be claimed
+
+########## Capital Allowances - Structures and building allowance ##########
+
+structuresBuildingsAllowance.p1.individual = You may be able to claim tax relief if you meet all these conditions:
+structuresBuildingsAllowance.p1.agent = Your client may be able to claim tax relief if you meet all these conditions:
+structuresBuildingsAllowance.p2.individual = You built, bought or leased a structure
+structuresBuildingsAllowance.p2.agent = They built, bought or leased a structure
+structuresBuildingsAllowance.p3 = All construction contracts were signed on or after 29 October 2018
+structuresBuildingsAllowance.p4 = Construction began on or after 29 October 2018
+structuresBuildingsAllowance.p5.individual = You can claim 3% of the qualifying costs to reduce their taxable profits.
+structuresBuildingsAllowance.p5.agent = They can claim 3% of the qualifying costs to reduce their taxable profits.
+structuresBuildingsAllowance.subheading.individual = In this accounting period did you build, renovate or buy a structure for your self-employment?
+structuresBuildingsAllowance.subheading.agent = In this accounting period did your client build, renovate or buy a structure for their self-employment?
+structuresBuildingsAllowance.hint = The structure or building must be for non-residential use.
+structuresBuildingsAllowance.error.required.individual = Select yes if you built, renovated or bought a structure or building for your self-employment
+structuresBuildingsAllowance.error.required.agent = Select yes if your client built, renovated or bought a structure or building for their self-employment
