@@ -37,7 +37,7 @@ object StructuresBuildingsAllowanceSummary {
           formatAnswer(answer.toString),
           routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsAllowance.subHeading.$userType"),
-          "balancingAllowance.change.hidden", //TODO change to structures buildings change
+          "balancingAllowance.change.hidden", // TODO change to structures buildings change
           rightTextAlign = true
         )
       }

@@ -37,7 +37,7 @@ object StructuresBuildingsClaimedSummary {
           formatAnswer(answer.toString),
           routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsClaimed.subHeading.$userType"),
-          "balancingAllowance.change.hidden", //TODO change to structures buildings claimed change
+          "balancingAllowance.change.hidden", // TODO change to structures buildings claimed change
           rightTextAlign = true
         )
       }

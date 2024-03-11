@@ -34,18 +34,18 @@ import views.html.standard.CheckYourAnswersView
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class StructuresBuildingsCYAController @Inject()(override val messagesApi: MessagesApi,
-                                                 identify: IdentifierAction,
-                                                 getAnswers: DataRetrievalAction,
-                                                 requireAnswers: DataRequiredAction,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: CheckYourAnswersView)
+class StructuresBuildingsCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getAnswers: DataRetrievalAction,
+                                                  requireAnswers: DataRequiredAction,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers){ implicit request =>
+    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
