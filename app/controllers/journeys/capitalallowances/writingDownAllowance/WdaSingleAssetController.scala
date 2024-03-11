@@ -24,18 +24,18 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.writingDownAllowance.{WdaMainRateView, WdaSingleAssetView}
+import views.html.journeys.capitalallowances.writingDownAllowance.WdaSingleAssetView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class WdaSingleAssetController @Inject() (override val messagesApi: MessagesApi,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       view: WdaSingleAssetView)
-  extends FrontendBaseController
+                                          val controllerComponents: MessagesControllerComponents,
+                                          identify: IdentifierAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          view: WdaSingleAssetView)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

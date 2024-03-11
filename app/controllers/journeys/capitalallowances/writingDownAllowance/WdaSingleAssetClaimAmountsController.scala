@@ -24,7 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.writingDownAllowance.{WdaMainRateView, WdaSingleAssetClaimAmountsView}
+import views.html.journeys.capitalallowances.writingDownAllowance.WdaSingleAssetClaimAmountsView
 
 import javax.inject.{Inject, Singleton}
 

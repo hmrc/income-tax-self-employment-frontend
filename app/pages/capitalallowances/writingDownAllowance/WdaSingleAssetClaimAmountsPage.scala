@@ -16,7 +16,6 @@
 
 import pages.capitalallowances.writingDownAllowance.WdaBasePage
 
-
 object WdaSingleAssetClaimAmountsPage extends WdaBasePage[BigDecimal] {
   override def toString: String = "WdaSingleAssetClaimAmounts"
 }

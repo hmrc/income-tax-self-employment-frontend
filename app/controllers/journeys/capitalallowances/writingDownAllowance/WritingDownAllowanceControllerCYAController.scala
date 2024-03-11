@@ -17,8 +17,6 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,6 +55,7 @@ class WritingDownAllowanceControllerCYAController @Inject() (override val messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      logger.info(s"$taxYear, $businessId, $request")
       ???
   }
 }
