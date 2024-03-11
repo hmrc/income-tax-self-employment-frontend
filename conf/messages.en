@@ -1592,3 +1592,9 @@ structuresBuildingsAllowance.subheading.agent = In this accounting period did yo
 structuresBuildingsAllowance.hint = The structure or building must be for non-residential use.
 structuresBuildingsAllowance.error.required.individual = Select yes if you built, renovated or bought a structure or building for your self-employment
 structuresBuildingsAllowance.error.required.agent = Select yes if your client built, renovated or bought a structure or building for their self-employment
+
+
+structuresBuildingsClaimed.subHeading.individual = Do you have a continuing claim for structures and buildings allowance?
+structuresBuildingsClaimed.subHeading.agent = Does your client have a continuing claim for structures and buildings allowance?
+structuresBuildingsClaimed.error.required.individual = Select yes if you have a continuing claim for structures and buildings allowance
+structuresBuildingsClaimed.error.required.agent = Select yes if your client has a continuing claim for structures and buildings allowance

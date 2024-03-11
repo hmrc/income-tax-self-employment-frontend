@@ -28,7 +28,7 @@ import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.balancingAllowance._
 import pages.capitalallowances.electricVehicleChargePoints._
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage
+import pages.capitalallowances.structuresBuildingsAllowance._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
@@ -204,8 +204,11 @@ class CapitalAllowancesNavigator @Inject() {
 
     case StructuresBuildingsAllowancePage =>
       _ =>
-        taxYear =>
-          businessId => structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case StructuresBuildingsClaimedPage =>
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
 
     case _ => _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
   }
@@ -232,6 +235,10 @@ class CapitalAllowancesNavigator @Inject() {
     case StructuresBuildingsAllowancePage =>
       _ =>
         taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
+
+    case StructuresBuildingsClaimedPage =>
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode)
 
     case _ =>
       _ => _ => _ => standard.routes.JourneyRecoveryController.onPageLoad()
