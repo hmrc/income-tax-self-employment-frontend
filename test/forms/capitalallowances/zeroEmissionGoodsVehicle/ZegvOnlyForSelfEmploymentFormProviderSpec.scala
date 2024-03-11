@@ -18,12 +18,12 @@ package forms.capitalallowances.zeroEmissionGoodsVehicle
 
 import forms.behaviours.SimpleFieldBehaviours
 import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider.RequiredError
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentFormProvider.RequiredError
 
-class ZeroEmissionGoodsVehicleFormProviderSpec extends SimpleFieldBehaviours {
+class ZegvOnlyForSelfEmploymentFormProviderSpec extends SimpleFieldBehaviours {
 
-  "ZeroEmissionGoodsVehicleFormProvider" - forAllUserTypes { userType =>
-    implicit val form = new ZeroEmissionGoodsVehicleFormProvider()(userType)
+  "ZegvOnlyForSelfEmploymentFormProvider" - forAllUserTypes { userType =>
+    implicit val form = new ZegvOnlyForSelfEmploymentFormProvider()(userType)
     checkValidBoolean()
     checkMandatoryField(userTypeAware(userType, RequiredError))
   }

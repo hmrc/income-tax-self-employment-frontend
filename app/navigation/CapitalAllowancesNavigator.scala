@@ -28,7 +28,7 @@ import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.balancingAllowance._
 import pages.capitalallowances.electricVehicleChargePoints._
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedPage
+import pages.capitalallowances.structuresBuildingsAllowance._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
@@ -202,6 +202,10 @@ class CapitalAllowancesNavigator @Inject() {
               businessId
             )
 
+    case StructuresBuildingsAllowancePage =>
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+
     case StructuresBuildingsClaimedPage =>
       _ =>
         taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
@@ -227,6 +231,10 @@ class CapitalAllowancesNavigator @Inject() {
 
     case BalancingAllowancePage | BalancingAllowanceAmountPage =>
       _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
+
+    case StructuresBuildingsAllowancePage =>
+      _ =>
+        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode)
 
     case StructuresBuildingsClaimedPage =>
       _ =>

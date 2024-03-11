@@ -1,3 +1,4 @@
+###### Common keys, and non-journey keys ######
 service.name = income-tax-self-employment-frontend
 
 site.back = Back
@@ -100,16 +101,7 @@ error.nonNumeric = The amount must be a number
 error.nonDecimal = The amount cannot have decimal places
 error.minimumOne = The amount must be more than 1
 error.maxNinetyNine = The amount cannot be more than 99
-
-capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
-capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
-capitalAllowances.p1.agent = Capital allowances are a type of tax relief. They let your client deduct some or all of the value of an item from their profits before they pay tax.
-capitalAllowances.p2.individual = You can claim capital allowances on:
-capitalAllowances.p2.agent = Your client can claim capital allowances on:
-capitalAllowances.p3 = These are known as ‘plant and machinery’.
-capitalAllowances.l1 = equipment
-capitalAllowances.l2 = machinery
-capitalAllowances.l3 = business vehicles
+error.overMax = The amount must be less than £100,000,000,000
 
 common.insert = {0}
 common.lowerAmount = A lower amount
@@ -384,7 +376,6 @@ expenses.actualCosts = Actual costs
 expenses.actualCosts.cya = Actual costs
 expenses.error.lessThanZero = The amount must be 0 or more
 expenses.error.noDecimals = The number cannot have decimal places
-expenses.error.overMax = The amount must be less than £100,000,000,000
 expenses.howWeCalculatedThis = How we calculated this:
 expenses.flatRateOrActualCosts.individual = You may choose to continue with this flat rate amount or enter your actual expenses instead.
 expenses.flatRateOrActualCosts.agent = Your client may choose to continue with this flat rate amount or enter their actual expenses instead.
@@ -1242,6 +1233,18 @@ otherExpensesDisallowableAmount.change.hidden = Change how much spent on other e
 otherExpensesCYA.title.individual = Check your other expenses
 otherExpensesCYA.title.agent = Check your client’s other expenses
 
+########## Capital Allowances #########
+
+capitalAllowances.understandingCapitalAllowances = Understanding capital allowances
+capitalAllowances.p1.individual = Capital allowances are a type of tax relief. They let you deduct some or all of the value of an item from your profits before you pay tax.
+capitalAllowances.p1.agent = Capital allowances are a type of tax relief. They let your client deduct some or all of the value of an item from their profits before they pay tax.
+capitalAllowances.p2.individual = You can claim capital allowances on:
+capitalAllowances.p2.agent = Your client can claim capital allowances on:
+capitalAllowances.p3 = These are known as ‘plant and machinery’.
+capitalAllowances.l1 = equipment
+capitalAllowances.l2 = machinery
+capitalAllowances.l3 = business vehicles
+
 ########## Capital Allowances - Tailoring ##########
 
 capitalAllowance.claimingTheAllowance = Claiming the allowance
@@ -1419,6 +1422,8 @@ zegvAllowance.p3.individual = Reduce your taxable income by the full cost of the
 zegvAllowance.p3.agent = Reduce your client’s taxable income by the full cost of the vehicle.
 zegvAllowance.p4.individual = Claim part of the cost of your vehicle by using the allowances for this tax year. You can then use
 zegvAllowance.p4.agent = Claim part of the cost of your client’s vehicle by using the allowances for this tax year. Your client can then use
+ZegvAllowance.error.required.individual = Select yes if you want to use your 100% first year allowance
+ZegvAllowance.error.required.agent = Select yes if your client wants to use their 100% first year allowance
 
 zegvTotalCostOfVehicle.title = What was the total cost of the vehicle, in pounds?
 zegvTotalCostOfVehicle.hint.individual = This is the price you paid at the time you purchased the vehicle. If you bought more than one vehicle, enter the total for all of them.
@@ -1442,8 +1447,8 @@ zegvHowMuchDoYouWantToClaim.p3.agent = Your client should enter any remaining am
 zegvHowMuchDoYouWantToClaim.subHeading.individual = How much of the vehicle’s cost do you want to claim under this 100% allowance?
 zegvHowMuchDoYouWantToClaim.subHeading.agent = How much of the vehicle’s cost do they want to claim under this 100% allowance?
 zegvHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
-zegvHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost of the car
-zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the car
+zegvHowMuchDoYouWantToClaim.error.required.agent = Enter an amount up to the full cost of the vehicle
+zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the vehicle
 zegvHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
 
@@ -1572,7 +1577,22 @@ annualInvestmentAllowanceAmount.error.required.individual = Enter the amount of 
 annualInvestmentAllowanceAmount.error.required.agent = Enter the amount of annual investment allowance your client wants to claim
 annualInvestmentAllowanceAmount.change.hidden = Change how much annual investment allowance will be claimed
 
-########## Capital Allowances - Structures and Buildings Allowance ##########
+########## Capital Allowances - Structures and building allowance ##########
+
+structuresBuildingsAllowance.p1.individual = You may be able to claim tax relief if you meet all these conditions:
+structuresBuildingsAllowance.p1.agent = Your client may be able to claim tax relief if you meet all these conditions:
+structuresBuildingsAllowance.p2.individual = You built, bought or leased a structure
+structuresBuildingsAllowance.p2.agent = They built, bought or leased a structure
+structuresBuildingsAllowance.p3 = All construction contracts were signed on or after 29 October 2018
+structuresBuildingsAllowance.p4 = Construction began on or after 29 October 2018
+structuresBuildingsAllowance.p5.individual = You can claim 3% of the qualifying costs to reduce their taxable profits.
+structuresBuildingsAllowance.p5.agent = They can claim 3% of the qualifying costs to reduce their taxable profits.
+structuresBuildingsAllowance.subheading.individual = In this accounting period did you build, renovate or buy a structure for your self-employment?
+structuresBuildingsAllowance.subheading.agent = In this accounting period did your client build, renovate or buy a structure for their self-employment?
+structuresBuildingsAllowance.hint = The structure or building must be for non-residential use.
+structuresBuildingsAllowance.error.required.individual = Select yes if you built, renovated or bought a structure or building for your self-employment
+structuresBuildingsAllowance.error.required.agent = Select yes if your client built, renovated or bought a structure or building for their self-employment
+
 
 structuresBuildingsClaimed.subHeading.individual = Do you have a continuing claim for structures and buildings allowance?
 structuresBuildingsClaimed.subHeading.agent = Does your client have a continuing claim for structures and buildings allowance?

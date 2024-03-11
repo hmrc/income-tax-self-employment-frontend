@@ -16,17 +16,19 @@
 
 package forms.capitalallowances.zeroEmissionGoodsVehicle
 
+import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider.RequiredError
 import forms.mappings.Mappings
-import models.common.{TaxYear, UserType}
+import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ZeroEmissionGoodsVehicleFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType, taxYear: TaxYear): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"zeroEmissionGoodsVehicle.error.required.$userType", args = Seq(taxYear.startYear.toString, taxYear.endYear.toString))
-    )
+  def apply(userType: UserType): Form[Boolean] =
+    Form("value" -> boolean(s"$RequiredError.$userType"))
+}
 
+object ZeroEmissionGoodsVehicleFormProvider {
+  val RequiredError = "zeroEmissionGoodsVehicle.error.required"
 }

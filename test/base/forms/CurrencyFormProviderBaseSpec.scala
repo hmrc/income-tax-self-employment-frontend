@@ -23,9 +23,6 @@ import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) extends BigDecimalFieldBehaviours {
-
-  private val fieldName = "value"
-
   protected lazy val minimum: BigDecimal             = zeroValue
   protected lazy val maximum: BigDecimal             = maxAmountValue
   protected lazy val validDataGenerator: Gen[String] = currencyInRangeWithCommas(minimum, maximum)

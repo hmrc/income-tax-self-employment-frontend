@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package forms.capitalallowances.structuresBuildingsAllowance
 
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
+import play.api.data.Form
 
-final case class FormStandardErrors(prefix: String) {
-  def requiredError(userType: UserType): String = s"$prefix.error.required.$userType"
-  val amountRequiredError: String               = s"$prefix.error.required.amount"
-  val overMaxCustomMessageError: String         = s"$prefix.error.overMax"
+class StructuresBuildingsAllowanceFormProviderSpec
+    extends BooleanFormProviderBaseSpec(
+      "StructuresBuildingsAllowanceFormProvider"
+    ) {
+
+  override def formProvider(userType: UserType): Form[Boolean] = new StructuresBuildingsAllowanceFormProvider()(userType)
+
+  override def requiredErrorKey: String = "structuresBuildingsAllowance.error.required"
+
 }

@@ -34,6 +34,10 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
       result.errors mustBe empty
     }
 
+    booleanInvalidField(form, fieldName, invalidError)
+  }
+
+  def booleanInvalidField(form: Form[_], fieldName: String, invalidError: FormError): Unit =
     "not bind non-booleans" in {
 
       forAll(nonBooleans -> "nonBoolean") { nonBoolean =>
@@ -41,5 +45,4 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
         result.errors mustBe Seq(invalidError)
       }
     }
-  }
 }

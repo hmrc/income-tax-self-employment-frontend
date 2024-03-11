@@ -49,14 +49,14 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
     implicit request =>
       val form = request.userAnswers
         .get(ZegvAllowancePage, businessId.some)
-        .fold(formProvider(request.userType, taxYear))(formProvider(request.userType, taxYear).fill)
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType, taxYear)
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

@@ -40,7 +40,7 @@ class ZegvAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec(
 
   def validAnswer: Boolean = true
 
-  def createForm(userType: UserType): Form[Boolean] = new ZegvAllowanceFormProvider()(userType, taxYear)
+  def createForm(userType: UserType): Form[Boolean] = new ZegvAllowanceFormProvider()(userType)
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

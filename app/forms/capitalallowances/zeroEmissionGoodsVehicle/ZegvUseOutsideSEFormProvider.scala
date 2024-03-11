@@ -24,7 +24,6 @@ import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 
 object ZegvUseOutsideSEFormProvider extends Mappings {
-
   case class ZegvUseOutsideSEFormModel(radioPercentage: ZegvUseOutsideSE, optDifferentAmount: Int = 0)
 
   private val radioPercentage    = "radioPercentage"

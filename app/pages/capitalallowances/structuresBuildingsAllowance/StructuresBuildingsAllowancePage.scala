@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.annualInvestmentAllowance
+package pages.capitalallowances.structuresBuildingsAllowance
 
-import forms.mappings.Mappings
-import forms.OverMaxError
-import models.common.{MoneyBounds, UserType}
-import play.api.data.Form
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class AnnualInvestmentAllowanceAmountFormProvider @Inject() extends Mappings with MoneyBounds {
-
-  def apply(userType: UserType): Form[BigDecimal] = Form(
-    "value" -> currency(s"annualInvestmentAllowanceAmount.error.required.$userType", "error.nonNumeric")
-      .verifying(greaterThan(minimumValue, "error.lessThanZero"))
-      .verifying(lessThan(maximumValue, OverMaxError)))
-
+object StructuresBuildingsAllowancePage extends OneQuestionPage[Boolean] {
+  override def toString: String = "structuresBuildingsAllowance"
 }

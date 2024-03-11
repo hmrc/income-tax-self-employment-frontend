@@ -15,9 +15,10 @@
  */
 
 package object forms {
-  val invalidError: String      = "error.invalid"
-  val lessThanZeroError: String = "error.lessThanZero"
-  val nonNumericError: String   = "error.nonNumeric"
-  val noDecimalsError: String   = "error.nonDecimal"
-
+  val LessThanZeroError: String = "error.lessThanZero"
+  val InvalidError: String      = "error.invalid"
+  val NonNumericError: String   = "error.nonNumeric"
+  val NoDecimalsError: String   = "error.nonDecimal"
+  val OverMaxError: String      = "error.overMax"
+  val ErrorBoolean: String      = "error.boolean"
 }
