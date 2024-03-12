@@ -24,6 +24,7 @@ import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage,
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
+import pages.capitalallowances.writingDownAllowance._
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
@@ -54,6 +55,20 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
 
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   val values: IndexedSeq[Journey] = findValues
+
+  implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
+
+    override def bind(key: String, value: String): Either[String, Journey] =
+      strBinder.bind(key, value).flatMap { stringValue =>
+        Journey.withNameOption(stringValue) match {
+          case Some(journeyName) => Right(journeyName)
+          case None              => Left(s"$stringValue Invalid journey name")
+        }
+      }
+
+    override def unbind(key: String, journeyName: Journey): String =
+      strBinder.unbind(key, journeyName.entryName)
+  }
 
   case object TradeDetails extends Journey("trade-details") {
     override val pageKeys: List[PageName] = Nil
@@ -152,11 +167,15 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = Nil
   }
 
-  case object CapitalAllowancesTailoring extends Journey("capital-allowances-tailoring") {
+  sealed abstract class CapitalAllowanceBaseJourney(override val entryName: String) extends Journey(entryName) {
+    override def toString: String = entryName
+  }
+
+  case object CapitalAllowancesTailoring extends CapitalAllowanceBaseJourney("capital-allowances-tailoring") {
     override val pageKeys: List[PageName] = List(ClaimCapitalAllowancesPage.pageName, SelectCapitalAllowancesPage.pageName)
   }
 
-  case object CapitalAllowancesZeroEmissionCars extends Journey("capital-allowances-zero-emission-cars") {
+  case object CapitalAllowancesZeroEmissionCars extends CapitalAllowanceBaseJourney("capital-allowances-zero-emission-cars") {
     override val pageKeys: List[PageName] = List(
       ZeroEmissionCarsPage.pageName,
       ZecAllowancePage.pageName,
@@ -169,7 +188,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     )
   }
 
-  case object CapitalAllowancesZeroEmissionGoodsVehicle extends Journey("capital-allowances-zero-emission-goods-vehicle") {
+  case object CapitalAllowancesZeroEmissionGoodsVehicle extends CapitalAllowanceBaseJourney("capital-allowances-zero-emission-goods-vehicle") {
     override val pageKeys: List[PageName] = List(
       ZeroEmissionGoodsVehiclePage.pageName,
       ZegvAllowancePage.pageName,
@@ -182,7 +201,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     )
   }
 
-  case object CapitalAllowancesElectricVehicleChargePoints extends Journey("capital-allowances-electric-vehicle-charge-points") {
+  case object CapitalAllowancesElectricVehicleChargePoints extends CapitalAllowanceBaseJourney("capital-allowances-electric-vehicle-charge-points") {
     override val pageKeys: List[PageName] = List(
       EVCPAllowancePage.pageName,
       ChargePointTaxReliefPage.pageName,
@@ -195,38 +214,38 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     )
   }
 
-  case object CapitalAllowancesBalancingAllowance extends Journey("capital-allowances-balancing-allowance") {
+  case object CapitalAllowancesBalancingAllowance extends CapitalAllowanceBaseJourney("capital-allowances-balancing-allowance") {
     override val pageKeys: List[PageName] = List(
       BalancingAllowancePage.pageName,
       BalancingAllowanceAmountPage.pageName
     )
   }
 
-  case object CapitalAllowancesAnnualInvestmentAllowance extends Journey("capital-allowances-annual-investment-allowance") {
+  case object CapitalAllowancesAnnualInvestmentAllowance extends CapitalAllowanceBaseJourney("capital-allowances-annual-investment-allowance") {
     override val pageKeys: List[PageName] = List(
       AnnualInvestmentAllowancePage.pageName,
       AnnualInvestmentAllowanceAmountPage.pageName
     )
   }
 
-  case object CapitalAllowancesStructuresBuildings extends Journey("capital-allowances-structures-buildings") {
+  case object CapitalAllowancesStructuresBuildings extends CapitalAllowanceBaseJourney("capital-allowances-structures-buildings") {
     override val pageKeys: List[PageName] = List(
       StructuresBuildingsAllowancePage.pageName,
       StructuresBuildingsClaimedPage.pageName
     )
   }
 
-  implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[Journey] = new PathBindable[Journey] {
-
-    override def bind(key: String, value: String): Either[String, Journey] =
-      strBinder.bind(key, value).flatMap { stringValue =>
-        Journey.withNameOption(stringValue) match {
-          case Some(journeyName) => Right(journeyName)
-          case None              => Left(s"$stringValue Invalid journey name")
-        }
-      }
-
-    override def unbind(key: String, journeyName: Journey): String =
-      strBinder.unbind(key, journeyName.entryName)
+  case object CapitalAllowancesWritingDownAllowance extends CapitalAllowanceBaseJourney("capital-allowances-writing-down-allowance") {
+    override val pageKeys: List[PageName] = List(
+      WritingDownAllowancePage.pageName,
+      WdaClaimAmountPage.pageName,
+      WdaMainRateClaimAmountPage.pageName,
+      WdaMainRatePage.pageName,
+      WdaSingleAssetClaimAmountsPage.pageName,
+      WdaSingleAssetPage.pageName,
+      WdaSpecialRateClaimAmountPage.pageName,
+      WdaSpecialRatePage.pageName
+    )
   }
+
 }

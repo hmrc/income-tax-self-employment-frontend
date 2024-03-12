@@ -23,7 +23,6 @@ import models.common.AccountingType.Cash
 import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
 import models.journeys.Journey._
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
@@ -42,7 +41,7 @@ object CapitalAllowancesTasklist {
 
     val abroadIsCompleted = tradesJourneyStatuses.getStatusOrNotStarted(Abroad) == Completed
     val tailoringStatus   = getJourneyStatus(CapitalAllowancesTailoring, abroadIsCompleted)(tradesJourneyStatuses)
-    val tailoringHref     = getCapitalAllowanceUrl(CapitalAllowancesTailoring, tailoringStatus, businessId, taxYear)
+    val tailoringHref     = getUrl(CapitalAllowancesTailoring, tailoringStatus, businessId, taxYear)
     val isCashHeading: String = userAnswers.map(_.getAccountingType(businessId)) match {
       case Some(Cash) => s".$Cash"
       case _          => ""
@@ -52,7 +51,7 @@ object CapitalAllowancesTasklist {
     val capAllowancesTailoringCompleted = tailoringStatus.isCompleted
 
     val zeroEmissionCarsStatus = getJourneyStatus(CapitalAllowancesZeroEmissionCars)(tradesJourneyStatuses)
-    val zeroEmissionCarsHref   = getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)
+    val zeroEmissionCarsHref   = getUrl(CapitalAllowancesZeroEmissionCars, zeroEmissionCarsStatus, businessId, taxYear)
     val zecIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionCar) && capAllowancesTailoringCompleted
     val zeroEmissionCarsRow = returnRowIfConditionPassed(
@@ -62,7 +61,7 @@ object CapitalAllowancesTasklist {
 
     val zeroEmissionGoodsVehicleStatus = getJourneyStatus(CapitalAllowancesZeroEmissionGoodsVehicle)(tradesJourneyStatuses)
     val zeroEmissionGoodsVehicleHref =
-      getCapitalAllowanceUrl(CapitalAllowancesZeroEmissionGoodsVehicle, zeroEmissionGoodsVehicleStatus, businessId, taxYear)
+      getUrl(CapitalAllowancesZeroEmissionGoodsVehicle, zeroEmissionGoodsVehicleStatus, businessId, taxYear)
     val zegvIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ZeroEmissionGoodsVehicle) && capAllowancesTailoringCompleted
     val zeroEmissionGoodsVehicleRow = returnRowIfConditionPassed(
@@ -72,7 +71,7 @@ object CapitalAllowancesTasklist {
 
     val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(tradesJourneyStatuses)
     val electricVehicleChargePointsHref =
-      getCapitalAllowanceUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
+      getUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
     val evcpIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
     val electricVehicleChargePointsRow = returnRowIfConditionPassed(
@@ -85,7 +84,7 @@ object CapitalAllowancesTasklist {
 
     val balancingAllowanceStatus = getJourneyStatus(CapitalAllowancesBalancingAllowance)(tradesJourneyStatuses)
     val balancingAllowanceHref =
-      getCapitalAllowanceUrl(CapitalAllowancesBalancingAllowance, balancingAllowanceStatus, businessId, taxYear)
+      getUrl(CapitalAllowancesBalancingAllowance, balancingAllowanceStatus, businessId, taxYear)
     val balancingAllowanceIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.Balancing) && capAllowancesTailoringCompleted
     val balancingAllowanceRow = returnRowIfConditionPassed(
@@ -95,7 +94,7 @@ object CapitalAllowancesTasklist {
 
     val annualInvestmentAllowanceStatus = getJourneyStatus(CapitalAllowancesAnnualInvestmentAllowance)(tradesJourneyStatuses)
     val annualInvestmentAllowanceHref =
-      getCapitalAllowanceUrl(CapitalAllowancesAnnualInvestmentAllowance, annualInvestmentAllowanceStatus, businessId, taxYear)
+      getUrl(CapitalAllowancesAnnualInvestmentAllowance, annualInvestmentAllowanceStatus, businessId, taxYear)
     val annualInvestmentAllowanceIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.AnnualInvestment) && capAllowancesTailoringCompleted
     val annualInvestmentAllowanceRow = returnRowIfConditionPassed(
@@ -106,17 +105,41 @@ object CapitalAllowancesTasklist {
       annualInvestmentAllowanceIsTailored
     )
 
+    val writingDownRow = getAllowanceRow(
+      taxYear,
+      CapitalAllowancesWritingDownAllowance,
+      CapitalAllowances.WritingDown,
+      tradesJourneyStatuses,
+      capAllowancesTailoringCompleted)
+
     List(
       tailoringRow,
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
       electricVehicleChargePointsRow,
       balancingAllowanceRow,
-      annualInvestmentAllowanceRow
+      annualInvestmentAllowanceRow,
+      writingDownRow
     ).flatten
   }
 
-  private def getCapitalAllowanceUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
+  private def getAllowanceRow(taxYear: TaxYear,
+                              journey: CapitalAllowanceBaseJourney,
+                              allowanceType: CapitalAllowances,
+                              tradesJourneyStatuses: TradesJourneyStatuses,
+                              capAllowancesTailoringCompleted: Boolean)(implicit
+      businessId: BusinessId,
+      messages: Messages,
+      userAnswers: Option[UserAnswers]
+  ): Option[SummaryListRow] = {
+    val status     = getJourneyStatus(journey)(tradesJourneyStatuses)
+    val href       = getUrl(journey, status, businessId, taxYear)
+    val isTailored = conditionPassedForViewableLink(SelectCapitalAllowancesPage, allowanceType) && capAllowancesTailoringCompleted
+
+    returnRowIfConditionPassed(buildSummaryRow(href, messages(s"journeys.$CapitalAllowancesWritingDownAllowance"), status), isTailored)
+  }
+
+  private def getUrl(journey: CapitalAllowanceBaseJourney, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     journey match {
       case CapitalAllowancesTailoring =>
         determineJourneyStartOrCyaUrl(
@@ -148,6 +171,11 @@ object CapitalAllowancesTasklist {
           capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
-      case _ => ???
+      case CapitalAllowancesWritingDownAllowance =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesStructuresBuildings => ???
     }
 }
