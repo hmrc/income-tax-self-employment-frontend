@@ -2,10 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 import re
+import os
 
 session = requests.Session()
 
-cookie_string = 'authentication=95f33aca87239c2179260855dcb4ff289127a76e5f728833cd1b4c42149f95fc; govuk-prototype-kit-2f617070=s%3AojjeECHZCvj9t9aPDfkQWjgb9kRgpK7m.7Rt9JcmgfCi9JFYQMBKwE3UlXr%2FGr4JaejV7XejmVMc'
+cookie_string = os.getenv('COOKIE_STRING')
+if not cookie_string:
+    print("COOKIE_STRING environment variable is not set.")
+    sys.exit(1)
 
 headers = {
     'Cookie': cookie_string
