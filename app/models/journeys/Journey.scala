@@ -226,7 +226,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       WdaSingleAssetClaimAmountsPage.pageName,
       WdaSingleAssetPage.pageName,
       WdaSpecialRateClaimAmountPage.pageName,
-      WdaSpecialRatePage.pageName,
+      WdaSpecialRatePage.pageName
     )
   }
 
