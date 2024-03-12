@@ -23,9 +23,8 @@ import models.common.AccountingType.Cash
 import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
 import models.journeys.Journey._
-import models.journeys.capitalallowances.tailoring.{AllowanceType, CapitalAllowances}
+import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import play.api.i18n.Messages
