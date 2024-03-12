@@ -176,5 +176,6 @@ object CapitalAllowancesTasklist {
           capitalallowances.writingDownAllowance.routes.WritingDownAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.writingDownAllowance.routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
+      case CapitalAllowancesStructuresBuildings => ???
     }
 }
