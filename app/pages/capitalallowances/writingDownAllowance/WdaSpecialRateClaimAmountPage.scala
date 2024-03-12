@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import pages.capitalallowances.writingDownAllowance.WdaBasePage
+package pages.capitalallowances.writingDownAllowance
 
 object WdaSpecialRateClaimAmountPage extends WdaBasePage[BigDecimal] {
   override def toString: String = "WdaSpecialRateClaimAmount"

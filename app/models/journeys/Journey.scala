@@ -24,6 +24,7 @@ import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage,
 import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
+import pages.capitalallowances.writingDownAllowance._
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
@@ -213,6 +214,19 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       StructuresBuildingsAllowancePage.pageName,
       StructuresBuildingsClaimedPage.pageName
+    )
+  }
+
+  case object CapitalAllowancesWritingDownAllowance extends Journey("capital-allowances-writing-down-allowance") {
+    override val pageKeys: List[PageName] = List(
+      WritingDownAllowancePage.pageName,
+      WdaClaimAmountPage.pageName,
+      WdaMainRateClaimAmountPage.pageName,
+      WdaMainRatePage.pageName,
+      WdaSingleAssetClaimAmountsPage.pageName,
+      WdaSingleAssetPage.pageName,
+      WdaSpecialRateClaimAmountPage.pageName,
+      WdaSpecialRatePage.pageName,
     )
   }
 

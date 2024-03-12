@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import pages.capitalallowances.writingDownAllowance.WdaBasePage
+package pages.capitalallowances.writingDownAllowance
 
 object WdaSingleAssetPage extends WdaBasePage[Boolean] {
   override def toString: String = "WdaSingleAsset"
