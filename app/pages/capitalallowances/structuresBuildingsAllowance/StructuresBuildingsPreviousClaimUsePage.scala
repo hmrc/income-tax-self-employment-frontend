@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import queries.Settable
 
 object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePage[Boolean] {
-  override def toString: String = "structuresBuildingsClaimUse"
+  override def toString: String = "structuresBuildingsPreviousClaimUse"
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
