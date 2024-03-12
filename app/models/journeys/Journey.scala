@@ -171,7 +171,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override def toString: String = entryName
   }
 
-
   case object CapitalAllowancesTailoring extends CapitalAllowanceBaseJourney("capital-allowances-tailoring") {
     override val pageKeys: List[PageName] = List(ClaimCapitalAllowancesPage.pageName, SelectCapitalAllowancesPage.pageName)
   }

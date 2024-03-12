@@ -28,9 +28,9 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-goods-vehicle"))) {
+@layout(pageTitle = title(form, messages("journeys.capital-allowances-writing-down-allowance"))) {
     @errorSummary(form)
-    @heading(messages("journeys.capital-allowances-zero-emission-goods-vehicle"))
+    @heading(messages("journeys.capital-allowances-writing-down-allowance"))
 
     <div class="govuk-body">
     @formHelper(action = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
