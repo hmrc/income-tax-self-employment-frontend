@@ -29,7 +29,7 @@ object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePa
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
-      // TODO previous claim amount page
+      // TODO SASS-7593 previous claim amount page
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
@@ -37,12 +37,13 @@ object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePa
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode),
+      onTrue = routes.StructuresBuildingsPreviousClaimUseController
+        .onPageLoad(taxYear, businessId, NormalMode), // TODO SASS-7593 change to previous claim amount page
       onFalse = cyaPage(taxYear, businessId)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
     val answer = userAnswers.get(this, businessId)
-    answer.contains(false) || StructuresBuildingsPreviousClaimUsePage.hasAllFurtherAnswers(businessId, userAnswers)
-  }
+    answer.contains(false) || StructuresBuildingsAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+  } // TODO SASS-7593 change previous claim amount page
 }
