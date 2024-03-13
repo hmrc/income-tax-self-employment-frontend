@@ -27,7 +27,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowanceSummary, StructuresBuildingsClaimedSummary}
+import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{
+  StructuresBuildingsAllowanceSummary,
+  StructuresBuildingsClaimedSummary,
+  StructuresBuildingsPreviousClaimUseSummary
+}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -50,7 +54,8 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
         SummaryListCYA.summaryListOpt(
           List(
             StructuresBuildingsAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            StructuresBuildingsClaimedSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            StructuresBuildingsClaimedSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            StructuresBuildingsPreviousClaimUseSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           )
         )
 
