@@ -1598,6 +1598,23 @@ structuresBuildingsClaimed.subHeading.agent = Does your client have a continuing
 structuresBuildingsClaimed.error.required.individual = Select yes if you have a continuing claim for structures and buildings allowance
 structuresBuildingsClaimed.error.required.agent = Select yes if your client has a continuing claim for structures and buildings allowance
 
+structuresBuildingsPreviousClaimUse.title.individual = Can you still claim?
+structuresBuildingsPreviousClaimUse.title.agent = Can your client still claim?
+structuresBuildingsPreviousClaimUse.p1 = To continue to claim, the structure or building still needs to be:
+structuresBuildingsPreviousClaimUse.l1 = used for a qualifying activity
+structuresBuildingsPreviousClaimUse.l2 = for non-residential purposes
+structuresBuildingsPreviousClaimUse.p2.individual = You must also continue to hold the relevant interest in the structure or building.
+structuresBuildingsPreviousClaimUse.p3.individual = If you can only meet the conditions for part of the account period then the allowance needs to be proportionally reduced.
+structuresBuildingsPreviousClaimUse.p4.individual = You must also hold an allowance statement, or the qualifying cost is treated as £0.
+structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for structures and buildings (link opens in a new tab)
+structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
+structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
+structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
+structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
+structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
+structuresBuildingsPreviousClaimUse.error.required.agent = Select yes if your client wants to use the structures and buildings allowance for an existing building
+
 structuresBuildingsClaimedAmount.title = Claim amount
 structuresBuildingsClaimedAmount.p1.individual = For a continuing claim you can claim 3% a year to the end of the allowance period.
 structuresBuildingsClaimedAmount.p1.agent = For a continuing claim they can claim 3% a year to the end of the allowance period.

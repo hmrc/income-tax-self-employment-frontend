@@ -21,22 +21,22 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance.route
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimUsePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
 
-object StructuresBuildingsAllowanceSummary {
+object StructuresBuildingsPreviousClaimUseSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(StructuresBuildingsAllowancePage, businessId.some)
+      .get(StructuresBuildingsPreviousClaimUsePage, businessId.some)
       .map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
-          routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsAllowance.subheading.$userType"),
+          routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"structuresBuildingsPreviousClaimUse.subheading.$userType"),
           "balancingAllowance.change.hidden", // TODO change to structures buildings change
           rightTextAlign = true
         )

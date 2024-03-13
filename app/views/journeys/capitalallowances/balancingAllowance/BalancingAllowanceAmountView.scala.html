@@ -31,7 +31,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"amountSpentOnEvcp.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"balancingAllowanceAmount.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
