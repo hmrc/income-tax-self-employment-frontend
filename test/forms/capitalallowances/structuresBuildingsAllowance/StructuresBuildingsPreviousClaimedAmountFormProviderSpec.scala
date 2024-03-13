@@ -28,7 +28,6 @@ class StructuresBuildingsPreviousClaimedAmountFormProviderSpec extends BigDecima
   val maximumVal: BigDecimal   = maxAmountValue
   val requiredError: String    = "structuresBuildingsClaimedAmount.subHeading"
   val nonNumericError: String  = "error.nonNumeric"
-  val noDecimalsError: String  = "error.nonDecimal"
   val lessThanMinError: String = "error.lessThanZero"
   val overMaxError: String     = "error.overMax"
 
@@ -63,15 +62,6 @@ class StructuresBuildingsPreviousClaimedAmountFormProviderSpec extends BigDecima
       form,
       fieldName,
       FormError(fieldName, s"$requiredError.$userType")
-    )
-
-    behave like bigDecimalFieldWithRegex(
-      form,
-      fieldName,
-      noDecimalRegexp,
-      BigDecimal(400),
-      BigDecimal(400.20),
-      FormError(fieldName, noDecimalsError, Seq(noDecimalRegexp))
     )
   }
 }

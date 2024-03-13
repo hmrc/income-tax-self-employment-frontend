@@ -30,7 +30,6 @@ class StructuresBuildingsPreviousClaimedAmountFormProvider @Inject() extends Map
       "value" -> currency(s"structuresBuildingsClaimedAmount.subHeading.$userType", "error.nonNumeric")
         .verifying(greaterThan(minimumValue, "error.lessThanZero"))
         .verifying(lessThan(maximumValue, OverMaxError))
-        .verifying(regexpBigDecimal(noDecimalRegexp, "error.nonDecimal"))
     )
 
 }
