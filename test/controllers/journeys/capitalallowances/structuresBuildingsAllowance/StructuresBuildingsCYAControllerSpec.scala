@@ -30,7 +30,8 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
 
   val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  val testDataCases: List[JsObject] = List(Json.obj("structuresBuildingsAllowance" -> false))
+  val testDataCases: List[JsObject] = List(
+    Json.obj("structuresBuildingsAllowance" -> false, "structuresBuildingsClaimed" -> false, "structuresBuildingsPreviousClaimedAmount" -> 12))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StructuresBuildingsCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.StructuresBuildingsCYAController.onSubmit
@@ -38,7 +39,11 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =
     SummaryList(
-      rows = List(StructuresBuildingsAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value),
+      rows = List(
+        StructuresBuildingsAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsClaimedSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsPreviousClaimedAmountSummary.row(userAnswers, taxYear, businessId, userType).value
+      ),
       classes = "govuk-!-margin-bottom-7"
     )
 }
