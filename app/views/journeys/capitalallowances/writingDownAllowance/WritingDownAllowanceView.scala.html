@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, Heading}
 
@@ -26,18 +26,29 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("journeys.capital-allowances-writing-down-allowance"))) {
-    @errorSummary(form)
-    @heading(messages("journeys.capital-allowances-writing-down-allowance"))
+@layout(pageTitle = titleNoForm(messages("journeys.capital-allowances-writing-down-allowance"))) {
+    @heading(messages("writingDownAllowance.h1"))
 
     <div class="govuk-body">
-    @formHelper(action = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        <p>@messages(s"writingDownAllowance.p1.$userType")<p>
+        <p>@messages(s"writingDownAllowance.p2.$userType")<p>
+        <p>@messages(s"writingDownAllowance.p3.$userType")<p>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+        <h1 class="govuk-heading-m">@messages("writingDownAllowance.h2")</h1>
+        <p>@messages(s"writingDownAllowance.p4.$userType")<p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"writingDownAllowance.l1.$userType")</li>
+            <li>@messages(s"writingDownAllowance.l2.$userType")</li>
+            <li>@messages(s"writingDownAllowance.l3.$userType")</li>
+        </ul>
+
+        @formHelper(action = routes.WritingDownAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
     </div>
 }

@@ -16,6 +16,16 @@
 
 package pages.capitalallowances.writingDownAllowance
 
+import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.NormalMode
+import models.common._
+import models.database.UserAnswers
+import play.api.mvc.Call
+
 object WdaMainRatePage extends WdaBasePage[Boolean] {
   override def toString: String = "WdaMainRate"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.WdaMainRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)
+
 }

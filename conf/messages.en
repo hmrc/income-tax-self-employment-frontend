@@ -1654,63 +1654,69 @@ structuresBuildingsEligibleClaim.error.required.agent = Select yes if your clien
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.h1=Writing down allowance
-writingDownAllowance.p1=You can claim a percentage of the item’s value and deduct this from your profits each year.
-writingDownAllowance.p2=Use this allowance if you have not gained tax relief from the annual investment allowance or a first-year allowance.
-writingDownAllowance.p3=How much tax relief you get depends on if the item is a main rate (18%) or special rate (6%) asset.
+writingDownAllowance.p1.individual=You can claim a percentage of the item’s value and deduct this from your profits each year.
+writingDownAllowance.p1.agent=Your client can claim a percentage of the item’s value and deduct this from their profits each year.
+writingDownAllowance.p2.individual=Use this allowance if you have not gained tax relief from the annual investment allowance or a first-year allowance.
+writingDownAllowance.p2.agent=Use this allowance if your client has not gained tax relief from the annual investment allowance or a first-year allowance.
+writingDownAllowance.p3.individual=How much tax relief you get depends on if the item is a main rate (18%) or special rate (6%) asset.
+writingDownAllowance.p3.agent=How much tax relief your client gets depends on if the item is a main rate (18%) or special rate (6%) asset.
 writingDownAllowance.h2=How to claim
-writingDownAllowance.p4=To claim, you need to:
-writingDownAllowance.l1=group items into ‘pools’ depending on which rate (6% or 18%) they qualify for
-writingDownAllowance.l2=work out how much you can claim separately for each pool
-writingDownAllowance.l3=add any items you use outside your business into a single asset pool
+writingDownAllowance.p4.individual=To claim, you need to:
+writingDownAllowance.p4.agent=To claim, your client needs to:
+writingDownAllowance.l1.individual=group items into ‘pools’ depending on which rate (6% or 18%) they qualify for
+writingDownAllowance.l1.agent=group items into ‘pools’ depending on which rate (6% or 18%) they qualify for
+writingDownAllowance.l2.individual=work out how much you can claim separately for each pool
+writingDownAllowance.l2.agent=work out how much your client can claim separately for each pool
+writingDownAllowance.l3.individual=add any items you use outside your business into a single asset pool
+writingDownAllowance.l3.agent=add any items your client uses outside their business into a single asset pool
 
-wdaSpecialRateView.h1=Special rate (6%) pool
-wdaSpecialRateView.p1=You can claim 6% tax relief on:
-wdaSpecialRateView.li1=parts of a building that are considered essential, known as ‘integral features’. This includes things like lifts and escalators, heating, cooling and electrical systems
-wdaSpecialRateView.li2=items with a long life (at least 25 years from when they were new and only if the value of all long-life items you buy in a 12-month accounting period is more than £100,000)
-wdaSpecialRateView.li3=solar panels
-wdaSpecialRateView.li4=thermal insulation you’ve added to a building
-wdaSpecialRateView.li5=cars with CO2 emissions over a certain threshold - check the threshold for your car (opens in a new tab)
-wdaSpecialRateView.h2=Do you want to claim allowances on items in the special rate pool?
+wdaSpecialRate.h1=Special rate (6%) pool
+wdaSpecialRate.p1=You can claim 6% tax relief on:
+wdaSpecialRate.l1=parts of a building that are considered essential, known as ‘integral features’. This includes things like lifts and escalators, heating, cooling and electrical systems
+wdaSpecialRate.l2=items with a long life (at least 25 years from when they were new and only if the value of all long-life items you buy in a 12-month accounting period is more than £100,000)
+wdaSpecialRate.l3=solar panels
+wdaSpecialRate.l4=thermal insulation you’ve added to a building
+wdaSpecialRate.l5=cars with CO2 emissions over a certain threshold - check the threshold for your car (opens in a new tab)
+wdaSpecialRate.h2=Do you want to claim allowances on items in the special rate pool?
 
-p1=From your previous accounting period:
-li1=Take the balance left in the pool
-li2=Add the balance of any first year allowance claim you made (£0 for a 100% first year allowance)
-p2=Add all your spend from this accounting period (except for any claims you’ve made to a first year allowance, or spend that must go into a single asset pool)
-p3=Take away:
-li3=any annual investment allowance claim you’ve made
-li4=the amount you got for any items you sold
-li5=the market value of any items your business stopped using and which you kept for yourself
-p4=This will give you your new pool balance.
-p5=If the balance is:
-li6=£1,000 or less, you can claim the full amount (known as the small pools allowance)
-li7=£1,000 or more, you can claim 6% of the balance.
-h1=How much do you want to claim from the 6% pool?
+wdaSpecialRateClaimAmount=p1=From your previous accounting period:
+wdaSpecialRateClaimAmount=li1=Take the balance left in the pool
+wdaSpecialRateClaimAmount=li2=Add the balance of any first year allowance claim you made (£0 for a 100% first year allowance)
+wdaSpecialRateClaimAmount=p2=Add all your spend from this accounting period (except for any claims you’ve made to a first year allowance, or spend that must go into a single asset pool)
+wdaSpecialRateClaimAmount=p3=Take away:
+wdaSpecialRateClaimAmount=li3=any annual investment allowance claim you’ve made
+wdaSpecialRateClaimAmount=li4=the amount you got for any items you sold
+wdaSpecialRateClaimAmount=li5=the market value of any items your business stopped using and which you kept for yourself
+wdaSpecialRateClaimAmount=p4=This will give you your new pool balance.
+wdaSpecialRateClaimAmount=p5=If the balance is:
+wdaSpecialRateClaimAmount=li6=£1,000 or less, you can claim the full amount (known as the small pools allowance)
+wdaSpecialRateClaimAmount=li7=£1,000 or more, you can claim 6% of the balance.
+wdaSpecialRateClaimAmount=h1=How much do you want to claim from the 6% pool?
 
-p1=You can claim 18% tax relief on all equipment you buy, unless the items need to go into:
-li1=the special rate pool
-li2=a single asset pool (for example, because you have chosen to treat them as ‘short life’ assets or you’ve used them outside your self-employment)
-h1=Do you want to claim allowances on items in the main rate pool?
+wdaMainRate.p1=You can claim 18% tax relief on all equipment you buy, unless the items need to go into:
+wdaMainRate.li1=the special rate pool
+wdaMainRate.li2=a single asset pool (for example, because you have chosen to treat them as ‘short life’ assets or you’ve used them outside your self-employment)
+wdaMainRate.h1=Do you want to claim allowances on items in the main rate pool?
 
-h1=Claim amount
-p1=From your previous accounting period:
-li1=Take the balance left in the pool
-li2=Add the balance of any first year allowance claim you made (£0 for a 100% first year allowance)
-p2=Add all your spend from this accounting period (except for any claims you’ve made to a first year allowance, or spend that must go into a single asset pool)
-p3=Take away:
-li3=any annual investment allowance claim you’ve made
-li4=the amount you got for any items you sold
-li5=the market value of any items your business stopped using and which you kept for yourself
-p4=This will give you your new pool balance.
-p5=If the balance is:
-li6=£1,000 or less, you can claim the full amount (known as the small pools allowance)
-li7=£1,000 or more, you can claim 18% of the balance.
-h2=How much do you want to claim for the main rate pool?
+wdaMainRateClaimAmount.h1=Claim amount
+wdaMainRateClaimAmount.p1=From your previous accounting period:
+wdaMainRateClaimAmount.li1=Take the balance left in the pool
+wdaMainRateClaimAmount.li2=Add the balance of any first year allowance claim you made (£0 for a 100% first year allowance)
+wdaMainRateClaimAmount.p2=Add all your spend from this accounting period (except for any claims you’ve made to a first year allowance, or spend that must go into a single asset pool)
+wdaMainRateClaimAmount.p3=Take away:
+wdaMainRateClaimAmount.li3=any annual investment allowance claim you’ve made
+wdaMainRateClaimAmount.li4=the amount you got for any items you sold
+wdaMainRateClaimAmount.li5=the market value of any items your business stopped using and which you kept for yourself
+wdaMainRateClaimAmount.p4=This will give you your new pool balance.
+wdaMainRateClaimAmount.p5=If the balance is:
+wdaMainRateClaimAmount.li6=£1,000 or less, you can claim the full amount (known as the small pools allowance)
+wdaMainRateClaimAmount.li7=£1,000 or more, you can claim 18% of the balance.
+wdaMainRateClaimAmount.h2=How much do you want to claim for the main rate pool?
 
-h1=Single asset pools
-p1=You might need to create one or more single asset pools for the cost of items that:
-li1=have a short life (for assets you're not going to keep for a long time)
-li2=you use outside your self-employment if you’re a sole trader or a partnership
+wdaSingleAsset.h1=Single asset pools
+wdaSingleAsset.p1=You might need to create one or more single asset pools for the cost of items that:
+wdaSingleAsset.li1=have a short life (for assets you're not going to keep for a long time)
+wdaSingleAsset.li2=you use outside your self-employment if you’re a sole trader or a partnership
 
-h1=Claim amount for single asset pools
-p1=If you have more than one pool, you’ll need to combine them.
-
+wdaSingleAssetClaimAmounts.h1=Claim amount for single asset pools
+wdaSingleAssetClaimAmounts.p1=If you have more than one pool, you’ll need to combine them.

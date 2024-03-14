@@ -17,7 +17,7 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
+import forms.capitalallowances.writingDownAllowance.WdaMainRateClaimAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,6 +33,7 @@ class WdaMainRateClaimAmountController @Inject() (override val messagesApi: Mess
                                                   val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
+                                                  formProvider: WdaMainRateClaimAmountFormProvider,
                                                   requireData: DataRequiredAction,
                                                   view: WdaMainRateClaimAmountView)
     extends FrontendBaseController
@@ -41,13 +42,13 @@ class WdaMainRateClaimAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
+      val form = formProvider.apply(request.userType)
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
+      val form = formProvider.apply(request.userType)
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 }
