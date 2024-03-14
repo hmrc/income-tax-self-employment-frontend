@@ -1614,3 +1614,18 @@ structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolish
 structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
 structuresBuildingsPreviousClaimUse.error.required.agent = Select yes if your client wants to use the structures and buildings allowance for an existing building
+
+structuresBuildingsEligibleClaim.title.individual = Are you eligible to claim?
+structuresBuildingsEligibleClaim.title.agent = Is your client eligible to claim?
+structuresBuildingsEligibleClaim.p1 = The structure or building must:
+structuresBuildingsEligibleClaim.l1 = not have been used as a residence the first time it was used or during the period you’re claiming for
+structuresBuildingsEligibleClaim.l2 = be used for a qualifying activity
+structuresBuildingsEligibleClaim.l3= have an allowance statement
+structuresBuildingsEligibleClaim.link= Claiming capital allowances for structures and buildings (opens in a new tab)
+structuresBuildingsEligibleClaim.href= https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsEligibleClaim.subHeading.individual = Do you want to use the structures and buildings allowance?
+structuresBuildingsEligibleClaim.subHeading.agent = Does your client want to use the structures and buildings allowance?
+structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
+structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
+structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
+
