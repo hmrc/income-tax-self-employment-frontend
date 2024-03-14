@@ -38,7 +38,7 @@
     <div class="govuk-body">
         <p>@messages(s"wdaSpecialRateClaimAmount.p1.$userType")<p>
 
-        @foldableDetails(messages("wdaSpecialRateClaimAmount.details")) {
+        @foldableDetails(messages(s"wdaSpecialRateClaimAmount.details.$userType")) {
             <p>@messages(s"wdaSpecialRateClaimAmount.p2")</p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("wdaSpecialRateClaimAmount.l1")</li>
@@ -61,7 +61,7 @@
 
          @formHelper(action = routes.WdaSpecialRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
              @singleAmountContent(form) {
-               @subheading("wdaSpecialRateClaimAmount.subheading")
+               @subheading(s"wdaSpecialRateClaimAmount.subheading.$userType")
              }
              @submitButton()
         }

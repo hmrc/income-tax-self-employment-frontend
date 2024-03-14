@@ -38,7 +38,7 @@
 
         @formHelper(action = routes.WdaSingleAssetClaimAmountsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
             @singleAmountContent(form) {
-                @subheading("WdaSingleAssetClaimAmounts.subheading")
+                @subheading(s"wdaSingleAssetClaimAmounts.subheading.$userType")
             }
             @submitButton()
         }

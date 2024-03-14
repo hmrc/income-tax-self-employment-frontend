@@ -24,7 +24,9 @@
         subheading: Subheading,
         submitButton: SubmitButton,
         twoRadios: TwoRadios,
-        heading: HeadingMsgAware)
+        heading: HeadingMsgAware,
+        link: Link
+)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
@@ -40,11 +42,15 @@
             <li>@messages(s"wdaSpecialRate.l2.$userType")</li>
             <li>@messages(s"wdaSpecialRate.l3.$userType")</li>
             <li>@messages(s"wdaSpecialRate.l4.$userType")</li>
-            <li>@messages(s"wdaSpecialRate.l5.$userType")</li>
+            <li>
+                @messages(s"wdaSpecialRate.l5.leftPart.$userType")
+                @link(linkHrefKey = "wdaSpecialRate.l5.href", linkTextKey = "wdaSpecialRate.l5.link")
+                @messages("common.opensInNewTab")
+            </li>
         </ul>
 
         @formHelper(action = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @subheading("wdaSpecialRate.subheading")
+            @subheading(s"wdaSpecialRate.subheading.$userType")
             @twoRadios(form)
             @submitButton()
         }

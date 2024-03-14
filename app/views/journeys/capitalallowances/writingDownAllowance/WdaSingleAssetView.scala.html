@@ -41,7 +41,7 @@
         </ul>
 
         @formHelper(action = routes.WdaSingleAssetController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @subheading("wdaSingleAsset.subheading")
+            @subheading(s"wdaSingleAsset.subheading.$userType")
             <p>@messages(s"wdaSingleAsset.p2.$userType")<p>
             @twoRadios(form)
             @submitButton()
