@@ -1651,7 +1651,6 @@ structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
 
-
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.h1=Writing down allowance
