@@ -1615,6 +1615,21 @@ structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demoli
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
 structuresBuildingsPreviousClaimUse.error.required.agent = Select yes if your client wants to use the structures and buildings allowance for an existing building
 
+structuresBuildingsClaimedAmount.title = Claim amount
+structuresBuildingsClaimedAmount.p1.individual = For a continuing claim you can claim 3% a year to the end of the allowance period.
+structuresBuildingsClaimedAmount.p1.agent = For a continuing claim they can claim 3% a year to the end of the allowance period.
+structuresBuildingsClaimedAmount.p2 = The allowance period will end 33 and one third years from the later of:
+structuresBuildingsClaimedAmount.l1 = the date the structure first came into non-residential use
+structuresBuildingsClaimedAmount.l2 = the date on which the qualifying expenditure is incurred
+structuresBuildingsClaimedAmount.p3 = This information will be on the allowance statement.
+structuresBuildingsClaimedAmount.p4 = Read about
+structuresBuildingsClaimedAmount.link = how the 3% rate of allowance works (link opens in a new tab).
+structuresBuildingsClaimedAmount.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsClaimedAmount.subHeading.individual = Enter the total amount you want to claim for existing buildings or renovations
+structuresBuildingsClaimedAmount.subHeading.agent = Enter the total amount your client wants to claim for existing buildings or renovations
+structuresBuildingsClaimedAmount.cya.individual = How much do you want to claim for existing buildings or renovations?
+structuresBuildingsClaimedAmount.cya.agent = How much does your client want to claim for existing buildings or renovations?
+
 structuresBuildingsEligibleClaim.title.individual = Are you eligible to claim?
 structuresBuildingsEligibleClaim.title.agent = Is your client eligible to claim?
 structuresBuildingsEligibleClaim.p1 = The structure or building must:

@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance._
+import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsEligibleClaimSummary, _}
 
 class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
@@ -32,10 +32,11 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
 
   val testDataCases: List[JsObject] = List(
     Json.obj(
-      "structuresBuildingsAllowance"        -> false,
-      "structuresBuildingsClaimed"          -> false,
-      "structuresBuildingsPreviousClaimUse" -> false,
-      "structuresBuildingsEligibleClaim"    -> false
+      "structuresBuildingsAllowance"             -> false,
+      "structuresBuildingsClaimed"               -> false,
+      "structuresBuildingsPreviousClaimUse"      -> false,
+      "structuresBuildingsPreviousClaimedAmount" -> 12,
+      "structuresBuildingsEligibleClaim"         -> false
     ))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StructuresBuildingsCYAController.onPageLoad
@@ -48,6 +49,7 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
         StructuresBuildingsAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsClaimedSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsPreviousClaimUseSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsPreviousClaimedAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsEligibleClaimSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
