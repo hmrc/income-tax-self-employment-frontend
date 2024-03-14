@@ -1629,3 +1629,22 @@ structuresBuildingsClaimedAmount.subHeading.individual = Enter the total amount 
 structuresBuildingsClaimedAmount.subHeading.agent = Enter the total amount your client wants to claim for existing buildings or renovations
 structuresBuildingsClaimedAmount.cya.individual = How much do you want to claim for existing buildings or renovations?
 structuresBuildingsClaimedAmount.cya.agent = How much does your client want to claim for existing buildings or renovations?
+
+structuresBuildingsEligibleClaim.title.individual = Are you eligible to claim?
+structuresBuildingsEligibleClaim.title.agent = Is your client eligible to claim?
+structuresBuildingsEligibleClaim.p1 = The structure or building must:
+structuresBuildingsEligibleClaim.l1 = not have been used as a residence the first time it was used or during the period you’re claiming for
+structuresBuildingsEligibleClaim.l2 = be used for a
+structuresBuildingsEligibleClaim.l2.link = qualifying activity
+structuresBuildingsEligibleClaim.l2.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#qualifying-activity
+structuresBuildingsEligibleClaim.l3= have an
+structuresBuildingsEligibleClaim.l3.link = allowance statement
+structuresBuildingsEligibleClaim.l3.href= https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsEligibleClaim.link= Claiming capital allowances for structures and buildings (opens in a new tab)
+structuresBuildingsEligibleClaim.href= https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsEligibleClaim.subHeading.individual = Do you want to use the structures and buildings allowance?
+structuresBuildingsEligibleClaim.subHeading.agent = Does your client want to use the structures and buildings allowance?
+structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
+structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
+structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
+
