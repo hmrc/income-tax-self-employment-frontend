@@ -30,6 +30,7 @@ import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{
   StructuresBuildingsAllowanceSummary,
   StructuresBuildingsClaimedSummary,
+  StructuresBuildingsEligibleClaimSummary,
   StructuresBuildingsPreviousClaimUseSummary
 }
 import viewmodels.journeys.SummaryListCYA
@@ -55,7 +56,8 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
           List(
             StructuresBuildingsAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             StructuresBuildingsClaimedSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            StructuresBuildingsPreviousClaimUseSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            StructuresBuildingsPreviousClaimUseSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            StructuresBuildingsEligibleClaimSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           )
         )
 

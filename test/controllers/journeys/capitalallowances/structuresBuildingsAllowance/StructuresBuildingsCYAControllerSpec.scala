@@ -31,7 +31,12 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
   val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
   val testDataCases: List[JsObject] = List(
-    Json.obj("structuresBuildingsAllowance" -> false, "structuresBuildingsClaimed" -> false, "structuresBuildingsPreviousClaimUse" -> false))
+    Json.obj(
+      "structuresBuildingsAllowance"        -> false,
+      "structuresBuildingsClaimed"          -> false,
+      "structuresBuildingsPreviousClaimUse" -> false,
+      "structuresBuildingsEligibleClaim"    -> false
+    ))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StructuresBuildingsCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.StructuresBuildingsCYAController.onSubmit
@@ -42,7 +47,8 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
       rows = List(
         StructuresBuildingsAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsClaimedSummary.row(userAnswers, taxYear, businessId, userType).value,
-        StructuresBuildingsPreviousClaimUseSummary.row(userAnswers, taxYear, businessId, userType).value
+        StructuresBuildingsPreviousClaimUseSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsEligibleClaimSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )
