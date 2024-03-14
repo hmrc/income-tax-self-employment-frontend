@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.writingDownAllowance.WdaMainRateClaimAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.writingDownAllowance.{WdaMainRateClaimAmountPage, WdaSpecialRatePage}
+import pages.capitalallowances.writingDownAllowance.WdaMainRateClaimAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

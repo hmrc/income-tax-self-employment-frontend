@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.writingDownAllowance.WritingDownAllowancePage
