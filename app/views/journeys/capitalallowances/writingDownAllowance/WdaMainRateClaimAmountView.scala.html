@@ -33,10 +33,10 @@
     @heading(messages("wdaMainRateClaimAmount.heading"))
 
     <div class="govuk-body">
-    @formHelper(action = routes.WdaMainRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+        @formHelper(action = routes.WdaMainRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
     </div>
 }

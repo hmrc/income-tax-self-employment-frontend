@@ -16,11 +16,13 @@
 
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components.{ErrorSummarySection, FoldableDetails, Heading, SingleAmountContent}
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
+        foldableDetails: FoldableDetails,
+        singleAmountContent: SingleAmountContent,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
@@ -28,12 +30,46 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("WdaSpecialRateClaimAmount.heading"))) {
-    @heading(messages("writingDownAllowance.heading"))
-    @formHelper(action = routes.WdaSpecialRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+@layout(pageTitle = titleNoForm(messages("wdaSpecialRateClaimAmount.heading"))) {
+    @errorSummary(form)
+    @heading(messages("wdaSpecialRateClaimAmount.heading"))
+
+    <div class="govuk-body">
+        <p>@messages(s"wdaSpecialRateClaimAmount.p1.$userType")<p>
+
+        @foldableDetails(messages("wdaSpecialRateClaimAmount.details")) {
+            <p>@messages(s"wdaSpecialRateClaimAmount.p2")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaSpecialRateClaimAmount.l1")</li>
+                <li>@messages("wdaSpecialRateClaimAmount.l2")</li>
+            </ul>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p3")</p>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p4")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaSpecialRateClaimAmount.l3")</li>
+                <li>@messages("wdaSpecialRateClaimAmount.l4")</li>
+                <li>@messages("wdaSpecialRateClaimAmount.l5")</li>
+            </ul>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p5")</p>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p6")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaSpecialRateClaimAmount.l6")</li>
+                <li>@messages("wdaSpecialRateClaimAmount.l7")</li>
+            </ul>
+        }
+
+         @formHelper(action = routes.WdaSpecialRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+             @singleAmountContent(form) {
+                 <div>
+                     <label class="govuk-label govuk-label--m">
+                         @messages("wdaSpecialRateClaimAmount.subheading")
+                     </label>
+                 </div>
+             }
+
+             @govukButton(
+                 ButtonViewModel(messages("site.continue"))
+             )
+        }
     </div>
 }

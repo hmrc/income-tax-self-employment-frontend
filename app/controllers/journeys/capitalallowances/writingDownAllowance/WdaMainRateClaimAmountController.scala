@@ -20,6 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.writingDownAllowance.WdaMainRateClaimAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.{WdaMainRateClaimAmountPage, WdaSpecialRatePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,7 +49,6 @@ class WdaMainRateClaimAmountController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = formProvider.apply(request.userType)
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      WdaMainRateClaimAmountPage.redirectNext(mode, request.userAnswers, businessId, taxYear)
   }
 }

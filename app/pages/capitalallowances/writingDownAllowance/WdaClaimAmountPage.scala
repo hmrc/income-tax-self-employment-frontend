@@ -26,6 +26,6 @@ object WdaClaimAmountPage extends WdaBasePage[BigDecimal] {
   override def toString: String = "WdaClaimAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.WdaSingleAssetController.onPageLoad(taxYear, businessId, NormalMode)
 
 }

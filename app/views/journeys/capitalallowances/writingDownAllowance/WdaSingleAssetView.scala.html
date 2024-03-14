@@ -33,10 +33,10 @@
     @heading(messages("wdaSingleAssetView.heading"))
 
     <div class="govuk-body">
-    @formHelper(action = routes.WdaSingleAssetController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+        @formHelper(action = routes.WdaSingleAssetController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
     </div>
 }

@@ -16,7 +16,7 @@
 
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import viewmodels.components.FormHelpers.standardRadio
+@import viewmodels.LegendSize.Medium
 @import views.html.components.{ErrorSummarySection, Heading}
 
 @this(layout: templates.Layout,
@@ -45,7 +45,14 @@
         </ul>
 
         @formHelper(action = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @standardRadio(govukRadios, form, messages(s"wdaSpecialRate.subHeading.$userType"))
+            @govukRadios(
+                RadiosViewModel.yesNoWithLabel(
+                    field  = form("value"),
+                    legend = LegendViewModel(messages(s"wdaSpecialRate.subheading.$userType")).asPageHeading(size = Medium),
+                    inline = true
+                )
+            )
+
             @govukButton(
                 ButtonViewModel(messages("site.continue"))
             )

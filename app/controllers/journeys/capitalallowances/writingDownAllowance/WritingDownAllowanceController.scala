@@ -42,13 +42,11 @@ class WritingDownAllowanceController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      println("on load")
       Ok(view(mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      println("onsubmit")
       WritingDownAllowancePage.redirectNext(mode, request.userAnswers, businessId, taxYear)
   }
 }
