@@ -17,26 +17,33 @@
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
         govukErrorSummary: GovukErrorSummary,
+        singleAmountContent: SingleAmountContent,
+        subheading: Subheading,
+        submitButton: SubmitButton,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("WdaSingleAssetClaimAmounts.heading"))) {
+@layout(pageTitle = titleNoForm(messages("wdaSingleAssetClaimAmounts.heading"))) {
     @errorSummary(form)
-    @heading(messages("WdaSingleAssetClaimAmounts.heading"))
+    @heading(messages("wdaSingleAssetClaimAmounts.heading"))
 
     <div class="govuk-body">
+        <p>@messages(s"wdaSingleAssetClaimAmounts.p1.$userType")<p>
+
         @formHelper(action = routes.WdaSingleAssetClaimAmountsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+            @singleAmountContent(form) {
+                @subheading("WdaSingleAssetClaimAmounts.subheading")
+            }
+            @submitButton()
         }
     </div>
 }

@@ -17,12 +17,16 @@
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, FoldableDetails, Heading, SingleAmountContent}
+@import views.html.components.SubmitButton
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
         foldableDetails: FoldableDetails,
         singleAmountContent: SingleAmountContent,
+        subheading: Subheading,
+        submitButton: SubmitButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
@@ -60,16 +64,9 @@
 
          @formHelper(action = routes.WdaSpecialRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
              @singleAmountContent(form) {
-                 <div>
-                     <label class="govuk-label govuk-label--m">
-                         @messages("wdaSpecialRateClaimAmount.subheading")
-                     </label>
-                 </div>
+               @subheading("wdaSpecialRateClaimAmount.subheading")
              }
-
-             @govukButton(
-                 ButtonViewModel(messages("site.continue"))
-             )
+             @submitButton()
         }
     </div>
 }

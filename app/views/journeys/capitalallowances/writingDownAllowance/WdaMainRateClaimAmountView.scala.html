@@ -17,10 +17,17 @@
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components.FoldableDetails
+@import views.html.components.SingleAmountContent
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
+        foldableDetails: FoldableDetails,
+        singleAmountContent: SingleAmountContent,
+        subheading: Subheading,
+        submitButton: SubmitButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
@@ -33,10 +40,32 @@
     @heading(messages("wdaMainRateClaimAmount.heading"))
 
     <div class="govuk-body">
+        @foldableDetails(messages("wdaMainRateClaimAmount.details")) {
+            <p>@messages(s"wdaMainRateClaimAmount.p1")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l1")</li>
+                <li>@messages("wdaMainRateClaimAmount.l2")</li>
+            </ul>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p2")</p>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p3")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l3")</li>
+                <li>@messages("wdaMainRateClaimAmount.l4")</li>
+                <li>@messages("wdaMainRateClaimAmount.l5")</li>
+            </ul>
+            <p>@messages(s"wdaMainRateClaimAmount.p4")</p>
+            <p>@messages(s"wdaMainRateClaimAmount.p5")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l6")</li>
+                <li>@messages("wdaMainRateClaimAmount.l7")</li>
+            </ul>
+        }
+
         @formHelper(action = routes.WdaMainRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+            @singleAmountContent(form) {
+                @subheading("wdaMainRateClaimAmount.subheading")
+            }
+            @submitButton()
         }
     </div>
 }

@@ -17,10 +17,12 @@
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
+        submitButton: SubmitButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
@@ -46,9 +48,7 @@
         </ul>
 
         @formHelper(action = routes.WritingDownAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+            @submitButton()
         }
     </div>
 }

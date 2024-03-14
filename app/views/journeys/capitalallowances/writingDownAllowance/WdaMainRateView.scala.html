@@ -16,12 +16,15 @@
 
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
         govukErrorSummary: GovukErrorSummary,
+        subheading: Subheading,
+        submitButton: SubmitButton,
+        twoRadios: TwoRadios,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         heading: Heading)
@@ -33,10 +36,16 @@
     @heading(messages("wdaMainRate.heading"))
 
     <div class="govuk-body">
+        <p>@messages(s"wdaMainRate.p1.$userType")<p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("wdaMainRate.l1")</li>
+            <li>@messages("wdaMainRate.l2")</li>
+        </ul>
+
         @formHelper(action = routes.WdaMainRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+            @subheading("wdaMainRate.subheading")
+            @twoRadios(form)
+            @submitButton()
         }
     </div>
 }
