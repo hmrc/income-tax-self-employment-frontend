@@ -16,29 +16,25 @@
 
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
 @import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        errorSummary: ErrorSummarySection,
         submitButton: SubmitButton,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        subheading: Subheading,
+        heading: HeadingMsgAware)
 
 @(mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("journeys.capital-allowances-writing-down-allowance"))) {
-    @heading(messages("writingDownAllowance.h1"))
+    @heading("writingDownAllowance.h1")
 
     <div class="govuk-body">
         <p>@messages(s"writingDownAllowance.p1.$userType")<p>
         <p>@messages(s"writingDownAllowance.p2.$userType")<p>
         <p>@messages(s"writingDownAllowance.p3.$userType")<p>
 
-        <h1 class="govuk-heading-m">@messages("writingDownAllowance.h2")</h1>
+        @subheading("writingDownAllowance.h2")
         <p>@messages(s"writingDownAllowance.p4.$userType")<p>
 
         <ul class="govuk-list govuk-list--bullet">

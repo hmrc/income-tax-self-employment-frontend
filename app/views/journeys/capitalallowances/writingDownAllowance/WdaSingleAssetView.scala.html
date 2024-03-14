@@ -21,19 +21,16 @@
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
-        govukErrorSummary: GovukErrorSummary,
         subheading: Subheading,
         twoRadios: TwoRadios,
         submitButton: SubmitButton,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        heading: HeadingMsgAware)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("wdaSingleAsset.heading"))) {
+@layout(pageTitle = title(form, messages("wdaSingleAsset.heading"))) {
     @errorSummary(form)
-    @heading(messages("wdaSingleAsset.heading"))
+    @heading("wdaSingleAsset.heading")
 
     <div class="govuk-body">
         <p>@messages(s"wdaSingleAsset.p1.$userType")<p>

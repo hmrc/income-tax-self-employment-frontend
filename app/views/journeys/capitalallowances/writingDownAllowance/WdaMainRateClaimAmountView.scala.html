@@ -16,9 +16,6 @@
 
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
-@import views.html.components.FoldableDetails
-@import views.html.components.SingleAmountContent
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -28,16 +25,13 @@
         singleAmountContent: SingleAmountContent,
         subheading: Subheading,
         submitButton: SubmitButton,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        heading: HeadingMsgAware)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("wdaMainRateClaimAmount.heading"))) {
+@layout(pageTitle = title(form, messages("wdaMainRateClaimAmount.heading"))) {
     @errorSummary(form)
-    @heading(messages("wdaMainRateClaimAmount.heading"))
+    @heading("wdaMainRateClaimAmount.heading")
 
     <div class="govuk-body">
         @foldableDetails(messages("wdaMainRateClaimAmount.details")) {
