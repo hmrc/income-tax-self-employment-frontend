@@ -18,54 +18,57 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearDependentPages
-import forms.capitalallowances.specialTaxSites.SpecialTaxSitesFormProvider
+import forms.DateFormModel
+import forms.capitalallowances.specialTaxSites.ConstructionStartDateFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites._
+import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           service: SelfEmploymentService,
-                                           formProvider: SpecialTaxSitesFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 service: SelfEmploymentService,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: ConstructionStartDateView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val formProvider = ConstructionStartDateFormProvider.formProvider
       val form = request.userAnswers
-        .get(SpecialTaxSitesPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+        .get(ConstructionStartDatePage, businessId.some)
+        .fold(formProvider) { localDate: LocalDate => formProvider.fill(DateFormModel(localDate)) }
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      ConstructionStartDateFormProvider.formProvider
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          formErrors => {
+            val (filteredFormErrors, hasWholeFormError) = ConstructionStartDateFormProvider.checkForWholeFormErrors(formErrors)
+            Future.successful(BadRequest(view(filteredFormErrors, mode, request.userType, taxYear, businessId, hasWholeFormError)))
+          },
           answer =>
-            for {
-              editedUserAnswers  <- clearDependentPages(SpecialTaxSitesPage, answer, request, businessId)
-              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, SpecialTaxSitesPage)
-            } yield SpecialTaxSitesPage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
+            service.persistAnswer(businessId, request.userAnswers, answer.toLocalDate, ConstructionStartDatePage).map {
+              ConstructionStartDatePage.redirectNext(mode, _, businessId, taxYear)
+            }
         )
   }
 

@@ -14,38 +14,40 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
+@import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
-@import viewmodels.LegendSize.Large
+@import views.html.components.DateInput
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
+        dateInput: DateInput,
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, wholeFormError: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"evcpOnlyForSelfEmployment.title.$userType"))) {
+@layout(pageTitle = title(form, messages("contractStartDate.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @formHelper(action = routes.EvcpOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ContractStartDateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"evcpOnlyForSelfEmployment.title.$userType"))
-                .asPageHeading(size = Large)
-                .withCssClass("govuk-!-margin-bottom-6"),
-                items  = EvcpOnlyForSelfEmployment.options(userType)
-            )
+        @dateInput(
+            "contractStartDate",
+            form,
+            wholeFormError,
+            legend = Some(Legend(
+                content = HtmlContent(messages("contractStartDate.title")),
+                isPageHeading = true,
+                classes = "govuk-label--l"
+            )),
+            hint = Some(Hint(content = HtmlContent(messages("site.exampleDate"))))
         )
+
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )

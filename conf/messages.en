@@ -36,6 +36,10 @@ site.tenPercent = 10%
 site.twentyFivePercent = 25%
 site.fiftyPercent = 50%
 site.differentAmount = A different amount
+site.exampleDate = For example, 27 3 2007
+site.day = Day
+site.month = Month
+site.year = Year
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -102,6 +106,10 @@ error.nonDecimal = The amount cannot have decimal places
 error.minimumOne = The amount must be more than 1
 error.maxNinetyNine = The amount cannot be more than 99
 error.overMax = The amount must be less than £100,000,000,000
+error.date.valid = The date must be a real date
+error.date.day = The date must include a day
+error.date.month = The date must include a month
+error.date.year = The date must include a year
 
 common.insert = {0}
 common.lowerAmount = A lower amount
@@ -1614,3 +1622,45 @@ structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolish
 structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
 structuresBuildingsPreviousClaimUse.error.required.agent = Select yes if your client wants to use the structures and buildings allowance for an existing building
+
+########## Capital Allowances - Special tax sites ##########
+
+specialTaxSites.title = Special tax sites allowance
+specialTaxSites.p1 = Special tax sites are designated areas of land located in Freeports or investment zones.
+specialTaxSites.p2.individual = You can claim enhanced structures and buildings allowance relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
+specialTaxSites.p2.agent = Your client can claim enhanced structures and buildings allowance relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
+specialTaxSites.p3 = This relief can be claimed from the date the site is designated until 30 September 2031.
+specialTaxSites.details.heading = Check if you are eligible to claim
+specialTaxSites.details.p1.individual = To qualify, you must meet all these conditions:
+specialTaxSites.details.p1.agent = To qualify, your client must meet all these conditions:
+specialTaxSites.details.l1 = Construction must begin when the site is a designated special tax site
+specialTaxSites.details.l2 = The structure or building must be brought into qualifying use when it is in a special tax site and on or before 30 September 2031
+specialTaxSites.details.l3 = The qualifying spend must be incurred when the structure or building is in a special tax site and on or before 30 September 2026
+specialTaxSites.details.l4 = The person who incurred the spend must be registered for either Corporation Tax or Income Tax
+specialTaxSites.details.l5.1 = The
+specialTaxSites.details.l5.link = allowance statement
+specialTaxSites.details.l5.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+specialTaxSites.details.l5.2 = must specify that the spend is to be treated as special tax site qualifying expenditure
+specialTaxSites.subHeading.individual = Are you claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.error.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
+specialTaxSites.error.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
+
+contractForBuildingConstruction.title = Special tax site contracts
+contractForBuildingConstruction.p1.individual = You will not be able to claim this allowance on any construction costs of the specific building if the contract was:
+contractForBuildingConstruction.p1.agent = Your client will not be able to claim this allowance on any construction costs of the specific building if the contract was:
+contractForBuildingConstruction.l1 = entered into before 29 October 2018
+contractForBuildingConstruction.l2 = signed before the Freeport site was designated
+contractForBuildingConstruction.subHeading.individual = Did you enter into a contract for the building’s construction?
+contractForBuildingConstruction.subHeading.agent = Did your client enter into a contract for the building’s construction?
+contractForBuildingConstruction.error.individual = Select yes if you entered into a contract for the building’s construction
+contractForBuildingConstruction.error.agent = Select yes if your client entered into a contract for the building’s construction
+
+contractStartDate.title = When was the contract entered into?
+contractStartDate.error.individual = Enter the date when you entered into the contract for the building’s construction
+contractStartDate.error.agent = Enter the date when your client entered into the contract for the building’s construction
+contractStartDate.error.tooEarly = The date when the contract was signed cannot be before 29 October 2018
+
+constructionStartDate.title = When did construction or physical works start?
+constructionStartDate.error = Enter the date when construction or physical works started
+constructionStartDate.error.tooEarly = The date when construction or physical works started cannot be before 29 October 2018

@@ -6,7 +6,8 @@ last_section=$(awk '/#########/{x="";next}{x=x"\n"$0}END{print x}' "$ROUTES_FILE
 JOURNEY_TYPE=""
 PARENT_PAGE_NAME=""
 
-declare -A page_names
+# Simulating associative array using prefix and suffix manipulation
+page_names=()
 
 while read -r line; do
   if [[ $line =~ controllers\.journeys\.([a-zA-Z]+)\.([a-zA-Z]+)\.([a-zA-Z]+)Controller ]]; then
@@ -19,11 +20,11 @@ while read -r line; do
 
     # Extract and store the unique page name
     page_name=${BASH_REMATCH[3]}
-    page_names["$page_name"]=1
+    if [[ ! " ${page_names[@]} " =~ " ${page_name} " ]]; then
+        page_names+=("$page_name")
+    fi
   fi
 done <<< "$last_section"
-
-page_names_array=("${!page_names[@]}")
 
 create_target() {
   local page_name="$1"
@@ -45,6 +46,6 @@ create_target() {
   done
 }
 
-for page_name in "${page_names_array[@]}"; do
+for page_name in "${page_names[@]}"; do
   create_target "$page_name"
 done

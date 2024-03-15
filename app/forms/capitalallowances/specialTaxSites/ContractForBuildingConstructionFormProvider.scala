@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package object forms {
-  val LessThanZeroError: String = "error.lessThanZero"
-  val InvalidError: String      = "error.invalid"
-  val NonNumericError: String   = "error.nonNumeric"
-  val NoDecimalsError: String   = "error.nonDecimal"
-  val OverMaxError: String      = "error.overMax"
-  val ErrorBoolean: String      = "error.boolean"
-  val ValidDateError: String    = "error.date.valid"
-  val MissingDayError: String   = "error.date.day"
-  val MissingMonthError: String = "error.date.month"
-  val MissingYearError: String  = "error.date.year"
+package forms.capitalallowances.specialTaxSites
+
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class ContractForBuildingConstructionFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"contractForBuildingConstruction.error.$userType"))
+
 }

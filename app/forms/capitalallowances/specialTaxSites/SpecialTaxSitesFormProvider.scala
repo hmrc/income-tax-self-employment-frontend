@@ -24,6 +24,6 @@ import javax.inject.Inject
 
 class SpecialTaxSitesFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"specialTaxSites.error.required.$userType"))
+  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"specialTaxSites.error.$userType"))
 
 }

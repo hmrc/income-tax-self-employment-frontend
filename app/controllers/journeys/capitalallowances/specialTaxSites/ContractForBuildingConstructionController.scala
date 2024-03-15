@@ -18,8 +18,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearDependentPages
-import forms.capitalallowances.specialTaxSites.SpecialTaxSitesFormProvider
+import forms.capitalallowances.specialTaxSites.ContractForBuildingConstructionFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites._
@@ -28,20 +27,20 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.capitalallowances.specialTaxSites.ContractForBuildingConstructionView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           service: SelfEmploymentService,
-                                           formProvider: SpecialTaxSitesFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+class ContractForBuildingConstructionController @Inject() (override val messagesApi: MessagesApi,
+                                                           identify: IdentifierAction,
+                                                           getData: DataRetrievalAction,
+                                                           requireData: DataRequiredAction,
+                                                           service: SelfEmploymentService,
+                                                           formProvider: ContractForBuildingConstructionFormProvider,
+                                                           val controllerComponents: MessagesControllerComponents,
+                                                           view: ContractForBuildingConstructionView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -49,7 +48,7 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(SpecialTaxSitesPage, businessId.some)
+        .get(ContractForBuildingConstructionPage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
@@ -57,15 +56,17 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val pageToClear = (answer: Boolean) => if (answer) ConstructionStartDatePage else ContractStartDatePage
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
-              editedUserAnswers  <- clearDependentPages(SpecialTaxSitesPage, answer, request, businessId)
-              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, SpecialTaxSitesPage)
-            } yield SpecialTaxSitesPage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
+              editedUserAnswers <- Future.fromTry(
+                SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, List(pageToClear(answer)), Some(businessId)))
+              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, ContractForBuildingConstructionPage)
+            } yield ContractForBuildingConstructionPage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
         )
   }
 
