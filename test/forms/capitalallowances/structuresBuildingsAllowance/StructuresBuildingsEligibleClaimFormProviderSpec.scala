@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.writingDownAllowance
+package forms.capitalallowances.structuresBuildingsAllowance
 
-import controllers.journeys.capitalallowances.writingDownAllowance.routes
-import models.NormalMode
-import models.common._
-import models.database.UserAnswers
-import play.api.mvc.Call
+import base.forms.BooleanFormProviderBaseSpec
+import models.common.UserType
+import play.api.data.Form
 
-object WdaMainRatePage extends WdaBasePage[Boolean] {
-  override def toString: String = "WdaMainRate"
+class StructuresBuildingsEligibleClaimFormProviderSpec
+    extends BooleanFormProviderBaseSpec(
+      "StructuresBuildingsEligibleClaimFormProvider"
+    ) {
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.WdaMainRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override def formProvider(userType: UserType): Form[Boolean] = new StructuresBuildingsEligibleClaimFormProvider()(userType)
+
+  override def requiredErrorKey: String = "structuresBuildingsEligibleClaim.error.required"
 
 }

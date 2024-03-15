@@ -16,6 +16,15 @@
 
 package pages.capitalallowances.writingDownAllowance
 
+import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.common._
+import models.database.UserAnswers
+import play.api.mvc.Call
+
 object WdaSingleAssetClaimAmountsPage extends WdaBasePage[BigDecimal] {
   override def toString: String = "WdaSingleAssetClaimAmounts"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId)
+
 }
