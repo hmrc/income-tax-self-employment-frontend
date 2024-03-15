@@ -28,7 +28,6 @@ target
 test-result
 tmp
 .idea_modules
-bin
 /*.iml
 /*.ipr
 /.classpath
@@ -40,3 +39,4 @@ bin
 metals.sbt
 .jvmopts
 test-output/
+venv/

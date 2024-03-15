@@ -14,30 +14,45 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        subheading: Subheading,
+        submitButton: SubmitButton,
+        twoRadios: TwoRadios,
+        heading: HeadingMsgAware,
+        link: Link
+)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-goods-vehicle"))) {
+@layout(pageTitle = title(form, messages("wdaSpecialRate.heading"))) {
     @errorSummary(form)
-    @heading(messages("journeys.capital-allowances-zero-emission-goods-vehicle"))
+    @heading("wdaSpecialRate.heading")
 
     <div class="govuk-body">
-    @formHelper(action = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        <p>@messages(s"wdaSpecialRate.p1.$userType")<p>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"wdaSpecialRate.l1.$userType")</li>
+            <li>@messages(s"wdaSpecialRate.l2.$userType")</li>
+            <li>@messages(s"wdaSpecialRate.l3.$userType")</li>
+            <li>@messages(s"wdaSpecialRate.l4.$userType")</li>
+            <li>
+                @messages(s"wdaSpecialRate.l5.leftPart.$userType")
+                @link(linkHrefKey = "wdaSpecialRate.l5.href", linkTextKey = "wdaSpecialRate.l5.link")
+                @messages("common.opensInNewTab")
+            </li>
+        </ul>
+
+        @formHelper(action = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+            @subheading(s"wdaSpecialRate.subheading.$userType")
+            @twoRadios(form)
+            @submitButton()
+        }
     </div>
 }

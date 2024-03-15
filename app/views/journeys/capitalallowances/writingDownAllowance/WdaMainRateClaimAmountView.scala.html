@@ -14,30 +14,52 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+@import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{ErrorSummarySection, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        foldableDetails: FoldableDetails,
+        singleAmountContent: SingleAmountContent,
+        subheading: Subheading,
+        submitButton: SubmitButton,
+        heading: HeadingMsgAware)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("journeys.capital-allowances-zero-emission-goods-vehicle"))) {
+@layout(pageTitle = title(form, messages("wdaMainRateClaimAmount.heading"))) {
     @errorSummary(form)
-    @heading(messages("journeys.capital-allowances-zero-emission-goods-vehicle"))
+    @heading("wdaMainRateClaimAmount.heading")
 
     <div class="govuk-body">
-    @formHelper(action = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        @foldableDetails(messages(s"wdaMainRateClaimAmount.details.$userType")) {
+            <p>@messages(s"wdaMainRateClaimAmount.p1")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l1")</li>
+                <li>@messages("wdaMainRateClaimAmount.l2")</li>
+            </ul>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p2")</p>
+            <p>@messages(s"wdaSpecialRateClaimAmount.p3")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l3")</li>
+                <li>@messages("wdaMainRateClaimAmount.l4")</li>
+                <li>@messages("wdaMainRateClaimAmount.l5")</li>
+            </ul>
+            <p>@messages(s"wdaMainRateClaimAmount.p4")</p>
+            <p>@messages(s"wdaMainRateClaimAmount.p5")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("wdaMainRateClaimAmount.l6")</li>
+                <li>@messages("wdaMainRateClaimAmount.l7")</li>
+            </ul>
+        }
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+        @formHelper(action = routes.WdaMainRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+            @singleAmountContent(form) {
+                @subheading(s"wdaMainRateClaimAmount.subheading.$userType")
+            }
+            @submitButton()
+        }
     </div>
 }

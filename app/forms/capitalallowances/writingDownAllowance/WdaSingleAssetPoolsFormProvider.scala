@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package forms.capitalallowances.writingDownAllowance
+
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
 import forms.mappings.Mappings
 import models.common.UserType
