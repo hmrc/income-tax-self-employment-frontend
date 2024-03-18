@@ -16,14 +16,13 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import viewmodels.checkAnswers.capitalallowances.specialTaxSites.{ConstructionStartDateSummary, ContractStartDateSummary}
 //import controllers.handleSubmitAnswersResult
 import controllers.journeys
 import models.common._
 import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,24 +34,27 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+//import scala.concurrent.ExecutionContext
 
 @Singleton
 class SpecialTaxSitesCYAController @Inject() (override val messagesApi: MessagesApi,
                                               identify: IdentifierAction,
                                               getAnswers: DataRetrievalAction,
-                                              getJourneyAnswers: SubmittedDataRetrievalActionProvider,
+//                                              getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                               requireAnswers: DataRequiredAction,
 //                                             service: SelfEmploymentService,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: CheckYourAnswersView)(implicit ec: ExecutionContext)
+                                              view: CheckYourAnswersView)
+//                                             (implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen getJourneyAnswers[SpecialTaxSitesAnswers](req =>
-      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesSpecialTaxSites)) andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen
+//      getJourneyAnswers[SpecialTaxSitesAnswers](req =>
+//      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesSpecialTaxSites)) andThen
+      requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
