@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package forms.capitalallowances.structuresBuildingsAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
+import forms.OverMaxError
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class WdaSpecialRateClaimAmountFormProvider @Inject() extends Mappings {
+class StructuresBuildingsPreviousClaimedAmountFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
+  def apply(userType: UserType): Form[BigDecimal] =
+    Form(
+      "value" -> currency(s"structuresBuildingsClaimedAmount.subHeading.$userType", "error.nonNumeric")
+        .verifying(greaterThan(minimumValue, "error.lessThanZero"))
+        .verifying(lessThan(maximumValue, OverMaxError))
+    )
 
-object WdaSpecialRateClaimAmountFormProvider {
-  val RequiredError: String = "WdaSpecialRateClaimAmount.error.required"
 }
