@@ -27,4 +27,7 @@ object WritingDownAllowancePage extends WdaBasePage[Boolean] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    WdaSpecialRatePage.hasAllFurtherAnswers(businessId, userAnswers)
 }

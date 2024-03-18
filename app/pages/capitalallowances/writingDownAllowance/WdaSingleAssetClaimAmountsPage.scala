@@ -27,4 +27,6 @@ object WdaSingleAssetClaimAmountsPage extends WdaBasePage[BigDecimal] {
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId)
 
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }

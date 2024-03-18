@@ -28,4 +28,7 @@ object WdaMainRateClaimAmountPage extends WdaBasePage[BigDecimal] {
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WdaSingleAssetController.onPageLoad(taxYear, businessId, NormalMode)
 
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && WdaSingleAssetPage.hasAllFurtherAnswers(businessId, userAnswers)
+
 }

@@ -17,6 +17,7 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -47,7 +48,7 @@ class WdaMainRateClaimAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = formProvider.apply(page, request.userType)
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
