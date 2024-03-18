@@ -20,6 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.WdaSpecialRatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,7 +47,6 @@ class WdaSpecialRateController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      WdaSpecialRatePage.redirectNext(mode, request.userAnswers, businessId, taxYear)
   }
 }

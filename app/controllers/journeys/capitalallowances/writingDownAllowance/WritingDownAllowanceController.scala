@@ -17,9 +17,9 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.WritingDownAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -41,13 +41,11 @@ class WritingDownAllowanceController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      Ok(view(mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      WritingDownAllowancePage.redirectNext(mode, request.userAnswers, businessId, taxYear)
   }
 }

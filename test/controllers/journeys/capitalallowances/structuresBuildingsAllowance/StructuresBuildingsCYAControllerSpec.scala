@@ -36,6 +36,7 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
       "structuresBuildingsClaimed"               -> false,
       "structuresBuildingsPreviousClaimUse"      -> false,
       "structuresBuildingsPreviousClaimedAmount" -> 12,
+      "structuresBuildingsEligibleClaim"         -> true,
       "structuresBuildingsNewClaimAmount"        -> 12
     ))
 
@@ -50,6 +51,7 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
         StructuresBuildingsClaimedSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsPreviousClaimUseSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsPreviousClaimedAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsEligibleClaimSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsNewClaimAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"

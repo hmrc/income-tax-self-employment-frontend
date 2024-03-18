@@ -21,4 +21,8 @@ package object forms {
   val NoDecimalsError: String   = "error.nonDecimal"
   val OverMaxError: String      = "error.overMax"
   val ErrorBoolean: String      = "error.boolean"
+  val ValidDateError: String    = "error.date.valid"
+  val MissingDayError: String   = "error.date.day"
+  val MissingMonthError: String = "error.date.month"
+  val MissingYearError: String  = "error.date.year"
 }
