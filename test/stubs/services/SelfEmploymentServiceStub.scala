@@ -66,9 +66,22 @@ case class SelfEmploymentServiceStub(
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
     Future(getUserAnswersWithAccrual)
 
-  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean], businessId: BusinessId, request: DataRequest[_], newAnswer: Boolean): Future[UserAnswers] = ???
+  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
+                                                  businessId: BusinessId,
+                                                  request: DataRequest[_],
+                                                  newAnswer: Boolean): Future[UserAnswers] = ???
 
-  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean], businessId: BusinessId, request: DataRequest[_], newAnswer: Boolean, taxYear: TaxYear, mode: Mode): Future[Result] = ???
+  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
+                                     businessId: BusinessId,
+                                     request: DataRequest[_],
+                                     newAnswer: Boolean,
+                                     taxYear: TaxYear,
+                                     mode: Mode): Future[Result] = ???
 
-  def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A], businessId: BusinessId, request: DataRequest[_], value: A, taxYear: TaxYear, mode: Mode): Future[Result] = ???
+  def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          request: DataRequest[_],
+                                          value: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode): Future[Result] = ???
 }
