@@ -1629,3 +1629,17 @@ structuresBuildingsClaimedAmount.subHeading.individual = Enter the total amount 
 structuresBuildingsClaimedAmount.subHeading.agent = Enter the total amount your client wants to claim for existing buildings or renovations
 structuresBuildingsClaimedAmount.cya.individual = How much do you want to claim for existing buildings or renovations?
 structuresBuildingsClaimedAmount.cya.agent = How much does your client want to claim for existing buildings or renovations?
+
+structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p.individual = If the structure or building only qualifies for part of the period, you must reduce your claim proportionally.
+structuresBuildingsNewClaimAmount.p.agent = If the structure or building only qualifies for part of the period, your client must reduce their claim proportionally.
+structuresBuildingsNewClaimAmount.p2 = This will happen when the structure or building:
+structuresBuildingsNewClaimAmount.l1 = starts to be used part way through your accounting period
+structuresBuildingsNewClaimAmount.l2 = is demolished or used for anything other than a qualifying activity
+structuresBuildingsNewClaimAmount.subHeading.individual = Enter the amount you want to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.subHeading.agent = Enter the amount your client wants to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.error.required.individual = Enter the amount you want to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.error.required.agent = Enter the amount your client wants to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.cya.individual = Enter the amount you want to claim for new buildings or renovations
+structuresBuildingsNewClaimAmount.cya.agent = Enter the amount your client wants to claim for new buildings or renovations
