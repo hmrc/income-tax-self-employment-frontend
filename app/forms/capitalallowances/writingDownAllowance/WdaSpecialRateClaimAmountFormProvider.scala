@@ -16,19 +16,9 @@
 
 package forms.capitalallowances.writingDownAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import forms.base.CurrencyFormProvider
+import pages.capitalallowances.writingDownAllowance.WdaSpecialRateClaimAmountPage
 
 import javax.inject.Inject
 
-class WdaSpecialRateClaimAmountFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaSpecialRateClaimAmountFormProvider {
-  val RequiredError: String = "WdaSpecialRateClaimAmount.error.required"
-}
+class WdaSpecialRateClaimAmountFormProvider @Inject() extends CurrencyFormProvider(WdaSpecialRateClaimAmountPage)

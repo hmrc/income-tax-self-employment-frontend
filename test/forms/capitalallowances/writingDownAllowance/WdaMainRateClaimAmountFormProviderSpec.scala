@@ -1,5 +1,9 @@
 package forms.capitalallowances.writingDownAllowance
 
-import org.scalatest.wordspec.AnyWordSpecLike
+import base.forms.StandardCurrencyFormProvider
 
-class WdaMainRateClaimAmountFormProviderSpec extends AnyWordSpecLike {}
+class WdaMainRateClaimAmountFormProviderSpec
+    extends StandardCurrencyFormProvider(
+      "wdaMainRateClaimAmount",
+      new WdaMainRateClaimAmountFormProvider().apply
+    )

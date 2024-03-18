@@ -1,9 +1,9 @@
 package forms.capitalallowances.writingDownAllowance
 
-import base.forms.BooleanFormUserTypeAwareFormProvider
+import base.forms.StandardBooleanFormProviderSpec
 
 class WdaSingleAssetFormProviderSpec
-    extends BooleanFormUserTypeAwareFormProvider(
+    extends StandardBooleanFormProviderSpec(
       errorPrefix = "wdaSingleAsset",
       mkForm = new WdaSingleAssetFormProvider().apply
     )
