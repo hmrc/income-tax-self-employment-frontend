@@ -16,42 +16,14 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentFormProvider
+import base.SpecBase.{businessId, emptyUserAnswers, taxYear}
+import controllers.StandardControllerSpec
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentPage
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvOnlyForSelfEmploymentView
 
-class ZegvOnlyForSelfEmploymentControllerSpec
-    extends RadioButtonGetAndPostQuestionBaseSpec("ZegvOnlyForSelfEmploymentController", ZegvOnlyForSelfEmploymentPage) {
+class ZegvOnlyForSelfEmploymentControllerSpec extends StandardControllerSpec {
+  lazy val onPageLoadCall = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitCall   = routes.ZegvOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode).url
 
-  def onPageLoadCall: Call = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
-
-  def onSubmitCall: Call = routes.ZegvOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, NormalMode)
-
-  def onwardRoute: Call = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
-
-  def validAnswer: Boolean = true
-
-  def createForm(userType: UserType): Form[Boolean] = new ZegvOnlyForSelfEmploymentFormProvider()(userType)
-
-  def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String = {
-    val view = application.injector.instanceOf[ZegvOnlyForSelfEmploymentView]
-    view(expectedForm, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
-  }
-
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
+  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Did you only use the vehicle for your self-employment?")
+  checkOnSubmit(onSubmitCall, emptyUserAnswers, ("value", "true"))
 }

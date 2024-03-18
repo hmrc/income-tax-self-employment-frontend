@@ -22,9 +22,13 @@ import models.common._
 import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
 object WdaSingleAssetPage extends WdaBasePage[Boolean] {
   override def toString: String = "wdaSingleAsset"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(WdaSingleAssetClaimAmountsPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.writingDownAllowance
+package controllers.journeys.capitalallowances.writingDownAllowance
 
-import org.scalatest.prop.TableFor2
-import pages.PageSpecBase
-import play.api.libs.json.{JsObject, Json}
-
-class WdaMainRateClaimAmountPageSpec extends PageSpecBase(WdaMainRateClaimAmountPage) {
-  val hasAllFurtherAnswersCases: TableFor2[JsObject, Boolean] = Table(
-    ("userAnswers", "expected"),
-    (Json.obj(), false),
-    (Json.obj("wdaMainRateClaimAmount" -> Some(10.0), "wdaSingleAsset" -> false), true)
-  )
+class WritingDownAllowanceControllerCYAControllerSpec {
+  // TODO: Will be added on CYA impl
 }

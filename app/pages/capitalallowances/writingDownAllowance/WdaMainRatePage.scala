@@ -22,9 +22,13 @@ import models.common._
 import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
 object WdaMainRatePage extends WdaBasePage[Boolean] {
   override def toString: String = "wdaMainRate"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(WdaMainRateClaimAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
@@ -32,7 +36,7 @@ object WdaMainRatePage extends WdaBasePage[Boolean] {
       userAnswers,
       businessId,
       onTrue = routes.WdaMainRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = cyaPage(taxYear, businessId)
+      onFalse = routes.WdaSingleAssetController.onPageLoad(taxYear, businessId, NormalMode)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
+package controllers.journeys.capitalallowances.writingDownAllowance
 
 import base.SpecBase.{businessId, emptyUserAnswers, taxYear}
 import controllers.StandardControllerSpec
 import models.NormalMode
 
-class ZegvAllowanceControllerSpec extends StandardControllerSpec {
-  lazy val onPageLoadCall = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitCall   = routes.ZegvAllowanceController.onSubmit(taxYear, businessId, NormalMode).url
+class WritingDownAllowanceControllerSpec extends StandardControllerSpec {
+  lazy val getOnPageLoadNormal: String = routes.WritingDownAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val postOnSubmitNormal: String  = routes.WritingDownAllowanceController.onSubmit(taxYear, businessId, NormalMode).url
+  override def onwardUrl: String       = routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Zero-emission goods vehicle allowance")
-  checkOnSubmit(onSubmitCall, emptyUserAnswers, ("value", "true"))
+  checkOnPageLoad(getOnPageLoadNormal, emptyUserAnswers, "‘Writing down’ allowance")
+  checkOnSubmit(postOnSubmitNormal, emptyUserAnswers)
 }

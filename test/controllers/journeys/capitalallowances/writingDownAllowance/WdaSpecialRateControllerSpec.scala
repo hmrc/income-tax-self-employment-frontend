@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
+package controllers.journeys.capitalallowances.writingDownAllowance
 
 import base.SpecBase.{businessId, emptyUserAnswers, taxYear}
 import controllers.StandardControllerSpec
 import models.NormalMode
 
-class ZegvAllowanceControllerSpec extends StandardControllerSpec {
-  lazy val onPageLoadCall = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitCall   = routes.ZegvAllowanceController.onSubmit(taxYear, businessId, NormalMode).url
+class WdaSpecialRateControllerSpec extends StandardControllerSpec {
+  lazy val onPageLoadCall = routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitCall   = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, NormalMode).url
 
-  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Zero-emission goods vehicle allowance")
+  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Special rate (6%) pool")
   checkOnSubmit(onSubmitCall, emptyUserAnswers, ("value", "true"))
 }
