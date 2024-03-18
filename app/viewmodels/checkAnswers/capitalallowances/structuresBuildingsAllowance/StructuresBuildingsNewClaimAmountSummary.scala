@@ -21,24 +21,22 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance.route
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object StructuresBuildingsAllowanceSummary {
+object StructuresBuildingsNewClaimAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(StructuresBuildingsAllowancePage, businessId.some)
+      .get(StructuresBuildingsNewClaimAmountPage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
-          routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsAllowance.cya.$userType"),
-          "balancingAllowance.change.hidden", // TODO change to structures buildings change
-          rightTextAlign = true
+        buildRowBigDecimal(
+          answer,
+          routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"structuresBuildingsNewClaimAmount.cya.$userType"),
+          "amountSpentOnEvcp.change.hidden" // TODO change to structures buildings hidden
         )
       }
 }
