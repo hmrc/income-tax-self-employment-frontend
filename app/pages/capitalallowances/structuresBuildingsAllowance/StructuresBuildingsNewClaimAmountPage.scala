@@ -18,6 +18,6 @@ package pages.capitalallowances.structuresBuildingsAllowance
 
 import pages.OneQuestionPage
 
-object StructuresBuildingsClaimedAmountPage extends OneQuestionPage[BigDecimal] {
-  override def toString: String = "structuresBuildingsClaimedAmount"
+object StructuresBuildingsNewClaimAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "structuresBuildingsNewClaimAmount"
 }

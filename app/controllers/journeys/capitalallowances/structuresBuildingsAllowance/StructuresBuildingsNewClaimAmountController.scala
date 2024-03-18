@@ -22,7 +22,7 @@ import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsN
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedAmountPage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -50,7 +50,7 @@ class StructuresBuildingsNewClaimAmountController @Inject() (override val messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = request.userAnswers
-        .get(StructuresBuildingsClaimedAmountPage, businessId.some)
+        .get(StructuresBuildingsNewClaimAmountPage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
@@ -64,8 +64,8 @@ class StructuresBuildingsNewClaimAmountController @Inject() (override val messag
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           value =>
             service
-              .persistAnswer(businessId, request.userAnswers, value, StructuresBuildingsClaimedAmountPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(StructuresBuildingsClaimedAmountPage, mode, updatedAnswers, taxYear, businessId)))
+              .persistAnswer(businessId, request.userAnswers, value, StructuresBuildingsNewClaimAmountPage)
+              .map(updatedAnswers => Redirect(navigator.nextPage(StructuresBuildingsNewClaimAmountPage, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

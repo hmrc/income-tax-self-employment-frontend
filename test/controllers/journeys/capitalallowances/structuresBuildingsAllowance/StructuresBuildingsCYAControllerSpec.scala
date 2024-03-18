@@ -35,7 +35,8 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
       "structuresBuildingsAllowance"             -> false,
       "structuresBuildingsClaimed"               -> false,
       "structuresBuildingsPreviousClaimUse"      -> false,
-      "structuresBuildingsPreviousClaimedAmount" -> 12
+      "structuresBuildingsPreviousClaimedAmount" -> 12,
+      "structuresBuildingsNewClaimAmount"        -> 12
     ))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StructuresBuildingsCYAController.onPageLoad
@@ -48,7 +49,8 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
         StructuresBuildingsAllowanceSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsClaimedSummary.row(userAnswers, taxYear, businessId, userType).value,
         StructuresBuildingsPreviousClaimUseSummary.row(userAnswers, taxYear, businessId, userType).value,
-        StructuresBuildingsPreviousClaimedAmountSummary.row(userAnswers, taxYear, businessId, userType).value
+        StructuresBuildingsPreviousClaimedAmountSummary.row(userAnswers, taxYear, businessId, userType).value,
+        StructuresBuildingsNewClaimAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )

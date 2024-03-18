@@ -21,7 +21,7 @@ import forms.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpForm
 import models.NormalMode
 import models.common.UserType
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedAmountPage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -32,7 +32,7 @@ import views.html.journeys.capitalallowances.structuresBuildingsAllowance.Struct
 class StructuresBuildingsNewClaimAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec(
       "StructuresBuildingsNewClaimAmountController",
-      StructuresBuildingsClaimedAmountPage
+      StructuresBuildingsNewClaimAmountPage
     ) {
 
   lazy val onPageLoadRoute = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, NormalMode).url

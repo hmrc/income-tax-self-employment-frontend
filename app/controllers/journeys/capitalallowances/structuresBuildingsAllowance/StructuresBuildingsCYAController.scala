@@ -52,7 +52,8 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
             StructuresBuildingsAllowanceSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             StructuresBuildingsClaimedSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             StructuresBuildingsPreviousClaimUseSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            StructuresBuildingsPreviousClaimedAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            StructuresBuildingsPreviousClaimedAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            StructuresBuildingsNewClaimAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           )
         )
 
