@@ -17,12 +17,11 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
 trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
 }

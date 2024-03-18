@@ -75,6 +75,7 @@ journeys.capital-allowances-electric-vehicle-charge-points = Electric vehicle ch
 journeys.capital-allowances-balancing-allowance = Balancing allowance
 journeys.capital-allowances-annual-investment-allowance = Annual Investment Allowance
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
+journeys.capital-allowances-special-tax-sites = Freeport sites
 
 date.day = Day
 date.month = Month
@@ -1802,6 +1803,7 @@ specialTaxSites.subHeading.individual = Are you claiming the allowance for a str
 specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
 specialTaxSites.error.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
 specialTaxSites.error.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
+specialTaxSites.change.hidden = Change if claiming the allowance for a structure or building in a special tax site
 
 contractForBuildingConstruction.title = Special tax site contracts
 contractForBuildingConstruction.p1.individual = You will not be able to claim this allowance on any construction costs of the specific building if the contract was:
@@ -1810,14 +1812,20 @@ contractForBuildingConstruction.l1 = entered into before 29 October 2018
 contractForBuildingConstruction.l2 = signed before the Freeport site was designated
 contractForBuildingConstruction.subHeading.individual = Did you enter into a contract for the building’s construction?
 contractForBuildingConstruction.subHeading.agent = Did your client enter into a contract for the building’s construction?
+contractForBuildingConstruction.subHeading.cya.individual = Did you sign a contract for the building’s construction?
+contractForBuildingConstruction.subHeading.cya.agent = Did your client sign a contract for the building’s construction?
 contractForBuildingConstruction.error.individual = Select yes if you entered into a contract for the building’s construction
 contractForBuildingConstruction.error.agent = Select yes if your client entered into a contract for the building’s construction
+contractForBuildingConstruction.change.hidden = Change whether you entered into a contract for the building’s construction
 
 contractStartDate.title = When was the contract entered into?
+contractStartDate.title.cya = When was the contract signed?
 contractStartDate.error.individual = Enter the date when you entered into the contract for the building’s construction
 contractStartDate.error.agent = Enter the date when your client entered into the contract for the building’s construction
 contractStartDate.error.tooEarly = The date when the contract was signed cannot be before 29 October 2018
+contractStartDate.change.hidden = Change the date the contract for the building’s construction was entered into
 
 constructionStartDate.title = When did construction or physical works start?
 constructionStartDate.error = Enter the date when construction or physical works started
 constructionStartDate.error.tooEarly = The date when construction or physical works started cannot be before 29 October 2018
+constructionStartDate.change.hidden = Change the date construction or physical works started

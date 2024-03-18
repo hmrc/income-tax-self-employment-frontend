@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmploymentPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
 object EvcpOnlyForSelfEmploymentSummary {
 

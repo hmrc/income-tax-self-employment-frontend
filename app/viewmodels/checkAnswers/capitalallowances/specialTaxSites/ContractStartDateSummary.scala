@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.balancingAllowance
+package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.balancingAllowance.routes
+import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
+import pages.capitalallowances.specialTaxSites.ContractStartDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBoolean
+import viewmodels.checkAnswers.buildRowString
 
-object BalancingAllowanceSummary {
+object ContractStartDateSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(BalancingAllowancePage, businessId.some)
+      .get(ContractStartDatePage, businessId.some)
       .map { answer =>
-        buildRowBoolean(
-          answer,
-          routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"balancingAllowance.subHeading.$userType"),
-          "balancingAllowance.change.hidden",
+        buildRowString(
+          answer.toString,
+          routes.ContractStartDateController.onPageLoad(taxYear, businessId, CheckMode),
+          messages("contractStartDate.title.cya"),
+          "contractStartDate.change.hidden",
           rightTextAlign = true
         )
       }

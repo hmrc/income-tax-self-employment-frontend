@@ -27,7 +27,9 @@ object ContractForBuildingConstructionPage extends SpecialTaxSitesBasePage[Boole
   override def toString: String = "contractForBuildingConstruction"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+    userAnswers.get(this, businessId).isDefined &&
+      (ConstructionStartDatePage.hasAllFurtherAnswers(businessId, userAnswers) ||
+        ContractStartDatePage.hasAllFurtherAnswers(businessId, userAnswers))
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
