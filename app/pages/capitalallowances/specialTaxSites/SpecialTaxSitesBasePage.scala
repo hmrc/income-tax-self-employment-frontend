@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package object forms {
-  val LessThanZeroError: String = "error.lessThanZero"
-  val InvalidError: String      = "error.invalid"
-  val NonNumericError: String   = "error.nonNumeric"
-  val NoDecimalsError: String   = "error.nonDecimal"
-  val OverMaxError: String      = "error.overMax"
-  val ErrorBoolean: String      = "error.boolean"
-  val ValidDateError: String    = "error.date.valid"
-  val MissingDayError: String   = "error.date.day"
-  val MissingMonthError: String = "error.date.month"
-  val MissingYearError: String  = "error.date.year"
+package pages.capitalallowances.specialTaxSites
+
+import controllers.journeys.capitalallowances.specialTaxSites.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import pages.OneQuestionPage
+import play.api.mvc.Call
+
+trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, NormalMode)
 }
