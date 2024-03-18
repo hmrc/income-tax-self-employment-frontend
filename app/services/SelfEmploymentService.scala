@@ -18,13 +18,16 @@ package services
 
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
+import controllers.journeys.clearDependentPages
 import controllers.redirectJourneyRecovery
+import models.Mode
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError.NotFoundError
+import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
-import pages.{QuestionPage, TradeAccountingType}
+import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
 import play.api.libs.json.{Format, Writes}
 import play.api.mvc.Result
@@ -45,6 +48,16 @@ trait SelfEmploymentService {
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
+  def submitAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
+                                           businessId: BusinessId,
+                                           request: DataRequest[_],
+                                           newAnswer: Boolean): Future[UserAnswers]
+  def submitAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
+                              businessId: BusinessId,
+                              request: DataRequest[_],
+                              newAnswer: Boolean,
+                              taxYear: TaxYear,
+                              mode: Mode): Future[Result]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -97,6 +110,26 @@ class SelfEmploymentServiceImpl @Inject() (
           setAccountingTypeForIds(updatedUserAnswers, tail)
         }
     }
+
+  def submitAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
+                                           businessId: BusinessId,
+                                           request: DataRequest[_],
+                                           newAnswer: Boolean): Future[UserAnswers] =
+    for {
+      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request, businessId)
+      updatedUserAnswers <- persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
+    } yield updatedUserAnswers
+
+  def submitAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
+                              businessId: BusinessId,
+                              request: DataRequest[_],
+                              newAnswer: Boolean,
+                              taxYear: TaxYear,
+                              mode: Mode): Future[Result] =
+    submitAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
+      .map { updatedAnswers =>
+        pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
+      }
 }
 
 object SelfEmploymentService {

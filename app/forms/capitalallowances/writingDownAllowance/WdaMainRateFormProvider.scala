@@ -16,19 +16,9 @@
 
 package forms.capitalallowances.writingDownAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import forms.base.BooleanFormProvider
+import pages.capitalallowances.writingDownAllowance.WdaMainRatePage
 
 import javax.inject.Inject
 
-class WdaMainRateFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaMainRateFormProvider {
-  val RequiredError: String = "WdaMainRate.error.required"
-}
+class WdaMainRateFormProvider @Inject() extends BooleanFormProvider(WdaMainRatePage)

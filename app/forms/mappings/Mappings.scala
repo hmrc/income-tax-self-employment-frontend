@@ -44,7 +44,7 @@ trait Mappings extends Formatters with Constraints {
                          args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(currencyFormatter(requiredKey, nonNumericKey, args))
 
-  protected def boolean(requiredKey: String = "error.required",
+  def boolean(requiredKey: String = "error.required",
                         invalidKey: String = "error.boolean",
                         args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
@@ -65,3 +65,5 @@ trait Mappings extends Formatters with Constraints {
 
   def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
 }
+
+object Mappings extends Mappings

@@ -19,13 +19,16 @@ package stubs.services
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
 import cats.data.EitherT
+import models.Mode
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
-import pages.QuestionPage
+import models.requests.DataRequest
+import pages.{OneQuestionPage, QuestionPage}
 import play.api.libs.json.{Format, JsObject, Json, Writes}
+import play.api.mvc.Result
 import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -63,4 +66,7 @@ case class SelfEmploymentServiceStub(
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
     Future(getUserAnswersWithAccrual)
 
+  def submitAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean], businessId: BusinessId, request: DataRequest[_], newAnswer: Boolean): Future[UserAnswers] = ???
+
+  def submitAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean], businessId: BusinessId, request: DataRequest[_], newAnswer: Boolean, taxYear: TaxYear, mode: Mode): Future[Result] = ???
 }

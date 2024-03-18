@@ -25,18 +25,21 @@ import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.IdiomaticMockito.StubbingOps
-import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
+import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import queries.Settable.SetAnswer
 import repositories.SessionRepository
 import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
+import stubs.repositories.StubSessionRepository
 
 import scala.concurrent.Future
 
@@ -44,10 +47,11 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
   val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
   val mockSessionRepository                    = mock[SessionRepository]
+  val repository                               = StubSessionRepository()
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
-  when(mockSessionRepository.set(any)) thenReturn Future.successful(true)
+//  when(mockSessionRepository.set(any)) thenReturn Future.successful(true)
 
-  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, mockSessionRepository)
+  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository)
 
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
@@ -172,6 +176,41 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
         result shouldBe Json.obj()
       }
+    }
+  }
+
+  "submitAnswerAndClearDependentAnswers" - {
+    "return UserAnswers with cleared dependent pages when selected No" in {
+      val existingAllAnswers = SetAnswer
+        .setMany(businessId, emptyUserAnswers)(
+          SetAnswer(ZegvAllowancePage, true),
+          SetAnswer(ZegvClaimAmountPage, BigDecimal(200)),
+          SetAnswer(ZegvHowMuchDoYouWantToClaimPage, ZegvHowMuchDoYouWantToClaim.LowerAmount),
+          SetAnswer(ZegvOnlyForSelfEmploymentPage, true),
+          SetAnswer(ZegvTotalCostOfVehiclePage, BigDecimal(100)),
+          SetAnswer(ZegvUseOutsideSEPage, ZegvUseOutsideSE.Ten),
+          SetAnswer(ZegvUseOutsideSEPercentagePage, 300)
+        )
+        .success
+        .value
+
+      val fakeRequest = fakeDataRequest(existingAllAnswers)
+      val updatedAnswers =
+        service.submitAnswerAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
+
+      val expectedAnswers = emptyUserAnswers
+        .set(
+          ZeroEmissionGoodsVehiclePage,
+          false,
+          Some(businessId)
+        )
+        .success
+        .value
+        .data
+
+      assert(updatedAnswers.data === expectedAnswers)
+      val dbAnswers = repository.state(userAnswersId).data
+      assert(dbAnswers === expectedAnswers)
     }
   }
 

@@ -24,7 +24,7 @@ import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceView
@@ -37,7 +37,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         service: ZegvService,
+                                         service: SelfEmploymentService,
                                          formProvider: ZegvAllowanceFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: ZegvAllowanceView)
