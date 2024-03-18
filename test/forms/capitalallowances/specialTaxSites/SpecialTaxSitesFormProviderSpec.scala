@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,12 @@
 
 package forms.capitalallowances.specialTaxSites
 
-import forms.mappings.Mappings
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.Form
 
-import java.time.LocalDate
-import javax.inject.Inject
+class SpecialTaxSitesFormProviderSpec extends BooleanFormProviderBaseSpec("SpecialTaxSitesFormProvider") {
 
-class ContractStartDateFormProvider @Inject() extends Mappings {
+  override def requiredErrorKey: String         = "specialTaxSites.error"
+  override def formProvider(userType: UserType) = new SpecialTaxSitesFormProvider()(userType)
 
-  private val earliestDate      = LocalDate.of(2018, 10, 29)
-  private val requiredError     = "contractStartDate.error."
-  private val dateTooEarlyError = "contractStartDate.error.tooEarly"
-
-  def apply(userType: UserType): Form[LocalDate] =
-    Form(
-      "contractStartDate" -> localDate(
-        requiredKey = s"$requiredError$userType",
-        earliestDateAndError = Some((earliestDate, dateTooEarlyError))
-      )
-    )
 }

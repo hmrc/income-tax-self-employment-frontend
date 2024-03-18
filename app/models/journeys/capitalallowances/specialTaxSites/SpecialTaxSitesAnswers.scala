@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package models.journeys.capitalallowances.specialTaxSites
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
-import javax.inject.Inject
 
-class ConstructionStartDateFormProvider @Inject() extends Mappings {
+case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
+                                  contractForBuildingConstruction: Option[Boolean],
+                                  contractStartDate: Option[LocalDate],
+                                  constructionStartDate: Option[LocalDate])
 
-  private val earliestDate      = LocalDate.of(2018, 10, 29)
-  private val requiredError     = "constructionStartDate.error"
-  private val dateTooEarlyError = "constructionStartDate.error.tooEarly"
-
-  def apply(): Form[LocalDate] =
-    Form(
-      "constructionStartDate" -> localDate(
-        requiredKey = requiredError,
-        earliestDateAndError = Some((earliestDate, dateTooEarlyError))
-      )
-    )
+object SpecialTaxSitesAnswers {
+  implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
 }

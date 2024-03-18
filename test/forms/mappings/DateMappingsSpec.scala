@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.{MissingDayError, MissingMonthError, MissingYearError, ValidDateError}
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -30,10 +31,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
   val form = Form(
     "value" -> localDate(
-      requiredKey = "error.required",
-      allRequiredKey = "error.required.all",
-      twoRequiredKey = "error.required.two",
-      invalidKey = "error.invalid"
+      requiredKey = "error.required"
     )
   )
 
@@ -65,7 +63,41 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
     val result = form.bind(Map.empty[String, String])
 
-    result.errors must contain only FormError("value", "error.required.all", List.empty)
+    result.errors must contain only FormError("value", "error.required", List.empty)
+  }
+
+  "must fail to bind a date that is earlier or later than the specified date boundaries" in {
+    val earliestDate = LocalDate.of(2010, 1, 1)
+    val latestDate   = LocalDate.of(2020, 1, 1)
+
+    val form = Form(
+      "value" -> localDate(
+        requiredKey = "error.required",
+        earliestDateAndError = Some((earliestDate, "error.dateTooEarly")),
+        latestDateAndError = Some((latestDate, "error.dateTooLate"))
+      )
+    )
+
+    val tooEarlyData = Map(
+      "value.day"   -> "1",
+      "value.month" -> "1",
+      "value.year"  -> "2000"
+    )
+    val tooLateData = Map(
+      "value.day"   -> "1",
+      "value.month" -> "1",
+      "value.year"  -> "2050"
+    )
+
+    val tooEarlyResult = form.bind(tooEarlyData)
+    val tooLateResult  = form.bind(tooLateData)
+
+    tooEarlyResult.errors must contain(
+      FormError("value", "error.dateTooEarly", List.empty)
+    )
+    tooLateResult.errors must contain(
+      FormError("value", "error.dateTooLate", List.empty)
+    )
   }
 
   "must fail to bind a date with a missing day" in {
@@ -82,7 +114,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val result = form.bind(data)
 
-      result.errors must contain only FormError("value", "error.required", List("day"))
+      result.errors must contain only FormError("value", MissingDayError, List.empty)
     }
   }
 
@@ -98,7 +130,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
       val result = form.bind(data)
 
       result.errors must contain(
-        FormError("value", "error.invalid", List.empty)
+        FormError("value", ValidDateError, List.empty)
       )
     }
   }
@@ -117,7 +149,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val result = form.bind(data)
 
-      result.errors must contain only FormError("value", "error.required", List("month"))
+      result.errors must contain only FormError("value", MissingMonthError, List.empty)
     }
   }
 
@@ -133,7 +165,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
       val result = form.bind(data)
 
       result.errors must contain(
-        FormError("value", "error.invalid", List.empty)
+        FormError("value", ValidDateError, List.empty)
       )
     }
   }
@@ -152,7 +184,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val result = form.bind(data)
 
-      result.errors must contain only FormError("value", "error.required", List("year"))
+      result.errors must contain only FormError("value", MissingYearError, List.empty)
     }
   }
 
@@ -168,131 +200,8 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
       val result = form.bind(data)
 
       result.errors must contain(
-        FormError("value", "error.invalid", List.empty)
+        FormError("value", ValidDateError, List.empty)
       )
-    }
-  }
-
-  "must fail to bind a date with a missing day and month" in {
-
-    forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing month") { (date, dayOpt, monthOpt) =>
-      val day = dayOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.day" -> value)
-      }
-
-      val month = monthOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.month" -> value)
-      }
-
-      val data: Map[String, String] = Map(
-        "value.year" -> date.getYear.toString
-      ) ++ day ++ month
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required.two", List("day", "month"))
-    }
-  }
-
-  "must fail to bind a date with a missing day and year" in {
-
-    forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing year") { (date, dayOpt, yearOpt) =>
-      val day = dayOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.day" -> value)
-      }
-
-      val year = yearOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.year" -> value)
-      }
-
-      val data: Map[String, String] = Map(
-        "value.month" -> date.getMonthValue.toString
-      ) ++ day ++ year
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required.two", List("day", "year"))
-    }
-  }
-
-  "must fail to bind a date with a missing month and year" in {
-
-    forAll(validData -> "valid date", missingField -> "missing month", missingField -> "missing year") { (date, monthOpt, yearOpt) =>
-      val month = monthOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.month" -> value)
-      }
-
-      val year = yearOpt.fold(Map.empty[String, String]) { value =>
-        Map("value.year" -> value)
-      }
-
-      val data: Map[String, String] = Map(
-        "value.day" -> date.getDayOfMonth.toString
-      ) ++ month ++ year
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required.two", List("month", "year"))
-    }
-  }
-
-  "must fail to bind an invalid day and month" in {
-
-    forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid month") { (date, day, month) =>
-      val data = Map(
-        "value.day"   -> day,
-        "value.month" -> month,
-        "value.year"  -> date.getYear.toString
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.invalid", List.empty)
-    }
-  }
-
-  "must fail to bind an invalid day and year" in {
-
-    forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid year") { (date, day, year) =>
-      val data = Map(
-        "value.day"   -> day,
-        "value.month" -> date.getMonthValue.toString,
-        "value.year"  -> year
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.invalid", List.empty)
-    }
-  }
-
-  "must fail to bind an invalid month and year" in {
-
-    forAll(validData -> "valid date", invalidField -> "invalid month", invalidField -> "invalid year") { (date, month, year) =>
-      val data = Map(
-        "value.day"   -> date.getDayOfMonth.toString,
-        "value.month" -> month,
-        "value.year"  -> year
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.invalid", List.empty)
-    }
-  }
-
-  "must fail to bind an invalid day, month and year" in {
-
-    forAll(invalidField -> "valid day", invalidField -> "invalid month", invalidField -> "invalid year") { (day, month, year) =>
-      val data = Map(
-        "value.day"   -> day,
-        "value.month" -> month,
-        "value.year"  -> year
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.invalid", List.empty)
     }
   }
 
@@ -307,7 +216,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     val result = form.bind(data)
 
     result.errors must contain(
-      FormError("value", "error.invalid", List.empty)
+      FormError("value", ValidDateError, List.empty)
     )
   }
 

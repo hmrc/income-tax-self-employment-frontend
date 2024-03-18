@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.balancingAllowance
+package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
-import controllers.journeys.capitalallowances.balancingAllowance.routes
+import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
+import pages.capitalallowances.specialTaxSites.ContractForBuildingConstructionPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
 
-object BalancingAllowanceSummary {
+object ContractForBuildingConstructionSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(BalancingAllowancePage, businessId.some)
+      .get(ContractForBuildingConstructionPage, businessId.some)
       .map { answer =>
         buildRowBoolean(
           answer,
-          routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"balancingAllowance.subHeading.$userType"),
-          "balancingAllowance.change.hidden",
+          routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"contractForBuildingConstruction.subHeading.cya.$userType"),
+          "contractForBuildingConstruction.change.hidden",
           rightTextAlign = true
         )
       }

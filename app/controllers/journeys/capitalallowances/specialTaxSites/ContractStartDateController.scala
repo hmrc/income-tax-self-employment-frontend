@@ -18,7 +18,6 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.DateFormModel
 import forms.capitalallowances.specialTaxSites.ContractStartDateFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -30,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ContractStartDateView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +38,7 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              service: SelfEmploymentService,
+                                             formProvider: ContractStartDateFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: ContractStartDateView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -48,25 +47,21 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val formProvider = ContractStartDateFormProvider.formProvider
       val form = request.userAnswers
         .get(ContractStartDatePage, businessId.some)
-        .fold(formProvider) { localDate: LocalDate => formProvider.fill(DateFormModel(localDate)) }
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      ContractStartDateFormProvider.formProvider
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => {
-            val (filteredFormErrors, hasWholeFormError) = ContractStartDateFormProvider.checkForWholeFormErrors(formErrors, request.userType)
-            Future.successful(BadRequest(view(filteredFormErrors, mode, request.userType, taxYear, businessId, hasWholeFormError)))
-          },
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer.toLocalDate, ContractStartDatePage).map {
+            service.persistAnswer(businessId, request.userAnswers, answer, ContractStartDatePage).map {
               ContractStartDatePage.redirectNext(mode, _, businessId, taxYear)
             }
         )

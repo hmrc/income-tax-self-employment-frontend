@@ -22,6 +22,7 @@ import pages.abroad.SelfEmploymentAbroadPage
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.electricVehicleChargePoints._
+import pages.capitalallowances.specialTaxSites._
 import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.writingDownAllowance._
@@ -245,6 +246,15 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       WdaSingleAssetPage.pageName,
       WdaSpecialRateClaimAmountPage.pageName,
       WdaSpecialRatePage.pageName
+    )
+  }
+
+  case object CapitalAllowancesSpecialTaxSites extends CapitalAllowanceBaseJourney("capital-allowances-special-tax-sites") {
+    override val pageKeys: List[PageName] = List(
+      SpecialTaxSitesPage.pageName,
+      ContractForBuildingConstructionPage.pageName,
+      ContractStartDatePage.pageName,
+      ConstructionStartDatePage.pageName
     )
   }
 

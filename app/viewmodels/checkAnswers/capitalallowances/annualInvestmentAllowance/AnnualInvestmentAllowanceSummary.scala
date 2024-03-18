@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object AnnualInvestmentAllowanceSummary {
 
@@ -33,8 +32,8 @@ object AnnualInvestmentAllowanceSummary {
     answers
       .get(AnnualInvestmentAllowancePage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
+        buildRowBoolean(
+          answer,
           routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"annualInvestmentAllowance.subHeading.cya.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
           "annualInvestmentAllowance.change.hidden",

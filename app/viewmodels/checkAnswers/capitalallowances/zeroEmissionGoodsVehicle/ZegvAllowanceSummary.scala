@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.{AnswerSummary, buildRowString}
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.{AnswerSummary, buildRowString, formatAnswer}
 
 object ZegvAllowanceSummary extends AnswerSummary {
 

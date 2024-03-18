@@ -62,4 +62,11 @@ package object checkAnswers {
       )
     )
   }
+
+  def formatAnswer(answer: String)(implicit messages: Messages): String =
+    answer match {
+      case "no" | "false" => messages("site.no")
+      case "yes" | "true" => messages("site.yes")
+      case value          => messages(s"expenses.$value.cya")
+    }
 }

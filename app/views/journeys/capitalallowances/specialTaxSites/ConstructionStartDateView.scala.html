@@ -17,16 +17,16 @@
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import views.html.components.DateInput
+@import viewmodels.LegendSize.Large
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        dateInput: DateInput,
+        govukDateInput: GovukDateInput,
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, wholeFormError: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("constructionStartDate.title"))) {
 
@@ -36,16 +36,12 @@
 
     @formHelper(action = routes.ConstructionStartDateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @dateInput(
-            "constructionStartDate",
-            form,
-            wholeFormError,
-            legend = Some(Legend(
-                content = HtmlContent(messages("constructionStartDate.title")),
-                isPageHeading = true,
-                classes = "govuk-label--l"
-            )),
-            hint = Some(Hint(content = HtmlContent(messages("site.exampleDate"))))
+        @govukDateInput(
+            DateViewModel(
+                field  = form("constructionStartDate"),
+                legend = LegendViewModel(messages("constructionStartDate.title")).asPageHeading(Large)
+            )
+            .withHint(HintViewModel(messages("site.exampleDate")))
         )
 
         @govukButton(
