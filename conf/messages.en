@@ -1621,6 +1621,8 @@ structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for struc
 structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
 structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
 structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
+structuresBuildingsAllowance.cya.individual = Did you build, renovate or buy a new structure for your self-employment?
+structuresBuildingsAllowance.cya.agent = Did your client build, renovate or buy a new structure for their self-employment?
 structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
@@ -1658,6 +1660,21 @@ structuresBuildingsEligibleClaim.subHeading.agent = Does your client want to use
 structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
+
+
+structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p.individual = If the structure or building only qualifies for part of the period, you must reduce your claim proportionally.
+structuresBuildingsNewClaimAmount.p.agent = If the structure or building only qualifies for part of the period, your client must reduce their claim proportionally.
+structuresBuildingsNewClaimAmount.p2 = This will happen when the structure or building:
+structuresBuildingsNewClaimAmount.l1 = starts to be used part way through your accounting period
+structuresBuildingsNewClaimAmount.l2 = is demolished or used for anything other than a qualifying activity
+structuresBuildingsNewClaimAmount.subHeading.individual = Enter the amount you want to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.subHeading.agent = Enter the amount your client wants to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.error.required.individual = Enter the amount you want to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.error.required.agent = Enter the amount your client wants to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.cya.individual = Enter the amount you want to claim for new buildings or renovations
+structuresBuildingsNewClaimAmount.cya.agent = Enter the amount your client wants to claim for new buildings or renovations
 
 ########## Capital Allowances - Writing down allowance ##########
 
