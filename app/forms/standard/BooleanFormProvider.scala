@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package forms.standard
 
-import forms.base.BooleanFormProvider
-import pages.capitalallowances.writingDownAllowance.WdaSingleAssetPage
+import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
+import forms.mappings.Mappings._
+import models.common.UserType
+import pages.OneQuestionPage
+import play.api.data.Form
 
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class WdaSingleAssetFormProvider @Inject() extends BooleanFormProvider(WdaSingleAssetPage)
+@Singleton
+class BooleanFormProvider @Inject() {
+
+  def apply(page: OneQuestionPage[_], userType: UserType): Form[Boolean] =
+    Form("value" -> boolean(s"${userTypeAware(userType, page.requiredErrorKey)}"))
+}

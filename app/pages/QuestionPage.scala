@@ -26,7 +26,6 @@ import queries.{Gettable, Settable}
 import utils.Logging
 
 import scala.concurrent.Future
-import utils.StringOps._
 
 trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Logging {
 
@@ -54,7 +53,7 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
   /** Pages which needs to be cleared when Yes is selected in the main page */
   val dependentPagesWhenYes: List[Settable[_]] = Nil
 
-  val requiredErrorKey: String = s"${lowerFirstLetter(this.toString)}.error.required"
+  val requiredErrorKey: String = s"$toString.error.required"
 
   def redirectNext(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
     val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode

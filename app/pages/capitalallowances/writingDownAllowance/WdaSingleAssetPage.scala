@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import play.api.mvc.Call
 
 object WdaSingleAssetPage extends WdaBasePage[Boolean] {
-  override def toString: String = "WdaSingleAsset"
+  override def toString: String = "wdaSingleAsset"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WdaSingleAssetClaimAmountsController.onPageLoad(taxYear, businessId, NormalMode)

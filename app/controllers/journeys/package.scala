@@ -16,10 +16,14 @@
 
 package controllers
 
+import cats.implicits.catsSyntaxOptionId
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.requests.DataRequest
-import pages.QuestionPage
+import pages.{OneQuestionPage, QuestionPage}
+import play.api.data.Form
+import play.api.libs.json.Reads
+import play.api.mvc.AnyContent
 import services.SelfEmploymentService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,4 +44,9 @@ package object journeys {
         Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
     }
   }
+
+  def fillForm[A: Reads](page: OneQuestionPage[A], businessId: BusinessId, form: Form[A])(implicit request: DataRequest[AnyContent]): Form[A] =
+    request.userAnswers
+      .get(page, businessId.some)
+      .fold(form)(form.fill)
 }

@@ -196,7 +196,7 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
 
       val fakeRequest = fakeDataRequest(existingAllAnswers)
       val updatedAnswers =
-        service.submitAnswerAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
+        service.submitBooleanAnswerAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
 
       val expectedAnswers = emptyUserAnswers
         .set(

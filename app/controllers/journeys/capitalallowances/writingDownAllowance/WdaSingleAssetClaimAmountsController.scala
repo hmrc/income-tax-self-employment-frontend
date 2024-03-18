@@ -17,38 +17,47 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.writingDownAllowance.WdaSingleAssetClaimAmountsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.writingDownAllowance.WdaSingleAssetClaimAmountsView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class WdaSingleAssetClaimAmountsController @Inject() (override val messagesApi: MessagesApi,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
+                                                      formProvider: CurrencyFormProvider,
                                                       requireData: DataRequiredAction,
+                                                      service: SelfEmploymentService,
                                                       view: WdaSingleAssetClaimAmountsView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = WdaSingleAssetClaimAmountsPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
+      val form = formProvider.apply(page, request.userType)
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      WdaSingleAssetClaimAmountsPage.redirectNext(mode, request.userAnswers, businessId, taxYear)
-
+      formProvider(page, request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+        )
   }
 }

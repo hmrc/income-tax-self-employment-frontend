@@ -22,7 +22,7 @@ import models.database.UserAnswers
 import play.api.mvc.Call
 
 object WdaSingleAssetClaimAmountsPage extends WdaBasePage[BigDecimal] {
-  override def toString: String = "WdaSingleAssetClaimAmounts"
+  override def toString: String = "wdaSingleAssetClaimAmounts"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId)

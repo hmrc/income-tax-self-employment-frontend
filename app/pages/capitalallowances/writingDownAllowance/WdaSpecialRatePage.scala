@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import play.api.mvc.Call
 
 object WdaSpecialRatePage extends WdaBasePage[Boolean] {
-  override def toString: String = "WdaSpecialRate"
+  override def toString: String = "wdaSpecialRate"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WdaSpecialRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)

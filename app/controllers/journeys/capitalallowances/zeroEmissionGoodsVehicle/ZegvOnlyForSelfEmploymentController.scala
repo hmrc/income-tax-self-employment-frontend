@@ -59,7 +59,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, taxYear, mode)
+          answer => service.submitBooleanAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, taxYear, mode)
         )
   }
 }

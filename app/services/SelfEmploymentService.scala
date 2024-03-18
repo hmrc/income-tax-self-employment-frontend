@@ -46,18 +46,24 @@ trait SelfEmploymentService {
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+  def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          request: DataRequest[_],
+                                          value: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode): Future[Result]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
-  def submitAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
-                                           businessId: BusinessId,
-                                           request: DataRequest[_],
-                                           newAnswer: Boolean): Future[UserAnswers]
-  def submitAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
-                              businessId: BusinessId,
-                              request: DataRequest[_],
-                              newAnswer: Boolean,
-                              taxYear: TaxYear,
-                              mode: Mode): Future[Result]
+  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
+                                                  businessId: BusinessId,
+                                                  request: DataRequest[_],
+                                                  newAnswer: Boolean): Future[UserAnswers]
+  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
+                                     businessId: BusinessId,
+                                     request: DataRequest[_],
+                                     newAnswer: Boolean,
+                                     taxYear: TaxYear,
+                                     mode: Mode): Future[Result]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -111,25 +117,37 @@ class SelfEmploymentServiceImpl @Inject() (
         }
     }
 
-  def submitAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
-                                           businessId: BusinessId,
-                                           request: DataRequest[_],
-                                           newAnswer: Boolean): Future[UserAnswers] =
+  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
+                                                  businessId: BusinessId,
+                                                  request: DataRequest[_],
+                                                  newAnswer: Boolean): Future[UserAnswers] =
     for {
       editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request, businessId)
       updatedUserAnswers <- persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
     } yield updatedUserAnswers
 
-  def submitAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
-                              businessId: BusinessId,
-                              request: DataRequest[_],
-                              newAnswer: Boolean,
-                              taxYear: TaxYear,
-                              mode: Mode): Future[Result] =
-    submitAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
+  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
+                                     businessId: BusinessId,
+                                     request: DataRequest[_],
+                                     newAnswer: Boolean,
+                                     taxYear: TaxYear,
+                                     mode: Mode): Future[Result] =
+    submitBooleanAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
       .map { updatedAnswers =>
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
       }
+
+  def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          request: DataRequest[_],
+                                          value: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode): Future[Result] =
+    persistAnswer(businessId, request.userAnswers, value, pageUpdated)
+      .map { updatedAnswers =>
+        pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
+      }
+
 }
 
 object SelfEmploymentService {
