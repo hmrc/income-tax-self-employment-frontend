@@ -1658,6 +1658,15 @@ structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
 
+structuresBuildingsQualifyingUseDate.title = Qualifying use
+structuresBuildingsQualifyingUseDate.p1 = Qualifying use is when the building is in non-residential use for the business activity.
+structuresBuildingsQualifyingUseDate.subHeading = When was the building first brought into qualifying use?
+structuresBuildingsQualifyingUseDate.hint.individual = If later, enter the date you incurred the qualifying spend.
+structuresBuildingsQualifyingUseDate.hint.agent = If later, enter the date your client incurred the qualifying spend.
+structuresBuildingsQualifyingUseDate.error = Enter the date when the building first came into qualifying use
+structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building first came into qualifying use must be in the past
+
+
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.heading = Writing down allowance

@@ -46,6 +46,7 @@ abstract class DateBaseFormProvider extends Mappings {
   def invalidEntry(errorForm: Form[DateFormModel]): Boolean = errorForm.errors.map(_.messages.contains(ValidDateError)).exists(identity)
 
   def dateTooEarly(errorForm: Form[DateFormModel], earliestDate: LocalDate): Boolean = errorForm.value.exists(_.toLocalDate.isBefore(earliestDate))
+  def dateInFuture(errorForm: Form[DateFormModel], latestDate: LocalDate): Boolean   = errorForm.value.exists(_.toLocalDate.isBefore(latestDate))
 
 }
 

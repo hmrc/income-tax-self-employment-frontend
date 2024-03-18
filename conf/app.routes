@@ -638,6 +638,12 @@ POST        /:taxYear/:businessId/capital-allowances/structures-buildings/use   
 GET         /:taxYear/:businessId/change-capital-allowances/structures-buildings/use                                       controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/change-capital-allowances/structures-buildings/use                                      controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+
+GET         /:taxYear/:businessId/capital-allowances/structures-buildings/use-date                                                   controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/structures-buildings/use-date                                                   controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-capital-allowances/structures-buildings/use-date                                            controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-capital-allowances/structures-buildings/use-date                                            controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 GET         /:taxYear/:businessId/capital-allowances/structures-buildings/check                                                 controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/structures-buildings/check                                                 controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
