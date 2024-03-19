@@ -38,6 +38,21 @@ trait Formatters {
       Map(key -> value)
   }
 
+  private[mappings] def optStringFormatter(maxLengthWithError: Option[(Int, String)], args: Seq[String] = Seq.empty): Formatter[Option[String]] =
+    new Formatter[Option[String]] {
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
+        (data.get(key), maxLengthWithError) match {
+          case (Some(s), Some((maxLength, error))) if s.trim.nonEmpty =>
+            if (s.length > maxLength) Left(Seq(FormError(key, error, args))) else Right(Some(s))
+          case (Some(s), None) if s.trim.nonEmpty => Right(Some(s))
+          case _                                  => Right(None)
+        }
+
+      override def unbind(key: String, value: Option[String]): Map[String, String] =
+        Map(key -> value.getOrElse(""))
+    }
+
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[String] = Seq.empty): Formatter[Boolean] =
     new Formatter[Boolean] {
 

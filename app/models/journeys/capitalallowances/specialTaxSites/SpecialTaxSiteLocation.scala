@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package object forms {
-  val LessThanZeroError: String = "error.lessThanZero"
-  val InvalidError: String      = "error.invalid"
-  val NonNumericError: String   = "error.nonNumeric"
-  val NoDecimalsError: String   = "error.nonDecimal"
-  val OverMaxError: String      = "error.overMax"
-  val ErrorBoolean: String      = "error.boolean"
-  val ValidDateError: String    = "error.date.valid"
-  val MissingDayError: String   = "error.date.day"
-  val MissingMonthError: String = "error.date.month"
-  val MissingYearError: String  = "error.date.year"
+package models.journeys.capitalallowances.specialTaxSites
 
-  val PostcodeRegex = """^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$"""
+import play.api.libs.json.{Json, OFormat}
+
+case class SpecialTaxSiteLocation(buildingName: Option[String], buildingNumber: Option[String], postCode: String)
+
+object SpecialTaxSiteLocation {
+  implicit val format: OFormat[SpecialTaxSiteLocation] = Json.format[SpecialTaxSiteLocation]
 }
