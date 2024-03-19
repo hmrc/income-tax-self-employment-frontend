@@ -18,7 +18,6 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.DateFormModel
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -30,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +38,7 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 service: SelfEmploymentService,
+                                                                formProvider: StructuresBuildingsQualifyingUseDateFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
                                                                 view: StructuresBuildingsQualifyingUseDateView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -48,26 +47,21 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val formProvider = StructuresBuildingsQualifyingUseDateFormProvider.formProvider
       val form = request.userAnswers
         .get(StructuresBuildingsQualifyingUseDatePage, businessId.some)
-        .fold(formProvider) { localDate: LocalDate => formProvider.fill(DateFormModel(localDate)) }
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      StructuresBuildingsQualifyingUseDateFormProvider.formProvider
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => {
-            val (filteredFormErrors, hasWholeFormError) =
-              StructuresBuildingsQualifyingUseDateFormProvider.checkForWholeFormErrors(formErrors)
-            Future.successful(BadRequest(view(filteredFormErrors, mode, request.userType, taxYear, businessId, hasWholeFormError)))
-          },
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer.toLocalDate, StructuresBuildingsQualifyingUseDatePage).map {
+            service.persistAnswer(businessId, request.userAnswers, answer, StructuresBuildingsQualifyingUseDatePage).map {
               StructuresBuildingsQualifyingUseDatePage.redirectNext(mode, _, businessId, taxYear)
             }
         )

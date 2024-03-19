@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.balancingAllowance.BalancingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object BalancingAllowanceSummary {
 
@@ -33,8 +32,8 @@ object BalancingAllowanceSummary {
     answers
       .get(BalancingAllowancePage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
+        buildRowBoolean(
+          answer,
           routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"balancingAllowance.subHeading.$userType"),
           "balancingAllowance.change.hidden",

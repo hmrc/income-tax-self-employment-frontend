@@ -16,22 +16,24 @@
 
 package forms.capitalallowances.structuresBuildingsAllowance
 
-import forms.{DateBaseFormProvider, DateFormModel, ValidDateError}
-import play.api.data.{Form, FormError}
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
 import java.time.LocalDate
+import javax.inject.Inject
 
-object StructuresBuildingsQualifyingUseDateFormProvider extends DateBaseFormProvider {
+class StructuresBuildingsQualifyingUseDateFormProvider @Inject() extends Mappings {
 
-  private val latestDate        = LocalDate.now()
-  private val requiredError     = "structuresBuildingsQualifyingUseDate.error"
-  private val dateInFutureError = "structuresBuildingsQualifyingUseDate.error.inFuture"
+  private val latestDate    = LocalDate.now()
+  private val requiredError = "structuresBuildingsQualifyingUseDate.error."
+  private val dateInFuture  = "structuresBuildingsQualifyingUseDate.error.inFuture "
 
-  val formProvider = createForm(latestDate, dateInFutureError)
-
-  def checkForWholeFormErrors(errorForm: Form[DateFormModel]): (Form[DateFormModel], Boolean) =
-    if (allFieldsEmpty(errorForm)) (errorForm.discardingErrors.withError(FormError("", requiredError)), true)
-    else if (invalidEntry(errorForm)) (errorForm.discardingErrors.withError(FormError("", ValidDateError)), true)
-    else if (dateInFuture(errorForm, latestDate)) (errorForm.discardingErrors.withError(FormError("", dateInFutureError)), true)
-    else (errorForm, false)
+  def apply(userType: UserType): Form[LocalDate] =
+    Form(
+      "structuresBuildingsQualifyingUseDate" -> localDate(
+        requiredKey = s"$requiredError$userType",
+        earliestDateAndError = Some((latestDate, dateInFuture))
+      )
+    )
 }

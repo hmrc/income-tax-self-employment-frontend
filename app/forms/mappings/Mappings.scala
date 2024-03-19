@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.{MissingDayError, MissingMonthError, MissingYearError, ValidDateError}
 import models.common.{Enumerable, UserType}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
@@ -52,12 +53,15 @@ trait Mappings extends Formatters with Constraints {
       ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  protected def localDate(invalidKey: String,
-                          allRequiredKey: String,
-                          twoRequiredKey: String,
-                          requiredKey: String,
+  protected def localDate(requiredKey: String,
+                          invalidKey: String = ValidDateError,
+                          missingDay: String = MissingDayError,
+                          missingMonth: String = MissingMonthError,
+                          missingYear: String = MissingYearError,
+                          earliestDateAndError: Option[(LocalDate, String)] = None,
+                          latestDateAndError: Option[(LocalDate, String)] = None,
                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+    of(new LocalDateFormatter(requiredKey, invalidKey, missingDay, missingMonth, missingYear, earliestDateAndError, latestDateAndError, args))
 
   def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
 }
