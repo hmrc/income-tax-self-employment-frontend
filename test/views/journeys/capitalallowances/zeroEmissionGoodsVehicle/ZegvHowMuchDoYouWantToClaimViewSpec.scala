@@ -59,7 +59,7 @@ class ZegvHowMuchDoYouWantToClaimViewSpec extends ViewBaseSpec {
     "render specific text when CheckMode" in {
       val html = view(form, CheckMode, Agent, taxYear, businessId, BigDecimal(fullCost))
       new Page(html) {
-        assert(formElement.attr("action").contains("change-capital-allowances"))
+        assert(formElement.attr("action").contains("change-goods-vehicles/claim-amount"))
       }
     }
   }
