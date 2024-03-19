@@ -124,6 +124,8 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
+checkYourAnswers.title.individual = Check your answers
+checkYourAnswers.title.agent = Check your answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
@@ -1799,6 +1801,19 @@ wdaSingleAssetClaimAmounts.subheading.individual = How much allowance are you cl
 wdaSingleAssetClaimAmounts.subheading.agent = How much allowance are you claiming for all these pools on behalf of your client this year?
 wdaSingleAssetClaimAmounts.error.required.individual = Enter the value of your single asset pools this year
 wdaSingleAssetClaimAmounts.error.required.agent = Enter the value of your client’s single asset pools this year
+
+wdaSpecialRate.subHeading.cya.individual = Do you want to claim allowances on items in the special rate pool?
+wdaSpecialRate.subHeading.cya.agent = Do your client want to claim allowances on items in the special rate pool?
+wdaSpecialRateClaimAmount.subHeading.cya.individual = How much do you want to claim from the special rate pool?
+wdaSpecialRateClaimAmount.subHeading.cya.agent = How much does your client want to claim from the special rate pool?
+wdaMainRate.subHeading.cya.individual = Do you want to claim allowances on items in the main rate pool?
+wdaMainRate.subHeading.cya.agent = Do your client want to claim allowances on items in the main rate pool?
+wdaMainRateClaimAmount.subHeading.cya.individual = How much do you want to claim from the main rate pool?
+wdaMainRateClaimAmount.subHeading.cya.agent = How much does your client want to claim from the main rate pool?
+wdaSingleAsset.subHeading.cya.individual = Do you have any single asset pools?
+wdaSingleAsset.subHeading.cya.agent = Does your client have any single asset pools?
+wdaSingleAssetClaimAmounts.subHeading.cya.individual = How much allowance are you claiming for all these pools this year?
+wdaSingleAssetClaimAmounts.subHeading.cya.agent = How much allowance is your client claiming for all these pools this year?
 
 ########## Capital Allowances - Special tax sites ##########
 

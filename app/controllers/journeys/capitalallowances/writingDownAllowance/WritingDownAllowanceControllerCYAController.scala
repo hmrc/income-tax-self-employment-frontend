@@ -17,15 +17,21 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.common.{BusinessId, TaxYear}
+import controllers.handleSubmitAnswersResult
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.journeys.Journey.CapitalAllowancesWritingDownAllowance
+import models.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.checkAnswers.capitalallowances.writingDownAllowance._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WritingDownAllowanceControllerCYAController @Inject() (override val messagesApi: MessagesApi,
@@ -33,19 +39,27 @@ class WritingDownAllowanceControllerCYAController @Inject() (override val messag
                                                              identify: IdentifierAction,
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
-                                                             view: CheckYourAnswersView)
+                                                             service: SelfEmploymentService,
+                                                             view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val summaryList =
       SummaryListCYA(request.userAnswers, taxYear, businessId, request.userType).mkSummaryList(
-        List()
+        List(
+          WdaSpecialRateSummary(taxYear, businessId),
+          WdaSpecialRateClaimAmountSummary(taxYear, businessId),
+          WdaMainRateSummary(taxYear, businessId),
+          WdaMainRateClaimAmountSummary(taxYear, businessId),
+          WdaSingleAssetSummary(taxYear, businessId),
+          WdaSingleAssetClaimAmountsSummary(taxYear, businessId)
+        )
       )
 
     Ok(
       view(
-        "test",
+        "checkYourAnswers",
         taxYear,
         request.userType,
         summaryList,
@@ -55,7 +69,8 @@ class WritingDownAllowanceControllerCYAController @Inject() (override val messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      logger.info(s"$taxYear, $businessId, $request")
-      ???
+      val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesWritingDownAllowance)
+      val result  = service.submitAnswers[WritingDownAllowanceAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 }
