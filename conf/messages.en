@@ -124,8 +124,6 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 taskList.reviewLink = Review self-employments
 
 checkYourAnswers.title = Check Your Answers
-checkYourAnswers.title.individual = Check your answers
-checkYourAnswers.title.agent = Check your answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
@@ -1814,6 +1812,12 @@ wdaSingleAsset.subHeading.cya.individual = Do you have any single asset pools?
 wdaSingleAsset.subHeading.cya.agent = Does your client have any single asset pools?
 wdaSingleAssetClaimAmounts.subHeading.cya.individual = How much allowance are you claiming for all these pools this year?
 wdaSingleAssetClaimAmounts.subHeading.cya.agent = How much allowance is your client claiming for all these pools this year?
+wdaSpecialRate.change.hidden = Change if you want to claim allowances on items in the special rate pool
+wdaSpecialRateClaimAmount.change.hidden = Change how much you want to claim from the special rate pool
+wdaMainRate.change.hidden = Change if you want to claim allowances on items in the main rate pool
+wdaMainRateClaimAmount.change.hidden = Change how much you want to claim from the main rate pool
+wdaSingleAsset.change.hidden = Change if you have any single asset pools
+wdaSingleAssetClaimAmounts.change.hidden = Change how much allowance you are claiming for all these pools this year
 
 ########## Capital Allowances - Special tax sites ##########
 

@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-abstract class BooleanSummary(page: OneQuestionPage[Boolean], callLink: Call) extends AnswerSummary {
+class BooleanSummary(page: OneQuestionPage[Boolean], callLink: Call) extends AnswerSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers

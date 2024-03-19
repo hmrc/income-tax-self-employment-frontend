@@ -136,4 +136,7 @@ object SpecBase extends SpecBase {
   }
 
   val emptyCall: Call = Call("", "", "")
+  val call        = Call("GET", "/url")
+  val fakeRequest = FakeRequest()
+
 }
