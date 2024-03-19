@@ -35,13 +35,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class WritingDownAllowanceControllerCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                             val controllerComponents: MessagesControllerComponents,
-                                                             identify: IdentifierAction,
-                                                             getData: DataRetrievalAction,
-                                                             requireData: DataRequiredAction,
-                                                             service: SelfEmploymentService,
-                                                             view: CheckYourAnswersView)(implicit ec: ExecutionContext)
+class WritingDownAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   service: SelfEmploymentService,
+                                                   view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -64,7 +64,7 @@ class WritingDownAllowanceControllerCYAController @Inject() (override val messag
         taxYear,
         request.userType,
         summaryList,
-        routes.WritingDownAllowanceControllerCYAController.onSubmit(taxYear, businessId)
+        routes.WritingDownAllowanceCYAController.onSubmit(taxYear, businessId)
       ))
   }
 

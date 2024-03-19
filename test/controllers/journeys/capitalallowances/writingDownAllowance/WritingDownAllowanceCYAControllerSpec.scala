@@ -27,12 +27,12 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.writingDownAllowance.WdaSpecialRateSummary
 
-class WritingDownAllowanceControllerCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class WritingDownAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
   val pageHeading: String           = CapitalAllowancesCYAPage.pageName.value
   val testDataCases: List[JsObject] = List(Json.obj(WdaSpecialRatePage.pageName.value -> false))
 
-  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.WritingDownAllowanceControllerCYAController.onPageLoad
-  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.WritingDownAllowanceControllerCYAController.onSubmit
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.WritingDownAllowanceCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.WritingDownAllowanceCYAController.onSubmit
 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =

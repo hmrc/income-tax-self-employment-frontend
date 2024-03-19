@@ -23,5 +23,5 @@ import play.api.mvc.Call
 
 trait WdaBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId)
+    routes.WritingDownAllowanceCYAController.onPageLoad(taxYear, businessId)
 }
