@@ -18,6 +18,8 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 @import viewmodels.InputWidth.{Full, Fixed10}
+@import viewmodels.LabelSize.Medium
+@import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -26,12 +28,16 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[SpecialTaxSiteLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@filteredErrorSummary = @{
+    form.copy(errors = form.errors.filterNot(_.equals(FormError("buildingNumber", s"specialTaxSiteLocation.error.building.$userType"))))
+}
 
 @layout(pageTitle = title(form, messages("specialTaxSiteLocation.title"))) {
 
     @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
+        @govukErrorSummary(ErrorSummaryViewModel(filteredErrorSummary))
     }
 
     @heading(messages("specialTaxSiteLocation.title"), extraClasses = "govuk-!-margin-bottom-3")
@@ -42,17 +48,19 @@
             InputViewModel(
                 field = form("buildingName"),
                 label = LabelViewModel(messages("specialTaxSiteLocation.buildingName"))
+                    .asPageHeading(Medium)
+                    .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Full)
         )
 
-        <div class="govuk-body">
-            <p>@messages("site.or")</p>
-        </div>
+        <div class="govuk-checkboxes__divider">@messages("site.or")</div>
 
         @govukInput(
             InputViewModel(
                 field = form("buildingNumber"),
                 label = LabelViewModel(messages("specialTaxSiteLocation.buildingNumber"))
+                    .asPageHeading(Medium)
+                    .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Full)
         )
 
@@ -60,6 +68,8 @@
             InputViewModel(
                 field = form("postcode"),
                 label = LabelViewModel(messages("specialTaxSiteLocation.postcode"))
+                    .asPageHeading(Medium)
+                    .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Fixed10)
         )
 

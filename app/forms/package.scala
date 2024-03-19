@@ -26,5 +26,5 @@ package object forms {
   val MissingMonthError: String = "error.date.month"
   val MissingYearError: String  = "error.date.year"
 
-  val PostcodeRegex = """^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$"""
+  val PostcodeRegex = """^[a-z/A-Z]{1,2}\d[a-z/A-Z\d]? ?\d[a-z/A-Z]{2}$"""
 }

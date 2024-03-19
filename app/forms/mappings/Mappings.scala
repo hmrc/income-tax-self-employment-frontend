@@ -42,14 +42,12 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey, args))
 
-  protected def currency(requiredKey: String = "error.required",
-                         nonNumericKey: String = "error.nonNumeric",
-                         args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
+  def currency(requiredKey: String = "error.required",
+               nonNumericKey: String = "error.nonNumeric",
+               args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(currencyFormatter(requiredKey, nonNumericKey, args))
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean",
-                        args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
+  def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
   protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[String] = Seq.empty)(implicit
@@ -68,3 +66,5 @@ trait Mappings extends Formatters with Constraints {
 
   def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
 }
+
+object Mappings extends Mappings

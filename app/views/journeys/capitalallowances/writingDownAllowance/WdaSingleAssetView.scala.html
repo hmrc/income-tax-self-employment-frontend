@@ -28,6 +28,10 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
+@description = {
+    <p>@messages(s"wdaSingleAsset.p2.$userType")<p>
+}
+
 @layout(pageTitle = title(form, messages("wdaSingleAsset.heading"))) {
     @errorSummary(form)
     @heading("wdaSingleAsset.heading")
@@ -41,9 +45,7 @@
         </ul>
 
         @formHelper(action = routes.WdaSingleAssetController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @subheading(s"wdaSingleAsset.subheading.$userType")
-            <p>@messages(s"wdaSingleAsset.p2.$userType")<p>
-            @twoRadios(form)
+            @twoRadios(form, "wdaSingleAsset", userType, taxYear, description)
             @submitButton()
         }
     </div>

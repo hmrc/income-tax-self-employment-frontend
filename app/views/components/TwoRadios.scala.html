@@ -14,14 +14,24 @@
  * limitations under the License.
  *@
 
+@import models.common.TaxYear
+@import models.common.UserType
+
 @this(govukRadios: GovukRadios)
 
-@(form: Form[_], legend: Legend = LegendViewModel(Empty), inline: Boolean = true, yesLabel: String = "site.yes", noLabel: String = "site.no")(implicit messages: Messages)
+@(form: Form[_], prefix: String, userType: UserType, taxYear: TaxYear, afterSubheadingHtml: Html = Html(""), inline: Boolean = true, yesLabel: String = "site.yes", noLabel: String = "site.no")(implicit messages: Messages)
+
+@defaultLegend() = {
+    <div>
+        <label class="govuk-label govuk-label--m">@messages(s"$prefix.subheading.$userType")</label>
+        @afterSubheadingHtml
+    </div>
+}
 
 @govukRadios(
     RadiosViewModel.yesNoWithLabel(
         field = form("value"),
-        legend = legend,
+        legend = LegendViewModel(HtmlContent(defaultLegend())),
         inline = inline,
         yesLabel = yesLabel,
         noLabel = noLabel

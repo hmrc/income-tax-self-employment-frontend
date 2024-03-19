@@ -30,7 +30,7 @@ import javax.inject.Inject
 class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
   private val buildingName              = "buildingName"
   private val buildingNumber            = "buildingNumber"
-  private val postCode                  = "postCode"
+  private val postcode                  = "postcode"
   private val maxBuildingNameLength     = 50
   private val maxBuildingNameError      = "specialTaxSiteLocation.error.buildingName.length"
   private val maxBuildingNumberLength   = 10
@@ -49,7 +49,7 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
       buildingNumber -> mandatoryIf(
         isEmpty(buildingName),
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNumberLength, maxBuildingNumberError))),
-      postCode -> text(postcodeRequiredError(userType)).verifying(regexp(PostcodeRegex, postcodeInvalidError))
+      postcode -> text(postcodeRequiredError(userType)).verifying(regexp(PostcodeRegex, postcodeInvalidError))
     )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply).verifying(
     )
   )
