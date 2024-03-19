@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object StructuresBuildingsClaimedSummary {
 
@@ -33,8 +32,8 @@ object StructuresBuildingsClaimedSummary {
     answers
       .get(StructuresBuildingsClaimedPage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
+        buildRowBoolean(
+          answer,
           routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsClaimed.subHeading.$userType"),
           "balancingAllowance.change.hidden", // TODO change to structures buildings claimed change

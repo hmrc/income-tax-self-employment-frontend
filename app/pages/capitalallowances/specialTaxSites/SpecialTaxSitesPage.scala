@@ -28,7 +28,7 @@ object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
   override def toString: String = "specialTaxSites"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+    userAnswers.get(this, businessId).contains(false) || ContractForBuildingConstructionPage.hasAllFurtherAnswers(businessId, userAnswers)
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(

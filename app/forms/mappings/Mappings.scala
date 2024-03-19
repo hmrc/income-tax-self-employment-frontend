@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.{MissingDayError, MissingMonthError, MissingYearError, ValidDateError}
 import models.common.{Enumerable, UserType}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
@@ -38,26 +39,29 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey, args))
 
-  protected def currency(requiredKey: String = "error.required",
-                         nonNumericKey: String = "error.nonNumeric",
-                         args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
+  def currency(requiredKey: String = "error.required",
+               nonNumericKey: String = "error.nonNumeric",
+               args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
     of(currencyFormatter(requiredKey, nonNumericKey, args))
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean",
-                        args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
+  def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
   protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[String] = Seq.empty)(implicit
       ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  protected def localDate(invalidKey: String,
-                          allRequiredKey: String,
-                          twoRequiredKey: String,
-                          requiredKey: String,
+  protected def localDate(requiredKey: String,
+                          invalidKey: String = ValidDateError,
+                          missingDay: String = MissingDayError,
+                          missingMonth: String = MissingMonthError,
+                          missingYear: String = MissingYearError,
+                          earliestDateAndError: Option[(LocalDate, String)] = None,
+                          latestDateAndError: Option[(LocalDate, String)] = None,
                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+    of(new LocalDateFormatter(requiredKey, invalidKey, missingDay, missingMonth, missingYear, earliestDateAndError, latestDateAndError, args))
 
   def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
 }
+
+object Mappings extends Mappings

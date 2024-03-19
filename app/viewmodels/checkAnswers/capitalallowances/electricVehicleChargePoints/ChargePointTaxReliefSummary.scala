@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object ChargePointTaxReliefSummary {
 
@@ -33,8 +32,8 @@ object ChargePointTaxReliefSummary {
     answers
       .get(ChargePointTaxReliefPage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
+        buildRowBoolean(
+          answer,
           routes.ChargePointTaxReliefController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"taxReliefChargePoints.subHeading.$userType"),
           "zeroEmission.change.hidden",

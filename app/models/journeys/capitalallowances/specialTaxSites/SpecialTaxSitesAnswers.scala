@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package models.journeys.capitalallowances.specialTaxSites
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+import java.time.LocalDate
 
-class WdaMainRateClaimAmountFormProvider @Inject() extends Mappings {
+case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
+                                  contractForBuildingConstruction: Option[Boolean],
+                                  contractStartDate: Option[LocalDate],
+                                  constructionStartDate: Option[LocalDate])
 
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaMainRateClaimAmountFormProvider {
-  val RequiredError: String = "WdaMainRateClaimAmount.error.required"
+object SpecialTaxSitesAnswers {
+  implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
 }

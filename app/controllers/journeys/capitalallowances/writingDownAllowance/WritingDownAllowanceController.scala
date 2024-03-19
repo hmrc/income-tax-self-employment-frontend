@@ -38,6 +38,7 @@ class WritingDownAllowanceController @Inject() (override val messagesApi: Messag
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = WritingDownAllowancePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -46,6 +47,6 @@ class WritingDownAllowanceController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      WritingDownAllowancePage.redirectNext(mode, request.userAnswers, businessId, taxYear)
+      page.redirectNext(mode, request.userAnswers, businessId, taxYear)
   }
 }

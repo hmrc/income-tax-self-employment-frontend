@@ -24,8 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
-import viewmodels.checkAnswers.expenses.tailoring.formatAnswer
+import viewmodels.checkAnswers.buildRowBoolean
 
 object EvcpAllowanceSummary {
 
@@ -33,8 +32,8 @@ object EvcpAllowanceSummary {
     answers
       .get(EVCPAllowancePage, businessId.some)
       .map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
+        buildRowBoolean(
+          answer,
           routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"evcpAllowance.subHeading.cya.$userType"),
           "amountSpentOnEvcp.change.hidden",

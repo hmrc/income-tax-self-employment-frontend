@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package pages.capitalallowances.structuresBuildingsAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class WdaSpecialRateClaimAmountFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaSpecialRateClaimAmountFormProvider {
-  val RequiredError: String = "WdaSpecialRateClaimAmount.error.required"
+object StructuresBuildingsNewClaimAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "structuresBuildingsNewClaimAmount"
 }

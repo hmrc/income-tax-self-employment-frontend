@@ -75,6 +75,7 @@ journeys.capital-allowances-electric-vehicle-charge-points = Electric vehicle ch
 journeys.capital-allowances-balancing-allowance = Balancing allowance
 journeys.capital-allowances-annual-investment-allowance = Annual Investment Allowance
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
+journeys.capital-allowances-special-tax-sites = Freeport sites
 
 date.day = Day
 date.month = Month
@@ -1625,6 +1626,8 @@ structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for struc
 structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings
 structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
 structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
+structuresBuildingsAllowance.cya.individual = Did you build, renovate or buy a new structure for your self-employment?
+structuresBuildingsAllowance.cya.agent = Did your client build, renovate or buy a new structure for their self-employment?
 structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
@@ -1665,6 +1668,21 @@ structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or u
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
 
+
+structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
+structuresBuildingsNewClaimAmount.p.individual = If the structure or building only qualifies for part of the period, you must reduce your claim proportionally.
+structuresBuildingsNewClaimAmount.p.agent = If the structure or building only qualifies for part of the period, your client must reduce their claim proportionally.
+structuresBuildingsNewClaimAmount.p2 = This will happen when the structure or building:
+structuresBuildingsNewClaimAmount.l1 = starts to be used part way through your accounting period
+structuresBuildingsNewClaimAmount.l2 = is demolished or used for anything other than a qualifying activity
+structuresBuildingsNewClaimAmount.subHeading.individual = Enter the amount you want to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.subHeading.agent = Enter the amount your client wants to claim for this new building or renovation
+structuresBuildingsNewClaimAmount.error.required.individual = Enter the amount you want to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.error.required.agent = Enter the amount your client wants to claim for the new building or renovation
+structuresBuildingsNewClaimAmount.cya.individual = Enter the amount you want to claim for new buildings or renovations
+structuresBuildingsNewClaimAmount.cya.agent = Enter the amount your client wants to claim for new buildings or renovations
+
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.heading = Writing down allowance
@@ -1697,6 +1715,8 @@ wdaSpecialRate.l5.link = check the threshold for your car
 wdaSpecialRate.l5.href = https://www.gov.uk/capital-allowances/business-cars
 wdaSpecialRate.subheading.individual = Do you want to claim allowances on items in the special rate pool?
 wdaSpecialRate.subheading.agent = Does your client want to claim allowances on items in the special rate pool?
+wdaSpecialRate.error.required.individual = Select yes if you want to claim allowances on items in the 6 per cent pool
+wdaSpecialRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 6 per cent pool
 
 wdaSpecialRateClaimAmount.heading = Claim amount
 wdaSpecialRateClaimAmount.p1 = This information should be recorded in your accounts.
@@ -1721,6 +1741,8 @@ wdaSpecialRateClaimAmount.l6 = £1,000 or less, you can claim the full amount (k
 wdaSpecialRateClaimAmount.l7 = £1,000 or more, you can claim 6% of the balance.
 wdaSpecialRateClaimAmount.subheading.individual = How much do you want to claim from the 6% pool?
 wdaSpecialRateClaimAmount.subheading.agent = How much does your client want to claim from the 6% pool?
+wdaSpecialRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 6 per cent pool
+wdaSpecialRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 6 per cent pool
 
 wdaMainRate.heading = Main rate (18%) pool
 wdaMainRate.p1.individual = You can claim 18% tax relief on all equipment you buy, unless the items need to go into:
@@ -1730,6 +1752,8 @@ wdaMainRate.l2.individual = a single asset pool (for example, because you have c
 wdaMainRate.l2.agent = a single asset pool (for example, because your client has chosen to treat them as ‘short life’ assets or they’ve used them outside their self-employment)
 wdaMainRate.subheading.individual = Do you want to claim allowances on items in the main rate pool?
 wdaMainRate.subheading.agent = Do your client want to claim allowances on items in the main rate pool?
+wdaMainRate.error.required.individual = Select yes if you want to claim allowances on items in the 18 per cent pool
+wdaMainRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 18 per cent pool
 
 wdaMainRateClaimAmount.heading = Claim amount
 wdaMainRateClaimAmount.details.individual = Work out how much you can claim
@@ -1751,6 +1775,8 @@ wdaMainRateClaimAmount.l6 = £1,000 or less, you can claim the full amount (know
 wdaMainRateClaimAmount.l7 = £1,000 or more, you can claim 18% of the balance.
 wdaMainRateClaimAmount.subheading.individual = How much do you want to claim for the main rate pool?
 wdaMainRateClaimAmount.subheading.agent = How much does your client want to claim for the main rate pool?
+wdaMainRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 18 per cent pool
+wdaMainRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 18 per cent pool
 
 wdaSingleAsset.heading = Single asset pools
 wdaSingleAsset.p1.individual = You might need to create one or more single asset pools for the cost of items that:
@@ -1763,12 +1789,16 @@ wdaSingleAsset.subheading.individual = Do you have any single asset pools?
 wdaSingleAsset.subheading.agent = Does your client have any single asset pools?
 wdaSingleAsset.p2.individual = Include any pools from a previous accounting period or pools you need to set up for this period.
 wdaSingleAsset.p2.agent = Include any pools from your client’s previous accounting period or pools you need to set up for this period on their behalf.
+wdaSingleAsset.error.required.individual = Select yes if you have any single asset pools
+wdaSingleAsset.error.required.agent = Select yes if your client has any single asset pools
 
 wdaSingleAssetClaimAmounts.heading = Claim amount for single asset pools
 wdaSingleAssetClaimAmounts.p1.individual = If you have more than one pool, you’ll need to combine them.
 wdaSingleAssetClaimAmounts.p1.agent = If your client has more than one pool, you’ll need to combine them.
 wdaSingleAssetClaimAmounts.subheading.individual = How much allowance are you claiming for all these pools this year?
 wdaSingleAssetClaimAmounts.subheading.agent = How much allowance are you claiming for all these pools on behalf of your client this year?
+wdaSingleAssetClaimAmounts.error.required.individual = Enter the value of your single asset pools this year
+wdaSingleAssetClaimAmounts.error.required.agent = Enter the value of your client’s single asset pools this year
 
 ########## Capital Allowances - Special tax sites ##########
 
@@ -1792,6 +1822,7 @@ specialTaxSites.subHeading.individual = Are you claiming the allowance for a str
 specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
 specialTaxSites.error.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
 specialTaxSites.error.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
+specialTaxSites.change.hidden = Change if claiming the allowance for a structure or building in a special tax site
 
 contractForBuildingConstruction.title = Special tax site contracts
 contractForBuildingConstruction.p1.individual = You will not be able to claim this allowance on any construction costs of the specific building if the contract was:
@@ -1800,14 +1831,20 @@ contractForBuildingConstruction.l1 = entered into before 29 October 2018
 contractForBuildingConstruction.l2 = signed before the Freeport site was designated
 contractForBuildingConstruction.subHeading.individual = Did you enter into a contract for the building’s construction?
 contractForBuildingConstruction.subHeading.agent = Did your client enter into a contract for the building’s construction?
+contractForBuildingConstruction.subHeading.cya.individual = Did you sign a contract for the building’s construction?
+contractForBuildingConstruction.subHeading.cya.agent = Did your client sign a contract for the building’s construction?
 contractForBuildingConstruction.error.individual = Select yes if you entered into a contract for the building’s construction
 contractForBuildingConstruction.error.agent = Select yes if your client entered into a contract for the building’s construction
+contractForBuildingConstruction.change.hidden = Change whether you entered into a contract for the building’s construction
 
 contractStartDate.title = When was the contract entered into?
+contractStartDate.title.cya = When was the contract signed?
 contractStartDate.error.individual = Enter the date when you entered into the contract for the building’s construction
 contractStartDate.error.agent = Enter the date when your client entered into the contract for the building’s construction
 contractStartDate.error.tooEarly = The date when the contract was signed cannot be before 29 October 2018
+contractStartDate.change.hidden = Change the date the contract for the building’s construction was entered into
 
 constructionStartDate.title = When did construction or physical works start?
 constructionStartDate.error = Enter the date when construction or physical works started
 constructionStartDate.error.tooEarly = The date when construction or physical works started cannot be before 29 October 2018
+constructionStartDate.change.hidden = Change the date construction or physical works started

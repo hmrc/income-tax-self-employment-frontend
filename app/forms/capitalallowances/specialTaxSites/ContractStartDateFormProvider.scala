@@ -16,23 +16,24 @@
 
 package forms.capitalallowances.specialTaxSites
 
-import forms.{DateBaseFormProvider, DateFormModel, ValidDateError}
+import forms.mappings.Mappings
 import models.common.UserType
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 
 import java.time.LocalDate
+import javax.inject.Inject
 
-object ContractStartDateFormProvider extends DateBaseFormProvider {
+class ContractStartDateFormProvider @Inject() extends Mappings {
 
   private val earliestDate      = LocalDate.of(2018, 10, 29)
-  private val requiredError     = "contractStartDate.error"
+  private val requiredError     = "contractStartDate.error."
   private val dateTooEarlyError = "contractStartDate.error.tooEarly"
 
-  val formProvider = createForm(earliestDate, dateTooEarlyError)
-
-  def checkForWholeFormErrors(errorForm: Form[DateFormModel], userType: UserType): (Form[DateFormModel], Boolean) =
-    if (allFieldsEmpty(errorForm)) (errorForm.discardingErrors.withError(FormError("", s"$requiredError.$userType")), true)
-    else if (invalidEntry(errorForm)) (errorForm.discardingErrors.withError(FormError("", ValidDateError)), true)
-    else if (dateTooEarly(errorForm, earliestDate)) (errorForm.discardingErrors.withError(FormError("", dateTooEarlyError)), true)
-    else (errorForm, false)
+  def apply(userType: UserType): Form[LocalDate] =
+    Form(
+      "contractStartDate" -> localDate(
+        requiredKey = s"$requiredError$userType",
+        earliestDateAndError = Some((earliestDate, dateTooEarlyError))
+      )
+    )
 }

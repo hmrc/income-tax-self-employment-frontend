@@ -17,7 +17,6 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
@@ -31,5 +30,5 @@ object ContractStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
     userAnswers.get(this, businessId).isDefined
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.ContractStartDateController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
 }
