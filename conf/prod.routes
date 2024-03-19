@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->        /update-and-submit-income-tax-return/self-employment                           app.Routes
-->        /update-and-submit-income-tax-return/self-employment/expenses                  appExpenses.Routes
-->        /update-and-submit-income-tax-return/self-employment/capital-allowances        appCapitalAllowances.Routes
-->        /                                                                              health.Routes
+->        /update-and-submit-income-tax-return/self-employment        app.Routes
+->        /update-and-submit-income-tax-return/self-employment        appExpenses.Routes
+->        /update-and-submit-income-tax-return/self-employment        appCapitalAllowances.Routes
+->        /                                                           health.Routes
