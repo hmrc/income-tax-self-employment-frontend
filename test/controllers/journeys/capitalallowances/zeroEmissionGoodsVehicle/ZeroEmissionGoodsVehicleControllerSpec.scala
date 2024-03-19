@@ -16,37 +16,14 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleFormProvider
+import base.SpecBase.{businessId, emptyUserAnswers, taxYear}
+import controllers.StandardControllerSpec
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclePage
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehiclesView
 
-class ZeroEmissionGoodsVehicleControllerSpec
-    extends RadioButtonGetAndPostQuestionBaseSpec("ZeroEmissionGoodsVehicleController", ZeroEmissionGoodsVehiclePage) {
+class ZeroEmissionGoodsVehicleControllerSpec extends StandardControllerSpec {
+  lazy val onPageLoadCall = routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitCall   = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode).url
 
-  def onPageLoadCall: Call = routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode)
-  def onSubmitCall: Call   = routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode)
-  def onwardRoute: Call    = routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-
-  val validAnswer: Boolean = true
-
-  def createForm(user: UserType): Form[Boolean] = new ZeroEmissionGoodsVehicleFormProvider()(user)
-
-  def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
-    val view = application.injector.instanceOf[ZeroEmissionGoodsVehiclesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
-  }
-
-  def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
+  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Zero-emission goods vehicles")
+  checkOnSubmit(onSubmitCall, emptyUserAnswers, ("value", "true"))
 }

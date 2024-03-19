@@ -23,7 +23,7 @@ import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvService
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle._
@@ -36,7 +36,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     service: ZegvService,
+                                                     service: SelfEmploymentService,
                                                      formProvider: ZegvOnlyForSelfEmploymentFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: ZegvOnlyForSelfEmploymentView)
@@ -59,7 +59,7 @@ class ZegvOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, taxYear, mode)
+          answer => service.submitBooleanAnswerAndRedirect(ZegvOnlyForSelfEmploymentPage, businessId, request, answer, taxYear, mode)
         )
   }
 }

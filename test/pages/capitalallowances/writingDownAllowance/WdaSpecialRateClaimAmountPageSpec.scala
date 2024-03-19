@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package pages.capitalallowances.writingDownAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import org.scalatest.prop.TableFor2
+import pages.PageSpecBase
+import play.api.libs.json.{JsObject, Json}
 
-import javax.inject.Inject
-
-class WdaSingleAssetFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaSingleAssetFormProvider {
-  val RequiredError: String = "WdaSingleAsset.error.required"
+class WdaSpecialRateClaimAmountPageSpec extends PageSpecBase(WdaSpecialRateClaimAmountPage) {
+  val hasAllFurtherAnswersCases: TableFor2[JsObject, Boolean] = Table(
+    ("userAnswers", "expected"),
+    (Json.obj(), false),
+    (Json.obj("wdaSpecialRateClaimAmount" -> Some(10.0), "wdaMainRate" -> false), true)
+  )
 }

@@ -20,12 +20,29 @@ import controllers.journeys.capitalallowances.writingDownAllowance.routes
 import models.NormalMode
 import models.common._
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
 object WdaSpecialRatePage extends WdaBasePage[Boolean] {
-  override def toString: String = "WdaSpecialRate"
+  override def toString: String = "wdaSpecialRate"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(WdaSpecialRateClaimAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.WdaSpecialRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    redirectOnBoolean(
+      this,
+      userAnswers,
+      businessId,
+      onTrue = routes.WdaSpecialRateClaimAmountController.onPageLoad(taxYear, businessId, NormalMode),
+      onFalse = routes.WdaMainRateController.onPageLoad(taxYear, businessId, NormalMode)
+    )
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).exists {
+      case false => true
+      case true  => WdaSpecialRateClaimAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+    }
 
 }

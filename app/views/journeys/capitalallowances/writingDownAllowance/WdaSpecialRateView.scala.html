@@ -50,8 +50,7 @@
         </ul>
 
         @formHelper(action = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @subheading(s"wdaSpecialRate.subheading.$userType")
-            @twoRadios(form)
+            @twoRadios(form, "wdaSpecialRate", userType, taxYear)
             @submitButton()
         }
     </div>

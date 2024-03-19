@@ -23,9 +23,11 @@ import models.database.UserAnswers
 import play.api.mvc.Call
 
 object WdaSpecialRateClaimAmountPage extends WdaBasePage[BigDecimal] {
-  override def toString: String = "WdaSpecialRateClaimAmount"
+  override def toString: String = "wdaSpecialRateClaimAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.WdaMainRateController.onPageLoad(taxYear, businessId, NormalMode)
 
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && WdaMainRatePage.hasAllFurtherAnswers(businessId, userAnswers)
 }
