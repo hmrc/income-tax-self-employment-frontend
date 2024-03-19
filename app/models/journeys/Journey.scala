@@ -239,7 +239,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object CapitalAllowancesWritingDownAllowance extends CapitalAllowanceBaseJourney("capital-allowances-writing-down-allowance") {
     override val pageKeys: List[PageName] = List(
       WritingDownAllowancePage.pageName,
-      WdaClaimAmountPage.pageName,
       WdaMainRateClaimAmountPage.pageName,
       WdaMainRatePage.pageName,
       WdaSingleAssetClaimAmountsPage.pageName,

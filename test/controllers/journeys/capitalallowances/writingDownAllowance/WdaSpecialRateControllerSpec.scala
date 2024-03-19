@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.writingDownAllowance
+package controllers.journeys.capitalallowances.writingDownAllowance
 
-import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import base.SpecBase.{businessId, emptyUserAnswers, taxYear}
+import controllers.StandardControllerSpec
 import models.NormalMode
-import models.common._
-import models.database.UserAnswers
-import play.api.mvc.Call
 
-object WdaClaimAmountPage extends WdaBasePage[BigDecimal] {
-  override def toString: String = "WdaClaimAmount"
+class WdaSpecialRateControllerSpec extends StandardControllerSpec {
+  lazy val onPageLoadCall = routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitCall   = routes.WdaSpecialRateController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.WdaSingleAssetController.onPageLoad(taxYear, businessId, NormalMode)
-
+  checkOnPageLoad(onPageLoadCall, emptyUserAnswers, "Special rate (6%) pool")
+  checkOnSubmit(onSubmitCall, emptyUserAnswers, ("value", "true"))
 }

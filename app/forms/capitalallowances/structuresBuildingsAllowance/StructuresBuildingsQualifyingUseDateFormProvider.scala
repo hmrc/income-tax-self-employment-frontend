@@ -17,7 +17,6 @@
 package forms.capitalallowances.structuresBuildingsAllowance
 
 import forms.mappings.Mappings
-import models.common.UserType
 import play.api.data.Form
 
 import java.time.LocalDate
@@ -26,14 +25,14 @@ import javax.inject.Inject
 class StructuresBuildingsQualifyingUseDateFormProvider @Inject() extends Mappings {
 
   private val latestDate    = LocalDate.now()
-  private val requiredError = "structuresBuildingsQualifyingUseDate.error."
-  private val dateInFuture  = "structuresBuildingsQualifyingUseDate.error.inFuture "
+  private val requiredError = "structuresBuildingsQualifyingUseDate.error"
+  private val dateInFuture  = "structuresBuildingsQualifyingUseDate.error.inFuture"
 
-  def apply(userType: UserType): Form[LocalDate] =
+  def apply(): Form[LocalDate] =
     Form(
       "structuresBuildingsQualifyingUseDate" -> localDate(
-        requiredKey = s"$requiredError$userType",
-        earliestDateAndError = Some((latestDate, dateInFuture))
+        requiredKey = requiredError,
+        latestDateAndError = Some((latestDate, dateInFuture))
       )
     )
 }

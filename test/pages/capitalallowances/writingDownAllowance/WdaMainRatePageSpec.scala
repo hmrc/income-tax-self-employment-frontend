@@ -16,17 +16,15 @@
 
 package pages.capitalallowances.writingDownAllowance
 
-import controllers.journeys.capitalallowances.writingDownAllowance.routes
-import models.common._
-import models.database.UserAnswers
-import play.api.mvc.Call
+import org.scalatest.prop.TableFor2
+import pages.PageSpecBase
+import play.api.libs.json.{JsObject, Json}
 
-object WdaSingleAssetClaimAmountsPage extends WdaBasePage[BigDecimal] {
-  override def toString: String = "wdaSingleAssetClaimAmounts"
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId)
-
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+class WdaMainRatePageSpec extends PageSpecBase(WdaMainRatePage) {
+  val hasAllFurtherAnswersCases: TableFor2[JsObject, Boolean] = Table(
+    ("userAnswers", "expected"),
+    (Json.obj(), false),
+    (Json.obj("wdaMainRate" -> false), true),
+    (Json.obj("wdaMainRate" -> true, "wdaMainRateClaimAmount" -> Some(10.0), "wdaSingleAsset" -> false), true)
+  )
 }

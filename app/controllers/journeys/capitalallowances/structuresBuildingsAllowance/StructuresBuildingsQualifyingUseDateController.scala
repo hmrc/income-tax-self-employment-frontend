@@ -49,14 +49,14 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
     implicit request =>
       val form = request.userAnswers
         .get(StructuresBuildingsQualifyingUseDatePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+        .fold(formProvider())(formProvider().fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider()
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

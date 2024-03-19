@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package controllers.journeys.capitalallowances.writingDownAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class WdaMainRateClaimAmountFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaMainRateClaimAmountFormProvider {
-  val RequiredError: String = "WdaMainRateClaimAmount.error.required"
+class WritingDownAllowanceControllerCYAControllerSpec {
+  // TODO: Will be added on CYA impl
 }

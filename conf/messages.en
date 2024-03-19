@@ -1611,14 +1611,19 @@ structuresBuildingsClaimed.error.required.agent = Select yes if your client has 
 
 structuresBuildingsPreviousClaimUse.title.individual = Can you still claim?
 structuresBuildingsPreviousClaimUse.title.agent = Can your client still claim?
-structuresBuildingsPreviousClaimUse.p1 = To continue to claim, the structure or building still needs to be:
-structuresBuildingsPreviousClaimUse.l1 = used for a qualifying activity
-structuresBuildingsPreviousClaimUse.l2 = for non-residential purposes
-structuresBuildingsPreviousClaimUse.p2.individual = You must also continue to hold the relevant interest in the structure or building.
-structuresBuildingsPreviousClaimUse.p3.individual = If you can only meet the conditions for part of the account period then the allowance needs to be proportionally reduced.
-structuresBuildingsPreviousClaimUse.p4.individual = You must also hold an allowance statement, or the qualifying cost is treated as £0.
+structuresBuildingsPreviousClaimUse.p1.individual = To continue to claim, you must:
+structuresBuildingsPreviousClaimUse.p1.agent = To continue to claim, your client must:
+structuresBuildingsPreviousClaimUse.l1 = still hold the relevant interest in the structure or building
+structuresBuildingsPreviousClaimUse.l2 = use the structure or building for a qualifying activity and for non-residential purposes
+structuresBuildingsPreviousClaimUse.p2.individual = If you can only meet the conditions for part of the accounting period, the allowance needs to be proportionally reduced.
+structuresBuildingsPreviousClaimUse.p2.agent = If your client can only meet the conditions for part of the accounting period, the allowance needs to be proportionally reduced.
+structuresBuildingsPreviousClaimUse.p3.individual = You must also hold an
+structuresBuildingsPreviousClaimUse.p3.agent = Your client must also hold an
+structuresBuildingsPreviousClaimUse.p3.link = allowance statement
+structuresBuildingsPreviousClaimUse.p3.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsPreviousClaimUse.p4 = or the qualifying cost is treated as £0.
 structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for structures and buildings (link opens in a new tab)
-structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings
 structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
 structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
 structuresBuildingsAllowance.cya.individual = Did you build, renovate or buy a new structure for your self-employment?
@@ -1646,7 +1651,8 @@ structuresBuildingsClaimedAmount.cya.agent = How much does your client want to c
 structuresBuildingsEligibleClaim.title.individual = Are you eligible to claim?
 structuresBuildingsEligibleClaim.title.agent = Is your client eligible to claim?
 structuresBuildingsEligibleClaim.p1 = The structure or building must:
-structuresBuildingsEligibleClaim.l1 = not have been used as a residence the first time it was used or during the period you’re claiming for
+structuresBuildingsEligibleClaim.l1.individual = not have been used as a residence the first time it was used or during the accounting period you’re claiming for
+structuresBuildingsEligibleClaim.l1.agent = not have been used as a residence the first time it was used or during the accounting period they are claiming for
 structuresBuildingsEligibleClaim.l2 = be used for a
 structuresBuildingsEligibleClaim.l2.link = qualifying activity
 structuresBuildingsEligibleClaim.l2.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#qualifying-activity
@@ -1657,9 +1663,10 @@ structuresBuildingsEligibleClaim.link= Claiming capital allowances for structure
 structuresBuildingsEligibleClaim.href= https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
 structuresBuildingsEligibleClaim.subHeading.individual = Do you want to use the structures and buildings allowance?
 structuresBuildingsEligibleClaim.subHeading.agent = Does your client want to use the structures and buildings allowance?
-structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
-structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
-structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
+structuresBuildingsEligibleClaim.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
+structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or used the building for anything other than their claim, click ‘no’.
+structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
+structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
 
 structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
 structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
@@ -1715,6 +1722,8 @@ wdaSpecialRate.l5.link = check the threshold for your car
 wdaSpecialRate.l5.href = https://www.gov.uk/capital-allowances/business-cars
 wdaSpecialRate.subheading.individual = Do you want to claim allowances on items in the special rate pool?
 wdaSpecialRate.subheading.agent = Does your client want to claim allowances on items in the special rate pool?
+wdaSpecialRate.error.required.individual = Select yes if you want to claim allowances on items in the 6 per cent pool
+wdaSpecialRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 6 per cent pool
 
 wdaSpecialRateClaimAmount.heading = Claim amount
 wdaSpecialRateClaimAmount.p1 = This information should be recorded in your accounts.
@@ -1739,6 +1748,8 @@ wdaSpecialRateClaimAmount.l6 = £1,000 or less, you can claim the full amount (k
 wdaSpecialRateClaimAmount.l7 = £1,000 or more, you can claim 6% of the balance.
 wdaSpecialRateClaimAmount.subheading.individual = How much do you want to claim from the 6% pool?
 wdaSpecialRateClaimAmount.subheading.agent = How much does your client want to claim from the 6% pool?
+wdaSpecialRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 6 per cent pool
+wdaSpecialRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 6 per cent pool
 
 wdaMainRate.heading = Main rate (18%) pool
 wdaMainRate.p1.individual = You can claim 18% tax relief on all equipment you buy, unless the items need to go into:
@@ -1748,6 +1759,8 @@ wdaMainRate.l2.individual = a single asset pool (for example, because you have c
 wdaMainRate.l2.agent = a single asset pool (for example, because your client has chosen to treat them as ‘short life’ assets or they’ve used them outside their self-employment)
 wdaMainRate.subheading.individual = Do you want to claim allowances on items in the main rate pool?
 wdaMainRate.subheading.agent = Do your client want to claim allowances on items in the main rate pool?
+wdaMainRate.error.required.individual = Select yes if you want to claim allowances on items in the 18 per cent pool
+wdaMainRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 18 per cent pool
 
 wdaMainRateClaimAmount.heading = Claim amount
 wdaMainRateClaimAmount.details.individual = Work out how much you can claim
@@ -1769,6 +1782,8 @@ wdaMainRateClaimAmount.l6 = £1,000 or less, you can claim the full amount (know
 wdaMainRateClaimAmount.l7 = £1,000 or more, you can claim 18% of the balance.
 wdaMainRateClaimAmount.subheading.individual = How much do you want to claim for the main rate pool?
 wdaMainRateClaimAmount.subheading.agent = How much does your client want to claim for the main rate pool?
+wdaMainRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 18 per cent pool
+wdaMainRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 18 per cent pool
 
 wdaSingleAsset.heading = Single asset pools
 wdaSingleAsset.p1.individual = You might need to create one or more single asset pools for the cost of items that:
@@ -1781,12 +1796,16 @@ wdaSingleAsset.subheading.individual = Do you have any single asset pools?
 wdaSingleAsset.subheading.agent = Does your client have any single asset pools?
 wdaSingleAsset.p2.individual = Include any pools from a previous accounting period or pools you need to set up for this period.
 wdaSingleAsset.p2.agent = Include any pools from your client’s previous accounting period or pools you need to set up for this period on their behalf.
+wdaSingleAsset.error.required.individual = Select yes if you have any single asset pools
+wdaSingleAsset.error.required.agent = Select yes if your client has any single asset pools
 
 wdaSingleAssetClaimAmounts.heading = Claim amount for single asset pools
 wdaSingleAssetClaimAmounts.p1.individual = If you have more than one pool, you’ll need to combine them.
 wdaSingleAssetClaimAmounts.p1.agent = If your client has more than one pool, you’ll need to combine them.
 wdaSingleAssetClaimAmounts.subheading.individual = How much allowance are you claiming for all these pools this year?
 wdaSingleAssetClaimAmounts.subheading.agent = How much allowance are you claiming for all these pools on behalf of your client this year?
+wdaSingleAssetClaimAmounts.error.required.individual = Enter the value of your single asset pools this year
+wdaSingleAssetClaimAmounts.error.required.agent = Enter the value of your client’s single asset pools this year
 
 ########## Capital Allowances - Special tax sites ##########
 

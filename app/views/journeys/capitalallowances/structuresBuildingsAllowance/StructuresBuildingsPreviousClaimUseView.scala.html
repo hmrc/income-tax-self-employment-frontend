@@ -36,14 +36,16 @@
     @heading(messages(s"structuresBuildingsPreviousClaimUse.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
 
     <div class="govuk-body">
-        <p>@messages("structuresBuildingsPreviousClaimUse.p1")<p>
+        <p>@messages(s"structuresBuildingsPreviousClaimUse.p1.$userType")<p>
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("structuresBuildingsPreviousClaimUse.l1")</li>
             <li>@messages("structuresBuildingsPreviousClaimUse.l2")</li>
         </ul>
         <p>@messages(s"structuresBuildingsPreviousClaimUse.p2.$userType")<p>
-    <p>@messages(s"structuresBuildingsPreviousClaimUse.p3.$userType")<p>
-    <p>@messages(s"structuresBuildingsPreviousClaimUse.p4.$userType")<p>
+        <p>@messages(s"structuresBuildingsPreviousClaimUse.p3.$userType")
+    <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsPreviousClaimUse.p3.href") >@messages("structuresBuildingsPreviousClaimUse.p3.link")</a>
+        @messages(s"structuresBuildingsPreviousClaimUse.p4")
+    </p>
         <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsPreviousClaimUse.href") >@messages("structuresBuildingsPreviousClaimUse.link")</a>
 
     @formHelper(action = routes.StructuresBuildingsPreviousClaimUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

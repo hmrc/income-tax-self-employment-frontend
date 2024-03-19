@@ -17,17 +17,20 @@
 package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.writingDownAllowance.WritingDownAllowanceFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.writingDownAllowance.WdaSpecialRatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.writingDownAllowance.WdaSpecialRateView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class WdaSpecialRateController @Inject() (override val messagesApi: MessagesApi,
@@ -35,18 +38,27 @@ class WdaSpecialRateController @Inject() (override val messagesApi: MessagesApi,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
+                                          formProvider: BooleanFormProvider,
+                                          service: SelfEmploymentService,
                                           view: WdaSpecialRateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = WdaSpecialRatePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = WritingDownAllowanceFormProvider.apply()
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      WdaSpecialRatePage.redirectNext(mode, request.userAnswers, businessId, taxYear)
+      formProvider(page, request.userType)
+        .bindFromRequest()
+        .fold(
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+        )
   }
 }

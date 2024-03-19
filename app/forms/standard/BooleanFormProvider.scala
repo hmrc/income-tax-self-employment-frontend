@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package forms.standard
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
+import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
+import forms.mappings.Mappings._
 import models.common.UserType
+import pages.OneQuestionPage
 import play.api.data.Form
 
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class WdaSingleAssetPoolsFormProvider @Inject() extends Mappings {
+@Singleton
+class BooleanFormProvider @Inject() {
 
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WdaSingleAssetPoolsFormProvider {
-  val RequiredError: String = "WdaSingleAssetPools.error.required"
+  def apply(page: OneQuestionPage[_], userType: UserType): Form[Boolean] =
+    Form("value" -> boolean(s"${userTypeAware(userType, page.requiredErrorKey)}"))
 }
