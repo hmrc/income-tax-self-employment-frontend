@@ -1610,14 +1610,19 @@ structuresBuildingsClaimed.error.required.agent = Select yes if your client has 
 
 structuresBuildingsPreviousClaimUse.title.individual = Can you still claim?
 structuresBuildingsPreviousClaimUse.title.agent = Can your client still claim?
-structuresBuildingsPreviousClaimUse.p1 = To continue to claim, the structure or building still needs to be:
-structuresBuildingsPreviousClaimUse.l1 = used for a qualifying activity
-structuresBuildingsPreviousClaimUse.l2 = for non-residential purposes
-structuresBuildingsPreviousClaimUse.p2.individual = You must also continue to hold the relevant interest in the structure or building.
-structuresBuildingsPreviousClaimUse.p3.individual = If you can only meet the conditions for part of the account period then the allowance needs to be proportionally reduced.
-structuresBuildingsPreviousClaimUse.p4.individual = You must also hold an allowance statement, or the qualifying cost is treated as £0.
+structuresBuildingsPreviousClaimUse.p1.individual = To continue to claim, you must:
+structuresBuildingsPreviousClaimUse.p1.agent = To continue to claim, your client must:
+structuresBuildingsPreviousClaimUse.l1 = still hold the relevant interest in the structure or building
+structuresBuildingsPreviousClaimUse.l2 = use the structure or building for a qualifying activity and for non-residential purposes
+structuresBuildingsPreviousClaimUse.p2.individual = If you can only meet the conditions for part of the accounting period, the allowance needs to be proportionally reduced.
+structuresBuildingsPreviousClaimUse.p2.agent = If your client can only meet the conditions for part of the accounting period, the allowance needs to be proportionally reduced.
+structuresBuildingsPreviousClaimUse.p3.individual = You must also hold an
+structuresBuildingsPreviousClaimUse.p3.agent = Your client must also hold an
+structuresBuildingsPreviousClaimUse.p3.link = allowance statement
+structuresBuildingsPreviousClaimUse.p3.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsPreviousClaimUse.p4 = or the qualifying cost is treated as £0.
 structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for structures and buildings (link opens in a new tab)
-structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
+structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings
 structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
 structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
 structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
@@ -1654,9 +1659,10 @@ structuresBuildingsEligibleClaim.link= Claiming capital allowances for structure
 structuresBuildingsEligibleClaim.href= https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
 structuresBuildingsEligibleClaim.subHeading.individual = Do you want to use the structures and buildings allowance?
 structuresBuildingsEligibleClaim.subHeading.agent = Does your client want to use the structures and buildings allowance?
-structuresBuildingsEligibleClaim.hint = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
-structuresBuildingsEligibleClaim.error.required.individual = Select yes if you are eligible to claim
-structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client is eligible to claim
+structuresBuildingsEligibleClaim.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
+structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or used the building for anything other than their claim, click ‘no’.
+structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
+structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
 
 ########## Capital Allowances - Writing down allowance ##########
 
