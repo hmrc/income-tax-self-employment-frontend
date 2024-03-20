@@ -25,4 +25,6 @@ object UserType {
   case object Agent extends UserType {
     override def toString = "agent"
   }
+
+  val values: List[UserType] = List(Individual, Agent)
 }
