@@ -82,6 +82,14 @@ object CapitalAllowancesTasklist {
       evcpIsTailored
     )
 
+    val specialTaxSitesRow = getAllowanceRow(
+      taxYear,
+      CapitalAllowancesSpecialTaxSites,
+      CapitalAllowances.SpecialTaxSitesStructuresAndBuildings,
+      tradesJourneyStatuses,
+      capAllowancesTailoringCompleted
+    )
+
     val balancingAllowanceStatus = getJourneyStatus(CapitalAllowancesBalancingAllowance)(tradesJourneyStatuses)
     val balancingAllowanceHref =
       getUrl(CapitalAllowancesBalancingAllowance, balancingAllowanceStatus, businessId, taxYear)
@@ -117,9 +125,10 @@ object CapitalAllowancesTasklist {
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
       electricVehicleChargePointsRow,
-      balancingAllowanceRow,
+      specialTaxSitesRow,
       annualInvestmentAllowanceRow,
-      writingDownRow
+      writingDownRow,
+      balancingAllowanceRow
     ).flatten
   }
 
@@ -136,7 +145,7 @@ object CapitalAllowancesTasklist {
     val href       = getUrl(journey, status, businessId, taxYear)
     val isTailored = conditionPassedForViewableLink(SelectCapitalAllowancesPage, allowanceType) && capAllowancesTailoringCompleted
 
-    returnRowIfConditionPassed(buildSummaryRow(href, messages(s"journeys.$CapitalAllowancesWritingDownAllowance"), status), isTailored)
+    returnRowIfConditionPassed(buildSummaryRow(href, messages(s"journeys.$journey"), status), isTailored)
   }
 
   private def getUrl(journey: CapitalAllowanceBaseJourney, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
@@ -161,6 +170,11 @@ object CapitalAllowancesTasklist {
           capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
+      case CapitalAllowancesSpecialTaxSites =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.specialTaxSites.routes.SpecialTaxSitesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.specialTaxSites.routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
       case CapitalAllowancesBalancingAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
@@ -174,7 +188,7 @@ object CapitalAllowancesTasklist {
       case CapitalAllowancesWritingDownAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.writingDownAllowance.routes.WritingDownAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
-          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId).url
+          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }

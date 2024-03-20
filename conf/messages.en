@@ -117,7 +117,7 @@ common.insert = {0}
 common.lowerAmount = A lower amount
 common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourDetails.title.individual = Check your details
-common.opensInNewTab = (opens in new tab)
+common.opensInNewTab = (opens in a new tab)
 
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
@@ -1806,6 +1806,25 @@ wdaSingleAssetClaimAmounts.subheading.individual = How much allowance are you cl
 wdaSingleAssetClaimAmounts.subheading.agent = How much allowance are you claiming for all these pools on behalf of your client this year?
 wdaSingleAssetClaimAmounts.error.required.individual = Enter the value of your single asset pools this year
 wdaSingleAssetClaimAmounts.error.required.agent = Enter the value of your client’s single asset pools this year
+
+wdaSpecialRate.subHeading.cya.individual = Do you want to claim allowances on items in the special rate pool?
+wdaSpecialRate.subHeading.cya.agent = Do your client want to claim allowances on items in the special rate pool?
+wdaSpecialRateClaimAmount.subHeading.cya.individual = How much do you want to claim from the special rate pool?
+wdaSpecialRateClaimAmount.subHeading.cya.agent = How much does your client want to claim from the special rate pool?
+wdaMainRate.subHeading.cya.individual = Do you want to claim allowances on items in the main rate pool?
+wdaMainRate.subHeading.cya.agent = Do your client want to claim allowances on items in the main rate pool?
+wdaMainRateClaimAmount.subHeading.cya.individual = How much do you want to claim from the main rate pool?
+wdaMainRateClaimAmount.subHeading.cya.agent = How much does your client want to claim from the main rate pool?
+wdaSingleAsset.subHeading.cya.individual = Do you have any single asset pools?
+wdaSingleAsset.subHeading.cya.agent = Does your client have any single asset pools?
+wdaSingleAssetClaimAmounts.subHeading.cya.individual = How much allowance are you claiming for all these pools this year?
+wdaSingleAssetClaimAmounts.subHeading.cya.agent = How much allowance is your client claiming for all these pools this year?
+wdaSpecialRate.change.hidden = Change if you want to claim allowances on items in the special rate pool
+wdaSpecialRateClaimAmount.change.hidden = Change how much you want to claim from the special rate pool
+wdaMainRate.change.hidden = Change if you want to claim allowances on items in the main rate pool
+wdaMainRateClaimAmount.change.hidden = Change how much you want to claim from the main rate pool
+wdaSingleAsset.change.hidden = Change if you have any single asset pools
+wdaSingleAssetClaimAmounts.change.hidden = Change how much allowance you are claiming for all these pools this year
 
 ########## Capital Allowances - Special tax sites ##########
 

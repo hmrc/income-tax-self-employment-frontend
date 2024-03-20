@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package viewmodels.checkAnswers.capitalallowances.writingDownAllowance
 
-import play.api.data.Form
-import play.api.data.Forms._
+import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.CheckMode
+import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.WdaSpecialRatePage
+import viewmodels.checkAnswers.BooleanSummary
 
-object WritingDownAllowanceFormProvider {
-
-  def apply(): Form[Unit] = Form(ignored(()))
-}
+final case class WdaSpecialRateSummary(taxYear: TaxYear, businessId: BusinessId)
+    extends BooleanSummary(
+      WdaSpecialRatePage,
+      routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, CheckMode)
+    )

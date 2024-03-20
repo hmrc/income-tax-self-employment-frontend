@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.writingDownAllowance
+package models.journeys.capitalallowances.writingDownAllowance
 
-class WritingDownAllowanceControllerCYAControllerSpec {
-  // TODO: Will be added on CYA impl
+import play.api.libs.json.{Format, Json}
+
+final case class WritingDownAllowanceAnswers(
+    wdaSpecialRate: Option[Boolean],
+    wdaSpecialRateClaimAmount: Option[BigDecimal],
+    wdaMainRate: Option[Boolean],
+    wdaMainRateClaimAmount: Option[BigDecimal],
+    wdaSingleAsset: Option[Boolean],
+    wdaSingleAssetClaimAmounts: Option[BigDecimal]
+)
+
+object WritingDownAllowanceAnswers {
+  implicit val format: Format[WritingDownAllowanceAnswers] = Json.format[WritingDownAllowanceAnswers]
 }

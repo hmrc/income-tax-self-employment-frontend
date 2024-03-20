@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.writingDownAllowance
+package viewmodels.checkAnswers.capitalallowances.writingDownAllowance
 
-import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvAllowanceFormProvider._
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.CheckMode
+import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.WdaMainRatePage
+import viewmodels.checkAnswers.BooleanSummary
 
-import javax.inject.Inject
-
-class WritingDownAllowanceControllerCYAFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, RequiredError)}"))
-}
-
-object WritingDownAllowanceControllerCYAFormProvider {
-  val RequiredError: String = "WritingDownAllowance.error.required"
-}
+final case class WdaMainRateSummary(taxYear: TaxYear, businessId: BusinessId)
+    extends BooleanSummary(
+      WdaMainRatePage,
+      routes.WdaMainRateController.onPageLoad(taxYear, businessId, CheckMode)
+    )

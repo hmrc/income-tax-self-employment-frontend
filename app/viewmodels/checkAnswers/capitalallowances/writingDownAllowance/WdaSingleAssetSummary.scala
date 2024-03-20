@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.writingDownAllowance
+package viewmodels.checkAnswers.capitalallowances.writingDownAllowance
 
 import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.CheckMode
 import models.common.{BusinessId, TaxYear}
-import pages.OneQuestionPage
-import play.api.mvc.Call
+import pages.capitalallowances.writingDownAllowance.WdaSingleAssetPage
+import viewmodels.checkAnswers.BooleanSummary
 
-trait WdaBasePage[A] extends OneQuestionPage[A] {
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.WritingDownAllowanceCYAController.onPageLoad(taxYear, businessId)
-}
+final case class WdaSingleAssetSummary(taxYear: TaxYear, businessId: BusinessId)
+    extends BooleanSummary(
+      WdaSingleAssetPage,
+      routes.WdaSingleAssetController.onPageLoad(taxYear, businessId, CheckMode)
+    )
