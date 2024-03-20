@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.specialTaxSites.NewSiteClaimingAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites.NewSiteClaimingAmountPage
@@ -30,40 +30,36 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.NewSiteClaimingAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class NewSiteClaimingAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                 val controllerComponents: MessagesControllerComponents,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  service: SelfEmploymentService,
-                                                 formProvider: NewSiteClaimingAmountFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: NewSiteClaimingAmountView)(implicit ec: ExecutionContext)
+                                                 formProvider: CurrencyFormProvider,
+                                                 view: NewSiteClaimingAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = NewSiteClaimingAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(NewSiteClaimingAmountPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer, NewSiteClaimingAmountPage).map {
-              NewSiteClaimingAmountPage.redirectNext(mode, _, businessId, taxYear)
-            }
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

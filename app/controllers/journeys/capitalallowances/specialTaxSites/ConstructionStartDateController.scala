@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.specialTaxSites.ConstructionStartDateFormProvider
+import controllers.journeys.fillForm
+import forms.standard.LocalDateFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
@@ -29,8 +29,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
@@ -38,32 +39,29 @@ class ConstructionStartDateController @Inject() (override val messagesApi: Messa
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  service: SelfEmploymentService,
-                                                 formProvider: ConstructionStartDateFormProvider,
+                                                 formProvider: LocalDateFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: ConstructionStartDateView)(implicit ec: ExecutionContext)
+                                                 view: ConstructionStartDateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page                 = ConstructionStartDatePage
+  private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "constructionStartDate.error.tooEarly"))
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ConstructionStartDatePage, businessId.some)
-        .fold(formProvider())(formProvider().fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType, earliestDateAndError = earliestDateAndError))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider()
+      formProvider(page, request.userType, earliestDateAndError = earliestDateAndError)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer, ConstructionStartDatePage).map {
-              ConstructionStartDatePage.redirectNext(mode, _, businessId, taxYear)
-            }
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

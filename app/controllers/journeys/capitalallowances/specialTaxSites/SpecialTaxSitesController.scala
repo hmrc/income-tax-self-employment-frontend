@@ -16,10 +16,9 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearDependentPages
-import forms.capitalallowances.specialTaxSites.SpecialTaxSitesFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites._
@@ -31,7 +30,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
@@ -39,33 +38,28 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            service: SelfEmploymentService,
-                                           formProvider: SpecialTaxSitesFormProvider,
+                                           formProvider: BooleanFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+                                           view: SpecialTaxSitesView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = SpecialTaxSitesPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(SpecialTaxSitesPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            for {
-              editedUserAnswers  <- clearDependentPages(SpecialTaxSitesPage, answer, request, businessId)
-              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, SpecialTaxSitesPage)
-            } yield SpecialTaxSitesPage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
+          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 
