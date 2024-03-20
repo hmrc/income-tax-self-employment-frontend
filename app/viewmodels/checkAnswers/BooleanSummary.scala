@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.writingDownAllowance
+package viewmodels.checkAnswers
 
-import controllers.journeys.capitalallowances.writingDownAllowance.routes
-import models.common.{BusinessId, TaxYear}
+import cats.implicits.catsSyntaxOptionId
+import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.i18n.Messages
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-trait WdaBasePage[A] extends OneQuestionPage[A] {
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.WritingDownAllowanceCYAController.onPageLoad(taxYear, businessId)
+class BooleanSummary(page: OneQuestionPage[Boolean], callLink: Call) extends AnswerSummary {
+
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(page, businessId.some)
+      .map(answer => mkBooleanSummary(answer, callLink, page, userType))
 }

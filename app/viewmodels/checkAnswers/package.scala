@@ -16,6 +16,8 @@
 
 package viewmodels
 
+import models.common.UserType
+import pages.Page
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
@@ -40,8 +42,25 @@ package object checkAnswers {
     buildRowString(messages(messageAnswer), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
+  def mkBooleanSummary(answer: Boolean, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+    buildRowBoolean(
+      answer,
+      callLink,
+      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      s"${page.pageName}.change.hidden",
+      rightTextAlign = true
+    )
+
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
+
+  def mkBigDecimalSummary(answer: BigDecimal, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+    buildRowBigDecimal(
+      answer,
+      callLink,
+      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      s"${page.pageName}.change.hidden"
+    )
 
   def buildRowInt(answer: Int, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(answer.toString, callLink, keyMessage, changeMessage, rightTextAlign = true)

@@ -188,7 +188,7 @@ object CapitalAllowancesTasklist {
       case CapitalAllowancesWritingDownAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.writingDownAllowance.routes.WritingDownAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
-          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear, businessId).url
+          capitalallowances.writingDownAllowance.routes.WritingDownAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case _ => ???
     }

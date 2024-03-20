@@ -221,8 +221,8 @@ POST        /:taxYear/:businessId/capital-allowances/writing-down-allowance/sing
 GET         /:taxYear/:businessId/capital-allowances/change-writing-down-allowance/single-asset-pools/claim-amount               controllers.journeys.capitalallowances.writingDownAllowance.WdaSingleAssetClaimAmountsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/capital-allowances/change-writing-down-allowance/single-asset-pools/claim-amount               controllers.journeys.capitalallowances.writingDownAllowance.WdaSingleAssetClaimAmountsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/capital-allowances/writing-down-allowance/check                                                controllers.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceControllerCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
-POST        /:taxYear/:businessId/capital-allowances/writing-down-allowance/check                                                controllers.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceControllerCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/capital-allowances/writing-down-allowance/check                                                controllers.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/capital-allowances/writing-down-allowance/check                                                controllers.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Capital Allowances - Special tax sites allowance ##########
 
