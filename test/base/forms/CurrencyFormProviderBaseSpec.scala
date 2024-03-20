@@ -22,7 +22,7 @@ import models.common.UserType.{Agent, Individual}
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
-abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) extends BigDecimalFieldBehaviours {
+abstract case class CurrencyFormProviderBaseSpec(formProviderName: String, nonUserSpecificErrorMessages: Boolean = false) extends BigDecimalFieldBehaviours {
   protected lazy val minimum: BigDecimal             = zeroValue
   protected lazy val maximum: BigDecimal             = maxAmountValue
   protected lazy val validDataGenerator: Gen[String] = currencyInRangeWithCommas(minimum, maximum)

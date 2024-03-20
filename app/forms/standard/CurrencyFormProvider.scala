@@ -35,7 +35,6 @@ class CurrencyFormProvider @Inject() {
       "value" -> currency(userTypeAware(userType, page.requiredErrorKey), NonNumericError)
         .verifying(greaterThan(minValue, LessThanZeroError))
         .verifying(lessThan(maxValue, OverMaxError))
-        .verifying(regexpBigDecimal(MoneyBounds.noDecimalRegexp, NoDecimalsError))
     )
 
 }

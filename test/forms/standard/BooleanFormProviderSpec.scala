@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package base.forms
+package forms.standard
 
-import forms.behaviours.SimpleFieldBehaviours
-import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
+import base.forms.BooleanFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.Form
+import pages.OneQuestionPage
 
-abstract class StandardBooleanFormProviderSpec(errorPrefix: String, mkForm: UserType => Form[Boolean]) extends SimpleFieldBehaviours {
-
-  "Boolean Form" - forAllUserTypes { userType =>
-    implicit val form = mkForm(userType)
-
-    "bind valid values" - {
-      checkValidBoolean()
-    }
-
-    "not bind invalid values" - {
-      checkMandatoryField(userTypeAware(userType, s"$errorPrefix.error.required"))
-    }
+class BooleanFormProviderSpec extends BooleanFormProviderBaseSpec("BooleanFormProvider") {
+  object TestPage extends OneQuestionPage[Boolean] {
+    override def toString: String = "testPage"
   }
+
+  override def requiredErrorKey = "testPage.error.required"
+
+  override def formProvider(user: UserType) = new BooleanFormProvider()(TestPage, user)
 }
