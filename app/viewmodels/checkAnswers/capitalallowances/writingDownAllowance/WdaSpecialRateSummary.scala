@@ -25,5 +25,5 @@ import viewmodels.checkAnswers.BooleanSummary
 final case class WdaSpecialRateSummary(taxYear: TaxYear, businessId: BusinessId)
     extends BooleanSummary(
       WdaSpecialRatePage,
-      routes.WdaMainRateController.onPageLoad(taxYear, businessId, CheckMode)
+      routes.WdaSpecialRateController.onPageLoad(taxYear, businessId, CheckMode)
     )
