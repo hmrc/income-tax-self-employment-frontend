@@ -27,7 +27,7 @@ class NewSiteClaimingAmountFormProvider @Inject() extends Mappings with MoneyBou
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "qualifyingUseStartDate" -> currency(s"newSiteClaimingAmount.error.$userType", NonNumericError)
+      "newSiteClaimingAmount" -> currency(s"newSiteClaimingAmount.error.$userType", NonNumericError)
         .verifying(greaterThan(minimumValue, LessThanZeroError))
         .verifying(maximumValue(maximumValue, OverMaxError))
     )

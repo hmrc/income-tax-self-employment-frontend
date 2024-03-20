@@ -25,11 +25,8 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
-    of(stringFormatter(errorKey, args))
-
-  protected def optionalText(maxLengthWithError: Option[(Int, String)] = None): FieldMapping[Option[String]] =
-    of(optStringFormatter(maxLengthWithError))
+  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty, toUpperCase: Boolean = false): FieldMapping[String] =
+    of(stringFormatter(errorKey, args, toUpperCase))
 
   protected def int(requiredKey: String = "error.required",
                     wholeNumberKey: String = "error.wholeNumber",

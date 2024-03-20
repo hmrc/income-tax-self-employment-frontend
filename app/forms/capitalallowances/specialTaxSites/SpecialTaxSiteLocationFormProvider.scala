@@ -31,9 +31,9 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
   private val buildingName              = "buildingName"
   private val buildingNumber            = "buildingNumber"
   private val postcode                  = "postcode"
-  private val maxBuildingNameLength     = 50
+  private val maxBuildingNameLength     = 100
   private val maxBuildingNameError      = "specialTaxSiteLocation.error.buildingName.length"
-  private val maxBuildingNumberLength   = 10
+  private val maxBuildingNumberLength   = 20
   private val maxBuildingNumberError    = "specialTaxSiteLocation.error.buildingNumber.length"
   private val emptyBuildingDetailsError = (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
   private val postcodeRequiredError     = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
@@ -49,7 +49,7 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
       buildingNumber -> mandatoryIf(
         isEmpty(buildingName),
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNumberLength, maxBuildingNumberError))),
-      postcode -> text(postcodeRequiredError(userType)).verifying(regexp(PostcodeRegex, postcodeInvalidError))
+      postcode -> text(postcodeRequiredError(userType),toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
     )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply).verifying(
     )
   )
