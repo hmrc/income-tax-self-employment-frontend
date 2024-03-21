@@ -22,6 +22,7 @@ import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey
 import models.journeys.Journey.ExpensesTailoring
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import navigation.ExpensesTailoringNavigator
@@ -43,17 +44,17 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          canHop: HopCheckerAction,
+                                          hopChecker: HopCheckerAction,
                                           formProvider: OfficeSuppliesFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: OfficeSuppliesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-  private val page: QuestionPage[OfficeSupplies] = OfficeSuppliesPage
+  private val page = OfficeSuppliesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
-      canHop.checkIfPagePossible(ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       val form = request.userAnswers
         .get(page, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)

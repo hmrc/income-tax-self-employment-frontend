@@ -20,7 +20,8 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.requests.DataRequest
-import pages.QuestionPage
+import pages.PageJourney.PageWithQuestion
+import pages.{PageJourney, QuestionPage}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 
@@ -38,10 +39,10 @@ final case class HopCheckerActionImpl(journey: Journey, targetPage: QuestionPage
     val answers = request.userAnswers
 
     @tailrec
-    def isReachableFrom(current: QuestionPage[_]): Boolean =
-      if (current == targetPage) true
+    def isReachableFrom(current: PageJourney): Boolean =
+      if (current.page == targetPage) true
       else {
-        val nextPage = current.next(answers, businessId)
+        val nextPage = current.maybeNextPage(answers, businessId)
         nextPage match {
           case None    => false
           case Some(p) => isReachableFrom(p)
@@ -49,7 +50,7 @@ final case class HopCheckerActionImpl(journey: Journey, targetPage: QuestionPage
       }
 
     Future.successful {
-      if (isReachableFrom(start)) None
+      if (isReachableFrom(PageWithQuestion(start))) None
       else Some(Redirect(journey.startUrl(taxYear, businessId, mode)))
     }
   }

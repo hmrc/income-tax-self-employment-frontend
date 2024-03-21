@@ -35,6 +35,7 @@ import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 
+// When you change the navigator, remember to change also `next` method in each of the pages
 @Singleton
 class ExpensesTailoringNavigator @Inject() () {
 

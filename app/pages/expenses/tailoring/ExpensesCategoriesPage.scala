@@ -20,17 +20,18 @@ import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring._
+import pages.PageJourney.{PageWithQuestion, TerminalPage}
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
-import pages.{OneQuestionPage, QuestionPage}
+import pages.{OneQuestionPage, PageJourney}
 
 case object ExpensesCategoriesPage extends OneQuestionPage[ExpensesTailoring] {
   override def toString: String = "expensesCategories"
 
-  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] =
-    userAnswers.get(this, businessId).flatMap {
-      case TotalAmount          => Some(TotalExpensesPage)
-      case IndividualCategories => Some(OfficeSuppliesPage)
-      case NoExpenses           => None // CYA page, but it is a Page cannot return for QuestionPage
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(this, businessId).map {
+      case TotalAmount          => PageWithQuestion(TotalExpensesPage)
+      case IndividualCategories => PageWithQuestion(OfficeSuppliesPage)
+      case NoExpenses           => TerminalPage(ExpensesTailoringCYAPage)
     }
 }

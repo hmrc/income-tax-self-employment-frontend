@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class HopCheckerAction @Inject() ()(implicit ec: ExecutionContext) {
-  def checkIfPagePossible(
+  def hasPreviousAnswers(
       journey: Journey,
       page: QuestionPage[_],
       taxYear: TaxYear,

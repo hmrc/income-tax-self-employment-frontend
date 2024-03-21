@@ -16,8 +16,17 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import pages.OneQuestionPage
+import models.common.BusinessId
+import models.database.UserAnswers
+import pages.{OneQuestionPage, QuestionPage}
+
 
 case object WorkFromHomePage extends OneQuestionPage[Boolean] {
   override def toString: String = "workFromHome"
+
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] =
+    userAnswers.get(this, businessId).map { _ =>
+      WorkFromBusinessPremisesPage
+    }
+
 }
