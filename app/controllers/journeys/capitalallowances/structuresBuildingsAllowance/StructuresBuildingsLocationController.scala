@@ -18,17 +18,17 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys.fillForm
-import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider
-import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.filterErrors
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.filterErrors
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites.SpecialTaxSiteLocationPage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocationView
+import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
@@ -40,13 +40,13 @@ class StructuresBuildingsLocationController @Inject() (override val messagesApi:
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        service: SelfEmploymentService,
-                                                       formProvider: SpecialTaxSiteLocationFormProvider,
-                                                       view: SpecialTaxSiteLocationView)
-  extends FrontendBaseController
+                                                       formProvider: StructuresBuildingsLocationFormProvider,
+                                                       view: StructuresBuildingsLocationView)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = SpecialTaxSiteLocationPage
+  private val page = StructuresBuildingsLocationPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

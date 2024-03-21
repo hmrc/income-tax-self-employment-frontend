@@ -40,6 +40,10 @@ site.exampleDate = For example, 27 3 2007
 site.day = Day
 site.month = Month
 site.year = Year
+site.or = or
+site.buildingName = Building name
+site.buildingNumber = Building number
+site.postcode = Postcode
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -112,6 +116,7 @@ error.date.valid = The date must be a real date
 error.date.day = The date must include a day
 error.date.month = The date must include a month
 error.date.year = The date must include a year
+error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
 
 common.insert = {0}
 common.lowerAmount = A lower amount
@@ -1682,6 +1687,14 @@ structuresBuildingsNewClaimAmount.error.required.individual = Enter the amount y
 structuresBuildingsNewClaimAmount.error.required.agent = Enter the amount your client wants to claim for the new building or renovation
 structuresBuildingsNewClaimAmount.cya.individual = Enter the amount you want to claim for new buildings or renovations
 structuresBuildingsNewClaimAmount.cya.agent = Enter the amount your client wants to claim for new buildings or renovations
+
+structuresBuildingsLocation.title = Where is the new structure or building located?
+structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
+structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building
+structuresBuildingsLocation.error.building.individual = Enter a building number or name for the structure or building
+structuresBuildingsLocation.error.building.agent = Enter a building number or name for your client’s structure or building
+structuresBuildingsLocation.error.buildingName.length = Name length error
+structuresBuildingsLocation.error.buildingNumber.length = Number length error
 
 ########## Capital Allowances - Writing down allowance ##########
 

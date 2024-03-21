@@ -16,18 +16,18 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-import controllers.journeys.capitalallowances.specialTaxSites.routes
+import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
+import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
 import play.api.mvc.Call
-object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[SpecialTaxSiteLocation] {
+object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[StructuresBuildingsLocation] {
   override def toString: String = "specialTaxSiteLocation"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers.get(this, businessId).isDefined // TODO add has further answers pages
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, NormalMode) // TODO setup correct navigation
 }
