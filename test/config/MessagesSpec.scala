@@ -213,11 +213,13 @@ class MessagesSpec extends SpecBase {
         .filterNot { case (msgKey, _) =>
           userSpecificMessagesWithoutAgentVersions.contains(msgKey)
         }
+        .filter { case (msgKey, msgValue) =>
+          msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual")
+        }
         .sortBy(_._1)
 
       missingAgentVersionMessages.foreach { case (msgKey, msgValue) =>
-        if (msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual"))
-          println(s"$msgKey=$msgValue")
+        println(s"$msgKey=$msgValue")
       }
 
       val hasNoMissingAgentVersionMessageValues = missingAgentVersionMessages.isEmpty
