@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.specialTaxSites.routes
+@import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
 @import viewmodels.InputWidth.{Full, Fixed10}
 @import viewmodels.LabelSize.Medium
-@import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
+@import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -28,28 +28,28 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[SpecialTaxSiteLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[StructuresBuildingsLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @filteredErrorSummary = @{
-    form.copy(errors = form.errors.filterNot(_.equals(FormError("buildingNumber", s"specialTaxSiteLocation.error.building.$userType"))))
+    form.copy(errors = form.errors.filterNot(_.equals(FormError("buildingNumber", s"structuresBuildingsLocation.error.building.$userType"))))
 }
 
-@layout(pageTitle = title(form, messages("specialTaxSiteLocation.title"))) {
+@layout(pageTitle = title(form, messages("structuresBuildingsLocation.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(filteredErrorSummary))
     }
 
-    @heading(messages("specialTaxSiteLocation.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("structuresBuildingsLocation.title"), extraClasses = "govuk-!-margin-bottom-3")
 
-    @formHelper(action = routes.SpecialTaxSiteLocationController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.StructuresBuildingsLocationController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("buildingName"),
                 label = LabelViewModel(messages("site.buildingName"))
-                    .asPageHeading(Medium)
-                    .withCssClass("govuk-!-margin-bottom-3")
+                .asPageHeading(Medium)
+                .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Full)
         )
 
@@ -59,8 +59,8 @@
             InputViewModel(
                 field = form("buildingNumber"),
                 label = LabelViewModel(messages("site.buildingNumber"))
-                    .asPageHeading(Medium)
-                    .withCssClass("govuk-!-margin-bottom-3")
+                .asPageHeading(Medium)
+                .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Full)
         )
 
@@ -68,8 +68,8 @@
             InputViewModel(
                 field = form("postcode"),
                 label = LabelViewModel(messages("site.postcode"))
-                    .asPageHeading(Medium)
-                    .withCssClass("govuk-!-margin-bottom-3")
+                .asPageHeading(Medium)
+                .withCssClass("govuk-!-margin-bottom-3")
             ).withWidth(Fixed10)
         )
 

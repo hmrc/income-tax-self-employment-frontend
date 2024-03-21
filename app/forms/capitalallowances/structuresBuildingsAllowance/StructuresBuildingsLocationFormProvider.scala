@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package forms.capitalallowances.structuresBuildingsAllowance
 
 import forms.PostcodeRegex
-import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.{buildingName, buildingNumber, emptyBuildingDetailsError}
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.{
+  buildingName,
+  buildingNumber,
+  emptyBuildingDetailsError
+}
 import forms.mappings.Mappings
 import models.common.UserType
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
+import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
 import play.api.data.Forms.{mapping, optional}
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{Form, FormError}
 
 import javax.inject.Inject
-
-class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
+class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
   private val postcode                = "postcode"
-  private val maxBuildingNameLength   = 100
-  private val maxBuildingNameError    = "specialTaxSiteLocation.error.buildingName.length"
-  private val maxBuildingNumberLength = 20
-  private val maxBuildingNumberError  = "specialTaxSiteLocation.error.buildingNumber.length"
-  private val postcodeRequiredError   = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
+  private val maxBuildingNameLength   = 90
+  private val maxBuildingNameError    = "structuresBuildingsLocation.error.buildingName.length"
+  private val maxBuildingNumberLength = 90
+  private val maxBuildingNumberError  = "structuresBuildingsLocation.error.buildingNumber.length"
+  private val postcodeRequiredError   = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
   private val postcodeInvalidError    = "error.postcode.invalid"
 
-  private def atLeastOneRequired(userType: UserType): Constraint[SpecialTaxSiteLocation] = Constraint("constraints.atleastone") { location =>
+  private def atLeastOneRequired(userType: UserType): Constraint[StructuresBuildingsLocation] = Constraint("constraints.atleastone") { location =>
     if (location.buildingName.isEmpty && location.buildingNumber.isEmpty) {
       Invalid(Seq(ValidationError(emptyBuildingDetailsError(userType))))
     } else {
@@ -44,21 +47,21 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
     }
   }
 
-  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
+  def apply(userType: UserType): Form[StructuresBuildingsLocation] = Form(
     mapping(
       buildingName   -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNameLength, maxBuildingNameError))),
       buildingNumber -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNumberLength, maxBuildingNumberError))),
       postcode       -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
-    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply).verifying(atLeastOneRequired(userType))
+    )(StructuresBuildingsLocation.apply)(StructuresBuildingsLocation.unapply).verifying(atLeastOneRequired(userType))
   )
 }
 
-object SpecialTaxSiteLocationFormProvider {
+object StructuresBuildingsLocationFormProvider {
   val buildingName              = "buildingName"
   val buildingNumber            = "buildingNumber"
-  val emptyBuildingDetailsError = (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
+  val emptyBuildingDetailsError = (userType: UserType) => s"structuresBuildingsLocation.error.building.$userType"
 
-  def filterErrors(form: Form[SpecialTaxSiteLocation], userType: UserType): Form[SpecialTaxSiteLocation] = {
+  def filterErrors(form: Form[StructuresBuildingsLocation], userType: UserType): Form[StructuresBuildingsLocation] = {
     val formError = FormError("", List(emptyBuildingDetailsError(userType)), List())
     if (form.errors.contains(formError))
       form

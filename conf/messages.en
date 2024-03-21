@@ -41,6 +41,9 @@ site.day = Day
 site.month = Month
 site.year = Year
 site.or = or
+site.buildingName = Building name
+site.buildingNumber = Building number
+site.postcode = Postcode
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -113,6 +116,7 @@ error.date.valid = The date must be a real date
 error.date.day = The date must include a day
 error.date.month = The date must include a month
 error.date.year = The date must include a year
+error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
 
 common.insert = {0}
 common.lowerAmount = A lower amount
@@ -1691,6 +1695,14 @@ structuresBuildingsQualifyingUseDate.hint.agent = If later, enter the date your 
 structuresBuildingsQualifyingUseDate.error = Enter the date when the building first came into qualifying use
 structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building first came into qualifying use must be in the past
 
+structuresBuildingsLocation.title = Where is the new structure or building located?
+structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
+structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building
+structuresBuildingsLocation.error.building.individual = Enter a building number or name for the structure or building
+structuresBuildingsLocation.error.building.agent = Enter a building number or name for your client’s structure or building
+structuresBuildingsLocation.error.buildingName.length = The building name must be 90 characters or fewer
+structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
+
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.heading = Writing down allowance
@@ -1886,14 +1898,10 @@ qualifyingUseStartDate.error.tooLate = The date when the building first came int
 qualifyingUseStartDate.change.hidden =
 
 specialTaxSiteLocation.title = Where is the special tax site located?
-specialTaxSiteLocation.buildingName = Building name
-specialTaxSiteLocation.buildingNumber = Building number
-specialTaxSiteLocation.postcode = Postcode
 specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site
 specialTaxSiteLocation.error.building.agent = Enter a building number or name for your client’s special tax site
 specialTaxSiteLocation.error.postcode.individual = Enter a postcode for the special tax site
 specialTaxSiteLocation.error.postcode.agent = Enter a postcode for your client’s special tax site
-specialTaxSiteLocation.error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
 specialTaxSiteLocation.change.hidden =
 
 newSiteClaimingAmount.p1.individual = You can claim the relief for up to 10 years from the later date of:

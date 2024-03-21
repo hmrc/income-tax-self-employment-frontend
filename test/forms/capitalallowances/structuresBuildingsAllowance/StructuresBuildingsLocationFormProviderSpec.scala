@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package forms.capitalallowances.structuresBuildingsAllowance
 
 import forms.PostcodeRegex
 import forms.behaviours.StringFieldBehaviours
 import models.common.UserType.Individual
 import play.api.data.FormError
-
-class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
+class StructuresBuildingsLocationFormProviderSpec extends StringFieldBehaviours {
   private val buildingName              = "buildingName"
   private val buildingNumber            = "buildingNumber"
   private val postcode                  = "postcode"
-  private val maxBuildingNameLength     = 100
-  private val maxBuildingNameError      = "specialTaxSiteLocation.error.buildingName.length"
-  private val maxBuildingNumberLength   = 20
-  private val maxBuildingNumberError    = "specialTaxSiteLocation.error.buildingNumber.length"
-  private val emptyBuildingDetailsError = "specialTaxSiteLocation.error.building.individual"
-  private val postcodeRequiredError     = "specialTaxSiteLocation.error.postcode.individual"
+  private val maxBuildingNameLength     = 90
+  private val maxBuildingNameError      = "structuresBuildingsLocation.error.buildingName.length"
+  private val maxBuildingNumberLength   = 90
+  private val maxBuildingNumberError    = "structuresBuildingsLocation.error.buildingNumber.length"
+  private val emptyBuildingDetailsError = "structuresBuildingsLocation.error.building.individual"
+  private val postcodeRequiredError     = "structuresBuildingsLocation.error.postcode.individual"
   private val postcodeInvalidError      = "error.postcode.invalid"
   private val validPostCode             = "GU84NB"
 
-  val form = new SpecialTaxSiteLocationFormProvider()(Individual)
+  val form = new StructuresBuildingsLocationFormProvider()(Individual)
 
   "buildingName" - {
 
