@@ -1692,8 +1692,8 @@ structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the
 structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building
 structuresBuildingsLocation.error.building.individual = Enter a building number or name for the structure or building
 structuresBuildingsLocation.error.building.agent = Enter a building number or name for your client’s structure or building
-structuresBuildingsLocation.error.buildingName.length = Name length error
-structuresBuildingsLocation.error.buildingNumber.length = Number length error
+structuresBuildingsLocation.error.buildingName.length = The building name must be 90 characters or fewer
+structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
 
 ########## Capital Allowances - Writing down allowance ##########
 
