@@ -32,7 +32,6 @@ class DataRequiredActionImpl @Inject() (implicit val executionContext: Execution
         logger.info(s"DataRequiredAction: userAnswers not defined")
         Future.successful(Left(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())))
       case Some(data) =>
-        logger.info(s"DataRequiredAction requires data. userAnswers: $data")
         Future.successful(Right(DataRequest(request.request, request.userId, request.user, data)))
     }
 
