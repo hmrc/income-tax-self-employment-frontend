@@ -56,7 +56,7 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

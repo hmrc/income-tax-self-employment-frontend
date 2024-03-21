@@ -55,7 +55,7 @@ class TravelForWorkController @Inject() (override val messagesApi: MessagesApi,
         case Some(value) => formProvider(request.userType).fill(value)
       }
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

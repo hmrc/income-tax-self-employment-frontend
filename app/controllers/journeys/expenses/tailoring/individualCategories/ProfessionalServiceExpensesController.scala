@@ -27,7 +27,12 @@ import models.journeys.Journey
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{DisallowableProfessionalFeesPage, DisallowableStaffCostsPage, DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
+import pages.expenses.tailoring.individualCategories.{
+  DisallowableProfessionalFeesPage,
+  DisallowableStaffCostsPage,
+  DisallowableSubcontractorCostsPage,
+  ProfessionalServiceExpensesPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.Settable
@@ -66,7 +71,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

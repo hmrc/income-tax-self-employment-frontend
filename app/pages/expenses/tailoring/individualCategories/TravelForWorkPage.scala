@@ -22,7 +22,6 @@ import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.OfficeSupplies
 
-
 case object TravelForWorkPage extends OneQuestionPage[TravelForWork] {
   override def toString: String = "travelForWork"
 
