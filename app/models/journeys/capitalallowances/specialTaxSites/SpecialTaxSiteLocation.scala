@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.writingDownAllowance
+package models.journeys.capitalallowances.specialTaxSites
 
-class WritingDownAllowanceControllerCYAControllerSpec {
-  // TODO: Will be added on CYA impl
+import play.api.libs.json.{Json, OFormat}
+
+case class SpecialTaxSiteLocation(buildingName: Option[String], buildingNumber: Option[String], postCode: String)
+
+object SpecialTaxSiteLocation {
+  implicit val format: OFormat[SpecialTaxSiteLocation] = Json.format[SpecialTaxSiteLocation]
 }

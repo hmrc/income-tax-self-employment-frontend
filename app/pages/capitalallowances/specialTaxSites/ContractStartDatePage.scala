@@ -17,6 +17,7 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
@@ -27,8 +28,8 @@ object ContractStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
   override def toString: String = "contractStartDate"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+    userAnswers.get(this, businessId).isDefined && QualifyingUseStartDatePage.hasAllFurtherAnswers(businessId, userAnswers)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+    routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, NormalMode)
 }

@@ -16,15 +16,16 @@
 
 package forms.behaviours
 
+import forms.{MissingDayError, MissingMonthError, MissingYearError, ValidDateError}
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DateBehaviours extends FieldBehaviours {
+trait DateBehaviours extends FieldBehaviours {
 
-  def dateField(form: Form[_], key: String, validData: Gen[LocalDate]): Unit =
+  def dateField(form: Form[_], key: String, validData: Gen[LocalDate]): Unit = {
     "bind valid data" in {
 
       forAll(validData -> "valid date") { date =>
@@ -40,6 +41,33 @@ class DateBehaviours extends FieldBehaviours {
         result.errors mustBe empty
       }
     }
+
+    "not bind an invalid field" in {
+      val validDate = LocalDate.now
+      val data1 = Map(
+        s"$key.day"   -> "invalid",
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> validDate.getYear.toString
+      )
+      val data2 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> "invalid",
+        s"$key.year"  -> validDate.getYear.toString
+      )
+      val data3 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> "invalid"
+      )
+      val invalidDayResult   = form.bind(data1)
+      val invalidMonthResult = form.bind(data2)
+      val invalidYearResult  = form.bind(data3)
+
+      invalidDayResult.errors mustBe List(FormError(key, ValidDateError))
+      invalidMonthResult.errors mustBe List(FormError(key, ValidDateError))
+      invalidYearResult.errors mustBe List(FormError(key, ValidDateError))
+    }
+  }
 
   def dateFieldWithMax(form: Form[_], key: String, max: LocalDate, formError: FormError): Unit =
     s"fail to bind a date greater than ${max.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
@@ -77,11 +105,38 @@ class DateBehaviours extends FieldBehaviours {
       }
     }
 
-  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit =
+  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
     "fail to bind an empty date" in {
 
       val result = form.bind(Map.empty[String, String])
 
       result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }
+
+    "return errors when a field is empty" in {
+      val validDate = LocalDate.now
+      val data1 = Map(
+        s"$key.day"   -> "",
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> validDate.getYear.toString
+      )
+      val data2 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> "",
+        s"$key.year"  -> validDate.getYear.toString
+      )
+      val data3 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> ""
+      )
+      val missingDayResult   = form.bind(data1)
+      val missingMonthResult = form.bind(data2)
+      val missingYearResult  = form.bind(data3)
+
+      missingDayResult.errors mustBe List(FormError(key, MissingDayError))
+      missingMonthResult.errors mustBe List(FormError(key, MissingMonthError))
+      missingYearResult.errors mustBe List(FormError(key, MissingYearError))
+    }
+  }
 }

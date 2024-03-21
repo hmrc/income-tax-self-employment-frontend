@@ -24,12 +24,12 @@ import play.api.mvc.Call
 
 import java.time.LocalDate
 
-object ConstructionStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
-  override def toString: String = "constructionStartDate"
+object QualifyingUseStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
+  override def toString: String = "qualifyingUseStartDate"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && QualifyingUseStartDatePage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers.get(this, businessId).isDefined && SpecialTaxSiteLocationPage.hasAllFurtherAnswers(businessId, userAnswers)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, NormalMode)
 }

@@ -21,22 +21,22 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContractStartDatePage
+import pages.capitalallowances.specialTaxSites.QualifyingUseStartDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowLocalDate
 
-object ContractStartDateSummary {
+object QualifyingUseStartDateSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ContractStartDatePage, businessId.some)
+      .get(QualifyingUseStartDatePage, businessId.some)
       .map { answer =>
         buildRowLocalDate(
           answer,
-          routes.ContractStartDateController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("contractStartDate.title.cya"),
-          "contractStartDate.change.hidden",
+          routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, CheckMode),
+          messages("qualifyingUseStartDate.subHeading"),
+          "qualifyingUseStartDate.change.hidden",
           rightTextAlign = true
         )
       }

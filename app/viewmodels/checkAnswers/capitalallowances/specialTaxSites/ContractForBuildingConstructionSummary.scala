@@ -35,7 +35,7 @@ object ContractForBuildingConstructionSummary {
         buildRowBoolean(
           answer,
           routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"contractForBuildingConstruction.subHeading.cya.$userType"),
+          messages(s"contractForBuildingConstruction.cya.$userType"),
           "contractForBuildingConstruction.change.hidden",
           rightTextAlign = true
         )

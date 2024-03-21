@@ -24,7 +24,7 @@ import models.database.UserAnswers
 import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.buildRowLocalDate
 
 object ConstructionStartDateSummary {
 
@@ -32,8 +32,8 @@ object ConstructionStartDateSummary {
     answers
       .get(ConstructionStartDatePage, businessId.some)
       .map { answer =>
-        buildRowString(
-          answer.toString,
+        buildRowLocalDate(
+          answer,
           routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, CheckMode),
           messages("constructionStartDate.title"),
           "constructionStartDate.change.hidden",

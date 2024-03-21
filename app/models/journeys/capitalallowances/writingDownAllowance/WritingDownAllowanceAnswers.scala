@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package models.journeys.capitalallowances.writingDownAllowance
 
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+final case class WritingDownAllowanceAnswers(
+    wdaSpecialRate: Option[Boolean],
+    wdaSpecialRateClaimAmount: Option[BigDecimal],
+    wdaMainRate: Option[Boolean],
+    wdaMainRateClaimAmount: Option[BigDecimal],
+    wdaSingleAsset: Option[Boolean],
+    wdaSingleAssetClaimAmounts: Option[BigDecimal]
+)
 
-class ContractForBuildingConstructionFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"contractForBuildingConstruction.error.$userType"))
-
+object WritingDownAllowanceAnswers {
+  implicit val format: Format[WritingDownAllowanceAnswers] = Json.format[WritingDownAllowanceAnswers]
 }

@@ -28,11 +28,11 @@ import java.time.LocalDate
 
 class ConstructionStartDateSummarySpec extends SummaryBaseSpec("ConstructionStartDateSummary") {
 
-  override def validData: JsObject = Json.obj("constructionStartDate" -> LocalDate.of(2020, 2, 2))
+  override def validData: JsObject = Json.obj("constructionStartDate" -> LocalDate.of(2020, 2, 20))
 
   override val testKey: UserType => Text = (_: UserType) => Text(messages("constructionStartDate.title"))
 
-  override val testValue: HtmlContent = HtmlContent("2020-02-02")
+  override val testValue: HtmlContent = HtmlContent("20 February 2020")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ConstructionStartDateSummary.row(userAnswers, taxYear, businessId)(messages)

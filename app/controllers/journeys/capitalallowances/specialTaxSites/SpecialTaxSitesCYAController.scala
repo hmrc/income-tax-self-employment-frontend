@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites.{ConstructionStartDateSummary, ContractStartDateSummary}
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
 //import controllers.handleSubmitAnswersResult
 import controllers.journeys
 import models.common._
@@ -61,7 +61,10 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
             SpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ContractForBuildingConstructionSummary.row(request.userAnswers, taxYear, businessId, request.userType),
             ContractStartDateSummary.row(request.userAnswers, taxYear, businessId),
-            ConstructionStartDateSummary.row(request.userAnswers, taxYear, businessId)
+            ConstructionStartDateSummary.row(request.userAnswers, taxYear, businessId),
+            QualifyingUseStartDateSummary.row(request.userAnswers, taxYear, businessId),
+            SpecialTaxSiteLocationSummary.row(request.userAnswers, taxYear, businessId),
+            NewSiteClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

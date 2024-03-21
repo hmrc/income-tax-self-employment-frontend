@@ -22,7 +22,7 @@ import models.common.UserType
 import models.common.UserType._
 import play.api.data.{Form, FormError}
 
-abstract class SimpleFieldBehaviours extends BigDecimalFieldBehaviours with BooleanFieldBehaviours {
+abstract class SimpleFieldBehaviours extends BigDecimalFieldBehaviours with BooleanFieldBehaviours with DateBehaviours {
   val userTypes = List(Individual, Agent)
 
   def checkValidValue[A](value: A)(implicit form: Form[_]): Unit =
@@ -50,7 +50,7 @@ abstract class SimpleFieldBehaviours extends BigDecimalFieldBehaviours with Bool
   def checkMandatoryForm(expectedErrors: FormError*)(implicit form: Form[_]): Unit =
     behave like mandatoryForm(form, expectedErrors: _*)
 
-  def checkMandatoryField(expectedError: String)(implicit form: Form[_]): Unit =
+  def checkMandatoryField(expectedError: String, fieldName: String = fieldName)(implicit form: Form[_]): Unit =
     behave like mandatoryField(form, fieldName, FormError(fieldName, expectedError))
 
   def checkLessThanField(expectedError: String = LessThanZeroError)(implicit form: Form[_]): Unit =

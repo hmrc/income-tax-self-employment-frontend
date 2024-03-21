@@ -14,25 +14,34 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package forms.standard
 
 import forms.mappings.Mappings
+import models.common.UserType
+import pages.OneQuestionPage
 import play.api.data.Form
 
 import java.time.LocalDate
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class ConstructionStartDateFormProvider @Inject() extends Mappings {
+@Singleton
+class LocalDateFormProvider @Inject() extends Mappings {
 
-  private val earliestDate      = LocalDate.of(2018, 10, 29)
-  private val requiredError     = "constructionStartDate.error"
-  private val dateTooEarlyError = "constructionStartDate.error.tooEarly"
+  def apply(page: OneQuestionPage[_],
+            userType: UserType,
+            userSpecificRequiredError: Boolean = false,
+            earliestDateAndError: Option[(LocalDate, String)] = None,
+            latestDateAndError: Option[(LocalDate, String)] = None): Form[LocalDate] = {
 
-  def apply(): Form[LocalDate] =
+    val pageName      = page.pageName.value
+    val requiredError = s"$pageName.error.required${if (userSpecificRequiredError) s".$userType"}"
+
     Form(
-      "constructionStartDate" -> localDate(
+      pageName -> localDate(
         requiredKey = requiredError,
-        earliestDateAndError = Some((earliestDate, dateTooEarlyError))
+        earliestDateAndError = earliestDateAndError,
+        latestDateAndError = latestDateAndError
       )
     )
+  }
 }

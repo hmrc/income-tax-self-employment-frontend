@@ -16,6 +16,8 @@
 
 package viewmodels
 
+import models.common.UserType
+import pages.Page
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
@@ -24,6 +26,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 package object checkAnswers {
 
@@ -37,11 +42,32 @@ package object checkAnswers {
     buildRowString(messages(messageAnswer), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
+  def mkBooleanSummary(answer: Boolean, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+    buildRowBoolean(
+      answer,
+      callLink,
+      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      s"${page.pageName}.change.hidden",
+      rightTextAlign = true
+    )
+
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
 
+  def mkBigDecimalSummary(answer: BigDecimal, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+    buildRowBigDecimal(
+      answer,
+      callLink,
+      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      s"${page.pageName}.change.hidden"
+    )
+
   def buildRowInt(answer: Int, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(answer.toString, callLink, keyMessage, changeMessage, rightTextAlign = true)
+
+  def buildRowLocalDate(answer: LocalDate, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
+      messages: Messages): SummaryListRow =
+    buildRowString(formatDate(answer), callLink, keyMessage, changeMessage, rightTextAlign)
 
   def buildRowString(answer: String,
                      callLink: Call,
@@ -69,4 +95,9 @@ package object checkAnswers {
       case "yes" | "true" => messages("site.yes")
       case value          => messages(s"expenses.$value.cya")
     }
+
+  def formatDate(date: LocalDate): String = {
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    date.format(formatter)
+  }
 }

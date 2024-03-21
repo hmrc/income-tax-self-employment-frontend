@@ -18,46 +18,44 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys.fillForm
-import forms.standard.LocalDateFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
+import pages.capitalallowances.specialTaxSites.NewSiteClaimingAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
+import views.html.journeys.capitalallowances.specialTaxSites.NewSiteClaimingAmountView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
+class NewSiteClaimingAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                 val controllerComponents: MessagesControllerComponents,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  service: SelfEmploymentService,
-                                                 formProvider: LocalDateFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: ConstructionStartDateView)
+                                                 formProvider: CurrencyFormProvider,
+                                                 view: NewSiteClaimingAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page                 = ConstructionStartDatePage
-  private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "constructionStartDate.error.tooEarly"))
+  private val page = NewSiteClaimingAmountPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType, earliestDateAndError = earliestDateAndError))
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(page, request.userType, earliestDateAndError = earliestDateAndError)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

@@ -22,9 +22,13 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
 object ContractForBuildingConstructionPage extends SpecialTaxSitesBasePage[Boolean] {
   override def toString: String = "contractForBuildingConstruction"
+
+  override val dependentPagesWhenYes: List[Settable[_]] = List(ConstructionStartDatePage)
+  override val dependentPagesWhenNo: List[Settable[_]]  = List(ContractStartDatePage)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined &&

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package viewmodels.checkAnswers.capitalallowances.writingDownAllowance
 
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import controllers.journeys.capitalallowances.writingDownAllowance.routes
+import models.CheckMode
+import models.common.{BusinessId, TaxYear}
+import pages.capitalallowances.writingDownAllowance.WdaSpecialRateClaimAmountPage
+import viewmodels.checkAnswers.BigDecimalSummary
 
-import javax.inject.Inject
-
-class SpecialTaxSitesFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"specialTaxSites.error.$userType"))
-
-}
+final case class WdaSpecialRateClaimAmountSummary(taxYear: TaxYear, businessId: BusinessId)
+    extends BigDecimalSummary(
+      WdaSpecialRateClaimAmountPage,
+      routes.WdaSpecialRateClaimAmountController.onPageLoad(taxYear, businessId, CheckMode)
+    )
