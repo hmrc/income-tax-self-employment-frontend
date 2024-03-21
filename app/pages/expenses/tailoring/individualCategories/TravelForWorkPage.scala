@@ -16,11 +16,10 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.TravelForWork
-import pages.{OneQuestionPage, PageJourney, QuestionPage}
 import models.common.BusinessId
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.OfficeSupplies
+import models.journeys.expenses.individualCategories.TravelForWork
+import pages.{OneQuestionPage, PageJourney}
 
 case object TravelForWorkPage extends OneQuestionPage[TravelForWork] {
   override def toString: String = "travelForWork"
