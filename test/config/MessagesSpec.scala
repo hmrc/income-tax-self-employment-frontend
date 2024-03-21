@@ -49,6 +49,43 @@ class MessagesSpec extends SpecBase {
 
   private val illegalCharacters: Set[Char] = Set('\'', '`')
 
+  // TODO Go through this list and fix content for agent
+  private val userSpecificMessagesWithoutAgentVersions = List(
+    "amountSpentOnEvcp.title.cya",
+    "checkYourSelfEmploymentDetails.accountingType",
+    "expenses.cyaSummary.agent",
+    "expenses.hint.disallowableExpenses",
+    "expensesCategories.p1.agent",
+    "expensesCategories.p2.agent",
+    "expensesCategories.p3",
+    "expensesCategories.p4.agent",
+    "howMuchTradingAllowance.p1.agent",
+    "howMuchTradingAllowance.p2",
+    "howMuchTradingAllowance.subHeading.agent",
+    "incomeNotCountedAsTurnover.p2",
+    "peopleLivingAtBusinessPremises.p1.agent",
+    "sectionCompletedState.title",
+    "selectCapitalAllowances.subText.annualInvestment",
+    "selectCapitalAllowances.subText.balancing",
+    "selectCapitalAllowances.subText.balancingCharge.ACCRUAL",
+    "selectCapitalAllowances.subText.balancingCharge.CASH",
+    "selectCapitalAllowances.subText.electricVehicleChargepoint",
+    "selectCapitalAllowances.subText.structuresAndBuildings",
+    "selectCapitalAllowances.subText.writingDown",
+    "selectCapitalAllowances.subText.zeroEmissionCar.ACCRUAL",
+    "selectCapitalAllowances.subText.zeroEmissionCar.CASH",
+    "selectCapitalAllowances.subText.zeroEmissionGoodsVehicle",
+    "signedOut.title",
+    "specialTaxSites.details.heading",
+    "structuresBuildingsAllowance.p1.agent",
+    "taxReliefChargePoints.hint.agent",
+    "timeout.message",
+    "turnoverNotTaxable.p1.agent",
+    "turnoverNotTaxable.p3.agent",
+    "wfhFlatRateOrActualCosts.error.required.agent",
+    "wfhFlatRateOrActualCosts.subHeading.agent"
+  )
+
   "messages must not contain any illegal characters" in {
     for {
       char <- illegalCharacters
@@ -169,6 +206,31 @@ class MessagesSpec extends SpecBase {
         result mustBe Set("example4", "example5")
       }
     }
+
+    "make sure user specific messages have also agent version" in {
+      val missingAgentVersionMessages = english.toList
+        .filterNot(_._1.endsWith("hidden"))
+        .filterNot { case (msgKey, _) =>
+          userSpecificMessagesWithoutAgentVersions.contains(msgKey)
+        }
+        .filter { case (msgKey, msgValue) =>
+          msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual")
+        }
+        .sortBy(_._1)
+
+      missingAgentVersionMessages.foreach { case (msgKey, msgValue) =>
+        println(s"$msgKey=$msgValue")
+      }
+
+      val hasNoMissingAgentVersionMessageValues = missingAgentVersionMessages.isEmpty
+      assert(
+        hasNoMissingAgentVersionMessageValues,
+        "Perhaps missing the agent version of the message. Add to the userSpecificMessagesWithoutAgentVersionsexception list if not true. " +
+          "See the console for details which keys are affected."
+      )
+
+    }
+
   }
 
   private def filterExcludedKeys(messages: List[(String, String)], exclusionKeys: Set[String], exclusionSubKeys: Set[String]) =

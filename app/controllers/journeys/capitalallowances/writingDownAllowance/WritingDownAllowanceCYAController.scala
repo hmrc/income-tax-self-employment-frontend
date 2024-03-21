@@ -16,7 +16,7 @@
 
 package controllers.journeys.capitalallowances.writingDownAllowance
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.CapitalAllowancesWritingDownAllowance
@@ -38,37 +38,40 @@ import scala.concurrent.ExecutionContext
 class WritingDownAllowanceCYAController @Inject() (override val messagesApi: MessagesApi,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
+                                                   getAnswers: DataRetrievalAction,
+                                                   getJourneyAnswers: SubmittedDataRetrievalActionProvider,
+                                                   requireAnswers: DataRequiredAction,
                                                    service: SelfEmploymentService,
                                                    view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList =
-      SummaryListCYA(request.userAnswers, taxYear, businessId, request.userType).mkSummaryList(
-        List(
-          WdaSpecialRateSummary(taxYear, businessId),
-          WdaSpecialRateClaimAmountSummary(taxYear, businessId),
-          WdaMainRateSummary(taxYear, businessId),
-          WdaMainRateClaimAmountSummary(taxYear, businessId),
-          WdaSingleAssetSummary(taxYear, businessId),
-          WdaSingleAssetClaimAmountsSummary(taxYear, businessId)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getAnswers andThen getJourneyAnswers[WritingDownAllowanceAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesWritingDownAllowance)) andThen requireAnswers) { implicit request =>
+      val summaryList =
+        SummaryListCYA(request.userAnswers, taxYear, businessId, request.userType).mkSummaryList(
+          List(
+            WdaSpecialRateSummary(taxYear, businessId),
+            WdaSpecialRateClaimAmountSummary(taxYear, businessId),
+            WdaMainRateSummary(taxYear, businessId),
+            WdaMainRateClaimAmountSummary(taxYear, businessId),
+            WdaSingleAssetSummary(taxYear, businessId),
+            WdaSingleAssetClaimAmountsSummary(taxYear, businessId)
+          )
         )
-      )
 
-    Ok(
-      view(
-        CapitalAllowancesCYAPage.pageName.value,
-        taxYear,
-        request.userType,
-        summaryList,
-        routes.WritingDownAllowanceCYAController.onSubmit(taxYear, businessId)
-      ))
-  }
+      Ok(
+        view(
+          CapitalAllowancesCYAPage.pageName.value,
+          taxYear,
+          request.userType,
+          summaryList,
+          routes.WritingDownAllowanceCYAController.onSubmit(taxYear, businessId)
+        ))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesWritingDownAllowance)
       val result  = service.submitAnswers[WritingDownAllowanceAnswers](context, request.userAnswers)

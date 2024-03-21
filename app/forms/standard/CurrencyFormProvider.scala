@@ -17,7 +17,7 @@
 package forms.standard
 
 import forms.mappings.Mappings._
-import forms.{LessThanZeroError, NoDecimalsError, NonNumericError, OverMaxError}
+import forms.{LessThanZeroError, NonNumericError, OverMaxError}
 import models.common.{MoneyBounds, UserType}
 import pages.OneQuestionPage
 import play.api.data.Form
@@ -35,7 +35,6 @@ class CurrencyFormProvider @Inject() {
       "value" -> currency(userTypeAware(userType, page.requiredErrorKey), NonNumericError)
         .verifying(greaterThan(minValue, LessThanZeroError))
         .verifying(lessThan(maxValue, OverMaxError))
-        .verifying(regexpBigDecimal(MoneyBounds.noDecimalRegexp, NoDecimalsError))
     )
 
 }
