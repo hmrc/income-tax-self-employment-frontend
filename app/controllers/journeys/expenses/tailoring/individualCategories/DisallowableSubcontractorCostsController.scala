@@ -38,11 +38,13 @@ class DisallowableSubcontractorCostsController @Inject() (override val messagesA
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction,
+                                                          hopChecker: HopCheckerAction,
                                                           formProvider: DisallowableSubcontractorCostsFormProvider,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: DisallowableSubcontractorCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableSubcontractorCostsPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

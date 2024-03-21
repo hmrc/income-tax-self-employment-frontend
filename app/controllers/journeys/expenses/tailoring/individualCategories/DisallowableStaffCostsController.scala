@@ -38,11 +38,13 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
+                                                  hopChecker: HopCheckerAction,
                                                   formProvider: DisallowableStaffCostsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: DisallowableStaffCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableStaffCostsPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -16,20 +16,24 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.FinancialExpenses
-import pages.OneQuestionPage
+import cats.implicits._
 import models.common.BusinessId
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.OfficeSupplies
-import pages.{OneQuestionPage, QuestionPage}
-
+import models.journeys.expenses.individualCategories.FinancialExpenses
+import models.journeys.expenses.individualCategories.FinancialExpenses._
+import pages.PageJourney.mkQuestion
+import pages.{OneQuestionPage, PageJourney}
 
 case object FinancialExpensesPage extends OneQuestionPage[Set[FinancialExpenses]] {
   override def toString: String = "financialExpenses"
 
-  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] =
-    userAnswers.get(this, businessId).map { _ =>
-      GoodsToSellOrUsePage
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(this, businessId).flatMap { seq =>
+      if (seq.contains(NoFinancialExpenses)) mkQuestion(DepreciationPage).some
+      else if (seq.contains(Interest)) mkQuestion(DisallowableInterestPage).some
+      else if (seq.contains(OtherFinancialCharges)) mkQuestion(DisallowableOtherFinancialChargesPage).some
+      else if (seq.contains(IrrecoverableDebts)) mkQuestion(DisallowableIrrecoverableDebtsPage).some
+      else None
     }
 
 }

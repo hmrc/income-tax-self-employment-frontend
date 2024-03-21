@@ -22,17 +22,18 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
-import pages.{OneQuestionPage, QuestionPage}
+import pages.PageJourney.mkQuestion
+import pages.{OneQuestionPage, PageJourney}
 
 case object ProfessionalServiceExpensesPage extends OneQuestionPage[Set[ProfessionalServiceExpenses]] {
   override def toString: String = "professionalServiceExpenses"
 
-  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] =
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).flatMap { seq =>
-      if (seq.contains(No)) FinancialExpensesPage.some
-      else if (seq.contains(Staff)) DisallowableStaffCostsPage.some
-      else if (seq.contains(Construction)) DisallowableSubcontractorCostsPage.some
-      else if (seq.contains(ProfessionalFees)) DisallowableProfessionalFeesPage.some
+      if (seq.contains(No)) mkQuestion(FinancialExpensesPage).some
+      else if (seq.contains(Staff)) mkQuestion(DisallowableStaffCostsPage).some
+      else if (seq.contains(Construction)) mkQuestion(DisallowableSubcontractorCostsPage).some
+      else if (seq.contains(ProfessionalFees)) mkQuestion(DisallowableProfessionalFeesPage).some
       else None
     }
 }

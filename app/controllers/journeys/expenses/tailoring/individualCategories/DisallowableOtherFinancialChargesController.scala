@@ -38,11 +38,13 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
                                                              identify: IdentifierAction,
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
+                                                             hopChecker: HopCheckerAction,
                                                              formProvider: DisallowableOtherFinancialChargesFormProvider,
                                                              val controllerComponents: MessagesControllerComponents,
                                                              view: DisallowableOtherFinancialChargesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableOtherFinancialChargesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

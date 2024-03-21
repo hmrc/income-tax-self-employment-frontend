@@ -16,19 +16,17 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
-import pages.OneQuestionPage
 import models.common.BusinessId
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.OfficeSupplies
-import pages.{OneQuestionPage, QuestionPage}
+import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
+import pages.{OneQuestionPage, PageJourney}
 
 case object AdvertisingOrMarketingPage extends OneQuestionPage[AdvertisingOrMarketing] {
   override def toString: String = "advertisingOrMarketing"
 
-  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] =
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>
-      EntertainmentCostsPage
+      PageJourney.mkQuestion(EntertainmentCostsPage)
     }
 
 }

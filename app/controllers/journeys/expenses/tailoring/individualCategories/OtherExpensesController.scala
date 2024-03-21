@@ -38,11 +38,13 @@ class OtherExpensesController @Inject() (override val messagesApi: MessagesApi,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
+                                         hopChecker: HopCheckerAction,
                                          formProvider: OtherExpensesFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: OtherExpensesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = OtherExpensesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

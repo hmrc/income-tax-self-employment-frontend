@@ -38,11 +38,13 @@ class WorkFromHomeController @Inject() (override val messagesApi: MessagesApi,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
+                                        hopChecker: HopCheckerAction,
                                         formProvider: WorkFromHomeFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: WorkFromHomeView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = WorkFromHomePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

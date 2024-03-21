@@ -35,9 +35,10 @@ import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 
-// When you change the navigator, remember to change also `next` method in each of the pages
+/** When you change the navigator, remember to change also `next` method in each of the pages
+  */
 @Singleton
-class ExpensesTailoringNavigator @Inject() () {
+class ExpensesTailoringNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
 

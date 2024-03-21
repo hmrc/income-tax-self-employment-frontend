@@ -38,11 +38,13 @@ class DepreciationController @Inject() (override val messagesApi: MessagesApi,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
+                                        hopChecker: HopCheckerAction,
                                         formProvider: DepreciationFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: DepreciationView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DepreciationPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

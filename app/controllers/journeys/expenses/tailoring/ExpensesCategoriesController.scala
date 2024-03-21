@@ -49,11 +49,13 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
+                                              hopChecker: HopCheckerAction,
                                               formProvider: ExpensesCategoriesFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: ExpensesCategoriesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = ExpensesCategoriesPage
 
   private val incomeThreshold: BigDecimal = 85000
 

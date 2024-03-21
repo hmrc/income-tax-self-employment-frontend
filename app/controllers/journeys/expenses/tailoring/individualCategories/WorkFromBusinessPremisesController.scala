@@ -38,11 +38,13 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
+                                                    hopChecker: HopCheckerAction,
                                                     formProvider: WorkFromBusinessPremisesFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     view: WorkFromBusinessPremisesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = WorkFromBusinessPremisesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

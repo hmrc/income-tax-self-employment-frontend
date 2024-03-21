@@ -38,11 +38,13 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction,
+                                                          hopChecker: HopCheckerAction,
                                                           formProvider: DisallowableIrrecoverableDebtsFormProvider,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: DisallowableIrrecoverableDebtsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableIrrecoverableDebtsPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

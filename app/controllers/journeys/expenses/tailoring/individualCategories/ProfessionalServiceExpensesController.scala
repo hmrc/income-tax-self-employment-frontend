@@ -53,12 +53,14 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
+                                                       hopChecker: HopCheckerAction,
                                                        formProvider: ProfessionalServiceExpensesFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: ProfessionalServiceExpensesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = ProfessionalServiceExpensesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

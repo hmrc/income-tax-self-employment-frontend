@@ -43,12 +43,14 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
                                                 getUserAnswers: DataRetrievalAction,
                                                 getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                                 requireData: DataRequiredAction,
+                                                hopChecker: HopCheckerAction,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: CheckYourAnswersView,
                                                 service: SelfEmploymentService)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
+  private val page                    = ExpensesTailoringCYAPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen

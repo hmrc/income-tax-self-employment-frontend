@@ -38,11 +38,13 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
+                                                hopChecker: HopCheckerAction,
                                                 formProvider: DisallowableInterestFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: DisallowableInterestView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableInterestPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -38,11 +38,13 @@ class DisallowableProfessionalFeesController @Inject() (override val messagesApi
                                                         identify: IdentifierAction,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
+                                                        hopChecker: HopCheckerAction,
                                                         formProvider: DisallowableProfessionalFeesFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: DisallowableProfessionalFeesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableProfessionalFeesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
