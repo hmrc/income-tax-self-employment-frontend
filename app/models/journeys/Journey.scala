@@ -16,8 +16,12 @@
 
 package models.journeys
 
+import controllers.journeys.expenses
 import enumeratum._
-import models.common.PageName
+import models.Mode
+import models.common.{BusinessId, PageName, TaxYear}
+import models.journeys.expenses.ExpensesTailoring
+import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
@@ -45,6 +49,7 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
+import play.api.libs.json.Reads
 import play.api.mvc.PathBindable
 
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
@@ -52,6 +57,10 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
 
   /** Used to recognize if there are any answers for that journey. Only leave it Nil if there are no answers to store */
   val pageKeys: List[PageName]
+
+  def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String = ""
+
+  def startPage: QuestionPage[_] = ???
 }
 
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
@@ -100,6 +109,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       ExpensesCategoriesPage.pageName
     )
+    override def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
+      expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, mode).url
+
+    override def startPage: QuestionPage[_] = ExpensesCategoriesPage
   }
   case object ExpensesGoodsToSellOrUse extends Journey("expenses-goods-to-sell-or-use") {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)

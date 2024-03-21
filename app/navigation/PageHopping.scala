@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package navigation
 
-import models.common.PageName
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import pages.{Page, QuestionPage}
+import play.api.libs.json.Reads
 
-import scala.language.implicitConversions
+case class PageHopping(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear) {
 
-trait Page extends {
-  def pageName: PageName = PageName(toString)
-}
+  def canHopTo[A: Reads](from: QuestionPage[A], to: QuestionPage[_]): Boolean =
+    true
 
-object Page {
-
-  implicit def toString(page: Page): String =
-    page.toString
-
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
+  // from: ExpensesCategoriesPage to OfficeSuppliesPage
 }

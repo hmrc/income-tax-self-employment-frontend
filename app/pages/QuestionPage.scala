@@ -72,4 +72,6 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
     false
   }
 
+  def next(userAnswers: UserAnswers, businessId: BusinessId): Option[QuestionPage[_]] = None
+
 }
