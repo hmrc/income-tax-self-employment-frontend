@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.specialTaxSites.ContractStartDateFormProvider
+import controllers.journeys.fillForm
+import forms.standard.LocalDateFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites.ContractStartDatePage
@@ -29,8 +29,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ContractStartDateView
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ContractStartDateController @Inject() (override val messagesApi: MessagesApi,
@@ -38,32 +39,32 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              service: SelfEmploymentService,
-                                             formProvider: ContractStartDateFormProvider,
+                                             formProvider: LocalDateFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: ContractStartDateView)(implicit ec: ExecutionContext)
+                                             view: ContractStartDateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page                 = ContractStartDatePage
+  private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "contractStartDate.error.tooEarly"))
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ContractStartDatePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(
+        page,
+        businessId,
+        formProvider(page, request.userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer, ContractStartDatePage).map {
-              ContractStartDatePage.redirectNext(mode, _, businessId, taxYear)
-            }
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

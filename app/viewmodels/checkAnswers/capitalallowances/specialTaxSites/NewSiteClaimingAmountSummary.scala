@@ -19,25 +19,24 @@ package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContractStartDatePage
+import pages.capitalallowances.specialTaxSites.NewSiteClaimingAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowLocalDate
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object ContractStartDateSummary {
+object NewSiteClaimingAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ContractStartDatePage, businessId.some)
+      .get(NewSiteClaimingAmountPage, businessId.some)
       .map { answer =>
-        buildRowLocalDate(
+        buildRowBigDecimal(
           answer,
-          routes.ContractStartDateController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("contractStartDate.title.cya"),
-          "contractStartDate.change.hidden",
-          rightTextAlign = true
+          routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"newSiteClaimingAmount.subHeading.$userType"),
+          "newSiteClaimingAmount.change.hidden"
         )
       }
 }

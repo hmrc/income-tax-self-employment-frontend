@@ -27,6 +27,9 @@ import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 package object checkAnswers {
 
   def buildRowBoolean(answer: Boolean,
@@ -62,6 +65,10 @@ package object checkAnswers {
   def buildRowInt(answer: Int, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
     buildRowString(answer.toString, callLink, keyMessage, changeMessage, rightTextAlign = true)
 
+  def buildRowLocalDate(answer: LocalDate, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = false)(implicit
+      messages: Messages): SummaryListRow =
+    buildRowString(formatDate(answer), callLink, keyMessage, changeMessage, rightTextAlign)
+
   def buildRowString(answer: String,
                      callLink: Call,
                      keyMessage: String,
@@ -88,4 +95,9 @@ package object checkAnswers {
       case "yes" | "true" => messages("site.yes")
       case value          => messages(s"expenses.$value.cya")
     }
+
+  def formatDate(date: LocalDate): String = {
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    date.format(formatter)
+  }
 }

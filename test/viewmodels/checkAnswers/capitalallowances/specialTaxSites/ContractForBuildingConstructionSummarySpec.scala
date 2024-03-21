@@ -28,7 +28,7 @@ class ContractForBuildingConstructionSummarySpec extends SummaryBaseSpec("Contra
 
   override def validData: JsObject = Json.obj("contractForBuildingConstruction" -> true)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"contractForBuildingConstruction.subHeading.cya.$userType"))
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"contractForBuildingConstruction.cya.$userType"))
 
   override val testValue: HtmlContent = HtmlContent("site.yes")
 

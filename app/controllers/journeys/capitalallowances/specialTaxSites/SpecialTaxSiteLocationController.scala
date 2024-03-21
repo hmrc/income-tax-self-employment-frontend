@@ -18,49 +18,49 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys.fillForm
-import forms.standard.LocalDateFormProvider
+import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider
+import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.filterErrors
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
+import pages.capitalallowances.specialTaxSites.SpecialTaxSiteLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
+import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocationView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 service: SelfEmploymentService,
-                                                 formProvider: LocalDateFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: ConstructionStartDateView)
+class SpecialTaxSiteLocationController @Inject() (override val messagesApi: MessagesApi,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  service: SelfEmploymentService,
+                                                  formProvider: SpecialTaxSiteLocationFormProvider,
+                                                  view: SpecialTaxSiteLocationView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page                 = ConstructionStartDatePage
-  private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "constructionStartDate.error.tooEarly"))
+  private val page = SpecialTaxSiteLocationPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType, earliestDateAndError = earliestDateAndError))
+      val form = fillForm(page, businessId, formProvider(request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(page, request.userType, earliestDateAndError = earliestDateAndError)
+      val form = formProvider(request.userType)
+      form
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          formErrors => Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId))),
           answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }

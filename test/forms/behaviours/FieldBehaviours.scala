@@ -55,6 +55,14 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       result.errors mustEqual Seq(expectedError)
     }
 
+  def fieldThatOnlyBindsRegexValidData(form: Form[_], fieldName: String, regex: String, expectedError: FormError): Unit =
+    s"not bind when input does not match regex, return ${formErrorToString(expectedError)}}" in {
+      forAll(regexNonMatchingString(regex) -> "invalidItem") { dataItem: String =>
+        val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+        result.errors mustEqual Seq(expectedError)
+      }
+    }
+
   def formErrorToString(formErrors: FormError*): String =
     formErrors match {
       case formError :: Nil => s"${formError.key}=${formError.message}, args=${formError.args.mkString(",")}"

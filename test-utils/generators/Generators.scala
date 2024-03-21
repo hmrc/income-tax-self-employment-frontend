@@ -148,6 +148,12 @@ trait Generators extends ModelGenerators {
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
 
+  def regexMatchingString(regex: String): Gen[String] =
+    nonEmptyString suchThat (_.matches(regex))
+
+  def regexNonMatchingString(regex: String): Gen[String] =
+    nonEmptyString suchThat (!_.matches(regex))
+
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)

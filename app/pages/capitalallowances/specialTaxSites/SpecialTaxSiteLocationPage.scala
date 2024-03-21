@@ -20,16 +20,15 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
 import play.api.mvc.Call
 
-import java.time.LocalDate
-
-object ConstructionStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
-  override def toString: String = "constructionStartDate"
+object SpecialTaxSiteLocationPage extends SpecialTaxSitesBasePage[SpecialTaxSiteLocation] {
+  override def toString: String = "specialTaxSiteLocation"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && QualifyingUseStartDatePage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers.get(this, businessId).isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, NormalMode)
+    routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
 }

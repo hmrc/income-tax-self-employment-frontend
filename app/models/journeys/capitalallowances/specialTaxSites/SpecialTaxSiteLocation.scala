@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.specialTaxSites
+package models.journeys.capitalallowances.specialTaxSites
 
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
+case class SpecialTaxSiteLocation(buildingName: Option[String], buildingNumber: Option[String], postCode: String)
 
-class ContractForBuildingConstructionFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] = Form("value" -> boolean(s"contractForBuildingConstruction.error.$userType"))
-
+object SpecialTaxSiteLocation {
+  implicit val format: OFormat[SpecialTaxSiteLocation] = Json.format[SpecialTaxSiteLocation]
 }

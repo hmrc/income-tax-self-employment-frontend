@@ -40,6 +40,7 @@ site.exampleDate = For example, 27 3 2007
 site.day = Day
 site.month = Month
 site.year = Year
+site.or = or
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -1668,7 +1669,6 @@ structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or u
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
 
-
 structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
 structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
 structuresBuildingsNewClaimAmount.p.individual = If the structure or building only qualifies for part of the period, you must reduce your claim proportionally.
@@ -1839,8 +1839,8 @@ specialTaxSites.details.l5.href = https://www.gov.uk/guidance/claiming-capital-a
 specialTaxSites.details.l5.2 = must specify that the spend is to be treated as special tax site qualifying expenditure
 specialTaxSites.subHeading.individual = Are you claiming the allowance for a structure or building in a special tax site?
 specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
-specialTaxSites.error.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
-specialTaxSites.error.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
+specialTaxSites.error.required.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
+specialTaxSites.error.required.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
 specialTaxSites.change.hidden = Change if claiming the allowance for a structure or building in a special tax site
 
 contractForBuildingConstruction.title = Special tax site contracts
@@ -1850,20 +1850,64 @@ contractForBuildingConstruction.l1 = entered into before 29 October 2018
 contractForBuildingConstruction.l2 = signed before the Freeport site was designated
 contractForBuildingConstruction.subHeading.individual = Did you enter into a contract for the building’s construction?
 contractForBuildingConstruction.subHeading.agent = Did your client enter into a contract for the building’s construction?
-contractForBuildingConstruction.subHeading.cya.individual = Did you sign a contract for the building’s construction?
-contractForBuildingConstruction.subHeading.cya.agent = Did your client sign a contract for the building’s construction?
-contractForBuildingConstruction.error.individual = Select yes if you entered into a contract for the building’s construction
-contractForBuildingConstruction.error.agent = Select yes if your client entered into a contract for the building’s construction
+contractForBuildingConstruction.cya.individual = Did you sign a contract for the building’s construction?
+contractForBuildingConstruction.cya.agent = Did your client sign a contract for the building’s construction?
+contractForBuildingConstruction.error.required.individual = Select yes if you entered into a contract for the building’s construction
+contractForBuildingConstruction.error.required.agent = Select yes if your client entered into a contract for the building’s construction
 contractForBuildingConstruction.change.hidden = Change whether you entered into a contract for the building’s construction
 
 contractStartDate.title = When was the contract entered into?
 contractStartDate.title.cya = When was the contract signed?
-contractStartDate.error.individual = Enter the date when you entered into the contract for the building’s construction
-contractStartDate.error.agent = Enter the date when your client entered into the contract for the building’s construction
+contractStartDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction
+contractStartDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction
 contractStartDate.error.tooEarly = The date when the contract was signed cannot be before 29 October 2018
 contractStartDate.change.hidden = Change the date the contract for the building’s construction was entered into
 
 constructionStartDate.title = When did construction or physical works start?
-constructionStartDate.error = Enter the date when construction or physical works started
+constructionStartDate.error.required = Enter the date when construction or physical works started
 constructionStartDate.error.tooEarly = The date when construction or physical works started cannot be before 29 October 2018
 constructionStartDate.change.hidden = Change the date construction or physical works started
+
+qualifyingUseStartDate.title = Qualifying use
+qualifyingUseStartDate.subHeading = When was the building first brought into qualifying use?
+qualifyingUseStartDate.p1 = Qualifying use is when the building is in non-residential use for the business activity.
+qualifyingUseStartDate.hint.individual = If this was a later date, enter the date that you incurred the qualifying expenditure.
+qualifyingUseStartDate.hint.agent = If this was a later date, enter the date that your client incurred the qualifying expenditure.
+qualifyingUseStartDate.error.required = Enter the date when the building first came into qualifying use
+qualifyingUseStartDate.error.tooLate = The date when the building first came into qualifying use must be in the past
+qualifyingUseStartDate.change.hidden =
+
+specialTaxSiteLocation.title = Where is the special tax site located?
+specialTaxSiteLocation.buildingName = Building name
+specialTaxSiteLocation.buildingNumber = Building number
+specialTaxSiteLocation.postcode = Postcode
+specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site
+specialTaxSiteLocation.error.building.agent = Enter a building number or name for your client’s special tax site
+specialTaxSiteLocation.error.postcode.individual = Enter a postcode for the special tax site
+specialTaxSiteLocation.error.postcode.agent = Enter a postcode for your client’s special tax site
+specialTaxSiteLocation.error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
+specialTaxSiteLocation.change.hidden =
+
+newSiteClaimingAmount.p1.individual = You can claim the relief for up to 10 years from the later date of:
+newSiteClaimingAmount.p1.agent = Your client can claim the relief for up to 10 years from the later date of:
+newSiteClaimingAmount.l1 = when the structure or building is first used for a non-residential purpose, or
+newSiteClaimingAmount.l2.individual = when you incur the expenditure
+newSiteClaimingAmount.l2.agent = when your client incurs the expenditure
+newSiteClaimingAmount.details.heading.individual = Example of tax relief you can claim
+newSiteClaimingAmount.details.heading.agent = Example of tax relief your client can claim
+newSiteClaimingAmount.details.p1.individual = You built a factory costing £2,000,000 which was 60% in a Freeport tax site and 40% not in a Freeport tax site. All contracts for construction were entered into after the date the Freeport tax site was designated.
+newSiteClaimingAmount.details.p1.agent = Your client built a factory costing £2,000,000 which was 60% in a Freeport tax site and 40% not in a Freeport tax site. All contracts for construction were entered into after the date the Freeport tax site was designated.
+newSiteClaimingAmount.details.p2.individual = The factory was completed on 13 July 2023 and you started to use it in your manufacturing business from 1 August 2023. You prepare accounts for each year ending on 31 July.
+newSiteClaimingAmount.details.p2.agent = The factory was completed on 13 July 2023 and your client started to use it in their manufacturing business from 1 August 2023. Your client prepares accounts for each year ending on 31 July.
+newSiteClaimingAmount.details.p3.individual = In the chargeable period to 31 July 2024, you can claim 10% a year on 60% of the expenditure and 3% a year on 40% of the expenditure.
+newSiteClaimingAmount.details.p3.agent = In the chargeable period to 31 July 2024, your client can claim 10% a year on 60% of the expenditure and 3% a year on 40% of the expenditure.
+newSiteClaimingAmount.details.l1 = 60% of £2,000,000 = £1,200,000
+newSiteClaimingAmount.details.l2 = 40% of £2,000,000 = £800,000
+newSiteClaimingAmount.details.l3 = 10% of £1,200,000 = £120,000
+newSiteClaimingAmount.details.l4 = Plus 3% of £800,000 = £24,000
+newSiteClaimingAmount.details.p4 = The total claim is £144,000 for the year ended 31 July 2024.
+newSiteClaimingAmount.subHeading.individual = How much enhanced structures and buildings allowance do you want to claim?
+newSiteClaimingAmount.subHeading.agent = How much enhanced structures and buildings allowance does your client want to claim?
+newSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for the building in the special tax site
+newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
+newSiteClaimingAmount.change.hidden =

@@ -21,23 +21,31 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContractStartDatePage
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
+import pages.capitalallowances.specialTaxSites.SpecialTaxSiteLocationPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowLocalDate
+import viewmodels.checkAnswers.buildRowString
 
-object ContractStartDateSummary {
+object SpecialTaxSiteLocationSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ContractStartDatePage, businessId.some)
+      .get(SpecialTaxSiteLocationPage, businessId.some)
       .map { answer =>
-        buildRowLocalDate(
-          answer,
-          routes.ContractStartDateController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("contractStartDate.title.cya"),
-          "contractStartDate.change.hidden",
+        buildRowString(
+          formatLocationAnswer(answer),
+          routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, CheckMode),
+          messages("specialTaxSiteLocation.title"),
+          "specialTaxSiteLocation.change.hidden",
           rightTextAlign = true
         )
       }
+
+  private def formatLocationAnswer(answer: SpecialTaxSiteLocation): String = {
+    val buildingName   = answer.buildingName.map(_ + "<br>").getOrElse("")
+    val buildingNumber = answer.buildingNumber.map(_ + "<br>").getOrElse("")
+    val postCode       = answer.postCode
+    buildingName + buildingNumber + postCode
+  }
 }

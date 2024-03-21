@@ -25,4 +25,6 @@ package object forms {
   val MissingDayError: String   = "error.date.day"
   val MissingMonthError: String = "error.date.month"
   val MissingYearError: String  = "error.date.year"
+
+  val PostcodeRegex = """^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$"""
 }
