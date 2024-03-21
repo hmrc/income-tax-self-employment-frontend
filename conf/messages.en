@@ -1703,9 +1703,10 @@ structuresBuildingsLocation.error.building.agent = Enter a building number or na
 structuresBuildingsLocation.error.buildingName.length = The building name must be 90 characters or fewer
 structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
 
-structuresBuildingsRemoveLocation.title.individual = Do you want to remove this structure or building?
-structuresBuildingsRemoveLocation.title.agent = Does your client want to remove this structure or building?
+structuresBuildingsRemoveLocation.title = Do you want to remove this structure or building?
 structuresBuildingsRemoveLocation.hint = The address and cost you entered will be deleted.
+structuresBuildingsRemove.error.required.individual = Select yes if you want to remove this structure or building
+structuresBuildingsRemove.error.required.agent = Select yes if your client wants to remove this structure or building
 
 ########## Capital Allowances - Writing down allowance ##########
 

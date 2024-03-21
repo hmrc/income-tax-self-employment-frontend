@@ -27,7 +27,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"structuresBuildingsRemoveLocation.title.$userType"))) {
+@layout(pageTitle = title(form, messages("structuresBuildingsRemoveLocation.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -42,7 +42,7 @@
                     s"""
                         <div>
                             <label class="govuk-label govuk-label--l">
-                                ${messages(s"structuresBuildingsRemoveLocation.title.$userType")}
+                                ${messages("structuresBuildingsRemoveLocation.title")}
                             </label>
                             <div class="govuk-hint govuk-!-margin-bottom-0">
                                 ${messages("structuresBuildingsRemoveLocation.hint")}
