@@ -32,9 +32,9 @@ import play.api.data.{Form, FormError}
 import javax.inject.Inject
 class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
   private val postcode                = "postcode"
-  private val maxBuildingNameLength   = 100
+  private val maxBuildingNameLength   = 90
   private val maxBuildingNameError    = "structuresBuildingsLocation.error.buildingName.length"
-  private val maxBuildingNumberLength = 20
+  private val maxBuildingNumberLength = 90
   private val maxBuildingNumberError  = "structuresBuildingsLocation.error.buildingNumber.length"
   private val postcodeRequiredError   = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
   private val postcodeInvalidError    = "error.postcode.invalid"
