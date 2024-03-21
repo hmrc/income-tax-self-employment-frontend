@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import models.{Mode, NormalMode}
@@ -59,8 +60,9 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
   private val incomeThreshold: BigDecimal = 85000
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       (for {
         incomeAmount <- request.valueOrRedirectDefault(TurnoverIncomeAmountPage, businessId)
         incomeIsOverThreshold = incomeAmount > incomeThreshold
@@ -68,7 +70,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)
       } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))).merge
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

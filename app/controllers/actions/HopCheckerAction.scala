@@ -20,7 +20,7 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.requests.DataRequest
-import pages.QuestionPage
+import pages.Page
 import play.api.mvc.ActionFilter
 
 import javax.inject.{Inject, Singleton}
@@ -30,9 +30,9 @@ import scala.concurrent.ExecutionContext
 class HopCheckerAction @Inject() ()(implicit ec: ExecutionContext) {
   def hasPreviousAnswers(
       journey: Journey,
-      page: QuestionPage[_],
+      target: Page,
       taxYear: TaxYear,
       businessId: BusinessId,
       mode: Mode
-  ): ActionFilter[DataRequest] = HopCheckerActionImpl(journey, page, taxYear, businessId, mode)
+  ): ActionFilter[DataRequest] = HopCheckerActionImpl(journey, target, taxYear, businessId, mode)
 }

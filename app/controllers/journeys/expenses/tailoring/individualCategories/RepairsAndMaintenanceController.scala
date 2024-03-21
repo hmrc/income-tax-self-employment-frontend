@@ -52,14 +52,15 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
     with Logging {
   private val page = RepairsAndMaintenancePage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen
-    hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-    val form = request.userAnswers
-      .get(RepairsAndMaintenancePage, businessId.some)
-      .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
+      val form = request.userAnswers
+        .get(RepairsAndMaintenancePage, businessId.some)
+        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-    Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
-  }
+      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

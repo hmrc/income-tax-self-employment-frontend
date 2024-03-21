@@ -23,15 +23,11 @@ import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpenses
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.tailoring.individualCategories.{
-  DisallowableProfessionalFeesPage,
-  DisallowableStaffCostsPage,
-  DisallowableSubcontractorCostsPage,
-  ProfessionalServiceExpensesPage
-}
+import pages.expenses.tailoring.individualCategories.{DisallowableProfessionalFeesPage, DisallowableStaffCostsPage, DisallowableSubcontractorCostsPage, ProfessionalServiceExpensesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.Settable
@@ -62,8 +58,9 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
     with Logging {
   private val page = ProfessionalServiceExpensesPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       val form = request.userAnswers
         .get(ProfessionalServiceExpensesPage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)

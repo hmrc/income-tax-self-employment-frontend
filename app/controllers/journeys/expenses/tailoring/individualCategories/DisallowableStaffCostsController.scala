@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.individualCategories.DisallowableStaffCostsFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,15 +47,16 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
     with I18nSupport {
   private val page = DisallowableStaffCostsPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       val preparedForm = request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
         case None        => formProvider(request.userType)
         case Some(value) => formProvider(request.userType).fill(value)
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

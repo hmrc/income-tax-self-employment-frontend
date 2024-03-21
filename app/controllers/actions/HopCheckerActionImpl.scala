@@ -21,16 +21,18 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
 import models.requests.DataRequest
 import pages.PageJourney.PageWithQuestion
-import pages.{PageJourney, QuestionPage}
+import pages.{Page, PageJourney, QuestionPage}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
+import utils.Logging
 
 import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 
-final case class HopCheckerActionImpl(journey: Journey, targetPage: QuestionPage[_], taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
+final case class HopCheckerActionImpl(journey: Journey, targetPage: Page, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
     ec: ExecutionContext)
-    extends ActionFilter[DataRequest] {
+    extends ActionFilter[DataRequest]
+    with Logging {
   private val start: QuestionPage[_] = journey.startPage
 
   def executionContext: ExecutionContext = ec
@@ -39,19 +41,22 @@ final case class HopCheckerActionImpl(journey: Journey, targetPage: QuestionPage
     val answers = request.userAnswers
 
     @tailrec
-    def isReachableFrom(current: PageJourney): Boolean =
-      if (current.page == targetPage) true
+    def findPageWithMissingAnswers(current: PageJourney): Option[PageJourney] =
+      if (current.page == targetPage) None
       else {
         val nextPage = current.maybeNextPage(answers, businessId)
         nextPage match {
-          case None    => false
-          case Some(p) => isReachableFrom(p)
+          case None    => Some(current)
+          case Some(p) => findPageWithMissingAnswers(p)
         }
       }
 
     Future.successful {
-      if (isReachableFrom(PageWithQuestion(start))) None
-      else Some(Redirect(journey.startUrl(taxYear, businessId, mode)))
+      val missingAnswersPage = findPageWithMissingAnswers(PageWithQuestion(start))
+      missingAnswersPage.fold[Option[Result]](None) { missing =>
+        logger.warn(s"Page hopping detected. target: $targetPage, missing answers in a page or reached a terminal page: $missing")
+        Some(Redirect(journey.startUrl(taxYear, businessId, mode)))
+      }
     }
   }
 
