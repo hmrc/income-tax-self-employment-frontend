@@ -17,10 +17,10 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
+import controllers.journeys.clearDependentPages
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,7 +30,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ContractForBuildingConstructionView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ContractForBuildingConstructionController @Inject() (override val messagesApi: MessagesApi,
@@ -40,27 +40,32 @@ class ContractForBuildingConstructionController @Inject() (override val messages
                                                            service: SelfEmploymentService,
                                                            formProvider: BooleanFormProvider,
                                                            val controllerComponents: MessagesControllerComponents,
-                                                           view: ContractForBuildingConstructionView)
+                                                           view: ContractForBuildingConstructionView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page = ContractForBuildingConstructionPage
+  private val form = (userType: UserType) => formProvider(page, userType)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider(page, request.userType)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
+          answer =>
+            for {
+              editedUserAnswers  <- clearDependentPages(page, answer, request, businessId)
+              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, page)
+            } yield page.redirectNextWithIndex(answer, mode, updatedUserAnswers, businessId, taxYear, index)
         )
-  }
+    }
 
 }

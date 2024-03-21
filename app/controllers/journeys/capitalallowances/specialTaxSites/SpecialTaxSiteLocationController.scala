@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider
 import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.filterErrors
 import models.Mode
@@ -48,21 +47,21 @@ class SpecialTaxSiteLocationController @Inject() (override val messagesApi: Mess
 
   private val page = SpecialTaxSiteLocationPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(formProvider(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      val form = formProvider(request.userType)
-      form
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId))),
+          formErrors =>
+            Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
           answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
-  }
+    }
 
 }

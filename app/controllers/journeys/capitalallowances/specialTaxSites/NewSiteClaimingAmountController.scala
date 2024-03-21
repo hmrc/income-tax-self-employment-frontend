@@ -17,10 +17,9 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites.NewSiteClaimingAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,21 +45,22 @@ class NewSiteClaimingAmountController @Inject() (override val messagesApi: Messa
     with Logging {
 
   private val page = NewSiteClaimingAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider(page, request.userType)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
           answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
-  }
+    }
 
 }

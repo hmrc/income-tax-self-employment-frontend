@@ -89,6 +89,36 @@ package object checkAnswers {
     )
   }
 
+  def buildChangeRemoveRow(answer: String,
+                           keyMessage: String,
+                           changeLink: Call,
+                           changeMessage: String,
+                           removeLink: Call,
+                           removeMessage: String
+//                     rightTextAlign: Boolean = false,
+//                     flipKeyToValueWidthRatio: Boolean = false
+  )(implicit messages: Messages): SummaryListRow =
+//    val oneThirdWidth  = "govuk-!-width-one-third"
+//    val twoThirdsWidth = "govuk-!-width-two-thirds"
+//    val keyClasses     = if (flipKeyToValueWidthRatio) oneThirdWidth else twoThirdsWidth
+//    val valueClasses = s"${if (flipKeyToValueWidthRatio) twoThirdsWidth else oneThirdWidth}${if (rightTextAlign) " govuk-!-text-align-right" else ""}"
+    SummaryListRowViewModel(
+      key = Key(content =
+        keyMessage
+//        classes = keyClasses
+      ),
+      value = Value(content =
+        HtmlContent(answer)
+//        , classes = valueClasses
+      ),
+      actions = Seq(
+        ActionItemViewModel("site.change", changeLink.url)
+          .withVisuallyHiddenText(messages(changeMessage)),
+        ActionItemViewModel("site.remove", removeLink.url)
+          .withVisuallyHiddenText(messages(removeMessage))
+      )
+    )
+
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {
       case "no" | "false" => messages("site.no")
@@ -97,7 +127,7 @@ package object checkAnswers {
     }
 
   def formatDate(date: LocalDate): String = {
-    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
     date.format(formatter)
   }
 }

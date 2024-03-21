@@ -17,10 +17,9 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.standard.LocalDateFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites.ContractStartDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,24 +47,23 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
 
   private val page                 = ContractStartDatePage
   private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "contractStartDate.error.tooEarly"))
+  private val form = (userType: UserType) =>
+    formProvider(page, userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(
-        page,
-        businessId,
-        formProvider(page, request.userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider(page, request.userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
           answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
-  }
+    }
 
 }

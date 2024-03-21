@@ -16,27 +16,20 @@
 
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.NewSiteClaimingAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
 object NewSiteClaimingAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(NewSiteClaimingAmountPage, businessId.some)
-      .map { answer =>
-        buildRowBigDecimal(
-          answer,
-          routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"newSiteClaimingAmount.subHeading.$userType"),
-          "newSiteClaimingAmount.change.hidden"
-        )
-      }
+  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowBigDecimal(
+      answer,
+      routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages(s"newSiteClaimingAmount.subHeading.$userType"),
+      "newSiteClaimingAmount.change.hidden"
+    )
 }

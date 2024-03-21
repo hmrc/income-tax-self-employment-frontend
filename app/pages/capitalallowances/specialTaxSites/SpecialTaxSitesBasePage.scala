@@ -17,11 +17,35 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
+import controllers.redirectJourneyRecovery
 import models.common.{BusinessId, TaxYear}
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import models.requests.DataRequest
 import pages.OneQuestionPage
-import play.api.mvc.Call
+import play.api.data.Form
+import play.api.mvc.{Call, Result}
 
 trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
     routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+
+  def getSiteFromIndex(request: DataRequest[_], businessId: BusinessId, index: Int): Option[NewSpecialTaxSite] =
+    request.getValue(NewSpecialTaxSitesList, businessId).map(_(index))
+
+  def getSiteOrRedirect(request: DataRequest[_], businessId: BusinessId, index: Int): Either[Result, NewSpecialTaxSite] =
+    getSiteFromIndex(request, businessId, index).toRight(redirectJourneyRecovery())
+
+  def fillFormWithIndex[B](form: Form[B], page: SpecialTaxSitesBasePage[B], request: DataRequest[_], businessId: BusinessId, index: Int): Form[B] = {
+    val site = getSiteFromIndex(request, businessId, index)
+    val existingValue: Option[B] = page match {
+      case ContractForBuildingConstructionPage => site.map(_.contractForBuildingConstruction)
+      case ContractStartDatePage               => site.flatMap(_.contractStartDate)
+      case ConstructionStartDatePage           => site.flatMap(_.constructionStartDate)
+      case QualifyingUseStartDatePage          => site.map(_.qualifyingUseStartDate)
+      case SpecialTaxSiteLocationPage          => site.map(_.specialTaxSiteLocation)
+      case NewSiteClaimingAmountPage           => site.map(_.newSiteClaimingAmount)
+      case _                                   => ???
+    }
+    existingValue.fold(form)(form.fill)
+  }
 }

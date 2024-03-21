@@ -26,7 +26,7 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("contractForBuildingConstruction.title"))) {
 
@@ -44,7 +44,7 @@
         </ul>
     </div>
 
-    @formHelper(action = routes.ContractForBuildingConstructionController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ContractForBuildingConstructionController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(

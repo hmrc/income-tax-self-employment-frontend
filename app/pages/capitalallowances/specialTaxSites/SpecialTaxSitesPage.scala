@@ -42,7 +42,12 @@ object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
       this,
       userAnswers,
       businessId,
-      onTrue = routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, NormalMode),
+      onTrue = redirectIfExistingSites(userAnswers, businessId, taxYear),
       onFalse = cyaPage(taxYear, businessId)
     )
+
+  private def redirectIfExistingSites(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (userAnswers.get(NewSpecialTaxSitesList, Some(businessId)).isEmpty)
+      routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode)
+    else routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
 }

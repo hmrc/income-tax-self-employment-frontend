@@ -1935,3 +1935,12 @@ newSiteClaimingAmount.subHeading.agent = How much enhanced structures and buildi
 newSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for the building in the special tax site
 newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
 newSiteClaimingAmount.change.hidden =
+
+siteSummary.title.individual = Special tax site summary
+siteSummary.title.agent = Special tax site summary
+
+newTaxSites.title = New special tax site structures or buildings
+newTaxSites.subHeading.individual = Do you need to add another site?
+newTaxSites.subHeading.agent = Does your client need to add another site?
+newTaxSites.hint.individual = You must tell us about all new sites where you claimed the allowance.
+newTaxSites.hint.agent = Your client must tell us about all new sites where they have claimed the allowance.

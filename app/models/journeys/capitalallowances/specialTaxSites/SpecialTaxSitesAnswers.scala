@@ -20,11 +20,21 @@ import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
-                                  contractForBuildingConstruction: Option[Boolean],
-                                  contractStartDate: Option[LocalDate],
-                                  constructionStartDate: Option[LocalDate])
+case class SpecialTaxSitesAnswers(specialTaxSites: Boolean, newSpecialTaxSites: List[NewSpecialTaxSite])
 
 object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
+}
+
+case class NewSpecialTaxSite(contractForBuildingConstruction: Boolean,
+                             contractStartDate: Option[LocalDate],
+                             constructionStartDate: Option[LocalDate],
+                             qualifyingUseStartDate: LocalDate,
+                             specialTaxSiteLocation: SpecialTaxSiteLocation,
+                             newSiteClaimingAmount: BigDecimal){
+  def isComplete(): Boolean = ???
+}
+
+object NewSpecialTaxSite {
+  implicit val formats: Format[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
 }

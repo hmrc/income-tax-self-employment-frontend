@@ -21,6 +21,8 @@ import models.common.UserType.Individual
 import org.scalatest.wordspec.AnyWordSpecLike
 import pages.Page
 
+import java.time.LocalDate
+
 class packageSpec extends AnyWordSpecLike {
   object StubPage extends Page {
     override def toString: String = "stubPage"
@@ -41,6 +43,14 @@ class packageSpec extends AnyWordSpecLike {
       val result = mkBigDecimalSummary(answer = BigDecimal(10.0), call, StubPage, Individual)(messagesStubbed)
       assert(result.key.content.asHtml.toString() === "stubPage.subHeading.cya.individual")
       assert(result.value.content.asHtml.toString() === "£10.00")
+    }
+  }
+
+  "formatDate" should {
+    "convert LocalDates into the valid 'd MMMM yyyy' format" in {
+      val localDates      = Seq(LocalDate.of(2020, 3, 3), LocalDate.of(3020, 5, 30))
+      val expectedAnswers = Seq("3 March 2020", "30 May 3020")
+      localDates.map(formatDate) mustEqual expectedAnswers
     }
   }
 }

@@ -17,38 +17,37 @@
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import viewmodels.LegendSize.Medium
+@import views.html.components.TwoRadios
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukDateInput: GovukDateInput,
+        govukRadios: GovukRadios,
         govukButton: GovukButton,
-        heading: Heading)
+        heading: Heading,
+        twoRadios: TwoRadios,
+        govukSummaryList: GovukSummaryList
+)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, summaryList: SummaryList)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("qualifyingUseStartDate.title"))) {
+@layout(pageTitle = title(form, messages("newTaxSites.title"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("qualifyingUseStartDate.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("newTaxSites.title"), extraClasses = "govuk-!-margin-bottom-3")
 
-        <div class="govuk-body">
-            <p>@messages("qualifyingUseStartDate.p1")</p>
-        </div>
+    @govukSummaryList(summaryList)
 
-    @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.NewTaxSitesController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 
-        @govukDateInput(
-            DateViewModel(
-                field  = form("qualifyingUseStartDate"),
-                legend = LegendViewModel(messages("qualifyingUseStartDate.subHeading")).asPageHeading(Medium)
-            )
-            .withHint(HintViewModel(messages(s"qualifyingUseStartDate.hint.$userType")))
-        )
+        @twoRadios(form, "newTaxSites", userType, taxYear, Html(s"""
+            <div class="govuk-hint govuk-!-margin-bottom-0">
+                ${messages(s"newTaxSites.hint.$userType")}
+            </div>
+            """.stripMargin))
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
