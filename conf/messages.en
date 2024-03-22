@@ -1703,6 +1703,12 @@ structuresBuildingsLocation.error.building.agent = Enter a building number or na
 structuresBuildingsLocation.error.buildingName.length = The building name must be 90 characters or fewer
 structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
 
+structuresBuildingsNewStructures.title = New structures or buildings
+structuresBuildingsNewStructures.subHeading = Do you need to add another structure or building?
+structuresBuildingsNewStructures.hint = You must tell us about all new structures or buildings.
+structuresBuildingsNewStructures.error.required.individual = Select yes if you need to add another structure or building
+structuresBuildingsNewStructures.error.required.agent = Select yes if your client needs to add another structure or building
+
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.heading = Writing down allowance
