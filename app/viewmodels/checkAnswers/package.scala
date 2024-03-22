@@ -103,13 +103,13 @@ package object checkAnswers {
 //    val keyClasses     = if (flipKeyToValueWidthRatio) oneThirdWidth else twoThirdsWidth
 //    val valueClasses = s"${if (flipKeyToValueWidthRatio) twoThirdsWidth else oneThirdWidth}${if (rightTextAlign) " govuk-!-text-align-right" else ""}"
     SummaryListRowViewModel(
-      key = Key(content =
-        keyMessage
-//        classes = keyClasses
+      key = Key(
+        content = keyMessage,
+        classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
       ),
-      value = Value(content =
-        HtmlContent(answer)
-//        , classes = valueClasses
+      value = Value(
+        content = HtmlContent(answer),
+        classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
       ),
       actions = Seq(
         ActionItemViewModel("site.change", changeLink.url)

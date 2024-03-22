@@ -17,11 +17,12 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
-import play.api.mvc.Call
+import models.{Mode, NormalMode}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Result}
 
 object SpecialTaxSiteLocationPage extends SpecialTaxSitesBasePage[SpecialTaxSiteLocation] {
   override def toString: String = "specialTaxSiteLocation"
@@ -29,6 +30,11 @@ object SpecialTaxSiteLocationPage extends SpecialTaxSitesBasePage[SpecialTaxSite
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  def nextPageWithIndex(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = {
+    val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
+
+    Redirect(routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, index, updatedMode))
+  }
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
 }

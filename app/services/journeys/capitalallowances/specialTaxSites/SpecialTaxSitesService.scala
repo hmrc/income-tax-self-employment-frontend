@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SpecialTaxSitesService @Inject() (sessionRepository: SessionRepositoryBase)(implicit ec: ExecutionContext) {
 
-  def submitAnswer[B](userAnswers: UserAnswers,
-                      answer: B,
+  def submitAnswer[A](userAnswers: UserAnswers,
+                      answer: A,
                       businessId: BusinessId,
                       index: Int,
-                      page: SpecialTaxSitesBasePage[_]): Future[UserAnswers] = {
+                      page: SpecialTaxSitesBasePage[A]): Future[UserAnswers] = {
     val listOfSites: Option[List[NewSpecialTaxSite]] = userAnswers.get(NewSpecialTaxSitesList, Some(businessId))
     val siteOfIndex: Option[NewSpecialTaxSite]       = listOfSites.map(_(index))
     val isFirstPage: Boolean                         = page == ContractForBuildingConstructionPage
@@ -55,17 +55,17 @@ class SpecialTaxSitesService @Inject() (sessionRepository: SessionRepositoryBase
     } yield updatedAnswers
   }
 
-  private def updateSiteAndList[B](site: NewSpecialTaxSite,
+  private def updateSiteAndList[A](site: NewSpecialTaxSite,
                                    list: List[NewSpecialTaxSite],
-                                   page: SpecialTaxSitesBasePage[B],
-                                   answer: B,
+                                   page: SpecialTaxSitesBasePage[A],
+                                   answer: A,
                                    index: Int): List[NewSpecialTaxSite] = {
     val updatedSite = updateSite(site, page, answer)
     val updatedList = list.updated(index, updatedSite)
     updatedList
   }
 
-  private def updateSite[B](site: NewSpecialTaxSite, page: SpecialTaxSitesBasePage[B], answer: B): NewSpecialTaxSite =
+  private def updateSite[A](site: NewSpecialTaxSite, page: SpecialTaxSitesBasePage[A], answer: A): NewSpecialTaxSite =
     (page, answer) match {
       case (ContractForBuildingConstructionPage, answer: Boolean)       => site.copy(contractForBuildingConstruction = answer.some)
       case (ContractStartDatePage, answer: LocalDate)                   => site.copy(contractStartDate = answer.some)

@@ -33,11 +33,7 @@ object ConstructionStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
 
-  def nextPageWithIndex(originalMode: Mode,
-                        userAnswers: UserAnswers,
-                        businessId: BusinessId,
-                        taxYear: TaxYear,
-                        index: Int): Result = {
+  def nextPageWithIndex(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = {
     val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
 
     Redirect(routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, index, updatedMode))

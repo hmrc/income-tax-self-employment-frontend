@@ -40,7 +40,7 @@
             <p>@messages("qualifyingUseStartDate.p1")</p>
         </div>
 
-    @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukDateInput(
             DateViewModel(
