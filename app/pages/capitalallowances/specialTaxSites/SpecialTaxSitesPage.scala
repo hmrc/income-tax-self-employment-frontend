@@ -25,6 +25,7 @@ import play.api.mvc.Call
 import queries.Settable
 
 object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
+
   override def toString: String = "specialTaxSites"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =

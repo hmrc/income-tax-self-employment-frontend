@@ -17,10 +17,9 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.{CheckMode, Mode, NormalMode}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.redirectOnBoolean
+import models.{CheckMode, Mode, NormalMode}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
 import queries.Settable
@@ -37,12 +36,17 @@ object ContractForBuildingConstructionPage extends SpecialTaxSitesBasePage[Boole
         ContractStartDatePage.hasAllFurtherAnswers(businessId, userAnswers))
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
-  def redirectNextWithIndex(answer: Boolean, originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = {
+  def redirectNextWithIndex(answer: Boolean,
+                            originalMode: Mode,
+                            userAnswers: UserAnswers,
+                            businessId: BusinessId,
+                            taxYear: TaxYear,
+                            index: Int): Result = {
     val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
     val newPage: Call = updatedMode match {
       case NormalMode if answer => routes.ContractStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
-      case NormalMode => routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
-      case CheckMode  => cyaPage(taxYear, businessId)
+      case NormalMode           => routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
+      case CheckMode            => cyaPage(taxYear, businessId)
     }
 
     Redirect(newPage)

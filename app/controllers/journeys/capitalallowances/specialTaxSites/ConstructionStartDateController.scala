@@ -23,24 +23,24 @@ import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites.ConstructionStartDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 service: SelfEmploymentService,
+                                                 service: SpecialTaxSitesService,
                                                  formProvider: LocalDateFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: ConstructionStartDateView)
+                                                 view: ConstructionStartDateView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -61,7 +61,10 @@ class ConstructionStartDateController @Inject() (override val messagesApi: Messa
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer =>
+            service.submitAnswer(request.userAnswers, answer, businessId, index, page) map { userAnswers =>
+              page.nextPageWithIndex(mode, userAnswers, businessId, taxYear, index)
+            }
         )
     }
 

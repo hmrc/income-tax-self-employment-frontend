@@ -24,7 +24,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ContractForBuildingConstructionView
@@ -37,7 +37,7 @@ class ContractForBuildingConstructionController @Inject() (override val messages
                                                            identify: IdentifierAction,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
-                                                           service: SelfEmploymentService,
+                                                           service: SpecialTaxSitesService,
                                                            formProvider: BooleanFormProvider,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            view: ContractForBuildingConstructionView)(implicit ec: ExecutionContext)
@@ -62,8 +62,13 @@ class ContractForBuildingConstructionController @Inject() (override val messages
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
           answer =>
             for {
-              editedUserAnswers  <- clearDependentPages(page, answer, request, businessId)
-              updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, page)
+              editedUserAnswers <- clearDependentPages(
+                page,
+                answer,
+                request,
+                businessId
+              ) // create site, assign value to the site, clear data from page if needed
+              updatedUserAnswers <- service.submitAnswer(editedUserAnswers, answer, businessId, index, page)
             } yield page.redirectNextWithIndex(answer, mode, updatedUserAnswers, businessId, taxYear, index)
         )
     }

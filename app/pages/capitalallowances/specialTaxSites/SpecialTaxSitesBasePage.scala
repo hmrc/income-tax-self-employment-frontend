@@ -38,12 +38,12 @@ trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
   def fillFormWithIndex[B](form: Form[B], page: SpecialTaxSitesBasePage[B], request: DataRequest[_], businessId: BusinessId, index: Int): Form[B] = {
     val site = getSiteFromIndex(request, businessId, index)
     val existingValue: Option[B] = page match {
-      case ContractForBuildingConstructionPage => site.map(_.contractForBuildingConstruction)
+      case ContractForBuildingConstructionPage => site.flatMap(_.contractForBuildingConstruction)
       case ContractStartDatePage               => site.flatMap(_.contractStartDate)
       case ConstructionStartDatePage           => site.flatMap(_.constructionStartDate)
-      case QualifyingUseStartDatePage          => site.map(_.qualifyingUseStartDate)
-      case SpecialTaxSiteLocationPage          => site.map(_.specialTaxSiteLocation)
-      case NewSiteClaimingAmountPage           => site.map(_.newSiteClaimingAmount)
+      case QualifyingUseStartDatePage          => site.flatMap(_.qualifyingUseStartDate)
+      case SpecialTaxSiteLocationPage          => site.flatMap(_.specialTaxSiteLocation)
+      case NewSiteClaimingAmountPage           => site.flatMap(_.newSiteClaimingAmount)
       case _                                   => ???
     }
     existingValue.fold(form)(form.fill)

@@ -16,7 +16,6 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.redirectJourneyRecovery
 import models.common._
@@ -51,12 +50,12 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
           val summaryList =
             SummaryListCYA.summaryListOpt(
               List(
-                ContractForBuildingConstructionSummary.row(site.contractForBuildingConstruction, taxYear, businessId, request.userType, index).some,
+                site.contractForBuildingConstruction.map(ContractForBuildingConstructionSummary.row(_, taxYear, businessId, request.userType, index)),
                 site.contractStartDate.map(ContractStartDateSummary.row(_, taxYear, businessId, index)),
                 site.constructionStartDate.map(ConstructionStartDateSummary.row(_, taxYear, businessId, index)),
-                QualifyingUseStartDateSummary.row(site.qualifyingUseStartDate, taxYear, businessId, index).some,
-                SpecialTaxSiteLocationSummary.row(site.specialTaxSiteLocation, taxYear, businessId, index).some,
-                NewSiteClaimingAmountSummary.row(site.newSiteClaimingAmount, taxYear, businessId, request.userType, index).some
+                site.qualifyingUseStartDate.map(QualifyingUseStartDateSummary.row(_, taxYear, businessId, index)),
+                site.specialTaxSiteLocation.map(SpecialTaxSiteLocationSummary.row(_, taxYear, businessId, index)),
+                site.newSiteClaimingAmount.map(NewSiteClaimingAmountSummary.row(_, taxYear, businessId, request.userType, index))
               ))
 
           Ok(

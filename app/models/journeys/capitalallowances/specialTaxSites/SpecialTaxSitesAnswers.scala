@@ -26,15 +26,20 @@ object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
 }
 
-case class NewSpecialTaxSite(contractForBuildingConstruction: Boolean,
-                             contractStartDate: Option[LocalDate],
-                             constructionStartDate: Option[LocalDate],
-                             qualifyingUseStartDate: LocalDate,
-                             specialTaxSiteLocation: SpecialTaxSiteLocation,
-                             newSiteClaimingAmount: BigDecimal){
-  def isComplete(): Boolean = ???
+case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = None,
+                             contractStartDate: Option[LocalDate] = None,
+                             constructionStartDate: Option[LocalDate] = None,
+                             qualifyingUseStartDate: Option[LocalDate] = None,
+                             specialTaxSiteLocation: Option[SpecialTaxSiteLocation] = None,
+                             newSiteClaimingAmount: Option[BigDecimal] = None){
+  def isComplete(): Boolean = contractForBuildingConstruction.isDefined && qualifyingUseStartDate.isDefined //TODO fix this method
+  // all values will need to be options and you add them as you go. If in check mode or by the end of the loop you will check if it is complete, otherwise you will error
+  // the List of NewTaxSites will need a method to self clean any half filled Sites
+  // Will need to check that all pages have the correct future and previous page checks, dependent pages, and correct CYAs
 }
 
 object NewSpecialTaxSite {
   implicit val formats: Format[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
+
+  def newSite(): NewSpecialTaxSite = NewSpecialTaxSite()
 }
