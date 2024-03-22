@@ -50,11 +50,13 @@ class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(MoreThan25HoursPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+      if (MoreThan25HoursPage.previousPagesAreAnswered(request, businessId)) { // Swap the IF/ELSE for a block in header
+        val form = request.userAnswers
+          .get(MoreThan25HoursPage, Some(businessId))
+          .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+        Ok(view(form, mode, request.userType, taxYear, businessId))
+      } else Redirect(MoreThan25HoursPage.journeyStartPage(request, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {

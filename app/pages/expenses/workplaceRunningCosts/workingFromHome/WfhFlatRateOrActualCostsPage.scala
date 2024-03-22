@@ -16,9 +16,19 @@
 
 package pages.expenses.workplaceRunningCosts.workingFromHome
 
+import models.common.BusinessId
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
-import pages.OneQuestionPage
+import models.requests.DataRequest
+import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsBasePage
 
-case object WfhFlatRateOrActualCostsPage extends OneQuestionPage[WfhFlatRateOrActualCosts] {
+case object WfhFlatRateOrActualCostsPage extends WorkplaceRunningCostsBasePage[WfhFlatRateOrActualCosts] {
   override def toString: String = "wfhFlatRateOrActualCosts"
+
+  def previousPagesAreAnswered(request: DataRequest[_], businessId: BusinessId): Boolean =
+    WorkingFromHomeHoursPage.previousPagesAreAnswered(request, businessId)
+
+  def pageAndPreviousAreAnswered(request: DataRequest[_], businessId: BusinessId): Boolean = {
+    request.getValue(this, businessId).isDefined && previousPagesAreAnswered(request, businessId)
+    p1.getValue().contains(false) || p2.pageAndPreviousPagesAreAnswered
+  }
 }

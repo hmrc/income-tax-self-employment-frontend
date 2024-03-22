@@ -16,8 +16,8 @@
 
 package pages.expenses.workplaceRunningCosts.workingFromHome
 
-import pages.OneQuestionPage
+import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsBasePage
 
-case object WfhClaimingAmountPage extends OneQuestionPage[BigDecimal] {
+case object WfhClaimingAmountPage extends WorkplaceRunningCostsBasePage[BigDecimal] {
   override def toString: String = "wfhClaimingAmount"
 }

@@ -16,9 +16,22 @@
 
 package pages.expenses.workplaceRunningCosts.workingFromHome
 
-import pages.Page
+import models.common.BusinessId
+import models.requests.DataRequest
+import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsBasePage
 
-case object WorkingFromHomeHoursPage extends Page {
+case object WorkingFromHomeHoursPage extends WorkplaceRunningCostsBasePage[_] {
   override def toString: String = "workingFromHomeHours"
+
+  def thisPageIsAnswered(request: DataRequest[_], businessId: BusinessId): Boolean =
+    request.getValue(WorkingFromHomeHours25To50, businessId).isDefined &&
+      request.getValue(WorkingFromHomeHours51To100, businessId).isDefined &&
+      request.getValue(WorkingFromHomeHours101Plus, businessId).isDefined
+
+  def previousPagesAreAnswered(request: DataRequest[_], businessId: BusinessId): Boolean =
+    request.getValue(MoreThan25HoursPage, businessId).isDefined
+
+  def pageAndPreviousAreAnswered(request: DataRequest[_], businessId: BusinessId): Boolean =
+    thisPageIsAnswered(request, businessId) && previousPagesAreAnswered(request, businessId)
 
 }
