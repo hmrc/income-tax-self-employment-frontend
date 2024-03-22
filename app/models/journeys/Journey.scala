@@ -20,7 +20,6 @@ import controllers.journeys.expenses
 import enumeratum._
 import models.Mode
 import models.common.{BusinessId, PageName, TaxYear}
-import models.journeys.expenses.ExpensesTailoring
 import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
@@ -49,7 +48,6 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
-import play.api.libs.json.Reads
 import play.api.mvc.PathBindable
 
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
@@ -58,9 +56,12 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
   /** Used to recognize if there are any answers for that journey. Only leave it Nil if there are no answers to store */
   val pageKeys: List[PageName]
 
-  def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String = ""
+  def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String = {
+    val _ = (taxYear, businessId, mode) // // TODO Remove default impl when all pages are fixed
+    ""
+  }
 
-  def startPage: QuestionPage[_] = ???
+  def startPage: QuestionPage[_] = ??? // TODO Remove default impl when all pages are fixed
 }
 
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {

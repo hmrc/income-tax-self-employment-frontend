@@ -18,7 +18,6 @@ package controllers.actions
 
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.Journey
 import models.requests.DataRequest
 import pages.PageJourney.PageWithQuestion
 import pages.{Page, PageJourney, QuestionPage}

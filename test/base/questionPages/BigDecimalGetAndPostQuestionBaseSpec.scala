@@ -27,7 +27,6 @@ import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

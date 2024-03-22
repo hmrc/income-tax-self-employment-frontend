@@ -20,7 +20,7 @@ import models.common.PageName
 
 import scala.language.implicitConversions
 
-trait Page extends {
+trait Page {
   def pageName: PageName = PageName(toString)
 }
 

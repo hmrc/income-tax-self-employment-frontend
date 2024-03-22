@@ -21,7 +21,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses._
 import pages.PageJourney.mkQuestion
 import pages.{OneQuestionPage, PageJourney}
-import cats.implicits._
 
 case object DisallowableStaffCostsPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableStaffCosts"

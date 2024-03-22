@@ -19,7 +19,6 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.NormalMode
-import models.common.AccountingType.Accrual
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -30,7 +29,6 @@ import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.Mockito.when
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TradeAccountingType
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form

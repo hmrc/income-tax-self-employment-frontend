@@ -23,10 +23,7 @@ import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
-import models.journeys.Journey.ExpensesTailoring
-import models.journeys.expenses.individualCategories.OfficeSupplies
 import navigation.ExpensesTailoringNavigator
-import pages.{Page, QuestionPage}
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

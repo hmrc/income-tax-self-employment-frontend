@@ -71,16 +71,16 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
 
   def baseAnswers =
     Json.obj(
-      ExpensesCategoriesPage.toString           -> IndividualCategories.toString,
-      OfficeSuppliesPage.toString               -> YesDisallowable.toString,
-      GoodsToSellOrUsePage.toString             -> GoodsToSellOrUse.YesDisallowable.toString,
-      RepairsAndMaintenancePage.toString        -> RepairsAndMaintenance.YesDisallowable.toString,
-      WorkFromHomePage.toString                 -> true,
-      WorkFromBusinessPremisesPage.toString     -> WorkFromBusinessPremises.YesDisallowable.toString,
-      TravelForWorkPage.toString                -> TravelForWork.YesDisallowable.toString,
-      AdvertisingOrMarketingPage.toString       -> AdvertisingOrMarketing.YesDisallowable.toString,
-      EntertainmentCostsPage.toString           -> true,
-      ProfessionalServiceExpensesPage.toString  -> List(Staff.toString)
+      ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
+      OfficeSuppliesPage.toString              -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString            -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString       -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString                -> true,
+      WorkFromBusinessPremisesPage.toString    -> WorkFromBusinessPremises.YesDisallowable.toString,
+      TravelForWorkPage.toString               -> TravelForWork.YesDisallowable.toString,
+      AdvertisingOrMarketingPage.toString      -> AdvertisingOrMarketing.YesDisallowable.toString,
+      EntertainmentCostsPage.toString          -> true,
+      ProfessionalServiceExpensesPage.toString -> List(Staff.toString)
     )
 
   "FinancialExpenses Controller" - {

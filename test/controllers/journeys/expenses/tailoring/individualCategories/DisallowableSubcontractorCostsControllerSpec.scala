@@ -21,7 +21,6 @@ import forms.expenses.tailoring.individualCategories.DisallowableSubcontractorCo
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
-import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Construction

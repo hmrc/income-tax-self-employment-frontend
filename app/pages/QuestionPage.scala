@@ -72,6 +72,9 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
     false
   }
 
-  def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] = None
+  def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] = {
+    val _ = (userAnswers, businessId) // just to remove 'unused' warning
+    None
+  }
 
 }

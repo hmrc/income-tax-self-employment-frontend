@@ -43,7 +43,6 @@ import repositories.SessionRepository
 import views.html.journeys.expenses.tailoring.individualCategories.TravelForWorkView
 
 import scala.concurrent.Future
-import scala.language.postfixOps
 
 class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
 

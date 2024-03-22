@@ -71,7 +71,7 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       TravelForWorkPage.toString               -> TravelForWork.YesDisallowable.toString,
       AdvertisingOrMarketingPage.toString      -> AdvertisingOrMarketing.YesDisallowable.toString,
       EntertainmentCostsPage.toString          -> true,
-      ProfessionalServiceExpensesPage.toString -> List(Staff.toString),
+      ProfessionalServiceExpensesPage.toString -> List(Staff.toString)
     )
   )
 

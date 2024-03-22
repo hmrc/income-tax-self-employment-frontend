@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package navigation
+package controllers.actions
 
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import pages.{Page, QuestionPage}
-import play.api.libs.json.Reads
+import org.scalatest.wordspec.AnyWordSpecLike
 
-case class PageHopping(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear) {
-
-  def canHopTo[A: Reads](from: QuestionPage[A], to: QuestionPage[_]): Boolean =
-    true
-
-  // from: ExpensesCategoriesPage to OfficeSuppliesPage
-}
+class HopCheckerActionImplSpec extends AnyWordSpecLike {}

@@ -22,7 +22,6 @@ import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvide
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.Journey
-import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage

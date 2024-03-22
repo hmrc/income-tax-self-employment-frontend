@@ -25,7 +25,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.TotalAmount
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
-import pages.TradeAccountingType
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import play.api.Application

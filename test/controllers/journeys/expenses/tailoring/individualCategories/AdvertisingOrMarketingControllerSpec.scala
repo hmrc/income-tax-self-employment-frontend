@@ -19,23 +19,23 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.AdvertisingOrMarketingFormProvider
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.{
-  AdvertisingOrMarketing,
-  GoodsToSellOrUse,
-  RepairsAndMaintenance,
-  TravelForWork,
-  WorkFromBusinessPremises
-}
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,26 +43,6 @@ import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.AdvertisingOrMarketingView
 
 import scala.concurrent.Future
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
-import models.NormalMode
-import models.common.AccountingType.Accrual
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
-import pages.TradeAccountingType
-import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.expenses.tailoring.individualCategories._
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
-import play.api.libs.json.Json
-import play.api.mvc.{Call, Request}
-import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
 
 class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 

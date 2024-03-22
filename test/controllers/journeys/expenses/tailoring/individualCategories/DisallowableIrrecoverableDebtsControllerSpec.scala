@@ -23,7 +23,7 @@ import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts}
+import models.journeys.expenses.individualCategories.FinancialExpenses.IrrecoverableDebts
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
 import models.journeys.expenses.individualCategories._
