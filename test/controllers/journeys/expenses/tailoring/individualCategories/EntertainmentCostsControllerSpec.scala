@@ -19,16 +19,29 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import forms.expenses.tailoring.individualCategories.EntertainmentCostsFormProvider
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.{
+  AdvertisingOrMarketing,
+  GoodsToSellOrUse,
+  RepairsAndMaintenance,
+  TravelForWork,
+  WorkFromBusinessPremises
+}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.EntertainmentCostsPage
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,28 +49,6 @@ import repositories.SessionRepository
 import views.html.journeys.expenses.tailoring.individualCategories.EntertainmentCostsView
 
 import scala.concurrent.Future
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
-import models.NormalMode
-import models.common.AccountingType.Accrual
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import models.journeys.expenses.individualCategories.GoodsToSellOrUse
-import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
-import org.mockito.Mockito.when
-import pages.TradeAccountingType
-import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.expenses.tailoring.individualCategories._
-import play.api.Application
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
-import play.api.libs.json.Json
-import play.api.mvc.{Call, Request}
-import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
-
 
 class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
@@ -75,6 +66,20 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
     UserScenario(userType = Agent, formProvider(Agent))
   )
 
+  def baseAnswers: UserAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString       -> IndividualCategories.toString,
+      TradeAccountingType.toString          -> Accrual.toString,
+      OfficeSuppliesPage.toString           -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString         -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString    -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString             -> true,
+      WorkFromBusinessPremisesPage.toString -> WorkFromBusinessPremises.YesDisallowable.toString,
+      TravelForWorkPage.toString            -> TravelForWork.YesDisallowable.toString,
+      AdvertisingOrMarketingPage.toString   -> AdvertisingOrMarketing.YesDisallowable.toString
+    )
+  )
+
   "EntertainmentCosts Controller" - {
 
     "onPageLoad" - {
@@ -83,7 +88,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, entertainmentCostsRoute)
@@ -102,7 +107,7 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers = UserAnswers(userAnswersId).set(EntertainmentCostsPage, true).success.value
+            val userAnswers = baseAnswers.set(EntertainmentCostsPage, true).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
