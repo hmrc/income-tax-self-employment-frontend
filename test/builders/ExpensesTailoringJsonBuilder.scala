@@ -16,65 +16,72 @@
 
 package builders
 
+import pages.expenses.tailoring.individualCategories.{
+  DepreciationPage,
+  DisallowableIrrecoverableDebtsPage,
+  DisallowableProfessionalFeesPage,
+  EntertainmentCostsPage,
+  WorkFromHomePage
+}
 import play.api.libs.json.Json
 
 object ExpensesTailoringJsonBuilder {
 
   val allNoIndividualCategoriesAnswers = Json.obj(
-    "expensesCategories"          -> "individualCategories",
-    "officeSupplies"              -> "no",
-    "officeSupplies"              -> "no",
-    "goodsToSellOrUse"            -> "no",
-    "repairsAndMaintenance"       -> "no",
-    "workFromHome"                -> "no",
-    "workFromBusinessPremises"    -> "no",
-    "travelForWork"               -> "no",
-    "advertisingOrMarketing"      -> "no",
-    "entertainmentCosts"          -> "no",
-    "professionalServiceExpenses" -> Set("no"),
-    "financialExpenses"           -> Set("noFinancialExpenses"),
-    "depreciation"                -> "no",
-    "otherExpenses"               -> "no"
+    "expensesCategories"            -> "individualCategories",
+    "officeSupplies"                -> "no",
+    "officeSupplies"                -> "no",
+    "goodsToSellOrUse"              -> "no",
+    "repairsAndMaintenance"         -> "no",
+    WorkFromHomePage.toString       -> false,
+    "workFromBusinessPremises"      -> "no",
+    "travelForWork"                 -> "no",
+    "advertisingOrMarketing"        -> "no",
+    EntertainmentCostsPage.toString -> false,
+    "professionalServiceExpenses"   -> Set("no"),
+    "financialExpenses"             -> Set("noFinancialExpenses"),
+    DepreciationPage.toString       -> false,
+    "otherExpenses"                 -> "no"
   )
 
   val allYesIndividualCategoriesAnswers = Json.obj(
-    "expensesCategories"                -> "individualCategories",
-    "officeSupplies"                    -> "yesAllowable",
-    "goodsToSellOrUse"                  -> "yesDisallowable",
-    "repairsAndMaintenance"             -> "yesDisallowable",
-    "workFromHome"                      -> "yes",
-    "workFromBusinessPremises"          -> "yesAllowable",
-    "travelForWork"                     -> "yesDisallowable",
-    "advertisingOrMarketing"            -> "yesDisallowable",
-    "entertainmentCosts"                -> "yes",
-    "professionalServiceExpenses"       -> Set("staff", "construction", "professionalFees"),
-    "disallowableStaffCosts"            -> "yes",
-    "disallowableSubcontractorCosts"    -> "yes",
-    "disallowableProfessionalFees"      -> "yes",
-    "financialExpenses"                 -> Set("interest", "otherFinancialCharges", "irrecoverableDebts"),
-    "disallowableInterest"              -> "yes",
-    "disallowableOtherFinancialCharges" -> "yes",
-    "disallowableIrrecoverableDebts"    -> "yes",
-    "depreciation"                      -> "yes",
-    "otherExpenses"                     -> "yesAllowable"
+    "expensesCategories"                        -> "individualCategories",
+    "officeSupplies"                            -> "yesAllowable",
+    "goodsToSellOrUse"                          -> "yesDisallowable",
+    "repairsAndMaintenance"                     -> "yesDisallowable",
+    WorkFromHomePage.toString                   -> true,
+    "workFromBusinessPremises"                  -> "yesAllowable",
+    "travelForWork"                             -> "yesDisallowable",
+    "advertisingOrMarketing"                    -> "yesDisallowable",
+    EntertainmentCostsPage.toString             -> true,
+    "professionalServiceExpenses"               -> Set("staff", "construction", "professionalFees"),
+    "disallowableStaffCosts"                    -> "yes",
+    "disallowableSubcontractorCosts"            -> "yes",
+    DisallowableProfessionalFeesPage.toString   -> true,
+    "financialExpenses"                         -> Set("interest", "otherFinancialCharges", "irrecoverableDebts"),
+    "disallowableInterest"                      -> "yes",
+    "disallowableOtherFinancialCharges"         -> "yes",
+    DisallowableIrrecoverableDebtsPage.toString -> true,
+    DepreciationPage.toString                   -> true,
+    "otherExpenses"                             -> "yesAllowable"
   )
 
   val mixedIndividualCategoriesAnswers = Json.obj(
-    "expensesCategories"           -> "individualCategories",
-    "officeSupplies"               -> "yesAllowable",
-    "goodsToSellOrUse"             -> "no",
-    "repairsAndMaintenance"        -> "yesDisallowable",
-    "workFromHome"                 -> "yes",
-    "workFromBusinessPremises"     -> "yesAllowable",
-    "travelForWork"                -> "yesDisallowable",
-    "advertisingOrMarketing"       -> "no",
-    "entertainmentCosts"           -> "no",
-    "professionalServiceExpenses"  -> Set("staff", "professionalFees"),
-    "disallowableStaffCosts"       -> "yes",
-    "disallowableProfessionalFees" -> "no",
-    "financialExpenses"            -> Set("noFinancialExpenses"),
-    "depreciation"                 -> "no",
-    "otherExpenses"                -> "yesAllowable"
+    "expensesCategories"                      -> "individualCategories",
+    "officeSupplies"                          -> "yesAllowable",
+    "goodsToSellOrUse"                        -> "no",
+    "repairsAndMaintenance"                   -> "yesDisallowable",
+    WorkFromHomePage.toString                 -> true,
+    "workFromBusinessPremises"                -> "yesAllowable",
+    "travelForWork"                           -> "yesDisallowable",
+    "advertisingOrMarketing"                  -> "no",
+    EntertainmentCostsPage.toString           -> false,
+    "professionalServiceExpenses"             -> Set("staff", "professionalFees"),
+    "disallowableStaffCosts"                  -> "yes",
+    DisallowableProfessionalFeesPage.toString -> false,
+    "financialExpenses"                       -> Set("noFinancialExpenses"),
+    DepreciationPage.toString                 -> false,
+    "otherExpenses"                           -> "yesAllowable"
   )
 
   val noExpensesAnswers = Json.obj(

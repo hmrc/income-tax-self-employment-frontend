@@ -43,7 +43,6 @@ import views.html.journeys.expenses.tailoring.individualCategories.OtherExpenses
 
 import scala.concurrent.Future
 
-
 class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
@@ -71,6 +70,8 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
       AdvertisingOrMarketingPage.toString      -> AdvertisingOrMarketing.YesDisallowable.toString,
       EntertainmentCostsPage.toString          -> true,
       ProfessionalServiceExpensesPage.toString -> List(Staff.toString),
+      FinancialExpensesPage.toString           -> List(FinancialExpenses.NoFinancialExpenses.toString),
+      DepreciationPage.toString                -> true
     )
   )
 
@@ -101,7 +102,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
-            val userAnswers =baseAnswers.set(OtherExpensesPage, OtherExpenses.values.head, Some(businessId)).success.value
+            val userAnswers = baseAnswers.set(OtherExpensesPage, OtherExpenses.values.head, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 

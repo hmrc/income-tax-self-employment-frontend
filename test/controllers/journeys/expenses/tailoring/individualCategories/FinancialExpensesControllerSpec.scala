@@ -24,7 +24,6 @@ import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import models.journeys.expenses.individualCategories.FinancialExpenses.Interest
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
 import models.journeys.expenses.individualCategories._
