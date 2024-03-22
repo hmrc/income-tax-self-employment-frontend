@@ -34,5 +34,6 @@ class HopCheckerAction @Inject() ()(implicit ec: ExecutionContext) {
       taxYear: TaxYear,
       businessId: BusinessId,
       mode: Mode
-  ): ActionFilter[DataRequest] = HopCheckerActionImpl(journey, target, taxYear, businessId, mode)
+  ): ActionFilter[DataRequest] =
+    HopCheckerActionImpl(journey.startPage, journey.startUrl(taxYear, businessId, mode), target, taxYear, businessId, mode)
 }

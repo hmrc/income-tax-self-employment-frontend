@@ -38,6 +38,27 @@ import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.RepairsAndMaintenanceView
 
 import scala.concurrent.Future
+import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
+import models.NormalMode
+import models.common.AccountingType.Accrual
+import models.common.UserType
+import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.libs.json.Json
+import play.api.mvc.{Call, Request}
+import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
 
 class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
@@ -51,9 +72,24 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
   case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: AccountingType, baseUserAnswers: UserAnswers)
 
+  def baseAnswers =
+    Json.obj(
+      ExpensesCategoriesPage.toString -> IndividualCategories.toString,
+      OfficeSuppliesPage.toString     -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString   -> GoodsToSellOrUse.YesDisallowable.toString
+    )
+
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual, baseUserAnswers = emptyUserAnswersAccrual),
-    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash, baseUserAnswers = emptyUserAnswersCash)
+    UserScenario(
+      userType = Individual,
+      formProvider(Individual),
+      AccountingType.Accrual,
+      baseUserAnswers = emptyUserAnswersAccrual.upsertFragment(businessId, baseAnswers)),
+    UserScenario(
+      userType = Agent,
+      formProvider(Agent),
+      AccountingType.Cash,
+      baseUserAnswers = emptyUserAnswersCash.upsertFragment(businessId, baseAnswers))
   )
 
   "RepairsAndMaintenance Controller" - {

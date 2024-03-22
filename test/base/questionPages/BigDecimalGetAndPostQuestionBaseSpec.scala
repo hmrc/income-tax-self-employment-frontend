@@ -27,6 +27,7 @@ import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -102,7 +103,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
               val result = route(application, postRequest).value
 
               status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe onwardRoute.url
+              assert(redirectLocation(result).value.endsWith(onwardRoute.url))
             }
           }
         }

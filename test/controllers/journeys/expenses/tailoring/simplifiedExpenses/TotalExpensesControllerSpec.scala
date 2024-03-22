@@ -21,13 +21,18 @@ import controllers.journeys.expenses.tailoring
 import forms.expenses.tailoring.simplifiedExpenses.TotalExpensesFormProvider
 import models.NormalMode
 import models.common.UserType
+import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.TotalAmount
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.simplifiedExpenses.TotalExpensesView
 
@@ -46,6 +51,11 @@ class TotalExpensesControllerSpec
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+  )
+  override def baseAnswers: UserAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString -> TotalAmount.toString
+    )
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)

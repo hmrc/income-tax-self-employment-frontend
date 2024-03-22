@@ -38,6 +38,28 @@ import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpensesView
 
 import scala.concurrent.Future
+import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
+import models.NormalMode
+import models.common.AccountingType.Accrual
+import models.common.UserType
+import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import org.mockito.Mockito.when
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.libs.json.Json
+import play.api.mvc.{Call, Request}
+import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
+
 
 class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 

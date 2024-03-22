@@ -29,11 +29,14 @@ import utils.Logging
 import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 
-final case class HopCheckerActionImpl(journey: Journey, targetPage: Page, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
-    ec: ExecutionContext)
+final case class HopCheckerActionImpl(startPage: QuestionPage[_],
+                                      startUrl: String,
+                                      targetPage: Page,
+                                      taxYear: TaxYear,
+                                      businessId: BusinessId,
+                                      mode: Mode)(implicit ec: ExecutionContext)
     extends ActionFilter[DataRequest]
     with Logging {
-  private val start: QuestionPage[_] = journey.startPage
 
   def executionContext: ExecutionContext = ec
 
@@ -52,10 +55,10 @@ final case class HopCheckerActionImpl(journey: Journey, targetPage: Page, taxYea
       }
 
     Future.successful {
-      val missingAnswersPage = findPageWithMissingAnswers(PageWithQuestion(start))
+      val missingAnswersPage = findPageWithMissingAnswers(PageWithQuestion(startPage))
       missingAnswersPage.fold[Option[Result]](None) { missing =>
         logger.warn(s"Page hopping detected. target: $targetPage, missing answers in a page or reached a terminal page: $missing")
-        Some(Redirect(journey.startUrl(taxYear, businessId, mode)))
+        Some(Redirect(startUrl))
       }
     }
   }
