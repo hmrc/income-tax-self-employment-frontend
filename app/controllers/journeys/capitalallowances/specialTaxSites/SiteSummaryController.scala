@@ -44,7 +44,7 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getSiteFromIndex(request, businessId, index) match {
+      getSiteFromIndex(request.userAnswers, businessId, index) match {
         case None => redirectJourneyRecovery()
         case Some(site) =>
           val summaryList =
@@ -64,13 +64,9 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
               taxYear,
               request.userType,
               summaryList,
-              routes.SpecialTaxSitesCYAController.onSubmit(taxYear, businessId)
+              routes.NewTaxSitesController.onSubmit(taxYear, businessId)
             ))
       }
-  }
-
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { _ =>
-    Redirect(routes.NewTaxSitesController.onPageLoad(taxYear, businessId))
   }
 
 }

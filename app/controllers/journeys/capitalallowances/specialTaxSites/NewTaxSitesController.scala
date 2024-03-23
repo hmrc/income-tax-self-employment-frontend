@@ -17,18 +17,18 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common._
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import pages.capitalallowances.specialTaxSites.{NewSpecialTaxSitesList, NewTaxSitesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.journeys.capitalallowances.specialTaxSites.NewTaxSitesViewModel.getNewSitesRows
+import viewmodels.journeys.capitalallowances.specialTaxSites.NewTaxSitesViewModel.getNewSitesSummaryRows
 import views.html.journeys.capitalallowances.specialTaxSites.NewTaxSitesView
 
 import javax.inject.{Inject, Singleton}
@@ -49,29 +49,35 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
 
   private val page = NewTaxSitesPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, businessId, formProvider(page, request.userType))
-    request.getValue(NewSpecialTaxSitesList, businessId) match {
-      case None => redirectJourneyRecovery()
-      case Some(sites) =>
-        val summaryList = getNewSitesRows(sites, taxYear, businessId)
-        Ok(view(form, request.userType, taxYear, businessId, summaryList))
-    }
-  }
-
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       request.getValue(NewSpecialTaxSitesList, businessId) match {
         case None => Future(redirectJourneyRecovery())
         case Some(sites) =>
-          val summaryList = getNewSitesRows(sites, taxYear, businessId)
-          formProvider(page, request.userType)
-            .bindFromRequest()
-            .fold(
-              formErrors => Future.successful(BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList))),
-              answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, NormalMode)
-            )
+          val cleanSiteList = removeIncompleteSites(sites)
+          service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewSpecialTaxSitesList).map { _ =>
+            val summaryList = getNewSitesSummaryRows(cleanSiteList, taxYear, businessId)
+            Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList))
+          }
       }
+  }
+
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    request.getValue(NewSpecialTaxSitesList, businessId) match {
+      case None => redirectJourneyRecovery()
+      case Some(sites) =>
+        val summaryList = getNewSitesSummaryRows(sites, taxYear, businessId)
+        formProvider(page, request.userType)
+          .bindFromRequest()
+          .fold(
+            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList)),
+            answer =>
+              Redirect(
+                if (answer) routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, sites.length, NormalMode)
+                else routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+              )
+          )
+    }
   }
 
 }

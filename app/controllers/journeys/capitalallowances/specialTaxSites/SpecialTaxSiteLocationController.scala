@@ -60,10 +60,7 @@ class SpecialTaxSiteLocationController @Inject() (override val messagesApi: Mess
         .fold(
           formErrors =>
             Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
-          answer =>
-            service.submitAnswer(request.userAnswers, answer, businessId, index, page) map { userAnswers =>
-              page.nextPageWithIndex(mode, userAnswers, businessId, taxYear, index)
-            }
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
     }
 

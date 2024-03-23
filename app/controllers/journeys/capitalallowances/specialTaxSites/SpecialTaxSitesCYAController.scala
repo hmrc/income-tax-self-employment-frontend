@@ -18,6 +18,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites.NewSpecialTaxSitesSummary
 //import controllers.handleSubmitAnswersResult
 import controllers.journeys
 import models.common._
@@ -57,7 +58,8 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            SpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            SpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+            NewSpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId)
           ))
 
       Ok(

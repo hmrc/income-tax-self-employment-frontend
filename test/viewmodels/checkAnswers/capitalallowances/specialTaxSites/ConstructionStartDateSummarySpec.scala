@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import base.summaries.SummaryBaseSpec
+import cats.implicits.catsSyntaxOptionId
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
@@ -35,6 +36,6 @@ class ConstructionStartDateSummarySpec extends SummaryBaseSpec("ConstructionStar
   override val testValue: HtmlContent = HtmlContent("20 February 2020")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ConstructionStartDateSummary.row(userAnswers, taxYear, businessId)(messages)
+    ConstructionStartDateSummary.row(LocalDate.of(2020, 2, 20), taxYear, businessId, 0)(messages).some
 
 }

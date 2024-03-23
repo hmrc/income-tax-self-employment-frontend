@@ -37,35 +37,14 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("newTaxSites.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading(messages("newTaxSites.title"), extraClasses = "govuk-!-margin-bottom-1 govuk-!-padding-top-0")
 
     @govukSummaryList(summaryList)
-    <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
-                name postcode
-            </dt>
-            <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
-                £12,345.00
-            </dt>
-            <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
-                <ul class="govuk-summary-list__actions-list">
-                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="freeport-details-summary">Change <span class="govuk-visually-hidden">
-                        Scheme 1</span></a>
-                    </li>
-                    <li class="govuk-summary-list__actions-list-item">
-                        <a class="govuk-link" href="freeport-remove">Remove <span class="govuk-visually-hidden">
-                            Scheme 1</span></a>
-                    </li>
-                </ul>
-            </dd>
-        </div>
-    </dl>
 
     @formHelper(action = routes.NewTaxSitesController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 
         @twoRadios(form, "newTaxSites", userType, taxYear, Html(s"""
-            <div class="govuk-hint govuk-!-margin-bottom-0">
+            <div class="govuk-hint">
                 ${messages(s"newTaxSites.hint.$userType")}
             </div>
             """.stripMargin))

@@ -24,6 +24,8 @@ case class SpecialTaxSitesAnswers(specialTaxSites: Boolean, newSpecialTaxSites: 
 
 object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
+
+  def removeIncompleteSites(sitesList: List[NewSpecialTaxSite]): List[NewSpecialTaxSite] = sitesList.filter(_.isComplete)
 }
 
 case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = None,
@@ -32,14 +34,26 @@ case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = 
                              qualifyingUseStartDate: Option[LocalDate] = None,
                              specialTaxSiteLocation: Option[SpecialTaxSiteLocation] = None,
                              newSiteClaimingAmount: Option[BigDecimal] = None) {
-  def isComplete(): Boolean = contractForBuildingConstruction.isDefined && qualifyingUseStartDate.isDefined // TODO fix this method
-  // all values will need to be options and you add them as you go. If in check mode or by the end of the loop you will check if it is complete, otherwise you will error
-  // the List of NewTaxSites will need a method to self clean any half filled Sites
-  // Will need to check that all pages have the correct future and previous page checks, dependent pages, and correct CYAs
+  def isComplete: Boolean =
+    contractForBuildingConstruction.isDefined &&
+      (contractStartDate.isDefined || constructionStartDate.isDefined) &&
+      qualifyingUseStartDate.isDefined &&
+      specialTaxSiteLocation.isDefined &&
+      newSiteClaimingAmount.isDefined
+
+  def isEmpty: Boolean = Seq(
+    contractForBuildingConstruction,
+    contractStartDate,
+    constructionStartDate,
+    qualifyingUseStartDate,
+    specialTaxSiteLocation,
+    newSiteClaimingAmount
+  ).forall(_.isEmpty)
+
 }
 
 object NewSpecialTaxSite {
   implicit val formats: Format[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
 
-  def newSite(): NewSpecialTaxSite = NewSpecialTaxSite()
+  def newSite: NewSpecialTaxSite = NewSpecialTaxSite()
 }

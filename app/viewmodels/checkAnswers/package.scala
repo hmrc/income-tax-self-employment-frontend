@@ -20,10 +20,11 @@ import models.common.UserType
 import pages.Page
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils.formatMoney
+import viewmodels.govuk.all.FluentActionItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -46,7 +47,7 @@ package object checkAnswers {
     buildRowBoolean(
       answer,
       callLink,
-      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      messages(s"${page.pageName}.subHeading.cya.$userType"),
       s"${page.pageName}.change.hidden",
       rightTextAlign = true
     )
@@ -58,7 +59,7 @@ package object checkAnswers {
     buildRowBigDecimal(
       answer,
       callLink,
-      messages(s"${page.pageName}.subHeading.cya.${userType}"),
+      messages(s"${page.pageName}.subHeading.cya.$userType"),
       s"${page.pageName}.change.hidden"
     )
 
@@ -95,13 +96,7 @@ package object checkAnswers {
                            changeMessage: String,
                            removeLink: Call,
                            removeMessage: String
-//                     rightTextAlign: Boolean = false,
-//                     flipKeyToValueWidthRatio: Boolean = false
-  )(implicit messages: Messages): SummaryListRow =
-//    val oneThirdWidth  = "govuk-!-width-one-third"
-//    val twoThirdsWidth = "govuk-!-width-two-thirds"
-//    val keyClasses     = if (flipKeyToValueWidthRatio) oneThirdWidth else twoThirdsWidth
-//    val valueClasses = s"${if (flipKeyToValueWidthRatio) twoThirdsWidth else oneThirdWidth}${if (rightTextAlign) " govuk-!-text-align-right" else ""}"
+  )(implicit messages: Messages): SummaryListRow = {
     SummaryListRowViewModel(
       key = Key(
         content = keyMessage,
@@ -111,13 +106,16 @@ package object checkAnswers {
         content = HtmlContent(answer),
         classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
       ),
-      actions = Seq(
+      actions = Actions(
+        classes = "govuk-summary-list__actions hmrc-summary-list__actions",
+        items = Seq(
         ActionItemViewModel("site.change", changeLink.url)
           .withVisuallyHiddenText(messages(changeMessage)),
         ActionItemViewModel("site.remove", removeLink.url)
           .withVisuallyHiddenText(messages(removeMessage))
-      )
+      ))
     )
+  }
 
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {

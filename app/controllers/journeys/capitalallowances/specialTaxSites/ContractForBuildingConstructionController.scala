@@ -17,10 +17,9 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.clearDependentPages
 import forms.standard.BooleanFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
+import models.{CheckMode, Mode, NormalMode}
 import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -60,16 +59,14 @@ class ContractForBuildingConstructionController @Inject() (override val messages
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer =>
-            for {
-              editedUserAnswers <- clearDependentPages(
-                page,
-                answer,
-                request,
-                businessId
-              ) // create site, assign value to the site, clear data from page if needed
-              updatedUserAnswers <- service.submitAnswer(editedUserAnswers, answer, businessId, index, page)
-            } yield page.redirectNextWithIndex(answer, mode, updatedUserAnswers, businessId, taxYear, index)
+          answer => {
+            val previousSameAsCurrentAnswer =
+              page.getSiteFromIndex(request.userAnswers, businessId, index).flatMap(_.contractForBuildingConstruction).contains(answer)
+            val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
+            service.updateSiteAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
+              page.nextPageWithIndex(answer, updatedMode, userAnswers, businessId, taxYear, index)
+            }
+          }
         )
     }
 

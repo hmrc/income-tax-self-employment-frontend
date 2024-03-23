@@ -19,36 +19,25 @@ package pages.capitalallowances.specialTaxSites
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 import models.{CheckMode, Mode, NormalMode}
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, Result}
-import queries.Settable
 
 object ContractForBuildingConstructionPage extends SpecialTaxSitesBasePage[Boolean] {
   override def toString: String = "contractForBuildingConstruction"
 
-  override val dependentPagesWhenYes: List[Settable[_]] = List(ConstructionStartDatePage)
-  override val dependentPagesWhenNo: List[Settable[_]]  = List(ContractStartDatePage)
+  def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean = site.contractForBuildingConstruction.isDefined &&
+    (ConstructionStartDatePage.hasAllFurtherAnswers(site) || ContractStartDatePage.hasAllFurtherAnswers(site))
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined &&
-      (ConstructionStartDatePage.hasAllFurtherAnswers(businessId, userAnswers) ||
-        ContractStartDatePage.hasAllFurtherAnswers(businessId, userAnswers))
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
-  def redirectNextWithIndex(answer: Boolean,
-                            originalMode: Mode,
-                            userAnswers: UserAnswers,
-                            businessId: BusinessId,
-                            taxYear: TaxYear,
-                            index: Int): Result = {
-    val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
-    val newPage: Call = updatedMode match {
-      case NormalMode if answer => routes.ContractStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
-      case NormalMode           => routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
-      case CheckMode            => cyaPage(taxYear, businessId)
+  def nextPageWithIndex(answer: Boolean, mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getSiteFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage(s"Site of index $index not found when redirecting from ContractForBuildingConstructionPage")
+      case Some(site) =>
+        Redirect(mode match {
+          case CheckMode if hasAllFurtherAnswers(site) => routes.SiteSummaryController.onPageLoad(taxYear, businessId, index)
+          case _ if answer                             => routes.ContractStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
+          case _                                       => routes.ConstructionStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
+        })
     }
-
-    Redirect(newPage)
-  }
 }

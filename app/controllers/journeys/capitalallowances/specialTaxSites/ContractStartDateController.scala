@@ -62,10 +62,7 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer =>
-            service.submitAnswer(request.userAnswers, answer, businessId, index, page) map { userAnswers =>
-              page.nextPageWithIndex(mode, userAnswers, businessId, taxYear, index)
-            }
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
     }
 

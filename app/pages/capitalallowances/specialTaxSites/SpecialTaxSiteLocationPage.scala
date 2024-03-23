@@ -17,24 +17,26 @@
 package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
-import models.{Mode, NormalMode}
+import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, Result}
 
 object SpecialTaxSiteLocationPage extends SpecialTaxSitesBasePage[SpecialTaxSiteLocation] {
   override def toString: String = "specialTaxSiteLocation"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+  def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean =
+    site.specialTaxSiteLocation.isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(site)
 
-  def nextPageWithIndex(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = {
-    val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
-
-    Redirect(routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, index, updatedMode))
-  }
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
+  override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getSiteFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage("NewSpecialTaxSitesList data not found when redirecting from SpecialTaxSiteLocationPage")
+      case Some(site) =>
+        Redirect(
+          if (hasAllFurtherAnswers(site)) routes.SiteSummaryController.onPageLoad(taxYear, businessId, index)
+          else routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, index, NormalMode)
+        )
+    }
 }

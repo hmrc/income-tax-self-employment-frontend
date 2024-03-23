@@ -22,22 +22,25 @@ import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.buildChangeRemoveRow
 import viewmodels.journeys.SummaryListCYA
 
 object NewTaxSitesViewModel {
 
-  def getNewSitesRows(sites: List[NewSpecialTaxSite], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): SummaryList = {
+  def getNewSitesSummaryRows(sites: List[NewSpecialTaxSite], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): SummaryList = {
     def convertToSummaryListRow(siteWithIndex: (NewSpecialTaxSite, Int))(implicit messages: Messages): Option[SummaryListRow] =
-      siteWithIndex._1.specialTaxSiteLocation map { location =>
-        buildChangeRemoveRow(
-          siteWithIndex._1.newSiteClaimingAmount.toString(),
-          s"${location.buildingName.getOrElse(location.buildingNumber.getOrElse(""))} ${location.postCode}",
-          routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
-          "CHANGE",
-          routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
-          "REMOVE"
-        )
+      siteWithIndex._1.specialTaxSiteLocation.flatMap { location =>
+        siteWithIndex._1.newSiteClaimingAmount.map { amount =>
+          buildChangeRemoveRow(
+            s"£${formatMoney(amount)}",
+            s"${location.buildingName.getOrElse(location.buildingNumber.getOrElse(""))} ${location.postCode}",
+            routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            "hidden.CHANGE.message", // TODO get these hidden messages
+            routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            "hidden.REMOVE.message"
+          )
+        }
       }
 
     SummaryListCYA.summaryListOpt(sites.zipWithIndex.map(convertToSummaryListRow), Some("hmrc-list-with-actions hmrc-list-with-actions--short"))

@@ -275,9 +275,6 @@ GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/new-sites
 POST        /:taxYear/:businessId/capital-allowances/special-tax-sites/new-sites                                                 controllers.journeys.capitalallowances.specialTaxSites.NewTaxSitesController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/freeport-details-summary/:index                           controllers.journeys.capitalallowances.specialTaxSites.SiteSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int)
-POST        /:taxYear/:businessId/capital-allowances/special-tax-sites/freeport-details-summary                                  controllers.journeys.capitalallowances.specialTaxSites.SiteSummaryController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
-
-
 
 GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/check                                                     controllers.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/special-tax-sites/check                                                     controllers.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)

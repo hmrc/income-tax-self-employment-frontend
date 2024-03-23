@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import base.summaries.SummaryBaseSpec
+import cats.implicits.catsSyntaxOptionId
 import models.common.UserType
 import models.database.UserAnswers
 import play.api.libs.json.{JsObject, Json}
@@ -33,6 +34,6 @@ class ContractForBuildingConstructionSummarySpec extends SummaryBaseSpec("Contra
   override val testValue: HtmlContent = HtmlContent("site.yes")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
-    ContractForBuildingConstructionSummary.row(userAnswers, taxYear, businessId, userType)(messages)
+    ContractForBuildingConstructionSummary.row(true, taxYear, businessId, userType, 0)(messages).some
 
 }

@@ -59,10 +59,7 @@ class NewSiteClaimingAmountController @Inject() (override val messagesApi: Messa
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer =>
-            service.submitAnswer(request.userAnswers, answer, businessId, index, page) map { _ =>
-              page.nextPageWithIndex(businessId, taxYear)
-            }
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
     }
 

@@ -16,10 +16,12 @@
 
 package pages.capitalallowances.specialTaxSites
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import controllers.redirectJourneyRecovery
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.newSite
 import models.requests.DataRequest
 import pages.OneQuestionPage
 import play.api.data.Form
@@ -29,23 +31,22 @@ trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
     routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
 
-  def getSiteFromIndex(request: DataRequest[_], businessId: BusinessId, index: Int): Option[NewSpecialTaxSite] =
-    request.getValue(NewSpecialTaxSitesList, businessId).map(_(index))
-
-  def getSiteOrRedirect(request: DataRequest[_], businessId: BusinessId, index: Int): Either[Result, NewSpecialTaxSite] =
-    getSiteFromIndex(request, businessId, index).toRight(redirectJourneyRecovery())
+  def getSiteFromIndex(userAnswers: UserAnswers, businessId: BusinessId, index: Int): Option[NewSpecialTaxSite] =
+    userAnswers.get(NewSpecialTaxSitesList, businessId.some).map(list => if (list.length > index) list(index) else newSite)
 
   def fillFormWithIndex[B](form: Form[B], page: SpecialTaxSitesBasePage[B], request: DataRequest[_], businessId: BusinessId, index: Int): Form[B] = {
-    val site = getSiteFromIndex(request, businessId, index)
+    val existingSite: Option[NewSpecialTaxSite] = getSiteFromIndex(request.userAnswers, businessId, index)
     val existingValue: Option[B] = page match {
-      case ContractForBuildingConstructionPage => site.flatMap(_.contractForBuildingConstruction)
-      case ContractStartDatePage               => site.flatMap(_.contractStartDate)
-      case ConstructionStartDatePage           => site.flatMap(_.constructionStartDate)
-      case QualifyingUseStartDatePage          => site.flatMap(_.qualifyingUseStartDate)
-      case SpecialTaxSiteLocationPage          => site.flatMap(_.specialTaxSiteLocation)
-      case NewSiteClaimingAmountPage           => site.flatMap(_.newSiteClaimingAmount)
+      case ContractForBuildingConstructionPage => existingSite.flatMap(_.contractForBuildingConstruction)
+      case ContractStartDatePage               => existingSite.flatMap(_.contractStartDate)
+      case ConstructionStartDatePage           => existingSite.flatMap(_.constructionStartDate)
+      case QualifyingUseStartDatePage          => existingSite.flatMap(_.qualifyingUseStartDate)
+      case SpecialTaxSiteLocationPage          => existingSite.flatMap(_.specialTaxSiteLocation)
+      case NewSiteClaimingAmountPage           => existingSite.flatMap(_.newSiteClaimingAmount)
       case _                                   => ???
     }
     existingValue.fold(form)(form.fill)
   }
+
+  def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = ???
 }

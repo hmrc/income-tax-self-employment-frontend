@@ -16,6 +16,7 @@
 
 package pages.capitalallowances.specialTaxSites
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -29,14 +30,13 @@ object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
   override def toString: String = "specialTaxSites"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).contains(false) || ContractForBuildingConstructionPage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers
+      .get(this, businessId)
+      .exists(
+        !_ || userAnswers.get(NewSpecialTaxSitesList, businessId.some).exists(_.nonEmpty)
+      )
 
-  override val dependentPagesWhenNo: List[Settable[_]] =
-    List(
-      ContractForBuildingConstructionPage,
-      ContractStartDatePage,
-      ConstructionStartDatePage
-    )
+  override val dependentPagesWhenNo: List[Settable[_]] = List(NewSpecialTaxSitesList)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
@@ -48,7 +48,6 @@ object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
     )
 
   private def redirectIfExistingSites(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    if (userAnswers.get(NewSpecialTaxSitesList, Some(businessId)).isEmpty)
-      routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode)
-    else routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
+    if (userAnswers.get(NewSpecialTaxSitesList, Some(businessId)).exists(_.nonEmpty)) routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
+    else routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode)
 }
