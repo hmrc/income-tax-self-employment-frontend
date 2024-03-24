@@ -90,13 +90,8 @@ package object checkAnswers {
     )
   }
 
-  def buildChangeRemoveRow(answer: String,
-                           keyMessage: String,
-                           changeLink: Call,
-                           changeMessage: String,
-                           removeLink: Call,
-                           removeMessage: String
-  )(implicit messages: Messages): SummaryListRow = {
+  def buildChangeRemoveRow(answer: String, keyMessage: String, changeLink: Call, changeMessage: String, removeLink: Call, removeMessage: String)(
+      implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = Key(
         content = keyMessage,
@@ -109,13 +104,13 @@ package object checkAnswers {
       actions = Actions(
         classes = "govuk-summary-list__actions hmrc-summary-list__actions",
         items = Seq(
-        ActionItemViewModel("site.change", changeLink.url)
-          .withVisuallyHiddenText(messages(changeMessage)),
-        ActionItemViewModel("site.remove", removeLink.url)
-          .withVisuallyHiddenText(messages(removeMessage))
-      ))
+          ActionItemViewModel("site.change", changeLink.url)
+            .withVisuallyHiddenText(messages(changeMessage)),
+          ActionItemViewModel("site.remove", removeLink.url)
+            .withVisuallyHiddenText(messages(removeMessage))
+        )
+      )
     )
-  }
 
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {

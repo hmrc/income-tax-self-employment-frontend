@@ -30,7 +30,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocationView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class SpecialTaxSiteLocationController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class SpecialTaxSiteLocationController @Inject() (override val messagesApi: Mess
                                                   requireData: DataRequiredAction,
                                                   service: SpecialTaxSitesService,
                                                   formProvider: SpecialTaxSiteLocationFormProvider,
-                                                  view: SpecialTaxSiteLocationView)(implicit ec: ExecutionContext)
+                                                  view: SpecialTaxSiteLocationView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

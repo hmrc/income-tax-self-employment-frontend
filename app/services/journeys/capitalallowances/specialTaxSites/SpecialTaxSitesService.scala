@@ -55,10 +55,10 @@ class SpecialTaxSitesService @Inject() (sessionRepository: SessionRepositoryBase
       case (None, None) if index == 0 && isFirstPageOfLoop =>
         updateSiteAndList(newSite, List(newSite), page, answer, index) // make a new list with a new empty site and save first page answer
       case (Some(list), None) if indexIsValidForNewSite(list) =>
-        updateSiteAndList(newSite, list.appended(newSite), page, answer, index) // making a new site, appended to list
+        updateSiteAndList(newSite, list.appended(newSite), page, answer, index) // make a new site, appended to list
       case (Some(list), Some(site)) =>
-        updateSiteAndList(site, list, page, answer, index) // editing existing site in list
-      case _ => ??? // error
+        updateSiteAndList(site, list, page, answer, index) // edit existing site in list
+      case _ => listOfSites.getOrElse(List.empty)
     }
 
     for {
@@ -71,18 +71,20 @@ class SpecialTaxSitesService @Inject() (sessionRepository: SessionRepositoryBase
                                    list: List[NewSpecialTaxSite],
                                    page: SpecialTaxSitesBasePage[A],
                                    answer: A,
-                                   index: Int): List[NewSpecialTaxSite] = list.updated(index, updateSite(site, page, answer))
+                                   index: Int): List[NewSpecialTaxSite] = {
+    val updatedSite: NewSpecialTaxSite =
+      (page, answer) match {
+        case (ContractForBuildingConstructionPage, answer: Boolean) =>
+          if (answer) site.copy(contractForBuildingConstruction = answer.some, constructionStartDate = None)
+          else site.copy(contractForBuildingConstruction = answer.some, contractStartDate = None)
+        case (ContractStartDatePage, answer: LocalDate)                   => site.copy(contractStartDate = answer.some)
+        case (ConstructionStartDatePage, answer: LocalDate)               => site.copy(constructionStartDate = answer.some)
+        case (QualifyingUseStartDatePage, answer: LocalDate)              => site.copy(qualifyingUseStartDate = answer.some)
+        case (SpecialTaxSiteLocationPage, answer: SpecialTaxSiteLocation) => site.copy(specialTaxSiteLocation = answer.some)
+        case (NewSiteClaimingAmountPage, answer: BigDecimal)              => site.copy(newSiteClaimingAmount = answer.some)
+        case _                                                            => newSite
+      }
 
-  private def updateSite[A](site: NewSpecialTaxSite, page: SpecialTaxSitesBasePage[A], answer: A): NewSpecialTaxSite =
-    (page, answer) match {
-      case (ContractForBuildingConstructionPage, answer: Boolean) =>
-        if (answer) site.copy(contractForBuildingConstruction = answer.some, constructionStartDate = None)
-        else site.copy(contractForBuildingConstruction = answer.some, contractStartDate = None)
-      case (ContractStartDatePage, answer: LocalDate)                   => site.copy(contractStartDate = answer.some)
-      case (ConstructionStartDatePage, answer: LocalDate)               => site.copy(constructionStartDate = answer.some)
-      case (QualifyingUseStartDatePage, answer: LocalDate)              => site.copy(qualifyingUseStartDate = answer.some)
-      case (SpecialTaxSiteLocationPage, answer: SpecialTaxSiteLocation) => site.copy(specialTaxSiteLocation = answer.some)
-      case (NewSiteClaimingAmountPage, answer: BigDecimal)              => site.copy(newSiteClaimingAmount = answer.some)
-      case _                                                            => ???
-    }
+    list.updated(index, updatedSite)
+  }
 }

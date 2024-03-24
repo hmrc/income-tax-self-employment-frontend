@@ -30,7 +30,7 @@ import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDa
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class ConstructionStartDateController @Inject() (override val messagesApi: Messa
                                                  service: SpecialTaxSitesService,
                                                  formProvider: LocalDateFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 view: ConstructionStartDateView)(implicit ec: ExecutionContext)
+                                                 view: ConstructionStartDateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

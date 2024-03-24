@@ -29,7 +29,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.NewSiteClaimingAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class NewSiteClaimingAmountController @Inject() (override val messagesApi: MessagesApi,
@@ -39,7 +39,7 @@ class NewSiteClaimingAmountController @Inject() (override val messagesApi: Messa
                                                  requireData: DataRequiredAction,
                                                  service: SpecialTaxSitesService,
                                                  formProvider: CurrencyFormProvider,
-                                                 view: NewSiteClaimingAmountView)(implicit ec: ExecutionContext)
+                                                 view: NewSiteClaimingAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

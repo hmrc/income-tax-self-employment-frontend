@@ -30,7 +30,7 @@ import views.html.journeys.capitalallowances.specialTaxSites.QualifyingUseStartD
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class QualifyingUseStartDateController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class QualifyingUseStartDateController @Inject() (override val messagesApi: Mess
                                                   requireData: DataRequiredAction,
                                                   service: SpecialTaxSitesService,
                                                   formProvider: LocalDateFormProvider,
-                                                  view: QualifyingUseStartDateView)(implicit ec: ExecutionContext)
+                                                  view: QualifyingUseStartDateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

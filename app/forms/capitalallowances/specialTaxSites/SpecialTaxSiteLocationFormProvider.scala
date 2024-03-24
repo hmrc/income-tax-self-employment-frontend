@@ -33,7 +33,7 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
   private val maxBuildingNameError   = "specialTaxSiteLocation.error.buildingName.length" // TODO get the messages for these from Tim
   private val maxBuildingNumberError = "specialTaxSiteLocation.error.buildingNumber.length"
   private val postcodeRequiredError  = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
-  private val postcodeInvalidError   = "specialTaxSiteLocation.error.postcode.invalid"
+  private val postcodeInvalidError   = "error.postcode.invalid"
 
 //  private def atLeastOneRequired(userType: UserType): Constraint[SpecialTaxSiteLocation] = Constraint("constraints.atleastone") { location =>
 //    if (location.buildingName.isEmpty && location.buildingNumber.isEmpty) {
@@ -46,9 +46,8 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
   private def allFieldsAreEmptyOrFilled(dependentFields: Seq[String]): Condition = { s =>
     dependentFields.forall(field => s.get(field).exists(_.isEmpty) || s.get(field).exists(_.nonEmpty))
   }
-//  def isEmpty(field: String): Condition = _.get(field).exists(_.isEmpty)
 
-  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
+  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form( // TODO allow building name OR number
     mapping(
       buildingName -> mandatoryIf(
         allFieldsAreEmptyOrFilled(Seq(buildingNumber, buildingName)),
@@ -59,8 +58,7 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))
       ),
       postcode -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
-    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply)
-  )
+    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply))
 
 //  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
 //    mapping(
@@ -74,10 +72,11 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
 }
 
 object SpecialTaxSiteLocationFormProvider {
-  val buildingName              = "buildingName"
-  val buildingNumber            = "buildingNumber"
-  val postcode                  = "postcode"
-  val emptyBuildingDetailsError = (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
+  val buildingName   = "buildingName"
+  val buildingNumber = "buildingNumber"
+  val postcode       = "postcode"
+  val emptyBuildingDetailsError: UserType => String =
+    (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
 
   def filterErrors(form: Form[SpecialTaxSiteLocation], userType: UserType): Form[SpecialTaxSiteLocation] = {
     val formError = FormError("", List(emptyBuildingDetailsError(userType)), List())

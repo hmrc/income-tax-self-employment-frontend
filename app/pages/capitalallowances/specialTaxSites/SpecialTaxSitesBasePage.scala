@@ -43,7 +43,7 @@ trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
       case QualifyingUseStartDatePage          => existingSite.flatMap(_.qualifyingUseStartDate)
       case SpecialTaxSiteLocationPage          => existingSite.flatMap(_.specialTaxSiteLocation)
       case NewSiteClaimingAmountPage           => existingSite.flatMap(_.newSiteClaimingAmount)
-      case _                                   => ???
+      case _                                   => None
     }
     existingValue.fold(form)(form.fill)
   }

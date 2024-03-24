@@ -43,11 +43,9 @@
 
     @formHelper(action = routes.NewTaxSitesController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 
-        @twoRadios(form, "newTaxSites", userType, taxYear, Html(s"""
-            <div class="govuk-hint">
-                ${messages(s"newTaxSites.hint.$userType")}
-            </div>
-            """.stripMargin))
+        @twoRadios(form, "newTaxSites", userType, taxYear, Html(
+            s"""<div class="govuk-hint">${messages(s"newTaxSites.hint.$userType")}</div>""".stripMargin
+        ))
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
