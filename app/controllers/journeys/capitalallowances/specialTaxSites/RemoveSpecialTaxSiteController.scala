@@ -19,6 +19,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -52,16 +53,22 @@ class RemoveSpecialTaxSiteController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val redirect = Redirect(routes.NewTaxSitesController.onPageLoad(taxYear, businessId))
+
       def handleSuccess(answer: Boolean): Future[Result] = {
-        val sitesList         = request.getValue(NewSpecialTaxSitesList, businessId)
-        val indexIsValid      = sitesList.exists(index >= 0 && index < _.length)
-        val continueToSummary = Redirect(routes.NewTaxSitesController.onPageLoad(taxYear, businessId))
+        val sitesList    = request.getValue(NewSpecialTaxSitesList, businessId)
+        val indexIsValid = sitesList.exists(index >= 0 && index < _.length)
         (answer, indexIsValid, sitesList) match {
-          case (true, true, Some(list)) =>
-            val updatedList = list.patch(index, Nil, 1)
-            service.persistAnswer(businessId, request.userAnswers, updatedList, NewSpecialTaxSitesList).map(_ => continueToSummary)
-          case _ => Future.successful(continueToSummary)
+          case (true, true, Some(list)) => removeSiteAndRedirect(list)
+          case (_, false, _) =>
+            logger.error(s"Index '$index' is invalid in SitesList of length '${sitesList.getOrElse(List.empty).length}")
+            Future.successful(redirect)
+          case _ => Future.successful(redirect)
         }
+      }
+      def removeSiteAndRedirect(sitesList: List[NewSpecialTaxSite]): Future[Result] = {
+        val removeSiteFromList = sitesList.patch(index, Nil, 1)
+        service.persistAnswer(businessId, request.userAnswers, removeSiteFromList, NewSpecialTaxSitesList).map(_ => redirect)
       }
 
       formProvider(page, request.userType)
