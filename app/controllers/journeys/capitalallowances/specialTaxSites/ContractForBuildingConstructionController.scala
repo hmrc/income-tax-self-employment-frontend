@@ -17,50 +17,57 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
+import models.{CheckMode, Mode, NormalMode}
 import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ContractForBuildingConstructionView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ContractForBuildingConstructionController @Inject() (override val messagesApi: MessagesApi,
                                                            identify: IdentifierAction,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
-                                                           service: SelfEmploymentService,
+                                                           service: SpecialTaxSitesService,
                                                            formProvider: BooleanFormProvider,
                                                            val controllerComponents: MessagesControllerComponents,
-                                                           view: ContractForBuildingConstructionView)
+                                                           view: ContractForBuildingConstructionView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page = ContractForBuildingConstructionPage
+  private val form = (userType: UserType) => formProvider(page, userType)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider(page, request.userType)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
+          answer => {
+            val previousSameAsCurrentAnswer =
+              page.getSiteFromIndex(request.userAnswers, businessId, index).flatMap(_.contractForBuildingConstruction).contains(answer)
+            val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
+            service.updateSiteAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
+              page.nextPageWithIndex(answer, updatedMode, userAnswers, businessId, taxYear, index)
+            }
+          }
         )
-  }
+    }
 
 }

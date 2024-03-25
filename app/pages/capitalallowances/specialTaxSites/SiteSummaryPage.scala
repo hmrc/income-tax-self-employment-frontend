@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package models.journeys.capitalallowances.specialTaxSites
+package pages.capitalallowances.specialTaxSites
 
-import play.api.libs.json.{Format, Json}
+import pages.Page
 
-case class SpecialTaxSitesAnswers(specialTaxSites: Boolean, newSpecialTaxSites: List[NewSpecialTaxSite])
-
-object SpecialTaxSitesAnswers {
-  implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
-
-  def removeIncompleteSites(sitesList: List[NewSpecialTaxSite]): List[NewSpecialTaxSite] = sitesList.filter(_.isComplete)
+object SiteSummaryPage extends Page {
+  override def toString: String = "siteSummary"
 }

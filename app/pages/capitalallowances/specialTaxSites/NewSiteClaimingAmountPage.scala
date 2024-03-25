@@ -18,15 +18,14 @@ package pages.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import play.api.mvc.Call
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 
 object NewSiteClaimingAmountPage extends SpecialTaxSitesBasePage[BigDecimal] {
   override def toString: String = "newSiteClaimingAmount"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+  def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean = site.newSiteClaimingAmount.isDefined
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+  def nextPage(businessId: BusinessId, taxYear: TaxYear): Result = Redirect(routes.NewTaxSitesController.onPageLoad(taxYear, businessId))
 }

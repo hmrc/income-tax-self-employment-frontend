@@ -17,6 +17,7 @@
 package base
 
 import builders.UserBuilder
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import models.common.UserType.Individual
 import models.common._
@@ -37,9 +38,10 @@ import play.api.http.Status.BAD_REQUEST
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
+import queries.Settable
 import services.SelfEmploymentService
 import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetrievalAction, StubSubmittedDataRetrievalActionProvider}
 import stubs.services.SelfEmploymentServiceStub
@@ -86,6 +88,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def emptyUserAnswersCash: UserAnswers    = emptyUserAnswers.set(TradeAccountingType, AccountingType.Cash, Some(businessId)).success.value
 
   def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
+  def buildUserAnswers[A](settable: Settable[A], answer: A)(implicit writes: Writes[A]): UserAnswers =
+    emptyUserAnswersAccrual.set(settable, answer, businessId.some).success.value
 
   def messages(app: Application): Messages =
     app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())

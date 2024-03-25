@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider
 import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.filterErrors
 import models.Mode
@@ -25,7 +24,7 @@ import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.specialTaxSites.SpecialTaxSiteLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocationView
@@ -39,7 +38,7 @@ class SpecialTaxSiteLocationController @Inject() (override val messagesApi: Mess
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  service: SelfEmploymentService,
+                                                  service: SpecialTaxSitesService,
                                                   formProvider: SpecialTaxSiteLocationFormProvider,
                                                   view: SpecialTaxSiteLocationView)
     extends FrontendBaseController
@@ -48,21 +47,21 @@ class SpecialTaxSiteLocationController @Inject() (override val messagesApi: Mess
 
   private val page = SpecialTaxSiteLocationPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(formProvider(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      val form = formProvider(request.userType)
-      form
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors =>
+            Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
-  }
+    }
 
 }

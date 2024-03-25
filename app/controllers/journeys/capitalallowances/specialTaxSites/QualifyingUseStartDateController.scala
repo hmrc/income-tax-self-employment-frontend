@@ -17,14 +17,13 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.standard.LocalDateFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import pages.capitalallowances.specialTaxSites.QualifyingUseStartDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.QualifyingUseStartDateView
@@ -35,12 +34,12 @@ import scala.concurrent.Future
 
 @Singleton
 class QualifyingUseStartDateController @Inject() (override val messagesApi: MessagesApi,
+                                                  val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  service: SelfEmploymentService,
+                                                  service: SpecialTaxSitesService,
                                                   formProvider: LocalDateFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
                                                   view: QualifyingUseStartDateView)
     extends FrontendBaseController
     with I18nSupport
@@ -48,21 +47,22 @@ class QualifyingUseStartDateController @Inject() (override val messagesApi: Mess
 
   private val page               = QualifyingUseStartDatePage
   private val latestDateAndError = Some((LocalDate.now, "qualifyingUseStartDate.error.tooLate"))
+  private val form               = (userType: UserType) => formProvider(page, userType, latestDateAndError = latestDateAndError)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType, latestDateAndError = latestDateAndError))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider(page, request.userType, latestDateAndError = latestDateAndError)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
-  }
+    }
 
 }

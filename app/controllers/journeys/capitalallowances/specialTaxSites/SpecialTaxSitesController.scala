@@ -30,7 +30,7 @@ import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
                                            service: SelfEmploymentService,
                                            formProvider: BooleanFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)
+                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -59,7 +59,12 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer =>
+            service
+              .submitBooleanAnswerAndClearDependentAnswers(page, businessId, request, answer)
+              .map { updatedAnswers =>
+                page.redirectNext(mode, updatedAnswers, businessId, taxYear)
+              }
         )
   }
 
