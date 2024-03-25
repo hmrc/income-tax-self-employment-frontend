@@ -83,9 +83,7 @@ class MessagesSpec extends SpecBase {
     "turnoverNotTaxable.p1.agent",
     "turnoverNotTaxable.p3.agent",
     "wfhFlatRateOrActualCosts.error.required.agent",
-    "wfhFlatRateOrActualCosts.subHeading.agent",
-    "existingSiteClaimingAmount.cya",
-    "existingSiteClaimingAmount.details.p1"
+    "wfhFlatRateOrActualCosts.subHeading.agent"
   )
 
   "messages must not contain any illegal characters" in {

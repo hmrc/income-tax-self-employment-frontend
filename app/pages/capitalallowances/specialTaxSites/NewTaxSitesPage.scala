@@ -30,7 +30,7 @@ object NewTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
   override val dependentPagesWhenNo: List[Settable[_]] = Nil
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+    ExistingSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

@@ -43,13 +43,13 @@
 
 
     <div class="govuk-body">
-      <p>@messages(s"existingSiteClaimingAmount.details.p1")</p>
-      <p>@messages(s"existingSiteClaimingAmount.details.p2")</p>
+      <p>@messages(s"existingSiteClaimingAmount.details.p1.$userType")</p>
+      <p>@messages("existingSiteClaimingAmount.details.p2")</p>
       <ul class="govuk-list govuk-list--bullet">
           <li>@messages("existingSiteClaimingAmount.details.l1")</li>
           <li>@messages("existingSiteClaimingAmount.details.l2")</li>
       </ul>
-      <p>@messages(s"existingSiteClaimingAmount.details.p3")</p>
+      <p>@messages("existingSiteClaimingAmount.details.p3")</p>
     </div>
 
     @formHelper(action = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
