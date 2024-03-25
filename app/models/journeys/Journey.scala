@@ -18,7 +18,7 @@ package models.journeys
 
 import controllers.journeys.expenses
 import enumeratum._
-import models.{Mode, NormalMode}
+import models.NormalMode
 import models.common.{BusinessId, PageName, TaxYear}
 import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
