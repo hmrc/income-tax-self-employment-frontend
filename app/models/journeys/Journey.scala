@@ -18,7 +18,7 @@ package models.journeys
 
 import controllers.journeys.expenses
 import enumeratum._
-import models.Mode
+import models.NormalMode
 import models.common.{BusinessId, PageName, TaxYear}
 import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
@@ -56,8 +56,8 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
   /** Used to recognize if there are any answers for that journey. Only leave it Nil if there are no answers to store */
   val pageKeys: List[PageName]
 
-  def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String = {
-    val _ = (taxYear, businessId, mode) // // TODO Remove default impl when all pages are fixed
+  def startUrl(taxYear: TaxYear, businessId: BusinessId): String = {
+    val _ = (taxYear, businessId) // // TODO Remove default impl when all pages are fixed
     ""
   }
 
@@ -110,8 +110,8 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       ExpensesCategoriesPage.pageName
     )
-    override def startUrl(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
-      expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, mode).url
+    override def startUrl(taxYear: TaxYear, businessId: BusinessId): String =
+      expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url
 
     override def startPage: QuestionPage[_] = ExpensesCategoriesPage
   }
