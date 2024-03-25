@@ -17,16 +17,21 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.handleSubmitAnswersResult
 import models.NormalMode
 import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
 //import controllers.handleSubmitAnswersResult
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
+import services.SelfEmploymentService
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites.NewSpecialTaxSitesSummary
+
+import scala.concurrent.ExecutionContext
 import controllers.journeys
 import models.common._
 import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-//import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.journeys.SummaryListCYA
@@ -39,8 +44,9 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
                                               identify: IdentifierAction,
                                               getAnswers: DataRetrievalAction,
                                               requireAnswers: DataRequiredAction,
+                                              service: SelfEmploymentService,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: CheckYourAnswersView)
+                                              view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -67,10 +73,11 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
         ))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, businessId, CapitalAllowancesSpecialTaxSites.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesSpecialTaxSites)
+      val result  = service.submitAnswers[SpecialTaxSitesAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 
 }
