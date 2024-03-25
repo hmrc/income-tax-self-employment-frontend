@@ -27,10 +27,10 @@ import scala.util.Using
 
 class MessagesSpec extends SpecBase {
 
-  lazy val app: Application = applicationBuilder().build()
+  lazy val app: Application         = applicationBuilder().build()
   lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val defaults = messagesApi.messages("default")
-  private val english = messagesApi.messages("en")
+  private val defaults              = messagesApi.messages("default")
+  private val english               = messagesApi.messages("en")
 
   private val exclusionKeys: Set[String] = Set(
     "global.error.badRequest400.message",
@@ -91,7 +91,7 @@ class MessagesSpec extends SpecBase {
   "messages must not contain any illegal characters" in {
     for {
       char <- illegalCharacters
-      key <- english.values.toList
+      key  <- english.values.toList
     } key should not contain char
   }
 
@@ -151,8 +151,8 @@ class MessagesSpec extends SpecBase {
     val repeatedMessages = exampleMessages ++ List(
       ("excludedKey.excludedExample", "this is the example text"),
       ("excludedSubKey.uniqueSubKey", "this is the example text"))
-    val exclusionKeys = Set("excludedKey.excludedExample")
-    val exclusionSubKeys = Set("excludedSubKey")
+    val exclusionKeys     = Set("excludedKey.excludedExample")
+    val exclusionSubKeys  = Set("excludedSubKey")
     val illegalCharacters = Set("'", "%", "`")
 
     "filterExcludedKeys" - {
@@ -194,8 +194,8 @@ class MessagesSpec extends SpecBase {
     "checkForIllegalCharacters" - {
       "should return an empty set when messages contains no illegal characters" in {
         val badMessages = exampleMessages ++ List(("example4", "apostrophe'"), ("example5", "back`tick"))
-        val result1 = checkForIllegalCharacters(exampleMessages, illegalCharacters)
-        val result2 = checkForIllegalCharacters(badMessages, Set.empty)
+        val result1     = checkForIllegalCharacters(exampleMessages, illegalCharacters)
+        val result2     = checkForIllegalCharacters(badMessages, Set.empty)
 
         result1 mustBe Set()
         result2 mustBe Set()
@@ -203,7 +203,7 @@ class MessagesSpec extends SpecBase {
 
       "should return a set of failed message keys when their values contain an illegal character" in {
         val badMessages = exampleMessages ++ List(("example4", "apostrophe'"), ("example5", "back`tick"))
-        val result = checkForIllegalCharacters(badMessages, illegalCharacters)
+        val result      = checkForIllegalCharacters(badMessages, illegalCharacters)
 
         result mustBe Set("example4", "example5")
       }
