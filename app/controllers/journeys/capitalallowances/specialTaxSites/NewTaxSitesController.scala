@@ -74,7 +74,7 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
             answer =>
               Redirect(
                 if (answer) routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, sites.length, NormalMode)
-                else routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+                else routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
               )
           )
     }
