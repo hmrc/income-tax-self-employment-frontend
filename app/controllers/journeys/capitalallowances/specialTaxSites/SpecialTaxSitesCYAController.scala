@@ -16,33 +16,29 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import models.NormalMode
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
-//import controllers.handleSubmitAnswersResult
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
-import services.SelfEmploymentService
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites.NewSpecialTaxSitesSummary
-
-import scala.concurrent.ExecutionContext
-import controllers.journeys
 import models.common._
 import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class SpecialTaxSitesCYAController @Inject() (override val messagesApi: MessagesApi,
                                               identify: IdentifierAction,
                                               getAnswers: DataRetrievalAction,
+                                              getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                               requireAnswers: DataRequiredAction,
                                               service: SelfEmploymentService,
                                               val controllerComponents: MessagesControllerComponents,
@@ -51,8 +47,10 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getAnswers andThen
+      getJourneyAnswers[SpecialTaxSitesAnswers](req => req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesSpecialTaxSites)) andThen
+      requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
