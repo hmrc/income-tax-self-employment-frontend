@@ -62,6 +62,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         CapitalAllowances.ZeroEmissionCar,
         CapitalAllowances.ZeroEmissionGoodsVehicle,
         CapitalAllowances.ElectricVehicleChargepoint,
+        CapitalAllowances.StructuresAndBuildings,
         CapitalAllowances.SpecialTaxSitesStructuresAndBuildings,
         CapitalAllowances.AnnualInvestment,
         CapitalAllowances.Balancing
@@ -82,6 +83,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
   private val electricVehicleChargePointsCyaUrl =
     capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
+  private val structuresBuildingsAllowanceUrl =
+    capitalallowances.structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
   private val specialTaxSitesUrl =
     capitalallowances.specialTaxSites.routes.SpecialTaxSitesController.onPageLoad(taxYear, businessId, NormalMode).url
   private val balancingAllowanceCyaUrl =
@@ -159,6 +162,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesElectricVehicleChargePoints, Completed),
+        JourneyNameAndStatus(CapitalAllowancesStructuresBuildings, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesSpecialTaxSites, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesAnnualInvestmentAllowance, Completed),
         JourneyNameAndStatus(CapitalAllowancesBalancingAllowance, Completed)
@@ -171,6 +175,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress),
         expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
         expectedRow(electricVehicleChargePointsCyaUrl, CapitalAllowancesElectricVehicleChargePoints, Completed),
+        expectedRow(structuresBuildingsAllowanceUrl, CapitalAllowancesStructuresBuildings, NotStarted),
         expectedRow(specialTaxSitesUrl, CapitalAllowancesSpecialTaxSites, NotStarted),
         expectedRow(annualInvestmentAllowanceCyaUrl, CapitalAllowancesAnnualInvestmentAllowance, Completed),
         expectedRow(balancingAllowanceCyaUrl, CapitalAllowancesBalancingAllowance, Completed)
@@ -186,7 +191,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
 
         withClue(s"""
             |${result.rows.mkString("\n")}
-            |did not equal to:
+            |did not equal:
             |${expectedRows.mkString("\n")}
             |""".stripMargin) {
           assert(result.rows === expectedRows)

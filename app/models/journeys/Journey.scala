@@ -247,6 +247,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       StructuresBuildingsAllowancePage.pageName,
       StructuresBuildingsClaimedPage.pageName
+      // TODO add other pages in journey
     )
   }
 

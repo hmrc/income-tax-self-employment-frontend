@@ -63,9 +63,9 @@ class ContractForBuildingConstructionController @Inject() (override val messages
             val previousSameAsCurrentAnswer =
               page.getSiteFromIndex(request.userAnswers, businessId, index).flatMap(_.contractForBuildingConstruction).contains(answer)
             val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
-            service.updateSiteAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
-              page.nextPageWithIndex(answer, updatedMode, userAnswers, businessId, taxYear, index)
-            }
+            service
+              .updateSiteAnswerWithIndex(request.userAnswers, answer, businessId, index, page)
+              .map(userAnswers => page.nextPageWithIndex(answer, updatedMode, userAnswers, businessId, taxYear, index))
           }
         )
     }

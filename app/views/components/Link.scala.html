@@ -16,6 +16,6 @@
 
 @this()
 
-@(linkHrefKey: String, linkTextKey: String)(implicit messages: Messages)
+@(linkHrefKey: String, linkTextKey: String, extraClasses: String = "")(implicit messages: Messages)
 
-<a href="@messages(linkHrefKey)" target="_blank" rel="noreferrer noopener" class="govuk-link">@messages(linkTextKey)</a>
+<a href="@messages(linkHrefKey)" target="_blank" rel="noreferrer noopener" class="govuk-link @extraClasses">@messages(linkTextKey)</a>
