@@ -31,7 +31,7 @@ object StructureBuildingLocationSummary {
       formatLocationAnswer(answer),
       routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, CheckMode),
       messages("structuresBuildingsLocation.title"),
-      "specialTaxSiteLocation.change.hidden", //TODO change
+      "specialTaxSiteLocation.change.hidden", // TODO change
       rightTextAlign = true
     )
 

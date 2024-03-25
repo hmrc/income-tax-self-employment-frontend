@@ -34,17 +34,20 @@ trait StructuresBuildingsBasePage[A] extends OneQuestionPage[A] {
   def getStructureFromIndex(userAnswers: UserAnswers, businessId: BusinessId, index: Int): Option[NewStructureBuilding] =
     userAnswers.get(NewStructuresBuildingsList, businessId.some).map(list => if (list.length > index) list(index) else newStructure)
 
-  def fillFormWithIndex[B](form: Form[B], page: StructuresBuildingsBasePage[B], request: DataRequest[_], businessId: BusinessId, index: Int): Form[B] = {
+  def fillFormWithIndex[B](form: Form[B],
+                           page: StructuresBuildingsBasePage[B],
+                           request: DataRequest[_],
+                           businessId: BusinessId,
+                           index: Int): Form[B] = {
     val existingStructure: Option[NewStructureBuilding] = getStructureFromIndex(request.userAnswers, businessId, index)
     val existingValue: Option[B] = page match {
       case StructuresBuildingsQualifyingUseDatePage => existingStructure.flatMap(_.qualifyingUse)
-      case StructuresBuildingsLocationPage => existingStructure.flatMap(_.newStructureBuildingLocation)
-      case StructuresBuildingsNewClaimAmountPage => existingStructure.flatMap(_.newStructureBuildingClaimingAmount)
-      case _ => None
+      case StructuresBuildingsLocationPage          => existingStructure.flatMap(_.newStructureBuildingLocation)
+      case StructuresBuildingsNewClaimAmountPage    => existingStructure.flatMap(_.newStructureBuildingClaimingAmount)
+      case _                                        => None
     }
     existingValue.fold(form)(form.fill)
   }
   def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result = ???
-
 
 }

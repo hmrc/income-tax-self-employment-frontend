@@ -56,10 +56,11 @@ class StructuresBuildingsLocationController @Inject() (override val messagesApi:
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) async { implicit request =>
-     formProvider(request.userType)
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
+          formErrors =>
+            Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
           answer => updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
     }

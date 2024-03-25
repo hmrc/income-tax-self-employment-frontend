@@ -41,34 +41,35 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
                                                                 formProvider: LocalDateFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
                                                                 view: StructuresBuildingsQualifyingUseDateView)(implicit ec: ExecutionContext)
-extends FrontendBaseController
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = StructuresBuildingsQualifyingUseDatePage
+  private val page               = StructuresBuildingsQualifyingUseDatePage
   private val latestDateAndError = Some((LocalDate.now, "structuresBuildingsQualifyingUseDate.error.inFuture"))
-  private val form = (userType: UserType) => formProvider(page, userType, latestDateAndError = latestDateAndError)
+  private val form               = (userType: UserType) => formProvider(page, userType, latestDateAndError = latestDateAndError)
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
       val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
       Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-    form(request.userType)
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
           answer => {
-            val previousSameAsCurrentAnswer = page.getStructureFromIndex(request.userAnswers, businessId, index).flatMap(_.qualifyingUse).contains(answer)
-           val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
-            service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map {userAnswers =>
+            val previousSameAsCurrentAnswer =
+              page.getStructureFromIndex(request.userAnswers, businessId, index).flatMap(_.qualifyingUse).contains(answer)
+            val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
+            service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
               page.nextPageWithIndex(updatedMode, userAnswers, businessId, taxYear, index)
             }
           }
         )
-  }
+    }
 
 }

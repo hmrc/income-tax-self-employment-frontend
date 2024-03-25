@@ -59,9 +59,10 @@ class StructuresBuildingsNewClaimAmountController @Inject() (override val messag
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer => service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { _ =>
-            page.nextPage(businessId, taxYear)
-          }
+          answer =>
+            service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { _ =>
+              page.nextPage(businessId, taxYear)
+            }
         )
 
     }

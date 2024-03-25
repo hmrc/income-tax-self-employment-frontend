@@ -19,7 +19,6 @@ package viewmodels.journeys.capitalallowances.structuresBuildingsAllowance
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import play.api.libs.json.{Format, Json}
 
-
 case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
                                          EligibleToClaim: Option[Boolean],
                                          PreviousClaim: Option[Boolean],

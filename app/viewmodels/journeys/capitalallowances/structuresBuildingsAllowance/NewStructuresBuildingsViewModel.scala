@@ -28,7 +28,8 @@ import viewmodels.journeys.SummaryListCYA
 
 object NewStructuresBuildingsViewModel {
 
-  def getNewStructuresSummaryRows(sites: List[NewStructureBuilding], taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): SummaryList = {
+  def getNewStructuresSummaryRows(sites: List[NewStructureBuilding], taxYear: TaxYear, businessId: BusinessId)(implicit
+      messages: Messages): SummaryList = {
     def convertToSummaryListRow(siteWithIndex: (NewStructureBuilding, Int))(implicit messages: Messages): Option[SummaryListRow] =
       siteWithIndex._1.newStructureBuildingLocation.flatMap { location =>
         siteWithIndex._1.newStructureBuildingClaimingAmount.map { amount =>

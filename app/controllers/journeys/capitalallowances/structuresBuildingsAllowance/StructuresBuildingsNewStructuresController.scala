@@ -42,7 +42,7 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
                                                             requireData: DataRequiredAction,
                                                             formProvider: BooleanFormProvider,
                                                             service: SelfEmploymentService,
-                                                            view: StructuresBuildingsNewStructuresView)(implicit ec : ExecutionContext)
+                                                            view: StructuresBuildingsNewStructuresView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -62,23 +62,22 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      request.getValue(NewStructuresBuildingsList, businessId) match {
-        case None => redirectJourneyRecovery()
-        case Some(structures) =>
-          val summaryList = getNewStructuresSummaryRows(structures, taxYear, businessId)
-          formProvider(page, request.userType)
-            .bindFromRequest()
-            .fold(
-              formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList)),
-              answer =>
-                Redirect(
-                  if (answer) routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, structures.length, NormalMode)
-                  else routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
-                )
-            )
-      }
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    request.getValue(NewStructuresBuildingsList, businessId) match {
+      case None => redirectJourneyRecovery()
+      case Some(structures) =>
+        val summaryList = getNewStructuresSummaryRows(structures, taxYear, businessId)
+        formProvider(page, request.userType)
+          .bindFromRequest()
+          .fold(
+            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList)),
+            answer =>
+              Redirect(
+                if (answer) routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, structures.length, NormalMode)
+                else routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
+              )
+          )
+    }
   }
 
 }

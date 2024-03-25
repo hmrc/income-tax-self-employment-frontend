@@ -26,15 +26,18 @@ import play.api.mvc.Results.Redirect
 object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[StructuresBuildingsLocation] {
   override def toString: String = "specialTaxSiteLocation"
 
-   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
-    structure.newStructureBuildingLocation.isDefined && StructuresBuildingsNewStructuresPage.hasAllFurtherAnswers(structure)// TODO add has further answers pages
+  def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+    structure.newStructureBuildingLocation.isDefined && StructuresBuildingsNewStructuresPage.hasAllFurtherAnswers(
+      structure
+    ) // TODO add has further answers pages
 
   override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
     getStructureFromIndex(userAnswers, businessId, index) match {
       case None => redirectToRecoveryPage("NewSpecialTaxSitesList data not found when redirecting from SpecialTaxSiteLocationPage")
       case Some(structure) =>
         Redirect(
-          if (hasAllFurtherAnswers(structure)) routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId) //TODO change to structure summary
+          if (hasAllFurtherAnswers(structure))
+            routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId) // TODO change to structure summary
           else routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, index, NormalMode)
         )
     }

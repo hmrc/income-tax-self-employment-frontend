@@ -62,9 +62,9 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
                                         index: Int,
                                         page: StructuresBuildingsBasePage[A]): Future[UserAnswers] = {
     val listOfStructures: Option[List[NewStructureBuilding]] = userAnswers.get(NewStructuresBuildingsList, Some(businessId))
-    val siteOfIndex: Option[NewStructureBuilding]            = if (listOfStructures .exists(_.length > index)) listOfStructures.map(_(index)) else None
-    val isFirstPageOfLoop: Boolean                                   = page == StructuresBuildingsAllowancePage
-    val isValidIndexForNewStructure                            = (list: List[NewStructureBuilding]) => index == 0 || list.length == index
+    val siteOfIndex: Option[NewStructureBuilding]            = if (listOfStructures.exists(_.length > index)) listOfStructures.map(_(index)) else None
+    val isFirstPageOfLoop: Boolean                           = page == StructuresBuildingsAllowancePage
+    val isValidIndexForNewStructure                          = (list: List[NewStructureBuilding]) => index == 0 || list.length == index
     val updatedList = (listOfStructures, siteOfIndex) match {
       case (None, None) if index == 0 && isFirstPageOfLoop =>
         updateStructureAndList(
@@ -78,7 +78,7 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
         updateStructureAndList(newStructure, list.appended(newStructure), page, answer, index) // making a new site, appended to list
       case (Some(list), Some(structure)) =>
         updateStructureAndList(structure, list, page, answer, index) // editing existing site in list
-      case _                        => listOfStructures.getOrElse(List.empty)                                                     // error
+      case _ => listOfStructures.getOrElse(List.empty) // error
     }
 
     for {
@@ -94,10 +94,10 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
                                         index: Int): List[NewStructureBuilding] = {
     val updatedStructure: NewStructureBuilding =
       (page, answer) match {
-        case (StructuresBuildingsQualifyingUseDatePage, answer: LocalDate) => structure.copy(qualifyingUse = answer.some)
+        case (StructuresBuildingsQualifyingUseDatePage, answer: LocalDate)          => structure.copy(qualifyingUse = answer.some)
         case (StructuresBuildingsLocationPage, answer: StructuresBuildingsLocation) => structure.copy(newStructureBuildingLocation = answer.some)
         case (StructuresBuildingsNewClaimAmountPage, answer: BigDecimal) => structure.copy(newStructureBuildingClaimingAmount = answer.some)
-        case _ => newStructure
+        case _                                                           => newStructure
       }
     list.updated(index, updatedStructure)
   }

@@ -32,7 +32,7 @@ object StructuresBuildingsUseDateSummary {
       answer,
       routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, index, CheckMode),
       messages("structuresBuildingsQualifyingUseDate.title"),
-      "constructionStartDate.change.hidden", //TODO change
+      "constructionStartDate.change.hidden", // TODO change
       rightTextAlign = true
     )
 }

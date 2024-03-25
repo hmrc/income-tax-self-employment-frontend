@@ -31,7 +31,7 @@ case class NewStructureBuilding(qualifyingUse: Option[LocalDate] = None,
   def isEmpty: Boolean = Seq(
     qualifyingUse,
     newStructureBuildingLocation,
-    newStructureBuildingClaimingAmount,
+    newStructureBuildingClaimingAmount
   ).forall(_.isEmpty)
 
 }

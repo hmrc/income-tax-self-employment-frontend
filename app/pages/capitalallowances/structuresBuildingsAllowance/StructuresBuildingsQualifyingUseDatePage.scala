@@ -29,7 +29,7 @@ import java.time.LocalDate
 object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBasePage[LocalDate] {
   override def toString: String = "structuresBuildingsQualifyingUseDate"
 
-   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+  def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
     structure.qualifyingUse.isDefined & StructuresBuildingsLocationPage.hasAllFurtherAnswers(structure)
 
   def nextPageWithIndex(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
@@ -37,9 +37,10 @@ object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBaseP
       case None => redirectToRecoveryPage(s"Structure of index $index not found when redirecting from StructuresBuildingsQualifyingUseDatePage")
       case Some(structure) =>
         Redirect(mode match {
-          case CheckMode if hasAllFurtherAnswers(structure) => routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index) //TODO change to structure summary page
+          case CheckMode if hasAllFurtherAnswers(structure) =>
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index) // TODO change to structure summary page
           case NormalMode => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
-          case _ => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
+          case _          => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
         })
     }
 }

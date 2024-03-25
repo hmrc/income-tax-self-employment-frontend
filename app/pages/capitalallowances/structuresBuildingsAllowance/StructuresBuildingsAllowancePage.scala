@@ -16,7 +16,6 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-
 object StructuresBuildingsAllowancePage extends StructuresBuildingsBasePage[Boolean] {
   override def toString: String = "structuresBuildingsAllowance"
 }
