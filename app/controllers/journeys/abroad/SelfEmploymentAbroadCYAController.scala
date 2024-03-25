@@ -38,18 +38,18 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                   val controllerComponents: MessagesControllerComponents,
                                                    identify: IdentifierAction,
-                                                   getUserAnswers: DataRetrievalAction,
+                                                   getAnswers: DataRetrievalAction,
                                                    getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                                    requireData: DataRequiredAction,
                                                    service: SelfEmploymentService,
-                                                   val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen
     getJourneyAnswersIfAny[SelfEmploymentAbroadAnswers](request =>
       request.mkJourneyNinoContext(taxYear, businessId, Journey.Abroad)) andThen requireData) { implicit request =>
     val summaryList = SummaryListCYA.summaryListOpt(
@@ -69,7 +69,7 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
     )
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Abroad)
       val result  = service.submitAnswers[SelfEmploymentAbroadAnswers](context, request.userAnswers)

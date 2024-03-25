@@ -16,9 +16,17 @@
 
 package pages.expenses.tailoring.individualCategories
 
+import models.common.BusinessId
+import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
-import pages.OneQuestionPage
+import pages.{OneQuestionPage, PageJourney}
 
 case object WorkFromBusinessPremisesPage extends OneQuestionPage[WorkFromBusinessPremises] {
   override def toString: String = "workFromBusinessPremises"
+
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(this, businessId).map { _ =>
+      PageJourney.mkQuestion(TravelForWorkPage)
+    }
+
 }

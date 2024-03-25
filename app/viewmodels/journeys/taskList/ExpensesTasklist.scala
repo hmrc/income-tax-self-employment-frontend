@@ -165,7 +165,7 @@ object ExpensesTasklist {
     journey match {
       case ExpensesTailoring =>
         determineJourneyStartOrCyaUrl(
-          expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          ExpensesTailoring.startUrl(taxYear, businessId, NormalMode),
           expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesOfficeSupplies =>

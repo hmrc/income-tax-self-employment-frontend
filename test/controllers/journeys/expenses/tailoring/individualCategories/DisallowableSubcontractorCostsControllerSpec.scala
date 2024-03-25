@@ -21,14 +21,19 @@ import forms.expenses.tailoring.individualCategories.DisallowableSubcontractorCo
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
-import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Construction
+import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.DisallowableSubcontractorCostsPage
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -55,6 +60,21 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
     UserScenario(userType = Agent, formProvider(Agent))
   )
 
+  def baseAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
+      OfficeSuppliesPage.toString              -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString            -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString       -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString                -> true,
+      WorkFromBusinessPremisesPage.toString    -> WorkFromBusinessPremises.YesDisallowable.toString,
+      TravelForWorkPage.toString               -> TravelForWork.YesDisallowable.toString,
+      AdvertisingOrMarketingPage.toString      -> AdvertisingOrMarketing.YesDisallowable.toString,
+      EntertainmentCostsPage.toString          -> true,
+      ProfessionalServiceExpensesPage.toString -> List(Construction.toString)
+    )
+  )
+
   "DisallowableSubcontractorCosts Controller" - {
 
     "onPageLoad" - {
@@ -63,7 +83,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
         s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableSubcontractorCostsRoute)
@@ -83,7 +103,7 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId)
+              baseAnswers
                 .set(DisallowableSubcontractorCostsPage, true, Some(businessId))
                 .success
                 .value

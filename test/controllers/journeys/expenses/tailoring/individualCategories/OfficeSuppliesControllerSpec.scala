@@ -22,15 +22,19 @@ import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
 
@@ -47,6 +51,13 @@ class OfficeSuppliesControllerSpec
   override def onwardRoute: Call              = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
   override def validAnswer: OfficeSupplies    = YesDisallowable
   override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
+
+  override def baseAnswers: UserAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString -> IndividualCategories.toString,
+      TradeAccountingType.toString    -> Accrual.toString
+    )
+  )
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

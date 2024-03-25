@@ -4,7 +4,11 @@
             <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
-    <root level="ERROR">
+
+    <logger name="uk.gov.hmrc.play.bootstrap.audit" level="ERROR" />
+    <logger name="play.filters.headers.SecurityHeadersConfig" level="ERROR" />
+
+    <root level="WARN">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

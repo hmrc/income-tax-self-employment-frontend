@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.expenses.tailoring.individualCategories.EntertainmentCostsFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.EntertainmentCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,21 +39,24 @@ class EntertainmentCostsController @Inject() (override val messagesApi: Messages
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
+                                              hopChecker: HopCheckerAction,
                                               formProvider: EntertainmentCostsFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: EntertainmentCostsView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = EntertainmentCostsPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       val preparedForm = request.userAnswers.get(EntertainmentCostsPage, Some(businessId)) match {
         case None        => formProvider(request.userType)
         case Some(value) => formProvider(request.userType).fill(value)
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

@@ -22,14 +22,18 @@ import models.NormalMode
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.Mockito.when
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.ProfessionalServiceExpensesPage
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -57,9 +61,30 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
                           baseUserAnswers: UserAnswers)
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual), AccountingType.Accrual, baseUserAnswers = emptyUserAnswersAccrual),
-    UserScenario(userType = Agent, formProvider(Agent), AccountingType.Cash, baseUserAnswers = emptyUserAnswersCash)
+    UserScenario(
+      userType = Individual,
+      formProvider(Individual),
+      AccountingType.Accrual,
+      baseUserAnswers = emptyUserAnswersAccrual.upsertFragment(businessId, baseAnswers)),
+    UserScenario(
+      userType = Agent,
+      formProvider(Agent),
+      AccountingType.Cash,
+      baseUserAnswers = emptyUserAnswersCash.upsertFragment(businessId, baseAnswers))
   )
+
+  def baseAnswers =
+    Json.obj(
+      ExpensesCategoriesPage.toString       -> IndividualCategories.toString,
+      OfficeSuppliesPage.toString           -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString         -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString    -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString             -> true,
+      WorkFromBusinessPremisesPage.toString -> WorkFromBusinessPremises.YesDisallowable.toString,
+      TravelForWorkPage.toString            -> TravelForWork.YesDisallowable.toString,
+      AdvertisingOrMarketingPage.toString   -> AdvertisingOrMarketing.YesDisallowable.toString,
+      EntertainmentCostsPage.toString       -> true
+    )
 
   "ProfessionalServiceExpenses Controller" - {
 
