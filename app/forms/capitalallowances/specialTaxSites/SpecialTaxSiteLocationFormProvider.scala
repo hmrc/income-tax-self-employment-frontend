@@ -35,40 +35,25 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
   private val postcodeRequiredError  = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
   private val postcodeInvalidError   = "error.postcode.invalid"
 
-//  private def atLeastOneRequired(userType: UserType): Constraint[SpecialTaxSiteLocation] = Constraint("constraints.atleastone") { location =>
-//    if (location.buildingName.isEmpty && location.buildingNumber.isEmpty) {
-//      Invalid(Seq(ValidationError(emptyBuildingDetailsError(userType))))
-//    } else {
-//      Valid
-//    }
-//  }
-
-  private def allFieldsAreEmptyOrFilled(dependentFields: Seq[String]): Condition = { s =>
-    dependentFields.forall(field => s.get(field).exists(_.isEmpty) || s.get(field).exists(_.nonEmpty))
+  private def bindIfOneOrBothAreFilled(dependentField: String): Condition = { s =>
+    val bothFull   = s.get(buildingName).exists(_.nonEmpty) && s.get(buildingNumber).exists(_.nonEmpty)
+    val otherEmpty = s.get(dependentField).exists(_.isEmpty)
+    otherEmpty || bothFull
   }
 
-  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form( // TODO allow building name OR number
+  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
     mapping(
       buildingName -> mandatoryIf(
-        allFieldsAreEmptyOrFilled(Seq(buildingNumber, buildingName)),
+        bindIfOneOrBothAreFilled(buildingNumber),
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNameError))
       ),
       buildingNumber -> mandatoryIf(
-        allFieldsAreEmptyOrFilled(Seq(buildingNumber, buildingName)),
+        bindIfOneOrBothAreFilled(buildingName),
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))
       ),
       postcode -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
     )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply))
 
-//  def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
-//    mapping(
-//      buildingName   -> optional(text(emptyBuildingDetailsError(userType))
-//        .verifying(maxLength(maxInputLength, maxBuildingNameError))
-//        .verifying(check(mapping(buildingNumber -> text(emptyBuildingDetailsError(userType)))))),
-//      buildingNumber -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))),
-//      postcode       -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
-//    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply).verifying(atLeastOneRequired(userType))
-//  )
 }
 
 object SpecialTaxSiteLocationFormProvider {

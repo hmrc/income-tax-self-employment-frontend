@@ -59,9 +59,7 @@ class RemoveSpecialTaxSiteController @Inject() (override val messagesApi: Messag
         (answer, indexIsValid, sitesList) match {
           case (true, true, Some(list)) =>
             val updatedList = list.patch(index, Nil, 1)
-            service.persistAnswer(businessId, request.userAnswers, updatedList, NewSpecialTaxSitesList).map { _ =>
-              continueToSummary
-            }
+            service.persistAnswer(businessId, request.userAnswers, updatedList, NewSpecialTaxSitesList).map(_ => continueToSummary)
           case _ => Future.successful(continueToSummary)
         }
       }

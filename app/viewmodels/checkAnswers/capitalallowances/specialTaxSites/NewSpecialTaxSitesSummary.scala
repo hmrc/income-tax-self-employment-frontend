@@ -18,7 +18,6 @@ package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.capitalallowances.specialTaxSites.NewSpecialTaxSitesList
@@ -34,8 +33,8 @@ object NewSpecialTaxSitesSummary {
       .map { sites =>
         buildRowBigDecimal(
           sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum,
-          routes.SpecialTaxSitesController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("newSpecialTaxSites.cya"),
+          routes.NewTaxSitesController.onPageLoad(taxYear, businessId),
+          messages("newSpecialTaxSitesList.cya"),
           "newSpecialTaxSites.change.hidden"
         )
       }
