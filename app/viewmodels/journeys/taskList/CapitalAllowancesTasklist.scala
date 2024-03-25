@@ -91,7 +91,7 @@ object CapitalAllowancesTasklist {
     )
 
     val structuresBuildingsStatus = getJourneyStatus(CapitalAllowancesStructuresBuildings)(tradesJourneyStatuses)
-    val structuresBuildingsHref   = getUrl(CapitalAllowancesBalancingAllowance, structuresBuildingsStatus, businessId, taxYear)
+    val structuresBuildingsHref   = getUrl(CapitalAllowancesStructuresBuildings, structuresBuildingsStatus, businessId, taxYear)
     val structuresBuildingsIsTailored =
       conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.StructuresAndBuildings) && capAllowancesTailoringCompleted
     val structuresBuildingsRow = returnRowIfConditionPassed(
