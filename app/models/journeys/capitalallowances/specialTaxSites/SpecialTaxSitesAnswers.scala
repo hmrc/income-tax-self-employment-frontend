@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 
 case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
                                   newSpecialTaxSites: List[NewSpecialTaxSite],
-                                  haveYouUsedStsAllowanceBefore: Boolean,
+                                  DoYouHaveAContinuingClaim: Boolean,
                                   continueClaimingAllowanceForExistingSite: Boolean,
                                   existingSiteClaimingAmount: BigDecimal)
 

@@ -1964,5 +1964,27 @@ removeSpecialTaxSite.hint.agent = The address and claim amount your client enter
 removeSpecialTaxSite.error.required.individual = Select yes if you want to remove this structure or building
 removeSpecialTaxSite.error.required.agent = Select yes if your client wants to remove this structure or building
 
+doYouHaveAContinuingClaim.title.individual = Do you have a continuing claim for enhanced structures and buildings allowance?
+doYouHaveAContinuingClaim.title.agent = Does your client have a continuing claim for enhanced structures and buildings allowance?
+doYouHaveAContinuingClaim.title.cya.individual = Have you used the Freeports structures and building allowance before?
+doYouHaveAContinuingClaim.title.cya.agent = Has your client used the Freeports structures and building allowance before?
+doYouHaveAContinuingClaim.error.required.individual = Select yes if you have a continuing claim for enhanced structures and buildings allowance
+doYouHaveAContinuingClaim.error.required.agent = Select yes if your client has a continuing claim for enhanced structures and buildings allowance
+doYouHaveAContinuingClaim.change.hidden =
+
+continueClaimingAllowanceForExistingSite.title.individual = Can you still claim?
+continueClaimingAllowanceForExistingSite.title.agent = Can your client still claim?
+continueClaimingAllowanceForExistingSite.subHeading.individual = Do you want to continue to claim this allowance for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.agent = Does your client want to continue to claim this allowance for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.cya.individual = Do you want to claim anything for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.cya.agent = Does your client want to claim anything for an existing site?
+continueClaimingAllowanceForExistingSite.p2.individual = If you can only meet these conditions for part of the accounting period, you will need to reduce the allowance proportionally.
+continueClaimingAllowanceForExistingSite.p2.agent = If your client can only meet these conditions for part of the accounting period, they will need to reduce the allowance proportionally.
+continueClaimingAllowanceForExistingSite.p3.individual = You must also hold an allowance statement, otherwise the qualifying expenditure is treated as £0.
+continueClaimingAllowanceForExistingSite.p3.agent = Your client must also hold an allowance statement, otherwise the qualifying expenditure is treated as £0.
+continueClaimingAllowanceForExistingSite.error.required.individual = Select yes if you want to continue to claim this allowance for an existing site
+continueClaimingAllowanceForExistingSite.error.required.agent = Select yes if your client wants to continue to claim this allowance for an existing site
+continueClaimingAllowanceForExistingSite.change.hidden =
+
 newSpecialTaxSitesList.cya = Total new enhanced structures and buildings allowance claim:
 newSpecialTaxSitesList.change.hidden =

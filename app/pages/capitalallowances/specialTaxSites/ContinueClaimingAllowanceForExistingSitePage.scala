@@ -16,6 +16,7 @@
 
 package pages.capitalallowances.specialTaxSites
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -24,20 +25,25 @@ import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
 
-object NewTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
-  override def toString: String = "newTaxSites"
+object ContinueClaimingAllowanceForExistingSitePage extends SpecialTaxSitesBasePage[Boolean] {
 
-  override val dependentPagesWhenNo: List[Settable[_]] = Nil
+  override def toString: String = "continueClaimingAllowanceForExistingSite"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && DoYouHaveAContinuingClaimPage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers
+      .get(this, businessId)
+      .exists(
+        !_ || ExistingSiteClaimingAmountPage, businessId.some).hasAllFurtherAnswers(businessId, userAnswers)
+      )
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(ExistingSiteClaimingAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      onTrue = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId),
-      onFalse = routes.DoYouHaveAContinuingClaimController.onPageLoad(taxYear, businessId, NormalMode)
+      onTrue = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode),
+      onFalse = cyaPage(taxYear, businessId)
     )
 }

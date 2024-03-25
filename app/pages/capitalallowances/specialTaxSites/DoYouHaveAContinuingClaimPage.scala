@@ -24,20 +24,25 @@ import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
 
-object NewTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
-  override def toString: String = "newTaxSites"
+object DoYouHaveAContinuingClaimPage extends SpecialTaxSitesBasePage[Boolean] {
 
-  override val dependentPagesWhenNo: List[Settable[_]] = Nil
+  override def toString: String = "doYouHaveAContinuingClaim"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && DoYouHaveAContinuingClaimPage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers
+      .get(this, businessId)
+      .exists(
+        !_ || ContinueClaimingAllowanceForExistingSitePage.hasAllFurtherAnswers(businessId, userAnswers)
+      )
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(ContinueClaimingAllowanceForExistingSitePage, ExistingSiteClaimingAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      onTrue = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId),
-      onFalse = routes.DoYouHaveAContinuingClaimController.onPageLoad(taxYear, businessId, NormalMode)
+      onTrue = routes.ContinueClaimingAllowanceForExistingSiteController.onPageLoad(taxYear, businessId, NormalMode),
+      onFalse = cyaPage(taxYear, businessId)
     )
 }
