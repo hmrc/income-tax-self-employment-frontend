@@ -16,27 +16,20 @@
 
 package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
 object StructuresBuildingsNewClaimAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(StructuresBuildingsNewClaimAmountPage, businessId.some)
-      .map { answer =>
-        buildRowBigDecimal(
-          answer,
-          routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsNewClaimAmount.cya.$userType"),
-          "amountSpentOnEvcp.change.hidden" // TODO change to structures buildings hidden
-        )
-      }
+  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowBigDecimal(
+      answer,
+      routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages(s"structuresBuildingsNewClaimAmount.cya.$userType"),
+      "newSiteClaimingAmount.change.hidden"
+    )
 }

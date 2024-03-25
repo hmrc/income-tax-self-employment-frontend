@@ -16,31 +16,24 @@
 
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
-import pages.capitalallowances.specialTaxSites.SpecialTaxSiteLocationPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 
 object SpecialTaxSiteLocationSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(SpecialTaxSiteLocationPage, businessId.some)
-      .map { answer =>
-        buildRowString(
-          formatLocationAnswer(answer),
-          routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("specialTaxSiteLocation.title"),
-          "specialTaxSiteLocation.change.hidden",
-          rightTextAlign = true
-        )
-      }
+  def row(answer: SpecialTaxSiteLocation, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowString(
+      formatLocationAnswer(answer),
+      routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages("specialTaxSiteLocation.title"),
+      "specialTaxSiteLocation.change.hidden",
+      rightTextAlign = true
+    )
 
   private def formatLocationAnswer(answer: SpecialTaxSiteLocation): String = {
     val buildingName   = answer.buildingName.map(_ + "<br>").getOrElse("")

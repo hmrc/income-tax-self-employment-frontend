@@ -20,14 +20,22 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance.route
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
-import play.api.mvc.Call
+import models.journeys.capitalallowances.structuresBuildingsAllowance.{NewStructureBuilding, StructuresBuildingsLocation}
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[StructuresBuildingsLocation] {
   override def toString: String = "specialTaxSiteLocation"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined // TODO add has further answers pages
+   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+    structure.newStructureBuildingLocation.isDefined && StructuresBuildingsNewStructuresPage.hasAllFurtherAnswers(structure)// TODO add has further answers pages
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, NormalMode) // TODO setup correct navigation
+  override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getStructureFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage("NewSpecialTaxSitesList data not found when redirecting from SpecialTaxSiteLocationPage")
+      case Some(structure) =>
+        Redirect(
+          if (hasAllFurtherAnswers(structure)) routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId) //TODO change to structure summary
+          else routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, index, NormalMode)
+        )
+    }
 }

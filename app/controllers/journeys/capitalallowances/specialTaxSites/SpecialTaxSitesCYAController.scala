@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites.NewSpecialTaxSitesSummary
 //import controllers.handleSubmitAnswersResult
 import controllers.journeys
 import models.common._
@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 //import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites.{ContractForBuildingConstructionSummary, SpecialTaxSitesSummary}
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites.SpecialTaxSitesSummary
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -59,12 +59,7 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
         SummaryListCYA.summaryListOpt(
           List(
             SpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            ContractForBuildingConstructionSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            ContractStartDateSummary.row(request.userAnswers, taxYear, businessId),
-            ConstructionStartDateSummary.row(request.userAnswers, taxYear, businessId),
-            QualifyingUseStartDateSummary.row(request.userAnswers, taxYear, businessId),
-            SpecialTaxSiteLocationSummary.row(request.userAnswers, taxYear, businessId),
-            NewSiteClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            NewSpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId)
           ))
 
       Ok(

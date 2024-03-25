@@ -26,7 +26,7 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("qualifyingUseStartDate.title"))) {
 
@@ -40,7 +40,7 @@
             <p>@messages("qualifyingUseStartDate.p1")</p>
         </div>
 
-    @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukDateInput(
             DateViewModel(

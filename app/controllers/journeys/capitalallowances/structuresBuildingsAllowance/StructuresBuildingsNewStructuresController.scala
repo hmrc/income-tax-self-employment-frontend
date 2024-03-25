@@ -17,20 +17,22 @@
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
+import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
-import models.Mode
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewStructuresPage
+import pages.capitalallowances.structuresBuildingsAllowance.{NewStructuresBuildingsList, StructuresBuildingsNewStructuresPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildings.removeIncompleteStructure
+import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsViewModel.getNewStructuresSummaryRows
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewStructuresView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class StructuresBuildingsNewStructuresController @Inject() (override val messagesApi: MessagesApi,
@@ -39,28 +41,44 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
                                                             formProvider: BooleanFormProvider,
-                                                            service: StructuresBuildingsService,
-                                                            view: StructuresBuildingsNewStructuresView)
+                                                            service: SelfEmploymentService,
+                                                            view: StructuresBuildingsNewStructuresView)(implicit ec : ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   val page = StructuresBuildingsNewStructuresPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      request.getValue(NewStructuresBuildingsList, businessId) match {
+        case None => Future(redirectJourneyRecovery())(ec)
+        case Some(sites) =>
+          val cleanSiteList = removeIncompleteStructure(sites)
+          service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewStructuresBuildingsList).map { _ =>
+            val summaryList = getNewStructuresSummaryRows(cleanSiteList, taxYear, businessId)
+            Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList))
+          }
+      }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      formProvider(page, request.userType)
-        .bindFromRequest()
-        .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
-        )
+      request.getValue(NewStructuresBuildingsList, businessId) match {
+        case None => redirectJourneyRecovery()
+        case Some(structures) =>
+          val summaryList = getNewStructuresSummaryRows(structures, taxYear, businessId)
+          formProvider(page, request.userType)
+            .bindFromRequest()
+            .fold(
+              formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList)),
+              answer =>
+                Redirect(
+                  if (answer) routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, structures.length, NormalMode)
+                  else routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
+                )
+            )
+      }
   }
 
 }

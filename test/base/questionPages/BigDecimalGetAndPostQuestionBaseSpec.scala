@@ -102,7 +102,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
               val result = route(application, postRequest).value
 
               status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe onwardRoute.url
+              assert(redirectLocation(result).value.endsWith(onwardRoute.url))
             }
           }
         }

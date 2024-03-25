@@ -16,8 +16,20 @@
 
 package pages.expenses.tailoring.individualCategories
 
-import pages.OneQuestionPage
+import models.common.BusinessId
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses._
+import pages.PageJourney.mkQuestion
+import pages.{OneQuestionPage, PageJourney}
 
 case object DisallowableStaffCostsPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableStaffCosts"
+
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(ProfessionalServiceExpensesPage, businessId).map { seq =>
+      if (seq.contains(Construction)) mkQuestion(DisallowableSubcontractorCostsPage)
+      else if (seq.contains(ProfessionalFees)) mkQuestion(DisallowableProfessionalFeesPage)
+      else mkQuestion(FinancialExpensesPage)
+    }
+
 }

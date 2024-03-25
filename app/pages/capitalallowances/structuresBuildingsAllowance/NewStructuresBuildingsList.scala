@@ -16,8 +16,8 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildings
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 
-object NewStructuresBuildingsList extends StructuresBuildingsBasePage[List[NewStructuresBuildings]] {
+object NewStructuresBuildingsList extends StructuresBuildingsBasePage[List[NewStructureBuilding]] {
   override def toString: String = "newStructuresBuildings"
 }

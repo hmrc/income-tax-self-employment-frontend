@@ -17,19 +17,25 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.standard
 import forms.expenses.tailoring.individualCategories.WorkFromBusinessPremisesFormProvider
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, RepairsAndMaintenance, WorkFromBusinessPremises}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,6 +59,17 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
     UserScenario(Agent)
   )
 
+  def baseAnswers: UserAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString    -> IndividualCategories.toString,
+      TradeAccountingType.toString       -> Accrual.toString,
+      OfficeSuppliesPage.toString        -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString      -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString          -> true
+    )
+  )
+
   "WorkFromBusinessPremises Controller" - {
 
     "onPageLoad" - {
@@ -62,7 +79,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
             val form        = formProvider(userScenario.userType)
 
             running(application) {
@@ -83,7 +100,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId)
+              baseAnswers
                 .set(WorkFromBusinessPremisesPage, WorkFromBusinessPremises.values.head, Some(businessId))
                 .success
                 .value
@@ -120,7 +137,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -218,7 +235,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

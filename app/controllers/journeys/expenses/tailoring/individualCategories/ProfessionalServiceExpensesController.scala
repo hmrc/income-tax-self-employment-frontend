@@ -23,6 +23,7 @@ import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpenses
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import navigation.ExpensesTailoringNavigator
@@ -53,21 +54,24 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
+                                                       hopChecker: HopCheckerAction,
                                                        formProvider: ProfessionalServiceExpensesFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: ProfessionalServiceExpensesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = ProfessionalServiceExpensesPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
       val form = request.userAnswers
         .get(ProfessionalServiceExpensesPage, businessId.some)
         .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

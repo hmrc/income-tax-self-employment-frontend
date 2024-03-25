@@ -16,24 +16,20 @@
 
 package viewmodels.journeys.capitalallowances.structuresBuildingsAllowance
 
-import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import play.api.libs.json.{Format, Json}
 
-import java.time.LocalDate
 
 case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
                                          EligibleToClaim: Option[Boolean],
                                          PreviousClaim: Option[Boolean],
                                          PreviousClaimUse: Option[Boolean],
                                          PreviousClaimAmount: Option[Int],
-                                         newSpecialTaxSites: List[NewStructuresBuildings])
-object NewStructuresBuildings {
-  implicit val formats: Format[NewStructuresBuildings] = Json.format[NewStructuresBuildings]
-}
-case class NewStructuresBuildings(qualifyingUse: Option[LocalDate] = None,
-                                  newStructureBuildingLocation: Option[StructuresBuildingsLocation] = None,
-                                  newStructureBuildingClaimingAmount: Option[BigDecimal] = None) {
-  def isComplete(): Boolean = ???
-}
+                                         newSpecialTaxSites: List[NewStructureBuilding])
 
-def newStructure(): NewStructuresBuildings = NewStructuresBuildings()
+object NewStructuresBuildings {
+  implicit val formats: Format[NewStructuresBuildingsAnswers] = Json.format[NewStructuresBuildingsAnswers]
+
+  def removeIncompleteStructure(sitesList: List[NewStructureBuilding]): List[NewStructureBuilding] = sitesList.filter(_.isComplete)
+
+}

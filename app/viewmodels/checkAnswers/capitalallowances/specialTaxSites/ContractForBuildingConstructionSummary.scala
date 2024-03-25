@@ -16,28 +16,21 @@
 
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContractForBuildingConstructionPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
 
 object ContractForBuildingConstructionSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(ContractForBuildingConstructionPage, businessId.some)
-      .map { answer =>
-        buildRowBoolean(
-          answer,
-          routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"contractForBuildingConstruction.cya.$userType"),
-          "contractForBuildingConstruction.change.hidden",
-          rightTextAlign = true
-        )
-      }
+  def row(answer: Boolean, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowBoolean(
+      answer,
+      routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages(s"contractForBuildingConstruction.cya.$userType"),
+      "contractForBuildingConstruction.change.hidden",
+      rightTextAlign = true
+    )
 }

@@ -17,9 +17,9 @@
 package pages.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
@@ -27,8 +27,8 @@ import queries.Settable
 object StructuresBuildingsNewStructuresPage extends StructuresBuildingsBasePage[Boolean] {
   override def toString: String = "structuresBuildingsNewStructures"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).contains(false)
+  def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+    structure.newStructureBuildingClaimingAmount.isDefined
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
@@ -39,7 +39,7 @@ object StructuresBuildingsNewStructuresPage extends StructuresBuildingsBasePage[
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId, NormalMode),
+      onTrue = routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId),
       onFalse = cyaPage(taxYear, businessId)
     )
 }

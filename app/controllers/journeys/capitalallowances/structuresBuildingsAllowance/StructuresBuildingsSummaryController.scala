@@ -19,13 +19,13 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.redirectJourneyRecovery
 import models.common._
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage.getStructureFromIndex
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
-import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.StructureBuildingLocationSummary
+import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{StructureBuildingLocationSummary, StructuresBuildingsNewClaimAmountSummary, StructuresBuildingsUseDateSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -44,14 +44,15 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getStructureFromIndex(request, businessId, index) match {
+      getStructureFromIndex(request.userAnswers, businessId, index) match {
         case None => redirectJourneyRecovery()
         case Some(structure) =>
           val summaryList =
             SummaryListCYA.summaryListOpt(
               List(
-                StructureBuildingLocationSummary.row(structure.structuresBuildingsLocation, taxYear, businessId, index).some,
-                NewSiteClaimingAmountSummary.row(structure.newSiteClaimingAmount, taxYear, businessId, request.userType, index).some
+                structure.qualifyingUse.map(StructuresBuildingsUseDateSummary.row(_, taxYear, businessId, index)),
+                structure.newStructureBuildingLocation.map(StructureBuildingLocationSummary.row(_, taxYear, businessId, index)),
+                structure.newStructureBuildingClaimingAmount.map(StructuresBuildingsNewClaimAmountSummary.row(_, taxYear, businessId, request.userType, index))
               ))
 
           Ok(
@@ -60,13 +61,10 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
               taxYear,
               request.userType,
               summaryList,
-              routes.StructuresBuildingsCYAController.onSubmit(taxYear, businessId)
+              routes.StructuresBuildingsNewStructuresController.onSubmit(taxYear, businessId)
             ))
       }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { _ =>
-    Redirect(routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
-  }
 
 }

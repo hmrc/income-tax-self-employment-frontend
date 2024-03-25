@@ -16,28 +16,23 @@
 
 package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContractStartDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowLocalDate
 
+import java.time.LocalDate
+
 object ContractStartDateSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(ContractStartDatePage, businessId.some)
-      .map { answer =>
-        buildRowLocalDate(
-          answer,
-          routes.ContractStartDateController.onPageLoad(taxYear, businessId, CheckMode),
-          messages("contractStartDate.title.cya"),
-          "contractStartDate.change.hidden",
-          rightTextAlign = true
-        )
-      }
+  def row(answer: LocalDate, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowLocalDate(
+      answer,
+      routes.ContractStartDateController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages("contractStartDate.title.cya"),
+      "contractStartDate.change.hidden",
+      rightTextAlign = true
+    )
 }

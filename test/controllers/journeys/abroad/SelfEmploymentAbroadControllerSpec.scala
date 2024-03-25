@@ -17,7 +17,7 @@
 package controllers.journeys.abroad
 
 import base.SpecBase
-import forms.abroad.SelfEmploymentAbroadFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType.Individual
 import models.database.UserAnswers
@@ -40,8 +40,7 @@ import scala.concurrent.Future
 class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
 
   val user                = Individual
-  val formProvider        = new SelfEmploymentAbroadFormProvider()
-  val form: Form[Boolean] = formProvider(user)
+  val form: Form[Boolean] = new BooleanFormProvider()(SelfEmploymentAbroadPage, user)
 
   lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url

@@ -31,12 +31,12 @@ case class SummaryListCYA(userAnswers: UserAnswers, taxYear: TaxYear, businessId
 
 object SummaryListCYA {
 
-  def summaryList(rows: List[SummaryListRow]): SummaryList = SummaryList(
+  def summaryList(rows: List[SummaryListRow], extraClasses: Option[String] = None): SummaryList = SummaryList(
     rows = rows,
-    classes = "govuk-!-margin-bottom-7"
+    classes = extraClasses.getOrElse("govuk-!-margin-bottom-7")
   )
 
-  def summaryListOpt(rows: List[Option[SummaryListRow]]): SummaryList =
-    summaryList(rows.flatten)
+  def summaryListOpt(rows: List[Option[SummaryListRow]], extraClasses: Option[String] = None): SummaryList =
+    summaryList(rows.flatten, extraClasses)
 
 }

@@ -17,15 +17,18 @@
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import views.html.components.TwoRadios
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
       govukErrorSummary: GovukErrorSummary,
       govukRadios: GovukRadios,
       govukButton: GovukButton,
-      heading: Heading)
+      heading: Heading,
+        twoRadios: TwoRadios,
+        govukSummaryList: GovukSummaryList)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, summaryList: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("structuresBuildingsNewStructures.title"))) {
 
@@ -35,7 +38,9 @@
 
     @heading(messages("structuresBuildingsNewStructures.title"), None, extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
 
-    @formHelper(action = routes.StructuresBuildingsNewStructuresController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @govukSummaryList(summaryList)
+
+    @formHelper(action = routes.StructuresBuildingsNewStructuresController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(

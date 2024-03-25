@@ -21,13 +21,13 @@ import controllers.journeys.clearDependentPages
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding.newStructure
+import models.journeys.capitalallowances.structuresBuildingsAllowance.{NewStructureBuilding, StructuresBuildingsLocation}
 import models.requests.DataRequest
 import pages.capitalallowances.structuresBuildingsAllowance._
 import play.api.mvc.Result
 import repositories.SessionRepositoryBase
 import services.SelfEmploymentService
-import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.{NewStructuresBuildings, newStructure}
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -56,28 +56,29 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
       }
 
-  def submitAnswer[A](userAnswers: UserAnswers,
-                      answer: A,
-                      businessId: BusinessId,
-                      index: Int,
-                      page: StructuresBuildingsBasePage[A]): Future[UserAnswers] = {
-    val listOfStructures: Option[List[NewStructuresBuildings]] = userAnswers.get(NewStructuresBuildingsList, Some(businessId))
-    val siteOfIndex: Option[NewStructuresBuildings]            = listOfStructures.map(_(index))
-    val isFirstPage: Boolean                                   = page == StructuresBuildingsAllowancePage
-    val indexIsValidForNewStructure                            = (list: List[NewStructuresBuildings]) => index == 0 || list.length == index
+  def updateStructureAnswerWithIndex[A](userAnswers: UserAnswers,
+                                        answer: A,
+                                        businessId: BusinessId,
+                                        index: Int,
+                                        page: StructuresBuildingsBasePage[A]): Future[UserAnswers] = {
+    val listOfStructures: Option[List[NewStructureBuilding]] = userAnswers.get(NewStructuresBuildingsList, Some(businessId))
+    val siteOfIndex: Option[NewStructureBuilding]            = if (listOfStructures .exists(_.length > index)) listOfStructures.map(_(index)) else None
+    val isFirstPageOfLoop: Boolean                                   = page == StructuresBuildingsAllowancePage
+    val isValidIndexForNewStructure                            = (list: List[NewStructureBuilding]) => index == 0 || list.length == index
     val updatedList = (listOfStructures, siteOfIndex) match {
-      case (None, None) if index == 0 && isFirstPage =>
+      case (None, None) if index == 0 && isFirstPageOfLoop =>
         updateStructureAndList(
-          newStructure(),
-          List(newStructure()),
+          newStructure,
+          List(newStructure),
           page,
           answer,
           index
         ) // make a new list with a new empty site and save first page answer
-      case (Some(list), None) if indexIsValidForNewStructure(list) =>
-        updateStructureAndList(newStructure(), list, page, answer, index) // making a new site, appended to list
-      case (Some(list), Some(site)) => updateStructureAndList(site, list, page, answer, index) // editing existing site in list
-      case _                        => ???                                                     // error
+      case (Some(list), None) if isValidIndexForNewStructure(list) =>
+        updateStructureAndList(newStructure, list.appended(newStructure), page, answer, index) // making a new site, appended to list
+      case (Some(list), Some(structure)) =>
+        updateStructureAndList(structure, list, page, answer, index) // editing existing site in list
+      case _                        => listOfStructures.getOrElse(List.empty)                                                     // error
     }
 
     for {
@@ -86,22 +87,19 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
     } yield updatedAnswers
   }
 
-  private def updateStructureAndList[A](structure: NewStructuresBuildings,
-                                        list: List[NewStructuresBuildings],
+  private def updateStructureAndList[A](structure: NewStructureBuilding,
+                                        list: List[NewStructureBuilding],
                                         page: StructuresBuildingsBasePage[A],
                                         answer: A,
-                                        index: Int): List[NewStructuresBuildings] = {
-    val updatedStructure = updateStructure(structure, page, answer)
-    val updatedList      = list.updated(index, updatedStructure)
-    updatedList
+                                        index: Int): List[NewStructureBuilding] = {
+    val updatedStructure: NewStructureBuilding =
+      (page, answer) match {
+        case (StructuresBuildingsQualifyingUseDatePage, answer: LocalDate) => structure.copy(qualifyingUse = answer.some)
+        case (StructuresBuildingsLocationPage, answer: StructuresBuildingsLocation) => structure.copy(newStructureBuildingLocation = answer.some)
+        case (StructuresBuildingsNewClaimAmountPage, answer: BigDecimal) => structure.copy(newStructureBuildingClaimingAmount = answer.some)
+        case _ => newStructure
+      }
+    list.updated(index, updatedStructure)
   }
-
-  private def updateStructure[A](structure: NewStructuresBuildings, page: StructuresBuildingsBasePage[A], answer: A): NewStructuresBuildings =
-    (page, answer) match {
-      case (StructuresBuildingsQualifyingUseDatePage, answer: LocalDate)          => structure.copy(qualifyingUse = answer.some)
-      case (StructuresBuildingsLocationPage, answer: StructuresBuildingsLocation) => structure.copy(newStructureBuildingLocation = answer.some)
-      case (StructuresBuildingsNewClaimAmountPage, answer: BigDecimal)            => structure.copy(newStructureBuildingClaimingAmount = answer.some)
-      case _                                                                      => ???
-    }
 
 }

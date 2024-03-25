@@ -18,13 +18,10 @@ package models.journeys.capitalallowances.specialTaxSites
 
 import play.api.libs.json.{Format, Json}
 
-import java.time.LocalDate
-
-case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
-                                  contractForBuildingConstruction: Option[Boolean],
-                                  contractStartDate: Option[LocalDate],
-                                  constructionStartDate: Option[LocalDate])
+case class SpecialTaxSitesAnswers(specialTaxSites: Boolean, newSpecialTaxSites: List[NewSpecialTaxSite])
 
 object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
+
+  def removeIncompleteSites(sitesList: List[NewSpecialTaxSite]): List[NewSpecialTaxSite] = sitesList.filter(_.isComplete)
 }

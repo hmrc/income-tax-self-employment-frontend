@@ -80,6 +80,7 @@ journeys.capital-allowances-balancing-allowance = Balancing allowance
 journeys.capital-allowances-annual-investment-allowance = Annual Investment Allowance
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
 journeys.capital-allowances-special-tax-sites = Freeport sites
+journeys.capital-allowances-structures-buildings = Structures and Buildings Allowance
 
 date.day = Day
 date.month = Month
@@ -1938,6 +1939,20 @@ newSiteClaimingAmount.details.l4 = Plus 3% of £800,000 = £24,000
 newSiteClaimingAmount.details.p4 = The total claim is £144,000 for the year ended 31 July 2024.
 newSiteClaimingAmount.subHeading.individual = How much enhanced structures and buildings allowance do you want to claim?
 newSiteClaimingAmount.subHeading.agent = How much enhanced structures and buildings allowance does your client want to claim?
+newSiteClaimingAmount.subHeading.cya.individual = How much enhanced structures and buildings allowance do you want to claim?
+newSiteClaimingAmount.subHeading.cya.agent = How much enhanced structures and buildings allowance does your client want to claim?
 newSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for the building in the special tax site
 newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
 newSiteClaimingAmount.change.hidden =
+
+siteSummary.title.individual = Special tax site summary
+siteSummary.title.agent = Special tax site summary
+
+newTaxSites.title = New special tax site structures or buildings
+newTaxSites.subheading.individual = Do you need to add another site?
+newTaxSites.subheading.agent = Does your client need to add another site?
+newTaxSites.hint.individual = You must tell us about all new sites where you claimed the allowance.
+newTaxSites.hint.agent = Your client must tell us about all new sites where they have claimed the allowance.
+
+newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
+newSpecialTaxSites.change.hidden =

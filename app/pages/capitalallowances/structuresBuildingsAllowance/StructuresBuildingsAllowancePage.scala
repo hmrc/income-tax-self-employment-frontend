@@ -16,8 +16,7 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-import pages.OneQuestionPage
 
-object StructuresBuildingsAllowancePage extends OneQuestionPage[Boolean] {
+object StructuresBuildingsAllowancePage extends StructuresBuildingsBasePage[Boolean] {
   override def toString: String = "structuresBuildingsAllowance"
 }
