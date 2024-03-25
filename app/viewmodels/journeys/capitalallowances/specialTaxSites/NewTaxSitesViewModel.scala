@@ -37,7 +37,7 @@ object NewTaxSitesViewModel {
             s"${location.buildingName.getOrElse(location.buildingNumber.getOrElse(""))} ${location.postCode}",
             routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.CHANGE.message", // TODO get these hidden messages
-            routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            routes.RemoveSpecialTaxSiteController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.REMOVE.message"
           )
         }

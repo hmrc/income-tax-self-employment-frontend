@@ -62,9 +62,7 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
           answer =>
             service
               .submitBooleanAnswerAndClearDependentAnswers(page, businessId, request, answer)
-              .map { updatedAnswers =>
-                page.redirectNext(mode, updatedAnswers, businessId, taxYear)
-              }
+              .map(updatedAnswers => page.redirectNext(mode, updatedAnswers, businessId, taxYear))
         )
   }
 

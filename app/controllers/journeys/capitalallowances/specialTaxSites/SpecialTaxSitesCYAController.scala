@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites.NewSpecialTaxSitesSummary
+import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
 //import controllers.handleSubmitAnswersResult
 import controllers.journeys
 import models.common._
@@ -29,7 +29,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 //import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.specialTaxSites.SpecialTaxSitesSummary
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
