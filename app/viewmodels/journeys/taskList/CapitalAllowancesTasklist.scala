@@ -90,6 +90,15 @@ object CapitalAllowancesTasklist {
       capAllowancesTailoringCompleted
     )
 
+    val structuresBuildingsStatus = getJourneyStatus(CapitalAllowancesStructuresBuildings)(tradesJourneyStatuses)
+    val structuresBuildingsHref   = getUrl(CapitalAllowancesStructuresBuildings, structuresBuildingsStatus, businessId, taxYear)
+    val structuresBuildingsIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.StructuresAndBuildings) && capAllowancesTailoringCompleted
+    val structuresBuildingsRow = returnRowIfConditionPassed(
+      buildSummaryRow(structuresBuildingsHref, messages(s"journeys.$CapitalAllowancesStructuresBuildings"), structuresBuildingsStatus),
+      structuresBuildingsIsTailored
+    )
+
     val balancingAllowanceStatus = getJourneyStatus(CapitalAllowancesBalancingAllowance)(tradesJourneyStatuses)
     val balancingAllowanceHref =
       getUrl(CapitalAllowancesBalancingAllowance, balancingAllowanceStatus, businessId, taxYear)
@@ -125,6 +134,7 @@ object CapitalAllowancesTasklist {
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
       electricVehicleChargePointsRow,
+      structuresBuildingsRow,
       specialTaxSitesRow,
       annualInvestmentAllowanceRow,
       writingDownRow,
@@ -169,6 +179,13 @@ object CapitalAllowancesTasklist {
         determineJourneyStartOrCyaUrl(
           capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
+      case CapitalAllowancesStructuresBuildings =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url,
+          capitalallowances.structuresBuildingsAllowance.routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case CapitalAllowancesSpecialTaxSites =>
         determineJourneyStartOrCyaUrl(
