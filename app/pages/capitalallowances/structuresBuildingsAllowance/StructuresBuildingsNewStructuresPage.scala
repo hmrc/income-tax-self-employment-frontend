@@ -17,6 +17,7 @@
 package pages.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
@@ -40,6 +41,6 @@ object StructuresBuildingsNewStructuresPage extends StructuresBuildingsBasePage[
       userAnswers,
       businessId,
       onTrue = routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId),
-      onFalse = cyaPage(taxYear, businessId)
+      onFalse = routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
     )
 }

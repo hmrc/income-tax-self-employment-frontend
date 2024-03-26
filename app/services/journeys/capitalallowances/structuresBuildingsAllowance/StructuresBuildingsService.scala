@@ -63,7 +63,7 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
                                         page: StructuresBuildingsBasePage[A]): Future[UserAnswers] = {
     val listOfStructures: Option[List[NewStructureBuilding]] = userAnswers.get(NewStructuresBuildingsList, Some(businessId))
     val siteOfIndex: Option[NewStructureBuilding]            = if (listOfStructures.exists(_.length > index)) listOfStructures.map(_(index)) else None
-    val isFirstPageOfLoop: Boolean                           = page == StructuresBuildingsAllowancePage
+    val isFirstPageOfLoop: Boolean                           = page == StructuresBuildingsQualifyingUseDatePage
     val isValidIndexForNewStructure                          = (list: List[NewStructureBuilding]) => index == 0 || list.length == index
     val updatedList = (listOfStructures, siteOfIndex) match {
       case (None, None) if index == 0 && isFirstPageOfLoop =>
