@@ -21,23 +21,22 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSitePage
+import pages.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBoolean
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object ContinueClaimingAllowanceForExistingSiteSummary {
+object ExistingSiteClaimingAmountSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(ContinueClaimingAllowanceForExistingSitePage, businessId.some)
+      .get(ExistingSiteClaimingAmountPage, businessId.some)
       .map { answer =>
-        buildRowBoolean(
+        buildRowBigDecimal(
           answer,
-          routes.ContinueClaimingAllowanceForExistingSiteController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"continueClaimingAllowanceForExistingSite.subHeading.cya.$userType"),
-          "continueClaimingAllowanceForExistingSite.change.hidden",
-          rightTextAlign = true
+          routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"existingSiteClaimingAmount.cya.$userType"),
+          "existingSiteClaimingAmount.change.hidden"
         )
       }
 }

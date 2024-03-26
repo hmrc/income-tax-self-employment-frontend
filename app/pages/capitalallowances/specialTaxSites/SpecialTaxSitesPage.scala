@@ -36,7 +36,8 @@ object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
         !_ || userAnswers.get(NewSpecialTaxSitesList, businessId.some).exists(_.nonEmpty)
       )
 
-  override val dependentPagesWhenNo: List[Settable[_]] = List(NewSpecialTaxSitesList)
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(NewSpecialTaxSitesList, DoYouHaveAContinuingClaimPage, ContinueClaimingAllowanceForExistingSitePage, ExistingSiteClaimingAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(

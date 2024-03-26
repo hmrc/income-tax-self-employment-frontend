@@ -27,7 +27,7 @@
         yesNoWithHeadingAndHint: YesNoWithHeadingAndHint,
         submitButton: SubmitButton)
 
-@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"removeSpecialTaxSite.title.$userType"))) {
 
@@ -45,7 +45,7 @@
         <p>@messages(s"continueClaimingAllowanceForExistingSite.p3.$userType")</p>
     </div>
 
-    @formHelper(action = routes.ContinueClaimingAllowanceForExistingSiteController.onSubmit(taxYear, businessId, CheckMode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ContinueClaimingAllowanceForExistingSiteController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(

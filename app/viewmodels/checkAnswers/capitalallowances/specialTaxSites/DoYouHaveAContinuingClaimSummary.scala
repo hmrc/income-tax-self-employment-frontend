@@ -21,7 +21,7 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.SpecialTaxSitesPage
+import pages.capitalallowances.specialTaxSites.DoYouHaveAContinuingClaimPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
@@ -30,7 +30,7 @@ object DoYouHaveAContinuingClaimSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(SpecialTaxSitesPage, businessId.some)
+      .get(DoYouHaveAContinuingClaimPage, businessId.some)
       .map { answer =>
         buildRowBoolean(
           answer,

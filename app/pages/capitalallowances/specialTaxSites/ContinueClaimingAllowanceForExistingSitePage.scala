@@ -16,7 +16,6 @@
 
 package pages.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -33,7 +32,7 @@ object ContinueClaimingAllowanceForExistingSitePage extends SpecialTaxSitesBaseP
     userAnswers
       .get(this, businessId)
       .exists(
-        !_ || ExistingSiteClaimingAmountPage, businessId.some).hasAllFurtherAnswers(businessId, userAnswers)
+        !_ || ExistingSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
       )
 
   override val dependentPagesWhenNo: List[Settable[_]] = List(ExistingSiteClaimingAmountPage)

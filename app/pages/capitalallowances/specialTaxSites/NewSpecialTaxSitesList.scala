@@ -19,5 +19,5 @@ package pages.capitalallowances.specialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 
 object NewSpecialTaxSitesList extends SpecialTaxSitesBasePage[List[NewSpecialTaxSite]] {
-  override def toString: String = "newSpecialTaxSitesList"
+  override def toString: String = "newSpecialTaxSites"
 }

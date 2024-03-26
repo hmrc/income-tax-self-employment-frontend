@@ -34,7 +34,7 @@ object NewSpecialTaxSitesSummary {
         buildRowBigDecimal(
           sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum,
           routes.NewTaxSitesController.onPageLoad(taxYear, businessId),
-          messages("newSpecialTaxSitesList.cya"),
+          messages("newSpecialTaxSites.cya"),
           "newSpecialTaxSites.change.hidden"
         )
       }
