@@ -69,7 +69,7 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
           summaryList,
           routes.SpecialTaxSitesCYAController.onSubmit(taxYear, businessId)
         ))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
     implicit request =>
