@@ -18,24 +18,26 @@ package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
-import models.common.{BusinessId, TaxYear}
+import models.CheckMode
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.specialTaxSites.NewSpecialTaxSitesList
+import pages.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSitePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBigDecimal
+import viewmodels.checkAnswers.buildRowBoolean
 
-object NewSpecialTaxSitesSummary {
+object ContinueClaimingAllowanceForExistingSiteSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(NewSpecialTaxSitesList, businessId.some)
-      .map { sites =>
-        buildRowBigDecimal(
-          sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum,
-          routes.NewTaxSitesController.onPageLoad(taxYear, businessId),
-          messages("newSpecialTaxSites.cya"),
-          "newSpecialTaxSites.change.hidden"
+      .get(ContinueClaimingAllowanceForExistingSitePage, businessId.some)
+      .map { answer =>
+        buildRowBoolean(
+          answer,
+          routes.ContinueClaimingAllowanceForExistingSiteController.onPageLoad(taxYear, businessId, CheckMode),
+          messages(s"continueClaimingAllowanceForExistingSite.subHeading.cya.$userType"),
+          "continueClaimingAllowanceForExistingSite.change.hidden",
+          rightTextAlign = true
         )
       }
 }
