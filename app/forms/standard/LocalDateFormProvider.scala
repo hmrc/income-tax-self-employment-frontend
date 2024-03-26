@@ -34,7 +34,7 @@ class LocalDateFormProvider @Inject() extends Mappings {
             latestDateAndError: Option[(LocalDate, String)] = None): Form[LocalDate] = {
 
     val pageName      = page.pageName.value
-    val requiredError = s"$pageName.error.required${if (userSpecificRequiredError) s".$userType"}"
+    val requiredError = s"$pageName.error.required${if (userSpecificRequiredError) s".$userType" else ""}"
 
     Form(
       pageName -> localDate(
