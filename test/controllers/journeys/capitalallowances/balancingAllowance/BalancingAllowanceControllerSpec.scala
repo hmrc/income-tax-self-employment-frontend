@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.balancingAllowance
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.balancingAllowance.BalancingAllowanceFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
@@ -41,7 +41,7 @@ class BalancingAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBase
 
   override val validAnswer = true
 
-  override def createForm(user: UserType): Form[Boolean] = new BalancingAllowanceFormProvider()(user)
+  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(BalancingAllowancePage, user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

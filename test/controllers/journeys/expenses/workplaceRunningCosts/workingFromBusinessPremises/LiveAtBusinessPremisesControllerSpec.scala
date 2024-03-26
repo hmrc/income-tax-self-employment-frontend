@@ -18,7 +18,7 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessP
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesFormProvider
+import forms.standard.BooleanFormProvider
 import models.common.UserType
 import models.common.UserType.Individual
 import models.database.UserAnswers
@@ -57,7 +57,7 @@ class LiveAtBusinessPremisesControllerSpec extends BooleanGetAndPostQuestionBase
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
 
-  override def createForm(userType: UserType) = new LiveAtBusinessPremisesFormProvider()(userType)
+  override def createForm(userType: UserType) = new BooleanFormProvider()(LiveAtBusinessPremisesPage, userType)
 
   override def expectedView(expectedForm: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],

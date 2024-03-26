@@ -17,7 +17,8 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, NormalMode}
 import navigation.ExpensesNavigator
@@ -38,18 +39,18 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    formProvider: TaxiMinicabOrRoadHaulageFormProvider,
+                                                    formProvider: BooleanFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     view: TaxiMinicabOrRoadHaulageView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = TaxiMinicabOrRoadHaulagePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm =
-        request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -59,7 +60,7 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
           case Some(answer) if currentAnswer != answer => NormalMode
           case _                                       => mode
         }
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),

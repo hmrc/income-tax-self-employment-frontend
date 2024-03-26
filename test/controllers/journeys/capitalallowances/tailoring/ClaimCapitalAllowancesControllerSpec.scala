@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.{BusinessId, UserType}
@@ -43,7 +43,7 @@ class ClaimCapitalAllowancesControllerSpec
 
   override val validAnswer: Boolean = true
 
-  override def createForm(user: UserType): Form[Boolean] = new ClaimCapitalAllowancesFormProvider()(user)
+  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(ClaimCapitalAllowancesPage, user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

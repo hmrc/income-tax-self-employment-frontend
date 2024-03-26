@@ -18,7 +18,7 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursFormProvider
+import forms.standard.BooleanFormProvider
 import models.common.UserType
 import models.common.UserType.Individual
 import models.database.UserAnswers
@@ -57,7 +57,7 @@ class MoreThan25HoursControllerSpec extends BooleanGetAndPostQuestionBaseSpec("M
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
 
-  override def createForm(userType: UserType) = new MoreThan25HoursFormProvider()(userType)
+  override def createForm(userType: UserType) = new BooleanFormProvider()(MoreThan25HoursPage, userType)
 
   override def expectedView(expectedForm: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
