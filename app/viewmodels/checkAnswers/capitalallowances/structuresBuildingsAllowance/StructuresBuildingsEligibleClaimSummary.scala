@@ -35,7 +35,7 @@ object StructuresBuildingsEligibleClaimSummary {
         buildRowBoolean(
           answer,
           routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsEligibleClaim.subheading.$userType"),
+          messages(s"structuresBuildingsEligibleClaim.subHeading.$userType"),
           "balancingAllowance.change.hidden", // TODO change to structures buildings change
           rightTextAlign = true
         )

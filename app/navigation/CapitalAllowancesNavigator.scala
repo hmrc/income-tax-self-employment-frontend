@@ -203,13 +203,25 @@ class CapitalAllowancesNavigator @Inject() {
             )
 
     case StructuresBuildingsAllowancePage =>
-      _ =>
-        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+      userAnswers =>
+        taxYear => businessId =>
+          userAnswers.get(StructuresBuildingsAllowancePage, Some(businessId)) match {
+          case Some(true) => structuresBuildingsAllowance.routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
+          case Some(false) =>
+            structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+          case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+          }
 
     case StructuresBuildingsClaimedPage =>
-      _ =>
-        taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
-
+      userAnswers =>
+        taxYear => businessId =>
+          userAnswers.get(StructuresBuildingsClaimedPage, Some(businessId)) match {
+            case Some(true) =>
+          structuresBuildingsAllowance.routes.StructuresBuildingsPreviousClaimUseController.onPageLoad (taxYear, businessId, NormalMode)
+            case Some(false) =>
+          structuresBuildingsAllowance.routes.StructuresBuildingsCYAController.onPageLoad (taxYear, businessId)
+            case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+          }
     case StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage =>
       _ => taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
 

@@ -29,7 +29,7 @@ object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePa
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
-      // TODO SASS-7593 previous claim amount page
+      StructuresBuildingsPreviousClaimedAmountPage
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
@@ -37,8 +37,8 @@ object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePa
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsPreviousClaimUseController
-        .onPageLoad(taxYear, businessId, NormalMode), // TODO SASS-7593 change to previous claim amount page
+      onTrue = routes.StructuresBuildingsPreviousClaimedAmountController
+        .onPageLoad(taxYear, businessId, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
 
