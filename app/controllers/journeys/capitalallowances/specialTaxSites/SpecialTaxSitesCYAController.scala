@@ -58,7 +58,8 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
         SummaryListCYA.summaryListOpt(
           List(
             SpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            NewSpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId)
+            NewSpecialTaxSitesSummary.row(request.userAnswers, taxYear, businessId),
+            ExistingSiteClaimingAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
           ))
 
       Ok(

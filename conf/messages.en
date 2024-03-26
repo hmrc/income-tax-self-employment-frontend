@@ -1944,6 +1944,20 @@ newSiteClaimingAmount.error.required.individual = Enter the amount you want to c
 newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
 newSiteClaimingAmount.change.hidden =
 
+existingSiteClaimingAmount.title = Claim amount
+existingSiteClaimingAmount.details.p1.individual = For a continuing claim you can claim 10% of the qualifying expenditure a year up to the end of the allowance period.
+existingSiteClaimingAmount.details.p1.agent = For a continuing claim your client can claim 10% of the qualifying expenditure a year up to the end of the allowance period.
+existingSiteClaimingAmount.details.p2 = The allowance period will end 10 years from the later of:
+existingSiteClaimingAmount.details.l1 = the date the structure first came into non-residential use
+existingSiteClaimingAmount.details.l2 = the date on which the qualifying expenditure is incurred
+existingSiteClaimingAmount.details.p3 = This information will be on the allowance statement.
+existingSiteClaimingAmount.subHeading.individual = Enter the total amount you want to claim for this special tax site
+existingSiteClaimingAmount.subHeading.agent = Enter the total amount your client wants to claim for this special tax site
+existingSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for this site
+existingSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for this site
+existingSiteClaimingAmount.cya.individual = How much do you want to claim for this site?
+existingSiteClaimingAmount.cya.agent = How much does your client want to claim for this site?
+
 newTaxSites.title = New special tax site structures or buildings
 newTaxSites.subheading.individual = Do you need to add another site?
 newTaxSites.subheading.agent = Does your client need to add another site?
