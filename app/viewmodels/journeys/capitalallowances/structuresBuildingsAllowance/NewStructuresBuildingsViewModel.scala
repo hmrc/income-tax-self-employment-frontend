@@ -16,7 +16,7 @@
 
 package viewmodels.journeys.capitalallowances.structuresBuildingsAllowance
 
-import controllers.journeys.capitalallowances.specialTaxSites.routes
+import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.common.{BusinessId, TaxYear}
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import play.api.i18n.Messages
@@ -36,9 +36,9 @@ object NewStructuresBuildingsViewModel {
           buildChangeRemoveRow(
             s"£${formatMoney(amount)}",
             s"${location.buildingName.getOrElse(location.buildingNumber.getOrElse(""))} ${location.postCode}",
-            routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.CHANGE.message", // TODO get these hidden messages
-            routes.SiteSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.REMOVE.message"
           )
         }
