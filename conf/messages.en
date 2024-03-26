@@ -1958,9 +1958,6 @@ existingSiteClaimingAmount.error.required.agent = Enter the amount your client w
 existingSiteClaimingAmount.cya.individual = How much do you want to claim for this site?
 existingSiteClaimingAmount.cya.agent = How much does your client want to claim for this site?
 
-siteSummary.title.individual = Special tax site summary
-siteSummary.title.agent = Special tax site summary
-
 newTaxSites.title = New special tax site structures or buildings
 newTaxSites.subheading.individual = Do you need to add another site?
 newTaxSites.subheading.agent = Does your client need to add another site?
