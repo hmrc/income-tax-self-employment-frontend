@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.tailoring.individualCategories.DisallowableInterestFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -50,13 +50,13 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val disallowableInterestRoute = routes.DisallowableInterestController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new DisallowableInterestFormProvider()
+  val formProvider = new BooleanFormProvider
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(DisallowableInterestPage, Individual)),
+    UserScenario(userType = Agent, formProvider(DisallowableInterestPage, Agent))
   )
 
   def baseAnswers = buildUserAnswers(

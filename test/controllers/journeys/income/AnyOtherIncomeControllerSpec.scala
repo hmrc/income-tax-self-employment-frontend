@@ -19,7 +19,7 @@ package controllers.journeys.income
 import base.SpecBase
 import controllers.journeys.income
 import controllers.standard
-import forms.income.AnyOtherIncomeFormProvider
+import forms.standard.BooleanFormProvider
 import models.common._
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
-  val formProvider           = new AnyOtherIncomeFormProvider()
+  val formProvider           = new BooleanFormProvider()
   val otherIncomeAmountCall  = income.routes.OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
   val turnoverNotTaxableCall = income.routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
   val tradingAllowanceCall   = income.routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
@@ -52,8 +52,8 @@ class AnyOtherIncomeControllerSpec extends SpecBase with MockitoSugar with Macro
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
-    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
+    UserScenario(userType = UserType.Individual, formProvider(AnyOtherIncomePage, UserType.Individual)),
+    UserScenario(userType = UserType.Agent, formProvider(AnyOtherIncomePage, UserType.Agent))
   )
 
   // TODO Clean these tests up, overly convoluted.
