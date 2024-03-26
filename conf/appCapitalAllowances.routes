@@ -196,6 +196,9 @@ POST        /:taxYear/:businessId/capital-allowances/structures-buildings/new-st
 
 GET         /:taxYear/:businessId/capital-allowances/structures-buildings/new-structures-summary/:index                          controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int)
 
+GET         /:taxYear/:businessId/capital-allowances/structures-buildings/remove/:index                                                     controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsRemoveController.onPageLoad(taxYear: TaxYear, businessId: BusinessId,index: Int)
+POST        /:taxYear/:businessId/capital-allowances/structures-buildings/remove/:index                                                     controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsRemoveController.onSubmit(taxYear: TaxYear, businessId: BusinessId,  index: Int)
+
 GET         /:taxYear/:businessId/capital-allowances/structures-buildings/check                                                  controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/structures-buildings/check                                                  controllers.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 

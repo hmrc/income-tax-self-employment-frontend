@@ -38,7 +38,7 @@ object NewStructuresBuildingsViewModel {
             s"${location.buildingName.getOrElse(location.buildingNumber.getOrElse(""))} ${location.postCode}",
             routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.CHANGE.message", // TODO get these hidden messages
-            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, siteWithIndex._2),
+            routes.StructuresBuildingsRemoveController.onPageLoad(taxYear, businessId, siteWithIndex._2),
             "hidden.REMOVE.message"
           )
         }

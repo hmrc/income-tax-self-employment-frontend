@@ -1713,6 +1713,11 @@ structuresBuildingsNewStructures.error.required.agent = Select yes if your clien
 structuresBuildingsNewStructures.emptyList.individual = If you don’t have a structure or building to add you can return to the overview page and come back later.
 structuresBuildingsNewStructures.emptyList.agent = If your client doesn’t have a structure or building to add you can return to the overview page and come back later.
 
+structuresBuildingsRemoveLocation.title = Do you want to remove this structure or building?
+structuresBuildingsRemoveLocation.hint = The address and cost you entered will be deleted.
+structuresBuildingsRemove.error.required.individual = Select yes if you want to remove this structure or building
+structuresBuildingsRemove.error.required.agent = Select yes if your client wants to remove this structure or building
+
 ########## Capital Allowances - Writing down allowance ##########
 
 writingDownAllowance.heading = Writing down allowance
