@@ -18,7 +18,11 @@ package models.journeys.capitalallowances.specialTaxSites
 
 import play.api.libs.json.{Format, Json}
 
-case class SpecialTaxSitesAnswers(specialTaxSites: Boolean, newSpecialTaxSites: List[NewSpecialTaxSite])
+case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
+                                  newSpecialTaxSites: List[NewSpecialTaxSite],
+                                  doYouHaveAContinuingClaim: Boolean,
+                                  continueClaimingAllowanceForExistingSite: Boolean,
+                                  existingSiteClaimingAmount: BigDecimal)
 
 object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]

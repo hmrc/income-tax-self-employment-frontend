@@ -266,9 +266,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object CapitalAllowancesSpecialTaxSites extends CapitalAllowanceBaseJourney("capital-allowances-special-tax-sites") {
     override val pageKeys: List[PageName] = List(
       SpecialTaxSitesPage.pageName,
-      ContractForBuildingConstructionPage.pageName,
-      ContractStartDatePage.pageName,
-      ConstructionStartDatePage.pageName
+      NewSpecialTaxSitesList.pageName,
+      DoYouHaveAContinuingClaimPage.pageName,
+      ContinueClaimingAllowanceForExistingSitePage.pageName,
+      ExistingSiteClaimingAmountPage.pageName
     )
   }
 

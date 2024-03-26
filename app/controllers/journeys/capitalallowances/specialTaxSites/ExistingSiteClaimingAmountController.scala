@@ -18,34 +18,34 @@ package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys.fillForm
-import forms.standard.BooleanFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites._
+import pages.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           service: SelfEmploymentService,
-                                           formProvider: BooleanFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+class ExistingSiteClaimingAmountController @Inject() (override val messagesApi: MessagesApi,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      service: SelfEmploymentService,
+                                                      formProvider: CurrencyFormProvider,
+                                                      view: ExistingSiteClaimingAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = SpecialTaxSitesPage
+  private val page = ExistingSiteClaimingAmountPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -59,10 +59,7 @@ class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service
-              .submitBooleanAnswerAndClearDependentAnswers(page, businessId, request, answer)
-              .map(updatedAnswers => page.redirectNext(mode, updatedAnswers, businessId, taxYear))
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

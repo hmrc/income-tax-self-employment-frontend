@@ -19,6 +19,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -32,7 +33,18 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
-      "specialTaxSites" -> false
+      "specialTaxSites" -> true,
+      "newSpecialTaxSites" -> List(Json.obj(
+        "contractForBuildingConstruction" -> Some(false),
+        "contractStartDate"               -> None,
+        "constructionStartDate"           -> Some("2022-03-02"),
+        "qualifyingUseStartDate"          -> Some("2022-03-02"),
+        "specialTaxSiteLocation"          -> Some(SpecialTaxSiteLocation(Some("name"), Some("number"), "GU84NB")),
+        "newSiteClaimingAmount"           -> Some(BigDecimal(2000))
+      )),
+      "doYouHaveAContinuingClaim"                -> true,
+      "continueClaimingAllowanceForExistingSite" -> true,
+      "existingSiteClaimingAmount"               -> BigDecimal(1000)
     ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.SpecialTaxSitesCYAController.onPageLoad
@@ -42,7 +54,11 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
-        SpecialTaxSitesSummary.row(userAnswers, taxYear, businessId, userType).value
+        SpecialTaxSitesSummary.row(userAnswers, taxYear, businessId, userType).value,
+        NewSpecialTaxSitesSummary.row(userAnswers, taxYear, businessId).value,
+        DoYouHaveAContinuingClaimSummary.row(userAnswers, taxYear, businessId, userType).value,
+        ContinueClaimingAllowanceForExistingSiteSummary.row(userAnswers, taxYear, businessId, userType).value,
+        ExistingSiteClaimingAmountSummary.row(userAnswers, taxYear, businessId, userType).value
       ),
       classes = "govuk-!-margin-bottom-7"
     )

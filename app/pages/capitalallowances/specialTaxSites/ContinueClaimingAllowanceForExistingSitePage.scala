@@ -16,7 +16,6 @@
 
 package pages.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -25,30 +24,25 @@ import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
 
-object SpecialTaxSitesPage extends SpecialTaxSitesBasePage[Boolean] {
+object ContinueClaimingAllowanceForExistingSitePage extends SpecialTaxSitesBasePage[Boolean] {
 
-  override def toString: String = "specialTaxSites"
+  override def toString: String = "continueClaimingAllowanceForExistingSite"
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers
       .get(this, businessId)
       .exists(
-        !_ || userAnswers.get(NewSpecialTaxSitesList, businessId.some).exists(_.nonEmpty)
+        !_ || ExistingSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
       )
 
-  override val dependentPagesWhenNo: List[Settable[_]] =
-    List(NewSpecialTaxSitesList, DoYouHaveAContinuingClaimPage, ContinueClaimingAllowanceForExistingSitePage, ExistingSiteClaimingAmountPage)
+  override val dependentPagesWhenNo: List[Settable[_]] = List(ExistingSiteClaimingAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      onTrue = redirectIfExistingSites(userAnswers, businessId, taxYear),
+      onTrue = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
-
-  private def redirectIfExistingSites(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    if (userAnswers.get(NewSpecialTaxSitesList, Some(businessId)).exists(_.nonEmpty)) routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
-    else routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode)
 }

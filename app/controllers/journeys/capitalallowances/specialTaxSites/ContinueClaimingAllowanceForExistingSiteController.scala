@@ -21,31 +21,31 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.specialTaxSites._
+import pages.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSitePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSiteView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           service: SelfEmploymentService,
-                                           formProvider: BooleanFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+class ContinueClaimingAllowanceForExistingSiteController @Inject() (override val messagesApi: MessagesApi,
+                                                                    identify: IdentifierAction,
+                                                                    getData: DataRetrievalAction,
+                                                                    requireData: DataRequiredAction,
+                                                                    service: SelfEmploymentService,
+                                                                    formProvider: BooleanFormProvider,
+                                                                    val controllerComponents: MessagesControllerComponents,
+                                                                    view: ContinueClaimingAllowanceForExistingSiteView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = SpecialTaxSitesPage
+  private val page = ContinueClaimingAllowanceForExistingSitePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

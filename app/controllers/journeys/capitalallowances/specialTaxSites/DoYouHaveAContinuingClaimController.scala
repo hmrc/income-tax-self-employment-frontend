@@ -27,25 +27,25 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.capitalallowances.specialTaxSites.DoYouHaveAContinuingClaimView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SpecialTaxSitesController @Inject() (override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           service: SelfEmploymentService,
-                                           formProvider: BooleanFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: SpecialTaxSitesView)(implicit ec: ExecutionContext)
+class DoYouHaveAContinuingClaimController @Inject() (override val messagesApi: MessagesApi,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     service: SelfEmploymentService,
+                                                     formProvider: BooleanFormProvider,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     view: DoYouHaveAContinuingClaimView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = SpecialTaxSitesPage
+  private val page = DoYouHaveAContinuingClaimPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
