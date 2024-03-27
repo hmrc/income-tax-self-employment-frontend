@@ -18,7 +18,8 @@ package controllers.journeys.income
 
 import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
-import forms.income.TurnoverNotTaxableFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.IncomeNavigator
@@ -39,20 +40,19 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: TurnoverNotTaxableFormProvider,
+                                              formProvider: BooleanFormProvider,
                                               service: SelfEmploymentService,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: TurnoverNotTaxableView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = TurnoverNotTaxablePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(TurnoverNotTaxablePage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -62,11 +62,11 @@ class TurnoverNotTaxableController @Inject() (override val messagesApi: Messages
           if (value) request.userAnswers.pure[Try] else request.userAnswers.remove(NotTaxableAmountPage, Some(businessId))
         for {
           answers        <- Future.fromTry(adjustedAnswers)
-          updatedAnswers <- service.persistAnswer(businessId, answers, value, TurnoverNotTaxablePage)
-        } yield Redirect(navigator.nextPage(TurnoverNotTaxablePage, mode, updatedAnswers, taxYear, businessId))
+          updatedAnswers <- service.persistAnswer(businessId, answers, value, page)
+        } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
       }
 
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -50,13 +50,13 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
   lazy val disallowableIrrecoverableDebtsRoute = routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new DisallowableIrrecoverableDebtsFormProvider()
+  val formProvider = new BooleanFormProvider
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(DisallowableIrrecoverableDebtsPage, Individual)),
+    UserScenario(userType = Agent, formProvider(DisallowableIrrecoverableDebtsPage, Agent))
   )
 
   def baseAnswers = buildUserAnswers(

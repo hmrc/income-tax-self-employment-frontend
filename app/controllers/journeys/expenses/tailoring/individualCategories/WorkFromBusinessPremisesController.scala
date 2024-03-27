@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.tailoring.individualCategories.WorkFromBusinessPremisesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -50,12 +51,8 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-      val preparedForm = request.userAnswers.get(WorkFromBusinessPremisesPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val form = fillForm(page, businessId, formProvider(request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {

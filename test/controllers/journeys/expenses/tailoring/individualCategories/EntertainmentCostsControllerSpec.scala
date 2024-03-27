@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import forms.expenses.tailoring.individualCategories.EntertainmentCostsFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
@@ -57,13 +57,13 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
   lazy val entertainmentCostsRoute =
     controllers.journeys.expenses.tailoring.individualCategories.routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new EntertainmentCostsFormProvider()
+  val formProvider = new BooleanFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(EntertainmentCostsPage, Individual)),
+    UserScenario(userType = Agent, formProvider(EntertainmentCostsPage, Agent))
   )
 
   def baseAnswers: UserAnswers = buildUserAnswers(

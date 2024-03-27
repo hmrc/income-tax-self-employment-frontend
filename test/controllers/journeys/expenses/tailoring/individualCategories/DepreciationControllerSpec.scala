@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.tailoring.individualCategories.DepreciationFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -48,13 +48,13 @@ class DepreciationControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val depreciationRoute = routes.DepreciationController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new DepreciationFormProvider()
+  val formProvider = new BooleanFormProvider
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(DepreciationPage, Individual)),
+    UserScenario(userType = Agent, formProvider(DepreciationPage, Agent))
   )
 
   def baseAnswers = buildUserAnswers(
