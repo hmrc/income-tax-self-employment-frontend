@@ -271,6 +271,13 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       ContinueClaimingAllowanceForExistingSitePage.pageName,
       ExistingSiteClaimingAmountPage.pageName
     )
+    val answerPages = List(
+      SpecialTaxSitesPage,
+      NewSpecialTaxSitesList,
+      DoYouHaveAContinuingClaimPage,
+      ContinueClaimingAllowanceForExistingSitePage,
+      ExistingSiteClaimingAmountPage
+    )
   }
 
 }

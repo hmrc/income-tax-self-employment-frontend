@@ -273,6 +273,7 @@ POST        /:taxYear/:businessId/capital-allowances/change-special-tax-sites/ne
 
 GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/new-sites                                                 controllers.journeys.capitalallowances.specialTaxSites.NewTaxSitesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/special-tax-sites/new-sites                                                 controllers.journeys.capitalallowances.specialTaxSites.NewTaxSitesController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/new-sites/return                                          controllers.journeys.capitalallowances.specialTaxSites.NewTaxSitesController.returnToOverview(taxYear: TaxYear, businessId: BusinessId)
 
 GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/freeport-details-summary/:index                           controllers.journeys.capitalallowances.specialTaxSites.SiteSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int)
 
