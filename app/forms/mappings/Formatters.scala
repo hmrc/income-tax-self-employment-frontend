@@ -25,14 +25,21 @@ import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
 
-  private[mappings] def stringFormatter(errorKey: String, args: Seq[String] = Seq.empty, toUpperCase: Boolean = false): Formatter[String] =
+  private[mappings] def stringFormatter(errorKey: String,
+                                        args: Seq[String] = Seq.empty,
+                                        toUpperCase: Boolean = false,
+                                        stripWhitespace: Boolean = false): Formatter[String] =
     new Formatter[String] {
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
         data.get(key) match {
           case None                      => Left(Seq(FormError(key, errorKey, args)))
           case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
-          case Some(s)                   => Right(if (toUpperCase) s.toUpperCase else s)
+          case Some(s) =>
+            Right {
+              val stripped = if (stripWhitespace) s.trim().replaceAll("\\s", "") else s
+              if (toUpperCase) stripped.toUpperCase else stripped
+            }
         }
 
       override def unbind(key: String, value: String): Map[String, String] =
