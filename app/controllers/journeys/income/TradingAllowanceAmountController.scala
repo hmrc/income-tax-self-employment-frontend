@@ -18,15 +18,16 @@ package controllers.journeys.income
 
 import cats.data.EitherT
 import controllers.actions._
-import forms.income.TradingAllowanceAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.IncomeNavigator
 import pages.income.TradingAllowanceAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentService.getMaxTradingAllowance
 import services.SelfEmploymentService
+import services.SelfEmploymentService.getMaxTradingAllowance
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.TradingAllowanceAmountView
 
@@ -40,26 +41,35 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   service: SelfEmploymentService,
-                                                  formProvider: TradingAllowanceAmountFormProvider,
+                                                  formProvider: CurrencyFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: TradingAllowanceAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = TradingAllowanceAmountPage
+  private val form = (userType: UserType, turnoverAmount: BigDecimal) =>
+    formProvider(
+      page,
+      userType,
+      maxValue = turnoverAmount,
+      minValueError = s"tradingAllowanceAmount.error.lessThanZero.$userType",
+      maxValueError = s"tradingAllowanceAmount.error.overTurnover.$userType",
+      nonNumericError = s"tradingAllowanceAmount.error.nonNumeric.$userType"
+    )
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       (for {
         allowance <- getMaxTradingAllowance(businessId, request.userAnswers)
-        form = request.userAnswers
-          .get(TradingAllowanceAmountPage, Some(businessId))
-          .fold(formProvider(request.userType, allowance))(formProvider(request.userType, allowance).fill)
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId))).merge
+        filledForm = fillForm(page, businessId, form(request.userType, allowance))
+      } yield Ok(view(filledForm, mode, request.userType, taxYear, businessId))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleForm(allowance: BigDecimal): Future[Result] =
-        formProvider(request.userType, allowance)
+        form(request.userType, allowance)
           .bindFromRequest()
           .fold(
             formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
