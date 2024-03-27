@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import forms.expenses.tailoring.individualCategories.DisallowableStaffCostsFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -51,13 +51,13 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar {
       .onPageLoad(taxYear, businessId, NormalMode)
       .url
 
-  val formProvider = new DisallowableStaffCostsFormProvider()
+  val formProvider = new BooleanFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(DisallowableStaffCostsPage, Individual)),
+    UserScenario(userType = Agent, formProvider(DisallowableStaffCostsPage, Agent))
   )
 
   def baseAnswers = buildUserAnswers(

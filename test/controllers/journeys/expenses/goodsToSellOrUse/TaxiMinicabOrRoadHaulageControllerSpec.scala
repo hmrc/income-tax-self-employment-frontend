@@ -18,7 +18,7 @@ package controllers.journeys.expenses.goodsToSellOrUse
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulageFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -44,13 +44,13 @@ class TaxiMinicabOrRoadHaulageControllerSpec extends SpecBase with MockitoSugar 
 
   lazy val taxiMinicabOrRoadHaulageRoute = routes.TaxiMinicabOrRoadHaulageController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new TaxiMinicabOrRoadHaulageFormProvider()
+  val formProvider = new BooleanFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(TaxiMinicabOrRoadHaulagePage, Individual)),
+    UserScenario(userType = Agent, formProvider(TaxiMinicabOrRoadHaulagePage, Agent))
   )
 
   "TaxiMinicabOrRoadHaulage Controller" - {

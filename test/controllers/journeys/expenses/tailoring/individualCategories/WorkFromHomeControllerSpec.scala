@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.tailoring.individualCategories.WorkFromHomeFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
@@ -51,13 +51,13 @@ class WorkFromHomeControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val workFromHomeRoute = routes.WorkFromHomeController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new WorkFromHomeFormProvider()
+  val formProvider = new BooleanFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(WorkFromHomePage, Individual)),
+    UserScenario(userType = Agent, formProvider(WorkFromHomePage, Agent))
   )
 
   def baseAnswers: UserAnswers = buildUserAnswers(

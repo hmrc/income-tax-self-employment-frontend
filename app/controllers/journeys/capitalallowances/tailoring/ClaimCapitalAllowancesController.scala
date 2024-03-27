@@ -16,10 +16,10 @@
 
 package controllers.journeys.capitalallowances.tailoring
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.capitalallowances.tailoring.ClaimCapitalAllowancesFormProvider
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
@@ -44,19 +44,18 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   service: SelfEmploymentService,
-                                                  formProvider: ClaimCapitalAllowancesFormProvider,
+                                                  formProvider: BooleanFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: ClaimCapitalAllowancesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = ClaimCapitalAllowancesPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ClaimCapitalAllowancesPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))
   }
 
@@ -68,7 +67,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
           updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ClaimCapitalAllowancesPage)
         } yield Redirect(navigator.nextPage(ClaimCapitalAllowancesPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors =>

@@ -18,8 +18,9 @@ package controllers.journeys.income
 
 import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.income.AnyOtherIncomeFormProvider
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear}
 import navigation.IncomeNavigator
@@ -42,20 +43,19 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           service: SelfEmploymentService,
-                                          formProvider: AnyOtherIncomeFormProvider,
+                                          formProvider: BooleanFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: AnyOtherIncomeView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = AnyOtherIncomePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(AnyOtherIncomePage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -65,11 +65,11 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
           if (anyOtherIncomeValue) request.userAnswers.pure[Try] else request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId))
         for {
           answers        <- Future.fromTry(adjustedAnswers)
-          updatedAnswers <- service.persistAnswer(businessId, answers, anyOtherIncomeValue, AnyOtherIncomePage)
-        } yield Redirect(navigator.nextPage(AnyOtherIncomePage, mode, updatedAnswers, taxYear, businessId, Some(accountingType)))
+          updatedAnswers <- service.persistAnswer(businessId, answers, anyOtherIncomeValue, page)
+        } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId, Some(accountingType)))
       }
 
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

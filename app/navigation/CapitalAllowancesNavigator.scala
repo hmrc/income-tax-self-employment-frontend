@@ -204,24 +204,27 @@ class CapitalAllowancesNavigator @Inject() {
 
     case StructuresBuildingsAllowancePage =>
       userAnswers =>
-        taxYear => businessId =>
-          userAnswers.get(StructuresBuildingsAllowancePage, Some(businessId)) match {
-          case Some(true) => structuresBuildingsAllowance.routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
-          case Some(false) =>
-            structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
-          case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-          }
+        taxYear =>
+          businessId =>
+            userAnswers.get(StructuresBuildingsAllowancePage, Some(businessId)) match {
+              case Some(true) =>
+                structuresBuildingsAllowance.routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) =>
+                structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
 
     case StructuresBuildingsClaimedPage =>
       userAnswers =>
-        taxYear => businessId =>
-          userAnswers.get(StructuresBuildingsClaimedPage, Some(businessId)) match {
-            case Some(true) =>
-          structuresBuildingsAllowance.routes.StructuresBuildingsPreviousClaimUseController.onPageLoad (taxYear, businessId, NormalMode)
-            case Some(false) =>
-          structuresBuildingsAllowance.routes.StructuresBuildingsSummaryController.onPageLoad (taxYear, businessId, index = 0)
-            case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-          }
+        taxYear =>
+          businessId =>
+            userAnswers.get(StructuresBuildingsClaimedPage, Some(businessId)) match {
+              case Some(true) =>
+                structuresBuildingsAllowance.routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
+              case Some(false) =>
+                structuresBuildingsAllowance.routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index = 0)
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
     case StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage =>
       _ => taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
 

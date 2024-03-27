@@ -32,14 +32,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StructuresBuildingsRemoveController @Inject()(override val messagesApi: MessagesApi,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: BooleanFormProvider,
-                                                    service: SelfEmploymentService,
-                                                    view: StructuresBuildingsRemoveView)(implicit ec: ExecutionContext)
+class StructuresBuildingsRemoveController @Inject() (override val messagesApi: MessagesApi,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: BooleanFormProvider,
+                                                     service: SelfEmploymentService,
+                                                     view: StructuresBuildingsRemoveView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -55,7 +55,7 @@ class StructuresBuildingsRemoveController @Inject()(override val messagesApi: Me
       val redirect = Redirect(routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
 
       def handleSuccess(answer: Boolean): Future[Result] = {
-        val sitesList = request.getValue(NewStructuresBuildingsList, businessId)
+        val sitesList    = request.getValue(NewStructuresBuildingsList, businessId)
         val indexIsValid = sitesList.exists(index >= 0 && index < _.length)
         (answer, indexIsValid, sitesList) match {
           case (true, true, Some(list)) => removeSiteAndRedirect(list)

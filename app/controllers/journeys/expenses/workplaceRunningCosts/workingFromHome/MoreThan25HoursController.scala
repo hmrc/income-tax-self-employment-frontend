@@ -17,7 +17,8 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.expenses.workplaceRunningCosts.workingFromHome.MoreThan25HoursFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -42,18 +43,17 @@ class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: MoreThan25HoursFormProvider,
+                                           formProvider: BooleanFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: MoreThan25HoursView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = MoreThan25HoursPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(MoreThan25HoursPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
@@ -65,7 +65,7 @@ class MoreThan25HoursController @Inject() (override val messagesApi: MessagesApi
           updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, MoreThan25HoursPage)
         } yield Redirect(navigator.nextPage(MoreThan25HoursPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
