@@ -17,48 +17,70 @@
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import pages.capitalallowances.specialTaxSites.NewSpecialTaxSitesList
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsRemovePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsRemoveView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StructuresBuildingsRemoveController @Inject()(override val messagesApi: MessagesApi,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: BooleanFormProvider,
-                                                    service: StructuresBuildingsService,
-                                                    view: StructuresBuildingsRemoveView)
+class StructuresBuildingsRemoveController @Inject() (override val messagesApi: MessagesApi,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: BooleanFormProvider,
+                                                     service: SelfEmploymentService,
+                                                     view: StructuresBuildingsRemoveView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page = StructuresBuildingsRemovePage
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, index))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val redirect = Redirect(
+        routes.StructuresBuildingsRemoveController.onPageLoad(taxYear, businessId, index)
+      ) // Replace with the page that shows the list of StructuresBuildings
+
+      def handleSuccess(answer: Boolean): Future[Result] = {
+        val structuresList = request.getValue(NewSpecialTaxSitesList, businessId) // Replace with Settable/Page that contains the List
+        val indexIsValid   = structuresList.exists(index >= 0 && index < _.length)
+        (answer, indexIsValid, structuresList) match {
+          case (true, true, Some(list)) => removeSiteAndRedirect(list)
+          case (_, false, _) =>
+            logger.error(s"Index '$index' is invalid in StructuresList of length '${structuresList.getOrElse(List.empty).length}")
+            Future.successful(redirect)
+          case _ => Future.successful(redirect)
+        }
+      }
+      def removeSiteAndRedirect(structuresList: List[NewSpecialTaxSite]): Future[Result] = { // Replace with List[Structures]
+        val removeStructureFromList = structuresList.patch(index, Nil, 1)
+        service
+          .persistAnswer(businessId, request.userAnswers, removeStructureFromList, NewSpecialTaxSitesList)
+          .map(_ => redirect) // Replace with Settable/Page that contains the List
+      }
+
       formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors => Future.successful(BadRequest(view(formErrors, request.userType, taxYear, businessId, index))),
+          answer => handleSuccess(answer)
         )
   }
 

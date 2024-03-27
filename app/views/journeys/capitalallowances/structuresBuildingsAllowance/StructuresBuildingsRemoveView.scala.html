@@ -16,47 +16,28 @@
 
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
+@import views.html.components.{SubmitButton, YesNoWithHeadingAndHint, ErrorSummarySection}
 
 @this(layout: templates.Layout,
-      formHelper: FormWithCSRF,
-      govukErrorSummary: GovukErrorSummary,
-      govukRadios: GovukRadios,
-      govukButton: GovukButton,
-      heading: Heading)
+        formHelper: FormWithCSRF,
+        errorSummarySection: ErrorSummarySection,
+        yesNoWithHeadingAndHint: YesNoWithHeadingAndHint,
+        submitButton: SubmitButton)
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("structuresBuildingsRemoveLocation.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
-    @formHelper(action = routes.StructuresBuildingsRemoveController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.StructuresBuildingsRemoveController.onSubmit(taxYear, businessId, index), Symbol("autoComplete") -> "off") {
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <label class="govuk-label govuk-label--l">
-                                ${messages("structuresBuildingsRemoveLocation.title")}
-                            </label>
-                            <div class="govuk-hint govuk-!-margin-bottom-0">
-                                ${messages("structuresBuildingsRemoveLocation.hint")}
-                            </div>
-                        </div>
-                        """
-                )
-            )
-            )
+        @yesNoWithHeadingAndHint(form,
+            messages(s"structuresBuildingsRemoveLocation.title.$userType"),
+            messages(s"structuresBuildingsRemoveLocation.hint.$userType"),
+            extraHintClasses = "govuk-hint govuk-!-margin-bottom-1"
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-
+        @submitButton()
     }
 }
