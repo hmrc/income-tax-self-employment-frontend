@@ -18,18 +18,21 @@ package pages.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.NormalMode
-import models.common._
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import pages.redirectOnBoolean
 import play.api.mvc.Call
 import queries.Settable
 
-object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePage[Boolean] {
-  override def toString: String = "structuresBuildingsPreviousClaimUse"
+object StructuresBuildingsNewStructuresPage extends StructuresBuildingsBasePage[Boolean] {
+  override def toString: String = "structuresBuildingsNewStructures"
+
+  def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+    structure.newStructureBuildingClaimingAmount.isDefined
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
-      StructuresBuildingsPreviousClaimedAmountPage
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
@@ -37,13 +40,7 @@ object StructuresBuildingsPreviousClaimUsePage extends StructuresBuildingsBasePa
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsPreviousClaimedAmountController
-        .onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = cyaPage(taxYear, businessId)
+      onTrue = routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId),
+      onFalse = routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
     )
-
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
-    val answer = userAnswers.get(this, businessId)
-    answer.contains(false) || StructuresBuildingsAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
-  } // TODO SASS-7593 change previous claim amount page
 }

@@ -18,18 +18,21 @@ package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBigDecimal
+import viewmodels.checkAnswers.buildRowLocalDate
 
-object StructuresBuildingsNewClaimAmountSummary {
+import java.time.LocalDate
 
-  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
-    buildRowBigDecimal(
+object StructuresBuildingsUseDateSummary {
+
+  def row(answer: LocalDate, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowLocalDate(
       answer,
-      routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, index, CheckMode),
-      messages(s"structuresBuildingsNewClaimAmount.cya.$userType"),
-      "newSiteClaimingAmount.change.hidden"
+      routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages("structuresBuildingsQualifyingUseDate.title"),
+      "constructionStartDate.change.hidden", // TODO change
+      rightTextAlign = true
     )
 }

@@ -54,7 +54,7 @@ class StructuresBuildingsPreviousClaimedAmountControllerSpec
   lazy val onPageLoadRoute = routes.StructuresBuildingsPreviousClaimedAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.StructuresBuildingsPreviousClaimedAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
   override val bindings: List[Binding[_]] = List(bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute)))
 

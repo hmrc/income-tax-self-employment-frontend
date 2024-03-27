@@ -35,10 +35,10 @@ class StructuresBuildingsNewClaimAmountControllerSpec
       StructuresBuildingsNewClaimAmountPage
     ) {
 
-  lazy val onPageLoadRoute = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.StructuresBuildingsNewClaimAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode).url
+  lazy val onSubmitRoute   = routes.StructuresBuildingsNewClaimAmountController.onSubmit(taxYear, businessId, 0, NormalMode).url
 
-  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
   override val bindings: List[Binding[_]] = List(bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute)))
 
@@ -49,7 +49,7 @@ class StructuresBuildingsNewClaimAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[StructuresBuildingsNewClaimAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
   }
 
 }

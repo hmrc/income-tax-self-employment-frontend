@@ -18,26 +18,24 @@ package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimUsePage
+import pages.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsList
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBoolean
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object StructuresBuildingsEligibleClaimSummary {
+object StructuresBuildingsClaimedAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(StructuresBuildingsPreviousClaimUsePage, businessId.some)
-      .map { answer =>
-        buildRowBoolean(
-          answer,
-          routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsEligibleClaim.subHeading.$userType"),
-          "balancingAllowance.change.hidden", // TODO change to structures buildings change
-          rightTextAlign = true
+      .get(NewStructuresBuildingsList, businessId.some)
+      .map { sites =>
+        buildRowBigDecimal(
+          sites.map(_.newStructureBuildingClaimingAmount.getOrElse(BigDecimal(0))).sum,
+          routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId),
+          messages("newSpecialTaxSites.cya"),
+          "newSpecialTaxSites.change.hidden"
         )
       }
 }

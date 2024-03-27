@@ -17,21 +17,21 @@
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys.fillForm
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.filterErrors
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationPage
+import models.database.UserAnswers
+import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsBasePage, StructuresBuildingsLocationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class StructuresBuildingsLocationController @Inject() (override val messagesApi: MessagesApi,
@@ -39,30 +39,40 @@ class StructuresBuildingsLocationController @Inject() (override val messagesApi:
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
-                                                       service: SelfEmploymentService,
+                                                       service: StructuresBuildingsService,
                                                        formProvider: StructuresBuildingsLocationFormProvider,
-                                                       view: StructuresBuildingsLocationView)
+                                                       view: StructuresBuildingsLocationView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page = StructuresBuildingsLocationPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(formProvider(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      val form = formProvider(request.userType)
-      form
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          formErrors =>
+            Future.successful(BadRequest(view(filterErrors(formErrors, request.userType), mode, request.userType, taxYear, businessId, index))),
+          answer => updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
-  }
+    }
+
+  def updateAndRedirectWithIndex[A](userAnswers: UserAnswers,
+                                    answer: A,
+                                    businessId: BusinessId,
+                                    taxYear: TaxYear,
+                                    index: Int,
+                                    page: StructuresBuildingsBasePage[A]): Future[Result] =
+    service.updateStructureAnswerWithIndex(userAnswers, answer, businessId, index, page) map { userAnswers =>
+      page.nextPageWithIndex(userAnswers, businessId, taxYear, index)
+    }
 
 }
