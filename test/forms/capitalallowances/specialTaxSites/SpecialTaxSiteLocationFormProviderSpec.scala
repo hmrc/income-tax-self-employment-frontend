@@ -25,10 +25,7 @@ class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
   private val buildingName              = "buildingName"
   private val buildingNumber            = "buildingNumber"
   private val postcode                  = "postcode"
-  private val maxBuildingNameLength     = 100
-  private val maxBuildingNameError      = "specialTaxSiteLocation.error.buildingName.length"
-  private val maxBuildingNumberLength   = 20
-  private val maxBuildingNumberError    = "specialTaxSiteLocation.error.buildingNumber.length"
+  private val maxLength                 = 90
   private val emptyBuildingDetailsError = "specialTaxSiteLocation.error.building.individual"
   private val postcodeRequiredError     = "specialTaxSiteLocation.error.postcode.individual"
   private val postcodeInvalidError      = "error.postcode.invalid"
@@ -41,15 +38,9 @@ class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       buildingName,
-      stringsWithMaxLength(maxBuildingNameLength)
+      stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      buildingName,
-      maxLength = maxBuildingNameLength,
-      lengthError = FormError(buildingName, maxBuildingNameError, Seq(maxBuildingNameLength))
-    )
   }
 
   "buildingNumber" - {
@@ -57,15 +48,9 @@ class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       buildingNumber,
-      stringsWithMaxLength(maxBuildingNumberLength)
+      stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      buildingNumber,
-      maxLength = maxBuildingNumberLength,
-      lengthError = FormError(buildingNumber, maxBuildingNumberError, Seq(maxBuildingNumberLength))
-    )
   }
 
   "postcode" - {
@@ -90,7 +75,7 @@ class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  "form should return an error when both buildingName and buildingNumber fields are empty" in {
+  "form should return errors when both buildingName and buildingNumber fields are empty" in {
     val result = form
       .bind(
         Map(
@@ -100,7 +85,7 @@ class SpecialTaxSiteLocationFormProviderSpec extends StringFieldBehaviours {
         ))
       .errors
       .toList
-    result mustEqual List(FormError("", emptyBuildingDetailsError))
+    result mustEqual List(FormError(buildingName, emptyBuildingDetailsError), FormError(buildingNumber, emptyBuildingDetailsError))
   }
 
 }

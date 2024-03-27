@@ -23,7 +23,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
-import pages.expenses.tailoring.ExpensesTailoringCYAPage
+import pages.expenses.tailoring._
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.JsObject

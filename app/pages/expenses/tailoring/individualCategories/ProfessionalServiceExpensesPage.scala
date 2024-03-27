@@ -16,9 +16,24 @@
 
 package pages.expenses.tailoring.individualCategories
 
+import cats.implicits._
+import models.common.BusinessId
+import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
-import pages.OneQuestionPage
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
+import pages.PageJourney.mkQuestion
+import pages.{OneQuestionPage, PageJourney}
 
 case object ProfessionalServiceExpensesPage extends OneQuestionPage[Set[ProfessionalServiceExpenses]] {
   override def toString: String = "professionalServiceExpenses"
+
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(this, businessId).flatMap { seq =>
+      if (seq.contains(No)) mkQuestion(FinancialExpensesPage).some
+      else if (seq.contains(Staff)) mkQuestion(DisallowableStaffCostsPage).some
+      else if (seq.contains(Construction)) mkQuestion(DisallowableSubcontractorCostsPage).some
+      else if (seq.contains(ProfessionalFees)) mkQuestion(DisallowableProfessionalFeesPage).some
+      else None
+    }
 }

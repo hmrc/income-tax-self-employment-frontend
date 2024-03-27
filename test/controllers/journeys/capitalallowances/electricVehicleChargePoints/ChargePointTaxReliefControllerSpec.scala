@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
@@ -41,7 +41,7 @@ class ChargePointTaxReliefControllerSpec extends RadioButtonGetAndPostQuestionBa
 
   override val validAnswer = true
 
-  override def createForm(user: UserType): Form[Boolean] = new ChargePointTaxReliefFormProvider()(user)
+  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(ChargePointTaxReliefPage, user, Some("zeroEmission"))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

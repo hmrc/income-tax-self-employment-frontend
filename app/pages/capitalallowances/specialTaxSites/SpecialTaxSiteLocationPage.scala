@@ -20,15 +20,23 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
-import play.api.mvc.Call
+import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 
 object SpecialTaxSiteLocationPage extends SpecialTaxSitesBasePage[SpecialTaxSiteLocation] {
   override def toString: String = "specialTaxSiteLocation"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+  def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean =
+    site.specialTaxSiteLocation.isDefined && NewSiteClaimingAmountPage.hasAllFurtherAnswers(site)
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getSiteFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage("NewSpecialTaxSitesList data not found when redirecting from SpecialTaxSiteLocationPage")
+      case Some(site) =>
+        Redirect(
+          if (hasAllFurtherAnswers(site)) routes.SiteSummaryController.onPageLoad(taxYear, businessId, index)
+          else routes.NewSiteClaimingAmountController.onPageLoad(taxYear, businessId, index, NormalMode)
+        )
+    }
 }

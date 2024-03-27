@@ -17,10 +17,10 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
-import forms.abroad.SelfEmploymentAbroadFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,35 +34,36 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
-                                                selfEmploymentService: SelfEmploymentService,
-                                                navigator: AbroadNavigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                formProvider: SelfEmploymentAbroadFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
+                                                identify: IdentifierAction,
+                                                navigator: AbroadNavigator,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: BooleanFormProvider,
+                                                service: SelfEmploymentService,
                                                 view: SelfEmploymentAbroadView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(SelfEmploymentAbroadPage, Some(businessId)) match {
-      case None        => formProvider(request.userType)
-      case Some(value) => formProvider(request.userType).fill(value)
-    }
+  private val page = SelfEmploymentAbroadPage
 
-    Ok(view(preparedForm, taxYear, businessId, request.userType, mode))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, taxYear, businessId, request.userType, mode))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    formProvider(request.userType)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
-        value =>
-          selfEmploymentService
-            .persistAnswer(businessId, request.userAnswers.getOrElse(UserAnswers(request.userId)), value, SelfEmploymentAbroadPage)
-            .map(updated => Redirect(navigator.nextPage(SelfEmploymentAbroadPage, mode, updated, taxYear, businessId)))
-      )
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      formProvider(page, request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
+          value =>
+            service
+              .persistAnswer(businessId, request.userAnswers, value, SelfEmploymentAbroadPage)
+              .map(updated => Redirect(navigator.nextPage(SelfEmploymentAbroadPage, mode, updated, taxYear, businessId)))
+        )
   }
 
 }

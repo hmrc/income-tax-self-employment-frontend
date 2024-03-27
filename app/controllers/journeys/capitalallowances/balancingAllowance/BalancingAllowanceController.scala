@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.balancingAllowance
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.balancingAllowance.BalancingAllowanceFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -44,25 +44,24 @@ class BalancingAllowanceController @Inject() (override val messagesApi: Messages
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               service: SelfEmploymentService,
-                                              formProvider: BalancingAllowanceFormProvider,
+                                              formProvider: BooleanFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: BalancingAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = BalancingAllowancePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(BalancingAllowancePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

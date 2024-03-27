@@ -17,7 +17,8 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import controllers.actions._
-import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -42,18 +43,18 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  formProvider: LiveAtBusinessPremisesFormProvider,
+                                                  formProvider: BooleanFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: LiveAtBusinessPremisesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = LiveAtBusinessPremisesPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm =
-        request.getValue(LiveAtBusinessPremisesPage, businessId).fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -64,7 +65,7 @@ class LiveAtBusinessPremisesController @Inject() (override val messagesApi: Mess
           updatedUserAnswers                <- selfEmploymentService.persistAnswer(businessId, editedUserAnswers, answer, LiveAtBusinessPremisesPage)
         } yield Redirect(navigator.nextPage(LiveAtBusinessPremisesPage, redirectMode, updatedUserAnswers, taxYear, businessId))
 
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),

@@ -22,15 +22,19 @@ import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
-import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
+import pages.TradeAccountingType
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
 
@@ -50,6 +54,14 @@ class GoodsToSellOrUseControllerSpec
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
+  )
+
+  override def baseAnswers: UserAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString -> IndividualCategories.toString,
+      TradeAccountingType.toString    -> Accrual.toString,
+      OfficeSuppliesPage.toString     -> YesDisallowable.toString
+    )
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)

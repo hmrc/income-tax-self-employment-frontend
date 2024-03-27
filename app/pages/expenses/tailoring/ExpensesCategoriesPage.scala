@@ -16,9 +16,22 @@
 
 package pages.expenses.tailoring
 
+import models.common.BusinessId
+import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
-import pages.OneQuestionPage
+import models.journeys.expenses.ExpensesTailoring._
+import pages.PageJourney.{PageWithQuestion, TerminalPage}
+import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
+import pages.{OneQuestionPage, PageJourney}
 
 case object ExpensesCategoriesPage extends OneQuestionPage[ExpensesTailoring] {
   override def toString: String = "expensesCategories"
+
+  override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
+    userAnswers.get(this, businessId).map {
+      case TotalAmount          => PageWithQuestion(TotalExpensesPage)
+      case IndividualCategories => PageWithQuestion(OfficeSuppliesPage)
+      case NoExpenses           => TerminalPage(ExpensesTailoringCYAPage)
+    }
 }

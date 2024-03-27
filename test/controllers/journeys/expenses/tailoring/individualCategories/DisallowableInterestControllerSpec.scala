@@ -17,20 +17,25 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableInterestController
-import controllers.standard.routes.JourneyRecoveryController
-import forms.expenses.tailoring.individualCategories.DisallowableInterestFormProvider
+import controllers.standard
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
-import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.expenses.individualCategories.FinancialExpenses.Interest
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
+import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,15 +48,33 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableInterestRoute = DisallowableInterestController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val disallowableInterestRoute = routes.DisallowableInterestController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new DisallowableInterestFormProvider()
+  val formProvider = new BooleanFormProvider
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(DisallowableInterestPage, Individual)),
+    UserScenario(userType = Agent, formProvider(DisallowableInterestPage, Agent))
+  )
+
+  def baseAnswers = buildUserAnswers(
+    Json.obj(
+      ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
+      OfficeSuppliesPage.toString              -> YesDisallowable.toString,
+      GoodsToSellOrUsePage.toString            -> GoodsToSellOrUse.YesDisallowable.toString,
+      RepairsAndMaintenancePage.toString       -> RepairsAndMaintenance.YesDisallowable.toString,
+      WorkFromHomePage.toString                -> true,
+      WorkFromBusinessPremisesPage.toString    -> WorkFromBusinessPremises.YesDisallowable.toString,
+      TravelForWorkPage.toString               -> TravelForWork.YesDisallowable.toString,
+      AdvertisingOrMarketingPage.toString      -> AdvertisingOrMarketing.YesDisallowable.toString,
+      EntertainmentCostsPage.toString          -> true,
+      ProfessionalServiceExpensesPage.toString -> List(Staff.toString),
+      FinancialExpensesPage.toString           -> List(Interest.toString),
+      DepreciationPage.toString                -> true,
+      OtherExpensesPage.toString               -> OtherExpenses.YesDisallowable.toString
+    )
   )
 
   "DisallowableInterest Controller" - {
@@ -62,7 +85,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
         s"when user is an ${userScenario.userType}" - {
           "must return OK and the correct view for a GET" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
             running(application) {
               val request = FakeRequest(GET, disallowableInterestRoute)
@@ -82,7 +105,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
           "must populate the view correctly on a GET when the question has previously been answered" in {
 
             val userAnswers =
-              UserAnswers(userAnswersId).set(DisallowableInterestPage, true, Some(businessId)).success.value
+              baseAnswers.set(DisallowableInterestPage, true, Some(businessId)).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
@@ -113,7 +136,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -127,7 +150,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          applicationBuilder(userAnswers = Some(baseAnswers))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
               bind[SessionRepository].toInstance(mockSessionRepository)
@@ -150,7 +173,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
         s"when user is an ${userScenario.userType}" - {
           "must return a Bad Request and errors when an empty form is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -173,7 +196,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
@@ -209,7 +232,7 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

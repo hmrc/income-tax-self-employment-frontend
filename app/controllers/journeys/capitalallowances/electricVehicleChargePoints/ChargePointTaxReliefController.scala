@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -44,25 +44,24 @@ class ChargePointTaxReliefController @Inject() (override val messagesApi: Messag
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 service: SelfEmploymentService,
-                                                formProvider: ChargePointTaxReliefFormProvider,
+                                                formProvider: BooleanFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: ChargePointTaxReliefView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = ChargePointTaxReliefPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ChargePointTaxReliefPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType, Some("zeroEmission")))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType, Some("zeroEmission"))
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),

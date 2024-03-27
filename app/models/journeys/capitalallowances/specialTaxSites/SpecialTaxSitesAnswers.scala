@@ -18,13 +18,14 @@ package models.journeys.capitalallowances.specialTaxSites
 
 import play.api.libs.json.{Format, Json}
 
-import java.time.LocalDate
-
 case class SpecialTaxSitesAnswers(specialTaxSites: Boolean,
-                                  contractForBuildingConstruction: Option[Boolean],
-                                  contractStartDate: Option[LocalDate],
-                                  constructionStartDate: Option[LocalDate])
+                                  newSpecialTaxSites: Option[List[NewSpecialTaxSite]],
+                                  doYouHaveAContinuingClaim: Option[Boolean],
+                                  continueClaimingAllowanceForExistingSite: Option[Boolean],
+                                  existingSiteClaimingAmount: Option[BigDecimal])
 
 object SpecialTaxSitesAnswers {
   implicit val formats: Format[SpecialTaxSitesAnswers] = Json.format[SpecialTaxSitesAnswers]
+
+  def removeIncompleteSites(sitesList: List[NewSpecialTaxSite]): List[NewSpecialTaxSite] = sitesList.filter(_.isComplete)
 }

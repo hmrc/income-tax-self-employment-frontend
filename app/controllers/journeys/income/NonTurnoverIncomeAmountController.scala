@@ -17,9 +17,10 @@
 package controllers.journeys.income
 
 import controllers.actions._
-import forms.income.NonTurnoverIncomeAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.IncomeNavigator
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,24 +39,31 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   formProvider: NonTurnoverIncomeAmountFormProvider,
+                                                   formProvider: CurrencyFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: NonTurnoverIncomeAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = NonTurnoverIncomeAmountPage
+  private val form = (userType: UserType) =>
+    formProvider(
+      page,
+      userType,
+      minValueError = s"nonTurnoverIncomeAmount.error.lessThanZero.$userType",
+      maxValueError = s"nonTurnoverIncomeAmount.error.overMax.$userType",
+      nonNumericError = s"nonTurnoverIncomeAmount.error.nonNumeric.$userType"
+    )
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(NonTurnoverIncomeAmountPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),

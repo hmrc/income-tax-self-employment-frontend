@@ -20,16 +20,25 @@ import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import play.api.mvc.Call
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 
 import java.time.LocalDate
 
 object ConstructionStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
   override def toString: String = "constructionStartDate"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && QualifyingUseStartDatePage.hasAllFurtherAnswers(businessId, userAnswers)
+  def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean =
+    site.constructionStartDate.isDefined && QualifyingUseStartDatePage.hasAllFurtherAnswers(site)
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, NormalMode)
+  override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getSiteFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage(s"Site of index $index not found when redirecting from ConstructionStartDatePage")
+      case Some(site) =>
+        Redirect(
+          if (hasAllFurtherAnswers(site)) routes.SiteSummaryController.onPageLoad(taxYear, businessId, index)
+          else routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, index, NormalMode)
+        )
+    }
 }

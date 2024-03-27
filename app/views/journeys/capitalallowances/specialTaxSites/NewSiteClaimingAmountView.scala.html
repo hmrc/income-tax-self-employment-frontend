@@ -31,7 +31,7 @@
         foldableDetails: FoldableDetails
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("newSiteClaimingAmount.subHeading"))) {
 
@@ -43,26 +43,27 @@
 
     <div class="govuk-body">
         <p>@messages(s"newSiteClaimingAmount.p1.$userType")</p>
+        <p>@messages(s"newSiteClaimingAmount.p2.$userType")</p>
         <ul>
-            <li>@messages("newSiteClaimingAmount.l1")</li>
+            <li>@messages(s"newSiteClaimingAmount.l1.$userType")</li>
             <li>@messages(s"newSiteClaimingAmount.l2.$userType")</li>
+            <li>@messages("newSiteClaimingAmount.l3")</li>
         </ul>
     </div>
 
     @foldableDetails(messages(s"newSiteClaimingAmount.details.heading.$userType"), marginBottomThree = false) {
         <p>@messages(s"newSiteClaimingAmount.details.p1.$userType")</p>
         <p>@messages(s"newSiteClaimingAmount.details.p2.$userType")</p>
-        <p>@messages(s"newSiteClaimingAmount.details.p3.$userType")</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("newSiteClaimingAmount.details.l1")</li>
-            <li>@messages("newSiteClaimingAmount.details.l2")</li>
-            <li>@messages("newSiteClaimingAmount.details.l3")</li>
-            <li>@messages("newSiteClaimingAmount.details.l4")</li>
-        </ul>
+        <p>@messages("newSiteClaimingAmount.details.p3")</p>
+        <ul class="govuk-list govuk-list--bullet"><li>@messages("newSiteClaimingAmount.details.l1")</li></ul>
         <p>@messages("newSiteClaimingAmount.details.p4")</p>
+        <ul class="govuk-list govuk-list--bullet"><li>@messages("newSiteClaimingAmount.details.l2")</li></ul>
+        <p>@messages("newSiteClaimingAmount.details.p5")</p>
+        <ul class="govuk-list govuk-list--bullet"><li>@messages("newSiteClaimingAmount.details.l3")</li></ul>
+        <p>@messages("newSiteClaimingAmount.details.p6")</p>
     }
 
-    @formHelper(action = routes.NewSiteClaimingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.NewSiteClaimingAmountController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(

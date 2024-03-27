@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.electricVehicleChargePoints.EVCPAllowanceFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
@@ -41,7 +41,7 @@ class EVCPAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec(
 
   override val validAnswer = true
 
-  override def createForm(user: UserType): Form[Boolean] = new EVCPAllowanceFormProvider()(user)
+  override def createForm(userType: UserType): Form[Boolean] = new BooleanFormProvider()(EVCPAllowancePage, userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.tailoring
+import models.CheckMode
 import models.common._
 import models.journeys.Journey
 import models.journeys.Journey.ExpensesTailoring
@@ -43,18 +44,21 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
                                                 getUserAnswers: DataRetrievalAction,
                                                 getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
                                                 requireData: DataRequiredAction,
+                                                hopChecker: HopCheckerAction,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: CheckYourAnswersView,
                                                 service: SelfEmploymentService)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   private implicit val logger: Logger = Logger(this.getClass)
+  private val page                    = ExpensesTailoringCYAPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen
       getJourneyAnswersIfAny[ExpensesTailoringAnswers](request =>
         request.mkJourneyNinoContext(taxYear, businessId, Journey.ExpensesTailoring)) andThen
-      requireData) { implicit request =>
+      requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, CheckMode)) { implicit request =>
       val summaryList = buildTailoringSummaryList(request.userAnswers, taxYear, businessId, request.userType)
       (request.valueOrRedirectDefault(ExpensesCategoriesPage, businessId) map { answer =>
         val title = s"${ExpensesTailoringCYAPage.toString}${if (answer == IndividualCategories) "Categories" else ""}"

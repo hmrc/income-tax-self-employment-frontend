@@ -17,9 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import forms.expenses.tailoring.individualCategories.DisallowableInterestFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,25 +40,24 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: DisallowableInterestFormProvider,
+                                                hopChecker: HopCheckerAction,
+                                                formProvider: BooleanFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: DisallowableInterestView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+  private val page = DisallowableInterestPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(DisallowableInterestPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, mode, request.userType, taxYear, businessId))
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),

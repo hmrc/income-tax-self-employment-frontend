@@ -15,84 +15,68 @@
  *@
 
 @import models.journeys.income.TradingAllowance
-@import controllers.journeys.income.routes.TradingAllowanceController
+@import controllers.journeys.income.routes
 @import models.common.{AccountingType, BusinessId, TaxYear}
-@import views.html.templates.helpers.Heading
+@import views.html.components._
 @import models.common.UserType
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        errorSummarySection: ErrorSummarySection,
+        foldableDetails: FoldableDetails,
+        link: Link,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: HeadingMsgAware
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
+@accrualDependentDetails = {
+    @if(accountingType == AccountingType.Accrual){
+        @foldableDetails(messages("capitalAllowances.understandingCapitalAllowances")) {
+            <p>@messages(s"capitalAllowances.p1.$userType")</p>
+            <p>@messages(s"capitalAllowances.p2.$userType")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("capitalAllowances.l1")</li>
+                <li>@messages("capitalAllowances.l2")</li>
+                <li>@messages("capitalAllowances.l3")</li>
+            </ul>
+            <p>@messages("capitalAllowances.p3")</p>
+        }
+    }
+}
+
 @layout(pageTitle = title(form, messages("tradingAllowance.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form)
 
-    @heading(messages("tradingAllowance.title"), None)
+    @heading(messages("tradingAllowance.title"))
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>
-            @messages(s"tradingAllowance.p1.$userType")
-        </p>
-        <p>
-            @messages(s"tradingAllowance.p2.$userType")
-        </p>
-        @if(accountingType == AccountingType.Accrual){
-            <p>
-                @messages(s"tradingAllowance.p3.$userType")
-            </p>
-        }
+    <div class="govuk-body">
+        <p>@messages(s"tradingAllowance.p1.$userType")</p>
+        <p>@messages(s"tradingAllowance.p2.$userType")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("tradingAllowance.l1")</li>
+            <li>@messages("tradingAllowance.l2")</li>
+        </ul>
+        @accrualDependentDetails
+        <p>@messages(s"tradingAllowance.p3.$userType")</p>
+        <p>@messages(s"tradingAllowance.p4.$userType")</p>
+        <p>@messages(s"tradingAllowance.p5.$userType")</p>
+        @link("tradingAllowance.p6.href", s"tradingAllowance.p6.$userType")
     </div>
 
-
-    @if(accountingType == AccountingType.Accrual){
-        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            @messages("capitalAllowances.understandingCapitalAllowances")
-                        </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p>
-                    @messages(s"capitalAllowances.p1.$userType")
-                </p>
-                <p>
-                    @messages(s"capitalAllowances.p2.$userType")
-                </p>
-                <ul class="govuk-list govuk-list--bullet indent-40px govuk-!-margin-top-1">
-                    <li>@messages("capitalAllowances.l1")</li>
-                    <li>@messages("capitalAllowances.l2")</li>
-                    <li>@messages("capitalAllowances.l3")</li>
-                </ul>
-                <p>
-                    @messages("capitalAllowances.p3")
-                </p>
-            </div>
-        </details>
-    }
-
-    @formHelper(action = TradingAllowanceController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
-
+    @formHelper(action = routes.TradingAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"tradingAllowance.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                legend = LegendViewModel(messages(s"tradingAllowance.subheading.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items = TradingAllowance.options
             )
         )
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton(extraClasses = "govuk-!-margin-top-4")
     }
 }

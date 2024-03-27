@@ -16,13 +16,14 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.Journey
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import navigation.ExpensesTailoringNavigator
@@ -53,21 +54,21 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
+                                             hopChecker: HopCheckerAction,
                                              formProvider: FinancialExpensesFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: FinancialExpensesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+  private val page = FinancialExpensesPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = request.userAnswers
-        .get(FinancialExpensesPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
+      val form = fillForm(page, businessId, formProvider(request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
-  }
+    }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>

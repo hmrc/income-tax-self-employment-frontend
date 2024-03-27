@@ -44,6 +44,7 @@ site.or = or
 site.buildingName = Building name
 site.buildingNumber = Building number
 site.postcode = Postcode
+site.returnToOverview = Return to overview
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -80,6 +81,7 @@ journeys.capital-allowances-balancing-allowance = Balancing allowance
 journeys.capital-allowances-annual-investment-allowance = Annual Investment Allowance
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
 journeys.capital-allowances-special-tax-sites = Freeport sites
+journeys.capital-allowances-structures-buildings = Structures and Buildings Allowance
 
 date.day = Day
 date.month = Month
@@ -275,14 +277,23 @@ notTaxableAmount.change.hidden = Change turnover exempt from being taxed as prof
 
 ## Trading allowance
 tradingAllowance.title = Trading allowance
-tradingAllowance.p1.individual = Your first £1,000 of income from self-employment is tax-free. It is known as your trading allowance.
-tradingAllowance.p1.agent = Your client’s first £1,000 of income from self-employment is tax-free. It is known as their trading allowance.
-tradingAllowance.p2.individual = You may want to consider which gives you a bigger reduction on your tax bill: declaring your expenses or using the trading allowance.
-tradingAllowance.p2.agent = Your client may want to consider which gives them a bigger reduction on their tax bill: declaring their expenses or using the trading allowance.
-tradingAllowance.p3.individual = If you choose to use your trading allowance, you cannot claim capital allowances.
-tradingAllowance.p3.agent = If your client chooses to use their trading allowance, they cannot claim capital allowances.
-tradingAllowance.subHeading.individual = What do you want to do?
-tradingAllowance.subHeading.agent = What does your client want to do?
+tradingAllowance.p1.individual = The trading allowance is a tax relief of up to £1,000 per year which you can use against your total self-employment and miscellaneous income.
+tradingAllowance.p1.agent = The trading allowance is a tax relief of up to £1,000 per year which your client can use against their total self-employment and miscellaneous income.
+tradingAllowance.p2.individual = If you use the allowance, you cannot:
+tradingAllowance.p2.agent = If your client uses the allowance, they cannot:
+tradingAllowance.l1 = deduct any expenses
+tradingAllowance.l2 = claim capital allowances
+tradingAllowance.p3.individual = You may want to consider which option gives a bigger reduction on your tax bill.
+tradingAllowance.p3.agent = They may want to consider which option gives a bigger reduction on their tax bill.
+tradingAllowance.p4.individual = For example, if your total self employment income is £750, the trading allowance would be capped at £750.
+tradingAllowance.p4.agent = For example, if your client’s total self employment income is £750, the trading allowance would be capped at £750.
+tradingAllowance.p5.individual = You cannot use the trading allowance to make a loss.
+tradingAllowance.p5.agent = Your client cannot use the trading allowance to make a loss.
+tradingAllowance.p6.individual = See if you can claim and read more information.
+tradingAllowance.p6.agent = See if your client can claim and read more information.
+tradingAllowance.p6.href = https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income
+tradingAllowance.subheading.individual = What do you want to do?
+tradingAllowance.subheading.agent = What does your client want to do?
 tradingAllowance.useTradingAllowance = Use the trading allowance
 tradingAllowance.declareExpenses = Declare expenses
 tradingAllowance.checkYourAnswersLabel.individual = Do you want to use the trading allowance or declare expenses?
@@ -1870,17 +1881,17 @@ specialTaxSites.details.l5.1 = The
 specialTaxSites.details.l5.link = allowance statement
 specialTaxSites.details.l5.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
 specialTaxSites.details.l5.2 = must specify that the spend is to be treated as special tax site qualifying expenditure
-specialTaxSites.subHeading.individual = Are you claiming the allowance for a structure or building in a special tax site?
-specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.subheading.individual = Are you claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.subheading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
 specialTaxSites.error.required.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
 specialTaxSites.error.required.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
 specialTaxSites.change.hidden = Change if claiming the allowance for a structure or building in a special tax site
 
-contractForBuildingConstruction.title = Special tax site contracts
-contractForBuildingConstruction.p1.individual = You will not be able to claim this allowance on any construction costs of the specific building if the contract was:
-contractForBuildingConstruction.p1.agent = Your client will not be able to claim this allowance on any construction costs of the specific building if the contract was:
-contractForBuildingConstruction.l1 = entered into before 29 October 2018
-contractForBuildingConstruction.l2 = signed before the Freeport site was designated
+contractForBuildingConstruction.title = Date construction started
+contractForBuildingConstruction.p1.individual = You will not be able to claim this allowance on any construction costs of the building if, before the special tax site was designated, you:
+contractForBuildingConstruction.p1.agent = Your client will not be able to claim this allowance on any construction costs of the building if, before the special tax site was designated, they:
+contractForBuildingConstruction.l1 = entered into a contract for the construction
+contractForBuildingConstruction.l2 = started construction activity
 contractForBuildingConstruction.subHeading.individual = Did you enter into a contract for the building’s construction?
 contractForBuildingConstruction.subHeading.agent = Did your client enter into a contract for the building’s construction?
 contractForBuildingConstruction.cya.individual = Did you sign a contract for the building’s construction?
@@ -1889,7 +1900,7 @@ contractForBuildingConstruction.error.required.individual = Select yes if you en
 contractForBuildingConstruction.error.required.agent = Select yes if your client entered into a contract for the building’s construction
 contractForBuildingConstruction.change.hidden = Change whether you entered into a contract for the building’s construction
 
-contractStartDate.title = When was the contract entered into?
+contractStartDate.title = When was the earliest contract entered into?
 contractStartDate.title.cya = When was the contract signed?
 contractStartDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction
 contractStartDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction
@@ -1904,8 +1915,8 @@ constructionStartDate.change.hidden = Change the date construction or physical w
 qualifyingUseStartDate.title = Qualifying use
 qualifyingUseStartDate.subHeading = When was the building first brought into qualifying use?
 qualifyingUseStartDate.p1 = Qualifying use is when the building is in non-residential use for the business activity.
-qualifyingUseStartDate.hint.individual = If this was a later date, enter the date that you incurred the qualifying expenditure.
-qualifyingUseStartDate.hint.agent = If this was a later date, enter the date that your client incurred the qualifying expenditure.
+qualifyingUseStartDate.hint.individual = If later, enter the date you incurred the qualifying spend.
+qualifyingUseStartDate.hint.agent = If later, enter the date that your client incurred the qualifying spend.
 qualifyingUseStartDate.error.required = Enter the date when the building first came into qualifying use
 qualifyingUseStartDate.error.tooLate = The date when the building first came into qualifying use must be in the past
 qualifyingUseStartDate.change.hidden =
@@ -1917,26 +1928,95 @@ specialTaxSiteLocation.error.postcode.individual = Enter a postcode for the spec
 specialTaxSiteLocation.error.postcode.agent = Enter a postcode for your client’s special tax site
 specialTaxSiteLocation.change.hidden =
 
-newSiteClaimingAmount.p1.individual = You can claim the relief for up to 10 years from the later date of:
-newSiteClaimingAmount.p1.agent = Your client can claim the relief for up to 10 years from the later date of:
-newSiteClaimingAmount.l1 = when the structure or building is first used for a non-residential purpose, or
-newSiteClaimingAmount.l2.individual = when you incur the expenditure
-newSiteClaimingAmount.l2.agent = when your client incurs the expenditure
+newSiteClaimingAmount.p1.individual = You can claim 10% of the qualifying costs.
+newSiteClaimingAmount.p1.agent = Your client can claim 10% of the qualifying costs.
+newSiteClaimingAmount.p2.individual = You must proportionally adjust your claim if:
+newSiteClaimingAmount.p2.agent = Your client must proportionally adjust their claim if:
+newSiteClaimingAmount.l1.individual = the qualifying use starts part way through your accounting period
+newSiteClaimingAmount.l1.agent = the qualifying use starts part way through their accounting period
+newSiteClaimingAmount.l2.individual = your accounting period is longer or shorter than 12 months
+newSiteClaimingAmount.l2.agent = their accounting period is longer or shorter than 12 months
+newSiteClaimingAmount.l3 = the building is part inside and part outside a special tax site
 newSiteClaimingAmount.details.heading.individual = Example of tax relief you can claim
 newSiteClaimingAmount.details.heading.agent = Example of tax relief your client can claim
-newSiteClaimingAmount.details.p1.individual = You built a factory costing £2,000,000 which was 60% in a Freeport tax site and 40% not in a Freeport tax site. All contracts for construction were entered into after the date the Freeport tax site was designated.
-newSiteClaimingAmount.details.p1.agent = Your client built a factory costing £2,000,000 which was 60% in a Freeport tax site and 40% not in a Freeport tax site. All contracts for construction were entered into after the date the Freeport tax site was designated.
-newSiteClaimingAmount.details.p2.individual = The factory was completed on 13 July 2023 and you started to use it in your manufacturing business from 1 August 2023. You prepare accounts for each year ending on 31 July.
-newSiteClaimingAmount.details.p2.agent = The factory was completed on 13 July 2023 and your client started to use it in their manufacturing business from 1 August 2023. Your client prepares accounts for each year ending on 31 July.
-newSiteClaimingAmount.details.p3.individual = In the chargeable period to 31 July 2024, you can claim 10% a year on 60% of the expenditure and 3% a year on 40% of the expenditure.
-newSiteClaimingAmount.details.p3.agent = In the chargeable period to 31 July 2024, your client can claim 10% a year on 60% of the expenditure and 3% a year on 40% of the expenditure.
-newSiteClaimingAmount.details.l1 = 60% of £2,000,000 = £1,200,000
-newSiteClaimingAmount.details.l2 = 40% of £2,000,000 = £800,000
-newSiteClaimingAmount.details.l3 = 10% of £1,200,000 = £120,000
-newSiteClaimingAmount.details.l4 = Plus 3% of £800,000 = £24,000
-newSiteClaimingAmount.details.p4 = The total claim is £144,000 for the year ended 31 July 2024.
+newSiteClaimingAmount.details.p1.individual = You built a factory costing £2 million. 60% of it sits inside and 40% sits outside a special tax site. The earliest construction contract was entered into after the site was designated.
+newSiteClaimingAmount.details.p1.agent = Your client built a factory costing £2 million. 60% of it sits inside and 40% sits outside a special tax site. The earliest construction contract was entered into after the site was designated.
+newSiteClaimingAmount.details.p2.individual = The factory was completed on 13 September 2023 and you started to use it in your manufacturing business from 1 October 2023. You prepare accounts for each year ending on 31 July.
+newSiteClaimingAmount.details.p2.agent = The factory was completed on 13 September 2023 and they started to use it in their manufacturing business from 1 October 2023. They prepare accounts for each year ending on 31 July.
+newSiteClaimingAmount.details.p3 = Spend qualifying for enhanced structures and buildings allowance:
+newSiteClaimingAmount.details.l1 = £2 million x 60% = £1.2 million
+newSiteClaimingAmount.details.p4 = Rate of relief:
+newSiteClaimingAmount.details.l2 = £1.2 million x 10% = £120,000
+newSiteClaimingAmount.details.p5 = Part year adjustment:
+newSiteClaimingAmount.details.l3 = £120,000 x 10/12 = £100,000
+newSiteClaimingAmount.details.p6 = The balance of the qualifying expenditure, £800,000 (£2 million - £1.2 million) qualifies for standard structures and buildings allowance at 3%
 newSiteClaimingAmount.subHeading.individual = How much enhanced structures and buildings allowance do you want to claim?
 newSiteClaimingAmount.subHeading.agent = How much enhanced structures and buildings allowance does your client want to claim?
+newSiteClaimingAmount.subHeading.cya.individual = How much enhanced structures and buildings allowance do you want to claim?
+newSiteClaimingAmount.subHeading.cya.agent = How much enhanced structures and buildings allowance does your client want to claim?
 newSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for the building in the special tax site
 newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
 newSiteClaimingAmount.change.hidden =
+
+newTaxSites.title = New special tax site structures or buildings
+newTaxSites.subheading.individual = Do you need to add another site?
+newTaxSites.subheading.agent = Does your client need to add another site?
+newTaxSites.hint.individual = You must tell us about all new sites where you claimed the allowance.
+newTaxSites.hint.agent = Your client must tell us about all new sites where they have claimed the allowance.
+newTaxSites.totalAmount = Total new enhanced structures and buildings allowance claim: £{0}
+newTaxSites.emptyList.individual = If you don’t have a special tax structure or building to add you can return to the overview page and come back later.
+newTaxSites.emptyList.agent = If your client doesn’t have a special tax structure or building to add you can return to the overview page and come back later.
+newTaxSites.addABuilding = Add a building
+newTaxSites.error.required.individual = Select yes if you need to add another building in a special tax site
+newTaxSites.error.required.agent = Select yes if your client needs to add another building in a special tax site
+newTaxSites.change.hidden =
+newTaxSites.remove.hidden =
+
+siteSummary.title.individual = Special tax site summary
+siteSummary.title.agent = Special tax site summary
+
+removeSpecialTaxSite.title.individual = Do you want to remove this special tax site structure or building?
+removeSpecialTaxSite.title.agent = Does your client want to remove this special tax site structure or building?
+removeSpecialTaxSite.hint.individual = The address and claim amount you entered will be deleted.
+removeSpecialTaxSite.hint.agent = The address and claim amount your client entered will be deleted.
+removeSpecialTaxSite.error.required.individual = Select yes if you want to remove this structure or building
+removeSpecialTaxSite.error.required.agent = Select yes if your client wants to remove this structure or building
+
+doYouHaveAContinuingClaim.title.individual = Do you have a continuing claim for enhanced structures and buildings allowance?
+doYouHaveAContinuingClaim.title.agent = Does your client have a continuing claim for enhanced structures and buildings allowance?
+doYouHaveAContinuingClaim.title.cya.individual = Have you used the Freeports structures and building allowance before?
+doYouHaveAContinuingClaim.title.cya.agent = Has your client used the Freeports structures and building allowance before?
+doYouHaveAContinuingClaim.error.required.individual = Select yes if you have a continuing claim for enhanced structures and buildings allowance
+doYouHaveAContinuingClaim.error.required.agent = Select yes if your client has a continuing claim for enhanced structures and buildings allowance
+doYouHaveAContinuingClaim.change.hidden =
+
+continueClaimingAllowanceForExistingSite.title.individual = Can you still claim?
+continueClaimingAllowanceForExistingSite.title.agent = Can your client still claim?
+continueClaimingAllowanceForExistingSite.subHeading.individual = Do you want to continue to claim this allowance for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.agent = Does your client want to continue to claim this allowance for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.cya.individual = Do you want to claim anything for an existing site?
+continueClaimingAllowanceForExistingSite.subHeading.cya.agent = Does your client want to claim anything for an existing site?
+continueClaimingAllowanceForExistingSite.p2.individual = If you can only meet these conditions for part of the accounting period, you will need to reduce the allowance proportionally.
+continueClaimingAllowanceForExistingSite.p2.agent = If your client can only meet these conditions for part of the accounting period, they will need to reduce the allowance proportionally.
+continueClaimingAllowanceForExistingSite.p3.individual = You must also hold an allowance statement, otherwise the qualifying expenditure is treated as £0.
+continueClaimingAllowanceForExistingSite.p3.agent = Your client must also hold an allowance statement, otherwise the qualifying expenditure is treated as £0.
+continueClaimingAllowanceForExistingSite.error.required.individual = Select yes if you want to continue to claim this allowance for an existing site
+continueClaimingAllowanceForExistingSite.error.required.agent = Select yes if your client wants to continue to claim this allowance for an existing site
+continueClaimingAllowanceForExistingSite.change.hidden =
+
+existingSiteClaimingAmount.title = Claim amount
+existingSiteClaimingAmount.details.p1.individual = For a continuing claim you can claim 10% of the qualifying expenditure a year up to the end of the allowance period.
+existingSiteClaimingAmount.details.p1.agent = For a continuing claim your client can claim 10% of the qualifying expenditure a year up to the end of the allowance period.
+existingSiteClaimingAmount.details.p2 = The allowance period will end 10 years from the later of:
+existingSiteClaimingAmount.details.l1 = the date the structure first came into non-residential use
+existingSiteClaimingAmount.details.l2 = the date on which the qualifying expenditure is incurred
+existingSiteClaimingAmount.details.p3 = This information will be on the allowance statement.
+existingSiteClaimingAmount.subHeading.individual = Enter the total amount you want to claim for this special tax site
+existingSiteClaimingAmount.subHeading.agent = Enter the total amount your client wants to claim for this special tax site
+existingSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for this site
+existingSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for this site
+existingSiteClaimingAmount.cya.individual = How much do you want to claim for this site?
+existingSiteClaimingAmount.cya.agent = How much does your client want to claim for this site?
+
+newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
+newSpecialTaxSites.change.hidden =

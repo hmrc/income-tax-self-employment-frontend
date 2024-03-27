@@ -17,46 +17,52 @@
 package forms.capitalallowances.specialTaxSites
 
 import forms.PostcodeRegex
-import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.{buildingName, buildingNumber, emptyBuildingDetailsError}
+import forms.capitalallowances.specialTaxSites.SpecialTaxSiteLocationFormProvider.{buildingName, buildingNumber, emptyBuildingDetailsError, postcode}
 import forms.mappings.Mappings
 import models.common.UserType
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
-import play.api.data.Forms.{mapping, optional}
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.Forms.mapping
 import play.api.data.{Form, FormError}
+import uk.gov.voa.play.form.Condition
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIf
 
 import javax.inject.Inject
 
 class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
-  private val postcode                = "postcode"
-  private val maxBuildingNameLength   = 100
-  private val maxBuildingNameError    = "specialTaxSiteLocation.error.buildingName.length"
-  private val maxBuildingNumberLength = 20
-  private val maxBuildingNumberError  = "specialTaxSiteLocation.error.buildingNumber.length"
-  private val postcodeRequiredError   = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
-  private val postcodeInvalidError    = "error.postcode.invalid"
+  private val maxInputLength         = 90
+  private val maxBuildingNameError   = "specialTaxSiteLocation.error.buildingName.length" // TODO get the messages for these from Tim
+  private val maxBuildingNumberError = "specialTaxSiteLocation.error.buildingNumber.length"
+  private val postcodeRequiredError  = (userType: UserType) => s"specialTaxSiteLocation.error.postcode.$userType"
+  private val postcodeInvalidError   = "error.postcode.invalid"
 
-  private def atLeastOneRequired(userType: UserType): Constraint[SpecialTaxSiteLocation] = Constraint("constraints.atleastone") { location =>
-    if (location.buildingName.isEmpty && location.buildingNumber.isEmpty) {
-      Invalid(Seq(ValidationError(emptyBuildingDetailsError(userType))))
-    } else {
-      Valid
-    }
+  private def bindIfOneOrBothAreFilled(dependentField: String): Condition = { s =>
+    val bothFull   = s.get(buildingName).exists(_.nonEmpty) && s.get(buildingNumber).exists(_.nonEmpty)
+    val otherEmpty = s.get(dependentField).exists(_.isEmpty)
+    otherEmpty || bothFull
   }
 
   def apply(userType: UserType): Form[SpecialTaxSiteLocation] = Form(
     mapping(
-      buildingName   -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNameLength, maxBuildingNameError))),
-      buildingNumber -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNumberLength, maxBuildingNumberError))),
-      postcode       -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
-    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply).verifying(atLeastOneRequired(userType))
-  )
+      buildingName -> mandatoryIf(
+        bindIfOneOrBothAreFilled(buildingNumber),
+        text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNameError))
+      ),
+      buildingNumber -> mandatoryIf(
+        bindIfOneOrBothAreFilled(buildingName),
+        text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))
+      ),
+      postcode -> text(postcodeRequiredError(userType), toUpperCase = true, stripWhitespace = true).verifying(
+        regexp(PostcodeRegex, postcodeInvalidError))
+    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply))
+
 }
 
 object SpecialTaxSiteLocationFormProvider {
-  val buildingName              = "buildingName"
-  val buildingNumber            = "buildingNumber"
-  val emptyBuildingDetailsError = (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
+  val buildingName   = "buildingName"
+  val buildingNumber = "buildingNumber"
+  val postcode       = "postcode"
+  val emptyBuildingDetailsError: UserType => String =
+    (userType: UserType) => s"specialTaxSiteLocation.error.building.$userType"
 
   def filterErrors(form: Form[SpecialTaxSiteLocation], userType: UserType): Form[SpecialTaxSiteLocation] = {
     val formError = FormError("", List(emptyBuildingDetailsError(userType)), List())
