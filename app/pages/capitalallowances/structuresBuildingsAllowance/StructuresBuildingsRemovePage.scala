@@ -26,24 +26,4 @@ import queries.Settable
 
 object StructuresBuildingsRemovePage extends StructuresBuildingsBasePage[Boolean] {
   override def toString: String = "structuresBuildingsRemove"
-
-  override val dependentPagesWhenNo: List[Settable[_]] =
-    List(
-      // TODO change page
-    )
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    redirectOnBoolean(
-      this,
-      userAnswers,
-      businessId,
-      onTrue = routes.StructuresBuildingsRemoveController
-        .onPageLoad(taxYear, businessId, NormalMode), // TODO change to new-structures summary page
-      onFalse = cyaPage(taxYear, businessId) //TODO change to new-structures summary page unless no buildings left
-    )
-
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
-    val answer = userAnswers.get(this, businessId)
-    answer.contains(false)
-  } // TODO change page
 }
