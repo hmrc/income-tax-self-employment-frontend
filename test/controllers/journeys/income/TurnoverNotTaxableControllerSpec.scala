@@ -17,9 +17,8 @@
 package controllers.journeys.income
 
 import base.SpecBase
-import controllers.journeys.income.routes.{IncomeCYAController, NotTaxableAmountController, TradingAllowanceController, TurnoverNotTaxableController}
-import controllers.standard.routes.JourneyRecoveryController
-import forms.income.TurnoverNotTaxableFormProvider
+import controllers.standard
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
@@ -39,10 +38,10 @@ import scala.concurrent.Future
 
 class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
-  val formProvider         = new TurnoverNotTaxableFormProvider()
-  val notTaxableAmountCall = NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-  val tradingAllowanceCall = TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-  val cyaCall              = IncomeCYAController.onPageLoad(taxYear, businessId)
+  val formProvider         = new BooleanFormProvider()
+  val notTaxableAmountCall = routes.NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+  val tradingAllowanceCall = routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  val cyaCall              = routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
   val onwardRouteNormalMode = (userAnswer: Boolean) => if (userAnswer) notTaxableAmountCall else tradingAllowanceCall
   val onwardRouteCheckMode  = (userAnswer: Boolean) => if (userAnswer) notTaxableAmountCall else cyaCall
@@ -50,8 +49,8 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
   val userScenarios = Seq(
-    UserScenario(userType = UserType.Individual, formProvider(UserType.Individual)),
-    UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
+    UserScenario(userType = UserType.Individual, formProvider(TurnoverNotTaxablePage, UserType.Individual)),
+    UserScenario(userType = UserType.Agent, formProvider(TurnoverNotTaxablePage, UserType.Agent))
   )
   val mockService = mock[SelfEmploymentService]
 
@@ -67,7 +66,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
-              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
+              val request = FakeRequest(GET, routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
 
               val result = route(application, request).value
 
@@ -88,7 +87,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
             running(application) {
-              val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
+              val request = FakeRequest(GET, routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, CheckMode).url)
 
               val view = application.injector.instanceOf[TurnoverNotTaxableView]
 
@@ -109,12 +108,12 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
+          val request = FakeRequest(GET, routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -138,7 +137,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
           running(application) {
             val request =
-              FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+              FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -161,7 +160,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
           running(application) {
             val request =
-              FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, CheckMode).url)
+              FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, CheckMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -191,7 +190,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
           running(application) {
             val request =
-              FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+              FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -217,7 +216,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
           running(application) {
             val request =
-              FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, CheckMode).url)
+              FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, CheckMode).url)
                 .withFormUrlEncodedBody(("value", userAnswer.toString))
 
             val result = route(application, request).value
@@ -237,7 +236,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
             running(application) {
               val request =
-                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+                FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = userScenario.form.bind(Map("value" -> ""))
@@ -260,7 +259,7 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
             running(application) {
               val request =
-                FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+                FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
                   .withFormUrlEncodedBody(("value", "non-Boolean"))
 
               val boundForm = userScenario.form.bind(Map("value" -> "non-Boolean"))
@@ -285,13 +284,13 @@ class TurnoverNotTaxableControllerSpec extends SpecBase with MockitoSugar with M
 
         running(application) {
           val request =
-            FakeRequest(POST, TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
+            FakeRequest(POST, routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode).url)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

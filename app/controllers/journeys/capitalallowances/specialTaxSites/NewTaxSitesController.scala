@@ -16,11 +16,13 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common._
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import pages.capitalallowances.specialTaxSites.{NewSpecialTaxSitesList, NewTaxSitesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import utils.MoneyUtils.formatMoney
 import viewmodels.journeys.capitalallowances.specialTaxSites.NewTaxSitesViewModel.getNewSitesSummaryRows
 import views.html.journeys.capitalallowances.specialTaxSites.NewTaxSitesView
 
@@ -57,7 +60,8 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
           val cleanSiteList = removeIncompleteSites(sites)
           service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewSpecialTaxSitesList).map { _ =>
             val summaryList = getNewSitesSummaryRows(cleanSiteList, taxYear, businessId)
-            Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList))
+            val totalAmount = getTotalIfMultiple(cleanSiteList)
+            Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList, totalAmount))
           }
       }
   }
@@ -70,7 +74,7 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
         formProvider(page, request.userType)
           .bindFromRequest()
           .fold(
-            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList)),
+            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList, getTotalIfMultiple(sites))),
             answer =>
               Redirect(
                 if (answer) routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, sites.length, NormalMode)
@@ -79,5 +83,9 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
           )
     }
   }
+
+  private def getTotalIfMultiple(sites: List[NewSpecialTaxSite]): Option[String] =
+    if (sites.length > 1) formatMoney(sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum).some
+    else None
 
 }

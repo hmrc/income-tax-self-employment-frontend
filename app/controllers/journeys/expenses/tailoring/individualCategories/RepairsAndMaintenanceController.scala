@@ -16,8 +16,8 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.RepairsAndMaintenanceFormProvider
 import models.Mode
@@ -55,10 +55,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-      val form = request.userAnswers
-        .get(RepairsAndMaintenancePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
     }
 

@@ -16,16 +16,16 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.Journey
-import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableProfessionalFeesPage,
@@ -66,10 +66,7 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-      val form = request.userAnswers
-        .get(ProfessionalServiceExpensesPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
     }
 

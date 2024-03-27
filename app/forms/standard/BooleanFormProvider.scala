@@ -22,12 +22,11 @@ import models.common.UserType
 import pages.OneQuestionPage
 import play.api.data.Form
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class BooleanFormProvider @Inject() {
 
-  def apply(page: OneQuestionPage[_], userType: UserType): Form[Boolean] =
-    Form("value" -> boolean(s"${userTypeAware(userType, page.requiredErrorKey)}"))
+  def apply(page: OneQuestionPage[_], userType: UserType, altPrefix: Option[String] = None): Form[Boolean] =
+    Form("value" -> boolean(userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required"))))
 }
