@@ -64,7 +64,7 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
               taxYear,
               request.userType,
               summaryList,
-              routes.NewTaxSitesController.onSubmit(taxYear, businessId)
+              routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
             ))
       }
   }
