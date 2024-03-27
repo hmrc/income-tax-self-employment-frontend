@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package viewmodels.journeys.capitalallowances.structuresBuildingsAllowance
+package models.journeys.capitalallowances.structuresBuildingsAllowance
 
-import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 import play.api.libs.json.{Format, Json}
 
 case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
@@ -26,7 +25,7 @@ case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
                                          PreviousClaimAmount: Option[Int],
                                          newSpecialTaxSites: List[NewStructureBuilding])
 
-object NewStructuresBuildings {
+object NewStructuresBuildingsAnswers {
   implicit val formats: Format[NewStructuresBuildingsAnswers] = Json.format[NewStructuresBuildingsAnswers]
 
   def removeIncompleteStructure(sitesList: List[NewStructureBuilding]): List[NewStructureBuilding] = sitesList.filter(_.isComplete)
