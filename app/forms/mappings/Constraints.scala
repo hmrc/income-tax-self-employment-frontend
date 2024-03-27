@@ -49,7 +49,7 @@ trait Constraints {
     check((a: A) => a >= minimum && a <= maximum, Invalid(errorKey, minimum, maximum))
 
   def regexp(regexp: String, errorKey: String): Constraint[String] =
-    check((a: String) => a.trim.matches(regexp), Invalid(errorKey, regexp))
+    check((a: String) => a.matches(regexp), Invalid(errorKey, regexp))
 
   def regexpBigDecimal(regex: String, errorKey: String): Constraint[BigDecimal] =
     check((a: BigDecimal) => a.toString.stripSuffix(".00").matches(regex), Invalid(errorKey, regex))

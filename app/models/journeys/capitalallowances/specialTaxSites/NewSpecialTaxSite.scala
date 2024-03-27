@@ -16,7 +16,9 @@
 
 package models.journeys.capitalallowances.specialTaxSites
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json}
+import utils.MoneyUtils.formatMoney
 
 import java.time.LocalDate
 
@@ -48,4 +50,8 @@ object NewSpecialTaxSite {
   implicit val formats: Format[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
 
   def newSite: NewSpecialTaxSite = NewSpecialTaxSite()
+
+  def returnTotalIfMultipleSites(sites: List[NewSpecialTaxSite]): Option[String] =
+    if (sites.length > 1) formatMoney(sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum).some
+    else None
 }

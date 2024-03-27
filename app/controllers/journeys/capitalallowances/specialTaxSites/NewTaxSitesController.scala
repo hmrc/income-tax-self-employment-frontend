@@ -16,21 +16,21 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.redirectJourneyRecovery
+import controllers.{journeys, redirectJourneyRecovery}
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common._
-import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.returnTotalIfMultipleSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
-import pages.capitalallowances.specialTaxSites.{NewSpecialTaxSitesList, NewTaxSitesPage}
+import pages.capitalallowances.specialTaxSites._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepositoryBase
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatMoney
 import viewmodels.journeys.capitalallowances.specialTaxSites.NewTaxSitesViewModel.getNewSitesSummaryRows
 import views.html.journeys.capitalallowances.specialTaxSites.NewTaxSitesView
 
@@ -44,6 +44,7 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        service: SelfEmploymentService,
+                                       sessionRepository: SessionRepositoryBase,
                                        formProvider: BooleanFormProvider,
                                        view: NewTaxSitesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -60,7 +61,7 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
           val cleanSiteList = removeIncompleteSites(sites)
           service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewSpecialTaxSitesList).map { _ =>
             val summaryList = getNewSitesSummaryRows(cleanSiteList, taxYear, businessId)
-            val totalAmount = getTotalIfMultiple(cleanSiteList)
+            val totalAmount = returnTotalIfMultipleSites(cleanSiteList)
             Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList, totalAmount))
           }
       }
@@ -74,7 +75,7 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
         formProvider(page, request.userType)
           .bindFromRequest()
           .fold(
-            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList, getTotalIfMultiple(sites))),
+            formErrors => BadRequest(view(formErrors, request.userType, taxYear, businessId, summaryList, returnTotalIfMultipleSites(sites))),
             answer =>
               Redirect(
                 if (answer) routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, sites.length, NormalMode)
@@ -84,8 +85,13 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
     }
   }
 
-  private def getTotalIfMultiple(sites: List[NewSpecialTaxSite]): Option[String] =
-    if (sites.length > 1) formatMoney(sites.map(_.newSiteClaimingAmount.getOrElse(BigDecimal(0))).sum).some
-    else None
+  def returnToOverview(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      for {
+        updatedAnswers <- Future.fromTry(
+          SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, CapitalAllowancesSpecialTaxSites.answerPages, Some(businessId)))
+        _ <- sessionRepository.set(updatedAnswers)
+      } yield Redirect(journeys.routes.TaskListController.onPageLoad(taxYear).url)
+  }
 
 }
