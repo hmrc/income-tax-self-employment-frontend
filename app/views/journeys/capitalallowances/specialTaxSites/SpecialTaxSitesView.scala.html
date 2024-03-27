@@ -15,67 +15,52 @@
  *@
 
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
+@import views.html.components._
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
-@import viewmodels.LegendSize.Medium
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        twoRadios: TwoRadios,
+        errorSummarySection: ErrorSummarySection,
+        submitButton: SubmitButton,
+        link: Link,
+        foldableDetails: FoldableDetails,
+        heading: HeadingMsgAware)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages("specialTaxSites.title"))) {
+@layout(pageTitle = title(form, messages("specialTaxSites.title"))) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+    @errorSummarySection(form)
+
+    @heading("specialTaxSites.title")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>@messages("specialTaxSites.p1")</p>
+        <p>@messages(s"specialTaxSites.p2.$userType")</p>
+        <p>@messages("specialTaxSites.p3")</p>
+
+        @foldableDetails(messages("specialTaxSites.details.heading"), marginBottomThree = false) {
+            <p>@messages(s"specialTaxSites.details.p1.$userType")</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>@messages("specialTaxSites.details.l1")</li>
+                <li>@messages("specialTaxSites.details.l2")</li>
+                <li>@messages("specialTaxSites.details.l3")</li>
+                <li>@messages("specialTaxSites.details.l4")</li>
+                <li>
+                    @messages("specialTaxSites.details.l5.1")
+                    @link("specialTaxSites.details.l5.href", "specialTaxSites.details.l5.link")
+                    @messages("specialTaxSites.details.l5.2")
+                </li>
+            </ul>
         }
+    </div>
 
-        <h1 class="govuk-heading-l">@messages("specialTaxSites.title")</h1>
+    @formHelper(action = routes.SpecialTaxSitesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        <div class="govuk-body govuk-!-margin-top-6">
-            <p>@messages("specialTaxSites.p1")</p>
-            <p>@messages(s"specialTaxSites.p2.$userType")</p>
-            <p>@messages("specialTaxSites.p3")</p>
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                    @{messages("specialTaxSites.details.heading")}
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <p>@{messages(s"specialTaxSites.details.p1.$userType")}</p>
-                    <ul class="govuk-body govuk-list--bullet">
-                        <li>@{messages("specialTaxSites.details.l1")}</li>
-                        <li>@{messages("specialTaxSites.details.l2")}</li>
-                        <li>@{messages("specialTaxSites.details.l3")}</li>
-                        <li>@{messages("specialTaxSites.details.l4")}</li>
-                        <li>
-                            @{messages("specialTaxSites.details.l5.1")}
-                            <a class="govuk-link" target="_blank" href=@messages("specialTaxSites.l5.href")>
-                                @messages("specialTaxSites.details.l5.link")
-                            </a>
-                            @{messages("specialTaxSites.details.l5.2")}
-                        </li>
-                    </ul>
-                </div>
-            </details>
-        </div>
+        @twoRadios(form, "specialTaxSites", userType, taxYear)
 
-        @formHelper(action = routes.SpecialTaxSitesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
-            @govukRadios(
-                RadiosViewModel.yesNo(
-                    field = form("value"),
-                    legend = LegendViewModel(messages(s"specialTaxSites.subHeading.$userType"))
-                    .asPageHeading(size = Medium)
-                )
-            )
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+        @submitButton()
     }
+}
