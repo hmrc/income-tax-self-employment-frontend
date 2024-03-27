@@ -37,7 +37,7 @@ object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[Struc
       case Some(structure) =>
         Redirect(
           if (hasAllFurtherAnswers(structure))
-            routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId) // TODO change to structure summary
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index)
           else routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, index, NormalMode)
         )
     }

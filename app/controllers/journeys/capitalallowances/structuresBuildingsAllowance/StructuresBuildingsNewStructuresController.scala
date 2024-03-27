@@ -74,7 +74,7 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
             answer =>
               Redirect(
                 if (answer) routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, structures.length, NormalMode)
-                else routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
+                else routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
               )
           )
     }
