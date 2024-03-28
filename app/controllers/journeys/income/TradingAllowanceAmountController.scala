@@ -17,6 +17,7 @@
 package controllers.journeys.income
 
 import cats.data.EitherT
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
@@ -52,11 +53,9 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
     formProvider(
       page,
       userType,
+      prefix = page.toString.some,
       maxValue = turnoverAmount,
-      minValueError = s"tradingAllowanceAmount.error.lessThanZero.$userType",
-      maxValueError = s"tradingAllowanceAmount.error.overTurnover.$userType",
-      nonNumericError = s"tradingAllowanceAmount.error.nonNumeric.$userType"
-    )
+      maxValueError = s"tradingAllowanceAmount.error.overTurnover.$userType")
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

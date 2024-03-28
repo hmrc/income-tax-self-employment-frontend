@@ -58,7 +58,7 @@ class StructuresBuildingsPreviousClaimedAmountControllerSpec
 
   override val bindings: List[Binding[_]] = List(bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute)))
 
-  def createForm(userType: UserType): Form[BigDecimal] = new AmountSpentOnEvcpFormProvider()(userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = new AmountSpentOnEvcpFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

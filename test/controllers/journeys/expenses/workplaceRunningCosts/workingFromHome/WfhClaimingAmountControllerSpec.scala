@@ -18,9 +18,7 @@ package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
-import forms.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountPage
 import play.api.Application
@@ -42,8 +40,6 @@ class WfhClaimingAmountControllerSpec
   override val onwardRoute: Call = workingFromBusinessPremises.routes.LiveAtBusinessPremisesController.onPageLoad(taxYear, businessId, NormalMode)
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
-
-  def createForm(userType: UserType): Form[BigDecimal] = new WfhClaimingAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
