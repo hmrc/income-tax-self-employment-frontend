@@ -17,7 +17,11 @@
 package forms.capitalallowances.structuresBuildingsAllowance
 
 import forms.PostcodeRegex
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.{buildingName, buildingNumber, emptyBuildingDetailsError}
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.{
+  buildingName,
+  buildingNumber,
+  emptyBuildingDetailsError
+}
 import forms.mappings.Mappings
 import models.common.UserType
 import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
@@ -28,15 +32,15 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIf
 
 import javax.inject.Inject
 class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
-  private val postcode                = "postcode"
-  private val maxInputLength   = 90
-  private val maxBuildingNameError    = "structuresBuildingsLocation.error.buildingName.length"
-  private val maxBuildingNumberError  = "structuresBuildingsLocation.error.buildingNumber.length"
-  private val postcodeRequiredError   = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
-  private val postcodeInvalidError    = "error.postcode.invalid"
+  private val postcode               = "postcode"
+  private val maxInputLength         = 90
+  private val maxBuildingNameError   = "structuresBuildingsLocation.error.buildingName.length"
+  private val maxBuildingNumberError = "structuresBuildingsLocation.error.buildingNumber.length"
+  private val postcodeRequiredError  = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
+  private val postcodeInvalidError   = "error.postcode.invalid"
 
   private def bindIfOneOrBothAreFilled(dependentField: String): Condition = { s =>
-    val bothFull = s.get(buildingName).exists(_.nonEmpty) && s.get(buildingNumber).exists(_.nonEmpty)
+    val bothFull   = s.get(buildingName).exists(_.nonEmpty) && s.get(buildingNumber).exists(_.nonEmpty)
     val otherEmpty = s.get(dependentField).exists(_.isEmpty)
     otherEmpty || bothFull
   }
@@ -56,9 +60,9 @@ class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
 }
 
 object StructuresBuildingsLocationFormProvider {
-  val buildingName              = "buildingName"
-  val buildingNumber            = "buildingNumber"
-  val postcode       = "postcode"
+  val buildingName                                  = "buildingName"
+  val buildingNumber                                = "buildingNumber"
+  val postcode                                      = "postcode"
   val emptyBuildingDetailsError: UserType => String = (userType: UserType) => s"structuresBuildingsLocation.error.building.$userType"
 
   def filterErrors(form: Form[StructuresBuildingsLocation], userType: UserType): Form[StructuresBuildingsLocation] = {

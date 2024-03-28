@@ -79,11 +79,11 @@ class StructuresBuildingsAllowanceController @Inject() (override val messagesApi
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
-      List( StructuresBuildingsEligibleClaimPage,
+      List(
+        StructuresBuildingsEligibleClaimPage,
         NewStructuresBuildingsList,
         StructuresBuildingsPreviousClaimUsePage,
-        StructuresBuildingsPreviousClaimedAmountPage
-      )
+        StructuresBuildingsPreviousClaimedAmountPage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case true  => Future(request.userAnswers)

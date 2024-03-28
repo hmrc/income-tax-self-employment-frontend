@@ -254,7 +254,7 @@ class CapitalAllowancesNavigator @Inject() {
       _ =>
         taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode)
 
-    case StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage | StructuresBuildingsAllowancePage=>
+    case StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage | StructuresBuildingsAllowancePage =>
       _ => taxYear => businessId => structuresBuildingsAllowance.routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
 
     case _ =>

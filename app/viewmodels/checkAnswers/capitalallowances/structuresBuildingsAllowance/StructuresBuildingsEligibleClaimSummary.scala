@@ -21,7 +21,7 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance.route
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsEligibleClaimPage, StructuresBuildingsPreviousClaimUsePage}
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
