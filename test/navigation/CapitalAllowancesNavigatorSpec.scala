@@ -20,9 +20,7 @@ import base.SpecBase
 import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
 import models.journeys.capitalallowances.electricVehicleChargePoints._
-import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
@@ -99,7 +97,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is ZecAllowancePage" - {
       "answer is 'Yes'" - {
         "navigate to TotalCostOfCarController" in {
-          val data           = Json.obj("zecAllowance" -> ZecAllowance.Yes.toString)
+          val data           = Json.obj("zecAllowance" -> true)
           val expectedResult = zeroEmissionCars.routes.ZecTotalCostOfCarController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
@@ -107,7 +105,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to ZeroEmissionCarsCYAController" in {
-          val data           = Json.obj("zecAllowance" -> ZecAllowance.No.toString)
+          val data           = Json.obj("zecAllowance" -> false)
           val expectedResult = zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
           nextPage(ZecAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
@@ -131,7 +129,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is ZecOnlyForSelfEmploymentPage" - {
       "answer is 'Yes'" - {
         "navigate to ZecHowMuchDoYouWantToClaimPage" in {
-          val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
+          val data           = Json.obj("zecOnlyForSelfEmployment" -> true)
           val expectedResult = zeroEmissionCars.routes.ZecHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
@@ -139,7 +137,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to ZecUseOutsideSEPage" in {
-          val data           = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.No.toString)
+          val data           = Json.obj("zecOnlyForSelfEmployment" -> false)
           val expectedResult = zeroEmissionCars.routes.ZecUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(ZecOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult

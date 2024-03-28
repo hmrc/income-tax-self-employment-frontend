@@ -17,13 +17,10 @@
 package controllers.journeys.capitalallowances.annualInvestmentAllowance
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
 import forms.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
+import models.common.UserType
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowancePage
 import play.api.Application
 import play.api.data.Form
@@ -49,10 +46,6 @@ class AnnualInvestmentAllowanceControllerSpec
     val view = application.injector.instanceOf[AnnualInvestmentAllowanceView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  override def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

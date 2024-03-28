@@ -19,11 +19,12 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import pages.QuestionPage
+import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -31,9 +32,10 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: QuestionPage[Boolean]) extends ControllerSpec {
+abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: OneQuestionPage[Boolean]) extends ControllerSpec {
 
   val validAnswer: Boolean = true
+  val form                 = new BooleanFormProvider
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
@@ -42,7 +44,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
   def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
-  def createForm(userType: UserType): Form[Boolean]
+  def createForm(userType: UserType): Form[Boolean] = new BooleanFormProvider()(page, userType)
 
   def expectedView(expectedForm: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],

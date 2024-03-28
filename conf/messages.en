@@ -1352,8 +1352,8 @@ capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 
-zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
-zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
+zeroEmission.subheading.individual = Do you want to use your 100% first year allowance?
+zeroEmission.subheading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
 zeroEmission.error.required.agent = Select yes if your client wants to use all their 100% first year allowance
 zeroEmission.change.hidden = Change whether to use the 100% first year allowances

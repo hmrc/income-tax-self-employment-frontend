@@ -14,32 +14,28 @@
  * limitations under the License.
  *@
 
-@import models.journeys.capitalallowances.ZecAllowance
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
-@import views.html.components.Link
+@import views.html.components._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading,
-    link: Link
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        heading: Heading,
+        link: Link,
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("selectCapitalAllowances.zeroEmissionCar"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form)
 
     @heading(messages("selectCapitalAllowances.zeroEmissionCar"), None, extraClasses = "no-padding-top")
-
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>@messages(s"zecAllowance.p1.$userType")</p>
@@ -58,17 +54,7 @@
 
     @formHelper(action = routes.ZecAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"zeroEmission.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
-                items  = ZecAllowance.options
-            )
-        )
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @twoRadios(form, "zeroEmission", userType, taxYear, inline = false)
+        @submitButton()
     }
 }

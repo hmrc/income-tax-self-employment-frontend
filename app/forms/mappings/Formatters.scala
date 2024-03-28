@@ -16,11 +16,13 @@
 
 package forms.mappings
 
+import cats.implicits._
 import models.common.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import scala.math.BigDecimal.RoundingMode
+import scala.util.chaining._
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
@@ -36,10 +38,11 @@ trait Formatters {
           case None                      => Left(Seq(FormError(key, errorKey, args)))
           case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
           case Some(s) =>
-            Right {
-              val stripped = if (stripWhitespace) s.trim().replaceAll("\\s", "") else s
-              if (toUpperCase) stripped.toUpperCase else stripped
-            }
+            val normalized = s
+              .pipe(str => if (stripWhitespace) str.trim.replaceAll("\\s+", "") else str)
+              .pipe(str => if (toUpperCase) str.toUpperCase else str)
+
+            normalized.asRight
         }
 
       override def unbind(key: String, value: String): Map[String, String] =

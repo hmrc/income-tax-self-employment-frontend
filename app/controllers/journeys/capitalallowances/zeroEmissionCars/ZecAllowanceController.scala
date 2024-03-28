@@ -16,13 +16,11 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.zeroEmissionCars.ZecAllowanceFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
-import models.journeys.capitalallowances.ZecAllowance.{No, Yes}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -46,37 +44,36 @@ class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         service: SelfEmploymentService,
-                                        formProvider: ZecAllowanceFormProvider,
+                                        formProvider: BooleanFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: ZecAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = ZecAllowancePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(ZecAllowancePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType, altPrefix = Some("zeroEmission")))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType, altPrefix = Some("zeroEmission"))
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, ZecAllowancePage)
-            } yield Redirect(navigator.nextPage(ZecAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, page)
+            } yield Redirect(navigator.nextPage(page, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: ZecAllowance,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
@@ -89,13 +86,12 @@ class ZecAllowanceController @Inject() (override val messagesApi: MessagesApi,
         ZecUseOutsideSEPage,
         ZecUseOutsideSEPercentagePage
       )
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case No  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case Yes => Future(request.userAnswers)
-    }
-    val redirectMode = request.getValue(ZecAllowancePage, businessId) match {
-      case Some(No) if currentAnswer == Yes => NormalMode
-      case _                                => mode
+    val clearUserAnswerDataIfNeeded =
+      if (currentAnswer) Future(request.userAnswers)
+      else Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+    val redirectMode = request.getValue(page, businessId) match {
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
