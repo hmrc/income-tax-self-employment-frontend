@@ -16,15 +16,9 @@
 
 package controllers.journeys.capitalallowances.zeroEmissionCars
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.zeroEmissionCars.ZecAllowanceFormProvider
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.zeroEmissionCars.ZecAllowancePage
 import play.api.Application
 import play.api.data.Form
@@ -33,28 +27,20 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.zeroEmissionCars.ZecAllowanceView
 
-class ZecAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ZecAllowanceController", ZecAllowancePage) {
+class ZecAllowanceControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ZecAllowanceController", ZecAllowancePage) {
 
   override def onPageLoadCall: Call = routes.ZecAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.ZecAllowanceController.onSubmit(taxYear, businessId, NormalMode)
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer = ZecAllowance.Yes
-
-  override def createForm(user: UserType): Form[ZecAllowance] = new ZecAllowanceFormProvider()(user)
-
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ZecAllowanceView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

@@ -16,9 +16,8 @@
 
 package pages.capitalallowances.zeroEmissionCars
 
-import models.journeys.capitalallowances.ZecAllowance
 import pages.OneQuestionPage
 
-object ZecAllowancePage extends OneQuestionPage[ZecAllowance] {
+object ZecAllowancePage extends OneQuestionPage[Boolean] {
   override def toString: String = "zecAllowance"
 }

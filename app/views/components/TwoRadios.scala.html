@@ -19,11 +19,11 @@
 
 @this(govukRadios: GovukRadios)
 
-@(form: Form[_], prefix: String, userType: UserType, taxYear: TaxYear, afterSubheadingHtml: Html = Html(""), inline: Boolean = true, yesLabel: String = "site.yes", noLabel: String = "site.no")(implicit messages: Messages)
+@(form: Form[_], prefix: String, userType: UserType, taxYear: TaxYear, afterSubheadingHtml: Html = Html(""), legend: Option[Html] = None, inline: Boolean = true, yesLabel: String = "site.yes", noLabel: String = "site.no")(implicit messages: Messages)
 
 @defaultLegend() = {
     <div>
-        <label class="govuk-label govuk-label--m">@messages(s"$prefix.subheading.$userType")</label>
+        @{legend.getOrElse{<label class="govuk-label govuk-label--m">{messages(s"$prefix.subheading.$userType")}</label>}}
         @afterSubheadingHtml
     </div>
 }
