@@ -36,7 +36,7 @@ object StructuresBuildingsPreviousClaimUseSummary {
           answer,
           routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsPreviousClaimUse.subheading.$userType"),
-          "balancingAllowance.change.hidden", // TODO change to structures buildings change
+          "structuresBuildingsEligibleClaim.change.hidden",
           rightTextAlign = true
         )
       }

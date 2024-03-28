@@ -66,7 +66,7 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
               taxYear,
               request.userType,
               summaryList,
-              routes.StructuresBuildingsNewStructuresController.onSubmit(taxYear, businessId)
+              routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId)
             ))
       }
   }

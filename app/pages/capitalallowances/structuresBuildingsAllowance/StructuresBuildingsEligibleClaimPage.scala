@@ -29,7 +29,9 @@ object StructuresBuildingsEligibleClaimPage extends StructuresBuildingsBasePage[
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
-      // TODO use date - located - new claim amount
+      StructuresBuildingsQualifyingUseDatePage,
+      StructuresBuildingsLocationPage,
+      StructuresBuildingsNewClaimAmountPage
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =

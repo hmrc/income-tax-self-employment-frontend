@@ -36,7 +36,7 @@ object StructuresBuildingsPreviousClaimedAmountSummary {
           answer,
           routes.StructuresBuildingsPreviousClaimedAmountController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsClaimedAmount.cya.$userType"),
-          "amountSpentOnEvcp.change.hidden" // TODO change to structures buildings hidden
+          "structuresBuildingsEligibleClaim.change.hidden"
         )
       }
 }

@@ -36,7 +36,7 @@ object StructuresBuildingsAllowanceSummary {
           answer,
           routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"structuresBuildingsAllowance.cya.$userType"),
-          "balancingAllowance.change.hidden", // TODO change to structures buildings change
+          "structuresBuildingsEligibleClaim.change.hidden",
           rightTextAlign = true
         )
       }
