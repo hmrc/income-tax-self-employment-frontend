@@ -222,7 +222,7 @@ class CapitalAllowancesNavigator @Inject() {
               case Some(true) =>
                 structuresBuildingsAllowance.routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
               case Some(false) =>
-                structuresBuildingsAllowance.routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index = 0)
+                structuresBuildingsAllowance.routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
     case StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage =>

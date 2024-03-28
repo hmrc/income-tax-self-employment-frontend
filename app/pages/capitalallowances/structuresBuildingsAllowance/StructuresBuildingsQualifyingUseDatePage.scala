@@ -38,7 +38,7 @@ object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBaseP
       case Some(structure) =>
         Redirect(mode match {
           case CheckMode if hasAllFurtherAnswers(structure) =>
-            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index) // TODO change to structure summary page
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index)
           case NormalMode => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
           case _          => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
         })

@@ -33,8 +33,8 @@
     @formHelper(action = routes.StructuresBuildingsRemoveController.onSubmit(taxYear, businessId, index), Symbol("autoComplete") -> "off") {
 
         @yesNoWithHeadingAndHint(form,
-            messages("structuresBuildingsRemoveLocation.title"),
-            messages("structuresBuildingsRemoveLocation.hint"),
+            messages(s"structuresBuildingsRemoveLocation.title.$userType"),
+            messages(s"structuresBuildingsRemoveLocation.hint.$userType"),
             extraHintClasses = "govuk-hint govuk-!-margin-bottom-1"
         )
 

@@ -1701,6 +1701,8 @@ structuresBuildingsQualifyingUseDate.hint.individual = If later, enter the date 
 structuresBuildingsQualifyingUseDate.hint.agent = If later, enter the date your client incurred the qualifying spend.
 structuresBuildingsQualifyingUseDate.error = Enter the date when the building first came into qualifying use
 structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building first came into qualifying use must be in the past
+structuresBuildingsQualifyingUseDate.error.required.individual =  Enter the date when you entered into the contract for the building’s construction.
+structuresBuildingsQualifyingUseDate.error.required.agent =  Enter the date when your client entered into the contract for the building’s construction.
 
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
@@ -1711,15 +1713,18 @@ structuresBuildingsLocation.error.buildingName.length = The building name must b
 structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
 
 structuresBuildingsNewStructures.title = New structures or buildings
-structuresBuildingsNewStructures.subHeading = Do you need to add another structure or building?
+structuresBuildingsNewStructures.subHeading.individual = Do you need to add another structure or building?
+structuresBuildingsNewStructures.subHeading.agent = Does your client need to add another structure or building?
 structuresBuildingsNewStructures.hint = You must tell us about all new structures or buildings.
 structuresBuildingsNewStructures.error.required.individual = Select yes if you need to add another structure or building
 structuresBuildingsNewStructures.error.required.agent = Select yes if your client needs to add another structure or building
 structuresBuildingsNewStructures.emptyList.individual = If you don’t have a structure or building to add you can return to the overview page and come back later.
-structuresBuildingsNewStructures.emptyList.agent = If your client doesn’t have a structure or building to add you can return to the overview page and come back later.
+structuresBuildingsNewStructures.emptyList.agent = If your client doesn’t have a structure or building to add they can return to the overview page and come back later.
 
-structuresBuildingsRemoveLocation.title = Do you want to remove this structure or building?
-structuresBuildingsRemoveLocation.hint = The address and cost you entered will be deleted.
+structuresBuildingsRemoveLocation.title.individual = Do you want to remove this structure or building?
+structuresBuildingsRemoveLocation.title.agent = Does your client want to remove this structure or building?
+structuresBuildingsRemoveLocation.hint.individual = The address and cost you entered will be deleted.
+structuresBuildingsRemoveLocation.hint.agent = The address and cost your client entered will be deleted.
 structuresBuildingsRemove.error.required.individual = Select yes if you want to remove this structure or building
 structuresBuildingsRemove.error.required.agent = Select yes if your client wants to remove this structure or building
 
