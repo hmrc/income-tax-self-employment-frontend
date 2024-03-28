@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesAmountPage
 import play.api.Application
@@ -43,8 +41,6 @@ class BusinessPremisesAmountControllerSpec
 
   override val bindings: List[Binding[_]] =
     List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
-
-  def createForm(userType: UserType): Form[BigDecimal] = new BusinessPremisesAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

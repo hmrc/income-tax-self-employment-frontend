@@ -47,7 +47,7 @@ class StaffCostsDisallowableAmountControllerSpec
 
   override def baseAnswers = emptyUserAnswers.set(StaffCostsAmountPage, amount, Some(businessId)).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsDisallowableAmountFormProvider()(userType, amount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

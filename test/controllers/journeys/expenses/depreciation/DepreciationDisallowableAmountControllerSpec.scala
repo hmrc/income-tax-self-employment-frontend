@@ -17,9 +17,7 @@
 package controllers.journeys.expenses.depreciation
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.depreciation.DepreciationDisallowableAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import play.api.Application
@@ -43,8 +41,6 @@ class DepreciationDisallowableAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  def createForm(userType: UserType): Form[BigDecimal] = new DepreciationDisallowableAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

@@ -18,7 +18,6 @@ package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common._
 import navigation.{FakeIncomeNavigator, IncomeNavigator}
 import pages.income.OtherIncomeAmountPage
 import play.api.Application
@@ -36,14 +35,6 @@ class OtherIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSp
   override val onwardRoute: Call = routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
 
   override val bindings: List[Binding[_]] = List(bind[IncomeNavigator].toInstance(new FakeIncomeNavigator(onwardRoute)))
-
-  def createForm(userType: UserType): Form[BigDecimal] = form(
-    page,
-    userType,
-    minValueError = s"otherIncomeAmount.error.lessThanZero.$userType",
-    maxValueError = s"otherIncomeAmount.error.overMax.$userType",
-    nonNumericError = s"otherIncomeAmount.error.nonNumeric.$userType"
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

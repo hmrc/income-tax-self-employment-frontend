@@ -16,6 +16,7 @@
 
 package controllers.journeys.income
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
@@ -46,14 +47,7 @@ class NotTaxableAmountController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport {
 
   private val page = NotTaxableAmountPage
-  private val form = (userType: UserType) =>
-    formProvider(
-      page,
-      userType,
-      minValueError = s"notTaxableAmount.error.lessThanZero.$userType",
-      maxValueError = s"notTaxableAmount.error.overMax.$userType",
-      nonNumericError = s"notTaxableAmount.error.nonNumeric.$userType"
-    )
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

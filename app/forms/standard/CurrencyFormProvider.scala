@@ -27,17 +27,25 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CurrencyFormProvider @Inject() {
 
-  def apply(page: OneQuestionPage[_],
+  def apply(page: OneQuestionPage[BigDecimal],
             userType: UserType,
             minValue: BigDecimal = MoneyBounds.minimumValue,
             minValueError: String = LessThanZeroError,
             maxValue: BigDecimal = MoneyBounds.maximumValue,
             maxValueError: String = OverMaxError,
-            nonNumericError: String = NonNumericError): Form[BigDecimal] =
+            nonNumericError: String = NonNumericError,
+            prefix: Option[String] = None): Form[BigDecimal] = {
+
+    val requiredError: String  = userTypeAware(userType, prefix.fold(page.requiredErrorKey)(s => s"$s.error.required"))
+    val minError: String       = prefix.fold(minValueError)(s => s"$s.error.lessThanZero.$userType")
+    val maxError: String       = prefix.fold(maxValueError)(s => s"$s.error.overMax.$userType")
+    val nonNumberError: String = prefix.fold(nonNumericError)(s => s"$s.error.nonNumeric.$userType")
+
     Form(
-      "value" -> currency(userTypeAware(userType, page.requiredErrorKey), nonNumericError)
-        .verifying(greaterThan(minValue, minValueError))
-        .verifying(lessThan(maxValue, maxValueError))
+      "value" -> currency(requiredError, nonNumberError)
+        .verifying(greaterThan(minValue, minError))
+        .verifying(lessThan(maxValue, maxError))
     )
+  }
 
 }

@@ -16,11 +16,13 @@
 
 package controllers.journeys.expenses.otherExpenses
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.expenses.otherExpenses.OtherExpensesAmountFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.OtherExpenses
 import navigation.ExpensesNavigator
 import pages.expenses.otherExpenses.OtherExpensesAmountPage
@@ -42,22 +44,23 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
                                                identify: IdentifierAction,
                                                getAnswers: DataRetrievalAction,
                                                requireAnswers: DataRequiredAction,
-                                               formProvider: OtherExpensesAmountFormProvider,
+                                               formProvider: CurrencyFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: OtherExpensesAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = OtherExpensesAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) { implicit request =>
       request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId) match {
         case Left(redirect) => redirect
         case Right(tailoringAnswer) =>
-          val form = request.userAnswers
-            .get(OtherExpensesAmountPage, Some(businessId))
-            .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-          Ok(view(form, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))
+          val filledForm = fillForm(page, businessId, form(request.userType))
+          Ok(view(filledForm, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))
       }
     }
 
@@ -65,13 +68,13 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
       def handleSuccess(value: BigDecimal): Future[Result] =
         service
-          .persistAnswer(businessId, request.userAnswers, value, OtherExpensesAmountPage)
-          .map(answer => Redirect(navigator.nextPage(OtherExpensesAmountPage, mode, answer, taxYear, businessId)))
+          .persistAnswer(businessId, request.userAnswers, value, page)
+          .map(answer => Redirect(navigator.nextPage(page, mode, answer, taxYear, businessId)))
 
       request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId) match {
         case Left(redirect) => Future(redirect)
         case Right(tailoringAnswer) =>
-          formProvider(request.userType)
+          form(request.userType)
             .bindFromRequest()
             .fold(
               formErrors =>

@@ -18,9 +18,7 @@ package controllers.journeys.expenses.tailoring.simplifiedExpenses
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.tailoring
-import forms.expenses.tailoring.simplifiedExpenses.TotalExpensesFormProvider
 import models.NormalMode
-import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.TotalAmount
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -58,8 +56,6 @@ class TotalExpensesControllerSpec
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(pageAnswers)
-
-  def createForm(userType: UserType): Form[BigDecimal] = new TotalExpensesFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

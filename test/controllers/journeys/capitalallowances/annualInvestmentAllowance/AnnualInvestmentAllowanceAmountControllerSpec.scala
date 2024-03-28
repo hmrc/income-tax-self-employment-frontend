@@ -38,7 +38,7 @@ class AnnualInvestmentAllowanceAmountControllerSpec
 
   override val onwardRoute: Call = routes.AnnualInvestmentAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-  def createForm(userType: UserType): Form[BigDecimal] = new AnnualInvestmentAllowanceAmountFormProvider()(userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = new AnnualInvestmentAllowanceAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

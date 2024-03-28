@@ -16,6 +16,7 @@
 
 package controllers.journeys.income
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
@@ -46,14 +47,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
     with I18nSupport {
 
   private val page = NonTurnoverIncomeAmountPage
-  private val form = (userType: UserType) =>
-    formProvider(
-      page,
-      userType,
-      minValueError = s"nonTurnoverIncomeAmount.error.lessThanZero.$userType",
-      maxValueError = s"nonTurnoverIncomeAmount.error.overMax.$userType",
-      nonNumericError = s"nonTurnoverIncomeAmount.error.nonNumeric.$userType"
-    )
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

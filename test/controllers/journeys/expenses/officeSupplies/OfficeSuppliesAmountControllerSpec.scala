@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.officeSupplies
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
 import models.NormalMode
 import models.common._
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -39,8 +38,6 @@ class OfficeSuppliesAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  def createForm(userType: UserType): Form[BigDecimal] = new OfficeSuppliesAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

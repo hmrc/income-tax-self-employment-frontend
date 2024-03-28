@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.repairsandmaintenance
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.Application
@@ -43,8 +41,6 @@ class RepairsAndMaintenanceAmountControllerSpec
 
   override val bindings: List[Binding[_]] =
     List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
-
-  def createForm(userType: UserType): Form[BigDecimal] = new RepairsAndMaintenanceAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

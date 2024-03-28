@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.entertainment
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.entertainment.EntertainmentAmountFormProvider
 import models.NormalMode
 import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
@@ -44,7 +43,7 @@ class EntertainmentAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  def createForm(userType: UserType): Form[BigDecimal] = new EntertainmentAmountFormProvider()(userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType, prefix = Some("entertainment"))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

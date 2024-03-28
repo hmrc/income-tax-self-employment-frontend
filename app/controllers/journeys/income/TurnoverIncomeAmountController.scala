@@ -16,6 +16,7 @@
 
 package controllers.journeys.income
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
@@ -49,14 +50,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
     with Logging {
 
   private val page = TurnoverIncomeAmountPage
-  private val form = (userType: UserType) =>
-    formProvider(
-      page,
-      userType,
-      minValueError = s"turnoverIncomeAmount.error.lessThanZero.$userType",
-      maxValueError = s"turnoverIncomeAmount.error.overMax.$userType",
-      nonNumericError = s"turnoverIncomeAmount.error.nonNumeric.$userType"
-    )
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

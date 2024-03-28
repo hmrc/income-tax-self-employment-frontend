@@ -44,7 +44,7 @@ class TradingAllowanceAmountControllerSpec
   val maxTradingAllowance: BigDecimal = 1000.00
   val smallTradingAllowance           = 400.00
 
-  def createForm(userType: UserType): Form[BigDecimal] = form(
+  override def createForm(userType: UserType): Form[BigDecimal] = form(
     page,
     userType,
     maxValue = maxTradingAllowance,

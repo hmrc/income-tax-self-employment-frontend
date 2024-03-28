@@ -16,10 +16,12 @@
 
 package controllers.journeys.expenses.financialCharges
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.expenses.financialCharges.FinancialChargesAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.ExpensesNavigator
 import pages.expenses.financialCharges.FinancialChargesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,33 +41,33 @@ class FinancialChargesAmountController @Inject() (override val messagesApi: Mess
                                                   identify: IdentifierAction,
                                                   getAnswers: DataRetrievalAction,
                                                   requireAnswers: DataRequiredAction,
-                                                  formProvider: FinancialChargesAmountFormProvider,
+                                                  formProvider: CurrencyFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: FinancialChargesAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = FinancialChargesAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) { implicit request =>
-      val form = request.userAnswers
-        .get(FinancialChargesAmountPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
 
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           value =>
             service
-              .persistAnswer(businessId, request.userAnswers, value, FinancialChargesAmountPage)
-              .map(answer => Redirect(navigator.nextPage(FinancialChargesAmountPage, mode, answer, taxYear, businessId)))
+              .persistAnswer(businessId, request.userAnswers, value, page)
+              .map(answer => Redirect(navigator.nextPage(page, mode, answer, taxYear, businessId)))
         )
     }
 }

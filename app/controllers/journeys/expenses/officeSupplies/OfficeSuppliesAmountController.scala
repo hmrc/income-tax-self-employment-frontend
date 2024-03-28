@@ -16,11 +16,13 @@
 
 package controllers.journeys.expenses.officeSupplies
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.expenses.officeSupplies.OfficeSuppliesAmountFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,32 +41,32 @@ class OfficeSuppliesAmountController @Inject() (override val messagesApi: Messag
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: OfficeSuppliesAmountFormProvider,
+                                                formProvider: CurrencyFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: OfficeSuppliesAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = OfficeSuppliesAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(OfficeSuppliesAmountPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(preparedForm, mode, request.userType, returnAccountingType(businessId), taxYear, businessId))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, returnAccountingType(businessId), taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, mode, request.userType, returnAccountingType(businessId), taxYear, businessId))),
           value =>
             selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesAmountPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesAmountPage, mode, updatedAnswers, taxYear, businessId)))
+              .persistAnswer(businessId, request.userAnswers, value, page)
+              .map(updatedAnswers => Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

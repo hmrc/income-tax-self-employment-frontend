@@ -47,7 +47,7 @@ class WfbpClaimingAmountControllerSpec
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
-  def createForm(userType: UserType): Form[BigDecimal] = new WfbpClaimingAmountFormProvider()(userType, expensesAmount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new WfbpClaimingAmountFormProvider()(userType, expensesAmount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

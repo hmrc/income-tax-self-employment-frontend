@@ -17,9 +17,7 @@
 package controllers.journeys.expenses.financialCharges
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.financialCharges.FinancialChargesAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import models.database.UserAnswers
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.financialCharges.FinancialChargesAmountPage
@@ -41,8 +39,6 @@ class FinancialChargesAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  override def createForm(user: UserType): Form[BigDecimal] = new FinancialChargesAmountFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

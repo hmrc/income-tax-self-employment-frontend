@@ -16,11 +16,13 @@
 
 package controllers.journeys.expenses.staffCosts
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.standard.routes
-import forms.expenses.staffCosts.StaffCostsAmountFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -41,30 +43,29 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            formProvider: StaffCostsAmountFormProvider,
+                                            formProvider: CurrencyFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: StaffCostsAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
+  private val page = StaffCostsAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
         case None => Redirect(routes.JourneyRecoveryController.onPageLoad())
         case Some(disallowableStaffCosts) =>
-          val preparedForm = request.userAnswers.get(StaffCostsAmountPage, Some(businessId)) match {
-            case None        => formProvider(request.userType)
-            case Some(value) => formProvider(request.userType).fill(value)
-          }
-
-          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
+          val filledForm = fillForm(page, businessId, form(request.userType))
+          Ok(view(filledForm, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleForm(disallowableStaffCosts: Boolean): Future[Result] =
-        formProvider(request.userType)
+        form(request.userType)
           .bindFromRequest()
           .fold(
             formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
@@ -76,8 +77,8 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
         )
       def handleSuccess(value: BigDecimal): Future[Result] =
         selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, StaffCostsAmountPage)
-          .map(updated => Redirect(navigator.nextPage(StaffCostsAmountPage, mode, updated, taxYear, businessId)))
+          .persistAnswer(businessId, request.userAnswers, value, page)
+          .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
 
       request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
         case Some(disallowableStaffCosts) => handleForm(disallowableStaffCosts)
