@@ -21,6 +21,7 @@ import play.api.libs.json.{Format, Json}
 case class NewStructuresBuildingsAnswers(structuresBuildingsAllowance: Boolean,
                                          structuresBuildingsEligibleClaim: Option[Boolean],
                                          structuresBuildingsPreviousClaimUse: Option[Boolean],
+                                         structuresBuildingsClaimed: Option[Boolean],
                                          newStructuresBuildings: Option[List[NewStructureBuilding]])
 
 object NewStructuresBuildingsAnswers {
