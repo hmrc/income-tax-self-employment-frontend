@@ -21,7 +21,7 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance.route
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimUsePage
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
@@ -30,13 +30,13 @@ object StructuresBuildingsEligibleClaimSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(StructuresBuildingsPreviousClaimUsePage, businessId.some)
+      .get(StructuresBuildingsEligibleClaimPage, businessId.some)
       .map { answer =>
         buildRowBoolean(
           answer,
           routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsEligibleClaim.subheading.$userType"),
-          "balancingAllowance.change.hidden", // TODO change to structures buildings change
+          messages(s"structuresBuildingsEligibleClaim.subHeading.$userType"),
+          "structuresBuildingsEligibleClaim.change.hidden",
           rightTextAlign = true
         )
       }

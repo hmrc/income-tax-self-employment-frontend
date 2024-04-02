@@ -25,42 +25,46 @@ import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsL
 import forms.mappings.Mappings
 import models.common.UserType
 import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
-import play.api.data.Forms.{mapping, optional}
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.Forms.mapping
 import play.api.data.{Form, FormError}
+import uk.gov.voa.play.form.Condition
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIf
 
 import javax.inject.Inject
 class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
-  private val postcode                = "postcode"
-  private val maxBuildingNameLength   = 90
-  private val maxBuildingNameError    = "structuresBuildingsLocation.error.buildingName.length"
-  private val maxBuildingNumberLength = 90
-  private val maxBuildingNumberError  = "structuresBuildingsLocation.error.buildingNumber.length"
-  private val postcodeRequiredError   = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
-  private val postcodeInvalidError    = "error.postcode.invalid"
+  private val postcode               = "postcode"
+  private val maxInputLength         = 90
+  private val maxBuildingNameError   = "structuresBuildingsLocation.error.buildingName.length"
+  private val maxBuildingNumberError = "structuresBuildingsLocation.error.buildingNumber.length"
+  private val postcodeRequiredError  = (userType: UserType) => s"structuresBuildingsLocation.error.postcode.$userType"
+  private val postcodeInvalidError   = "error.postcode.invalid"
 
-  private def atLeastOneRequired(userType: UserType): Constraint[StructuresBuildingsLocation] = Constraint("constraints.atleastone") { location =>
-    if (location.buildingName.isEmpty && location.buildingNumber.isEmpty) {
-      Invalid(Seq(ValidationError(emptyBuildingDetailsError(userType))))
-    } else {
-      Valid
-    }
+  private def bindIfOneOrBothAreFilled(dependentField: String): Condition = { s =>
+    val bothFull   = s.get(buildingName).exists(_.nonEmpty) && s.get(buildingNumber).exists(_.nonEmpty)
+    val otherEmpty = s.get(dependentField).exists(_.isEmpty)
+    otherEmpty || bothFull
   }
 
   def apply(userType: UserType): Form[StructuresBuildingsLocation] = Form(
     mapping(
-      buildingName   -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNameLength, maxBuildingNameError))),
-      buildingNumber -> optional(text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxBuildingNumberLength, maxBuildingNumberError))),
+      buildingName -> mandatoryIf(
+        bindIfOneOrBothAreFilled(buildingNumber),
+        text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNameError))
+      ),
+      buildingNumber -> mandatoryIf(
+        bindIfOneOrBothAreFilled(buildingName),
+        text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))
+      ),
       postcode -> text(postcodeRequiredError(userType), toUpperCase = true, stripWhitespace = true).verifying(
         regexp(PostcodeRegex, postcodeInvalidError))
-    )(StructuresBuildingsLocation.apply)(StructuresBuildingsLocation.unapply).verifying(atLeastOneRequired(userType))
-  )
+    )(StructuresBuildingsLocation.apply)(StructuresBuildingsLocation.unapply))
 }
 
 object StructuresBuildingsLocationFormProvider {
-  val buildingName              = "buildingName"
-  val buildingNumber            = "buildingNumber"
-  val emptyBuildingDetailsError = (userType: UserType) => s"structuresBuildingsLocation.error.building.$userType"
+  val buildingName                                  = "buildingName"
+  val buildingNumber                                = "buildingNumber"
+  val postcode                                      = "postcode"
+  val emptyBuildingDetailsError: UserType => String = (userType: UserType) => s"structuresBuildingsLocation.error.building.$userType"
 
   def filterErrors(form: Form[StructuresBuildingsLocation], userType: UserType): Form[StructuresBuildingsLocation] = {
     val formError = FormError("", List(emptyBuildingDetailsError(userType)), List())

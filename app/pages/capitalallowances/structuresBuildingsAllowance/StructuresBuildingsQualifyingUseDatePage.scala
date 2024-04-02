@@ -17,19 +17,30 @@
 package pages.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import play.api.mvc.Call
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
+import models.{CheckMode, Mode, NormalMode}
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 
 import java.time.LocalDate
 
 object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBasePage[LocalDate] {
   override def toString: String = "structuresBuildingsQualifyingUseDate"
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+  def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
+    structure.qualifyingUse.isDefined & StructuresBuildingsLocationPage.hasAllFurtherAnswers(structure)
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, NormalMode)
+  def nextPageWithIndex(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+    getStructureFromIndex(userAnswers, businessId, index) match {
+      case None => redirectToRecoveryPage(s"Structure of index $index not found when redirecting from StructuresBuildingsQualifyingUseDatePage")
+      case Some(structure) =>
+        Redirect(mode match {
+          case CheckMode if hasAllFurtherAnswers(structure) =>
+            routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index)
+          case NormalMode => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
+          case _          => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
+        })
+    }
 }

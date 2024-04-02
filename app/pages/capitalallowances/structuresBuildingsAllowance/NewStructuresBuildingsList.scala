@@ -16,14 +16,8 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.common.{BusinessId, TaxYear}
-import play.api.mvc.Result
-import play.api.mvc.Results.Redirect
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
 
-object StructuresBuildingsNewClaimAmountPage extends StructuresBuildingsBasePage[BigDecimal] {
-  override def toString: String = "structuresBuildingsNewClaimAmount"
-
-  def nextPage(businessId: BusinessId, taxYear: TaxYear): Result = Redirect(
-    routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
+object NewStructuresBuildingsList extends StructuresBuildingsBasePage[List[NewStructureBuilding]] {
+  override def toString: String = "newStructuresBuildings"
 }

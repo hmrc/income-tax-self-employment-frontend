@@ -29,7 +29,9 @@ object StructuresBuildingsEligibleClaimPage extends StructuresBuildingsBasePage[
 
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
-      // TODO use date - located - new claim amount
+      StructuresBuildingsQualifyingUseDatePage,
+      StructuresBuildingsLocationPage,
+      StructuresBuildingsNewClaimAmountPage
     )
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
@@ -37,9 +39,9 @@ object StructuresBuildingsEligibleClaimPage extends StructuresBuildingsBasePage[
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsEligibleClaimController
-        .onPageLoad(taxYear, businessId, NormalMode), // TODO change to use date controller
-      onFalse = routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
+      onTrue = routes.StructuresBuildingsQualifyingUseDateController
+        .onPageLoad(taxYear, businessId, 0, NormalMode),
+      onFalse = routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {

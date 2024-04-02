@@ -16,19 +16,19 @@
 
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear}
+import forms.standard.LocalDateFormProvider
+import models.common.{BusinessId, TaxYear, UserType}
+import models.{CheckMode, Mode, NormalMode}
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateView
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,34 +37,39 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
                                                                 identify: IdentifierAction,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
-                                                                service: SelfEmploymentService,
-                                                                formProvider: StructuresBuildingsQualifyingUseDateFormProvider,
+                                                                service: StructuresBuildingsService,
+                                                                formProvider: LocalDateFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
                                                                 view: StructuresBuildingsQualifyingUseDateView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = request.userAnswers
-        .get(StructuresBuildingsQualifyingUseDatePage, businessId.some)
-        .fold(formProvider())(formProvider().fill)
+  private val page               = StructuresBuildingsQualifyingUseDatePage
+  private val latestDateAndError = Some((LocalDate.now, "structuresBuildingsQualifyingUseDate.error.inFuture"))
+  private val form = (userType: UserType) => formProvider(page, userType, userSpecificRequiredError = true, latestDateAndError = latestDateAndError)
 
-      Ok(view(form, mode, request.userType, taxYear, businessId))
-  }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      formProvider()
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) async { implicit request =>
+      form(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.persistAnswer(businessId, request.userAnswers, answer, StructuresBuildingsQualifyingUseDatePage).map {
-              StructuresBuildingsQualifyingUseDatePage.redirectNext(mode, _, businessId, taxYear)
+          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
+          answer => {
+            val previousSameAsCurrentAnswer =
+              page.getStructureFromIndex(request.userAnswers, businessId, index).flatMap(_.qualifyingUse).contains(answer)
+            val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
+            service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
+              page.nextPageWithIndex(updatedMode, userAnswers, businessId, taxYear, index)
             }
+          }
         )
-  }
+    }
 
 }

@@ -28,7 +28,7 @@
         govukButton: GovukButton,
         heading: Heading)
 
-@(form: Form[StructuresBuildingsLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[StructuresBuildingsLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
 @filteredErrorSummary = @{
     form.copy(errors = form.errors.filterNot(_.equals(FormError("buildingNumber", s"structuresBuildingsLocation.error.building.$userType"))))
@@ -42,7 +42,7 @@
 
     @heading(messages("structuresBuildingsLocation.title"), extraClasses = "govuk-!-margin-bottom-3")
 
-    @formHelper(action = routes.StructuresBuildingsLocationController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.StructuresBuildingsLocationController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(

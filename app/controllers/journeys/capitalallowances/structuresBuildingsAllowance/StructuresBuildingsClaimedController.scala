@@ -24,7 +24,11 @@ import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedPage
+import pages.capitalallowances.structuresBuildingsAllowance.{
+  StructuresBuildingsClaimedPage,
+  StructuresBuildingsPreviousClaimUsePage,
+  StructuresBuildingsPreviousClaimedAmountPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
@@ -80,6 +84,8 @@ class StructuresBuildingsClaimedController @Inject() (override val messagesApi: 
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] =
       List(
+        StructuresBuildingsPreviousClaimUsePage,
+        StructuresBuildingsPreviousClaimedAmountPage
       )
     val clearUserAnswerDataIfNeeded = currentAnswer match {
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))

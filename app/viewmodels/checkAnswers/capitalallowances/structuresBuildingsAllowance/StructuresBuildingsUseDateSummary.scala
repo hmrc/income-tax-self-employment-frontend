@@ -16,28 +16,23 @@
 
 package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsClaimedPage
+import models.common.{BusinessId, TaxYear}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.buildRowBoolean
+import viewmodels.checkAnswers.buildRowLocalDate
 
-object StructuresBuildingsClaimedSummary {
+import java.time.LocalDate
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(StructuresBuildingsClaimedPage, businessId.some)
-      .map { answer =>
-        buildRowBoolean(
-          answer,
-          routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsClaimed.subHeading.$userType"),
-          "structuresBuildingsClaimed.change.hidden",
-          rightTextAlign = true
-        )
-      }
+object StructuresBuildingsUseDateSummary {
+
+  def row(answer: LocalDate, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowLocalDate(
+      answer,
+      routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages("structuresBuildingsQualifyingUseDate.title"),
+      "constructionStartDate.change.hidden", // TODO change
+      rightTextAlign = true
+    )
 }

@@ -18,25 +18,24 @@ package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountPage
+import pages.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsList
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
-object StructuresBuildingsPreviousClaimedAmountSummary {
+object StructuresBuildingsClaimedAmountSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(StructuresBuildingsPreviousClaimedAmountPage, businessId.some)
-      .map { answer =>
+      .get(NewStructuresBuildingsList, businessId.some)
+      .map { sites =>
         buildRowBigDecimal(
-          answer,
-          routes.StructuresBuildingsPreviousClaimedAmountController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsClaimedAmount.cya.$userType"),
-          "structuresBuildingsEligibleClaim.change.hidden"
+          sites.map(_.newStructureBuildingClaimingAmount.getOrElse(BigDecimal(0))).sum,
+          routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId),
+          messages("newSpecialTaxSites.cya"),
+          "newSpecialTaxSites.change.hidden"
         )
       }
 }

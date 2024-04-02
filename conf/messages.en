@@ -1624,6 +1624,7 @@ structuresBuildingsClaimed.subHeading.individual = Do you have a continuing clai
 structuresBuildingsClaimed.subHeading.agent = Does your client have a continuing claim for structures and buildings allowance?
 structuresBuildingsClaimed.error.required.individual = Select yes if you have a continuing claim for structures and buildings allowance
 structuresBuildingsClaimed.error.required.agent = Select yes if your client has a continuing claim for structures and buildings allowance
+structuresBuildingsClaimed.change.hidden = Change if you have a continuing claim for structures and buildings allowance
 
 structuresBuildingsPreviousClaimUse.title.individual = Can you still claim?
 structuresBuildingsPreviousClaimUse.title.agent = Can your client still claim?
@@ -1648,6 +1649,7 @@ structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolish
 structuresBuildingsPreviousClaimUse.hint.agent = If your client has sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsPreviousClaimUse.error.required.individual = Select yes if you want to use the structures and buildings allowance for an existing building
 structuresBuildingsPreviousClaimUse.error.required.agent = Select yes if your client wants to use the structures and buildings allowance for an existing building
+structuresBuildingsPreviousClaimUse.change.hidden = Change if you want to use the structures and buildings allowance for an existing building
 
 structuresBuildingsClaimedAmount.title = Claim amount
 structuresBuildingsClaimedAmount.p1.individual = For a continuing claim you can claim 3% a year to the end of the allowance period.
@@ -1663,6 +1665,7 @@ structuresBuildingsClaimedAmount.subHeading.individual = Enter the total amount 
 structuresBuildingsClaimedAmount.subHeading.agent = Enter the total amount your client wants to claim for existing buildings or renovations
 structuresBuildingsClaimedAmount.cya.individual = How much do you want to claim for existing buildings or renovations?
 structuresBuildingsClaimedAmount.cya.agent = How much does your client want to claim for existing buildings or renovations?
+structuresBuildingsClaimedAmount.change.hidden = Change how much you want to claim for existing buildings or renovations
 
 structuresBuildingsEligibleClaim.title.individual = Are you eligible to claim?
 structuresBuildingsEligibleClaim.title.agent = Is your client eligible to claim?
@@ -1683,6 +1686,7 @@ structuresBuildingsEligibleClaim.hint.individual = If you’ve sold, demolished 
 structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
+structuresBuildingsEligibleClaim.change.hidden =
 
 structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
 structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
@@ -1697,6 +1701,7 @@ structuresBuildingsNewClaimAmount.error.required.individual = Enter the amount y
 structuresBuildingsNewClaimAmount.error.required.agent = Enter the amount your client wants to claim for the new building or renovation
 structuresBuildingsNewClaimAmount.cya.individual = Enter the amount you want to claim for new buildings or renovations
 structuresBuildingsNewClaimAmount.cya.agent = Enter the amount your client wants to claim for new buildings or renovations
+structuresBuildingsNewClaimAmount.change.hidden = Change the amount you want to claim for new buildings or renovations
 
 structuresBuildingsQualifyingUseDate.title = Qualifying use
 structuresBuildingsQualifyingUseDate.p1 = Qualifying use is when the building is in non-residential use for the business activity.
@@ -1705,6 +1710,8 @@ structuresBuildingsQualifyingUseDate.hint.individual = If later, enter the date 
 structuresBuildingsQualifyingUseDate.hint.agent = If later, enter the date your client incurred the qualifying spend.
 structuresBuildingsQualifyingUseDate.error = Enter the date when the building first came into qualifying use
 structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building first came into qualifying use must be in the past
+structuresBuildingsQualifyingUseDate.error.required.individual =  Enter the date when you entered into the contract for the building’s construction.
+structuresBuildingsQualifyingUseDate.error.required.agent =  Enter the date when your client entered into the contract for the building’s construction.
 
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
@@ -1713,6 +1720,22 @@ structuresBuildingsLocation.error.building.individual = Enter a building number 
 structuresBuildingsLocation.error.building.agent = Enter a building number or name for your client’s structure or building
 structuresBuildingsLocation.error.buildingName.length = The building name must be 90 characters or fewer
 structuresBuildingsLocation.error.buildingNumber.length = The building number must be 90 characters or fewer
+
+structuresBuildingsNewStructures.title = New structures or buildings
+structuresBuildingsNewStructures.subHeading.individual = Do you need to add another structure or building?
+structuresBuildingsNewStructures.subHeading.agent = Does your client need to add another structure or building?
+structuresBuildingsNewStructures.hint = You must tell us about all new structures or buildings.
+structuresBuildingsNewStructures.error.required.individual = Select yes if you need to add another structure or building
+structuresBuildingsNewStructures.error.required.agent = Select yes if your client needs to add another structure or building
+structuresBuildingsNewStructures.emptyList.individual = If you don’t have a structure or building to add you can return to the overview page and come back later.
+structuresBuildingsNewStructures.emptyList.agent = If your client doesn’t have a structure or building to add they can return to the overview page and come back later.
+
+structuresBuildingsRemoveLocation.title.individual = Do you want to remove this structure or building?
+structuresBuildingsRemoveLocation.title.agent = Does your client want to remove this structure or building?
+structuresBuildingsRemoveLocation.hint.individual = The address and cost you entered will be deleted.
+structuresBuildingsRemoveLocation.hint.agent = The address and cost your client entered will be deleted.
+structuresBuildingsRemove.error.required.individual = Select yes if you want to remove this structure or building
+structuresBuildingsRemove.error.required.agent = Select yes if your client wants to remove this structure or building
 
 ########## Capital Allowances - Writing down allowance ##########
 
