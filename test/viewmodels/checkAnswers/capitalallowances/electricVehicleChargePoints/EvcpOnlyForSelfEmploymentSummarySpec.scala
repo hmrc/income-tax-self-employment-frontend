@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.capitalallowances.electricVehicleChargePoints
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class EvcpOnlyForSelfEmploymentSummarySpec extends SummaryBaseSpec("EvcpOnlyForSelfEmploymentSummary") {
 
-  override val validData: JsObject = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString)
+  override val validData: JsObject = Json.obj("evcpOnlyForSelfEmployment" -> true)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"evcpOnlyForSelfEmployment.title.$userType"))
 

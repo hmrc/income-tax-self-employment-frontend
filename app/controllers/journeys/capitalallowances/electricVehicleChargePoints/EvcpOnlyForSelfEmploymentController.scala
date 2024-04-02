@@ -17,11 +17,10 @@
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmploymentFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment._
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
@@ -45,25 +44,24 @@ class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      service: SelfEmploymentService,
-                                                     formProvider: EvcpOnlyForSelfEmploymentFormProvider,
+                                                     formProvider: BooleanFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: EvcpOnlyForSelfEmploymentView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = EvcpOnlyForSelfEmploymentPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(EvcpOnlyForSelfEmploymentPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
@@ -75,14 +73,14 @@ class EvcpOnlyForSelfEmploymentController @Inject() (override val messagesApi: M
         )
   }
 
-  private def handleGatewayQuestion(currentAnswer: EvcpOnlyForSelfEmployment,
+  private def handleGatewayQuestion(currentAnswer: Boolean,
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
     val pagesToBeCleared: List[Settable[_]] = List(EvcpUseOutsideSEPage, EvcpUseOutsideSEPercentagePage)
     val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case Yes => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case No  => Future(request.userAnswers)
+      case true  => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
+      case false => Future(request.userAnswers)
     }
     val redirectMode = request.getValue(EvcpOnlyForSelfEmploymentPage, businessId) match {
       case Some(previousAnswer) if currentAnswer != previousAnswer => NormalMode

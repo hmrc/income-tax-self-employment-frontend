@@ -16,9 +16,8 @@
 
 package pages.capitalallowances.electricVehicleChargePoints
 
-import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
 import pages.OneQuestionPage
 
-object EvcpOnlyForSelfEmploymentPage extends OneQuestionPage[EvcpOnlyForSelfEmployment] {
+object EvcpOnlyForSelfEmploymentPage extends OneQuestionPage[Boolean] {
   override def toString: String = "evcpOnlyForSelfEmployment"
 }

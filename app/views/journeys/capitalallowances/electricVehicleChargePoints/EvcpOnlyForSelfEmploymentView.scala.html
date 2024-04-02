@@ -16,38 +16,28 @@
 
 @import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
-@import models.journeys.capitalallowances.electricVehicleChargePoints.EvcpOnlyForSelfEmployment
-@import viewmodels.LegendSize.Large
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton,
         heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"evcpOnlyForSelfEmployment.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @formHelper(action = routes.EvcpOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"evcpOnlyForSelfEmployment.title.$userType"))
-                .asPageHeading(size = Large)
-                .withCssClass("govuk-!-margin-bottom-6"),
-                items  = EvcpOnlyForSelfEmployment.options(userType)
-            )
-        )
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @twoRadios(form, "", userType, taxYear, inline = false,
+            legend = Some(Html({
+                    s"""<label class="govuk-label govuk-label--l">${messages(s"evcpOnlyForSelfEmployment.title.$userType")}</label>"""
+            })),
+            noLabel = messages(s"evcpOnlyForSelfEmployment.no.$userType"))
+        @submitButton()
     }
 }
