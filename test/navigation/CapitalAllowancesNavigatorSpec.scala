@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
@@ -225,7 +224,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
     "page is EvcpOnlyForSelfEmploymentPage" - {
       "answer is 'Yes'" - {
         "navigate to EvcpHowMuchDoYouWantToClaimPage" in {
-          val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.Yes.toString)
+          val data           = Json.obj("evcpOnlyForSelfEmployment" -> true)
           val expectedResult = electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
@@ -233,7 +232,7 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
       "answer is 'No'" - {
         "navigate to EvcpUseOutsideSEPage" in {
-          val data           = Json.obj("evcpOnlyForSelfEmployment" -> EvcpOnlyForSelfEmployment.No.toString)
+          val data           = Json.obj("evcpOnlyForSelfEmployment" -> false)
           val expectedResult = electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
 
           nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult

@@ -37,7 +37,7 @@ class ElectricVehicleChargePointsCYAControllerSpec extends CYAOnPageLoadControll
     "evcpAllowance"               -> true,
     "chargePointTaxRelief"        -> true,
     "amountSpentOnEvcp"           -> 400.00,
-    "evcpOnlyForSelfEmployment"   -> EvcpOnlyForSelfEmployment.No.toString,
+    "evcpOnlyForSelfEmployment"   -> false,
     "evcpUsedOutsideSE"           -> EvcpUseOutsideSE.Fifty.toString,
     "evcpUsedOutsideSEPercentage" -> 50,
     "evcpHowMuchDoYouWantToClaim" -> EvcpHowMuchDoYouWantToClaim.FullCost.toString,
