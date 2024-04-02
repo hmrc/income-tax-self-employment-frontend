@@ -50,7 +50,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
 
   def pageAnswers: UserAnswers = baseAnswers.set(page, amount, businessId.some).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal]
+  def createForm(userType: UserType): Form[BigDecimal] = form(page, userType, prefix = page.toString.some)
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 

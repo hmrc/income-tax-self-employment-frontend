@@ -16,132 +16,39 @@
 
 package controllers.journeys.abroad
 
-import base.SpecBase
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import forms.standard.BooleanFormProvider
-import models.NormalMode
-import models.common.UserType.Individual
-import models.database.UserAnswers
-import models.journeys.Journey.Abroad
-import navigation.{AbroadNavigator, FakeAbroadNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import models.common.{BusinessId, TaxYear, UserType}
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
+import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Request}
 import views.html.journeys.abroad.SelfEmploymentAbroadView
 
-import scala.concurrent.Future
+class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSpec("SelfEmploymentAbroadController", SelfEmploymentAbroadPage) {
 
-class SelfEmploymentAbroadControllerSpec extends SpecBase with MockitoSugar {
+  override def onPageLoadCall: Call = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode)
 
-  val user                = Individual
-  val form: Form[Boolean] = new BooleanFormProvider()(SelfEmploymentAbroadPage, user)
+  override def onwardRoute: Call = models.common.onwardRoute
 
-  lazy val selfEmploymentAbroadRoute: String = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val taskListRoute: String             = controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url
-  lazy val taskListCall: Call                = Call("GET", taskListRoute)
-  lazy val journeyRecoveryRoute: String      = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-  lazy val journeyRecoveryCall: Call         = Call("GET", journeyRecoveryRoute)
+  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(page, user)
 
-  lazy val sectionCompletedStateRoute: String =
-    controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Abroad.toString, NormalMode).url
-
-  lazy val sectionCompletedStateCall: Call = Call("GET", journeyRecoveryRoute)
-
-  "SelfEmploymentAbroad Controller" - {
-
-    "onPageLoad" - {
-
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, selfEmploymentAbroadRoute)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, taxYear, businessId, user, NormalMode)(request, messages(application)).toString
-        }
-      }
-
-      "must populate the view correctly for a GET when the question has previously been answered" in {
-
-        val userAnswers = UserAnswers(userAnswersId).set(SelfEmploymentAbroadPage, true, Some(businessId)).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, selfEmploymentAbroadRoute)
-
-          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), taxYear, businessId, user, NormalMode)(request, messages(application)).toString
-        }
-      }
-
-    }
-
-    "onSubmit" - {
-
-      "must redirect to the next page when valid data is submitted" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[AbroadNavigator].toInstance(new FakeAbroadNavigator(sectionCompletedStateCall)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, selfEmploymentAbroadRoute)
-              .withFormUrlEncodedBody(("value", "true"))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual sectionCompletedStateCall.url
-        }
-      }
-
-      "must return a Bad Request and errors when invalid data is submitted" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, selfEmploymentAbroadRoute)
-              .withFormUrlEncodedBody(("value", "OhDear"))
-
-          val boundForm = form.bind(Map("value" -> "OhDear"))
-
-          val view = application.injector.instanceOf[SelfEmploymentAbroadView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, taxYear, businessId, user, NormalMode)(request, messages(application)).toString
-        }
-      }
-
-    }
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[SelfEmploymentAbroadView]
+    view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
   }
+
+  mockService.submitBooleanAnswerAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[DataRequest[_]], *, *[TaxYear], *[Mode]) returns Redirect(
+    onwardRoute.url).asFuture
 
 }

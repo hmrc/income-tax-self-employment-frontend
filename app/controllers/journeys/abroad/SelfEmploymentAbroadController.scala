@@ -21,7 +21,6 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.AbroadNavigator
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,18 +29,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.abroad.SelfEmploymentAbroadView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 identify: IdentifierAction,
-                                                navigator: AbroadNavigator,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: BooleanFormProvider,
                                                 service: SelfEmploymentService,
-                                                view: SelfEmploymentAbroadView)(implicit ec: ExecutionContext)
+                                                view: SelfEmploymentAbroadView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -59,10 +57,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, SelfEmploymentAbroadPage)
-              .map(updated => Redirect(navigator.nextPage(SelfEmploymentAbroadPage, mode, updated, taxYear, businessId)))
+          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

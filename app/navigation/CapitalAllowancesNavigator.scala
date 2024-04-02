@@ -21,7 +21,6 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.capitalallowances.electricVehicleChargePoints._
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.balancingAllowance._
@@ -158,9 +157,9 @@ class CapitalAllowancesNavigator @Inject() {
         taxYear =>
           businessId =>
             userAnswers.get(EvcpOnlyForSelfEmploymentPage, Some(businessId)) match {
-              case Some(EvcpOnlyForSelfEmployment.Yes) =>
+              case Some(true) =>
                 electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(EvcpOnlyForSelfEmployment.No) =>
+              case Some(false) =>
                 electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }

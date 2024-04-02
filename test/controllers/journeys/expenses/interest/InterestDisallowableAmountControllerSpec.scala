@@ -47,7 +47,7 @@ class InterestDisallowableAmountControllerSpec
 
   override def baseAnswers = emptyUserAnswers.set(InterestAmountPage, amount, Some(businessId)).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal] = new InterestDisallowableAmountFormProvider()(userType, amount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new InterestDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

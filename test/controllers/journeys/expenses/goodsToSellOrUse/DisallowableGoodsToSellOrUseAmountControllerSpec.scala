@@ -47,7 +47,7 @@ class DisallowableGoodsToSellOrUseAmountControllerSpec
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
-  def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, amount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new DisallowableGoodsToSellOrUseAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

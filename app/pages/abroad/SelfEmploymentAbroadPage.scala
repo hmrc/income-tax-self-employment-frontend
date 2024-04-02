@@ -16,8 +16,19 @@
 
 package pages.abroad
 
+import controllers.journeys.abroad.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object SelfEmploymentAbroadPage extends OneQuestionPage[Boolean] {
   override def toString: String = "selfEmploymentAbroad"
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }

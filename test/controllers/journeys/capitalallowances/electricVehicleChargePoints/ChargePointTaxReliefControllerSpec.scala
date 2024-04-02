@@ -36,8 +36,6 @@ class ChargePointTaxReliefControllerSpec extends BooleanGetAndPostQuestionBaseSp
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  override val validAnswer = true
-
   override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(page, user, Some("zeroEmission"))
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit

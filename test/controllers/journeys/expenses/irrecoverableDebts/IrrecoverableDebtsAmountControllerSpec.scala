@@ -17,9 +17,7 @@
 package controllers.journeys.expenses.irrecoverableDebts
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.irrecoverableDebts.IrrecoverableDebtsAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsAmountPage
 import play.api.Application
@@ -40,8 +38,6 @@ class IrrecoverableDebtsAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  override def createForm(user: UserType): Form[BigDecimal] = new IrrecoverableDebtsAmountFormProvider()(user)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
