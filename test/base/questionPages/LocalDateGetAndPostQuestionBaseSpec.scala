@@ -19,7 +19,7 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import forms.standard.BooleanFormProvider
+import forms.standard.LocalDateFormProvider
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -32,45 +32,51 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: OneQuestionPage[Boolean]) extends ControllerSpec {
+import java.time.LocalDate
 
-  val validAnswer: Boolean    = true
-  val form                    = new BooleanFormProvider
-  val checkForExistingAnswers = true
+abstract case class LocalDateGetAndPostQuestionBaseSpec(controller: String, page: OneQuestionPage[LocalDate]) extends ControllerSpec {
 
-  def onPageLoadCall: Call
-  def onSubmitCall: Call
-  def onwardRoute: Call = models.common.onwardRoute
+  def validDate: LocalDate = LocalDate.now()
+  val form                 = new LocalDateFormProvider
 
+  /** Implementers should avoid eager overrides of below.
+    */
+  def onPageLoadRoute: String
+  def onSubmitRoute: String
+
+  def onwardRoute: Call
+
+  /** Implementers can provide prerequisite answers the controller requires.
+    */
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
-  def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
 
-  def createForm(userType: UserType): Form[Boolean] = new BooleanFormProvider()(page, userType)
+  def pageAnswers: UserAnswers = baseAnswers.set(page, validDate, businessId.some).success.value
 
-  def expectedView(expectedForm: Form[Boolean], scenario: TestScenario)(implicit
-      request: Request[_],
-      messages: Messages,
-      application: Application): String
+  def createForm(userType: UserType): Form[LocalDate] = form(page, userType)
+
+  def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
-  private lazy val getRequest  = FakeRequest(GET, onPageLoadCall.url)
-  private lazy val postRequest = FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))
+  private def getRequest = FakeRequest(GET, onPageLoadRoute)
+  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(
+    (s"${page.toString}.day", validDate.getDayOfMonth.toString),
+    (s"${page.toString}.month", validDate.getMonthValue.toString),
+    (s"${page.toString}.year", validDate.getYear.toString)
+  )
 
   forAll(userTypeCases) { user =>
-    s"$controllerName for $user" - {
-      val form: Form[Boolean] = createForm(user)
+    s"$controller for $user" - {
+      val form = createForm(user)
 
       "on page load" - {
-        if (checkForExistingAnswers) {
-          "answers exist for the page" - {
-            "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
-              running(application) {
-                val result = route(application, getRequest).value
+        "answers exist for the page" - {
+          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
+            running(application) {
+              val result = route(application, getRequest).value
 
-                status(result) shouldBe OK
-                contentAsString(result) shouldBe expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
-              }
+              status(result) shouldBe OK
+              contentAsString(result) shouldBe expectedView(form.fill(validDate), this)(getRequest, messages(application), application)
             }
           }
         }
@@ -84,6 +90,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
             }
           }
         }
+        // Below test for checking `requireData` is invoked.
         "no answers exist in the session" - {
           "redirect to the journey recovery controller" in new TestScenario(user, answers = None) {
             running(application) {
@@ -103,16 +110,16 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
               val result = route(application, postRequest).value
 
               status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe onwardRoute.url
+              assert(redirectLocation(result).value.endsWith(onwardRoute.url))
             }
           }
         }
         "invalid data is submitted" - {
           "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
             running(application) {
-              val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+              val request   = postRequest.withFormUrlEncodedBody((page.toString, "invalid value"))
               val result    = route(application, request).value
-              val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
+              val boundForm = createForm(userType).bind(Map(page.toString -> "invalid value"))
 
               status(result) shouldBe BAD_REQUEST
               contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)

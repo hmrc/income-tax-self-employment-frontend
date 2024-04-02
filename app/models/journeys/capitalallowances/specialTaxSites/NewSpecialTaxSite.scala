@@ -17,7 +17,7 @@
 package models.journeys.capitalallowances.specialTaxSites
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 import utils.MoneyUtils.formatMoney
 
 import java.time.LocalDate
@@ -47,7 +47,7 @@ case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = 
 }
 
 object NewSpecialTaxSite {
-  implicit val formats: Format[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
+  implicit val formats: OFormat[NewSpecialTaxSite] = Json.format[NewSpecialTaxSite]
 
   def newSite: NewSpecialTaxSite = NewSpecialTaxSite()
 
