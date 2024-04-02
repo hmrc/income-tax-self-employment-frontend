@@ -55,19 +55,19 @@ class StructuresBuildingsRemoveController @Inject() (override val messagesApi: M
       val redirect = Redirect(routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
 
       def handleSuccess(answer: Boolean): Future[Result] = {
-        val sitesList    = request.getValue(NewStructuresBuildingsList, businessId)
-        val indexIsValid = sitesList.exists(index >= 0 && index < _.length)
-        (answer, indexIsValid, sitesList) match {
+        val structuresList = request.getValue(NewStructuresBuildingsList, businessId)
+        val indexIsValid   = structuresList.exists(index >= 0 && index < _.length)
+        (answer, indexIsValid, structuresList) match {
           case (true, true, Some(list)) => removeSiteAndRedirect(list)
           case (_, false, _) =>
-            logger.error(s"Index '$index' is invalid in StructuresList of length '${sitesList.getOrElse(List.empty).length}")
+            logger.error(s"Index '$index' is invalid in StructuresList of length '${structuresList.getOrElse(List.empty).length}")
             Future.successful(redirect)
           case _ => Future.successful(redirect)
         }
       }
 
-      def removeSiteAndRedirect(sitesList: List[NewStructureBuilding]): Future[Result] = {
-        val removeSiteFromList = sitesList.patch(index, Nil, 1)
+      def removeSiteAndRedirect(structuresList: List[NewStructureBuilding]): Future[Result] = {
+        val removeSiteFromList = structuresList.patch(index, Nil, 1)
         service.persistAnswer(businessId, request.userAnswers, removeSiteFromList, NewStructuresBuildingsList).map(_ => redirect)
       }
 

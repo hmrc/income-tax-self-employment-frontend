@@ -23,11 +23,11 @@ case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
                                          PreviousClaim: Option[Boolean],
                                          PreviousClaimUse: Option[Boolean],
                                          PreviousClaimAmount: Option[Int],
-                                         newSpecialTaxSites: List[NewStructureBuilding])
+                                         newStructuresBuildings: List[NewStructureBuilding])
 
 object NewStructuresBuildingsAnswers {
   implicit val formats: Format[NewStructuresBuildingsAnswers] = Json.format[NewStructuresBuildingsAnswers]
 
-  def removeIncompleteStructure(sitesList: List[NewStructureBuilding]): List[NewStructureBuilding] = sitesList.filter(_.isComplete)
+  def removeIncompleteStructure(structuresList: List[NewStructureBuilding]): List[NewStructureBuilding] = structuresList.filter(_.isComplete)
 
 }

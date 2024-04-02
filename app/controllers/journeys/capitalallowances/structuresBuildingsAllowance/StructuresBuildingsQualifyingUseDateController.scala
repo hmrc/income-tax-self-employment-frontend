@@ -47,7 +47,7 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
 
   private val page               = StructuresBuildingsQualifyingUseDatePage
   private val latestDateAndError = Some((LocalDate.now, "structuresBuildingsQualifyingUseDate.error.inFuture"))
-  private val form               = (userType: UserType) => formProvider(page, userType, latestDateAndError = latestDateAndError)
+  private val form = (userType: UserType) => formProvider(page, userType, userSpecificRequiredError = true, latestDateAndError = latestDateAndError)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>

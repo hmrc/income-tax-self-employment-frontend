@@ -42,7 +42,7 @@
     @govukSummaryList(summaryList)
     @formHelper(action = routes.StructuresBuildingsNewStructuresController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
         @yesNoWithHeadingAndHint(form,
-            messages("structuresBuildingsNewStructures.subHeading"),
+            messages(s"structuresBuildingsNewStructures.subHeading.$userType"),
             messages("structuresBuildingsNewStructures.hint"),
             headingSize = "m"
         )
