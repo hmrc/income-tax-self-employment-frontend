@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.professionalFees
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.professionalFees.ProfessionalFeesAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.professionalFees.ProfessionalFeesAmountPage
 import play.api.Application
@@ -44,8 +42,6 @@ class ProfessionalFeesAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  def createForm(userType: UserType): Form[BigDecimal] = new ProfessionalFeesAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

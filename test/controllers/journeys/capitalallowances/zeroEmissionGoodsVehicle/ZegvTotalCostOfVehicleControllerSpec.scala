@@ -37,7 +37,7 @@ class ZegvTotalCostOfVehicleControllerSpec
   def onSubmitRoute   = routes.ZegvTotalCostOfVehicleController.onSubmit(taxYear, businessId, NormalMode).url
   def onwardRoute     = routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
 
-  def createForm(userType: UserType): Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
+  override def createForm(userType: UserType): Form[BigDecimal] = new ZegvTotalCostOfVehicleFormProvider()()
 
   def expectedView(form: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[ZegvTotalCostOfVehicleView]

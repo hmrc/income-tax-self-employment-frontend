@@ -18,7 +18,8 @@ package controllers.journeys.expenses.staffCosts
 
 import cats.implicits.toBifunctorOps
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.journeys.fillForm
+import controllers.standard
 import forms.expenses.staffCosts.StaffCostsDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, TextAmount}
@@ -52,10 +53,7 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getStaffCostsAmount(businessId).map { allowableAmount =>
-        val preparedForm = request.userAnswers.get(StaffCostsDisallowableAmountPage, Some(businessId)) match {
-          case Some(existingAnswer) => formProvider(request.userType, allowableAmount).fill(existingAnswer)
-          case None                 => formProvider(request.userType, allowableAmount)
-        }
+        val preparedForm = fillForm(StaffCostsDisallowableAmountPage, businessId, formProvider(request.userType, allowableAmount))
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId, TextAmount(allowableAmount)))
       }.merge
   }
@@ -80,6 +78,6 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
   }
 
   private def getStaffCostsAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(StaffCostsAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
+    request.userAnswers.get(StaffCostsAmountPage, Some(businessId)).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
 
 }

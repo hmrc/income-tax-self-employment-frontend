@@ -47,7 +47,7 @@ class ConstructionIndustryDisallowableAmountControllerSpec
 
   override def baseAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
 
-  def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
+  override def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

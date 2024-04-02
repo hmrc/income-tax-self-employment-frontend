@@ -17,9 +17,10 @@
 package controllers.journeys.expenses.entertainment
 
 import controllers.actions._
-import forms.expenses.entertainment.EntertainmentAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.ExpensesNavigator
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,31 +39,31 @@ class EntertainmentAmountController @Inject() (override val messagesApi: Message
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: EntertainmentAmountFormProvider,
+                                               formProvider: CurrencyFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: EntertainmentAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = EntertainmentAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("entertainment"))
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(EntertainmentAmountPage, Some(businessId)) match {
-        case None        => formProvider(request.userType)
-        case Some(value) => formProvider(request.userType).fill(value)
-      }
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, EntertainmentAmountPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(EntertainmentAmountPage, mode, updatedAnswers, taxYear, businessId)))
+              .persistAnswer(businessId, request.userAnswers, value, page)
+              .map(updatedAnswers => Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId)))
         )
   }
 

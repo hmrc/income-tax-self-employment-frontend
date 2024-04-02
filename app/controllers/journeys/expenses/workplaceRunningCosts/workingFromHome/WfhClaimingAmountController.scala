@@ -16,10 +16,12 @@
 
 package controllers.journeys.expenses.workplaceRunningCosts.workingFromHome
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountFormProvider
+import controllers.journeys.fillForm
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import navigation.WorkplaceRunningCostsNavigator
 import pages.expenses.workplaceRunningCosts.workingFromHome.WfhClaimingAmountPage
@@ -39,29 +41,29 @@ class WfhClaimingAmountController @Inject() (override val messagesApi: MessagesA
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: WfhClaimingAmountFormProvider,
+                                             formProvider: CurrencyFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: WfhClaimingAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = WfhClaimingAmountPage
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(WfhClaimingAmountPage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
         service
-          .persistAnswer(businessId, userAnswers, value, WfhClaimingAmountPage)
-          .map(updated => Redirect(navigator.nextPage(WfhClaimingAmountPage, mode, updated, taxYear, businessId)))
+          .persistAnswer(businessId, userAnswers, value, page)
+          .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
 
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),

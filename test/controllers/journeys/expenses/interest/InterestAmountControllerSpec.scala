@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.interest
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.interest.InterestAmountFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.interest.InterestAmountPage
 import play.api.Application
@@ -44,8 +42,6 @@ class InterestAmountControllerSpec
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
-
-  def createForm(userType: UserType): Form[BigDecimal] = new InterestAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

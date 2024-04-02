@@ -17,9 +17,7 @@
 package controllers.journeys.expenses.staffCosts
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.expenses.staffCosts.StaffCostsAmountFormProvider
 import models.NormalMode
-import models.common.UserType
 import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
@@ -45,8 +43,6 @@ class StaffCostsAmountControllerSpec
     List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   override def baseAnswers = emptyUserAnswers.set(DisallowableStaffCostsPage, true, Some(businessId)).success.value
-
-  def createForm(userType: UserType): Form[BigDecimal] = new StaffCostsAmountFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

@@ -42,7 +42,7 @@ class AmountSpentOnEvcpControllerSpec
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
-  def createForm(userType: UserType): Form[BigDecimal] = new AmountSpentOnEvcpFormProvider()(userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = new AmountSpentOnEvcpFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
