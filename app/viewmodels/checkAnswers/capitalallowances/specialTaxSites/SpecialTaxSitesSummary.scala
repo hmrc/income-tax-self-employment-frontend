@@ -35,7 +35,7 @@ object SpecialTaxSitesSummary {
         buildRowBoolean(
           answer,
           routes.SpecialTaxSitesController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"specialTaxSites.subHeading.$userType"),
+          messages(s"specialTaxSites.subheading.$userType"),
           "specialTaxSites.change.hidden",
           rightTextAlign = true
         )

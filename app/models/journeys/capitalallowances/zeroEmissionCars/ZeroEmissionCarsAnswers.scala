@@ -16,13 +16,12 @@
 
 package models.journeys.capitalallowances.zeroEmissionCars
 
-import models.journeys.capitalallowances.ZecAllowance
 import play.api.libs.json.{Format, Json}
 
 case class ZeroEmissionCarsAnswers(zeroEmissionCars: Boolean,
-                                   zecAllowance: Option[ZecAllowance],
+                                   zecAllowance: Option[Boolean],
                                    zecTotalCostOfCar: Option[BigDecimal],
-                                   zecOnlyForSelfEmployment: Option[ZecOnlyForSelfEmployment],
+                                   zecOnlyForSelfEmployment: Option[Boolean],
                                    zecUsedOutsideSE: Option[ZecUseOutsideSE],
                                    zecUsedOutsideSEPercentage: Option[Int],
                                    zecHowMuchDoYouWantToClaim: Option[ZecHowMuchDoYouWantToClaim],

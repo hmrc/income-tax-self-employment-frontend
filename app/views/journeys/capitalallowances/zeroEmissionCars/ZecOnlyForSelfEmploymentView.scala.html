@@ -16,37 +16,27 @@
 
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
-@import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
-@import viewmodels.LegendSize.Large
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        heading: Heading)
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"zecOnlyForSelfEmployment.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @formHelper(action = routes.ZecOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages(s"zecOnlyForSelfEmployment.title.$userType"))
-                .asPageHeading(size = Large),
-                items  = ZecOnlyForSelfEmployment.options(userType)
-            )
+        @twoRadios(form, "", userType, taxYear,
+            legend = Some(Html(s"""<label class="govuk-label govuk-label--m">${messages(s"zecOnlyForSelfEmployment.title.$userType")}</label>""")),
+            inline = false,
+            noLabel = s"zecOnlyForSelfEmployment.no.$userType"
         )
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

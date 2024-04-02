@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
-import models.journeys.capitalallowances.zeroEmissionCars.ZecOnlyForSelfEmployment
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ZecOnlyForSelfEmploymentSummarySpec extends SummaryBaseSpec("ZecOnlyForSelfEmploymentSummary") {
 
-  override val validData: JsObject = Json.obj("zecOnlyForSelfEmployment" -> ZecOnlyForSelfEmployment.Yes.toString)
+  override val validData: JsObject = Json.obj("zecOnlyForSelfEmployment" -> true)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecOnlyForSelfEmployment.title.$userType"))
 

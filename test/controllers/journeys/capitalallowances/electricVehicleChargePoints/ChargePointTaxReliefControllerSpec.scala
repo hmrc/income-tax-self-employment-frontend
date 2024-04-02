@@ -16,14 +16,11 @@
 
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import forms.standard.BooleanFormProvider
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
+import models.common.UserType
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefPage
 import play.api.Application
 import play.api.data.Form
@@ -32,7 +29,7 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.electricVehicleChargePoints.ChargePointTaxReliefView
 
-class ChargePointTaxReliefControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("ChargePointTaxReliefController", ChargePointTaxReliefPage) {
+class ChargePointTaxReliefControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ChargePointTaxReliefController", ChargePointTaxReliefPage) {
 
   override def onPageLoadCall: Call = routes.ChargePointTaxReliefController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.ChargePointTaxReliefController.onSubmit(taxYear, businessId, NormalMode)
@@ -41,19 +38,15 @@ class ChargePointTaxReliefControllerSpec extends RadioButtonGetAndPostQuestionBa
 
   override val validAnswer = true
 
-  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(ChargePointTaxReliefPage, user, Some("zeroEmission"))
+  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(page, user, Some("zeroEmission"))
 
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ChargePointTaxReliefView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

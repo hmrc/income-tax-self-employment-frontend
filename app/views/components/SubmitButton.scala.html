@@ -16,8 +16,8 @@
 
 @this(govukButton: GovukButton)
 
-@(name: String = "site.continue")(implicit messages: Messages)
+@(name: String = "site.continue", extraClasses: String ="")(implicit messages: Messages)
 
 @govukButton(
-    ButtonViewModel(messages(name))
+    ButtonViewModel(messages(name)).withCssClass(extraClasses)
 )

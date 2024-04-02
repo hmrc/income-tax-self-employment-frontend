@@ -30,11 +30,14 @@ class CurrencyFormProvider @Inject() {
   def apply(page: OneQuestionPage[_],
             userType: UserType,
             minValue: BigDecimal = MoneyBounds.minimumValue,
-            maxValue: BigDecimal = MoneyBounds.maximumValue): Form[BigDecimal] =
+            minValueError: String = LessThanZeroError,
+            maxValue: BigDecimal = MoneyBounds.maximumValue,
+            maxValueError: String = OverMaxError,
+            nonNumericError: String = NonNumericError): Form[BigDecimal] =
     Form(
-      "value" -> currency(userTypeAware(userType, page.requiredErrorKey), NonNumericError)
-        .verifying(greaterThan(minValue, LessThanZeroError))
-        .verifying(lessThan(maxValue, OverMaxError))
+      "value" -> currency(userTypeAware(userType, page.requiredErrorKey), nonNumericError)
+        .verifying(greaterThan(minValue, minValueError))
+        .verifying(lessThan(maxValue, maxValueError))
     )
 
 }

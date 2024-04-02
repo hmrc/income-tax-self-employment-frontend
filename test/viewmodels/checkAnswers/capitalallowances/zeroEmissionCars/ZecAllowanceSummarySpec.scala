@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.capitalallowances.zeroEmissionCars
 import base.summaries.SummaryBaseSpec
 import models.common.UserType
 import models.database.UserAnswers
-import models.journeys.capitalallowances.ZecAllowance
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,9 +26,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ZecAllowanceSummarySpec extends SummaryBaseSpec("ZecAllowanceSummary") {
 
-  override val validData: JsObject = Json.obj("zecAllowance" -> ZecAllowance.Yes.toString)
+  override val validData: JsObject = Json.obj("zecAllowance" -> true)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zeroEmission.subHeading.$userType"))
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zeroEmission.subheading.$userType"))
 
   override val testValue: HtmlContent = HtmlContent("site.yes")
 

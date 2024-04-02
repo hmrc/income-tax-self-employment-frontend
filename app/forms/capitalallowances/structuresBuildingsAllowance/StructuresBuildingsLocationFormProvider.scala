@@ -55,7 +55,8 @@ class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
         bindIfOneOrBothAreFilled(buildingName),
         text(emptyBuildingDetailsError(userType)).verifying(maxLength(maxInputLength, maxBuildingNumberError))
       ),
-      postcode -> text(postcodeRequiredError(userType), toUpperCase = true).verifying(regexp(PostcodeRegex, postcodeInvalidError))
+      postcode -> text(postcodeRequiredError(userType), toUpperCase = true, stripWhitespace = true).verifying(
+        regexp(PostcodeRegex, postcodeInvalidError))
     )(StructuresBuildingsLocation.apply)(StructuresBuildingsLocation.unapply))
 }
 

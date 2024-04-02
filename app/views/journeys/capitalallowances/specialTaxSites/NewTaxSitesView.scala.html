@@ -35,7 +35,7 @@
     <p class="govuk-body">@messages(s"newTaxSites.emptyList.$userType")</p>
     <div class="govuk-button-group">
         @button(routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode).url, "newTaxSites.addABuilding")
-        @button(journeys.routes.TaskListController.onPageLoad(taxYear).url, "site.returnToOverview", "govuk-button--secondary")
+        @button(routes.NewTaxSitesController.returnToOverview(taxYear, businessId).url, "site.returnToOverview", "govuk-button--secondary")
     </div>
 }
 

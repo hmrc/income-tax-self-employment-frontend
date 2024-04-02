@@ -16,23 +16,33 @@
 
 package forms.mappings
 
+import cats.implicits._
 import models.common.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import scala.math.BigDecimal.RoundingMode
+import scala.util.chaining._
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
 
-  private[mappings] def stringFormatter(errorKey: String, args: Seq[String] = Seq.empty, toUpperCase: Boolean = false): Formatter[String] =
+  private[mappings] def stringFormatter(errorKey: String,
+                                        args: Seq[String] = Seq.empty,
+                                        toUpperCase: Boolean = false,
+                                        stripWhitespace: Boolean = false): Formatter[String] =
     new Formatter[String] {
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
         data.get(key) match {
           case None                      => Left(Seq(FormError(key, errorKey, args)))
           case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
-          case Some(s)                   => Right(if (toUpperCase) s.toUpperCase else s)
+          case Some(s) =>
+            val normalized = s
+              .pipe(str => if (stripWhitespace) str.trim.replaceAll("\\s+", "") else str)
+              .pipe(str => if (toUpperCase) str.toUpperCase else str)
+
+            normalized.asRight
         }
 
       override def unbind(key: String, value: String): Map[String, String] =
