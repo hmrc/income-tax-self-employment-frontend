@@ -21,7 +21,7 @@ import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import models.common._
 import models.journeys.Journey.CapitalAllowancesStructuresBuildings
-import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers
+import models.journeys.capitalallowances.structuresBuildingsAllowance.newStructuresBuildingsAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getAnswers andThen
-      getJourneyAnswers[NewStructuresBuildingsAnswers](req =>
+      getJourneyAnswers[newStructuresBuildingsAnswers](req =>
         req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesStructuresBuildings)) andThen
       requireAnswers) { implicit request =>
       val summaryList =
@@ -78,7 +78,7 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesStructuresBuildings)
-      val result  = service.submitAnswers[NewStructuresBuildingsAnswers](context, request.userAnswers)
+      val result  = service.submitAnswers[newStructuresBuildingsAnswers](context, request.userAnswers)
       handleSubmitAnswersResult(context, result)
   }
 
