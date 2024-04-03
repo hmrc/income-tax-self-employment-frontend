@@ -39,9 +39,8 @@ object StructuresBuildingsEligibleClaimPage extends StructuresBuildingsBasePage[
       this,
       userAnswers,
       businessId,
-      onTrue = routes.StructuresBuildingsQualifyingUseDateController
-        .onPageLoad(taxYear, businessId, 0, NormalMode),
-      onFalse = routes.StructuresBuildingsCYAController.onPageLoad(taxYear, businessId)
+      onTrue = routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, 0, NormalMode),
+      onFalse = routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
