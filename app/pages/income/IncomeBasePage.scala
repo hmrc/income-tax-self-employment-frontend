@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,19 @@
 package pages.income
 
 import controllers.journeys.income.routes
+import models.common.AccountingType.{Accrual, Cash}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import pages.OneQuestionPage
 import play.api.mvc.Call
 
-case object TradingAllowanceAmountPage extends IncomeBasePage[BigDecimal] {
-  override def toString: String = "tradingAllowanceAmount"
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+trait IncomeBasePage[A] extends OneQuestionPage[A] {
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
     routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+  def redirectForAccountingType(userAnswers: UserAnswers, businessId: BusinessId, accrualRedirect: Call, cashRedirect: Call): Call =
+    userAnswers.getAccountingType(businessId) match {
+      case Accrual => accrualRedirect
+      case Cash    => cashRedirect
+    }
 }

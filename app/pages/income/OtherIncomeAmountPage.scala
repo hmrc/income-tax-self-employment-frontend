@@ -16,8 +16,26 @@
 
 package pages.income
 
-import pages.OneQuestionPage
+import controllers.journeys.income.routes
+import models.NormalMode
+import models.common.AccountingType.{Accrual, Cash}
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import play.api.mvc.Call
 
-case object OtherIncomeAmountPage extends OneQuestionPage[BigDecimal] {
+case object OtherIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "otherIncomeAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectForAccountingType(
+    userAnswers,
+    businessId,
+    routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode),
+    routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  )
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.getAccountingType(businessId) match {
+      case Accrual => TurnoverNotTaxablePage.hasAllFurtherAnswers(businessId, userAnswers)
+      case Cash    => TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+    }
 }

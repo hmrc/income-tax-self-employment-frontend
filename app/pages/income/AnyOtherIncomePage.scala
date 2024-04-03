@@ -16,8 +16,41 @@
 
 package pages.income
 
-import pages.OneQuestionPage
+import controllers.journeys.income.routes
+import models.NormalMode
+import models.common.AccountingType.{Accrual, Cash}
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import pages.redirectOnBoolean
+import play.api.mvc.Call
+import queries.Settable
 
-case object AnyOtherIncomePage extends OneQuestionPage[Boolean] {
+case object AnyOtherIncomePage extends IncomeBasePage[Boolean] {
   override def toString: String = "anyOtherIncome"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
+    this,
+    userAnswers,
+    businessId,
+    onTrue = routes.OtherIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode),
+    onFalse = redirectForAccountingType(
+      userAnswers,
+      businessId,
+      routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode),
+      routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+    )
+  )
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val thisPage       = userAnswers.get(this, businessId)
+    val accountingType = userAnswers.getAccountingType(businessId)
+    (thisPage, accountingType) match {
+      case (Some(true), _)        => OtherIncomeAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case (Some(false), Accrual) => TurnoverNotTaxablePage.hasAllFurtherAnswers(businessId, userAnswers)
+      case (Some(false), Cash)    => TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+      case _                      => false
+    }
+  }
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(OtherIncomeAmountPage, TurnoverNotTaxablePage, NotTaxableAmountPage)
 }

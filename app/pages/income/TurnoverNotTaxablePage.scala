@@ -16,8 +16,32 @@
 
 package pages.income
 
-import pages.OneQuestionPage
+import controllers.journeys.income.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import pages.redirectOnBoolean
+import play.api.mvc.Call
+import queries.Settable
 
-case object TurnoverNotTaxablePage extends OneQuestionPage[Boolean] {
+case object TurnoverNotTaxablePage extends IncomeBasePage[Boolean] {
   override def toString: String = "turnoverNotTaxable"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
+    this,
+    userAnswers,
+    businessId,
+    routes.NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode),
+    routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+  )
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers
+      .get(this, businessId)
+      .exists { a =>
+        (a && NotTaxableAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
+        (!a && TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers))
+      }
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(NotTaxableAmountPage)
 }

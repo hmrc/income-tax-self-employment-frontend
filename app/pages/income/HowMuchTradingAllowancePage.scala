@@ -16,9 +16,28 @@
 
 package pages.income
 
+import controllers.journeys.income.routes
+import controllers.standard
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
-import pages.OneQuestionPage
+import play.api.mvc.Call
 
-case object HowMuchTradingAllowancePage extends OneQuestionPage[HowMuchTradingAllowance] {
+case object HowMuchTradingAllowancePage extends IncomeBasePage[HowMuchTradingAllowance] {
   override def toString: String = "howMuchTradingAllowance"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    userAnswers.get(this, businessId) match {
+      case Some(HowMuchTradingAllowance.LessThan) => routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
+      case Some(HowMuchTradingAllowance.Maximum)  => routes.IncomeCYAController.onPageLoad(taxYear, businessId)
+      case None                                   => standard.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId) match {
+      case Some(HowMuchTradingAllowance.LessThan) => TradingAllowanceAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case Some(HowMuchTradingAllowance.Maximum)  => true
+      case None                                   => false
+    }
 }

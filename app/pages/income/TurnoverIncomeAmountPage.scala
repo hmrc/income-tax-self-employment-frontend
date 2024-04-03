@@ -16,8 +16,18 @@
 
 package pages.income
 
-import pages.OneQuestionPage
+import controllers.journeys.income.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import play.api.mvc.Call
 
-case object TurnoverIncomeAmountPage extends OneQuestionPage[BigDecimal] {
+case object TurnoverIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "turnoverIncomeAmount"
+
+  def nextPageInNormalMode(businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && AnyOtherIncomePage.hasAllFurtherAnswers(businessId, userAnswers)
 }
