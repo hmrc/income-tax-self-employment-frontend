@@ -16,15 +16,16 @@
 
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance
-import controllers.journeys
-import models.NormalMode
 import models.common._
 import models.journeys.Journey.CapitalAllowancesStructuresBuildings
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance._
@@ -32,20 +33,26 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StructuresBuildingsCYAController @Inject() (override val messagesApi: MessagesApi,
                                                   identify: IdentifierAction,
                                                   getAnswers: DataRetrievalAction,
+                                                  getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                                   requireAnswers: DataRequiredAction,
+                                                  service: SelfEmploymentService,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: CheckYourAnswersView)
+                                                  view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getAnswers andThen requireAnswers) { implicit request =>
+    (identify andThen getAnswers andThen
+      getJourneyAnswers[NewStructuresBuildingsAnswers](req =>
+        req.mkJourneyNinoContext(taxYear, businessId, CapitalAllowancesStructuresBuildings)) andThen
+      requireAnswers) { implicit request =>
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
@@ -68,10 +75,11 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
         ))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, businessId, CapitalAllowancesStructuresBuildings.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, businessId, CapitalAllowancesStructuresBuildings)
+      val result  = service.submitAnswers[NewStructuresBuildingsAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
 
 }

@@ -18,12 +18,11 @@ package models.journeys.capitalallowances.structuresBuildingsAllowance
 
 import play.api.libs.json.{Format, Json}
 
-case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
-                                         EligibleToClaim: Option[Boolean],
-                                         PreviousClaim: Option[Boolean],
-                                         PreviousClaimUse: Option[Boolean],
-                                         PreviousClaimAmount: Option[Int],
-                                         newStructuresBuildings: List[NewStructureBuilding])
+case class NewStructuresBuildingsAnswers(structuresBuildingsAllowance: Boolean,
+                                         structuresBuildingsEligibleClaim: Option[Boolean],
+                                         structuresBuildingsPreviousClaimUse: Option[Boolean],
+                                         structuresBuildingsClaimed: Option[Boolean],
+                                         newStructuresBuildings: Option[List[NewStructureBuilding]])
 
 object NewStructuresBuildingsAnswers {
   implicit val formats: Format[NewStructuresBuildingsAnswers] = Json.format[NewStructuresBuildingsAnswers]
