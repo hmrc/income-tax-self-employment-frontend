@@ -23,7 +23,7 @@ import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import pages.QuestionPage
+import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -31,7 +31,7 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, page: QuestionPage[BigDecimal]) extends ControllerSpec {
+abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, page: OneQuestionPage[BigDecimal]) extends ControllerSpec {
 
   val amount: BigDecimal = BigDecimal(100.00)
 
