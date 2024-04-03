@@ -51,7 +51,7 @@ class ExistingSiteClaimingAmountControllerSpec
     *[Mode]
   ) returns Redirect(onwardRoute).asFuture
 
-  def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
