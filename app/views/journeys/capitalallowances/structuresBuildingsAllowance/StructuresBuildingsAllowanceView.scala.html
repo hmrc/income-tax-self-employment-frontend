@@ -19,43 +19,43 @@
 @import views.html.templates.helpers.Heading
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("selectCapitalAllowances.structuresAndBuildings"))) {
+    @layout(pageTitle = title(form, messages("selectCapitalAllowances.structuresAndBuildings"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        }
 
-    @heading(messages("selectCapitalAllowances.structuresAndBuildings"), None, extraClasses = "no-padding-top")
+        @heading(messages("selectCapitalAllowances.structuresAndBuildings"), None, extraClasses = "no-padding-top")
 
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"structuresBuildingsAllowance.p1.$userType")</p>
+        <div class="govuk-body govuk-!-margin-top-6">
+            <p>@messages(s"structuresBuildingsAllowance.p1.$userType")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages(s"structuresBuildingsAllowance.p2.$userType")</li>
+                <li>@messages(s"structuresBuildingsAllowance.p3")</li>
+                <li>@messages(s"structuresBuildingsAllowance.p4")</li>
+        </ul>
+            <p>@messages(s"structuresBuildingsAllowance.p5.$userType")</p>
 
-        <li>@messages(s"structuresBuildingsAllowance.p2.$userType")</li>
-        <li>@messages(s"structuresBuildingsAllowance.p3")</li>
-        <li>@messages(s"structuresBuildingsAllowance.p4")</li>
+        </div>
 
-        <p>@messages(s"structuresBuildingsAllowance.p5.$userType")</p>
+        @formHelper(action = routes.StructuresBuildingsAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-    </div>
-
-    @formHelper(action = routes.StructuresBuildingsAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
+            @govukRadios(
+                RadiosViewModel.yesNo(
+                    field = form("value"),
+                    legend = LegendViewModel(HtmlContent(
+                        s"""
                         <div>
                             <label class="govuk-label govuk-label--m">
                                 ${messages(s"structuresBuildingsAllowance.subheading.$userType")}
@@ -65,14 +65,13 @@
                             </div>
                         </div>
                         """
-                ))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                    ))
+                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                )
             )
-        )
 
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+            @govukButton(
+                ButtonViewModel(messages("site.continue"))
+            )
+        }
     }
-}
