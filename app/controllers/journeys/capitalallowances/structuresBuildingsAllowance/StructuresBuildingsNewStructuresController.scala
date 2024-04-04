@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers.removeIncompleteStructure
+import models.journeys.capitalallowances.structuresBuildingsAllowance.newStructuresBuildingsAnswers.removeIncompleteStructure
 import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsViewModel.getNewStructuresSummaryRows
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewStructuresView
 

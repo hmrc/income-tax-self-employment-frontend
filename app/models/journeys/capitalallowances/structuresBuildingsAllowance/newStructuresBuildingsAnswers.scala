@@ -18,15 +18,14 @@ package models.journeys.capitalallowances.structuresBuildingsAllowance
 
 import play.api.libs.json.{Format, Json}
 
-case class NewStructuresBuildingsAnswers(Allowance: Option[Boolean],
-                                         EligibleToClaim: Option[Boolean],
-                                         PreviousClaim: Option[Boolean],
-                                         PreviousClaimUse: Option[Boolean],
-                                         PreviousClaimAmount: Option[Int],
-                                         newStructuresBuildings: List[NewStructureBuilding])
+case class newStructuresBuildingsAnswers(structuresBuildingsAllowance: Boolean,
+                                         structuresBuildingsEligibleClaim: Option[Boolean],
+                                         structuresBuildingsPreviousClaimUse: Option[Boolean],
+                                         structuresBuildingsClaimed: Option[Boolean],
+                                         newStructuresBuildings: Option[List[NewStructureBuilding]])
 
-object NewStructuresBuildingsAnswers {
-  implicit val formats: Format[NewStructuresBuildingsAnswers] = Json.format[NewStructuresBuildingsAnswers]
+object newStructuresBuildingsAnswers {
+  implicit val formats: Format[newStructuresBuildingsAnswers] = Json.format[newStructuresBuildingsAnswers]
 
   def removeIncompleteStructure(structuresList: List[NewStructureBuilding]): List[NewStructureBuilding] = structuresList.filter(_.isComplete)
 
