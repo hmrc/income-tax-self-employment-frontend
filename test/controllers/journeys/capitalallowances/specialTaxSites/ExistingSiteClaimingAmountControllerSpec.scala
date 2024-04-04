@@ -37,8 +37,8 @@ class ExistingSiteClaimingAmountControllerSpec
       ExistingSiteClaimingAmountPage
     ) {
 
-  lazy val onPageLoadRoute = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
 
@@ -51,7 +51,7 @@ class ExistingSiteClaimingAmountControllerSpec
     *[Mode]
   ) returns Redirect(onwardRoute).asFuture
 
-  def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
