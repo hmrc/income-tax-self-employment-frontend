@@ -22,7 +22,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
-import queries.{Gettable, Settable}
+import queries.Settable
 
 case object IncomeNotCountedAsTurnoverPage extends IncomeBasePage[Boolean] {
   override def toString: String = "incomeNotCountedAsTurnover"
@@ -30,7 +30,7 @@ case object IncomeNotCountedAsTurnoverPage extends IncomeBasePage[Boolean] {
   override val dependentPagesWhenNo: List[Settable[_]] = List(NonTurnoverIncomeAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
-    this[Gettable[Boolean]],
+    this,
     userAnswers,
     businessId,
     onTrue = routes.NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode),
@@ -42,6 +42,6 @@ case object IncomeNotCountedAsTurnoverPage extends IncomeBasePage[Boolean] {
       .get(this, businessId)
       .exists { a =>
         (a && NonTurnoverIncomeAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) ||
-          (!a && TurnoverIncomeAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+        (!a && TurnoverIncomeAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
       }
 }

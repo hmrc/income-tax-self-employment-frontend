@@ -19,11 +19,9 @@ package controllers.journeys.income
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
-import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.IncomeNavigator
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,18 +31,17 @@ import utils.Logging
 import views.html.journeys.income.OtherIncomeAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                             navigator: IncomeNavigator,
+                                             val controllerComponents: MessagesControllerComponents,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              service: SelfEmploymentService,
                                              formProvider: CurrencyFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: OtherIncomeAmountView)(implicit ec: ExecutionContext)
+                                             view: OtherIncomeAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -64,12 +61,7 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, OtherIncomeAmountPage)
-              .map(updatedAnswers =>
-                Redirect(
-                  navigator.nextPage(OtherIncomeAmountPage, mode, updatedAnswers, taxYear, businessId, Some(returnAccountingType(businessId)))))
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

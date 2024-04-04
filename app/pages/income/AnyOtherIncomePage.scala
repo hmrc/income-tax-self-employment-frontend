@@ -52,5 +52,5 @@ case object AnyOtherIncomePage extends IncomeBasePage[Boolean] {
     }
   }
 
-  override val dependentPagesWhenNo: List[Settable[_]] = List(OtherIncomeAmountPage, TurnoverNotTaxablePage, NotTaxableAmountPage)
+  override val dependentPagesWhenNo: List[Settable[_]] = List(OtherIncomeAmountPage)
 }

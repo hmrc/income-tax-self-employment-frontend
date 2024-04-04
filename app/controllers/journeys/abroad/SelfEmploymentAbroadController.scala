@@ -57,7 +57,7 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
-          answer => service.submitBooleanAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer => service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
         )
   }
 

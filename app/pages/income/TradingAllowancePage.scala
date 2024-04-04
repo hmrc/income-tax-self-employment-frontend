@@ -23,6 +23,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.income.TradingAllowance
 import play.api.mvc.Call
+import queries.Settable
 
 case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
   override def toString: String = "tradingAllowance"
@@ -40,4 +41,6 @@ case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
       case Some(TradingAllowance.DeclareExpenses)     => true
       case None                                       => false
     }
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage)
 }

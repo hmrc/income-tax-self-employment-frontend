@@ -16,10 +16,8 @@
 
 package controllers.journeys
 
-import builders.UserBuilder.aNoddyUser
 import models.common.BusinessId
 import models.database.UserAnswers
-import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.wordspec.AnyWordSpecLike
 import pages.OneQuestionPage
@@ -33,7 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class packageSpec extends AnyWordSpecLike with ScalaFutures {
   lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-  val businessId                                           = BusinessId("businessId")
+  val businessId: BusinessId                               = BusinessId("businessId")
 
   "clearPages" when {
     "clearDependentPages on No" should {
@@ -56,16 +54,15 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
         businessId.value -> Json.obj(
           "page1" -> true
         ))
-      val answers     = UserAnswers("id", validData)
-      val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
+      val answers = UserAnswers("id", validData)
 
       "remove dependent pages if selected Yes (true)" in {
-        val updatedAnswer = clearDependentPages(Page1, true, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, newAnswer = true, answers, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected No (false)" in {
-        val updatedAnswer = clearDependentPages(Page1, false, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, newAnswer = false, answers, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true
@@ -94,16 +91,15 @@ class packageSpec extends AnyWordSpecLike with ScalaFutures {
         businessId.value -> Json.obj(
           "page1" -> true
         ))
-      val answers     = UserAnswers("id", validData)
-      val dataRequest = DataRequest(getRequest, "userId", aNoddyUser, answers)
+      val answers = UserAnswers("id", validData)
 
       "remove dependent pages if selected No (false)" in {
-        val updatedAnswer = clearDependentPages(Page1, false, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, newAnswer = false, answers, businessId).futureValue
         assert(updatedAnswer === answers)
       }
 
       "remove dependent pages if selected Yes (true)" in {
-        val updatedAnswer = clearDependentPages(Page1, true, dataRequest, businessId).futureValue
+        val updatedAnswer = clearDependentPages(Page1, newAnswer = true, answers, businessId).futureValue
         val expectedData = Json.obj(
           businessId.value -> Json.obj(
             "page1" -> true

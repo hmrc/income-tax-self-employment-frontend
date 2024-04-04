@@ -27,8 +27,8 @@ import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.OptionValues._
 import org.scalatest.wordspec.AnyWordSpecLike
 import pages.OneQuestionPage
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, PlayRunners}
 
@@ -61,10 +61,10 @@ trait StandardControllerSpec extends AnyWordSpecLike with PlayRunners with Contr
       mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns userAnswers.asFuture
       mockService.persistAnswerAndRedirect(*[OneQuestionPage[_]], *[BusinessId], *[DataRequest[_]], *, *[TaxYear], *[Mode])(*) returns Redirect(
         onwardUrl).asFuture
-      mockService.submitBooleanAnswerAndRedirect(
+      mockService.submitGatewayQuestionAndRedirect(
         *[OneQuestionPage[Boolean]],
         *[BusinessId],
-        *[DataRequest[_]],
+        *[UserAnswers],
         *,
         *[TaxYear],
         *[Mode]) returns Redirect(onwardUrl).asFuture

@@ -25,7 +25,7 @@ import play.api.mvc.Call
 case object NonTurnoverIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "nonTurnoverIncomeAmount"
 
-  def nextPageInNormalMode(businessId: BusinessId, taxYear: TaxYear): Call =
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =

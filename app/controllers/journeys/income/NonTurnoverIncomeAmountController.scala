@@ -22,7 +22,6 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.IncomeNavigator
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,18 +30,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.NonTurnoverIncomeAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                   selfEmploymentService: SelfEmploymentService,
-                                                   navigator: IncomeNavigator,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   service: SelfEmploymentService,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: CurrencyFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: NonTurnoverIncomeAmountView)(implicit ec: ExecutionContext)
+                                                   view: NonTurnoverIncomeAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -61,10 +59,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, NonTurnoverIncomeAmountPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(NonTurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 

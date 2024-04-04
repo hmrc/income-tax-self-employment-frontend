@@ -34,8 +34,8 @@ case object OtherIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.getAccountingType(businessId) match {
+    userAnswers.get(this, businessId).isDefined && (userAnswers.getAccountingType(businessId) match {
       case Accrual => TurnoverNotTaxablePage.hasAllFurtherAnswers(businessId, userAnswers)
       case Cash    => TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
-    }
+    })
 }

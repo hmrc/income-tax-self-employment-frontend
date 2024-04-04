@@ -16,34 +16,30 @@
 
 package controllers.journeys.income
 
-import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.IncomeNavigator
-import pages.income.{IncomeNotCountedAsTurnoverPage, NonTurnoverIncomeAmountPage}
+import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
+import scala.concurrent.Future
 
 @Singleton
 class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: MessagesApi,
-                                                      navigator: IncomeNavigator,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: BooleanFormProvider,
                                                       service: SelfEmploymentService,
                                                       val controllerComponents: MessagesControllerComponents,
-                                                      view: IncomeNotCountedAsTurnoverView)(implicit ec: ExecutionContext)
+                                                      view: IncomeNotCountedAsTurnoverView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,24 +53,11 @@ class IncomeNotCountedAsTurnoverController @Inject() (override val messagesApi: 
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(value: Boolean): Future[Result] = {
-        val adjustedAnswers =
-          if (value) {
-            request.userAnswers.pure[Try]
-          } else {
-            request.userAnswers.remove(NonTurnoverIncomeAmountPage, Some(businessId))
-          }
-        for {
-          answers        <- Future.fromTry(adjustedAnswers)
-          updatedAnswers <- service.persistAnswer(businessId, answers, value, page)
-        } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
-      }
-
       formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value => handleSuccess(value)
+          answer => service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
         )
   }
 

@@ -22,7 +22,6 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.IncomeNavigator
 import pages.income.TradingAllowanceAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,13 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TradingAllowanceAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                  navigator: IncomeNavigator,
+                                                  val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   service: SelfEmploymentService,
                                                   formProvider: CurrencyFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
                                                   view: TradingAllowanceAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -73,13 +71,8 @@ class TradingAllowanceAmountController @Inject() (override val messagesApi: Mess
           .bindFromRequest()
           .fold(
             formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-            value => handleSuccess(value)
+            answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
           )
-
-      def handleSuccess(value: BigDecimal): Future[Result] =
-        service
-          .persistAnswer(businessId, request.userAnswers, value, TradingAllowanceAmountPage)
-          .map(updatedAnswers => Redirect(navigator.nextPage(TradingAllowanceAmountPage, mode, updatedAnswers, taxYear, businessId)))
 
       (for {
         allowance <- EitherT.fromEither[Future](getMaxTradingAllowance(businessId, request.userAnswers))

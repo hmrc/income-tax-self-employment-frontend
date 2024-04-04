@@ -30,18 +30,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 package object journeys {
 
-  def clearDependentPages(page: QuestionPage[Boolean], newAnswer: Boolean, request: DataRequest[_], businessId: BusinessId)(implicit
-      ec: ExecutionContext): Future[UserAnswers] = {
-    val previousAnswer = request.userAnswers.get(page, Some(businessId))
-    val pagesToClear   = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo).distinct
+  def clearDependentPages[A](page: QuestionPage[A], newAnswer: A, userAnswers: UserAnswers, businessId: BusinessId)(implicit
+      ec: ExecutionContext,
+      reads: Reads[A]): Future[UserAnswers] = {
+    val previousAnswer = userAnswers.get(page, Some(businessId))
+    val pagesToClear   = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo ++ page.dependentPagesWhenAnswerChanges).distinct
 
     if (previousAnswer == Option(newAnswer)) {
-      Future.successful(request.userAnswers)
+      Future.successful(userAnswers)
     } else {
       if (pagesToClear.isEmpty)
-        Future(request.userAnswers)
+        Future(userAnswers)
       else
-        Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
+        Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(userAnswers, pagesToClear, Some(businessId)))
     }
   }
 

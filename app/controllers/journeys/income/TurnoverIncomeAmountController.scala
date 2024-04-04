@@ -23,7 +23,6 @@ import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.IncomeNavigator
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,18 +32,17 @@ import utils.Logging
 import views.html.journeys.income.TurnoverIncomeAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class TurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                navigator: IncomeNavigator,
+                                                val controllerComponents: MessagesControllerComponents,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 service: SelfEmploymentService,
                                                 formProvider: CurrencyFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: TurnoverIncomeAmountView)(implicit ec: ExecutionContext)
+                                                view: TurnoverIncomeAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -65,10 +63,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
         .fold(
           formErrors =>
             Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, TurnoverIncomeAmountPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(TurnoverIncomeAmountPage, mode, updatedAnswers, taxYear, businessId)))
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
         )
   }
 
