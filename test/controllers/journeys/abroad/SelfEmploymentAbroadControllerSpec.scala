@@ -17,8 +17,7 @@
 package controllers.journeys.abroad
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import forms.standard.BooleanFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -35,10 +34,6 @@ class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSp
 
   override def onPageLoadCall: Call = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode)
-
-  override def onwardRoute: Call = models.common.onwardRoute
-
-  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(page, user)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
