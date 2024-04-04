@@ -37,8 +37,8 @@ class ExistingSiteClaimingAmountControllerSpec
       ExistingSiteClaimingAmountPage
     ) {
 
-  lazy val onPageLoadRoute = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
 
