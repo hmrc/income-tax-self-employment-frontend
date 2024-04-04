@@ -17,19 +17,21 @@
 package base.questionPages
 
 import base.ControllerSpec
+import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
-import models.common.UserType
+import models.common.{Enumerable, UserType}
 import models.database.UserAnswers
 import pages.QuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 // TODO: Clean this base class up.
-abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
@@ -41,7 +43,9 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: Str
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
-  def filledUserAnswers: UserAnswers
+
+  implicit def writes: Writes[A]     = Writes(value => JsString(value.toString))
+  def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some)(writes).success.value
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadCall.url)
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =

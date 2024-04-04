@@ -50,7 +50,6 @@ class OfficeSuppliesControllerSpec
   override def onSubmitCall: Call             = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
   override def onwardRoute: Call              = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
   override def validAnswer: OfficeSupplies    = YesDisallowable
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(

@@ -14,41 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.specialTaxSites
+package controllers.journeys.income
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
 import models.NormalMode
-import models.common.BusinessId
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
-import pages.capitalallowances.specialTaxSites.SpecialTaxSitesPage
+import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesView
+import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 
-class SpecialTaxSitesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("SpecialTaxSitesController", SpecialTaxSitesPage) {
+class IncomeNotCountedAsTurnoverControllerSpec
+    extends BooleanGetAndPostQuestionBaseSpec("IncomeNotCountedAsTurnoverController", IncomeNotCountedAsTurnoverPage) {
 
-  override def onPageLoadCall: Call = routes.SpecialTaxSitesController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.SpecialTaxSitesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call   = routes.IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = routes.ContractForBuildingConstructionController.onPageLoad(taxYear, businessId, 0, NormalMode)
+  override def onwardRoute: Call = routes.NonTurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[SpecialTaxSitesView]
+    val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  mockService.submitGatewayQuestionAndClearDependentAnswers(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *) returns pageAnswers
-    .set(page, validAnswer, businessId.some)
-    .success
-    .value
-    .asFuture
+  mockService
+    .submitGatewayQuestionAndRedirect[Boolean](*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
+    onwardRoute).asFuture
 
 }

@@ -75,7 +75,6 @@ class WfbpFlatRateOrActualCostsControllerSpec
     .set(LivingAtBusinessPremisesThreePlusPeople, validMonths, Some(businessId))
     .success
     .value
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
