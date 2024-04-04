@@ -35,11 +35,12 @@ import play.api.test.Helpers._
 abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: OneQuestionPage[Boolean]) extends ControllerSpec {
 
   val validAnswer: Boolean = true
-  val form                 = new BooleanFormProvider
+  val form = new BooleanFormProvider
+  val checkForExistingAnswers = true
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
-  def onwardRoute: Call
+  def onwardRoute: Call = models.common.onwardRoute
 
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
   def pageAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
@@ -61,13 +62,15 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
       val form: Form[Boolean] = createForm(user)
 
       "on page load" - {
-        "answers exist for the page" - {
-          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
-            running(application) {
-              val result = route(application, getRequest).value
+        if (checkForExistingAnswers) {
+          "answers exist for the page" - {
+            "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
+              running(application) {
+                val result = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
+                status(result) shouldBe OK
+                contentAsString(result) shouldBe expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
+              }
             }
           }
         }

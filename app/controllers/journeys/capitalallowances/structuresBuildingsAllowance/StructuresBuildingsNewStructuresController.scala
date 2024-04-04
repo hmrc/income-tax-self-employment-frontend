@@ -21,13 +21,13 @@ import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.capitalallowances.structuresBuildingsAllowance.newStructuresBuildingsAnswers.removeIncompleteStructure
 import pages.capitalallowances.structuresBuildingsAllowance.{NewStructuresBuildingsList, StructuresBuildingsNewStructuresPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import models.journeys.capitalallowances.structuresBuildingsAllowance.newStructuresBuildingsAnswers.removeIncompleteStructure
 import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsViewModel.getNewStructuresSummaryRows
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewStructuresView
 

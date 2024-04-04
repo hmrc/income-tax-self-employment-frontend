@@ -25,11 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{
-  StructureBuildingLocationSummary,
-  StructuresBuildingsNewClaimAmountSummary,
-  StructuresBuildingsUseDateSummary
-}
+import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{StructureBuildingLocationSummary, StructuresBuildingsNewClaimAmountSummary, StructuresBuildingsUseDateSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 

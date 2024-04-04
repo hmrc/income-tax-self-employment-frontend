@@ -1,0 +1,5 @@
+package controllers.journeys.capitalallowances.structuresBuildingsAllowance
+
+class StructuresBuildingsLocationControllerSpec {
+
+}

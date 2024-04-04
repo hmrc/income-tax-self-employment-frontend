@@ -17,11 +17,7 @@
 package forms.capitalallowances.structuresBuildingsAllowance
 
 import forms.PostcodeRegex
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.{
-  buildingName,
-  buildingNumber,
-  emptyBuildingDetailsError
-}
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocationFormProvider.{buildingName, buildingNumber, emptyBuildingDetailsError}
 import forms.mappings.Mappings
 import models.common.UserType
 import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
