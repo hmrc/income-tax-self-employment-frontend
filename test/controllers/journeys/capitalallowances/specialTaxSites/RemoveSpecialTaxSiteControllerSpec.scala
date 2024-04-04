@@ -1,0 +1,47 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.journeys.capitalallowances.specialTaxSites
+
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
+import models.database.UserAnswers
+import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
+import pages.capitalallowances.specialTaxSites.{NewSpecialTaxSitesList, RemoveSpecialTaxSitePage}
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.{Call, Request}
+import views.html.journeys.capitalallowances.specialTaxSites.RemoveSpecialTaxSiteView
+
+class RemoveSpecialTaxSiteControllerSpec extends BooleanGetAndPostQuestionBaseSpec("RemoveSpecialTaxSiteController", RemoveSpecialTaxSitePage) {
+
+  override val checkForExistingAnswers = false
+  override def onPageLoadCall: Call    = routes.RemoveSpecialTaxSiteController.onPageLoad(taxYear, businessId, 0)
+  override def onSubmitCall: Call      = routes.RemoveSpecialTaxSiteController.onSubmit(taxYear, businessId, 0)
+
+  override def onwardRoute: Call = routes.NewTaxSitesController.onPageLoad(taxYear, businessId)
+
+  override def baseAnswers: UserAnswers = buildUserAnswers(NewSpecialTaxSitesList, List(NewSpecialTaxSite(Some(false))))
+
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[RemoveSpecialTaxSiteView]
+    view(form, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
+  }
+
+}
