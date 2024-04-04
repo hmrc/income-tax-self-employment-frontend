@@ -61,7 +61,7 @@ class ContinueClaimingAllowanceForExistingSiteController @Inject() (override val
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             service
-              .submitBooleanAnswerAndClearDependentAnswers(page, businessId, request, answer)
+              .submitGatewayQuestionAndClearDependentAnswers(page, businessId, request.userAnswers, answer)
               .map(updatedAnswers => page.redirectNext(mode, updatedAnswers, businessId, taxYear))
         )
   }

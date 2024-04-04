@@ -63,7 +63,7 @@ class AnnualInvestmentAllowanceController @Inject() (override val messagesApi: M
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
-              editedUserAnswers  <- clearDependentPages(AnnualInvestmentAllowancePage, answer, request, businessId)
+              editedUserAnswers  <- clearDependentPages(AnnualInvestmentAllowancePage, answer, request.userAnswers, businessId)
               updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, answer, AnnualInvestmentAllowancePage)
             } yield AnnualInvestmentAllowancePage.redirectNext(mode, updatedUserAnswers, businessId, taxYear)
         )

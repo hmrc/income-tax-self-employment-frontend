@@ -60,7 +60,7 @@ class ZegvAllowanceController @Inject() (override val messagesApi: MessagesApi,
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitBooleanAnswerAndRedirect(ZegvAllowancePage, businessId, request, answer, taxYear, mode)
+          answer => service.submitGatewayQuestionAndRedirect(ZegvAllowancePage, businessId, request.userAnswers, answer, taxYear, mode)
         )
   }
 }

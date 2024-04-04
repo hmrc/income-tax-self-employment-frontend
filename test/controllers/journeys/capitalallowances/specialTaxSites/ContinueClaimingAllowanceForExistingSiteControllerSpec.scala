@@ -20,7 +20,7 @@ import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import models.NormalMode
 import models.common.BusinessId
-import models.requests.DataRequest
+import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSitePage
@@ -46,7 +46,7 @@ class ContinueClaimingAllowanceForExistingSiteControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  mockService.submitBooleanAnswerAndClearDependentAnswers(*[OneQuestionPage[Boolean]], *[BusinessId], *[DataRequest[_]], *) returns pageAnswers
+  mockService.submitGatewayQuestionAndClearDependentAnswers(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *) returns pageAnswers
     .set(page, validAnswer, businessId.some)
     .success
     .value

@@ -16,73 +16,52 @@
 
 package controllers.journeys.income
 
-import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
+import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.income.TradingAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.income.TradingAllowance
-import models.journeys.income.TradingAllowance.{DeclareExpenses, UseTradingAllowance}
-import navigation.IncomeNavigator
-import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage, TradingAllowancePage}
+import pages.income.TradingAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.income.TradingAllowanceView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
+import scala.concurrent.Future
 
 @Singleton
 class TradingAllowanceController @Inject() (override val messagesApi: MessagesApi,
-                                            navigator: IncomeNavigator,
+                                            val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: TradingAllowanceFormProvider,
                                             service: SelfEmploymentService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: TradingAllowanceView)(implicit ec: ExecutionContext)
+                                            view: TradingAllowanceView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = TradingAllowancePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(TradingAllowancePage, Some(businessId))
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(value: TradingAllowance): Future[Result] = {
-        val adjustedAnswers = value match {
-          case DeclareExpenses =>
-            request.userAnswers
-              .remove(HowMuchTradingAllowancePage, Some(businessId))
-              .flatMap(_.remove(TradingAllowanceAmountPage, Some(businessId)))
-          case UseTradingAllowance =>
-            request.userAnswers.pure[Try]
-        }
-        for {
-          answers        <- Future.fromTry(adjustedAnswers)
-          updatedAnswers <- service.persistAnswer(businessId, answers, value, TradingAllowancePage)
-        } yield Redirect(navigator.nextPage(TradingAllowancePage, mode, updatedAnswers, taxYear, businessId))
-      }
-
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formErrors =>
             Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          value => handleSuccess(value)
+          answer => service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
         )
 
   }

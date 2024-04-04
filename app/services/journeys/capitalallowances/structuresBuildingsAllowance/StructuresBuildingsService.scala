@@ -41,7 +41,7 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
                                                                                  request: DataRequest[_],
                                                                                  newAnswer: Boolean): Future[UserAnswers] =
     for {
-      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request, businessId)
+      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request.userAnswers, businessId)
       updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
     } yield updatedUserAnswers
 

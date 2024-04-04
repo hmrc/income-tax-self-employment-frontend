@@ -49,7 +49,6 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
   val mockSessionRepository                    = mock[SessionRepository]
   val repository                               = StubSessionRepository()
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
-//  when(mockSessionRepository.set(any)) thenReturn Future.successful(true)
 
   val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository)
 
@@ -194,9 +193,10 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
         .success
         .value
 
-      val fakeRequest = fakeDataRequest(existingAllAnswers)
       val updatedAnswers =
-        service.submitBooleanAnswerAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, fakeRequest, newAnswer = false).futureValue
+        service
+          .submitGatewayQuestionAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, existingAllAnswers, newAnswer = false)
+          .futureValue
 
       val expectedAnswers = emptyUserAnswers
         .set(

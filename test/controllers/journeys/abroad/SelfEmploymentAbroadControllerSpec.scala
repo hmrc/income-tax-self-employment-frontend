@@ -18,7 +18,7 @@ package controllers.journeys.abroad
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
+import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
@@ -43,7 +43,7 @@ class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSp
     view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
   }
 
-  mockService.submitBooleanAnswerAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[DataRequest[_]], *, *[TaxYear], *[Mode]) returns Redirect(
+  mockService.submitGatewayQuestionAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *[Mode]) returns Redirect(
     onwardRoute.url).asFuture
 
 }

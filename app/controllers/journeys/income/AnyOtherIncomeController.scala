@@ -16,36 +16,31 @@
 
 package controllers.journeys.income
 
-import cats.implicits.catsSyntaxApplicativeId
 import controllers.actions._
 import controllers.journeys.fillForm
-import controllers.returnAccountingType
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.{AccountingType, BusinessId, TaxYear}
-import navigation.IncomeNavigator
-import pages.income.{AnyOtherIncomePage, OtherIncomeAmountPage}
+import models.common.{BusinessId, TaxYear}
+import pages.income.AnyOtherIncomePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.income.AnyOtherIncomeView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
+import scala.concurrent.Future
 
 @Singleton
 class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
-                                          navigator: IncomeNavigator,
+                                          val controllerComponents: MessagesControllerComponents,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           service: SelfEmploymentService,
                                           formProvider: BooleanFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: AnyOtherIncomeView)(implicit ec: ExecutionContext)
+                                          view: AnyOtherIncomeView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -60,20 +55,11 @@ class AnyOtherIncomeController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(anyOtherIncomeValue: Boolean, accountingType: AccountingType): Future[Result] = {
-        val adjustedAnswers =
-          if (anyOtherIncomeValue) request.userAnswers.pure[Try] else request.userAnswers.remove(OtherIncomeAmountPage, Some(businessId))
-        for {
-          answers        <- Future.fromTry(adjustedAnswers)
-          updatedAnswers <- service.persistAnswer(businessId, answers, anyOtherIncomeValue, page)
-        } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId, Some(accountingType)))
-      }
-
       formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          anyOtherIncomeValue => handleSuccess(anyOtherIncomeValue, returnAccountingType(businessId))
+          answer => service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
         )
   }
 
