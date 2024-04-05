@@ -17,10 +17,9 @@
 package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.standard.CurrencyFormProvider
-import models.{Mode, NormalMode}
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.OtherIncomeAmountPage
@@ -37,8 +36,6 @@ class OtherIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSp
   lazy val onSubmitRoute: String   = routes.OtherIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

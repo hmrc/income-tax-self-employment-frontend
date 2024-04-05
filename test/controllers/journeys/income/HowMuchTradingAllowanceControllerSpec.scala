@@ -19,17 +19,14 @@ package controllers.journeys.income
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.{Mode, NormalMode}
-import models.common.{BusinessId, TaxYear, UserType}
+import models.NormalMode
+import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
 import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
@@ -57,14 +54,5 @@ class HowMuchTradingAllowanceControllerSpec
     val view = application.injector.instanceOf[HowMuchTradingAllowanceView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, allowance).toString()
   }
-
-  mockService
-    .submitGatewayQuestionAndRedirect[HowMuchTradingAllowance](
-      *[OneQuestionPage[HowMuchTradingAllowance]],
-      *[BusinessId],
-      *[UserAnswers],
-      *[HowMuchTradingAllowance],
-      *[TaxYear],
-      *[Mode]) returns Redirect(onwardRoute).asFuture
 
 }

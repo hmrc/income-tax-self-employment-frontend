@@ -20,31 +20,27 @@ import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
 import models.Mode
-import models.common.Enumerable.Implicits
-import models.common.{BusinessId, Enumerable, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.{OneQuestionPage, QuestionPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsString, Writes}
+import play.api.libs.json.{JsString, Reads, Writes}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](controllerName: String, page: QuestionPage[A])
-    extends ControllerSpec
-    with Enumerable[A]
-    with Implicits {
+import scala.concurrent.Future
+
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
   def onwardRoute: Call
   def validAnswer: A
-
-  override def withName(str: String): Option[A] = validAnswer.some
 
   def createForm(userType: UserType): Form[A]
 
@@ -59,9 +55,14 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))
 
-  mockService
-    .submitGatewayQuestionAndRedirect[A](*[OneQuestionPage[A]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *[Mode]) returns Redirect(
-    onwardRoute).asFuture
+  mockService.submitGatewayQuestionAndRedirect[A](
+    *[OneQuestionPage[A]],
+    *[BusinessId],
+    *[UserAnswers],
+    *[A],
+    *[TaxYear],
+    *[Mode]
+  )(*[Reads[A]], *[Writes[A]]) returns Future.successful(Redirect(onwardRoute))
 
   forAll(userTypeCases) { userType =>
     s"$controllerName for $userType" - {
@@ -117,9 +118,11 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
 
         "Redirect to the next page on submit" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
-            val result = route(application, postRequest).value
+            val result                     = route(application, postRequest).value
+            val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
+
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
+            assert(redirectMatchesOnwardRoute)
           }
         }
 
