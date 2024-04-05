@@ -20,7 +20,7 @@ import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
 import forms.standard.BooleanFormProvider
-import models.common.{BusinessId, UserType}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -28,6 +28,7 @@ import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,6 +54,9 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
       application: Application): String
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
+  mockService
+    .submitGatewayQuestionAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
+    onwardRoute).asFuture
 
   private lazy val getRequest  = FakeRequest(GET, onPageLoadCall.url)
   private lazy val postRequest = FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))

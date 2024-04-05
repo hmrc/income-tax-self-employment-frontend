@@ -51,4 +51,13 @@ class ExistingSiteClaimingAmountControllerSpec
     val view = application.injector.instanceOf[ExistingSiteClaimingAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 }

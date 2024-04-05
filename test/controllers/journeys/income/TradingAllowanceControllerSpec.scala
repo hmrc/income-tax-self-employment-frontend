@@ -17,7 +17,6 @@
 package controllers.journeys.income
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
 import controllers.returnAccountingType
 import forms.income.TradingAllowanceFormProvider
 import models.NormalMode
@@ -58,7 +57,7 @@ class TradingAllowanceControllerSpec
   }
 
   mockService
-    .submitGatewayQuestionAndRedirect[Boolean](*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
+    .submitGatewayQuestionAndRedirect(*[OneQuestionPage[TradingAllowance]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
     onwardRoute).asFuture
 
 }

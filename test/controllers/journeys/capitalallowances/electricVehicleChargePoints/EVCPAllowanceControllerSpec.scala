@@ -16,14 +16,9 @@
 
 package controllers.journeys.capitalallowances.electricVehicleChargePoints
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.standard.BooleanFormProvider
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
 import play.api.Application
 import play.api.data.Form
@@ -32,26 +27,18 @@ import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowanceView
 
-class EVCPAllowanceControllerSpec extends RadioButtonGetAndPostQuestionBaseSpec("EVCPAllowanceController", EVCPAllowancePage) {
+class EVCPAllowanceControllerSpec extends BooleanGetAndPostQuestionBaseSpec("EVCPAllowanceController", EVCPAllowancePage) {
 
   override def onPageLoadCall: Call = routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = models.common.onwardRoute
-
-  override val validAnswer = true
-
-  override def createForm(userType: UserType): Form[Boolean] = new BooleanFormProvider()(EVCPAllowancePage, userType)
-
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[EVCPAllowanceView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

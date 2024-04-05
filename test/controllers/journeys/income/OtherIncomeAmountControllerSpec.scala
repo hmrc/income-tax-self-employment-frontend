@@ -18,12 +18,16 @@ package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.standard.CurrencyFormProvider
-import models.NormalMode
-import models.common.UserType
+import models.{Mode, NormalMode}
+import models.common.{BusinessId, TaxYear, UserType}
+import models.requests.DataRequest
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.income.OtherIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.income.OtherIncomeAmountView
 
@@ -43,4 +47,13 @@ class OtherIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSp
     val view = application.injector.instanceOf[OtherIncomeAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 }

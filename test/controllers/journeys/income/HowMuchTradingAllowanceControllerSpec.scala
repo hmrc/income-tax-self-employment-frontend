@@ -17,14 +17,15 @@
 package controllers.journeys.income
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import cats.implicits.catsSyntaxOptionId
 import forms.income.HowMuchTradingAllowanceFormProvider
-import models.NormalMode
+import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.income.HowMuchTradingAllowance
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
-import pages.income.HowMuchTradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -42,9 +43,12 @@ class HowMuchTradingAllowanceControllerSpec
   override def onwardRoute: Call = routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def validAnswer: HowMuchTradingAllowance = HowMuchTradingAllowance.LessThan
-  private val allowance                             = "allowance"
+
+  private val allowance = "1,000"
 
   override def createForm(userType: UserType): Form[HowMuchTradingAllowance] = new HowMuchTradingAllowanceFormProvider()(userType, allowance)
+
+  override def baseAnswers: UserAnswers = emptyUserAnswersAccrual.set(TurnoverIncomeAmountPage, BigDecimal(1000), businessId.some).success.value
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
@@ -59,8 +63,8 @@ class HowMuchTradingAllowanceControllerSpec
       *[OneQuestionPage[HowMuchTradingAllowance]],
       *[BusinessId],
       *[UserAnswers],
-      *,
+      *[HowMuchTradingAllowance],
       *[TaxYear],
-      *) returns Redirect(onwardRoute).asFuture
+      *[Mode]) returns Redirect(onwardRoute).asFuture
 
 }

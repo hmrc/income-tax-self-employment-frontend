@@ -46,10 +46,10 @@ class GoodsToSellOrUseControllerSpec
       GoodsToSellOrUsePage
     ) {
 
-  override def onPageLoadCall: Call           = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call             = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
-  override def onwardRoute: Call              = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
-  override def validAnswer: GoodsToSellOrUse  = YesDisallowable
+  override def onPageLoadCall: Call          = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call            = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call             = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: GoodsToSellOrUse = YesDisallowable
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

@@ -20,17 +20,14 @@ import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
 import forms.standard.CurrencyFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -58,14 +55,6 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
   mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
-    *[BusinessId],
-    *[DataRequest[_]],
-    *,
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
 
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))

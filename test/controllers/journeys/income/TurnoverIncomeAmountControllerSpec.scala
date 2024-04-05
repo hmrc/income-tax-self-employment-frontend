@@ -18,14 +18,16 @@ package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.returnAccountingType
-import forms.standard.CurrencyFormProvider
-import models.NormalMode
-import models.common.UserType
+import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.income.TurnoverIncomeAmountView
 
@@ -36,8 +38,6 @@ class TurnoverIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
 
   override val onwardRoute: Call = routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
-
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
@@ -46,4 +46,13 @@ class TurnoverIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
     val dataRequest: DataRequest[_] = fakeDataRequest(emptyUserAnswersAccrual)
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, returnAccountingType(businessId)(dataRequest)).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 }

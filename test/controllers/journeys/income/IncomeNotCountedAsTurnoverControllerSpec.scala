@@ -18,15 +18,10 @@ package controllers.journeys.income
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
 import pages.income.IncomeNotCountedAsTurnoverPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.income.IncomeNotCountedAsTurnoverView
 
@@ -45,9 +40,5 @@ class IncomeNotCountedAsTurnoverControllerSpec
     val view = application.injector.instanceOf[IncomeNotCountedAsTurnoverView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  mockService
-    .submitGatewayQuestionAndRedirect[Boolean](*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
-    onwardRoute).asFuture
 
 }
