@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import forms.standard.RadioButtonFormProvider
+import forms.standard.EnumerableFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
@@ -55,7 +55,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  val formProvider = new RadioButtonFormProvider()
+  val formProvider = new EnumerableFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[AdvertisingOrMarketing])
 

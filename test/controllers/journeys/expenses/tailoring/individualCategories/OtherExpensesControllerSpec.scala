@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.standard.RadioButtonFormProvider
+import forms.standard.EnumerableFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -49,7 +49,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val otherExpensesRoute = routes.OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new RadioButtonFormProvider()
+  val formProvider = new EnumerableFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[OtherExpenses])
 

@@ -18,7 +18,7 @@ package base.questionPages
 
 import base.ControllerSpec
 import controllers.standard.{routes => genRoutes}
-import forms.standard.RadioButtonFormProvider
+import forms.standard.EnumerableFormProvider
 import models.common.{Enumerable, UserType}
 import models.database.UserAnswers
 import pages.OneQuestionPage
@@ -37,7 +37,7 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
   def onwardRoute: Call
   def validAnswer: A
 
-  val form = new RadioButtonFormProvider
+  val form = new EnumerableFormProvider
 
   def createForm(userType: UserType): Form[A] = form(page, userType)
 

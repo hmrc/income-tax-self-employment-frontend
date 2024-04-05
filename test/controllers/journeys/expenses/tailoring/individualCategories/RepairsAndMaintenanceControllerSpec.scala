@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.standard.RadioButtonFormProvider
+import forms.standard.EnumerableFormProvider
 import models.NormalMode
 import models.common.UserType.{Agent, Individual}
 import models.common._
@@ -49,7 +49,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
   lazy val repairsAndMaintenanceRoute = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new RadioButtonFormProvider()
+  val formProvider = new EnumerableFormProvider()
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 

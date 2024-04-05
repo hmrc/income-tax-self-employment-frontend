@@ -19,7 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.standard.RadioButtonFormProvider
+import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.Journey
@@ -44,7 +44,7 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           hopChecker: HopCheckerAction,
-                                          formProvider: RadioButtonFormProvider,
+                                          formProvider: EnumerableFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: OfficeSuppliesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController

@@ -24,7 +24,7 @@ import play.api.data.Form
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RadioButtonFormProvider @Inject() extends Mappings {
+class EnumerableFormProvider @Inject() extends Mappings {
 
   def apply[A](page: OneQuestionPage[A], userType: UserType, altPrefix: Option[String] = None)(implicit `enum`: Enumerable[A]): Form[A] =
     Form("value" -> enumerable[A](userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required")))(enum))

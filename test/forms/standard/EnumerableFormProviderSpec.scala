@@ -16,17 +16,17 @@
 
 package forms.standard
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.EnumerableFormProviderBaseSpec
 import models.common.UserType
 import models.journeys.expenses.individualCategories.OtherExpenses
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.data.Form
 
-class RadioButtonFormProviderSpec extends RadioButtonFormProviderBaseSpec[OtherExpenses]("RadioButtonFormProvider") {
+class EnumerableFormProviderSpec extends EnumerableFormProviderBaseSpec[OtherExpenses]("RadioButtonFormProvider") {
 
   override def validValues: Seq[OtherExpenses] = OtherExpenses.values
   override def requiredError                   = "otherExpenses.error.required"
-  private def formProvider                     = new RadioButtonFormProvider()
+  private def formProvider                     = new EnumerableFormProvider()
 
   override def getFormProvider(user: UserType): Form[OtherExpenses] = formProvider(OtherExpensesPage, user)
 }

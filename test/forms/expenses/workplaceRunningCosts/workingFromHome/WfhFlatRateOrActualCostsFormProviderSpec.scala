@@ -16,13 +16,13 @@
 
 package forms.expenses.workplaceRunningCosts.workingFromHome
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.EnumerableFormProviderBaseSpec
 import models.common.UserType
 import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 import play.api.data.Form
 
 class WfhFlatRateOrActualCostsFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[WfhFlatRateOrActualCosts](
+    extends EnumerableFormProviderBaseSpec[WfhFlatRateOrActualCosts](
       "WfhFlatRateOrActualCostsFormProvider"
     ) {
 
