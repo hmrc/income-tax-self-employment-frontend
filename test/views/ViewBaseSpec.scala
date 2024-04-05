@@ -18,6 +18,7 @@ package views
 
 import base.SpecBase
 import base.SpecBase._
+import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.BeforeAndAfterAll
@@ -25,12 +26,13 @@ import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.AnyContent
 import play.twirl.api.Html
 import views.helper.writeHtmlToTempFile
 import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimView
 
 trait ViewBaseSpec extends PlaySpec with BeforeAndAfterAll {
-  implicit val fakeRequest = fakeDataRequest(emptyUserAnswers)
+  implicit val fakeRequest: DataRequest[AnyContent] = fakeDataRequest(emptyUserAnswers)
 
   var application: Application              = _
   var view: ZegvHowMuchDoYouWantToClaimView = _

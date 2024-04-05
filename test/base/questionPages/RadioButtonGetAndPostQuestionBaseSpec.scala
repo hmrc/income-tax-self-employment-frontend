@@ -110,7 +110,7 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: Str
           running(application) {
             val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val result    = route(application, request).value
-            val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
+            val boundForm = createForm(this.userType).bind(Map("value" -> "invalid value"))
             status(result) mustEqual BAD_REQUEST
             contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)
           }

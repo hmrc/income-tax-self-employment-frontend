@@ -45,7 +45,7 @@ object ExpensesTailoringAnswers {
       Json.writes[AsOneTotalAnswers].writes(answers) + (expensesCategoriesKey -> JsString(answers.expensesCategories.toString))
     }
 
-    implicit val reads = Json.reads[AsOneTotalAnswers]
+    implicit val reads: Reads[AsOneTotalAnswers] = Json.reads[AsOneTotalAnswers]
   }
 
   final case class ExpensesTailoringIndividualCategoriesAnswers(
@@ -77,7 +77,7 @@ object ExpensesTailoringAnswers {
       Json.writes[ExpensesTailoringIndividualCategoriesAnswers].writes(answers) + (expensesCategoriesKey -> JsString(
         answers.expensesCategories.toString))
     }
-    implicit val reads = Json.reads[ExpensesTailoringIndividualCategoriesAnswers]
+    implicit val reads: Reads[ExpensesTailoringIndividualCategoriesAnswers] = Json.reads[ExpensesTailoringIndividualCategoriesAnswers]
 
   }
 
