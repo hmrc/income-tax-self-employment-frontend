@@ -17,9 +17,8 @@
 package controllers.journeys.abroad
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import forms.standard.BooleanFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
-import models.requests.DataRequest
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
@@ -36,10 +35,6 @@ class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSp
   override def onPageLoadCall: Call = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = models.common.onwardRoute
-
-  override def createForm(user: UserType): Form[Boolean] = new BooleanFormProvider()(page, user)
-
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
@@ -48,7 +43,7 @@ class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSp
     view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
   }
 
-  mockService.submitBooleanAnswerAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[DataRequest[_]], *, *[TaxYear], *[Mode]) returns Redirect(
+  mockService.submitGatewayQuestionAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *[Mode]) returns Redirect(
     onwardRoute.url).asFuture
 
 }

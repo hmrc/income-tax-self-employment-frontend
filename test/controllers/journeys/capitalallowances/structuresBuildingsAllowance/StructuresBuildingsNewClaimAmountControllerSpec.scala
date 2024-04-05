@@ -48,8 +48,8 @@ import play.api.mvc.{Call, Request}
 import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountView
 
-class StructuresBuildingsNewClaimAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec(
-  "StructuresBuildingsNewClaimAmountController", StructuresBuildingsNewClaimAmountPage) {
+class StructuresBuildingsNewClaimAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec("StructuresBuildingsNewClaimAmountController", StructuresBuildingsNewClaimAmountPage) {
 
   override def onPageLoadRoute: String = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode).url
 
@@ -61,29 +61,30 @@ class StructuresBuildingsNewClaimAmountControllerSpec extends BigDecimalGetAndPo
 
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
-      "structuresBuildingsAllowance" -> true,
+      "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
-      "newStructuresBuildings" -> List(Json.obj(
-        "qualifyingUse" -> Some("2022-03-02"),
-        "specialTaxSiteLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA"))
-      ))
+      "newStructuresBuildings" -> List(
+        Json.obj(
+          "qualifyingUse"          -> Some("2022-03-02"),
+          "specialTaxSiteLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA"))
+        ))
     ))
 
   override def pageAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
-      "structuresBuildingsAllowance" -> true,
+      "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
       "newStructuresBuildings" -> List(Json.obj(
-        "qualifyingUse"           -> Some("2022-03-02"),
-        "specialTaxSiteLocation"          -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA")),
-        "newSiteClaimingAmount"           -> Some(amount)
+        "qualifyingUse"          -> Some("2022-03-02"),
+        "specialTaxSiteLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA")),
+        "newSiteClaimingAmount"  -> Some(amount)
       ))
     ))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[StructuresBuildingsNewClaimAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
   }
@@ -101,4 +102,3 @@ class StructuresBuildingsNewClaimAmountControllerSpec extends BigDecimalGetAndPo
     .asFuture
 
 }
-

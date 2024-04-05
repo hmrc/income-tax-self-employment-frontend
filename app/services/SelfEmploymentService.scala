@@ -29,7 +29,7 @@ import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
-import play.api.libs.json.{Format, Writes}
+import play.api.libs.json.{Format, Reads, Writes}
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
@@ -54,16 +54,16 @@ trait SelfEmploymentService {
                                           mode: Mode): Future[Result]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
-  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
-                                                  businessId: BusinessId,
-                                                  request: DataRequest[_],
-                                                  newAnswer: Boolean): Future[UserAnswers]
-  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
-                                     businessId: BusinessId,
-                                     request: DataRequest[_],
-                                     newAnswer: Boolean,
-                                     taxYear: TaxYear,
-                                     mode: Mode): Future[Result]
+  def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
+                                                       businessId: BusinessId,
+                                                       userAnswers: UserAnswers,
+                                                       newAnswer: A)(implicit reads: Reads[A], writes: Writes[A]): Future[UserAnswers]
+  def submitGatewayQuestionAndRedirect[A](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          userAnswers: UserAnswers,
+                                          newAnswer: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -117,22 +117,22 @@ class SelfEmploymentServiceImpl @Inject() (
         }
     }
 
-  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
-                                                  businessId: BusinessId,
-                                                  request: DataRequest[_],
-                                                  newAnswer: Boolean): Future[UserAnswers] =
+  def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
+                                                       businessId: BusinessId,
+                                                       userAnswers: UserAnswers,
+                                                       newAnswer: A)(implicit reads: Reads[A], writes: Writes[A]): Future[UserAnswers] =
     for {
-      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request, businessId)
+      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, userAnswers, businessId)
       updatedUserAnswers <- persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
     } yield updatedUserAnswers
 
-  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
-                                     businessId: BusinessId,
-                                     request: DataRequest[_],
-                                     newAnswer: Boolean,
-                                     taxYear: TaxYear,
-                                     mode: Mode): Future[Result] =
-    submitBooleanAnswerAndClearDependentAnswers(pageUpdated, businessId, request, newAnswer)
+  def submitGatewayQuestionAndRedirect[A](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          userAnswers: UserAnswers,
+                                          newAnswer: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result] =
+    submitGatewayQuestionAndClearDependentAnswers(pageUpdated, businessId, userAnswers, newAnswer)
       .map { updatedAnswers =>
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
       }

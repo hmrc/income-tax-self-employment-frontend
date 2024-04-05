@@ -27,8 +27,9 @@ import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
 import pages.{OneQuestionPage, QuestionPage}
-import play.api.libs.json.{Format, JsObject, Json, Writes}
+import play.api.libs.json._
 import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,7 +43,9 @@ case class SelfEmploymentServiceStub(
     getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
     getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
-    getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL")))
+    getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
+    getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
+    getResultFromGatewaySubmission: Result = Redirect(onwardRoute)
 ) extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -66,17 +69,19 @@ case class SelfEmploymentServiceStub(
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
     Future(getUserAnswersWithAccrual)
 
-  def submitBooleanAnswerAndClearDependentAnswers(pageUpdated: OneQuestionPage[Boolean],
-                                                  businessId: BusinessId,
-                                                  request: DataRequest[_],
-                                                  newAnswer: Boolean): Future[UserAnswers] = ???
+  def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
+                                                       businessId: BusinessId,
+                                                       userAnswers: UserAnswers,
+                                                       newAnswer: A)(implicit reads: Reads[A], writes: Writes[A]): Future[UserAnswers] =
+    Future(getUserAnswersWithClearedData)
 
-  def submitBooleanAnswerAndRedirect(pageUpdated: OneQuestionPage[Boolean],
-                                     businessId: BusinessId,
-                                     request: DataRequest[_],
-                                     newAnswer: Boolean,
-                                     taxYear: TaxYear,
-                                     mode: Mode): Future[Result] = ???
+  def submitGatewayQuestionAndRedirect[A](pageUpdated: OneQuestionPage[A],
+                                          businessId: BusinessId,
+                                          userAnswers: UserAnswers,
+                                          newAnswer: A,
+                                          taxYear: TaxYear,
+                                          mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result] =
+    Future(getResultFromGatewaySubmission)
 
   def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
                                           businessId: BusinessId,

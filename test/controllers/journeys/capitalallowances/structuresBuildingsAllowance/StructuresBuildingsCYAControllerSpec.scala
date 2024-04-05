@@ -33,16 +33,16 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
-      "structuresBuildingsAllowance" -> true,
+      "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
-      "newStructuresBuildings"                -> List(Json.obj(
-        "qualifyingUse" -> Some("2022-03-02"),
-        "newStructureBuildingLocation" -> Some(StructuresBuildingsLocation(Some("name"), Some("number"), "GU84NB")),
+      "newStructuresBuildings" -> List(Json.obj(
+        "qualifyingUse"                      -> Some("2022-03-02"),
+        "newStructureBuildingLocation"       -> Some(StructuresBuildingsLocation(Some("name"), Some("number"), "GU84NB")),
         "newStructureBuildingClaimingAmount" -> Some(BigDecimal(2000))
       )),
-      "structuresBuildingsClaimed" -> true,
-      "structuresBuildingsPreviousClaimUse" -> true,
-      "structuresBuildingsPreviousClaimedAmount"               -> BigDecimal(1000)
+      "structuresBuildingsClaimed"               -> true,
+      "structuresBuildingsPreviousClaimUse"      -> true,
+      "structuresBuildingsPreviousClaimedAmount" -> BigDecimal(1000)
     ))
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StructuresBuildingsCYAController.onPageLoad

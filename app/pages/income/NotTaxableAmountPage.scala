@@ -16,8 +16,18 @@
 
 package pages.income
 
-import pages.OneQuestionPage
+import controllers.journeys.income.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import play.api.mvc.Call
 
-case object NotTaxableAmountPage extends OneQuestionPage[BigDecimal] {
+case object NotTaxableAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "notTaxableAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
 }

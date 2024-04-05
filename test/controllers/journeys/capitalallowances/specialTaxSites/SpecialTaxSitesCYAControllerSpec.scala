@@ -16,9 +16,11 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.journeys.Journey
+import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
 import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.Messages
@@ -27,14 +29,14 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.specialTaxSites._
 
-class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
 
-  override val testDataCases: List[JsObject] = List(
-    Json.obj(
-      "specialTaxSites" -> true,
-      "newSpecialTaxSites" -> List(Json.obj(
+  override val submissionData: JsObject = Json.obj(
+    "specialTaxSites" -> true,
+    "newSpecialTaxSites" -> List(
+      Json.obj(
         "contractForBuildingConstruction" -> Some(false),
         "contractStartDate"               -> None,
         "constructionStartDate"           -> Some("2022-03-02"),
@@ -42,10 +44,12 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
         "specialTaxSiteLocation"          -> Some(SpecialTaxSiteLocation(Some("name"), Some("number"), "GU84NB")),
         "newSiteClaimingAmount"           -> Some(BigDecimal(2000))
       )),
-      "doYouHaveAContinuingClaim"                -> true,
-      "continueClaimingAllowanceForExistingSite" -> true,
-      "existingSiteClaimingAmount"               -> BigDecimal(1000)
-    ))
+    "doYouHaveAContinuingClaim"                -> true,
+    "continueClaimingAllowanceForExistingSite" -> true,
+    "existingSiteClaimingAmount"               -> BigDecimal(1000)
+  )
+
+  override val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.SpecialTaxSitesCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.SpecialTaxSitesCYAController.onSubmit
@@ -62,5 +66,7 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
       ),
       classes = "govuk-!-margin-bottom-7"
     )
+
+  override val journey: Journey = CapitalAllowancesSpecialTaxSites
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.structuresBuildingsAllowance
+package controllers.journeys.capitalallowances.specialTaxSites
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.implicits.catsSyntaxOptionId
@@ -23,26 +23,27 @@ import models.common.BusinessId
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
-import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimPage
+import pages.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSitePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimView
+import views.html.journeys.capitalallowances.specialTaxSites.ContinueClaimingAllowanceForExistingSiteView
 
-class StructuresBuildingsEligibleClaimControllerSpec
-    extends BooleanGetAndPostQuestionBaseSpec("StructuresBuildingsEligibleClaimController", StructuresBuildingsEligibleClaimPage) {
+class DoYouHaveAContinuingClaimControllerSpec
+    extends BooleanGetAndPostQuestionBaseSpec("ContinueClaimingAllowanceForExistingSiteController", ContinueClaimingAllowanceForExistingSitePage) {
 
-  override def onPageLoadCall: Call = routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.ContinueClaimingAllowanceForExistingSiteController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, 0, NormalMode)
+  override def onSubmitCall: Call = routes.ContinueClaimingAllowanceForExistingSiteController.onSubmit(taxYear, businessId, NormalMode)
+
+  override def onwardRoute: Call = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[StructuresBuildingsEligibleClaimView]
+    val view = application.injector.instanceOf[ContinueClaimingAllowanceForExistingSiteView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 

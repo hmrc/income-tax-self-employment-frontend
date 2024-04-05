@@ -16,9 +16,31 @@
 
 package pages.income
 
+import controllers.journeys.income.routes
+import controllers.standard
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.journeys.income.TradingAllowance
-import pages.OneQuestionPage
+import play.api.mvc.Call
+import queries.Settable
 
-case object TradingAllowancePage extends OneQuestionPage[TradingAllowance] {
+case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
   override def toString: String = "tradingAllowance"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    userAnswers.get(this, businessId) match {
+      case Some(TradingAllowance.UseTradingAllowance) => routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
+      case Some(TradingAllowance.DeclareExpenses)     => routes.IncomeCYAController.onPageLoad(taxYear, businessId)
+      case None                                       => standard.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId) match {
+      case Some(TradingAllowance.UseTradingAllowance) => HowMuchTradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+      case Some(TradingAllowance.DeclareExpenses)     => true
+      case None                                       => false
+    }
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage)
 }

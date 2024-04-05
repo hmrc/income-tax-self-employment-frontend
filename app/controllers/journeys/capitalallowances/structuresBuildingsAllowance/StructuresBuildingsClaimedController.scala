@@ -24,7 +24,11 @@ import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.CapitalAllowancesNavigator
-import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsClaimedPage, StructuresBuildingsPreviousClaimUsePage, StructuresBuildingsPreviousClaimedAmountPage}
+import pages.capitalallowances.structuresBuildingsAllowance.{
+  StructuresBuildingsClaimedPage,
+  StructuresBuildingsPreviousClaimUsePage,
+  StructuresBuildingsPreviousClaimedAmountPage
+}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
