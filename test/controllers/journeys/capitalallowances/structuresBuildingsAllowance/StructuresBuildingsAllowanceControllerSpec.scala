@@ -17,9 +17,7 @@
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceFormProvider
 import models.NormalMode
-import models.common.UserType
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage
 import play.api.Application
@@ -34,8 +32,6 @@ class StructuresBuildingsAllowanceControllerSpec
 
   override def onPageLoadCall: Call = routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.StructuresBuildingsAllowanceController.onSubmit(taxYear, businessId, NormalMode)
-
-  override def createForm(user: UserType): Form[Boolean] = new StructuresBuildingsAllowanceFormProvider()(user)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],

@@ -16,9 +16,9 @@
 
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceFormProvider
+import controllers.journeys.fillForm
+import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.requests.DataRequest
@@ -44,33 +44,32 @@ class StructuresBuildingsAllowanceController @Inject() (override val messagesApi
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         service: SelfEmploymentService,
-                                                        formProvider: StructuresBuildingsAllowanceFormProvider,
+                                                        formProvider: BooleanFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: StructuresBuildingsAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
+  private val page = StructuresBuildingsAllowancePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form = request.userAnswers
-        .get(StructuresBuildingsAllowancePage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
-
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      formProvider(request.userType)
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
           answer =>
             for {
               (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
-              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, StructuresBuildingsAllowancePage)
-            } yield Redirect(navigator.nextPage(StructuresBuildingsAllowancePage, redirectMode, updatedUserAnswers, taxYear, businessId))
+              updatedUserAnswers                <- service.persistAnswer(businessId, editedUserAnswers, answer, page)
+            } yield Redirect(navigator.nextPage(page, redirectMode, updatedUserAnswers, taxYear, businessId))
         )
   }
 
@@ -88,7 +87,7 @@ class StructuresBuildingsAllowanceController @Inject() (override val messagesApi
       case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
       case true  => Future(request.userAnswers)
     }
-    val redirectMode = request.getValue(StructuresBuildingsAllowancePage, businessId) match {
+    val redirectMode = request.getValue(page, businessId) match {
       case Some(false) if currentAnswer => NormalMode
       case _                            => mode
     }
