@@ -16,14 +16,9 @@
 
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
-import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import cats.implicits.catsSyntaxOptionId
-import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceFormProvider
+import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage
 import play.api.Application
 import play.api.data.Form
@@ -33,28 +28,18 @@ import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowanceView
 
 class StructuresBuildingsAllowanceControllerSpec
-    extends RadioButtonGetAndPostQuestionBaseSpec("StructuresBuildingsAllowanceController", StructuresBuildingsAllowancePage) {
+    extends BooleanGetAndPostQuestionBaseSpec("StructuresBuildingsAllowanceController", StructuresBuildingsAllowancePage) {
 
   override def onPageLoadCall: Call = routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call   = routes.StructuresBuildingsAllowanceController.onSubmit(taxYear, businessId, NormalMode)
 
-  override def onwardRoute: Call = models.common.onwardRoute
-
-  override val validAnswer = true
-
-  override def createForm(user: UserType): Form[Boolean] = new StructuresBuildingsAllowanceFormProvider()(user)
-
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[StructuresBuildingsAllowanceView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some).success.value
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns filledUserAnswers.asFuture
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

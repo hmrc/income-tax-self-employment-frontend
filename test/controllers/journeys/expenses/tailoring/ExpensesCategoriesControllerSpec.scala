@@ -51,7 +51,6 @@ class ExpensesCategoriesControllerSpec
   override def onwardRoute: Call              = routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
   override def validAnswer: ExpensesTailoring = NoExpenses
   override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))

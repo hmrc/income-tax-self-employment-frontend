@@ -14,42 +14,37 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.specialTaxSites
+package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.standard.CurrencyFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
+import controllers.returnAccountingType
+import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
-import pages.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountPage
+import pages.income.TurnoverIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountView
+import views.html.journeys.income.TurnoverIncomeAmountView
 
-class ExistingSiteClaimingAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ExistingSiteClaimingAmountController",
-      ExistingSiteClaimingAmountPage
-    ) {
+class TurnoverIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec("TurnoverIncomeAmountController", TurnoverIncomeAmountPage) {
 
-  lazy val onPageLoadRoute: String = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute: String   = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.TurnoverIncomeAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
-
-  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
+  override val onwardRoute: Call = routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ExistingSiteClaimingAmountView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+    val view                        = application.injector.instanceOf[TurnoverIncomeAmountView]
+    val dataRequest: DataRequest[_] = fakeDataRequest(emptyUserAnswersAccrual)
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, returnAccountingType(businessId)(dataRequest)).toString()
   }
 
   mockService.persistAnswerAndRedirect(

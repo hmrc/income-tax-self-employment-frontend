@@ -14,41 +14,48 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.specialTaxSites
+package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import forms.standard.CurrencyFormProvider
+import cats.implicits.catsSyntaxOptionId
 import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
-import pages.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountPage
+import pages.income.{TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountView
+import views.html.journeys.income.TradingAllowanceAmountView
 
-class ExistingSiteClaimingAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ExistingSiteClaimingAmountController",
-      ExistingSiteClaimingAmountPage
-    ) {
+class TradingAllowanceAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec("TradingAllowanceAmountController", TradingAllowanceAmountPage) {
 
-  lazy val onPageLoadRoute: String = routes.ExistingSiteClaimingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute: String   = routes.ExistingSiteClaimingAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.TradingAllowanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute: Call = routes.SpecialTaxSitesCYAController.onPageLoad(taxYear, businessId)
+  override val onwardRoute: Call = routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
-  override def createForm(userType: UserType): Form[BigDecimal] = new CurrencyFormProvider()(page, userType)
+  override def baseAnswers: UserAnswers = emptyUserAnswersAccrual.set(TurnoverIncomeAmountPage, amount + 1, businessId.some).success.value
+
+  override def createForm(userType: UserType): Form[BigDecimal] = form(
+    page,
+    userType,
+    maxValue = amount + 1,
+    minValueError = s"tradingAllowanceAmount.error.lessThanZero.$userType",
+    maxValueError = s"tradingAllowanceAmount.error.overTurnover.$userType",
+    nonNumericError = s"tradingAllowanceAmount.error.nonNumeric.$userType"
+  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ExistingSiteClaimingAmountView]
+    val view = application.injector.instanceOf[TradingAllowanceAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
