@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring.individualCategories
+package forms.standard
 
 import forms.mappings.Mappings
-import models.common.UserType
-import models.journeys.expenses.individualCategories.OtherExpenses
+import models.common.{Enumerable, UserType}
+import pages.OneQuestionPage
 import play.api.data.Form
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class OtherExpensesFormProvider @Inject() extends Mappings {
+@Singleton
+class RadioButtonFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[OtherExpenses] =
-    Form(
-      "value" -> enumerable[OtherExpenses](s"otherExpenses.error.required.$userType")
-    )
-
+  def apply[A](page: OneQuestionPage[A], userType: UserType, altPrefix: Option[String] = None)(implicit `enum`: Enumerable[A]): Form[A] =
+    Form("value" -> enumerable[A](userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required")))(enum))
 }

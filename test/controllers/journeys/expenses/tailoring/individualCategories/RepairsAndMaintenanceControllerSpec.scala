@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import controllers.standard
-import forms.expenses.tailoring.individualCategories.RepairsAndMaintenanceFormProvider
+import forms.standard.RadioButtonFormProvider
 import models.NormalMode
 import models.common.UserType.{Agent, Individual}
 import models.common._
@@ -49,7 +49,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
   lazy val repairsAndMaintenanceRoute = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new RepairsAndMaintenanceFormProvider()
+  val formProvider = new RadioButtonFormProvider()
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -65,14 +65,16 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
   val userScenarios = Seq(
     UserScenario(
       userType = Individual,
-      formProvider(Individual),
+      formProvider(RepairsAndMaintenancePage, Individual),
       AccountingType.Accrual,
-      baseUserAnswers = emptyUserAnswersAccrual.upsertFragment(businessId, baseAnswers)),
+      baseUserAnswers = emptyUserAnswersAccrual.upsertFragment(businessId, baseAnswers)
+    ),
     UserScenario(
       userType = Agent,
-      formProvider(Agent),
+      formProvider(RepairsAndMaintenancePage, Agent),
       AccountingType.Cash,
-      baseUserAnswers = emptyUserAnswersCash.upsertFragment(businessId, baseAnswers))
+      baseUserAnswers = emptyUserAnswersCash.upsertFragment(businessId, baseAnswers)
+    )
   )
 
   "RepairsAndMaintenance Controller" - {

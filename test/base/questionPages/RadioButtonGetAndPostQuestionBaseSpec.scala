@@ -18,9 +18,10 @@ package base.questionPages
 
 import base.ControllerSpec
 import controllers.standard.{routes => genRoutes}
-import models.common.UserType
+import forms.standard.RadioButtonFormProvider
+import models.common.{Enumerable, UserType}
 import models.database.UserAnswers
-import pages.QuestionPage
+import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -29,14 +30,16 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 // TODO: Clean this base class up.
-abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](controllerName: String, page: OneQuestionPage[A]) extends ControllerSpec {
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
   def onwardRoute: Call
   def validAnswer: A
 
-  def createForm(userType: UserType): Form[A]
+  val form = new RadioButtonFormProvider
+
+  def createForm(userType: UserType): Form[A] = form(page, userType)
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
