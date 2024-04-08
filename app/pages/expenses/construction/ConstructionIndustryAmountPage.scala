@@ -16,9 +16,28 @@
 
 package pages.expenses.construction
 
+import controllers.journeys.expenses.construction.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.DisallowableSubcontractorCostsPage
+import play.api.mvc.Call
 
 case object ConstructionIndustryAmountPage extends OneQuestionPage[BigDecimal] {
 
   override def toString: String = "constructionIndustryAmount"
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else cyaPage(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || ConstructionIndustryDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(DisallowableSubcontractorCostsPage, businessId).getOrElse(false)
 }

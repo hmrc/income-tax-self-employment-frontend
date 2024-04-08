@@ -32,6 +32,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsObject
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -55,7 +56,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
 
-      val result = underTest.loadTaskList(taxYear, fakeOptionalRequest).value.futureValue
+      val result = await(underTest.loadTaskList(taxYear, fakeOptionalRequest).value)
 
       val expected = TaskListWithRequest(aTaskList, fakeOptionalRequest)
       result shouldBe Right(expected)

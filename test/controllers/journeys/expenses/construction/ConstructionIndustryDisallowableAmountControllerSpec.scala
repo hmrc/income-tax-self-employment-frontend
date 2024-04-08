@@ -18,14 +18,17 @@ package controllers.journeys.expenses.construction
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.construction.ConstructionIndustryDisallowableAmountFormProvider
-import models.NormalMode
-import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.{Mode, NormalMode}
+import models.common.{BusinessId, TaxYear, UserType}
+import models.database.UserAnswers
+import models.requests.DataRequest
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
@@ -41,11 +44,7 @@ class ConstructionIndustryDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
-
-  override def baseAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
+  override def baseAnswers: UserAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
 
   override def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
 
@@ -56,5 +55,14 @@ class ConstructionIndustryDisallowableAmountControllerSpec
     val view = application.injector.instanceOf[ConstructionIndustryDisallowableAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 
 }

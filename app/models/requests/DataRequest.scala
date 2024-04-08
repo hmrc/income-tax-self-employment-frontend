@@ -27,6 +27,8 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
 import queries.Gettable
 
+import scala.concurrent.{ExecutionContext, Future}
+
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
     extends WrappedRequest[A](request) {
   val userType: UserType   = user.userType
@@ -51,5 +53,8 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
     getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
+
+  def valueOrFutureRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId)(implicit ec: ExecutionContext): Either[Future[Result], B] =
+    getValue(page, businessId).toRight(Future(Redirect(standard.routes.JourneyRecoveryController.onPageLoad())))
 
 }

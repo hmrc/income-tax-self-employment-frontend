@@ -22,27 +22,25 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class DepreciationDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                          selfEmploymentService: SelfEmploymentService,
-                                                          navigator: ExpensesNavigator,
+                                                          val controllerComponents: MessagesControllerComponents,
+                                                          service: SelfEmploymentService,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction,
                                                           formProvider: CurrencyFormProvider,
-                                                          val controllerComponents: MessagesControllerComponents,
-                                                          view: DepreciationDisallowableAmountView)(implicit ec: ExecutionContext)
+                                                          view: DepreciationDisallowableAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,16 +55,11 @@ class DepreciationDisallowableAmountController @Inject() (override val messagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, page)
-          .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
-
       form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value => handleSuccess(value)
+          value => service.persistAnswerAndRedirect(page, businessId, request, value, taxYear, mode)
         )
   }
 

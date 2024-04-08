@@ -17,13 +17,16 @@
 package controllers.journeys.expenses.depreciation
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import models.NormalMode
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.common.{BusinessId, TaxYear}
+import models.requests.DataRequest
+import models.{Mode, NormalMode}
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
@@ -38,10 +41,6 @@ class DepreciationDisallowableAmountControllerSpec
 
   override val onwardRoute: Call = routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
-
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
@@ -49,5 +48,14 @@ class DepreciationDisallowableAmountControllerSpec
     val view = application.injector.instanceOf[DepreciationDisallowableAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 
 }

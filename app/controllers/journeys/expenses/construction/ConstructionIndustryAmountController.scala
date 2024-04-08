@@ -22,7 +22,6 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,18 +30,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class ConstructionIndustryAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                      selfEmploymentService: SelfEmploymentService,
-                                                      navigator: ExpensesNavigator,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      service: SelfEmploymentService,
                                                       identify: IdentifierAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: CurrencyFormProvider,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: ConstructionIndustryAmountView)(implicit ec: ExecutionContext)
+                                                      view: ConstructionIndustryAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -61,10 +59,7 @@ class ConstructionIndustryAmountController @Inject() (override val messagesApi: 
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, page)
-              .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
+          value => service.persistAnswerAndRedirect(page, businessId, request, value, taxYear, mode)
         )
   }
 }

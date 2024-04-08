@@ -17,14 +17,16 @@
 package controllers.journeys.expenses.advertisingOrMarketing
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import models.NormalMode
-import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.{Mode, NormalMode}
+import models.common.{BusinessId, TaxYear, UserType}
+import models.requests.DataRequest
+import org.mockito.IdiomaticMockito.StubbingOps
+import pages.OneQuestionPage
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
 
@@ -39,10 +41,6 @@ class AdvertisingAmountControllerSpec
 
   override val onwardRoute: Call = routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
-
   override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType, prefix = Some("advertisingAmount"))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
@@ -52,5 +50,14 @@ class AdvertisingAmountControllerSpec
     val view = application.injector.instanceOf[AdvertisingAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
+
+  mockService.persistAnswerAndRedirect(
+    *[OneQuestionPage[BigDecimal]],
+    *[BusinessId],
+    *[DataRequest[_]],
+    *,
+    *[TaxYear],
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 
 }
