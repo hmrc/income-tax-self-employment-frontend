@@ -16,13 +16,13 @@
 
 package forms.expenses.tailoring
 
-import base.forms.RadioButtonFormProviderBaseSpec
+import base.forms.EnumerableFormProviderBaseSpec
 import models.common.UserType
 import models.journeys.expenses.ExpensesTailoring
 import play.api.data.Form
 
 class ExpensesCategoriesFormProviderSpec
-    extends RadioButtonFormProviderBaseSpec[ExpensesTailoring](
+    extends EnumerableFormProviderBaseSpec[ExpensesTailoring](
       "ExpensesCategoriesFormProvider"
     ) {
 

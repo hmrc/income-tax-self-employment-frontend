@@ -19,11 +19,12 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
-import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
+import forms.standard.EnumerableFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.Journey
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse.enumerable
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,19 +45,20 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             hopChecker: HopCheckerAction,
-                                            formProvider: GoodsToSellOrUseFormProvider,
+                                            formProvider: EnumerableFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: GoodsToSellOrUseView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
   private val page = GoodsToSellOrUsePage
+  private val form = (userType: UserType) => formProvider[GoodsToSellOrUse](page, userType)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-      val form = fillForm(page, businessId, formProvider(request.userType))
-      Ok(view(form, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
+      val filledForm = fillForm(page, businessId, form(request.userType))
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -66,7 +68,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
           .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUsePage)
           .map(updated => Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updated, taxYear, businessId)))
 
-      formProvider(request.userType)
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors =>

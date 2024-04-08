@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import forms.expenses.tailoring.individualCategories.AdvertisingOrMarketingFormProvider
+import forms.standard.EnumerableFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
@@ -55,13 +55,13 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
-  val formProvider = new AdvertisingOrMarketingFormProvider()
+  val formProvider = new EnumerableFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[AdvertisingOrMarketing])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(AdvertisingOrMarketingPage, Individual)),
+    UserScenario(userType = Agent, formProvider(AdvertisingOrMarketingPage, Agent))
   )
 
   def baseAnswers: UserAnswers = buildUserAnswers(

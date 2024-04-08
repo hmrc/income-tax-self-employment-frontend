@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.OfficeSupplies
@@ -63,8 +61,6 @@ class OfficeSuppliesControllerSpec
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-
-  def createForm(userType: UserType): Form[OfficeSupplies] = new OfficeSuppliesFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

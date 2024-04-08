@@ -19,11 +19,12 @@ package base.questionPages
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
+import forms.standard.EnumerableFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, Enumerable, TaxYear, UserType}
 import models.database.UserAnswers
 import org.mockito.IdiomaticMockito.StubbingOps
-import pages.{OneQuestionPage, QuestionPage}
+import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -35,14 +36,16 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-abstract case class RadioButtonGetAndPostQuestionBaseSpec[A](controllerName: String, page: QuestionPage[A]) extends ControllerSpec {
+abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](controllerName: String, page: OneQuestionPage[A]) extends ControllerSpec {
 
   def onPageLoadCall: Call
   def onSubmitCall: Call
   def onwardRoute: Call
   def validAnswer: A
 
-  def createForm(userType: UserType): Form[A]
+  val form = new EnumerableFormProvider
+
+  def createForm(userType: UserType): Form[A] = form(page, userType)
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
