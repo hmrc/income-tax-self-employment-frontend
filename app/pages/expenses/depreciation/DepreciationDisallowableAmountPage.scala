@@ -16,8 +16,19 @@
 
 package pages.expenses.depreciation
 
+import controllers.journeys.expenses.depreciation.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object DepreciationDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "depreciationDisallowableAmount"
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }
