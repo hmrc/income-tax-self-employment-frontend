@@ -42,6 +42,8 @@ class StructuresBuildingsQualifyingUseDateControllerSpec
 
   override def onwardRoute: Call = routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
+  override def validDate: LocalDate = LocalDate.of(2020, 2, 2)
+
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj("structuresBuildingsAllowance" -> true, "structuresBuildingsEligibleClaim" -> true))
 
@@ -49,7 +51,7 @@ class StructuresBuildingsQualifyingUseDateControllerSpec
     Json.obj(
       "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
-      "newStructuresBuildings"           -> List(Json.obj("qualifyingUse" -> Some("2022-03-02")))
+      "newStructuresBuildings"           -> List(Json.obj("qualifyingUse" -> Some("2020-02-02")))
     ))
 
   override def createForm(userType: UserType): Form[LocalDate] =
@@ -67,8 +69,8 @@ class StructuresBuildingsQualifyingUseDateControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
   }
 
-  val mockStsService: StructuresBuildingsService = mock[StructuresBuildingsService]
-  mockStsService.updateAndRedirectWithIndex(
+  val mockSbsService: StructuresBuildingsService = mock[StructuresBuildingsService]
+  mockSbsService.updateAndRedirectWithIndex(
     *[UserAnswers],
     *[LocalDate],
     *[BusinessId],

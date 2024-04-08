@@ -65,8 +65,8 @@ class StructuresBuildingsNewClaimAmountControllerSpec
       "structuresBuildingsEligibleClaim" -> true,
       "newStructuresBuildings" -> List(
         Json.obj(
-          "qualifyingUse"          -> Some("2022-03-02"),
-          "specialTaxSiteLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA"))
+          "qualifyingUse"               -> Some("2022-03-02"),
+          "structuresBuildingsLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA"))
         ))
     ))
 
@@ -75,9 +75,9 @@ class StructuresBuildingsNewClaimAmountControllerSpec
       "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
       "newStructuresBuildings" -> List(Json.obj(
-        "qualifyingUse"          -> Some("2022-03-02"),
-        "specialTaxSiteLocation" -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA")),
-        "newSiteClaimingAmount"  -> Some(amount)
+        "qualifyingUse"                      -> Some("2022-03-02"),
+        "structuresBuildingsLocation"        -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA")),
+        "newStructureBuildingClaimingAmount" -> Some(amount)
       ))
     ))
 
@@ -89,8 +89,8 @@ class StructuresBuildingsNewClaimAmountControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
   }
 
-  val mockStsService: StructuresBuildingsService = mock[StructuresBuildingsService]
-  mockStsService.updateStructureAnswerWithIndex(
+  val mockSbsService: StructuresBuildingsService = mock[StructuresBuildingsService]
+  mockSbsService.updateStructureAnswerWithIndex(
     *[UserAnswers],
     *[BigDecimal],
     *[BusinessId],
