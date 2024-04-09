@@ -36,10 +36,20 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class StructuresBuildingsService @Inject() (sessionRepository: SessionRepositoryBase, service: SelfEmploymentService)(implicit ec: ExecutionContext) {
 
-  private[structuresBuildingsAllowance] def submitAnswerAndClearDependentAnswers(pageUpdated: StructuresBuildingsBasePage[Boolean],
-                                                                                 businessId: BusinessId,
-                                                                                 request: DataRequest[_],
-                                                                                 newAnswer: Boolean): Future[UserAnswers] =
+  def updateAndRedirectWithIndex[A](userAnswers: UserAnswers,
+                                    answer: A,
+                                    businessId: BusinessId,
+                                    taxYear: TaxYear,
+                                    index: Int,
+                                    page: StructuresBuildingsBasePage[A]): Future[Result] =
+    updateStructureAnswerWithIndex(userAnswers, answer, businessId, index, page) map { userAnswers =>
+      page.nextPageWithIndex(userAnswers, businessId, taxYear, index)
+    }
+
+  def submitAnswerAndClearDependentAnswers(pageUpdated: StructuresBuildingsBasePage[Boolean],
+                                           businessId: BusinessId,
+                                           request: DataRequest[_],
+                                           newAnswer: Boolean): Future[UserAnswers] =
     for {
       editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, request.userAnswers, businessId)
       updatedUserAnswers <- service.persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)

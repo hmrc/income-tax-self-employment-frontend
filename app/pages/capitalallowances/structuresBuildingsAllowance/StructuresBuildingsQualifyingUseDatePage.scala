@@ -17,10 +17,10 @@
 package pages.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
-import models.{CheckMode, Mode, NormalMode}
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
@@ -32,15 +32,14 @@ object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBaseP
   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
     structure.qualifyingUse.isDefined & StructuresBuildingsLocationPage.hasAllFurtherAnswers(structure)
 
-  def nextPageWithIndex(mode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
+  override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
     getStructureFromIndex(userAnswers, businessId, index) match {
       case None => redirectToRecoveryPage(s"Structure of index $index not found when redirecting from StructuresBuildingsQualifyingUseDatePage")
       case Some(structure) =>
-        Redirect(mode match {
-          case CheckMode if hasAllFurtherAnswers(structure) =>
+        Redirect(
+          if (hasAllFurtherAnswers(structure))
             routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index)
-          case NormalMode => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
-          case _          => routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
-        })
+          else routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
+        )
     }
 }

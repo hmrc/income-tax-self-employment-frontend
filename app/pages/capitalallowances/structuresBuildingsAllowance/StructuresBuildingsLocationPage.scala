@@ -24,7 +24,7 @@ import models.journeys.capitalallowances.structuresBuildingsAllowance.{NewStruct
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[StructuresBuildingsLocation] {
-  override def toString: String = "specialTaxSiteLocation"
+  override def toString: String = "structuresBuildingsLocation"
 
   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
     structure.newStructureBuildingLocation.isDefined && StructuresBuildingsNewStructuresPage.hasAllFurtherAnswers(
@@ -33,7 +33,7 @@ object StructuresBuildingsLocationPage extends StructuresBuildingsBasePage[Struc
 
   override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
     getStructureFromIndex(userAnswers, businessId, index) match {
-      case None => redirectToRecoveryPage("NewSpecialTaxSitesList data not found when redirecting from SpecialTaxSiteLocationPage")
+      case None => redirectToRecoveryPage("NewStructuresBuildingsList data not found when redirecting from StructuresBuildingsLocationPage")
       case Some(structure) =>
         Redirect(
           if (hasAllFurtherAnswers(structure))
