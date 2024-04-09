@@ -16,17 +16,13 @@
 
 package pages
 
-import models.common.BusinessId
-import models.journeys.CompletedSectionState
-import play.api.libs.json.JsPath
+import controllers.journeys
+import models.common.TaxYear
+import play.api.mvc.Call
 
-case object SectionCompletedStatePage extends QuestionPage[CompletedSectionState] {
+case object SectionCompletedStatePage extends OneQuestionPage[Boolean] {
 
-  override def path(businessId: Option[BusinessId] = None): JsPath =
-    businessId match {
-      case Some(id) => JsPath \ id.value \ toString
-      case None     => JsPath \ toString
-    }
+  def nextPage(taxYear: TaxYear): Call = journeys.routes.TaskListController.onPageLoad(taxYear)
 
   override def toString: String = "sectionCompletedState"
 }
