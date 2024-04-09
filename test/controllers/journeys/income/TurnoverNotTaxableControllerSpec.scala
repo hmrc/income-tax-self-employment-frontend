@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.journeys.capitalallowances.electricVehicleChargePoints
+package controllers.journeys.income
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import pages.capitalallowances.electricVehicleChargePoints.EVCPAllowancePage
+import pages.income.TurnoverNotTaxablePage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
-import views.html.journeys.capitalallowances.electricVehicleChargePoints.EVCPAllowanceView
+import views.html.journeys.income.TurnoverNotTaxableView
 
-class EVCPAllowanceControllerSpec extends BooleanGetAndPostQuestionBaseSpec("EVCPAllowanceController", EVCPAllowancePage) {
+class TurnoverNotTaxableControllerSpec extends BooleanGetAndPostQuestionBaseSpec("TurnoverNotTaxableController", TurnoverNotTaxablePage) {
 
-  override def onPageLoadCall: Call = routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.EVCPAllowanceController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.TurnoverNotTaxableController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def onSubmitCall: Call = routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, NormalMode)
+
+  override def onwardRoute: Call = routes.NotTaxableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[EVCPAllowanceView]
+    val view = application.injector.instanceOf[TurnoverNotTaxableView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  override val bindings: List[Binding[_]] = List(
-    bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))
-  )
 }

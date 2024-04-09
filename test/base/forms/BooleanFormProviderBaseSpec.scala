@@ -22,6 +22,7 @@ import forms.behaviours.BooleanFieldBehaviours
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import play.api.data.{Form, FormError}
+import play.api.i18n.Messages
 
 abstract class BooleanFormProviderBaseSpec(formProvider: String) extends BooleanFieldBehaviours with SpecBase {
 
@@ -29,7 +30,7 @@ abstract class BooleanFormProviderBaseSpec(formProvider: String) extends Boolean
 
   val invalidErrorKey = ErrorBoolean
 
-  implicit val messages = messagesStubbed
+  implicit val messages: Messages = messagesStubbed
 
   def requiredErrorKey: String
 

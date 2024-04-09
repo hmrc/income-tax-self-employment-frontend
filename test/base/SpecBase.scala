@@ -26,7 +26,6 @@ import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.journeys.Journey
 import models.requests.{DataRequest, OptionalDataRequest}
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -48,11 +47,12 @@ import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.ZonedDateTime
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear           = TaxYear(LocalDate.now().getYear)
+  val taxYear: TaxYear           = TaxYear(ZonedDateTime.now().getYear)
   val userAnswersId              = "id"
   val someNino: Nino             = Nino("someNino")
   val mtditid                    = Mtditid("someId")

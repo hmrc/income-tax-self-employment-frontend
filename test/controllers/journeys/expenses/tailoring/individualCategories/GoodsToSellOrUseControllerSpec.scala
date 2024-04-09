@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import forms.expenses.tailoring.individualCategories.GoodsToSellOrUseFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
@@ -46,11 +44,10 @@ class GoodsToSellOrUseControllerSpec
       GoodsToSellOrUsePage
     ) {
 
-  override def onPageLoadCall: Call           = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call             = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
-  override def onwardRoute: Call              = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
-  override def validAnswer: GoodsToSellOrUse  = YesDisallowable
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def onPageLoadCall: Call          = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call            = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call             = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: GoodsToSellOrUse = YesDisallowable
 
   override val bindings: List[Binding[_]] = List(
     bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
@@ -65,8 +62,6 @@ class GoodsToSellOrUseControllerSpec
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-
-  def createForm(userType: UserType): Form[GoodsToSellOrUse] = new GoodsToSellOrUseFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

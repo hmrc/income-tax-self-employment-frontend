@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package forms.expenses.tailoring.individualCategories
+package forms.standard
 
-import forms.mappings.Mappings
+import base.forms.EnumerableFormProviderBaseSpec
 import models.common.UserType
 import models.journeys.expenses.individualCategories.OtherExpenses
+import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.data.Form
 
-import javax.inject.Inject
+class EnumerableFormProviderSpec extends EnumerableFormProviderBaseSpec[OtherExpenses]("RadioButtonFormProvider") {
 
-class OtherExpensesFormProvider @Inject() extends Mappings {
+  override def validValues: Seq[OtherExpenses] = OtherExpenses.values
+  override def requiredError                   = "otherExpenses.error.required"
+  private def formProvider                     = new EnumerableFormProvider()
 
-  def apply(userType: UserType): Form[OtherExpenses] =
-    Form(
-      "value" -> enumerable[OtherExpenses](s"otherExpenses.error.required.$userType")
-    )
-
+  override def getFormProvider(user: UserType): Form[OtherExpenses] = formProvider(OtherExpensesPage, user)
 }

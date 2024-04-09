@@ -80,6 +80,6 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
   def getTitle(fut: Future[Result]): String = {
     val html = contentAsString(fut)
     val doc  = Jsoup.parse(html)
-    doc.select("title").text()
+    doc.select("title").first().text()
   }
 }

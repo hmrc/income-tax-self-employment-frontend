@@ -21,11 +21,11 @@ import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import play.api.data.{Form, FormError}
 
-abstract case class RadioButtonFormProviderBaseSpec[T](formProviderName: String) extends OptionFieldBehaviours {
+abstract case class EnumerableFormProviderBaseSpec[T](formProviderName: String) extends OptionFieldBehaviours {
   private val userTypes: List[UserType] = List(Individual, Agent)
 
-  val validValues: Seq[T]
-  val requiredError: String
+  def validValues: Seq[T]
+  def requiredError: String
 
   def getFormProvider(userType: UserType): Form[T]
 

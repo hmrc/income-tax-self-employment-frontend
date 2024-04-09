@@ -16,12 +16,12 @@
 
 package models.test
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 final case class RepairsAndMaintenanceInfo(repairsAndMaintenance: Option[String],
                                            repairsAndMaintenanceAmount: Option[BigDecimal],
                                            repairsAndMaintenanceDisallowableAmount: Option[BigDecimal])
 
 object RepairsAndMaintenanceInfo {
-  implicit val format = Json.format[RepairsAndMaintenanceInfo]
+  implicit val format: OFormat[RepairsAndMaintenanceInfo] = Json.format[RepairsAndMaintenanceInfo]
 }

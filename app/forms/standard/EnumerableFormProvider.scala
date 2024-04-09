@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package forms.capitalallowances.structuresBuildingsAllowance
+package forms.standard
 
-import base.forms.BooleanFormProviderBaseSpec
-import models.common.UserType
+import forms.mappings.Mappings
+import models.common.{Enumerable, UserType}
+import pages.OneQuestionPage
 import play.api.data.Form
 
-class StructuresBuildingsAllowanceFormProviderSpec
-    extends BooleanFormProviderBaseSpec(
-      "StructuresBuildingsAllowanceFormProvider"
-    ) {
+import javax.inject.{Inject, Singleton}
 
-  override def formProvider(userType: UserType): Form[Boolean] = new StructuresBuildingsAllowanceFormProvider()(userType)
+@Singleton
+class EnumerableFormProvider @Inject() extends Mappings {
 
-  override def requiredErrorKey: String = "structuresBuildingsAllowance.error.required"
-
+  def apply[A](page: OneQuestionPage[A], userType: UserType, altPrefix: Option[String] = None)(implicit `enum`: Enumerable[A]): Form[A] =
+    Form("value" -> enumerable[A](userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required")))(enum))
 }

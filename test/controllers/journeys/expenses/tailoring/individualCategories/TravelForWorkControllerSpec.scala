@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
-import forms.expenses.tailoring.individualCategories.TravelForWorkFormProvider
+import forms.standard.EnumerableFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
@@ -51,13 +51,13 @@ class TravelForWorkControllerSpec extends SpecBase with MockitoSugar {
   lazy val travelForWorkRoute =
     controllers.journeys.expenses.tailoring.individualCategories.routes.TravelForWorkController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new TravelForWorkFormProvider()
+  val formProvider = new EnumerableFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[TravelForWork])
 
   val userScenarios = Seq(
-    UserScenario(userType = Individual, formProvider(Individual)),
-    UserScenario(userType = Agent, formProvider(Agent))
+    UserScenario(userType = Individual, formProvider(TravelForWorkPage, Individual)),
+    UserScenario(userType = Agent, formProvider(TravelForWorkPage, Agent))
   )
 
   def baseAnswers: UserAnswers = buildUserAnswers(

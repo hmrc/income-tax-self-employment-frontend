@@ -17,10 +17,8 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
-import forms.expenses.tailoring.individualCategories.OfficeSuppliesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.OfficeSupplies
@@ -46,11 +44,10 @@ class OfficeSuppliesControllerSpec
       OfficeSuppliesPage
     ) {
 
-  override def onPageLoadCall: Call           = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call             = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
-  override def onwardRoute: Call              = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
-  override def validAnswer: OfficeSupplies    = YesDisallowable
-  override def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, Some(businessId)).success.value
+  override def onPageLoadCall: Call        = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def onSubmitCall: Call          = routes.OfficeSuppliesController.onSubmit(taxYear, businessId, NormalMode)
+  override def onwardRoute: Call           = routes.GoodsToSellOrUseController.onPageLoad(taxYear, businessId, NormalMode)
+  override def validAnswer: OfficeSupplies = YesDisallowable
 
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
@@ -64,8 +61,6 @@ class OfficeSuppliesControllerSpec
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-
-  def createForm(userType: UserType): Form[OfficeSupplies] = new OfficeSuppliesFormProvider()(userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
