@@ -21,7 +21,7 @@ import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.capitalallowances.structuresBuildingsAllowance.newStructuresBuildingsAnswers.removeIncompleteStructure
+import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers.removeIncompleteStructure
 import pages.capitalallowances.structuresBuildingsAllowance.{NewStructuresBuildingsList, StructuresBuildingsNewStructuresPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
