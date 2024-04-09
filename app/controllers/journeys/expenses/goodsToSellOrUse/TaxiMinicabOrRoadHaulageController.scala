@@ -21,7 +21,6 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, NormalMode}
-import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,18 +29,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: MessagesApi,
-                                                    selfEmploymentService: SelfEmploymentService,
-                                                    navigator: ExpensesNavigator,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    service: SelfEmploymentService,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: BooleanFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: TaxiMinicabOrRoadHaulageView)(implicit ec: ExecutionContext)
+                                                    view: TaxiMinicabOrRoadHaulageView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -64,12 +62,8 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value => {
-            val redirectMode = normalModeIfAnswerChanged(value)
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, TaxiMinicabOrRoadHaulagePage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(TaxiMinicabOrRoadHaulagePage, redirectMode, updatedAnswers, taxYear, businessId)))
-          }
+          answer =>
+            service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, normalModeIfAnswerChanged(answer))
         )
   }
 

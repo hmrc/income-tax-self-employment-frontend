@@ -22,15 +22,16 @@ import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormPr
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AdvertisingDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
@@ -56,18 +57,19 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request
-        .valueOrFutureRedirectDefault(AdvertisingOrMarketingAmountPage, businessId)
-        .map { allowableAmount =>
-          formProvider(request.userType, allowableAmount)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))),
-              value => service.persistAnswerAndRedirect(page, businessId, request, value, taxYear, mode)
-            )
-        }
-        .merge
+      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
+
+      (for {
+        allowableAmount <- request.valueOrFutureRedirectDefault(AdvertisingOrMarketingAmountPage, businessId)
+        result = service.defaultHandleForm(
+          formProvider(request.userType, allowableAmount),
+          page,
+          businessId,
+          taxYear,
+          mode,
+          handleError(allowableAmount))
+      } yield result).merge
   }
 
 }

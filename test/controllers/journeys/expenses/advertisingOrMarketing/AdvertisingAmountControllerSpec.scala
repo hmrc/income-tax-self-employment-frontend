@@ -17,15 +17,16 @@
 package controllers.journeys.expenses.advertisingOrMarketing
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.Application
-import play.api.data.Form
+import play.api.data.{Form, FormBinding}
 import play.api.i18n.Messages
+import play.api.libs.json.Writes
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
@@ -51,13 +52,10 @@ class AdvertisingAmountControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
-    *[BusinessId],
+  mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
     *[DataRequest[_]],
-    *,
-    *[TaxYear],
-    *[Mode]
+    *[FormBinding],
+    *[Writes[BigDecimal]]
   ) returns Redirect(onwardRoute).asFuture
 
 }

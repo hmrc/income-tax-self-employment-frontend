@@ -27,6 +27,7 @@ import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
 import pages.{OneQuestionPage, QuestionPage}
+import play.api.data.{Form, FormBinding}
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -89,4 +90,14 @@ case class SelfEmploymentServiceStub(
                                           value: A,
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result] = ???
+  def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
+      request: DataRequest[_],
+      defaultFormBinding: FormBinding): Future[Result] = ???
+  def defaultHandleForm[A](
+      form: Form[A],
+      page: OneQuestionPage[A],
+      businessId: BusinessId,
+      taxYear: TaxYear,
+      mode: Mode,
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] = ???
 }

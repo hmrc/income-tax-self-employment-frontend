@@ -16,8 +16,26 @@
 
 package pages.expenses.goodsToSellOrUse
 
+import controllers.journeys.expenses.goodsToSellOrUse.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
+import play.api.mvc.Call
 
 case object GoodsToSellOrUseAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "goodsToSellOrUseAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || DisallowableGoodsToSellOrUseAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(GoodsToSellOrUsePage, businessId).contains(GoodsToSellOrUse.YesDisallowable)
 }

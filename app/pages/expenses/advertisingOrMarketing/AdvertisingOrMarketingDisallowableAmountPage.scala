@@ -25,9 +25,8 @@ import play.api.mvc.Call
 case object AdvertisingOrMarketingDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "advertisingOrMarketingDisallowableAmount"
 
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined

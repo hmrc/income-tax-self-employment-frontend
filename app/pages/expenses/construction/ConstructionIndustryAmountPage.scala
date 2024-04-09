@@ -28,11 +28,9 @@ case object ConstructionIndustryAmountPage extends OneQuestionPage[BigDecimal] {
 
   override def toString: String = "constructionIndustryAmount"
 
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     if (hasDisallowable(businessId, userAnswers)) routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-    else cyaPage(taxYear, businessId)
+    else routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined &&

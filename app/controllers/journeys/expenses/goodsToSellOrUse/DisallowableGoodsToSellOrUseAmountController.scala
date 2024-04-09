@@ -17,67 +17,59 @@
 package controllers.journeys.expenses.goodsToSellOrUse
 
 import controllers.actions._
-import controllers.standard.routes
+import controllers.journeys.fillForm
 import forms.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.goodsToSellOrUse.DisallowableGoodsToSellOrUseAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                              selfEmploymentService: SelfEmploymentService,
-                                                              navigator: ExpensesNavigator,
+                                                              val controllerComponents: MessagesControllerComponents,
+                                                              service: SelfEmploymentService,
                                                               identify: IdentifierAction,
                                                               getData: DataRetrievalAction,
                                                               requireData: DataRequiredAction,
                                                               formProvider: DisallowableGoodsToSellOrUseAmountFormProvider,
-                                                              val controllerComponents: MessagesControllerComponents,
                                                               view: DisallowableGoodsToSellOrUseAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Some(goodsAmount) =>
-          val preparedForm =
-            request.userAnswers.get(DisallowableGoodsToSellOrUseAmountPage, Some(businessId)) match {
-              case None        => formProvider(request.userType, goodsAmount)
-              case Some(value) => formProvider(request.userType, goodsAmount).fill(value)
-            }
+  private val page = DisallowableGoodsToSellOrUseAmountPage
 
-          Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount))))
-      }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      (for {
+        goodsAmount <- request.valueOrRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
+        form = fillForm(page, businessId, formProvider(request.userType, goodsAmount))
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.userAnswers.get(GoodsToSellOrUseAmountPage, Some(businessId)) match {
-        case None => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        case Some(goodsAmount) =>
-          formProvider(request.userType, goodsAmount)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, DisallowableGoodsToSellOrUseAmountPage)
-                  .map(updatedAnswers =>
-                    Redirect(navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, updatedAnswers, taxYear, businessId)))
-            )
-      }
+      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
+
+      (for {
+        allowableAmount <- request.valueOrFutureRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
+        result = service.defaultHandleForm(
+          formProvider(request.userType, allowableAmount),
+          page,
+          businessId,
+          taxYear,
+          mode,
+          handleError(allowableAmount))
+      } yield result).merge
   }
 
 }

@@ -16,8 +16,19 @@
 
 package pages.expenses.goodsToSellOrUse
 
+import controllers.journeys.expenses.goodsToSellOrUse.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[Boolean] {
   override def toString: String = "taxiMinicabOrRoadHaulage"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && GoodsToSellOrUseAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
 }

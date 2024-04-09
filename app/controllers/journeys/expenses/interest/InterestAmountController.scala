@@ -23,8 +23,8 @@ import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.interest.InterestAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -33,18 +33,16 @@ import utils.Logging
 import views.html.journeys.expenses.interest.InterestAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
-                                          selfEmploymentService: SelfEmploymentService,
-                                          navigator: ExpensesNavigator,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          service: SelfEmploymentService,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: CurrencyFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: InterestAmountView)(implicit ec: ExecutionContext)
+                                          view: InterestAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -60,17 +58,9 @@ class InterestAmountController @Inject() (override val messagesApi: MessagesApi,
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, page)
-          .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
+      def handleError(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
 
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          value => handleSuccess(value)
-        )
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
   }
 }

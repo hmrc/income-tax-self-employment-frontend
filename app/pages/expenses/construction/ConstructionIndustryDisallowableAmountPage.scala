@@ -26,9 +26,8 @@ case object ConstructionIndustryDisallowableAmountPage extends OneQuestionPage[B
 
   override def toString: String = "constructionIndustryDisallowableAmount"
 
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined

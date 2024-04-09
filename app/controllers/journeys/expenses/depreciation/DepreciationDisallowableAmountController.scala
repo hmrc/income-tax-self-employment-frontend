@@ -23,14 +23,14 @@ import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
 class DepreciationDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
@@ -55,12 +55,9 @@ class DepreciationDisallowableAmountController @Inject() (override val messagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value => service.persistAnswerAndRedirect(page, businessId, request, value, taxYear, mode)
-        )
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }
