@@ -18,13 +18,11 @@ package controllers.journeys
 
 import controllers._
 import controllers.actions._
-import forms.SectionCompletedStateFormProvider
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.JourneyStatus._
 import models.common.{BusinessId, JourneyAnswersContext, JourneyStatus, TaxYear}
-import models.journeys.CompletedSectionState.{No, Yes}
-import models.journeys.{CompletedSectionState, Journey}
-import navigation.GeneralNavigator
+import models.journeys.Journey
 import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,20 +39,20 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SectionCompletedStateController @Inject() (override val messagesApi: MessagesApi,
                                                  service: SelfEmploymentService,
-                                                 navigator: GeneralNavigator,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
-                                                 formProvider: SectionCompletedStateFormProvider,
+                                                 formProvider: BooleanFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SectionCompletedStateView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  val form: Form[CompletedSectionState] = formProvider()
+  val page = SectionCompletedStatePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
+      val form: Form[Boolean] = formProvider(page, request.userType)
       val preparedForm = service
         .getJourneyStatus(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)))
         .value
@@ -65,29 +63,30 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
       }
   }
 
-  private def fill(form: Form[CompletedSectionState], status: JourneyStatus) =
+  private def fill(form: Form[Boolean], status: JourneyStatus) =
     status match {
-      case Completed                                     => form.fill(Yes)
-      case InProgress                                    => form.fill(No)
+      case Completed                                     => form.fill(true)
+      case InProgress                                    => form.fill(false)
       case NotStarted | CheckOurRecords | CannotStartYet => form
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
-      form
+      formProvider(page, request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, Journey.withName(journey), mode))),
-          state =>
+          answer =>
             handleResultT(
-              saveAndRedirect(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)), state)
+              saveAndRedirect(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)), answer)
             )
         )
   }
 
-  private def saveAndRedirect(ctx: JourneyAnswersContext, state: CompletedSectionState)(implicit hc: HeaderCarrier) =
-    service.setJourneyStatus(ctx, state.toStatus).map { _ =>
-      Redirect(navigator.nextPage(SectionCompletedStatePage, ctx.taxYear))
+  private def saveAndRedirect(ctx: JourneyAnswersContext, answer: Boolean)(implicit hc: HeaderCarrier) = {
+    val status = if (answer) Completed else InProgress
+    service.setJourneyStatus(ctx, status) map { _ =>
+      Redirect(page.nextPage(ctx.taxYear))
     }
-
+  }
 }

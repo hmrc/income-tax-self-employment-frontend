@@ -16,7 +16,6 @@
 
 package generators
 
-import models.journeys._
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
@@ -76,11 +75,6 @@ trait ModelGenerators {
   implicit lazy val arbitraryTradingAllowance: Arbitrary[TradingAllowance] =
     Arbitrary {
       Gen.oneOf(TradingAllowance.values)
-    }
-
-  implicit lazy val arbitraryCompletedSectionState: Arbitrary[CompletedSectionState] =
-    Arbitrary {
-      Gen.oneOf(CompletedSectionState.values)
     }
 
 }

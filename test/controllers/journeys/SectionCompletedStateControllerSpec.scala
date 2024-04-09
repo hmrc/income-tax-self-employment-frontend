@@ -17,26 +17,28 @@
 package controllers.journeys
 
 import base.SpecBase
-import forms.SectionCompletedStateFormProvider
+import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.JourneyStatus
-import models.journeys.{CompletedSectionState, Journey}
-import navigation._
+import models.common.UserType.Individual
+import models.errors.ServiceError
+import models.journeys.Journey
 import org.scalatest.prop.TableDrivenPropertyChecks
+import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SelfEmploymentService
 import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.SectionCompletedStateView
-import services.SelfEmploymentService
 
 class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPropertyChecks {
-  val journey                           = Journey.Abroad
-  val stubService                       = SelfEmploymentServiceStub()
-  val formProvider                      = new SectionCompletedStateFormProvider()
-  val form: Form[CompletedSectionState] = formProvider()
+  val journey             = Journey.Abroad
+  val stubService         = SelfEmploymentServiceStub()
+  val formProvider        = new BooleanFormProvider()
+  val form: Form[Boolean] = formProvider(SectionCompletedStatePage, Individual)
 
   lazy val sectionCompletedStateRoute: String =
     routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode).url
@@ -53,8 +55,8 @@ class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPrope
         (JourneyStatus.CheckOurRecords, form),
         (JourneyStatus.CannotStartYet, form),
         (JourneyStatus.NotStarted, form),
-        (JourneyStatus.InProgress, form.fill(CompletedSectionState.No)),
-        (JourneyStatus.Completed, form.fill(CompletedSectionState.Yes))
+        (JourneyStatus.InProgress, form.fill(false)),
+        (JourneyStatus.Completed, form.fill(true))
       )
 
       forAll(cases) { case (journeyStatus, expectedForm) =>
@@ -83,7 +85,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPrope
         running(application) {
           val request =
             FakeRequest(POST, sectionCompletedStateRoute)
-              .withFormUrlEncodedBody(("value", CompletedSectionState.values.head.toString))
+              .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 
@@ -112,17 +114,17 @@ class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPrope
       }
 
       "must redirect to Journey Recovery when an error response is returned from the service" in {
+        val errorStubService = stubService.copy(setJourneyStatusResult = Left(ServiceError.NotFoundError("Not Found")))
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(
-              bind[GeneralNavigator].toInstance(new FakeGeneralNavigator(journeyRecoveryCall)),
-              bind[SelfEmploymentService].toInstance(stubService)
+              bind[SelfEmploymentService].toInstance(errorStubService)
             )
             .build()
 
         running(application) {
           val request = FakeRequest(POST, sectionCompletedStateRoute)
-            .withFormUrlEncodedBody(("value", CompletedSectionState.values.head.toString))
+            .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
 

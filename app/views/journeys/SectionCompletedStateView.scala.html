@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.journeys.CompletedSectionState
 @import models.common.{BusinessId, TaxYear}
-@import views.html.templates.helpers.Heading
 @import models.journeys.Journey
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
@@ -25,31 +25,28 @@
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton,
-    heading: Heading
+    heading: Heading,
+    yesNoWithHeadingAndHint: YesNoWithHeadingAndHint,
+    twoRadios: TwoRadios,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("sectionCompletedState.title"))) {
 
-    @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey.entryName, mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey.entryName, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @heading(messages("sectionCompletedState.title"), None, extraClasses = "govuk-!-margin-bottom-2")
-
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(""),
-                items  = CompletedSectionState.options
-            )
+        @yesNoWithHeadingAndHint(form,
+            messages("sectionCompletedState.title"),
+            messages("sectionCompletedState.hint"),
+            extraHintClasses = "govuk-hint govuk-!-margin-bottom-1"
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
