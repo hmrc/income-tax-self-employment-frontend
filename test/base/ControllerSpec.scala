@@ -17,6 +17,7 @@
 package base
 
 import builders.UserBuilder
+import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey
@@ -51,7 +52,7 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
 
   val bindings: List[Binding[_]] = Nil
 
-  case class TestScenario(userType: UserType,
+  case class TestScenario(userType: UserType = Individual,
                           answers: Option[UserAnswers],
                           mode: Mode = NormalMode,
                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),

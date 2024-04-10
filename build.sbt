@@ -1,4 +1,3 @@
-
 import play.sbt.routes.RoutesKeys
 import sbt.Def
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
