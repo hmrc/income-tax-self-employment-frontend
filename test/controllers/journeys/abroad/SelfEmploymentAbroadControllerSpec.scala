@@ -17,16 +17,11 @@
 package controllers.journeys.abroad
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
+import models.NormalMode
 import pages.abroad.SelfEmploymentAbroadPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.abroad.SelfEmploymentAbroadView
 
@@ -42,8 +37,5 @@ class SelfEmploymentAbroadControllerSpec extends BooleanGetAndPostQuestionBaseSp
     val view = application.injector.instanceOf[SelfEmploymentAbroadView]
     view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
   }
-
-  mockService.submitGatewayQuestionAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *[Mode]) returns Redirect(
-    onwardRoute.url).asFuture
 
 }

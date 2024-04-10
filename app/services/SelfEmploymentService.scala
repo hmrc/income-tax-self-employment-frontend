@@ -29,6 +29,7 @@ import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
+import play.api.data.{Form, FormBinding}
 import play.api.libs.json.{Format, Reads, Writes}
 import play.api.mvc.Result
 import queries.Settable
@@ -64,6 +65,16 @@ trait SelfEmploymentService {
                                           newAnswer: A,
                                           taxYear: TaxYear,
                                           mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result]
+  def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
+      request: DataRequest[_],
+      defaultFormBinding: FormBinding): Future[Result]
+  def defaultHandleForm[A](
+      form: Form[A],
+      page: OneQuestionPage[A],
+      businessId: BusinessId,
+      taxYear: TaxYear,
+      mode: Mode,
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -148,6 +159,28 @@ class SelfEmploymentServiceImpl @Inject() (
         pageUpdated.redirectNext(mode, updatedAnswers, businessId, taxYear)
       }
 
+  def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
+      request: DataRequest[_],
+      defaultFormBinding: FormBinding): Future[Result] =
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(handleError(formWithErrors)),
+        answer => handleSuccess(answer)
+      )
+
+  def defaultHandleForm[A](
+      form: Form[A],
+      page: OneQuestionPage[A],
+      businessId: BusinessId,
+      taxYear: TaxYear,
+      mode: Mode,
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] = {
+    def defaultHandleSuccess(answer: A)(implicit writes: Writes[A]): Future[Result] =
+      persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+
+    handleForm(form, handleError, defaultHandleSuccess)
+  }
 }
 
 object SelfEmploymentService {
