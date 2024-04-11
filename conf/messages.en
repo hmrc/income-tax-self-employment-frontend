@@ -159,9 +159,10 @@ checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Di
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
-sectionCompletedState.title = Have you completed this section?
-sectionCompletedState.yes = Yes, I’ve completed this section
-sectionCompletedState.no = No, I’ll come back to it later
+sectionCompletedState.title = Have you finished this section?
+sectionCompletedState.hint = You’ll still be able to go back and review the information that you’ve given us.
+sectionCompletedState.yes = Yes
+sectionCompletedState.no = No
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 
 ###### Abroad Journey ######

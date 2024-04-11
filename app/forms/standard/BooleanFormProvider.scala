@@ -16,7 +16,6 @@
 
 package forms.standard
 
-import forms.capitalallowances.zeroEmissionCars.ZecUseOutsideSEFormProvider.userTypeAware
 import forms.mappings.Mappings._
 import models.common.UserType
 import pages.OneQuestionPage
@@ -27,6 +26,9 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class BooleanFormProvider @Inject() {
 
-  def apply(page: OneQuestionPage[_], userType: UserType, altPrefix: Option[String] = None): Form[Boolean] =
-    Form("value" -> boolean(userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required"))))
+  def apply(page: OneQuestionPage[_],
+            userType: UserType,
+            altPrefix: Option[String] = None,
+            userSpecificRequiredError: Boolean = true): Form[Boolean] =
+    Form("value" -> boolean(s"${altPrefix.getOrElse(page.pageName)}.error.required${if (userSpecificRequiredError) s".$userType" else ""}"))
 }
