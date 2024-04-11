@@ -32,10 +32,7 @@ import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
 class AdvertisingDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "AdvertisingDisallowableAmountController",
-      AdvertisingOrMarketingDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("AdvertisingDisallowableAmountController", AdvertisingOrMarketingDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.AdvertisingDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url

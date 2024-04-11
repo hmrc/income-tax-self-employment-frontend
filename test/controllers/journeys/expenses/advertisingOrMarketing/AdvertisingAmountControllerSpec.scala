@@ -19,29 +19,19 @@ package controllers.journeys.expenses.advertisingOrMarketing
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
 
-class AdvertisingAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "AdvertisingAmountController",
-      AdvertisingOrMarketingAmountPage
-    ) {
+class AdvertisingAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec("AdvertisingAmountController", AdvertisingOrMarketingAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.AdvertisingAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType, prefix = Some("advertisingAmount"))
 

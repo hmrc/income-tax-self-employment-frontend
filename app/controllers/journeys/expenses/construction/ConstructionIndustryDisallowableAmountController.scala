@@ -16,13 +16,11 @@
 
 package controllers.journeys.expenses.construction
 
-import cats.data.EitherT
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.construction.ConstructionIndustryDisallowableAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import models.common.{BusinessId, TaxYear}
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,61 +31,45 @@ import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConstructionIndustryDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                                  selfEmploymentService: SelfEmploymentService,
-                                                                  navigator: ExpensesNavigator,
+                                                                  val controllerComponents: MessagesControllerComponents,
+                                                                  service: SelfEmploymentService,
                                                                   identify: IdentifierAction,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
                                                                   formProvider: ConstructionIndustryDisallowableAmountFormProvider,
-                                                                  val controllerComponents: MessagesControllerComponents,
                                                                   view: ConstructionIndustryDisallowableAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
+  private val page = ConstructionIndustryDisallowableAmountPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       (for {
         allowableAmount <- request.valueOrRedirectDefault(ConstructionIndustryAmountPage, businessId)
-        existingAnswer = request.getValue(ConstructionIndustryDisallowableAmountPage, businessId)
-        form           = formProvider(request.userType, allowableAmount)
-        preparedForm   = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
+        form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], userType: UserType, allowableAmount: BigDecimal): Future[Result] =
-        Future.successful(
-          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, formatMoney(allowableAmount)))
-        )
+      def handleFormError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
 
-      def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, userAnswers, value, ConstructionIndustryDisallowableAmountPage)
-          .map(updated => Redirect(navigator.nextPage(ConstructionIndustryDisallowableAmountPage, mode, updated, taxYear, businessId)))
-
-      def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => handleError(formWithErrors, userType, allowableAmount),
-            value => handleSuccess(userAnswers, value)
-          )
-
-      val getAllowableValue = request.valueOrRedirectDefault(ConstructionIndustryAmountPage, businessId)
-      val result = for {
-        allowableAmount <- EitherT.fromEither[Future](getAllowableValue)
-        userType    = request.userType
-        userAnswers = request.userAnswers
-        form        = formProvider(userType, allowableAmount)
-        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, allowableAmount))
-      } yield finalResult
-
-      result.merge
+      (for {
+        allowableAmount <- request.valueOrFutureRedirectDefault(ConstructionIndustryAmountPage, businessId)
+        result = service.defaultHandleForm(
+          formProvider(request.userType, allowableAmount),
+          page,
+          businessId,
+          taxYear,
+          mode,
+          handleFormError(allowableAmount))
+      } yield result).merge
   }
 
 }
