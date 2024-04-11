@@ -19,20 +19,15 @@ package controllers.journeys.expenses.goodsToSellOrUse
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 class GoodsToSellOrUseAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "GoodsToSellOrUseAmountController",
-      GoodsToSellOrUseAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("GoodsToSellOrUseAmountController", GoodsToSellOrUseAmountPage) {
 
   lazy val onPageLoadRoute = routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, NormalMode).url
@@ -40,10 +35,6 @@ class GoodsToSellOrUseAmountControllerSpec
   override val onwardRoute: Call = routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def baseAnswers = emptyUserAnswersAccrual.set(TaxiMinicabOrRoadHaulagePage, true, Some(businessId)).success.value
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

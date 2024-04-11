@@ -50,16 +50,17 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, form(request.userType))
-      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
-      Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), taxiDriver))
+      val filledForm   = fillForm(page, businessId, form(request.userType))
+      val isTaxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
+
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), isTaxiDriver))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
+      val isTaxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
       def handleError(formWithErrors: Form[_]): Result =
-        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), taxiDriver))
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), isTaxiDriver))
 
       service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
   }

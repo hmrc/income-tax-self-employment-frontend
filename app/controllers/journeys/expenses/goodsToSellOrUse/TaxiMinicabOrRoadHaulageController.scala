@@ -22,8 +22,9 @@ import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, NormalMode}
 import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.tailoring.individualCategories.TaxiMinicabOrRoadHaulageView
@@ -48,23 +49,20 @@ class TaxiMinicabOrRoadHaulageController @Inject() (override val messagesApi: Me
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form = fillForm(page, businessId, formProvider(page, request.userType))
+
       Ok(view(form, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def normalModeIfAnswerChanged(currentAnswer: Boolean): Mode =
-        request.getValue(TaxiMinicabOrRoadHaulagePage, businessId) match {
-          case Some(answer) if currentAnswer != answer => NormalMode
-          case _                                       => mode
-        }
-      formProvider(page, request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          answer =>
-            service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, normalModeIfAnswerChanged(answer))
-        )
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+      def handleSuccess(answer: Boolean): Future[Result] = {
+        val normalModeIfAnswerChanged =
+          if (request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(!answer)) NormalMode else mode
+        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, normalModeIfAnswerChanged)
+      }
+
+      service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 
 }

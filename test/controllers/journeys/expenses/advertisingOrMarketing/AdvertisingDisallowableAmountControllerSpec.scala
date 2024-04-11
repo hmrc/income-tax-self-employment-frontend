@@ -19,17 +19,13 @@ package controllers.journeys.expenses.advertisingOrMarketing
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys.expenses.tailoring
 import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormProvider
-import models.{Mode, NormalMode}
-import models.common.{BusinessId, TaxYear, UserType}
+import models.NormalMode
+import models.common.UserType
 import models.database.UserAnswers
-import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
@@ -53,14 +49,5 @@ class AdvertisingDisallowableAmountControllerSpec
     val view = application.injector.instanceOf[AdvertisingDisallowableAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
-
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
-    *[BusinessId],
-    *[DataRequest[_]],
-    *,
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
 
 }

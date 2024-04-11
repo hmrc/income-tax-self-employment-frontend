@@ -50,9 +50,9 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       (for {
-        goodsAmount <- request.valueOrRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
-        form = fillForm(page, businessId, formProvider(request.userType, goodsAmount))
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(goodsAmount)))).merge
+        allowableAmount <- request.valueOrRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
+        form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
