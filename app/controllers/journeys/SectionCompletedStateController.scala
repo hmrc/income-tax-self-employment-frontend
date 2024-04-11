@@ -52,7 +52,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
-      val form: Form[Boolean] = formProvider(page, request.userType)
+      val form: Form[Boolean] = formProvider(page, request.userType, userSpecificRequiredError = false)
       val preparedForm = service
         .getJourneyStatus(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)))
         .value
@@ -72,7 +72,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
-      formProvider(page, request.userType)
+      formProvider(page, request.userType, userSpecificRequiredError = false)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, Journey.withName(journey), mode))),
