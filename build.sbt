@@ -3,10 +3,12 @@ import sbt.Def
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "income-tax-self-employment-frontend"
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
 
 val additionalScalacOptions = if (sys.props.getOrElse("PLAY_ENV", "") == "Dev") Seq() else Seq("-Xfatal-warnings")
 
-lazy val root = (project in file("."))
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(inConfig(Test)(testSettings): _*)
@@ -15,8 +17,6 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(ThisBuild / useSuperShell := false)
   .settings(
-    scalaVersion := "2.13.8",
-    name         := appName,
     RoutesKeys.routesImport ++= Seq(
       "models._",
       "models.common._",

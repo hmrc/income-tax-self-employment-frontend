@@ -46,8 +46,8 @@ case class SelfEmploymentServiceStub(
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
     getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
     getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
-    getResultFromGatewaySubmission: Result = Redirect(onwardRoute)
-) extends SelfEmploymentService {
+    submitAnswerAndRedirectResult: Result = Redirect(onwardRoute))
+    extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
     EitherT.fromEither[Future](getBusinessesResult)
@@ -82,22 +82,25 @@ case class SelfEmploymentServiceStub(
                                           newAnswer: A,
                                           taxYear: TaxYear,
                                           mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result] =
-    Future(getResultFromGatewaySubmission)
+    Future(submitAnswerAndRedirectResult)
 
   def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
                                           businessId: BusinessId,
                                           request: DataRequest[_],
                                           value: A,
                                           taxYear: TaxYear,
-                                          mode: Mode): Future[Result] = ???
+                                          mode: Mode): Future[Result] =
+    Future(submitAnswerAndRedirectResult)
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
       request: DataRequest[_],
-      defaultFormBinding: FormBinding): Future[Result] = ???
+      defaultFormBinding: FormBinding): Future[Result] =
+    Future(submitAnswerAndRedirectResult)
   def defaultHandleForm[A](
       form: Form[A],
       page: OneQuestionPage[A],
       businessId: BusinessId,
       taxYear: TaxYear,
       mode: Mode,
-      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] = ???
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
+    Future(submitAnswerAndRedirectResult)
 }

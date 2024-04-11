@@ -18,8 +18,8 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.standard.LocalDateFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.{CheckMode, Mode, NormalMode}
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,7 +30,7 @@ import views.html.journeys.capitalallowances.structuresBuildingsAllowance.Struct
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class StructuresBuildingsQualifyingUseDateController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +40,7 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
                                                                 service: StructuresBuildingsService,
                                                                 formProvider: LocalDateFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
-                                                                view: StructuresBuildingsQualifyingUseDateView)(implicit ec: ExecutionContext)
+                                                                view: StructuresBuildingsQualifyingUseDateView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -61,14 +61,7 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, index))),
-          answer => {
-            val previousSameAsCurrentAnswer =
-              page.getStructureFromIndex(request.userAnswers, businessId, index).flatMap(_.qualifyingUse).contains(answer)
-            val updatedMode = if (previousSameAsCurrentAnswer) CheckMode else NormalMode
-            service.updateStructureAnswerWithIndex(request.userAnswers, answer, businessId, index, page).map { userAnswers =>
-              page.nextPageWithIndex(updatedMode, userAnswers, businessId, taxYear, index)
-            }
-          }
+          answer => service.updateAndRedirectWithIndex(request.userAnswers, answer, businessId, taxYear, index, page)
         )
     }
 

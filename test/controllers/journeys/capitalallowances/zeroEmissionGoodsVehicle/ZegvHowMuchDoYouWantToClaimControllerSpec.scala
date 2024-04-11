@@ -36,7 +36,7 @@ class ZegvHowMuchDoYouWantToClaimControllerSpec extends AnyWordSpecLike with Pla
   lazy val getOnPageLoadNormal: String = routes.ZegvHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val postOnSubmitNormal: String  = routes.ZegvHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, NormalMode).url
 
-  "onPaGeLoad" should {
+  "onPageLoad" should {
     def request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, getOnPageLoadNormal)
 
     "return to the recovery page when no required data" in new TestScenario(UserType.Individual, emptyUserAnswersAccrual.some) {
