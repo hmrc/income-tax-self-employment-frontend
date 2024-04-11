@@ -20,30 +20,21 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.construction.ConstructionIndustryDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
 
 class ConstructionIndustryDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ConstructionIndustryDisallowableAmountController",
-      ConstructionIndustryDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("ConstructionIndustryDisallowableAmountController", ConstructionIndustryDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
 

@@ -21,27 +21,25 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AdvertisingAmountController @Inject() (override val messagesApi: MessagesApi,
-                                             selfEmploymentService: SelfEmploymentService,
-                                             navigator: ExpensesNavigator,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             service: SelfEmploymentService,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: CurrencyFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: AdvertisingAmountView)(implicit ec: ExecutionContext)
+                                             view: AdvertisingAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -51,20 +49,15 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val filledForm = fillForm(page, businessId, form(request.userType))
+
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, page)
-              .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
-        )
+      def handleFormError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleFormError)
   }
 
 }

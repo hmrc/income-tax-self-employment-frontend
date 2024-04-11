@@ -18,29 +18,20 @@ package controllers.journeys.expenses.depreciation
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.depreciation.DepreciationDisallowableAmountView
 
 class DepreciationDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "DepreciationDisallowableAmountController",
-      DepreciationDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("DepreciationDisallowableAmountController", DepreciationDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.DepreciationDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.DepreciationDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

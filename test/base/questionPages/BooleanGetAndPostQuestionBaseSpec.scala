@@ -88,7 +88,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
               val result = route(application, getRequest).value
 
               status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form(), this)(getRequest, messages(application), application)
+              contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
             }
           }
         }

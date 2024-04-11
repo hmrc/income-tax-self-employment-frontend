@@ -20,15 +20,20 @@ import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
 import forms.standard.CurrencyFormProvider
-import models.common.{BusinessId, UserType}
+import models.Mode
+import models.common.UserType.Individual
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.OneQuestionPage
 import play.api.Application
-import play.api.data.Form
+import play.api.data.{Form, FormBinding}
 import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
+import play.api.libs.json.Writes
+import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -59,75 +64,92 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))
 
-  forAll(userTypeCases) { user =>
-    s"$controller for $user" - {
-      val form: Form[BigDecimal] = createForm(user)
+  controller - {
+    def form(userType: UserType = Individual): Form[BigDecimal] = createForm(userType)
 
-      "on page load" - {
-        "answers exist for the page" - {
-          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
+    "on page load" - {
+      "answers exist for the page" - {
+        "return Ok and the view with the existing answer" in new TestScenario(answers = pageAnswers.some) {
+          running(application) {
+            val result = route(application, getRequest).value
+
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form().fill(amount), this)(getRequest, messages(application), application)
+          }
+        }
+      }
+      "the page has no existing answers" - {
+        forAll(userTypeCases) { user =>
+          s"when user is $user, return Ok" in new TestScenario(user, answers = baseAnswers.some) {
             running(application) {
               val result = route(application, getRequest).value
 
               status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form.fill(amount), this)(getRequest, messages(application), application)
-            }
-          }
-        }
-        "the page has no existing answers" - {
-          "return Ok" in new TestScenario(user, answers = baseAnswers.some) {
-            running(application) {
-              val result = route(application, getRequest).value
-
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form, this)(getRequest, messages(application), application)
-            }
-          }
-        }
-        // Below test for checking `requireData` is invoked.
-        "no answers exist in the session" - {
-          "redirect to the journey recovery controller" in new TestScenario(user, answers = None) {
-            running(application) {
-              val result = route(application, getRequest).value
-
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+              contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
             }
           }
         }
       }
+      // Below test for checking `requireData` is invoked.
+      "no answers exist in the session" - {
+        "redirect to the journey recovery controller" in new TestScenario(answers = None) {
+          running(application) {
+            val result = route(application, getRequest).value
 
-      "on page submission" - {
-        "valid data is submitted" - {
-          "redirect to the next page" in new TestScenario(user, answers = pageAnswers.some) {
-            running(application) {
-              val result = route(application, postRequest).value
-
-              status(result) shouldBe SEE_OTHER
-              assert(redirectLocation(result).value.endsWith(onwardRoute.url))
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
           }
         }
-        "invalid data is submitted" - {
-          "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
+      }
+    }
+
+    "on page submission" - {
+      "valid data is submitted" - {
+        "redirect to the next page" in new TestScenario(answers = pageAnswers.some) {
+          mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
+            *[DataRequest[_]],
+            *[FormBinding],
+            *[Writes[BigDecimal]]
+          ) returns Redirect(onwardRoute).asFuture
+
+          running(application) {
+            val result                     = route(application, postRequest).value
+            val redirectMatchesOnwardRoute = redirectLocation(result).value.endsWith(onwardRoute.url)
+
+            status(result) shouldBe SEE_OTHER
+            assert(redirectMatchesOnwardRoute)
+          }
+        }
+      }
+      "invalid data is submitted" - {
+        forAll(userTypeCases) { user =>
+          s"when user is $user, return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
+            val request: FakeRequest[AnyContentAsFormUrlEncoded] = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm: Form[BigDecimal]                      = createForm(userType).bind(Map("value" -> "invalid value"))
+            val expectedErrorView: String                        = expectedView(boundForm, this)(request, messages(application), application)
+
+            mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
+              *[DataRequest[_]],
+              *[FormBinding],
+              *[Writes[BigDecimal]]
+            ) returns BadRequest(expectedErrorView).asFuture
+
             running(application) {
-              val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-              val result    = route(application, request).value
-              val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
+              val result = route(application, request).value
 
               status(result) shouldBe BAD_REQUEST
-              contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)
+              contentAsString(result) shouldBe expectedErrorView
             }
           }
         }
-        "no answers exist in the session" - {
-          "Redirect to the journey recovery page" in new TestScenario(user, answers = None) {
-            running(application) {
-              val result = route(application, getRequest).value
+      }
+      "no answers exist in the session" - {
+        "Redirect to the journey recovery page" in new TestScenario(answers = None) {
+          running(application) {
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
           }
         }
       }
