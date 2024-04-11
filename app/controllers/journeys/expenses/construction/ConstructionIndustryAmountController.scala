@@ -50,6 +50,7 @@ class ConstructionIndustryAmountController @Inject() (override val messagesApi: 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val filledForm = fillForm(page, businessId, form(request.userType))
+
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 

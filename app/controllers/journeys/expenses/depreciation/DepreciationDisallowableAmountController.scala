@@ -50,14 +50,15 @@ class DepreciationDisallowableAmountController @Inject() (override val messagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val filledForm = fillForm(page, businessId, form(request.userType))
+
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+      def handleFormError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
 
-      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleFormError)
   }
 
 }

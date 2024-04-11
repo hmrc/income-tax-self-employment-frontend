@@ -18,33 +18,25 @@ package controllers.journeys.expenses.construction
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.construction.ConstructionIndustryDisallowableAmountFormProvider
-import models.{Mode, NormalMode}
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
+import models.NormalMode
+import models.common.UserType
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.construction.ConstructionIndustryDisallowableAmountView
 
 class ConstructionIndustryDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ConstructionIndustryDisallowableAmountController",
-      ConstructionIndustryDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("ConstructionIndustryDisallowableAmountController", ConstructionIndustryDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.ConstructionIndustryDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ConstructionIndustryCYAController.onPageLoad(taxYear, businessId)
 
-  override def baseAnswers: UserAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
+  override def baseAnswers = emptyUserAnswers.set(ConstructionIndustryAmountPage, amount, Some(businessId)).success.value
 
   override def createForm(userType: UserType): Form[BigDecimal] = new ConstructionIndustryDisallowableAmountFormProvider()(userType, amount)
 
@@ -55,14 +47,5 @@ class ConstructionIndustryDisallowableAmountControllerSpec
     val view = application.injector.instanceOf[ConstructionIndustryDisallowableAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, formatMoney(amount)).toString()
   }
-
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
-    *[BusinessId],
-    *[DataRequest[_]],
-    *,
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
 
 }

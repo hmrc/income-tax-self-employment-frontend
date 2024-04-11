@@ -57,7 +57,7 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+      def handleFormError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
         BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
 
       (for {
@@ -68,7 +68,7 @@ class AdvertisingDisallowableAmountController @Inject() (override val messagesAp
           businessId,
           taxYear,
           mode,
-          handleError(allowableAmount))
+          handleFormError(allowableAmount))
       } yield result).merge
   }
 

@@ -17,25 +17,16 @@
 package controllers.journeys.expenses.advertisingOrMarketing
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import models.common.{BusinessId, TaxYear, UserType}
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
+import models.NormalMode
+import models.common.UserType
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
 import play.api.Application
-import play.api.data.{Form, FormBinding}
+import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.Writes
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingAmountView
 
-class AdvertisingAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "AdvertisingAmountController",
-      AdvertisingOrMarketingAmountPage
-    ) {
+class AdvertisingAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec("AdvertisingAmountController", AdvertisingOrMarketingAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.AdvertisingAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.AdvertisingAmountController.onSubmit(taxYear, businessId, NormalMode).url
@@ -51,11 +42,5 @@ class AdvertisingAmountControllerSpec
     val view = application.injector.instanceOf[AdvertisingAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
-    *[DataRequest[_]],
-    *[FormBinding],
-    *[Writes[BigDecimal]]
-  ) returns Redirect(onwardRoute).asFuture
 
 }

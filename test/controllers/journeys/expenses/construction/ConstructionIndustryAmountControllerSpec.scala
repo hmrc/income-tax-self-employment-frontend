@@ -17,24 +17,16 @@
 package controllers.journeys.expenses.construction
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
+import models.NormalMode
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 class ConstructionIndustryAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ConstructionIndustryAmountController",
-      ConstructionIndustryAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("ConstructionIndustryAmountController", ConstructionIndustryAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url
@@ -48,14 +40,5 @@ class ConstructionIndustryAmountControllerSpec
     val view = application.injector.instanceOf[ConstructionIndustryAmountView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
-
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
-    *[BusinessId],
-    *[DataRequest[_]],
-    *,
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
 
 }
