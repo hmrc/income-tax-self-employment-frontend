@@ -49,10 +49,13 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      (for {
-        allowableAmount <- request.valueOrRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
-        form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
+      request
+        .valueOrRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
+        .map { allowableAmount =>
+          val form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+          Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
@@ -60,16 +63,12 @@ class DisallowableGoodsToSellOrUseAmountController @Inject() (override val messa
       def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
         BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
 
-      (for {
-        allowableAmount <- request.valueOrFutureRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
-        result = service.defaultHandleForm(
-          formProvider(request.userType, allowableAmount),
-          page,
-          businessId,
-          taxYear,
-          mode,
-          handleError(allowableAmount))
-      } yield result).merge
+      request
+        .valueOrFutureRedirectDefault(GoodsToSellOrUseAmountPage, businessId)
+        .map { allowableAmount =>
+          service.defaultHandleForm(formProvider(request.userType, allowableAmount), page, businessId, taxYear, mode, handleError(allowableAmount))
+        }
+        .merge
   }
 
 }
