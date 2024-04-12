@@ -45,6 +45,8 @@ site.buildingName = Building name
 site.buildingNumber = Building number
 site.postcode = Postcode
 site.returnToOverview = Return to overview
+site.sales = Sales
+site.amount = Amount
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -178,6 +180,14 @@ selfEmploymentAbroad.change.hidden = Change if all self-employment was carried o
 ## Common
 income.turnoverExemptFromTax.individual = Is any of your turnover exempt from being taxed as profit?
 income.turnoverExemptFromTax.agent = Is any of your client’s turnover exempt from being taxed as profit?
+income.otherBusinessIncome = Other business income
+income.income = Income
+income.totalIncome = Total income
+
+## Business income prepop
+businessIncomeSummary.title = Business income
+businessIncomeSummary.p1 = To change this data you’ll have to use your reporting software.
+businessIncomeSummary.subheading = Total for this year
 
 ## Income not counted as turnover
 incomeNotCountedAsTurnover.title = Income not counted as turnover

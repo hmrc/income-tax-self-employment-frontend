@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package pages.prepop
 
-@(value: String)(implicit messages: Messages)
+import pages.OneQuestionPage
 
-<h2 class="govuk-heading-m">@messages(value)</h2>
-
-
+case object IncomeOtherAmount extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "otherIncome"
+}
