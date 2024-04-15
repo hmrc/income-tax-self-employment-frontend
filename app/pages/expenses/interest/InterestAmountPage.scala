@@ -16,8 +16,25 @@
 
 package pages.expenses.interest
 
+import controllers.journeys.expenses.interest.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
+import play.api.mvc.Call
 
 case object InterestAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "interestAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else routes.InterestCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || InterestDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(DisallowableInterestPage, businessId).getOrElse(false)
 }

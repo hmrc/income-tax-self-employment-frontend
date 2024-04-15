@@ -23,27 +23,25 @@ import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.goodsToSellOrUse.{GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                  selfEmploymentService: SelfEmploymentService,
-                                                  navigator: ExpensesNavigator,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  service: SelfEmploymentService,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: CurrencyFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: GoodsToSellOrUseAmountView)(implicit ec: ExecutionContext)
+                                                  view: GoodsToSellOrUseAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -52,25 +50,19 @@ class GoodsToSellOrUseAmountController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, form(request.userType))
-      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
-      Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), taxiDriver))
+      val filledForm   = fillForm(page, businessId, form(request.userType))
+      val isTaxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
+
+      Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), isTaxiDriver))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val taxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), taxiDriver))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, page)
-              .map(updatedAnswers => Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId)))
-        )
+      val isTaxiDriver = request.getValue(TaxiMinicabOrRoadHaulagePage, businessId).contains(true)
+      def handleError(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId), isTaxiDriver))
+
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }

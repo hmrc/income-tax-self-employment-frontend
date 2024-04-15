@@ -28,8 +28,8 @@ import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 class ConstructionIndustryAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("ConstructionIndustryAmountController", ConstructionIndustryAmountPage) {
 
-  lazy val onPageLoadRoute = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 

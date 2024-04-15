@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.journeys.expenses._
 import controllers.journeys.expenses.entertainment.routes._
 import controllers.journeys.expenses.financialCharges.routes._
-import controllers.journeys.expenses.goodsToSellOrUse.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
 import controllers.standard.routes._
@@ -30,8 +29,6 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
-import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
@@ -145,38 +142,6 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
-        "GoodsToSellOrUse journey" - {
-          "the page is GoodsToSellOrUseAmountPage" - {
-            "some expenses were claimed to be disallowable" - {
-              "navigate to the DisallowableGoodsToSellOrUseAmountController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("goodsToSellOrUse" -> "yesDisallowable"))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, mode)
-
-                navigator.nextPage(GoodsToSellOrUseAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
-              }
-            }
-            "all expenses were claimed as allowable" - {
-              "navigate to the GoodsToSellOrUseCYAController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("goodsToSellOrUse" -> "yesAllowable"))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(GoodsToSellOrUseAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
-              }
-            }
-          }
-          "the page is DisallowableGoodsToSellOrUseAmountPage" - {
-            "navigate to the GoodsToSellOrUseCYAController" in {
-              val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-        }
-
         "Entertainment journey" - {
           "the page is EntertainmentAmountPage" - {
             "navigate to the EntertainmentCYAController" in {
@@ -246,38 +211,6 @@ class ExpensesNavigatorSpec extends SpecBase {
               val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
               navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-        }
-
-        "DisallowableInterest journey" - {
-          "the page is InterestAmountPage" - {
-            "some expenses were claimed to be disallowable" - {
-              "navigate to the InterestDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> true))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
-
-                navigator.nextPage(InterestAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
-              }
-            }
-            "navigate to the InterestCYAPage" - {
-              "if all expenses were claimed as allowable" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableInterest" -> false))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(InterestAmountPage, mode, userAnswers, taxYear, businessId) mustBe expectedResult
-              }
-            }
-          }
-          "the page is InterestDisallowableAmountController" - {
-            "navigate to the InterestCYAController" in {
-              val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(InterestDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
             }
           }
         }
@@ -356,21 +289,6 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
-        "the page is GoodsToSellOrUseAmountPage" - {
-          "navigate to the GoodsToSellOrUseCYAController" in {
-            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
-            navigator.nextPage(GoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-          }
-        }
-        "the page is DisallowableGoodsToSellOrUseAmountPage" - {
-          "navigate to the GoodsToSellOrUseCYAController" in {
-            val expectedResult = GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
-            navigator.nextPage(DisallowableGoodsToSellOrUseAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-          }
-        }
-
         "the page is EntertainmentAmountPage" - {
           "navigate to the EntertainmentCYAController" in {
             val expectedResult = EntertainmentCYAController.onPageLoad(taxYear, businessId)
@@ -406,21 +324,6 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-          }
-        }
-
-        "the page is InterestAmountPage" - {
-          "navigate to the InterestCYAController" in {
-            val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
-            navigator.nextPage(InterestAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-          }
-        }
-        "the page is InterestDisallowableAmountPage" - {
-          "navigate to the InterestCYAController" in {
-            val expectedResult = interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
-            navigator.nextPage(InterestDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

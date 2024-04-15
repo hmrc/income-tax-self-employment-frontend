@@ -16,26 +16,34 @@
 
 package services
 
-import base.SpecBase
+import base.{ControllerTestScenarioSpec, SpecBase}
 import cats.data.EitherT
-import cats.implicits.catsSyntaxEitherId
+import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
 import connectors.SelfEmploymentConnector
 import controllers.actions.SubmittedDataRetrievalActionProvider
+import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
+import forms.standard.BooleanFormProvider
+import models.NormalMode
+import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
 import models.journeys.{Journey, JourneyNameAndStatus}
-import org.mockito.ArgumentMatchersSugar
+import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import org.scalatestplus.mockito.MockitoSugar
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
+import play.api.data.{Form, FormBinding}
+import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.libs.json.{JsObject, Json}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.{AnyContent, Result}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import queries.Settable.SetAnswer
 import repositories.SessionRepository
 import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
@@ -43,7 +51,7 @@ import stubs.repositories.StubSessionRepository
 
 import scala.concurrent.Future
 
-class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with ArgumentMatchersSugar {
+class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
 
   val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
   val mockSessionRepository                    = mock[SessionRepository]
@@ -178,39 +186,94 @@ class SelfEmploymentServiceSpec extends SpecBase with MockitoSugar with Argument
     }
   }
 
-  "submitAnswerAndClearDependentAnswers" - {
+  private val existingZegvAnswers = SetAnswer
+    .setMany(businessId, emptyUserAnswers)(
+      SetAnswer(ZegvAllowancePage, true),
+      SetAnswer(ZegvClaimAmountPage, BigDecimal(200)),
+      SetAnswer(ZegvHowMuchDoYouWantToClaimPage, ZegvHowMuchDoYouWantToClaim.LowerAmount),
+      SetAnswer(ZegvOnlyForSelfEmploymentPage, true),
+      SetAnswer(ZegvTotalCostOfVehiclePage, BigDecimal(100)),
+      SetAnswer(ZegvUseOutsideSEPage, ZegvUseOutsideSE.Ten),
+      SetAnswer(ZegvUseOutsideSEPercentagePage, 300)
+    )
+    .success
+    .value
+  private val expectedClearedAnswers = emptyUserAnswers.set(ZeroEmissionGoodsVehiclePage, false, Some(businessId)).success.value.data
+  "submitGatewayQuestionAndClearDependentAnswers" - {
     "return UserAnswers with cleared dependent pages when selected No" in {
-      val existingAllAnswers = SetAnswer
-        .setMany(businessId, emptyUserAnswers)(
-          SetAnswer(ZegvAllowancePage, true),
-          SetAnswer(ZegvClaimAmountPage, BigDecimal(200)),
-          SetAnswer(ZegvHowMuchDoYouWantToClaimPage, ZegvHowMuchDoYouWantToClaim.LowerAmount),
-          SetAnswer(ZegvOnlyForSelfEmploymentPage, true),
-          SetAnswer(ZegvTotalCostOfVehiclePage, BigDecimal(100)),
-          SetAnswer(ZegvUseOutsideSEPage, ZegvUseOutsideSE.Ten),
-          SetAnswer(ZegvUseOutsideSEPercentagePage, 300)
-        )
-        .success
-        .value
-
       val updatedAnswers =
         service
-          .submitGatewayQuestionAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, existingAllAnswers, newAnswer = false)
+          .submitGatewayQuestionAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, existingZegvAnswers, newAnswer = false)
           .futureValue
 
-      val expectedAnswers = emptyUserAnswers
-        .set(
-          ZeroEmissionGoodsVehiclePage,
-          false,
-          Some(businessId)
-        )
-        .success
-        .value
-        .data
-
-      assert(updatedAnswers.data === expectedAnswers)
       val dbAnswers = repository.state(userAnswersId).data
+      assert(dbAnswers === expectedClearedAnswers)
+
+      assert(updatedAnswers.data === expectedClearedAnswers)
+    }
+  }
+
+  "submitGatewayQuestionAndRedirect" - {
+    "return a Redirect to the next page and cleared dependent pages when answer is 'No'" in {
+      val result = service.submitGatewayQuestionAndRedirect(
+        ZeroEmissionGoodsVehiclePage,
+        businessId,
+        existingZegvAnswers,
+        newAnswer = false,
+        taxYear,
+        NormalMode)
+
+      val dbAnswers = repository.state(userAnswersId).data
+      assert(dbAnswers === expectedClearedAnswers)
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe ZeroEmissionGoodsVehiclePage.cyaPage(taxYear, businessId).url.some
+    }
+  }
+
+  "persistAnswerAndRedirect" - {
+    "save answer to session repository and return a Redirect to the next page" in {
+      val result =
+        service
+          .persistAnswerAndRedirect(
+            ZeroEmissionGoodsVehiclePage,
+            businessId,
+            fakeDataRequest(existingZegvAnswers),
+            value = false,
+            taxYear,
+            NormalMode)
+
+      val expectedAnswers = existingZegvAnswers.set(ZeroEmissionGoodsVehiclePage, false, businessId.some).success.value
+      val dbAnswers       = repository.state(userAnswersId)
       assert(dbAnswers === expectedAnswers)
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe ZeroEmissionGoodsVehiclePage.cyaPage(taxYear, businessId).url.some
+    }
+  }
+
+  "handleForm" - {
+    "should attempt to bind from request" - {
+      val page                = ZeroEmissionGoodsVehiclePage
+      val form: Form[Boolean] = new BooleanFormProvider()(page, Individual)
+      val request             = FakeRequest(POST, routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode).url)
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(formWithErrors.toString)
+      def handleSuccess(answer: Boolean): Future[Result] = answer match {
+        case _ => Future(Redirect(page.cyaPage(taxYear, businessId)))
+      }
+      "following the handleSuccess method if it binds successfully" in {
+        val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
+        val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe ZeroEmissionGoodsVehiclePage.cyaPage(taxYear, businessId).url.some
+      }
+      "following the handleError method if it binds unsuccessfully" in {
+        val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", fakeUser, existingZegvAnswers)
+        val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
+
+        status(result) shouldBe BAD_REQUEST
+      }
     }
   }
 

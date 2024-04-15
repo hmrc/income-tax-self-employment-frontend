@@ -25,8 +25,6 @@ import models.journeys.expenses.individualCategories._
 import pages._
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
-import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
@@ -91,24 +89,6 @@ class ExpensesNavigator @Inject() {
     case FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-    case TaxiMinicabOrRoadHaulagePage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-    case GoodsToSellOrUseAmountPage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(GoodsToSellOrUsePage, Some(businessId)) match {
-              case Some(GoodsToSellOrUse.YesAllowable) =>
-                goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-              case Some(GoodsToSellOrUse.YesDisallowable) =>
-                goodsToSellOrUse.routes.DisallowableGoodsToSellOrUseAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
-
-    case DisallowableGoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
     case RepairsAndMaintenanceAmountPage =>
       userAnswers =>
         taxYear =>
@@ -157,21 +137,6 @@ class ExpensesNavigator @Inject() {
     case ProfessionalFeesDisallowableAmountPage =>
       _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 
-    case InterestAmountPage =>
-      userAnswers =>
-        taxYear =>
-          businessId =>
-            userAnswers.get(DisallowableInterestPage, Some(businessId)) match {
-              case Some(true) =>
-                interest.routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-              case Some(false) =>
-                interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-              case None => standard.routes.JourneyRecoveryController.onPageLoad()
-            }
-
-    case InterestDisallowableAmountPage =>
-      _ => taxYear => businessId => interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
-
     case IrrecoverableDebtsAmountPage =>
       userAnswers =>
         taxYear =>
@@ -201,17 +166,11 @@ class ExpensesNavigator @Inject() {
     case FinancialChargesAmountPage | FinancialChargesDisallowableAmountPage =>
       _ => taxYear => businessId => financialCharges.routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
 
-    case TaxiMinicabOrRoadHaulagePage | GoodsToSellOrUseAmountPage | DisallowableGoodsToSellOrUseAmountPage =>
-      _ => taxYear => businessId => goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
-
     case EntertainmentAmountPage =>
       _ => taxYear => businessId => entertainment.routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 
     case ProfessionalFeesAmountPage | ProfessionalFeesDisallowableAmountPage =>
       _ => taxYear => businessId => professionalFees.routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
-
-    case InterestAmountPage | InterestDisallowableAmountPage =>
-      _ => taxYear => businessId => interest.routes.InterestCYAController.onPageLoad(taxYear, businessId)
 
     case RepairsAndMaintenanceAmountPage | RepairsAndMaintenanceDisallowableAmountPage =>
       _ => taxYear => businessId => repairsandmaintenance.routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
