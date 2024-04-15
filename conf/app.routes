@@ -45,7 +45,7 @@ POST        /:taxYear/:businessId/details/change-self-employment-abroad         
 GET         /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
-########## Income Prepop ##########
+########## Prepop ##########
 
 GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
