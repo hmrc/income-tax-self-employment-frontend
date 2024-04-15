@@ -25,7 +25,7 @@ import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
-import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.income.{IncomeJourneyAnswers, IncomePrepopAnswers}
 import models.journeys.{Journey, TaskListWithRequest}
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
@@ -74,7 +74,8 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring)
-    } yield TaskListWithRequest(taskList, capitalAllowancesUpdated)
+      incomePrepopUpdated <- loadAnswers[IncomePrepopAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.IncomePrepop)
+    } yield TaskListWithRequest(taskList, incomePrepopUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
