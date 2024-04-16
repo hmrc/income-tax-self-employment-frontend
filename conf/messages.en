@@ -565,6 +565,7 @@ disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs
 disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
 disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
 
 ## Disallowable subcontractor costs

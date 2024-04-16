@@ -16,13 +16,11 @@
 
 package controllers.journeys.expenses.irrecoverableDebts
 
-import cats.data.EitherT
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import models.common.{BusinessId, TaxYear}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,12 +31,11 @@ import utils.MoneyUtils
 import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IrrecoverableDebtsDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                                 selfEmploymentService: SelfEmploymentService,
-                                                                navigator: ExpensesNavigator,
                                                                 identify: IdentifierAction,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
@@ -49,40 +46,30 @@ class IrrecoverableDebtsDisallowableAmountController @Inject() (override val mes
     with I18nSupport
     with MoneyUtils {
 
+  private val page = IrrecoverableDebtsDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      (for {
-        allowableAmount <- request.valueOrRedirectDefault(IrrecoverableDebtsAmountPage, businessId)
-        existingAnswer = request.getValue(IrrecoverableDebtsDisallowableAmountPage, businessId)
-        form           = formProvider(request.userType, allowableAmount)
-        preparedForm   = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
+      request
+        .valueOrRedirectDefault(IrrecoverableDebtsAmountPage, businessId)
+        .map { allowableAmount =>
+          val form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+          Ok(view(form, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, formatMoney(allowableAmount)))),
-            value => handleSuccess(userAnswers, value)
-          )
+      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
 
-      def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, userAnswers, value, IrrecoverableDebtsDisallowableAmountPage)
-          .map(updated => Redirect(navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, updated, taxYear, businessId)))
-
-      val getAllowableValue = request.valueOrRedirectDefault(IrrecoverableDebtsAmountPage, businessId)
-      val result = for {
-        allowableAmount <- EitherT.fromEither[Future](getAllowableValue)
-        userType    = request.userType
-        userAnswers = request.userAnswers
-        form        = formProvider(userType, allowableAmount)
-        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, allowableAmount))
-      } yield finalResult
-
-      result.merge
+      request
+        .valueOrFutureRedirectDefault(IrrecoverableDebtsAmountPage, businessId)
+        .map { allowableAmount =>
+          selfEmploymentService
+            .defaultHandleForm(formProvider(request.userType, allowableAmount), page, businessId, taxYear, mode, handleError(allowableAmount))
+        }
+        .merge
   }
 }

@@ -305,7 +305,7 @@ POST        /:taxYear/:businessId/expenses/change-interest-bank-business-loans/d
 GET         /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                                          controllers.journeys.expenses.interest.InterestCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/interest-bank-business-loans/check                                                          controllers.journeys.expenses.interest.InterestCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
-########## Expenses - Fincancial Charges ##########
+########## Expenses - Financial Charges ##########
 
 GET         /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/amount                                                   controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/expenses/bank-credit-card-financial-charges/amount                                                   controllers.journeys.expenses.financialCharges.FinancialChargesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

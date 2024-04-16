@@ -16,13 +16,13 @@
 
 package controllers.journeys.expenses.financialCharges
 
-import cats.implicits.{catsSyntaxOptionId, toTraverseOps}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import forms.expenses.financialCharges.FinancialChargesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -31,11 +31,10 @@ import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.financialCharges.FinancialChargesDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class FinancialChargesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                              navigator: ExpensesNavigator,
                                                               identify: IdentifierAction,
                                                               getAnswers: DataRetrievalAction,
                                                               requireAnswers: DataRequiredAction,
@@ -46,35 +45,30 @@ class FinancialChargesDisallowableAmountController @Inject() (override val messa
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = FinancialChargesDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
     implicit request =>
-      (for {
-        amount <- request.valueOrRedirectDefault(FinancialChargesAmountPage, businessId)
-        form = request.userAnswers
-          .get(FinancialChargesDisallowableAmountPage, businessId.some)
-          .fold(formProvider(request.userType, amount))(formProvider(request.userType, amount).fill)
-      } yield Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(amount)))).merge
+      request
+        .valueOrRedirectDefault(FinancialChargesAmountPage, businessId)
+        .map { allowableAmount =>
+          val form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+          Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers).async { implicit request =>
-      def handleForm(amount: BigDecimal): Future[Result] =
-        formProvider(request.userType, amount)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, taxYear, businessId, request.userType, formatMoney(amount)))),
-            answer => handleSuccess(answer)
-          )
-
-      def handleSuccess(answer: BigDecimal): Future[Result] =
-        service
-          .persistAnswer(businessId, request.userAnswers, answer, FinancialChargesDisallowableAmountPage)
-          .map(answer => Redirect(navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, answer, taxYear, businessId)))
+      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
 
       request
-        .valueOrRedirectDefault(FinancialChargesAmountPage, businessId)
-        .traverse(handleForm)
-        .map(_.merge)
+        .valueOrFutureRedirectDefault(FinancialChargesAmountPage, businessId)
+        .map { allowableAmount =>
+          service.defaultHandleForm(formProvider(request.userType, allowableAmount), page, businessId, taxYear, mode, handleError(allowableAmount))
+        }
+        .merge
     }
 
 }

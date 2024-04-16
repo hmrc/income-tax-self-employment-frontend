@@ -18,8 +18,6 @@ package navigation
 
 import base.SpecBase
 import controllers.journeys.expenses._
-import controllers.journeys.expenses.entertainment.routes._
-import controllers.journeys.expenses.financialCharges.routes._
 import controllers.journeys.expenses.officeSupplies.routes._
 import controllers.journeys.expenses.otherExpenses.routes._
 import controllers.standard.routes._
@@ -27,9 +25,6 @@ import models._
 import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
-import pages.expenses.entertainment.EntertainmentAmountPage
-import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
@@ -110,47 +105,6 @@ class ExpensesNavigatorSpec extends SpecBase {
             }
           }
         }
-        "FinancialCharges journey" - {
-          "the page is FinancialChargesAmountPage" - {
-            "some expenses were claimed to be disallowable" - {
-              "navigate to the FinancialChargesDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> true))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
-
-                navigator.nextPage(FinancialChargesAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
-              }
-            }
-            "no disallowable expenses" - {
-              "navigate to the FinancialChargesCYAController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableOtherFinancialCharges" -> false))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
-              }
-            }
-          }
-          "the page is FinancialChargesDisallowableAmountPage" - {
-            "navigate to the FinancialChargesCYAController" in {
-              val expectedResult = FinancialChargesCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(FinancialChargesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-        }
-
-        "Entertainment journey" - {
-          "the page is EntertainmentAmountPage" - {
-            "navigate to the EntertainmentCYAController" in {
-              val expectedResult = EntertainmentCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-        }
 
         "StaffCosts journey" - {
           "the page is StaffCostsAmountPage" - {
@@ -215,38 +169,6 @@ class ExpensesNavigatorSpec extends SpecBase {
           }
         }
 
-        "IrrecoverableDebts journey" - {
-          "the page is IrrecoverableDebtsAmountPage" - {
-            "some expenses were claimed to be disallowable" - {
-              "navigate to the IrrecoverableDebtsDisallowableAmountPage" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> true))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, mode)
-
-                navigator.nextPage(IrrecoverableDebtsAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
-              }
-            }
-            "no disallowable expenses" - {
-              "navigate to the IrrecoverableDebtsCYAController" in {
-                val data        = Json.obj(businessId.value -> Json.obj("disallowableIrrecoverableDebts" -> false))
-                val userAnswers = UserAnswers(userAnswersId, data)
-
-                val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
-
-                navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
-              }
-            }
-          }
-          "the page is IrrecoverableDebtsDisallowableAmountPage" - {
-            "navigate to the IrrecoverableDebtsCYAController" in {
-              val expectedResult = irrecoverableDebts.routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
-
-              navigator.nextPage(IrrecoverableDebtsDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-            }
-          }
-        }
-
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
             val expectedResult = JourneyRecoveryController.onPageLoad()
@@ -286,14 +208,6 @@ class ExpensesNavigatorSpec extends SpecBase {
             val expectedResult = OtherExpensesCYAController.onPageLoad(taxYear, businessId)
 
             navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
-          }
-        }
-
-        "the page is EntertainmentAmountPage" - {
-          "navigate to the EntertainmentCYAController" in {
-            val expectedResult = EntertainmentCYAController.onPageLoad(taxYear, businessId)
-
-            navigator.nextPage(EntertainmentAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
           }
         }
 

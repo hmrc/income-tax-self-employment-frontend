@@ -18,12 +18,10 @@ package controllers.journeys.expenses.irrecoverableDebts
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsAmountView
 
@@ -34,10 +32,6 @@ class IrrecoverableDebtsAmountControllerSpec
   lazy val onSubmitRoute: String   = routes.IrrecoverableDebtsAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
