@@ -20,26 +20,24 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.common._
 import models.journeys.Journey.AdjustmentsPrepop
 import models.journeys.adjustments.AdjustmentsPrepopAnswers
-import pages.prepop.{IncomeOtherAmount, IncomeTurnoverAmount}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.buildTable
-import viewmodels.checkAnswers.prepop.AdjustmentsSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
+import viewmodels.checkAnswers.prepop.AdjustmentsSummary.buildAdjustmentsTable
 import views.html.journeys.prepop.AdjustmentsSummaryView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AdjustmentsSummaryController @Inject()(override val messagesApi: MessagesApi,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalAction,
-                                             getJourneyAnswers: SubmittedDataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             view: AdjustmentsSummaryView)(implicit ec: ExecutionContext)
+class AdjustmentsSummaryController @Inject() (override val messagesApi: MessagesApi,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalAction,
+                                              getJourneyAnswers: SubmittedDataRetrievalActionProvider,
+                                              requireData: DataRequiredAction,
+                                              view: AdjustmentsSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -47,18 +45,9 @@ class AdjustmentsSummaryController @Inject()(override val messagesApi: MessagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getData andThen getJourneyAnswers[AdjustmentsPrepopAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, AdjustmentsPrepop)) andThen requireData) { implicit request =>
-      val answers = AdjustmentsPrepopAnswers(
-//        request.getValue(IncomeTurnoverAmount, businessId),
-//        request.getValue(IncomeOtherAmount, businessId)
-      )
-      val incomeTable = buildTable(
-        headRow,
-        Seq(
-          turnoverIncomeRow(answers),
-          otherIncomeRow(answers),
-          totalIncomeRow(answers)
-        ).flatten)
-      Ok(view(request.userType, taxYear, businessId, incomeTable))
+      val answers      = AdjustmentsPrepopAnswers.getFromRequest(request, businessId)
+      val answersTable = buildAdjustmentsTable(answers)
+      Ok(view(request.userType, taxYear, businessId, answersTable))
     }
 
 }

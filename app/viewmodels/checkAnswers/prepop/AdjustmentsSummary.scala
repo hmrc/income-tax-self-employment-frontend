@@ -17,27 +17,32 @@
 package viewmodels.checkAnswers.prepop
 
 import cats.implicits.catsSyntaxOptionId
-import models.journeys.income.IncomePrepopAnswers
+import models.journeys.adjustments.AdjustmentsPrepopAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table}
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildTableRow
+import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
 
 object AdjustmentsSummary extends MoneyUtils {
 
   def headRow(implicit messages: Messages): Option[Seq[HeadCell]] =
     Seq(
-      HeadCell(HtmlContent(messages("income.income"))),
+      HeadCell(HtmlContent(messages("adjustments.adjustment"))),
       HeadCell(HtmlContent(messages("site.amount")), classes = "govuk-!-text-align-right")
     ).some
 
-  def turnoverIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    answers.turnoverIncome.map(amount => buildTableRow("site.sales", s"£${formatMoney(amount)}"))
-
-  def otherIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    answers.otherIncome.map(amount => buildTableRow("income.otherBusinessIncome", s"£${formatMoney(amount)}"))
-
-  def totalIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    buildTableRow("income.totalIncome", s"£${formatMoney(answers.totalIncome)}", classes = "govuk-!-font-weight-bold").some
+  def buildAdjustmentsTable(answers: AdjustmentsPrepopAnswers)(implicit messages: Messages): Table = {
+    val rows = Seq(
+      answers.includedNonTaxableProfits.map(buildTableAmountRow("adjustments.includedNonTaxableProfits", _)),
+      answers.accountingAdjustment.map(buildTableAmountRow("adjustments.accountingAdjustment", _)),
+      answers.averagingAdjustment.map(buildTableAmountRow("adjustments.averagingAdjustment", _)),
+      answers.outstandingBusinessIncome.map(buildTableAmountRow("adjustments.outstandingBusinessIncome", _)),
+      answers.balancingChargeOther.map(buildTableAmountRow("adjustments.balancingChargeOther", _)),
+      answers.goodsAndServicesOwnUse.map(buildTableAmountRow("adjustments.goodsAndServicesOwnUse", _)),
+      answers.transitionProfitAmount.map(buildTableAmountRow("adjustments.transitionProfitAmount", _)),
+      answers.transitionProfitAccelerationAmount.map(buildTableAmountRow("adjustments.transitionProfitAccelerationAmount", _))
+    ).flatten
+    buildTable(headRow, rows)
+  }
 }

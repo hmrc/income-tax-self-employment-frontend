@@ -27,19 +27,18 @@
         button: Button
 )
 
-@(userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeTable: Table)(implicit request: Request[_], messages: Messages)
+@(userType: UserType, taxYear: TaxYear, businessId: BusinessId, adjustmentsTable: Table)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
 
     @heading(
-        heading = messages("businessIncomeSummary.title"),
+        heading = messages("adjustments.businessAdjustments"),
         subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
         marginZero = false
     )
     <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
 
-    @subHeading(messages("businessIncomeSummary.subheading"), isH2 = true)
-    @govukTable(incomeTable)
+    @govukTable(adjustmentsTable)
 
     <div class="govuk-!-margin-top-7">
         @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, IncomePrepop.entryName, NormalMode).url, "site.continue")

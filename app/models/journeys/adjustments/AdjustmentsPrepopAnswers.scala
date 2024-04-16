@@ -16,10 +16,31 @@
 
 package models.journeys.adjustments
 
+import models.common.BusinessId
+import models.requests.DataRequest
+import pages.prepop.adjustments._
 import play.api.libs.json.{Json, OFormat}
 
-case class AdjustmentsPrepopAnswers(turnoverIncome: Option[BigDecimal], otherIncome: Option[BigDecimal])
+case class AdjustmentsPrepopAnswers(includedNonTaxableProfits: Option[BigDecimal],
+                                    accountingAdjustment: Option[BigDecimal],
+                                    averagingAdjustment: Option[BigDecimal],
+                                    outstandingBusinessIncome: Option[BigDecimal],
+                                    balancingChargeOther: Option[BigDecimal],
+                                    goodsAndServicesOwnUse: Option[BigDecimal],
+                                    transitionProfitAmount: Option[BigDecimal],
+                                    transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object AdjustmentsPrepopAnswers {
   implicit val formats: OFormat[AdjustmentsPrepopAnswers] = Json.format[AdjustmentsPrepopAnswers]
+
+  def getFromRequest(request: DataRequest[_], businessId: BusinessId): AdjustmentsPrepopAnswers = AdjustmentsPrepopAnswers(
+    request.getValue(IncludedNonTaxableProfits, businessId),
+    request.getValue(AccountingAdjustment, businessId),
+    request.getValue(AveragingAdjustment, businessId),
+    request.getValue(OutstandingBusinessIncome, businessId),
+    request.getValue(BalancingChargeOther, businessId),
+    request.getValue(GoodsAndServicesOwnUse, businessId),
+    request.getValue(TransitionProfitAmount, businessId),
+    request.getValue(TransitionProfitAccelerationAmount, businessId)
+  )
 }

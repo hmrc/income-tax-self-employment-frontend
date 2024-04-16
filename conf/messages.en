@@ -175,6 +175,24 @@ selfEmploymentAbroad.error.required.individual = Select yes if you carried out a
 selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
 selfEmploymentAbroad.change.hidden = Change if all self-employment was carried out abroad
 
+###### Prepop ######
+
+prepop.useReportingSoftware = To change this data you’ll have to use your reporting software.
+
+businessIncomeSummary.title = Business income
+businessIncomeSummary.subheading = Total for this year
+
+adjustments.businessAdjustments = Business adjustments
+adjustments.adjustment = Adjustment
+adjustments.includedNonTaxableProfits = Amount of turnover not taxable as business profits
+adjustments.accountingAdjustment = Change of accounting method adjustment
+adjustments.averagingAdjustment = Averaging adjustment
+adjustments.outstandingBusinessIncome = Other business income
+adjustments.balancingChargeOther = Balancing charge on sales of assets or on the cessation of business use
+adjustments.goodsAndServicesOwnUse = Cost of goods and services used outside self-employment
+adjustments.transitionProfitAmount = Transition profit amount
+adjustments.transitionProfitAccelerationAmount = Transition profit acceleration amount
+
 ###### Income Journey ######
 
 ## Common
@@ -183,11 +201,6 @@ income.turnoverExemptFromTax.agent = Is any of your client’s turnover exempt f
 income.otherBusinessIncome = Other business income
 income.income = Income
 income.totalIncome = Total income
-
-## Business income prepop
-businessIncomeSummary.title = Business income
-businessIncomeSummary.p1 = To change this data you’ll have to use your reporting software.
-businessIncomeSummary.subheading = Total for this year
 
 ## Income not counted as turnover
 incomeNotCountedAsTurnover.title = Income not counted as turnover
