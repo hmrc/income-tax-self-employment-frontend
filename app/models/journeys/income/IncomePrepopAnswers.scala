@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package models.journeys.income
 
-@(value: String, isH2: Boolean = false)(implicit messages: Messages)
-@{
- if (isH2) <h2 class="govuk-heading-m">{messages(value)}</h2>
- else <h1 class="govuk-heading-m">{messages(value)}</h1>
+import play.api.libs.json.{Json, OFormat}
+
+case class IncomePrepopAnswers(turnoverIncome: Option[BigDecimal], otherIncome: Option[BigDecimal]) {
+  def totalIncome: BigDecimal = {
+    val incomes = List(turnoverIncome, otherIncome).flatten
+    if (incomes.nonEmpty) incomes.sum else 0
+  }
+}
+
+object IncomePrepopAnswers {
+  implicit val formats: OFormat[IncomePrepopAnswers] = Json.format[IncomePrepopAnswers]
 }
