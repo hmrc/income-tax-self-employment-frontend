@@ -22,28 +22,26 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.financialCharges.FinancialChargesAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.financialCharges.FinancialChargesAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FinancialChargesAmountController @Inject() (override val messagesApi: MessagesApi,
                                                   service: SelfEmploymentService,
-                                                  navigator: ExpensesNavigator,
                                                   identify: IdentifierAction,
                                                   getAnswers: DataRetrievalAction,
                                                   requireAnswers: DataRequiredAction,
                                                   formProvider: CurrencyFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: FinancialChargesAmountView)(implicit ec: ExecutionContext)
+                                                  view: FinancialChargesAmountView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -60,14 +58,8 @@ class FinancialChargesAmountController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            service
-              .persistAnswer(businessId, request.userAnswers, value, page)
-              .map(answer => Redirect(navigator.nextPage(page, mode, answer, taxYear, businessId)))
-        )
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+
+      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
     }
 }

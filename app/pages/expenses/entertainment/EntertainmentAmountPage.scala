@@ -16,8 +16,21 @@
 
 package pages.expenses.entertainment
 
+import controllers.journeys.expenses.entertainment.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object EntertainmentAmountPage extends OneQuestionPage[BigDecimal] {
+
   override def toString: String = "entertainmentAmount"
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = userAnswers.get(this, businessId).isDefined
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    cyaPage(taxYear, businessId)
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.EntertainmentCYAController.onPageLoad(taxYear, businessId)
 }

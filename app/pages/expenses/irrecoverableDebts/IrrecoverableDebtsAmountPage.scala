@@ -16,8 +16,27 @@
 
 package pages.expenses.irrecoverableDebts
 
+import controllers.journeys.expenses.irrecoverableDebts.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsPage
+import play.api.mvc.Call
 
 case object IrrecoverableDebtsAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "irrecoverableDebtsAmount"
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = userAnswers.get(this, businessId).isDefined &&
+    (!hasDisallowable(businessId, userAnswers) || IrrecoverableDebtsDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else cyaPage(taxYear, businessId)
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(DisallowableIrrecoverableDebtsPage, businessId).getOrElse(false)
 }

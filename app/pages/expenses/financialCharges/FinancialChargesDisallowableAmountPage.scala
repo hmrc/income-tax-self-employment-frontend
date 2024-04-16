@@ -16,8 +16,18 @@
 
 package pages.expenses.financialCharges
 
+import controllers.journeys.expenses.financialCharges.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object FinancialChargesDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "financialChargesDisallowableAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.FinancialChargesCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }
