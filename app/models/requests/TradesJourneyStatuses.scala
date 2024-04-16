@@ -22,7 +22,7 @@ import models.database.UserAnswers
 import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel
+import viewmodels.journeys.taskList.{PrepopTradeJourneyStatusesViewModel, TradeJourneyStatusesViewModel}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryList
 
 case class TradesJourneyStatuses(businessId: BusinessId,
@@ -40,6 +40,14 @@ object TradesJourneyStatuses {
   def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
       message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
+      tradeDetails.tradingName.getOrElse(TradingName.empty),
+      tradeDetails.businessId,
+      buildSummaryList(tradeDetails, taxYear, userAnswers)
+    )
+
+  def toPrepopViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
+      message: Messages): PrepopTradeJourneyStatusesViewModel =
+    PrepopTradeJourneyStatusesViewModel(
       tradeDetails.tradingName.getOrElse(TradingName.empty),
       tradeDetails.businessId,
       buildSummaryList(tradeDetails, taxYear, userAnswers)
