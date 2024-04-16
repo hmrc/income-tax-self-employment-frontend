@@ -19,26 +19,23 @@ package controllers.journeys.expenses.financialCharges
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.financialCharges.FinancialChargesAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.financialCharges.FinancialChargesAmountView
 
 class FinancialChargesAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec("FinancialChargesAmountController", FinancialChargesAmountPage) {
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "FinancialChargesAmountController",
+      FinancialChargesAmountPage
+    ) {
 
   lazy val onPageLoadRoute: String = routes.FinancialChargesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.FinancialChargesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.FinancialChargesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

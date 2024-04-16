@@ -16,8 +16,18 @@
 
 package pages.expenses.irrecoverableDebts
 
+import controllers.journeys.expenses.irrecoverableDebts.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object IrrecoverableDebtsDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "irrecoverableDebtsDisallowableAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.IrrecoverableDebtsCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }

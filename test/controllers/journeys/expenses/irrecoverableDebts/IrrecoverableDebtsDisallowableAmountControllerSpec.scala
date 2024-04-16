@@ -21,12 +21,10 @@ import cats.implicits.catsSyntaxOptionId
 import forms.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountView
@@ -39,10 +37,6 @@ class IrrecoverableDebtsDisallowableAmountControllerSpec
 
   override val onwardRoute: Call =
     routes.IrrecoverableDebtsDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode) // TODO: Add CYA nav.
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers = emptyUserAnswers.set(IrrecoverableDebtsAmountPage, amount, businessId.some).success.value
 

@@ -21,27 +21,25 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.entertainment.EntertainmentAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.entertainment.EntertainmentAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EntertainmentAmountController @Inject() (override val messagesApi: MessagesApi,
                                                selfEmploymentService: SelfEmploymentService,
-                                               navigator: ExpensesNavigator,
                                                identify: IdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: CurrencyFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
-                                               view: EntertainmentAmountView)(implicit ec: ExecutionContext)
+                                               view: EntertainmentAmountView)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -56,15 +54,9 @@ class EntertainmentAmountController @Inject() (override val messagesApi: Message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, page)
-              .map(updatedAnswers => Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId)))
-        )
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+
+      selfEmploymentService.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }
