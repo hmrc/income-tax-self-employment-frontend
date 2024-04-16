@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.buildTable
-import viewmodels.checkAnswers.income.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
+import viewmodels.checkAnswers.prepop.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
 import views.html.journeys.prepop.BusinessIncomeSummaryView
 
 import javax.inject.{Inject, Singleton}

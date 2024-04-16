@@ -16,8 +16,8 @@
 
 @this()
 
-@(value: String)(implicit messages: Messages)
-
-<h2 class="govuk-heading-m">@messages(value)</h2>
-
-
+@(value: String, isH2: Boolean = false)(implicit messages: Messages)
+@{
+ if (isH2) <h2 class="govuk-heading-m">{messages(value)}</h2>
+ else <h1 class="govuk-heading-m">{messages(value)}</h1>
+}

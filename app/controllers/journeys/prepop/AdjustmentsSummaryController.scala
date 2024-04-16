@@ -19,15 +19,15 @@ package controllers.journeys.prepop
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import models.common._
 import models.journeys.Journey.AdjustmentsPrepop
-import models.journeys.income.AdjustmentsPrepopAnswers
+import models.journeys.adjustments.AdjustmentsPrepopAnswers
 import pages.prepop.{IncomeOtherAmount, IncomeTurnoverAmount}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.buildTable
-import viewmodels.checkAnswers.income.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
-import views.html.journeys.prepop.BusinessIncomeSummaryView
+import viewmodels.checkAnswers.prepop.AdjustmentsSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
+import views.html.journeys.prepop.AdjustmentsSummaryView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -39,7 +39,7 @@ class AdjustmentsSummaryController @Inject()(override val messagesApi: MessagesA
                                              getData: DataRetrievalAction,
                                              getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                              requireData: DataRequiredAction,
-                                             view: BusinessIncomeSummaryView)(implicit ec: ExecutionContext)
+                                             view: AdjustmentsSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -48,8 +48,8 @@ class AdjustmentsSummaryController @Inject()(override val messagesApi: MessagesA
     (identify andThen getData andThen getJourneyAnswers[AdjustmentsPrepopAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, AdjustmentsPrepop)) andThen requireData) { implicit request =>
       val answers = AdjustmentsPrepopAnswers(
-        request.getValue(IncomeTurnoverAmount, businessId),
-        request.getValue(IncomeOtherAmount, businessId)
+//        request.getValue(IncomeTurnoverAmount, businessId),
+//        request.getValue(IncomeOtherAmount, businessId)
       )
       val incomeTable = buildTable(
         headRow,

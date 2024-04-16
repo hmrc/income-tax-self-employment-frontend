@@ -29,7 +29,7 @@ import play.api.test.Helpers.{GET, contentAsString, redirectLocation, route, sta
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import utils.Assertions.assertEqualWithDiff
 import viewmodels.checkAnswers.buildTable
-import viewmodels.checkAnswers.income.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
+import viewmodels.checkAnswers.prepop.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
 import views.html.journeys.prepop.BusinessIncomeSummaryView
 
 class BusinessIncomeSummaryControllerSpec extends ControllerSpec {

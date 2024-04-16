@@ -18,12 +18,7 @@ package models.journeys.adjustments
 
 import play.api.libs.json.{Json, OFormat}
 
-case class AdjustmentsPrepopAnswers(turnoverIncome: Option[BigDecimal], otherIncome: Option[BigDecimal]) {
-  def totalIncome: BigDecimal = {
-    val incomes = List(turnoverIncome, otherIncome).flatten
-    if (incomes.nonEmpty) incomes.sum else 0
-  }
-}
+case class AdjustmentsPrepopAnswers(turnoverIncome: Option[BigDecimal], otherIncome: Option[BigDecimal])
 
 object AdjustmentsPrepopAnswers {
   implicit val formats: OFormat[AdjustmentsPrepopAnswers] = Json.format[AdjustmentsPrepopAnswers]

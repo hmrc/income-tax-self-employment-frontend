@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.income
+package viewmodels.checkAnswers.prepop
 
 import cats.implicits.catsSyntaxOptionId
 import models.journeys.income.IncomePrepopAnswers
