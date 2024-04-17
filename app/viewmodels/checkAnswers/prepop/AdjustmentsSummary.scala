@@ -26,7 +26,7 @@ import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
 
 object AdjustmentsSummary extends MoneyUtils {
 
-  def headRow(implicit messages: Messages): Option[Seq[HeadCell]] =
+  private def headRow(implicit messages: Messages): Option[Seq[HeadCell]] =
     Seq(
       HeadCell(HtmlContent(messages("adjustments.adjustment"))),
       HeadCell(HtmlContent(messages("site.amount")), classes = "govuk-!-text-align-right")

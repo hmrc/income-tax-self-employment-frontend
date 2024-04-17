@@ -29,7 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
 import utils.Assertions.assertEqualWithDiff
 import viewmodels.checkAnswers.prepop.AdjustmentsSummary.buildAdjustmentsTable
-import views.html.journeys.prepop.BusinessIncomeSummaryView
+import views.html.journeys.prepop.AdjustmentsSummaryView
 
 class AdjustmentsSummaryControllerSpec extends ControllerSpec {
 
@@ -60,7 +60,7 @@ class AdjustmentsSummaryControllerSpec extends ControllerSpec {
           implicit val msg = SpecBase.messages(application)
           val result       = route(application, onPageLoadRequest).value
           val expectedView: String = {
-            val view = application.injector.instanceOf[BusinessIncomeSummaryView]
+            val view = application.injector.instanceOf[AdjustmentsSummaryView]
             view(userType, taxYear, businessId, buildAdjustmentsTable(adjustmentAnswers))(onPageLoadRequest, msg).toString()
           }
 
