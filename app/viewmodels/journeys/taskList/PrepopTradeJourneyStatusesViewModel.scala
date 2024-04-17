@@ -16,11 +16,10 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, income}
+import controllers.journeys.income
 import models._
 import models.common.JourneyStatus.CannotStartYet
-import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName}
-import models.database.UserAnswers
+import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName, TypeOfBusiness}
 import models.journeys.Journey
 import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
@@ -30,24 +29,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getJourneyStatus}
 
-case class PrepopTradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
+case class PrepopTradeJourneyStatusesViewModel(tradingName: TradingName, typeOfBusiness: TypeOfBusiness, businessId: BusinessId, statusList: SummaryList)
 
 object PrepopTradeJourneyStatusesViewModel {
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
+  def buildPrepopSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit
       messages: Messages): SummaryList = {
     implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
-    implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 
-    val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = true)
+    val incomePrepopRow = buildRow(IncomePrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val selfEmploymentPrepopRow = buildRow(SelfEmploymentPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val expensesPrepopRow = buildRow(ExpensesPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val adjustmentsPrepopRow = buildRow(AdjustmentsPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val lossesPrepopRow = buildRow(LossesPrepop, dependentJourneyIsFinishedForClickableLink = true)
 
-    val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
-    val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
 
     val rows: List[SummaryListRow] =
-      List(abroadRow, incomeRow)
+      List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow, lossesPrepopRow)
 
     SummaryListCYA.summaryList(rows)
   }
@@ -60,7 +61,6 @@ object PrepopTradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case Abroad => getAbroadUrl(status, businessId, taxYear)
       case Income => getIncomeUrl(status, businessId, taxYear)
       case _      => "#"
     }
@@ -83,11 +83,6 @@ object PrepopTradeJourneyStatusesViewModel {
     ).withCssClass("app-task-list__item no-wrap no-after-content")
   }
 
-  private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineJourneyStartOrCyaUrl(
-      abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
-      abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
-    )(journeyStatus)
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,

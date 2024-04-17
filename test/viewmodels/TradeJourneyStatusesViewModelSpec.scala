@@ -186,7 +186,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (journeyCompletedStates, answers, expectedRows) =>
         val userAnswers           = buildAnswers(answers)
-        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), Accrual, journeyCompletedStates)
+        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), None, Accrual, journeyCompletedStates)
         val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
 
         withClue(s"""

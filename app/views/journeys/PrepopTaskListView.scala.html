@@ -41,25 +41,10 @@
 
     <div class="task-list">
 
-        <h2 class="app-task-list__section">@messages("journeys.selfEmployment")</h2>
-
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a class ="govuk-link" href=@selfEmploymentSummaryLink>
-                        @messages("taskList.reviewLink")
-                    </a>
-                </span>
-                <a href=@selfEmploymentSummaryLink>
-                    <strong class="govuk-tag tag-float app-task-list__tag govuk-tag--@status">@messages(s"status.$status")</strong>
-                </a>
-            </li>
-        </ul>
-
 
         @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
             <h2 class="app-task-list__section">
-                @{s"${selfEmployment.tradingName.withSuffixStr(messages("journeys.selfEmployment"))}"}
+                @{s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"}
             </h2>
 
             @govukSummaryList(selfEmployment.statusList)

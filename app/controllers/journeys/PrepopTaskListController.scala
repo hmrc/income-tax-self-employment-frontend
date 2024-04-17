@@ -16,20 +16,17 @@
 
 package controllers.journeys
 
-import cats.data.EitherT
 import cats.implicits._
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleResultT
 import models.common.JourneyStatus._
 import models.common.TaxYear
-import models.errors.ServiceError
 import models.journeys.TaskList
 import models.requests.TradesJourneyStatuses
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.PrepopTaskListView
 
@@ -38,7 +35,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class PrepopTaskListController @Inject() (override val messagesApi: MessagesApi,
-                                          service: SelfEmploymentService,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           answerLoader: SubmittedDataRetrievalActionProvider,
@@ -56,9 +52,7 @@ class PrepopTaskListController @Inject() (override val messagesApi: MessagesApi,
       completedTrades       = getViewModelList(taskList)
       message               = messagesApi.preferred(updatedRequest)
       tradeDetailsStatus    = taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
-      idsWithAccountingType = completedTrades.map(t => (t.accountingType, t.businessId))
-      updatedUserAnswers <- EitherT.right[ServiceError](service.setAccountingTypeForIds(updatedRequest.answers, idsWithAccountingType))
-      viewModelList = completedTrades.map(TradesJourneyStatuses.toPrepopViewModel(_, taxYear, updatedUserAnswers.some)(message))
+      viewModelList = completedTrades.map(TradesJourneyStatuses.toPrepopViewModel(_, taxYear)(message))
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList)(updatedRequest, message))
     handleResultT(result)
   }

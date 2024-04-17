@@ -28,6 +28,7 @@ class TradesJourneyStatusesSpec extends AnyWordSpecLike {
   val statuses = TradesJourneyStatuses(
     businessId,
     tradingName.some,
+    typeOfBusiness.some,
     Accrual,
     List(
       JourneyNameAndStatus(Journey.ExpensesConstruction, JourneyStatus.Completed)
