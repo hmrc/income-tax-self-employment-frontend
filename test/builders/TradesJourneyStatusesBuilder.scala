@@ -27,7 +27,7 @@ object TradesJourneyStatusesBuilder {
   val aTadesJourneyStatusesModel = TradesJourneyStatuses(
     businessId,
     Some(TradingName("TradingName1")),
-    Some(TypeOfBusiness("SelfEmployment")),
+    TypeOfBusiness("SelfEmployment"),
     AccountingType.Accrual,
     List(
       JourneyNameAndStatus(Abroad, JourneyStatus.Completed),

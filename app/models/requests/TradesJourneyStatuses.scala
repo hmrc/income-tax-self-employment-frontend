@@ -28,7 +28,7 @@ import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryLi
 
 case class TradesJourneyStatuses(businessId: BusinessId,
                                  tradingName: Option[TradingName],
-                                 typeOfBusiness: Option[TypeOfBusiness] = None,
+                                 typeOfBusiness: TypeOfBusiness,
                                  accountingType: AccountingType,
                                  journeyStatuses: List[JourneyNameAndStatus]) {
   def getStatusOrNotStarted(journey: Journey): JourneyStatus =
@@ -50,7 +50,7 @@ object TradesJourneyStatuses {
   def toPrepopViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): PrepopTradeJourneyStatusesViewModel =
     PrepopTradeJourneyStatusesViewModel(
       tradeDetails.tradingName.getOrElse(TradingName.empty),
-      tradeDetails.typeOfBusiness.getOrElse(TypeOfBusiness.empty),
+      tradeDetails.typeOfBusiness,
       tradeDetails.businessId,
       buildPrepopSummaryList(tradeDetails, taxYear)
     )

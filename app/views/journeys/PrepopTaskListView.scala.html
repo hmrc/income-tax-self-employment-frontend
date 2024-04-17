@@ -22,15 +22,17 @@
 @import views.html.templates.helpers.Heading
 
 @this(
-    layout: Layout,
-    govukSummaryList: GovukSummaryList,
+        layout: Layout,
+        govukSummaryList: GovukSummaryList,
         heading: Heading
 )
 
 
 @(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[PrepopTradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 
-@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
+@selfEmploymentSummaryLink = {
+@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
+}
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
@@ -39,14 +41,24 @@
         subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
         extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
 
+
+
     <div class="task-list">
 
+        <h2 class ="govuk-heading-m" >
+        @messages("journeys.selfEmployment")
+        </h2>
 
-        @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
-            <h2 class="app-task-list__section">
-                @{s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"}
+        @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex) {
+            <h2 class="govuk-heading-s">
+            @{
+                s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"
+            }
             </h2>
 
+            <p class="govuk-body">
+            @messages("prepopTastList.hint")
+            </p>
             @govukSummaryList(selfEmployment.statusList)
         }
 
