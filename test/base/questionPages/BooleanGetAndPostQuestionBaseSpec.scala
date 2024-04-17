@@ -88,7 +88,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
               val result = route(application, getRequest).value
 
               status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form(), this)(getRequest, messages(application), application)
+              contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
             }
           }
         }
@@ -108,6 +108,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
     "on page submission" - {
       "valid data is submitted" - {
         "redirect to the next page" in new TestScenario(answers = pageAnswers.some) {
+          mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns Redirect(onwardRoute).asFuture
           mockService.defaultHandleForm(*[Form[Boolean]], *[OneQuestionPage[Boolean]], *[BusinessId], *[TaxYear], *[Mode], *)(
             *[DataRequest[_]],
             *[FormBinding],
@@ -130,6 +131,7 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
             val boundForm         = createForm(userType).bind(Map("value" -> "invalid value"))
             val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
 
+            mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
             mockService.defaultHandleForm(*[Form[Boolean]], *[OneQuestionPage[Boolean]], *[BusinessId], *[TaxYear], *[Mode], *)(
               *[DataRequest[_]],
               *[FormBinding],

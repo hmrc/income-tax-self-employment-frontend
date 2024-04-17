@@ -38,7 +38,7 @@ object TradesJourneyStatusesBuilder {
     )
   )
 
-  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(businessId, None, None, AccountingType.Accrual, Nil)
+  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(businessId, None, TypeOfBusiness("SelfEmployment"), AccountingType.Accrual, Nil)
 
   val aSequenceTadesJourneyStatusesModel = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
   val aTaskList =

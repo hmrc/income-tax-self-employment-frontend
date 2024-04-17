@@ -19,12 +19,10 @@ package controllers.journeys.expenses.entertainment
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.entertainment.EntertainmentAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.entertainment.EntertainmentAmountView
 
@@ -36,12 +34,8 @@ class EntertainmentAmountControllerSpec
 
   val onwardRoute: Call = models.common.onwardRoute
 
-  lazy val onPageLoadRoute = routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, NormalMode).url
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
+  lazy val onPageLoadRoute: String = routes.EntertainmentAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.EntertainmentAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType, prefix = Some("entertainment"))
 

@@ -45,6 +45,8 @@ site.buildingName = Building name
 site.buildingNumber = Building number
 site.postcode = Postcode
 site.returnToOverview = Return to overview
+site.sales = Sales
+site.amount = Amount
 
 status.completed = COMPLETED
 status.inProgress = IN PROGRESS
@@ -164,9 +166,10 @@ checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Di
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
 
-sectionCompletedState.title = Have you completed this section?
-sectionCompletedState.yes = Yes, I’ve completed this section
-sectionCompletedState.no = No, I’ll come back to it later
+sectionCompletedState.title = Have you finished this section?
+sectionCompletedState.hint = You’ll still be able to go back and review the information that you’ve given us.
+sectionCompletedState.yes = Yes
+sectionCompletedState.no = No
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 
 prepopTastList.taxReturn = Your Income Tax Return
@@ -180,11 +183,32 @@ selfEmploymentAbroad.error.required.individual = Select yes if you carried out a
 selfEmploymentAbroad.error.required.agent = Select yes if your client carried out all of their self-employment abroad
 selfEmploymentAbroad.change.hidden = Change if all self-employment was carried out abroad
 
+###### Prepop ######
+
+prepop.useReportingSoftware = To change this data you’ll have to use your reporting software.
+
+businessIncomeSummary.title = Business income
+businessIncomeSummary.subheading = Total for this year
+
+adjustments.businessAdjustments = Business adjustments
+adjustments.adjustment = Adjustment
+adjustments.includedNonTaxableProfits = Amount of turnover not taxable as business profits
+adjustments.accountingAdjustment = Change of accounting method adjustment
+adjustments.averagingAdjustment = Averaging adjustment
+adjustments.outstandingBusinessIncome = Other business income
+adjustments.balancingChargeOther = Balancing charge on sales of assets or on the cessation of business use
+adjustments.goodsAndServicesOwnUse = Cost of goods and services used outside self-employment
+adjustments.transitionProfitAmount = Transition profit amount
+adjustments.transitionProfitAccelerationAmount = Transition profit acceleration amount
+
 ###### Income Journey ######
 
 ## Common
 income.turnoverExemptFromTax.individual = Is any of your turnover exempt from being taxed as profit?
 income.turnoverExemptFromTax.agent = Is any of your client’s turnover exempt from being taxed as profit?
+income.otherBusinessIncome = Other business income
+income.income = Income
+income.totalIncome = Total income
 
 ## Income not counted as turnover
 incomeNotCountedAsTurnover.title = Income not counted as turnover
@@ -572,6 +596,7 @@ disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs
 disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
 disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
 
 ## Disallowable subcontractor costs

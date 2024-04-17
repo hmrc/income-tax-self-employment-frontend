@@ -18,29 +18,20 @@ package controllers.journeys.expenses.construction
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.construction.ConstructionIndustryAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.construction.ConstructionIndustryAmountView
 
 class ConstructionIndustryAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "ConstructionIndustryAmountController",
-      ConstructionIndustryAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("ConstructionIndustryAmountController", ConstructionIndustryAmountPage) {
 
-  lazy val onPageLoadRoute = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-  lazy val onSubmitRoute   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  lazy val onPageLoadRoute: String = routes.ConstructionIndustryAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute: String   = routes.ConstructionIndustryAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ConstructionIndustryDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

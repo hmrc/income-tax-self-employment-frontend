@@ -16,8 +16,26 @@
 
 package pages.expenses.advertisingOrMarketing
 
+import controllers.journeys.expenses.advertisingOrMarketing.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
+import play.api.mvc.Call
 
 case object AdvertisingOrMarketingAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "advertisingOrMarketingAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || AdvertisingOrMarketingDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(AdvertisingOrMarketingPage, businessId).contains(AdvertisingOrMarketing.YesDisallowable)
 }

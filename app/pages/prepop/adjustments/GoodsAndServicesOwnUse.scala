@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.prepop.adjustments
 
-import models.common.TaxYear
-import pages._
-import play.api.mvc.Call
+import pages.OneQuestionPage
 
-class FakeGeneralNavigator(desiredRoute: Call) extends GeneralNavigator {
-
-  override def nextPage(page: Page, taxYear: TaxYear): Call = desiredRoute
+case object GoodsAndServicesOwnUse extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "goodsAndServicesOwnUse"
 }

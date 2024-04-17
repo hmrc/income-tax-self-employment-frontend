@@ -22,7 +22,7 @@ import controllers.journeys._
 import models._
 import models.common.AccountingType.Accrual
 import models.common.JourneyStatus._
-import models.common.{JourneyStatus, TradingName}
+import models.common.{JourneyStatus, TradingName, TypeOfBusiness}
 import models.database.UserAnswers
 import models.journeys.Journey._
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
@@ -185,9 +185,10 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (journeyCompletedStates, answers, expectedRows) =>
-        val userAnswers           = buildAnswers(answers)
-        val tradesJourneyStatuses = TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), None, Accrual, journeyCompletedStates)
-        val result                = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
+        val userAnswers = buildAnswers(answers)
+        val tradesJourneyStatuses =
+          TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), TypeOfBusiness("typeOfBusiness"), Accrual, journeyCompletedStates)
+        val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
 
         withClue(s"""
             |${result.rows.mkString("\n")}

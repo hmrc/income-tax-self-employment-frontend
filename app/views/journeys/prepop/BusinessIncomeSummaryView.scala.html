@@ -1,0 +1,48 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components.{Subheading, Button}
+@import views.html.templates.helpers.Heading
+@import models.journeys.Journey.IncomePrepop
+
+@this(layout: templates.Layout,
+        heading: Heading,
+        subHeading: Subheading,
+        govukTable: GovukTable,
+        button: Button
+)
+
+@(userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeTable: Table)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
+
+    @heading(
+        heading = messages("businessIncomeSummary.title"),
+        subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
+        marginZero = false
+    )
+    <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
+
+    @subHeading(messages("businessIncomeSummary.subheading"), isH2 = true)
+    @govukTable(incomeTable)
+
+    <div class="govuk-!-margin-top-7">
+        @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, IncomePrepop.entryName, NormalMode).url, "site.continue")
+    </div>
+
+}

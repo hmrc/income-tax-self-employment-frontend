@@ -23,6 +23,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 import utils.MoneyUtils.formatMoney
 import viewmodels.govuk.all.FluentActionItem
 import viewmodels.govuk.summarylist._
@@ -111,6 +112,15 @@ package object checkAnswers {
         )
       )
     )
+
+  def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
+    Seq(
+      TableRow(content = HtmlContent(messages(key)), classes = classes),
+      TableRow(content = HtmlContent(s"£${formatMoney(answer)}"), classes = s"govuk-!-text-align-right $classes")
+    )
+
+  def buildTable(headRow: Option[Seq[HeadCell]], rows: Seq[Seq[TableRow]]): Table =
+    Table(rows, headRow)
 
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {

@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package pages.prepop.adjustments
 
-import forms.mappings.Mappings
-import models.journeys.CompletedSectionState
-import play.api.data.Form
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-
-class SectionCompletedStateFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[CompletedSectionState] =
-    Form(
-      "value" -> enumerable[CompletedSectionState]("sectionCompletedState.error.required")
-    )
+case object TransitionProfitAmount extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "transitionProfitAmount"
 }

@@ -20,30 +20,21 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.interest.InterestDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.interest.InterestDisallowableAmountView
 
 class InterestDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "InterestDisallowableAmountController",
-      InterestDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("InterestDisallowableAmountController", InterestDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.InterestDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers = emptyUserAnswers.set(InterestAmountPage, amount, Some(businessId)).success.value
 

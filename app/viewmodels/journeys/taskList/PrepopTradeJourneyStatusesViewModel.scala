@@ -46,10 +46,9 @@ object PrepopTradeJourneyStatusesViewModel {
     val expensesPrepopRow          = buildRow(ExpensesPrepop, dependentJourneyIsFinishedForClickableLink = true)
     val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop, dependentJourneyIsFinishedForClickableLink = true)
     val adjustmentsPrepopRow       = buildRow(AdjustmentsPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val lossesPrepopRow            = buildRow(LossesPrepop, dependentJourneyIsFinishedForClickableLink = true)
 
     val rows: List[SummaryListRow] =
-      List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow, lossesPrepopRow)
+      List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow)
 
     SummaryListCYA.summaryList(rows)
   }

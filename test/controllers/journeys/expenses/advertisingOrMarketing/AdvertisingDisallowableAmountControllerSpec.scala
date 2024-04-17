@@ -21,32 +21,24 @@ import controllers.journeys.expenses.tailoring
 import forms.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
+import models.database.UserAnswers
 import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.advertisingOrMarketing.AdvertisingDisallowableAmountView
 
 class AdvertisingDisallowableAmountControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec(
-      "AdvertisingDisallowableAmountController",
-      AdvertisingOrMarketingDisallowableAmountPage
-    ) {
+    extends BigDecimalGetAndPostQuestionBaseSpec("AdvertisingDisallowableAmountController", AdvertisingOrMarketingDisallowableAmountPage) {
 
   lazy val onPageLoadRoute: String = routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.AdvertisingDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
-
-  override def baseAnswers = emptyUserAnswers.set(AdvertisingOrMarketingAmountPage, amount, Some(businessId)).success.value
+  override def baseAnswers: UserAnswers = emptyUserAnswers.set(AdvertisingOrMarketingAmountPage, amount, Some(businessId)).success.value
 
   override def createForm(userType: UserType): Form[BigDecimal] = new AdvertisingDisallowableAmountFormProvider()(userType, amount)
 
