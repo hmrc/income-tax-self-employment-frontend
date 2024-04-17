@@ -17,31 +17,38 @@
 package controllers.journeys.prepop
 
 import base.{ControllerSpec, SpecBase}
+import cats.implicits.catsSyntaxOptionId
 import common.TestApp.buildAppFromUserType
 import controllers.standard
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
-import models.journeys.income.IncomePrepopAnswers
+import models.journeys.adjustments.AdjustmentsPrepopAnswers
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import utils.Assertions.assertEqualWithDiff
-import viewmodels.checkAnswers.buildTable
-import viewmodels.checkAnswers.prepop.PrepopIncomeSummary.{headRow, otherIncomeRow, totalIncomeRow, turnoverIncomeRow}
-import views.html.journeys.prepop.BusinessIncomeSummaryView
+import viewmodels.checkAnswers.prepop.AdjustmentsSummary.buildAdjustmentsTable
+import views.html.journeys.prepop.AdjustmentsSummaryView
 
-class BusinessIncomeSummaryControllerSpec extends ControllerSpec {
+class AdjustmentsSummaryControllerSpec extends ControllerSpec {
 
+  private val amount: BigDecimal = 2000
   def userAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
-      "turnoverIncome" -> BigDecimal(2000),
-      "otherIncome"    -> BigDecimal(1000)
+      "includedNonTaxableProfits"          -> amount,
+      "accountingAdjustment"               -> amount,
+      "averagingAdjustment"                -> amount,
+      "outstandingBusinessIncome"          -> amount,
+      "balancingChargeOther"               -> amount,
+      "goodsAndServicesOwnUse"             -> amount,
+      "transitionProfitAmount"             -> amount,
+      "transitionProfitAccelerationAmount" -> amount
     ))
-  def incomeAnswers: IncomePrepopAnswers = IncomePrepopAnswers(Some(2000), Some(1000))
+  def adjustmentAnswers: AdjustmentsPrepopAnswers =
+    AdjustmentsPrepopAnswers(amount.some, amount.some, amount.some, amount.some, amount.some, amount.some, amount.some, amount.some)
 
-  def onPageLoad: String = routes.BusinessIncomeSummaryController.onPageLoad(taxYear, businessId).url
+  def onPageLoad: String = routes.AdjustmentsSummaryController.onPageLoad(taxYear, businessId).url
 
   def onPageLoadRequest = FakeRequest(GET, onPageLoad)
 
@@ -52,16 +59,9 @@ class BusinessIncomeSummaryControllerSpec extends ControllerSpec {
           val application  = buildAppFromUserType(userType, Some(userAnswers))
           implicit val msg = SpecBase.messages(application)
           val result       = route(application, onPageLoadRequest).value
-          val incomeTable: Table = buildTable(
-            headRow,
-            Seq(
-              turnoverIncomeRow(incomeAnswers),
-              otherIncomeRow(incomeAnswers),
-              totalIncomeRow(incomeAnswers)
-            ).flatten)
           val expectedView: String = {
-            val view = application.injector.instanceOf[BusinessIncomeSummaryView]
-            view(userType, taxYear, businessId, incomeTable)(onPageLoadRequest, msg).toString()
+            val view = application.injector.instanceOf[AdjustmentsSummaryView]
+            view(userType, taxYear, businessId, buildAdjustmentsTable(adjustmentAnswers))(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK

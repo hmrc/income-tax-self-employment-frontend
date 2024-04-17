@@ -35,6 +35,11 @@ GET         /:taxYear/:businessId/details/check                                 
 
 GET         /:taxYear/self-employment-summary                                       controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: TaxYear)
 
+########## Prepop ##########
+
+GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/adjustments/prepop                                controllers.journeys.prepop.AdjustmentsSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Abroad Journey ##########
 
 GET         /:taxYear/:businessId/details/self-employment-abroad                    controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
@@ -44,10 +49,6 @@ POST        /:taxYear/:businessId/details/change-self-employment-abroad         
 
 GET         /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
-
-########## Prepop ##########
-
-GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Income Journey ##########
 
