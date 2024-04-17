@@ -170,7 +170,7 @@ sectionCompletedState.no = No, I’ll come back to it later
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 
 prepopTastList.taxReturn = Your Income Tax Return
-prepopTastList.hint = To change this data you'll have to use your reporting software.
+prepopTastList.hint = To change this data you’ll have to use your reporting software.
 
 ###### Abroad Journey ######
 

@@ -29,23 +29,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, Summ
 import viewmodels.govuk.summarylist._
 import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getJourneyStatus}
 
-case class PrepopTradeJourneyStatusesViewModel(tradingName: TradingName, typeOfBusiness: TypeOfBusiness, businessId: BusinessId, statusList: SummaryList)
+case class PrepopTradeJourneyStatusesViewModel(tradingName: TradingName,
+                                               typeOfBusiness: TypeOfBusiness,
+                                               businessId: BusinessId,
+                                               statusList: SummaryList)
 
 object PrepopTradeJourneyStatusesViewModel {
 
-  def buildPrepopSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit
-      messages: Messages): SummaryList = {
+  def buildPrepopSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
     implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
-    val incomePrepopRow = buildRow(IncomePrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val selfEmploymentPrepopRow = buildRow(SelfEmploymentPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val expensesPrepopRow = buildRow(ExpensesPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val incomePrepopRow            = buildRow(IncomePrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val selfEmploymentPrepopRow    = buildRow(SelfEmploymentPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val expensesPrepopRow          = buildRow(ExpensesPrepop, dependentJourneyIsFinishedForClickableLink = true)
     val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val adjustmentsPrepopRow = buildRow(AdjustmentsPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val lossesPrepopRow = buildRow(LossesPrepop, dependentJourneyIsFinishedForClickableLink = true)
-
+    val adjustmentsPrepopRow       = buildRow(AdjustmentsPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val lossesPrepopRow            = buildRow(LossesPrepop, dependentJourneyIsFinishedForClickableLink = true)
 
     val rows: List[SummaryListRow] =
       List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow, lossesPrepopRow)

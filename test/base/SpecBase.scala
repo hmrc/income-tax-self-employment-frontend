@@ -52,15 +52,15 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear           = TaxYear(ZonedDateTime.now().getYear)
-  val userAnswersId              = "id"
-  val someNino: Nino             = Nino("someNino")
-  val mtditid                    = Mtditid("someId")
-  val businessId: BusinessId     = BusinessId("SJPR05893938418")
-  val tradingName: TradingName   = TradingName("Circus Performer")
-  val typeOfBusiness: TypeOfBusiness   = TypeOfBusiness("Self Employed")
-  val zeroValue: BigDecimal      = 0
-  val maxAmountValue: BigDecimal = 100000000000.00
+  val taxYear: TaxYear               = TaxYear(ZonedDateTime.now().getYear)
+  val userAnswersId                  = "id"
+  val someNino: Nino                 = Nino("someNino")
+  val mtditid                        = Mtditid("someId")
+  val businessId: BusinessId         = BusinessId("SJPR05893938418")
+  val tradingName: TradingName       = TradingName("Circus Performer")
+  val typeOfBusiness: TypeOfBusiness = TypeOfBusiness("Self Employed")
+  val zeroValue: BigDecimal          = 0
+  val maxAmountValue: BigDecimal     = 100000000000.00
 
   val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
   val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)

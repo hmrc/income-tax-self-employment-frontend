@@ -47,8 +47,7 @@ object TradesJourneyStatuses {
       buildSummaryList(tradeDetails, taxYear, userAnswers)
     )
 
-  def toPrepopViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit
-      message: Messages): PrepopTradeJourneyStatusesViewModel =
+  def toPrepopViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): PrepopTradeJourneyStatusesViewModel =
     PrepopTradeJourneyStatusesViewModel(
       tradeDetails.tradingName.getOrElse(TradingName.empty),
       tradeDetails.typeOfBusiness.getOrElse(TypeOfBusiness.empty),

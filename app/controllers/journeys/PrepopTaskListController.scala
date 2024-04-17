@@ -47,12 +47,12 @@ class PrepopTaskListController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit originalRequest =>
     val result = for {
       taskListWithRequest <- answerLoader.loadTaskList(taxYear, originalRequest)
-      taskList              = taskListWithRequest.taskList
-      updatedRequest        = taskListWithRequest.request
-      completedTrades       = getViewModelList(taskList)
-      message               = messagesApi.preferred(updatedRequest)
-      tradeDetailsStatus    = taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
-      viewModelList = completedTrades.map(TradesJourneyStatuses.toPrepopViewModel(_, taxYear)(message))
+      taskList           = taskListWithRequest.taskList
+      updatedRequest     = taskListWithRequest.request
+      completedTrades    = getViewModelList(taskList)
+      message            = messagesApi.preferred(updatedRequest)
+      tradeDetailsStatus = taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
+      viewModelList      = completedTrades.map(TradesJourneyStatuses.toPrepopViewModel(_, taxYear)(message))
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList)(updatedRequest, message))
     handleResultT(result)
   }
