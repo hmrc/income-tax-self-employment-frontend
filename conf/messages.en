@@ -56,11 +56,15 @@ status.checkOurRecords = CHECK OUR RECORDS
 
 journeys.selfEmployment = Self-employment
 journeys.self-employment-abroad = Self-employment abroad
-journeys.self-employment-details = Check your self-employment details
+journeys.self-employment-details-prepop = Check your self-employment details
 journeys.income = Income
+journeys.income-prepop = Income
 journeys.expenses = Expenses
+journeys.expenses-prepop = Expenses
 journeys.capital-allowances = Capital Allowances
+journeys.capital-allowances-prepop = Capital Allowances
 journeys.adjustments = Adjustments
+journeys.adjustments-prepop = Adjustments
 journeys.losses = Losses
 journeys.expenses-categories = Expenses categories
 journeys.national-insurance = National Insurance

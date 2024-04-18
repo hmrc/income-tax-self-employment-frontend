@@ -43,6 +43,7 @@ object TradesJourneyStatuses {
       message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       tradeDetails.tradingName.getOrElse(TradingName.empty),
+      tradeDetails.typeOfBusiness,
       tradeDetails.businessId,
       buildSummaryList(tradeDetails, taxYear, userAnswers)
     )

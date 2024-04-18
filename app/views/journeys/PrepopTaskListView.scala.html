@@ -51,9 +51,12 @@
 
         @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex) {
             <h2 class="govuk-heading-s">
-            @{
-                s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"
+            @if(!selfEmployment.tradingName.value.isEmpty) {
+                @{s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"}
+            } else {
+                @selfEmployment.typeOfBusiness
             }
+            </h2>
             </h2>
 
             <p class="govuk-body">

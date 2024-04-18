@@ -19,7 +19,7 @@ package viewmodels.journeys.taskList
 import controllers.journeys.{abroad, income}
 import models._
 import models.common.JourneyStatus.CannotStartYet
-import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName}
+import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName, TypeOfBusiness}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
@@ -32,7 +32,7 @@ import viewmodels.journeys.taskList.CapitalAllowancesTasklist.buildCapitalAllowa
 import viewmodels.journeys.taskList.ExpensesTasklist.buildExpensesCategories
 import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getJourneyStatus}
 
-case class TradeJourneyStatusesViewModel(tradingName: TradingName, businessId: BusinessId, statusList: SummaryList)
+case class TradeJourneyStatusesViewModel(tradingName: TradingName, typeOfBusiness: TypeOfBusiness, businessId: BusinessId, statusList: SummaryList)
 
 object TradeJourneyStatusesViewModel {
 
