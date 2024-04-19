@@ -49,6 +49,8 @@ POST        /:taxYear/:businessId/details/self-employment-abroad/check          
 
 GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
+GET         /:taxYear/:businessId/details/prepop                                    controllers.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Income Journey ##########
 
 GET         /:taxYear/:businessId/income/not-counted-turnover                       controllers.journeys.income.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
