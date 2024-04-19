@@ -16,11 +16,10 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, income}
+import controllers.journeys.income
 import models._
 import models.common.JourneyStatus.CannotStartYet
 import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName, TypeOfBusiness}
-import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
 import models.requests.TradesJourneyStatuses
@@ -28,43 +27,40 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
 import viewmodels.govuk.summarylist._
-import viewmodels.journeys.taskList.CapitalAllowancesTasklist.buildCapitalAllowances
-import viewmodels.journeys.taskList.ExpensesTasklist.buildExpensesCategories
 import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getJourneyStatus}
 
-case class TradeJourneyStatusesViewModel(tradingName: TradingName, typeOfBusiness: TypeOfBusiness, businessId: BusinessId, statusList: SummaryList)
+case class PrepopTradeJourneyStatusesViewModel(tradingName: TradingName,
+                                               typeOfBusiness: TypeOfBusiness,
+                                               businessId: BusinessId,
+                                               statusList: SummaryList)
 
-object TradeJourneyStatusesViewModel {
+object PrepopTradeJourneyStatusesViewModel {
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
-      messages: Messages): SummaryList = {
+  def buildPrepopSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
     implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
-    implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 
-    val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = true)
-
-    val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
-    val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
+    val incomePrepopRow            = buildRow(IncomePrepop)
+    val selfEmploymentPrepopRow    = buildRow(SelfEmploymentPrepop)
+    val expensesPrepopRow          = buildRow(ExpensesPrepop)
+    val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop)
+    val adjustmentsPrepopRow       = buildRow(AdjustmentsPrepop)
 
     val rows: List[SummaryListRow] =
-      List(abroadRow, incomeRow) ++
-        buildExpensesCategories ++
-        buildCapitalAllowances(tradesJourneyStatuses, taxYear)
+      List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow)
 
     SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
+  private def buildRow(journey: Journey)(implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getJourneyStatus(journey)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case Abroad => getAbroadUrl(status, businessId, taxYear)
       case Income => getIncomeUrl(status, businessId, taxYear)
       case _      => "#"
     }
@@ -87,11 +83,6 @@ object TradeJourneyStatusesViewModel {
     ).withCssClass("app-task-list__item no-wrap no-after-content")
   }
 
-  private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    determineJourneyStartOrCyaUrl(
-      abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
-      abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
-    )(journeyStatus)
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,

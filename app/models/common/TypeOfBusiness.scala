@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package models.journeys
+package models.common
 
-import models.requests.TradesJourneyStatuses
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-final case class TaskList(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses])
-object TaskList {
-  implicit val format: OFormat[TaskList] = Json.format[TaskList]
+final case class TypeOfBusiness(value: String) extends AnyVal {
+  override def toString: String = value
 
-  val empty: TaskList = TaskList(None, Nil)
+  def withSuffixStr(suffix: String): String = if (value.isEmpty) suffix else s"$value - $suffix"
+}
+
+object TypeOfBusiness {
+  implicit val format: Format[TypeOfBusiness] = Json.valueFormat[TypeOfBusiness]
+
+  def empty: TypeOfBusiness = TypeOfBusiness("")
 }
