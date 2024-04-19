@@ -90,16 +90,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     )
   }
 
-  case object IncomePrepop extends Journey("income-prepop") {
-    override val pageKeys: List[PageName] = Nil
-  }
-  case object AdjustmentsPrepop extends Journey("adjustments-prepop") {
-    override val pageKeys: List[PageName] = Nil
-  }
-  case object BusinessDetailsPrepop extends Journey("business-details-prepop") {
-    override val pageKeys: List[PageName] = Nil
-  }
-
   case object Income extends Journey("income") {
     override val pageKeys: List[PageName] = List(
       AnyOtherIncomePage.pageName,
@@ -114,6 +104,15 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       TurnoverNotTaxablePage.pageName
     )
   }
+  
+  case object BusinessDetailsPrepop extends Journey("business-details-prepop") {
+    override val pageKeys: List[PageName] = Nil
+  }
+  
+  case object IncomePrepop extends Journey("income-prepop") {
+    override val pageKeys: List[PageName] = Nil
+  }
+  
   case object SelfEmploymentPrepop extends Journey("self-employment-details-prepop") {
     override val pageKeys: List[PageName] = Nil
   }
