@@ -23,6 +23,7 @@ GET         /error/you-need-agent-services-account                              
 GET         /unauthorised                                                           controllers.standard.UnauthorisedController.onPageLoad
 
 GET         /:taxYear/task-list                                                     controllers.journeys.TaskListController.onPageLoad(taxYear: TaxYear)
+GET         /:taxYear/task-list-prepop                                              controllers.journeys.PrepopTaskListController.onPageLoad(taxYear: TaxYear)
 
 GET         /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)

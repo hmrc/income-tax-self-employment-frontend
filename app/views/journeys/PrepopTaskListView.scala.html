@@ -1,0 +1,70 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.actions.AuthenticatedIdentifierAction.User
+@import models.common.JourneyStatus
+@import templates.Layout
+@import viewmodels.journeys.taskList.PrepopTradeJourneyStatusesViewModel
+@import models.common.TaxYear
+@import views.html.templates.helpers.Heading
+
+@this(
+        layout: Layout,
+        govukSummaryList: GovukSummaryList,
+        heading: Heading
+)
+
+
+@(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[PrepopTradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
+
+@selfEmploymentSummaryLink = {
+@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
+}
+
+@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
+
+    @heading(
+        heading = messages(s"prepopTastList.taxReturn"),
+        subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
+        extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
+
+
+
+    <div class="task-list">
+
+        <h2 class ="govuk-heading-m" >
+        @messages("journeys.selfEmployment")
+        </h2>
+
+        @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex) {
+            <h2 class="govuk-heading-s">
+            @if(!selfEmployment.tradingName.value.isEmpty) {
+                @{s"${selfEmployment.tradingName} - ${selfEmployment.typeOfBusiness}"}
+            } else {
+                @selfEmployment.typeOfBusiness
+            }
+            </h2>
+            </h2>
+
+            <p class="govuk-body">
+            @messages("prepopTastList.hint")
+            </p>
+            @govukSummaryList(selfEmployment.statusList)
+        }
+
+    </div>
+
+}
