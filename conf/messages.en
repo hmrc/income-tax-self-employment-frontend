@@ -169,6 +169,7 @@ checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a 
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
+checkYourSelfEmploymentDetails.p1 = To edit this data, use your software.
 
 sectionCompletedState.title = Have you finished this section?
 sectionCompletedState.hint = You’ll still be able to go back and review the information that you’ve given us.
