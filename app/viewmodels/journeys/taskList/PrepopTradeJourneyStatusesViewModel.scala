@@ -41,11 +41,11 @@ object PrepopTradeJourneyStatusesViewModel {
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
 
-    val incomePrepopRow            = buildRow(IncomePrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val selfEmploymentPrepopRow    = buildRow(SelfEmploymentPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val expensesPrepopRow          = buildRow(ExpensesPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop, dependentJourneyIsFinishedForClickableLink = true)
-    val adjustmentsPrepopRow       = buildRow(AdjustmentsPrepop, dependentJourneyIsFinishedForClickableLink = true)
+    val incomePrepopRow            = buildRow(IncomePrepop)
+    val selfEmploymentPrepopRow    = buildRow(SelfEmploymentPrepop)
+    val expensesPrepopRow          = buildRow(ExpensesPrepop)
+    val capitalAllowancesPrepopRow = buildRow(CapitalAllowancesPrepop)
+    val adjustmentsPrepopRow       = buildRow(AdjustmentsPrepop)
 
     val rows: List[SummaryListRow] =
       List(selfEmploymentPrepopRow, incomePrepopRow, expensesPrepopRow, capitalAllowancesPrepopRow, adjustmentsPrepopRow)
@@ -53,12 +53,12 @@ object PrepopTradeJourneyStatusesViewModel {
     SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
+  private def buildRow(journey: Journey)(implicit
       messages: Messages,
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getJourneyStatus(journey)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
       case Income => getIncomeUrl(status, businessId, taxYear)
