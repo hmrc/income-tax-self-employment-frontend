@@ -113,10 +113,11 @@ package object checkAnswers {
       )
     )
 
-  def buildTableRow(key: String, answer: String, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
+  def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
     Seq(
       TableRow(content = HtmlContent(messages(key)), classes = classes),
-      TableRow(content = HtmlContent(answer), classes = s"govuk-!-text-align-right $classes"))
+      TableRow(content = HtmlContent(s"£${formatMoney(answer)}"), classes = s"govuk-!-text-align-right $classes")
+    )
 
   def buildTable(headRow: Option[Seq[HeadCell]], rows: Seq[Seq[TableRow]]): Table =
     Table(rows, headRow)

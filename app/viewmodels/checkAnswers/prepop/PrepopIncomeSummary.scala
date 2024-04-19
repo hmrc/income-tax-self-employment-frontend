@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.income
+package viewmodels.checkAnswers.prepop
 
 import cats.implicits.catsSyntaxOptionId
 import models.journeys.income.IncomePrepopAnswers
@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 import utils.MoneyUtils
-import viewmodels.checkAnswers.buildTableRow
+import viewmodels.checkAnswers.buildTableAmountRow
 
 object PrepopIncomeSummary extends MoneyUtils {
 
@@ -33,11 +33,11 @@ object PrepopIncomeSummary extends MoneyUtils {
     ).some
 
   def turnoverIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    answers.turnoverIncome.map(amount => buildTableRow("site.sales", s"£${formatMoney(amount)}"))
+    answers.turnoverIncome.map(buildTableAmountRow("site.sales", _))
 
   def otherIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    answers.otherIncome.map(amount => buildTableRow("income.otherBusinessIncome", s"£${formatMoney(amount)}"))
+    answers.otherIncome.map(buildTableAmountRow("income.otherBusinessIncome", _))
 
   def totalIncomeRow(answers: IncomePrepopAnswers)(implicit messages: Messages): Option[Seq[TableRow]] =
-    buildTableRow("income.totalIncome", s"£${formatMoney(answers.totalIncome)}", classes = "govuk-!-font-weight-bold").some
+    buildTableAmountRow("income.totalIncome", answers.totalIncome, classes = "govuk-!-font-weight-bold").some
 }
