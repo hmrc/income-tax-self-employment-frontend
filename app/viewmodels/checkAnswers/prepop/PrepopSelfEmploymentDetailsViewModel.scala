@@ -25,6 +25,7 @@ import viewmodels.implicits._
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, FormatStyle}
+import scala.util.Try
 
 object PrepopSelfEmploymentDetailsViewModel {
 
@@ -56,9 +57,9 @@ object PrepopSelfEmploymentDetailsViewModel {
     )
   }
 
-  private def handleDateString(date: Option[String]): String = try
-    LocalDate.parse(date.getOrElse("")).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
-  catch {
-    case _: Throwable => ""
-  }
+  private def handleDateString(date: Option[String]): String =
+    date
+      .flatMap(d => Try(LocalDate.parse(d)).toOption)
+      .map(_.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)))
+      .getOrElse("")
 }

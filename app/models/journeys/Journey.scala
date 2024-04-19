@@ -95,6 +95,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object AdjustmentsPrepop extends Journey("adjustments-prepop") {
     override val pageKeys: List[PageName] = Nil
   }
+  case object BusinessDetailsPrepop extends Journey("business-details-prepop") {
+    override val pageKeys: List[PageName] = Nil
+  }
   case object Income extends Journey("income") {
     override val pageKeys: List[PageName] = List(
       AnyOtherIncomePage.pageName,

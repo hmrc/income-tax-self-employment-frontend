@@ -16,8 +16,10 @@
 
 package pages.prepop
 
-import controllers.journeys.prepop.routes
+import controllers.journeys.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.Journey.BusinessDetailsPrepop
 import pages.Page
 import play.api.mvc.Call
 
@@ -25,7 +27,6 @@ case object PrepopCheckYourSelfEmploymentDetailsPage extends Page {
 
   override def toString: String = "checkYourSelfEmploymentDetails"
 
-  // TODO: Redirect to 'Have you completed this section'
   def nextPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId)
+    routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, BusinessDetailsPrepop.entryName, NormalMode)
 }
