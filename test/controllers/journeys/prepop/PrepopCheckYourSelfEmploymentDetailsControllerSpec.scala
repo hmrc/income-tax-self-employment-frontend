@@ -20,11 +20,14 @@ import base.SpecBase
 import cats.data.EitherT
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.prepop.routes._
+import controllers.journeys.routes
 import controllers.standard.routes._
+import models.NormalMode
 import models.common.BusinessId
 import models.common.UserType.Individual
 import models.domain.BusinessData
 import models.errors.ServiceError.NotFoundError
+import models.journeys.Journey.BusinessDetailsPrepop
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -77,7 +80,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
         val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual)(messages(application))
 
         running(application) {
-          val nextRoute = PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
+          val nextRoute = routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, BusinessDetailsPrepop.entryName, NormalMode).url
 
           when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(aBusinessData)
 
