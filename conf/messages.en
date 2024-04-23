@@ -205,6 +205,10 @@ adjustments.goodsAndServicesOwnUse = Cost of goods and services used outside sel
 adjustments.transitionProfitAmount = Transition profit amount
 adjustments.transitionProfitAccelerationAmount = Transition profit acceleration amount
 
+###### Capital Allowance Prepop ######
+
+capitalAllowances.title = Capital allowance
+capitalAllowances.annualInvestmentAllowance = Annual investment allowance
 ###### Income Journey ######
 
 ## Common

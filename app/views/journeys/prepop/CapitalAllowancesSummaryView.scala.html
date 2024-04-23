@@ -1,0 +1,31 @@
+
+@import controllers.journeys
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components.{Subheading, Button}
+@import views.html.templates.helpers.Heading
+@import models.journeys.Journey.CapitalAllowancesPrepop
+
+@this(layout: templates.Layout,
+        heading: Heading,
+        subHeading: Subheading,
+        govukTable: GovukTable,
+        button: Button
+)
+
+@(userType: UserType, taxYear: TaxYear, businessId: BusinessId, capitalAllowancesTable: Table)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("journeys.capital-allowances-prepop"))) {
+
+    @heading(
+        heading = messages("journeys.capital-allowances-prepop"),
+        subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
+        marginZero = false
+    )
+    <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
+
+    @govukTable(capitalAllowancesTable)
+
+    <div class="govuk-!-margin-top-7">
+    @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, CapitalAllowancesPrepop.entryName, NormalMode).url, "site.continue")
+    </div>
+}

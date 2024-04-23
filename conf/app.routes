@@ -40,6 +40,8 @@ GET         /:taxYear/self-employment-summary                                   
 
 GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 GET         /:taxYear/:businessId/adjustments/prepop                                controllers.journeys.prepop.AdjustmentsSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/capital-allowances/prepop                                   controllers.journeys.prepop.CapitalAllowancesSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+
 
 ########## Abroad Journey ##########
 
