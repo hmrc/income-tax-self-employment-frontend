@@ -40,15 +40,15 @@
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>@messages(s"balancingAllowance.p1.$userType")</p>
-        <div>
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"balancingAllowance.p2.$userType")</li>
             <li>@messages(s"balancingAllowance.p3.$userType")</li>
-        </div>
+        </ul>
         <p>@messages(s"balancingAllowance.p4.$userType")</p>
-        <div>
-        <li>@messages(s"balancingAllowance.p5.$userType")</li>
-        <li>@messages(s"balancingAllowance.p6.$userType")</li>
-        </div>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"balancingAllowance.p5.$userType")</li>
+            <li>@messages(s"balancingAllowance.p6.$userType")</li>
+        </ul>
         <p>@messages(s"balancingAllowance.p7.read")
         <a class="govuk-link" target="_blank" href=@messages("balancingAllowance.p7.href") >@messages("balancingAllowance.p7.link")</a>
         @messages(s"balancingAllowance.p7.tab")</p>
