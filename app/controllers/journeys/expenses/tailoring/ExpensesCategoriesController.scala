@@ -23,12 +23,10 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.expenses.ExpensesTailoring
-import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
+import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.goodsToSellOrUse.TaxiMinicabOrRoadHaulagePage
 import pages.expenses.tailoring._
-import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.data.Form
@@ -119,28 +117,6 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
   }
 
   private def clearDependentPageAnswers(userAnswers: UserAnswers, businessId: Option[BusinessId], pageAnswer: ExpensesTailoring): Try[UserAnswers] = {
-    val tailoringList = List(
-      AdvertisingOrMarketingPage,
-      DepreciationPage,
-      DisallowableIrrecoverableDebtsPage,
-      DisallowableOtherFinancialChargesPage,
-      DisallowableInterestPage,
-      DisallowableStaffCostsPage,
-      DisallowableSubcontractorCostsPage,
-      DisallowableProfessionalFeesPage,
-      EntertainmentCostsPage,
-      FinancialExpensesPage,
-      GoodsToSellOrUsePage,
-      OfficeSuppliesPage,
-      OtherExpensesPage,
-      ProfessionalServiceExpensesPage,
-      RepairsAndMaintenancePage,
-      TaxiMinicabOrRoadHaulagePage,
-      TravelForWorkPage,
-      WorkFromHomePage,
-      WorkFromBusinessPremisesPage,
-      TotalExpensesPage
-    )
     val toBeRemoved = pageAnswer match {
       case NoExpenses           => tailoringList
       case IndividualCategories => tailoringList.filter(_ == TotalExpensesPage)

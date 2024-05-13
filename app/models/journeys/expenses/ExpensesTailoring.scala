@@ -17,6 +17,23 @@
 package models.journeys.expenses
 
 import models.common.{Enumerable, UserType, WithName}
+import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
+import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
+import pages.expenses.depreciation.DepreciationDisallowableAmountPage
+import pages.expenses.entertainment.EntertainmentAmountPage
+import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
+import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
+import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
+import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
+import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
+import pages.expenses.workplaceRunningCosts.workingFromHome._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -33,6 +50,67 @@ object ExpensesTailoring extends Enumerable.Implicits {
     TotalAmount,
     IndividualCategories,
     NoExpenses
+  )
+
+  val tailoringList = List(
+    AdvertisingOrMarketingAmountPage,
+    AdvertisingOrMarketingDisallowableAmountPage,
+    AdvertisingOrMarketingPage,
+    BusinessPremisesAmountPage,
+    BusinessPremisesDisallowableAmountPage,
+    ConstructionIndustryAmountPage,
+    ConstructionIndustryDisallowableAmountPage,
+    DepreciationDisallowableAmountPage,
+    DepreciationPage,
+    DisallowableGoodsToSellOrUseAmountPage,
+    DisallowableInterestPage,
+    DisallowableIrrecoverableDebtsPage,
+    DisallowableOtherFinancialChargesPage,
+    DisallowableProfessionalFeesPage,
+    DisallowableStaffCostsPage,
+    DisallowableSubcontractorCostsPage,
+    EntertainmentAmountPage,
+    EntertainmentCostsPage,
+    FinancialChargesAmountPage,
+    FinancialChargesDisallowableAmountPage,
+    FinancialExpensesPage,
+    GoodsToSellOrUseAmountPage,
+    GoodsToSellOrUsePage,
+    InterestAmountPage,
+    InterestDisallowableAmountPage,
+    IrrecoverableDebtsAmountPage,
+    IrrecoverableDebtsDisallowableAmountPage,
+    LiveAtBusinessPremisesPage,
+    LivingAtBusinessPremisesOnePerson,
+    LivingAtBusinessPremisesThreePlusPeople,
+    LivingAtBusinessPremisesTwoPeople,
+    MoreThan25HoursPage,
+    OfficeSuppliesAmountPage,
+    OfficeSuppliesDisallowableAmountPage,
+    OfficeSuppliesPage,
+    OtherExpensesAmountPage,
+    OtherExpensesDisallowableAmountPage,
+    OtherExpensesPage,
+    ProfessionalFeesAmountPage,
+    ProfessionalFeesDisallowableAmountPage,
+    ProfessionalServiceExpensesPage,
+    RepairsAndMaintenanceAmountPage,
+    RepairsAndMaintenanceDisallowableAmountPage,
+    RepairsAndMaintenancePage,
+    StaffCostsAmountPage,
+    StaffCostsDisallowableAmountPage,
+    TaxiMinicabOrRoadHaulagePage,
+    TotalExpensesPage,
+    TravelForWorkPage,
+    WfbpClaimingAmountPage,
+    WfbpFlatRateOrActualCostsPage,
+    WfhClaimingAmountPage,
+    WfhFlatRateOrActualCostsPage,
+    WorkFromBusinessPremisesPage,
+    WorkFromHomePage,
+    WorkingFromHomeHours25To50,
+    WorkingFromHomeHours51To100,
+    WorkingFromHomeHours101Plus
   )
 
   def options(userType: UserType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
