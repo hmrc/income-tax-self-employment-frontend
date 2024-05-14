@@ -21,7 +21,9 @@ import controllers.standard
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.tailoringList
 import models.journeys.income.TradingAllowance
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.mvc.Call
 import queries.Settable
 
@@ -42,5 +44,6 @@ case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
       case None                                       => false
     }
 
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage)
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
+    tailoringList ++ List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage, ExpensesCategoriesPage)
 }

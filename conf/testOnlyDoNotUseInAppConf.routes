@@ -12,5 +12,5 @@
 # Add all the application routes to the prod.routes file
 ->          /                      prod.Routes
 
-GET         /update-and-submit-income-tax-return/self-employment/test-clear-all-data        controllers.testonly.TestManagerController.isTestEnabled()
-POST        /update-and-submit-income-tax-return/self-employment/test-clear-all-data        controllers.testonly.TestManagerController.clearAllData()
+GET         /update-and-submit-income-tax-return/self-employment/test-only/test-clear-all-data        controllers.testonly.TestManagerController.isTestEnabled()
+POST        /update-and-submit-income-tax-return/self-employment/test-only/test-clear-all-data        controllers.testonly.TestManagerController.clearAllData()
